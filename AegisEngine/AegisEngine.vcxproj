@@ -19,9 +19,6 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <Image Include="AegisEngine_icon.ico" />
-  </ItemGroup>
-  <ItemGroup>
     <ClCompile Include="audio_clip.cpp" />
     <ClCompile Include="Billboard.cpp" />
     <ClCompile Include="Bounding.cpp" />
@@ -113,6 +110,8 @@
     <ClInclude Include="Player.h" />
     <ClInclude Include="Polygon_3D.h" />
     <ClInclude Include="Renderer.h" />
+    <ClInclude Include="resource.h" />
+    <ClInclude Include="resource1.h" />
     <ClInclude Include="Scene.h" />
     <ClInclude Include="Score.h" />
     <ClInclude Include="Sprite.h" />
@@ -144,6 +143,12 @@
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(Filename).cso</ObjectFileOutput>
     </FxCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="AegisEngine1.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="icon1.ico" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
