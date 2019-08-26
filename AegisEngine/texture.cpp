@@ -1,0 +1,718 @@
+#include	"main.h"
+#include	"Renderer.h"
+#include	"texture.h"
+
+using namespace std;
+
+typedef struct {
+	string Name;
+	XMINT2 WH;
+}TEXTURE_FILE;
+
+static TEXTURE_FILE g_TextureFiles[] = {
+	{"number.png", XMINT2(512, 512) },
+	{"number02.png", XMINT2(320, 32) },
+
+	{"title.png", XMINT2(1920, 1080) },
+	{"game_clear.png", XMINT2(1920, 1080) },
+	{"game_over.png", XMINT2(1920, 1080) },
+
+	{"field004.png", XMINT2(128, 128) },
+	{"shadow000.jpg", XMINT2(80, 80) },
+	{"Explosion.png", XMINT2(360, 360) },
+	{"arrow.png", XMINT2(665, 95) },
+	{"Reticule.png", XMINT2(512, 512) },
+
+	{"hp_rod.png", XMINT2(64, 256) },
+	{"hp.png", XMINT2(2, 2) },
+	{"bullet_icon.png", XMINT2(64, 128) },
+
+	{"pause.png", XMINT2(512, 512) },
+	{"select.png", XMINT2(60, 60) },
+
+	{"UVCheckerMap01-512.png", XMINT2(512, 512) },
+	{"UVCheckerMap01-1024.png", XMINT2(1024, 1024) },
+
+	{"asphalt01-pattern.jpg", XMINT2(1000, 1000) },
+
+	{"asult_rifl.png", XMINT2(512, 512) },
+	{"Bazooka.png", XMINT2(512, 512) },
+
+	{"go.png", XMINT2(256, 128) },
+
+	{"sky.jpg", XMINT2(3072, 2048) },
+};
+
+
+map<string, ID3D11ShaderResourceView*> TEXTURE_MANEGER::TextureResource;
+
+// 読み込みテクスチャ数
+static const int TEXTURE_FILE_COUNT = sizeof(g_TextureFiles) / sizeof(g_TextureFiles[0]);
+
+
+
+//================================================================================
+
+void CTexture::Load(const char *FileName)
+{
+	unsigned char	header[18];
+	unsigned char*	image;
+	unsigned int	width, height;
+	unsigned char	depth;
+	unsigned int	bpp;
+	unsigned int	size;
+
+
+	// ヘッダ読み込み
+	FILE* file;
+	file = fopen(FileName, "rb");
+	assert(file);
+
+	fread(header, sizeof(header), 1, file);
+
+
+	// 画像サイズ取得
+	width = header[13] * 256 + header[12];
+	height = header[15] * 256 + header[14];
+	depth = header[16];
+
+	if (depth == 32)
+		bpp = 4;
+	else if (depth == 24)
+		bpp = 3;
+	else
+		bpp = 0;
+
+	if (bpp != 4) {
+		assert(false);
+	}
+
+	size = width * height * bpp;
+
+	// メモリ確保
+	image = (unsigned char*)new unsigned char[size];
+
+	// 画像読み込み
+	fread(image, size, 1, file);
+
+	// R<->B
+	for (unsigned int y = 0; y < height; y++)
+	{
+		for (unsigned int x = 0; x < width; x++)
+		{
+			unsigned char c;
+			c = image[(y * width + x) * bpp + 0];
+			image[(y * width + x) * bpp + 0] = image[(y * width + x) * bpp + 2];
+			image[(y * width + x) * bpp + 2] = c;
+		}
+	}
+
+	fclose(file);
+
+
+	D3D11_TEXTURE2D_DESC desc;
+	desc.Width = width;
+	desc.Height = height;
+	desc.MipLevels = 1;
+	desc.ArraySize = 1;
+	desc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+	desc.SampleDesc.Count = 1;
+	desc.SampleDesc.Quality = 0;
+	desc.Usage = D3D11_USAGE_DEFAULT;
+	desc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
+	desc.CPUAccessFlags = 0;
+	desc.MiscFlags = 0;
+
+	D3D11_SUBRESOURCE_DATA initData;
+	initData.pSysMem = image;
+	initData.SysMemPitch = width * 4;
+	initData.SysMemSlicePitch = size;
+
+	auto hr = CRenderer::GetDevice()->CreateTexture2D(&desc, &initData, &m_Texture);
+	if (FAILED(hr)) {
+		assert(false);
+	}
+
+	D3D11_SHADER_RESOURCE_VIEW_DESC SRVDesc = {};
+	SRVDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+	SRVDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
+	SRVDesc.Texture2D.MipLevels = 1;
+
+	hr = CRenderer::GetDevice()->CreateShaderResourceView(m_Texture, &SRVDesc, &m_ShaderResourceView);
+	if (FAILED(hr))
+	{
+		assert(false);
+	}
+
+	delete image;
+}
+
+void CTexture::Unload()
+{
+	SAFE_RELEASE(m_Texture);
+	SAFE_RELEASE(m_ShaderResourceView);
+}
+
+//================================================================================
+
+
+
+TEXTURE::TEXTURE()
+{
+	FileName = "none";
+}
+
+TEXTURE::TEXTURE(const string& const file_name)
+{
+	FileName = file_name;
+}
+
+//========================================
+// テクスチャを設定(Directx11)
+//========================================
+void TEXTURE::Set_Texture(void)
+{
+	ID3D11ShaderResourceView* shader_resouce_view = TEXTURE_MANEGER::GetShaderResourceView(FileName);
+
+	CRenderer::GetDeviceContext()->PSSetShaderResources(0, 1, &shader_resouce_view);
+}
+
+//========================================
+// テクスチャ名の設定
+//========================================
+void TEXTURE::Set_Texture_Name(const string& const file_name)
+{
+	FileName = file_name;
+}
+
+//========================================
+// テクスチャ名の取得
+//========================================
+const string& TEXTURE::Get_Texture_Name(void)
+{
+	return FileName;
+}
+
+XMINT2* const TEXTURE::Get_WH()
+{
+	return TEXTURE_MANEGER::Get_WH(FileName);
+}
+
+
+
+
+
+
+void TEXTURE_MANEGER::Init()
+{
+	Load();
+}
+
+void TEXTURE_MANEGER::Uninit()
+{
+	for (auto tex : TextureResource)
+	{
+		tex.second->Release();
+	}
+	TextureResource.clear();
+}
+
+void TEXTURE_MANEGER::Load(void)
+{
+	ID3D11ShaderResourceView* ShaderResourceView;
+
+	wstring path = L"asset/texture/";
+	wstring file_name;
+
+	for (int i = 0; i < TEXTURE_FILE_COUNT; i++)
+	{
+		HRESULT hr;
+
+		// char から wchar_t への変換
+		file_name = wstring(g_TextureFiles[i].Name.begin(), g_TextureFiles[i].Name.end());
+
+		path = L"asset/texture/";
+
+		path = path + file_name;
+
+		hr = DirectX::CreateWICTextureFromFile(CRenderer::GetDevice(), CRenderer::GetDeviceContext(), path.c_str(), nullptr, &ShaderResourceView);
+		if (FAILED(hr))
+		{
+			FAILDE_ASSERT;
+			return;
+		}
+
+		path.clear();
+		file_name.clear();
+
+		TextureResource[g_TextureFiles[i].Name] = ShaderResourceView;
+	}
+}
+
+void TEXTURE_MANEGER::Add(const string& const file_name)
+{
+	ID3D11ShaderResourceView* ShaderResourceView;
+
+	wstring path = L"asset/texture/";
+
+	// char から wchar_t への変換
+	wstring file = wstring(file_name.begin(), file_name.end());
+
+	path = path + file;
+
+	HRESULT hr;
+
+	hr = DirectX::CreateWICTextureFromFile(CRenderer::GetDevice(), CRenderer::GetDeviceContext(), path.c_str(), nullptr, &ShaderResourceView);
+	if (FAILED(hr))
+	{
+		return;
+	}
+
+	TextureResource[file_name] = ShaderResourceView;
+}
+
+// テクスチャの解放
+void TEXTURE_MANEGER::Unload(const string& const file_name)
+{
+}
+
+XMINT2* const TEXTURE_MANEGER::Get_WH(const string& file_name)
+{
+	for (int i = 0; i < TEXTURE_FILE_COUNT; i++)
+	{
+		if (file_name == g_TextureFiles[i].Name)
+		{
+			return &g_TextureFiles[i].WH;
+		}
+	}
+
+	return nullptr;
+}
+
+ID3D11ShaderResourceView* const TEXTURE_MANEGER::GetShaderResourceView(const string& const file_name)
+{
+	for (auto tex : TextureResource)
+	{
+		if (file_name == tex.first)
+		{
+			return tex.second;
+		}
+	}
+	return nullptr;
+}
+
+
+
+map<string, ID3D11ShaderResourceView*> FONT::FontResource;
+ID3D11SamplerState* FONT::SamplerState = nullptr;
+unsigned short FONT::FontCnt = 0;
+
+void FONT::Init()
+{
+	/*string a("あいうえお");
+
+	const char* e = u8"あいうえお";
+
+	const wchar_t* f = L"菅野翔吾aA";
+
+	wstring b(f);
+
+	f = (wchar_t*)e;
+
+	wchar_t c;
+
+	for (auto d : b)
+	{
+		c = d;
+
+		UINT code = (UINT)c;
+
+		int z = 0;
+	}*/
+
+	FONT::Load_Font();
+}
+
+void FONT::Load_Font()
+{
+	// フォントデータ
+	//wstring Font;
+	//{
+	string Font01("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789 +-*=/^.,;!?()[]{}");
+
+		//wstring Font02(L"あいおうおかきくけこさしすせそたちつてとなにぬねのはひふへほまみむめもやゆよらりるれろわをんがぎぐげござじずぜぞだぢづでどばびぶべぼぱぴぷぺぽゃゅょっ");
+
+		//wstring Font03(L"アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲンガギグゲゴザジズゼゾダヂヅデドバビブベボパピプペポャュョッ");
+
+		//Font = wstring(Font01.begin(), Font01.end());
+
+		//Font02 = Font02 + Font03;
+
+		//Font = Font + Font02;//
+
+		FontCnt = Font01.size();
+	//}
+
+	// フォントハンドルの生成
+	int fontSize = 256;
+	int fontWeight = 1000;
+	LOGFONTW lf =
+	{
+		fontSize, 0, 0, 0, fontWeight, 0, 0, 0,
+		SHIFTJIS_CHARSET, OUT_TT_ONLY_PRECIS, CLIP_DEFAULT_PRECIS,
+		PROOF_QUALITY, DEFAULT_PITCH | FF_MODERN,
+		(WCHAR)"ＭＳ Ｐ明朝"
+		//(WCHAR)"ＭＳ 明朝"
+		//(WCHAR)"ＭＳ ゴシック"
+	};
+	HFONT hFont = CreateFontIndirectW(&lf);
+
+	// 現在のウィンドウに適用
+	// デバイスにフォントを持たせないとGetGlyphOutline関数はエラーとなる
+	HDC hdc = GetDC(NULL);
+	HFONT oldFont = (HFONT)SelectObject(hdc, hFont);
+
+	const int gradFlag = GGO_GRAY8_BITMAP;
+	// 階調の最大値
+	int grad = 0;
+	switch (gradFlag)
+	{
+	case GGO_GRAY2_BITMAP:
+		grad = 4;
+		break;
+	case GGO_GRAY4_BITMAP:
+		grad = 16;
+		break;
+	case GGO_GRAY8_BITMAP:
+		grad = 64;
+		break;
+	}
+
+	//フォントを書き込むテクスチャ作成
+	D3D11_TEXTURE2D_DESC fontTextureDesc;
+	ZeroMemory(&fontTextureDesc, sizeof(fontTextureDesc));
+	fontTextureDesc.MipLevels = 1;
+	fontTextureDesc.ArraySize = 1;
+	fontTextureDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+	fontTextureDesc.SampleDesc.Count = 1;
+	fontTextureDesc.SampleDesc.Quality = 0;
+	fontTextureDesc.Usage = D3D11_USAGE_DYNAMIC;
+	fontTextureDesc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
+	fontTextureDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+	fontTextureDesc.MiscFlags = 0;
+
+	// シェーダ用にサンプラを作成する
+	{
+		D3D11_SAMPLER_DESC samDesc;
+		ZeroMemory(&samDesc, sizeof(samDesc));
+		samDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
+		samDesc.AddressU = samDesc.AddressV = samDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
+		samDesc.MaxAnisotropy = 1;
+		samDesc.ComparisonFunc = D3D11_COMPARISON_ALWAYS;
+		samDesc.MaxLOD = D3D11_FLOAT32_MAX;
+
+		ID3D11SamplerState* samplerState = nullptr;
+
+		CRenderer::GetDevice()->CreateSamplerState(&samDesc, &samplerState);
+	}
+
+	// ShaderResourceViewの情報を作成する
+	D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc;
+	ZeroMemory(&srvDesc, sizeof(srvDesc));
+	srvDesc.Format = fontTextureDesc.Format;
+	srvDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
+	srvDesc.Texture2D.MostDetailedMip = 0;
+	srvDesc.Texture2D.MipLevels = fontTextureDesc.MipLevels;
+
+	ID3D11ShaderResourceView* ShaderResourceView;
+
+	for (auto font : Font01)
+	{
+		//// フォントビットマップ取得
+
+		UINT code = (UINT)font;
+
+		TEXTMETRIC tm;
+		GetTextMetrics(hdc, &tm);
+		GLYPHMETRICS gm;
+		CONST MAT2 mat = { {0,1}, {0,0}, {0,0}, {0,1} };
+
+		DWORD size = GetGlyphOutlineW(hdc, code, gradFlag, &gm, 0, NULL, &mat);
+		BYTE* pMono = new BYTE[size];
+
+		GetGlyphOutlineW(hdc, code, gradFlag, &gm, size, pMono, &mat);
+
+		//================================================================================
+
+		//フォントの幅と高さ
+		int fontWidth = gm.gmCellIncX;
+		int fontHeight = tm.tmHeight;
+
+		//フォントを書き込むテクスチャ作成
+		fontTextureDesc.Width = fontWidth;
+		fontTextureDesc.Height = fontHeight;
+
+		ID3D11Texture2D* font_texture;
+
+		HRESULT hr = CRenderer::GetDevice()->CreateTexture2D(&fontTextureDesc, NULL, &font_texture);
+
+		//デバイスコンテキスト
+		auto deviceContext = CRenderer::GetDeviceContext();
+
+		// フォント情報をテクスチャに書き込む部分
+		D3D11_MAPPED_SUBRESOURCE hMappedResource;
+		hr = deviceContext->Map(
+			font_texture,
+			0,
+			D3D11_MAP_WRITE_DISCARD,
+			0,
+			&hMappedResource);
+		// ここで書き込む
+		BYTE* pBits = (BYTE*)hMappedResource.pData;
+		// フォント情報の書き込み
+		// iOfs_x, iOfs_y : 書き出し位置(左上)
+		// iBmp_w, iBmp_h : フォントビットマップの幅高
+		// Level : α値の段階 (GGO_GRAY4_BITMAPなので17段階)
+		int iOfs_x = gm.gmptGlyphOrigin.x;
+		int iOfs_y = tm.tmAscent - gm.gmptGlyphOrigin.y;
+		int iBmp_w = gm.gmBlackBoxX + (4 - (gm.gmBlackBoxX % 4)) % 4;
+		int iBmp_h = gm.gmBlackBoxY;
+		int Level = 17;
+		int x, y;
+		DWORD Alpha, Color;
+		memset(pBits, 0, hMappedResource.RowPitch * tm.tmHeight);
+		for (y = iOfs_y; y < iOfs_y + iBmp_h; y++)
+		{
+			for (x = iOfs_x; x < iOfs_x + iBmp_w; x++)
+			{
+				Alpha =
+					(255 * pMono[x - iOfs_x + iBmp_w * (y - iOfs_y)])
+					/ (Level - 1);
+				Color = 0x00ffffff | (Alpha << 24);
+				memcpy(
+					(BYTE*)pBits
+					+ hMappedResource.RowPitch * y + 4 * x,
+					&Color,
+					sizeof(DWORD));
+			}
+		}
+		deviceContext->Unmap(font_texture, 0);
+		//不要なので削除
+		delete[] pMono;
+
+		// シェーダーリソースの作成
+		CRenderer::GetDevice()->CreateShaderResourceView(font_texture, &srvDesc, &ShaderResourceView);
+
+		char name = font;
+
+		string a;
+
+		a.push_back(name);
+
+		FontResource[a] = ShaderResourceView;
+	}
+}
+
+void FONT::Load_Font(const string one_character)
+{
+	// フォントハンドルの生成
+	int fontSize = 256;
+	int fontWeight = 1000;
+	LOGFONTW lf =
+	{
+		fontSize, 0, 0, 0, fontWeight, 0, 0, 0,
+		SHIFTJIS_CHARSET, OUT_TT_ONLY_PRECIS, CLIP_DEFAULT_PRECIS,
+		PROOF_QUALITY, DEFAULT_PITCH | FF_MODERN,
+		(WCHAR)"ＭＳ Ｐ明朝"
+		//(WCHAR)"ＭＳ 明朝"
+		//(WCHAR)"ＭＳ ゴシック"
+	};
+	HFONT hFont = CreateFontIndirectW(&lf);
+
+	// 現在のウィンドウに適用
+	// デバイスにフォントを持たせないとGetGlyphOutline関数はエラーとなる
+	HDC hdc = GetDC(NULL);
+	HFONT oldFont = (HFONT)SelectObject(hdc, hFont);
+
+	// フォントビットマップ取得
+
+	wchar_t font = (wchar_t)one_character.c_str();
+
+	UINT code = (UINT)font;
+
+	const int gradFlag = GGO_GRAY8_BITMAP;
+	// 階調の最大値
+	int grad = 0;
+	switch (gradFlag)
+	{
+	case GGO_GRAY2_BITMAP:
+		grad = 4;
+		break;
+	case GGO_GRAY4_BITMAP:
+		grad = 16;
+		break;
+	case GGO_GRAY8_BITMAP:
+		grad = 64;
+		break;
+	}
+
+	TEXTMETRIC tm;
+	GetTextMetrics(hdc, &tm);
+	GLYPHMETRICS gm;
+	CONST MAT2 mat = { {0,1}, {0,0}, {0,0}, {0,1} };
+
+	DWORD size = GetGlyphOutlineW(hdc, code, gradFlag, &gm, 0, NULL, &mat);
+	BYTE* pMono = new BYTE[size];
+
+	GetGlyphOutlineW(hdc, code, gradFlag, &gm, size, pMono, &mat);
+
+	//================================================================================
+
+	//フォントの幅と高さ
+	int fontWidth = gm.gmCellIncX;
+	int fontHeight = tm.tmHeight;
+
+	//フォントを書き込むテクスチャ作成
+	D3D11_TEXTURE2D_DESC fontTextureDesc;
+	ZeroMemory(&fontTextureDesc, sizeof(fontTextureDesc));
+	fontTextureDesc.Width = fontWidth;
+	fontTextureDesc.Height = fontHeight;
+	fontTextureDesc.MipLevels = 1;
+	fontTextureDesc.ArraySize = 1;
+	fontTextureDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+	fontTextureDesc.SampleDesc.Count = 1;
+	fontTextureDesc.SampleDesc.Quality = 0;
+	fontTextureDesc.Usage = D3D11_USAGE_DYNAMIC;
+	fontTextureDesc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
+	fontTextureDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+	fontTextureDesc.MiscFlags = 0;
+
+	ID3D11Texture2D* font_texture;
+
+	HRESULT hr = CRenderer::GetDevice()->CreateTexture2D(&fontTextureDesc, NULL, &font_texture);
+
+	//デバイスコンテキスト
+	auto deviceContext = CRenderer::GetDeviceContext();
+
+	// フォント情報をテクスチャに書き込む部分
+	D3D11_MAPPED_SUBRESOURCE hMappedResource;
+	hr = deviceContext->Map(
+		font_texture,
+		0,
+		D3D11_MAP_WRITE_DISCARD,
+		0,
+		&hMappedResource);
+	// ここで書き込む
+	BYTE* pBits = (BYTE*)hMappedResource.pData;
+	// フォント情報の書き込み
+	// iOfs_x, iOfs_y : 書き出し位置(左上)
+	// iBmp_w, iBmp_h : フォントビットマップの幅高
+	// Level : α値の段階 (GGO_GRAY4_BITMAPなので17段階)
+	int iOfs_x = gm.gmptGlyphOrigin.x;
+	int iOfs_y = tm.tmAscent - gm.gmptGlyphOrigin.y;
+	int iBmp_w = gm.gmBlackBoxX + (4 - (gm.gmBlackBoxX % 4)) % 4;
+	int iBmp_h = gm.gmBlackBoxY;
+	int Level = 17;
+	int x, y;
+	DWORD Alpha, Color;
+	memset(pBits, 0, hMappedResource.RowPitch * tm.tmHeight);
+	for (y = iOfs_y; y < iOfs_y + iBmp_h; y++)
+	{
+		for (x = iOfs_x; x < iOfs_x + iBmp_w; x++)
+		{
+			Alpha =
+				(255 * pMono[x - iOfs_x + iBmp_w * (y - iOfs_y)])
+				/ (Level - 1);
+			Color = 0x00ffffff | (Alpha << 24);
+			memcpy(
+				(BYTE*)pBits
+				+ hMappedResource.RowPitch * y + 4 * x,
+				&Color,
+				sizeof(DWORD));
+		}
+	}
+	deviceContext->Unmap(font_texture, 0);
+	//不要なので削除
+	delete[] pMono;
+
+	// ShaderResourceViewの情報を作成する
+	D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc;
+	ZeroMemory(&srvDesc, sizeof(srvDesc));
+	srvDesc.Format = fontTextureDesc.Format;
+	srvDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
+	srvDesc.Texture2D.MostDetailedMip = 0;
+	srvDesc.Texture2D.MipLevels = fontTextureDesc.MipLevels;
+
+	ID3D11ShaderResourceView* ShaderResourceView;
+
+	CRenderer::GetDevice()->CreateShaderResourceView(font_texture, &srvDesc, &ShaderResourceView);
+
+	char name = font;
+
+	string a;
+
+	a.push_back(name);
+
+	FontResource[a] = ShaderResourceView;
+}
+
+void FONT::Add_Font(const string one_character)
+{
+	//wstring font(one_character.begin(), one_character.end());
+
+	for (auto value : FontResource)
+	{
+		if (one_character == value.first)
+		{
+			return;
+		}
+	}
+
+	FONT::Load_Font(one_character);
+}
+
+#include	<locale.h>
+
+ID3D11ShaderResourceView* FONT::Get_Font_Resource(const string one_character)
+{
+	/*string a("Z");
+	wstring name;
+
+	a = one_character + a;
+
+	wstring b(a.begin(), a.end());
+
+	for (auto font : b)
+	{
+		wchar_t c = font;
+
+		name.push_back(c);
+
+		int a = 0;
+	}
+
+	//// char* から wchar_t* への変換
+	//WCHAR name[8];
+
+	//size_t wlen = 0;
+	//errno_t err = 0;
+
+	//setlocale(LC_ALL, "Jananese");
+
+	//err = mbstowcs_s(&wlen, name, 8, one_character.c_str(), _TRUNCATE);*/
+
+	for (auto value : FontResource)
+	{
+		if (one_character == value.first)
+		{
+			return FontResource[one_character];
+		}
+	}
+
+	return nullptr;
+}
+
+ID3D11SamplerState* FONT::Get_SamplerState()
+{
+	return SamplerState;
+}

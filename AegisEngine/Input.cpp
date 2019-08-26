@@ -1,0 +1,64 @@
+#include	"Input.h"
+
+//CINPUT* CINPUT::InputDevice = nullptr;
+RAWINPUTDEVICE CINPUT::device[2];
+
+LRESULT CALLBACK CINPUT::subclassProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam, UINT_PTR uIdSubclass, DWORD_PTR dwRefData)
+{
+	if (uMsg == WM_INPUT) {
+		CINPUT* pInput = (CINPUT*)dwRefData;
+		pInput->onRawInput(wParam, lParam);
+	}
+	return DefSubclassProc(hWnd, uMsg, wParam, lParam);
+}
+
+void CINPUT::onRawInput(WPARAM wParam, LPARAM lParam)
+{
+	HRESULT hResult = S_OK;
+
+	UINT dwSize = 0;
+
+	GetRawInputData((HRAWINPUT)lParam, RID_INPUT, NULL, &dwSize, sizeof(RAWINPUTHEADER));
+	LPBYTE lpb = new BYTE[dwSize];
+	if (lpb == NULL)
+	{
+		return;
+	}
+
+	if (GetRawInputData((HRAWINPUT)lParam, RID_INPUT, lpb, &dwSize,
+		sizeof(RAWINPUTHEADER)) != dwSize)
+		OutputDebugString(TEXT("GetRawInputData does not return correct size !\n"));
+
+	RAWINPUT* raw = (RAWINPUT*)lpb;
+
+	if (raw->header.dwType == RIM_TYPEKEYBOARD)
+	{
+
+
+		if (FAILED(hResult))
+		{
+			// TODO: write error handler
+		}
+	}
+	else if (raw->header.dwType == RIM_TYPEMOUSE)
+	{
+		if (raw->data.mouse.usButtonFlags & 1)
+		{
+			int a = 0;
+		}
+
+		POINT pos;
+
+		pos.x = raw->data.mouse.lLastX;
+		pos.y = raw->data.mouse.lLastY;
+
+		MOUSE::Set_Position(pos);
+
+		if (FAILED(hResult))
+		{
+			// TODO: write error handler
+		}
+	}
+
+	delete[] lpb;
+}

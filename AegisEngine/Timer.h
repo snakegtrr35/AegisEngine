@@ -1,0 +1,105 @@
+/**
+* @file Timer.h
+* @brief 時間関係のクラスがあるヘッダーファイル
+*/
+
+#pragma once
+
+#ifndef TIMER_H
+#define TIMER_H
+
+/**
+* @brief タイマークラス
+* @details ゲームのFPSに依存しない(たぶん)タイマー
+*/
+class TIMER {
+private:
+	static LARGE_INTEGER start;		//! 開始時間が入っている変数
+	static LARGE_INTEGER end;		//! 現在時間が入っている変数
+	static LARGE_INTEGER frep;		//! タイム関係の値が入っている変数
+
+protected:
+
+public:
+
+	/**
+	* @brief 初期化の関数
+	*/
+	static void Init() {
+
+		memset(&start, 0, sizeof(start));
+		memset(&end, 0, sizeof(end));
+		memset(&frep, 0, sizeof(frep));
+
+		QueryPerformanceFrequency(&frep);
+
+		QueryPerformanceCounter(&start);
+	};
+
+	/**
+	* @brief 時間の取得関数
+	* @return DWORD ゲーム開始時からの経過時刻
+	*/
+	static DWORD Get_Time() {
+		QueryPerformanceCounter(&end);
+		return (end.QuadPart - start.QuadPart);
+	};
+
+	/**
+	* @brief 時間の取得関数(単位 秒)
+	* @return DWORD ゲーム開始時からの経過時刻(単位 秒)
+	*/
+	static DWORD Get_Time_Sec() {
+		QueryPerformanceCounter(&end);
+		return (end.QuadPart - start.QuadPart) / frep.QuadPart;
+	};
+
+	/**
+	* @brief 時間の取得関数((単位 ミリ秒))
+	* @param[in] digit 小数点以下の桁数
+	* @return DWORD ゲーム開始時からの経過時刻(単位 ミリ秒)
+	*/
+	static DWORD Get_Time_Mili(const unsigned char digit = 1) {
+		QueryPerformanceCounter(&end);
+
+		return (end.QuadPart - start.QuadPart) * std::pow(10, digit) / frep.QuadPart;
+	};
+};
+
+
+
+/**
+* @brief クロックタイマークラス
+* @details ゲームのFPSに依存するタイマー
+*/
+class CROCK_TIMER {
+private:
+	static DWORD Time;		//! タイムが入る変数
+
+protected:
+
+public:
+
+	/**
+	* @brief 初期化の関数
+	*/
+	static void Init() {
+		Time = 0;
+	};
+
+	/**
+	* @brief タイマーの更新関数
+	*/
+	static void Update() {
+		Time++;
+	}
+
+	/**
+	* @brief 時間の取得関数
+	*/
+	static const DWORD Get_Time() {
+		return Time;
+	};
+};
+
+#endif // !TIMER_H
