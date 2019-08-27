@@ -1,7 +1,6 @@
 #include	"Sprite.h"
 #include	"texture.h"
 #include	"Scene.h"
-#include	"main.h"
 
 unique_ptr<ID3D11Buffer, Release> SPRITE::pIndexBuffer;		// インデックスバッファ
 

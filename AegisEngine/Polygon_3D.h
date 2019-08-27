@@ -4,8 +4,9 @@
 #define POLYGON_3D_H
 
 #include	"Game_Object.h"
-#include	"texture.h"
-#include	"main.h"
+#include	"Renderer.h"
+
+class TEXTURE;
 
 struct POLYGOM {
 	VERTEX_3D Vertex[4 * 6];

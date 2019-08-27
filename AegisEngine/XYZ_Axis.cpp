@@ -1,5 +1,4 @@
 #include	"XYZ_Axis.h"
-
 #include	"manager.h"
 #include	"Scene.h"
 #include	"camera.h"

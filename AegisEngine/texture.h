@@ -3,7 +3,6 @@
 #ifndef TEXYUTE_H
 #define TEXYUTE_H
 
-#include	"main.h"
 #include	"Renderer.h"
 #include	"WICTextureLoader.h"
 

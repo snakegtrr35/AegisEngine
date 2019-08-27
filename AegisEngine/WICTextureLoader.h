@@ -26,7 +26,6 @@
 #include <d3d11_1.h>
 #include <stdint.h>
 
-
 namespace DirectX
 {
     enum WIC_LOADER_FLAGS

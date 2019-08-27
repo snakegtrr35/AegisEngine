@@ -3,7 +3,6 @@
 #include	"Scene.h"
 #include	"manager.h"
 #include	"Sprite.h"
-#include	<vector>
 
 MOUSE_EVENT_COMPONENT::MOUSE_EVENT_COMPONENT()
 {

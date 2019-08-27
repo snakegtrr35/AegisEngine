@@ -1,7 +1,6 @@
 #include	"Polygon_3D.h"
-#include	"Renderer.h"
+#include	"texture.h"
 #include	"Input.h"
-
 #include	"My_imgui.h"
 
 static float roll = 0.0f;

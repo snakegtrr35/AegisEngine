@@ -4,7 +4,6 @@
 #define PLAYER_H
 
 #include	"Game_Object.h"
-#include	"texture.h"
 
 class CMODEL;
 class BULLET;

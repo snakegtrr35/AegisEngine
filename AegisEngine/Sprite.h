@@ -6,7 +6,6 @@
 #include	"Game_Object.h"
 #include	"Menu_Component.h"
 #include	"Renderer.h"
-#include	"main.h"
 
 class TEXTURE;
 
