@@ -1,5 +1,4 @@
 #include	"Collision.h"
-#include	<typeinfo>
 
 bool Collision_HitCircle(const CIRCLE* pA, const CIRCLE* pB)
 {

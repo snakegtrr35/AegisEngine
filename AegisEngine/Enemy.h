@@ -3,7 +3,10 @@
 #ifndef ENEMY_H
 #define ENEMY_H
 
-#include	"Game_Object.h"
+class CMODEL;
+class COLLISION;
+class BOUNDING_AABB;
+class GAME_OBJECT;
 
 typedef struct
 {
@@ -13,11 +16,6 @@ typedef struct
 	float RL_Probability;		// ç∂âEà⁄ìÆÇêÿÇËë÷Ç¶ÇÈämó¶
 	bool RL;
 }PROBABILITY_DATE;
-
-class CMODEL;
-class COLLISION;
-
-class BOUNDING_AABB;
 
 class ENEMY : public GAME_OBJECT {
 private:

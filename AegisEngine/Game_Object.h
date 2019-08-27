@@ -3,10 +3,7 @@
 #ifndef GAME_OBJECT_H
 #define GAME_OBJECT_H
 
-#include	"main.h"
 #include	"Component.h"
-#include	<string>
-using namespace std;
 
 class GAME_OBJECT {
 private:

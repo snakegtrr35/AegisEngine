@@ -3,10 +3,7 @@
 #include	"manager.h"
 #include	"Component.h"
 #include	"audio_clip.h"
-#include	<algorithm>
-
 #include	"Fade.h"
-
 
 #include	"Axis.h"
 

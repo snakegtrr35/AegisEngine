@@ -2,7 +2,6 @@
 #include	"Scene.h"
 #include	"manager.h"
 #include	"Renderer.h"
-#include	<algorithm>
 
 bool FADE::FadeEnable = false;
 

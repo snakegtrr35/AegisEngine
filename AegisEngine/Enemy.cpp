@@ -5,7 +5,6 @@
 #include	"manager.h"
 #include	"Bounding.h"
 #include	"Bullet.h"
-#include	"main.h"
 #include	"Axis.h"
 #include	"audio_clip.h"
 

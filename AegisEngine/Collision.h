@@ -3,8 +3,6 @@
 #ifndef COLLISION_H
 #define	COLLISION_H
 
-#include	"main.h"
-
 // ‰~
 typedef	struct {
 	XMFLOAT2 Position;		// ’†SÀ•W

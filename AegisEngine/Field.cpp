@@ -1,8 +1,6 @@
 #include	"Field.h"
 #include	"Renderer.h"
 
-#include	"main.h"
-
 static const WORD g_Index[] = {
 		0, 1, 2,
 		1, 3, 2,

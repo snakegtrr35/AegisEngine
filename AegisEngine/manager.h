@@ -1,6 +1,7 @@
 #pragma once
 
-
+#ifndef MANAGER_H
+#define MANAGER_H
 
 class SCENE_MANAGER;
 class SCENE;
@@ -20,3 +21,5 @@ public:
 	static bool Get_GameEnd();
 	static void GameEnd();
 };
+
+#endif // !MANAGER_H
