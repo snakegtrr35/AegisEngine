@@ -27,7 +27,7 @@ void MESH_DOOM::Init()
 			vertexArray[x + (cornerNum + 1) * y].Position	= XMFLOAT3(Radius * sinf(theta) * cosf(phi), Radius * cosf(theta), Radius * sinf(theta) * sinf(phi));
 			vertexArray[x + (cornerNum + 1) * y].Normal		= XMFLOAT3(0.0f, 1.0f, 0.0f);
 			vertexArray[x + (cornerNum + 1) * y].Diffuse	= XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
-			vertexArray[x + (cornerNum + 1) * y].TexCoord	= XMFLOAT2(-phi / (XM_2PI), -theta / (XM_PI * 0.25f) - 1.0f);
+			vertexArray[x + (cornerNum + 1) * y].TexCoord	= XMFLOAT2(-phi / (XM_2PI), -theta / (XM_PI * 0.25f));
 
 			phi -= addAngle;
 		}

@@ -36,11 +36,10 @@ void main( in  float4 inPosition		: POSITION0,
 
 						 out float4 outDiffuse		: SV_Target )
 {
-
     outDiffuse = g_Texture.Sample( g_SamplerState, inTexCoord );
 
-	if (outDiffuse.a <= 0.0)discard;
+    if (outDiffuse.a <= 0.0)
+        discard;
 
 	outDiffuse *= inDiffuse;
-
 }
