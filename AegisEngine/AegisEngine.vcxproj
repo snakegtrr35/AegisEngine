@@ -43,6 +43,7 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Main_Menu.cpp" />
     <ClCompile Include="manager.cpp" />
+    <ClCompile Include="Math.cpp" />
     <ClCompile Include="Menu_Component.cpp" />
     <ClCompile Include="Mesh_Cylinder.cpp" />
     <ClCompile Include="Mesh_Dome.cpp" />
@@ -78,6 +79,7 @@
     <ClInclude Include="camera.h" />
     <ClInclude Include="Circle_Shadow.h" />
     <ClInclude Include="Collision.h" />
+    <ClInclude Include="common.h" />
     <ClInclude Include="Component.h" />
     <ClInclude Include="Enemy.h" />
     <ClInclude Include="Fade.h" />
@@ -110,8 +112,6 @@
     <ClInclude Include="Player.h" />
     <ClInclude Include="Polygon_3D.h" />
     <ClInclude Include="Renderer.h" />
-    <ClInclude Include="resource.h" />
-    <ClInclude Include="resource1.h" />
     <ClInclude Include="Scene.h" />
     <ClInclude Include="Score.h" />
     <ClInclude Include="Sprite.h" />
@@ -143,12 +143,6 @@
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(Filename).cso</ObjectFileOutput>
     </FxCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <ResourceCompile Include="AegisEngine1.rc" />
-  </ItemGroup>
-  <ItemGroup>
-    <Image Include="icon1.ico" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
@@ -242,7 +236,7 @@
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
-      <ForcedIncludeFiles>stdafx.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <ForcedIncludeFiles>stdafx.h;Math.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -280,6 +274,7 @@
       <LanguageStandard>stdcpp17</LanguageStandard>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <ForcedIncludeFiles>stdafx.h;Math.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>

@@ -5,7 +5,6 @@
 
 #include	"Game_Object.h"
 #include	"texture.h"
-#include	"main.h"
 
 //==============================
 // ビルボードクラス

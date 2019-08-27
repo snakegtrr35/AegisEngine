@@ -19,6 +19,7 @@
 #undef NOMINMAX
 #include	<assert.h>
 
+#include	"common.h"
 
 #ifndef IMGUI
 #define IMGUI
@@ -46,6 +47,7 @@
 #include	<map>
 #include	<memory>
 #include	<string>
+#include	<random>
 #include	<algorithm>
 #include	<typeinfo>
 

@@ -5,7 +5,6 @@
 #ifndef BOUNDING_H
 #define BOUNDING_H
 
-#include	"main.h"
 #include	"Renderer.h"
 #include	"Game_Object.h"
 
