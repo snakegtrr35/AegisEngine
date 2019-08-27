@@ -3,9 +3,6 @@
 #ifndef MATH_H
 #define MATH_H
 
-#include	<DirectXMath.h>
-using namespace DirectX;
-
 const int Get_Random(const int min, const int max);
 bool Rand_Bool(const double probability);
 

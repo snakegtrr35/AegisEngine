@@ -1,4 +1,3 @@
-#include	"main.h"
 #include	"Renderer.h"
 #include	"manager.h"
 #include	"Scene.h"
@@ -7,8 +6,6 @@
 
 CCamera* CCamera::pCamera = nullptr;
 XMMATRIX CCamera::m_ViewMatrix;
-
-//XMMATRIX CCamera::m_InvViewMatrix;//
 
 float CCamera::Lenght = 10.0f;
 

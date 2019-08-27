@@ -1,10 +1,5 @@
 #include	"Circle_Shadow.h"
-
-
-static const WORD g_Index[] = {
-		0, 1, 2,
-		1, 3, 2,
-};
+#include	"texture.h"
 
 CIRCLE_SHADOW::CIRCLE_SHADOW()
 {
@@ -56,6 +51,11 @@ CIRCLE_SHADOW::CIRCLE_SHADOW()
 	{
 		HRESULT hr;
 
+		const WORD index[] = {
+		0, 1, 2,
+		1, 3, 2,
+		};
+
 		D3D11_BUFFER_DESC ibDesc;
 		ibDesc.ByteWidth = sizeof(WORD) * 6;
 		ibDesc.Usage = D3D11_USAGE_DEFAULT;
@@ -65,7 +65,7 @@ CIRCLE_SHADOW::CIRCLE_SHADOW()
 		ibDesc.StructureByteStride = 0;
 
 		D3D11_SUBRESOURCE_DATA irData;
-		irData.pSysMem = g_Index;
+		irData.pSysMem = index;
 		irData.SysMemPitch = 0;
 		irData.SysMemSlicePitch = 0;
 
@@ -131,6 +131,11 @@ CIRCLE_SHADOW::CIRCLE_SHADOW(XMFLOAT3 position, XMFLOAT2 wh)
 	{
 		HRESULT hr;
 
+		const WORD index[] = {
+		0, 1, 2,
+		1, 3, 2,
+		};
+
 		D3D11_BUFFER_DESC ibDesc;
 		ibDesc.ByteWidth = sizeof(WORD) * 6;
 		ibDesc.Usage = D3D11_USAGE_DEFAULT;
@@ -140,7 +145,7 @@ CIRCLE_SHADOW::CIRCLE_SHADOW(XMFLOAT3 position, XMFLOAT2 wh)
 		ibDesc.StructureByteStride = 0;
 
 		D3D11_SUBRESOURCE_DATA irData;
-		irData.pSysMem = g_Index;
+		irData.pSysMem = index;
 		irData.SysMemPitch = 0;
 		irData.SysMemSlicePitch = 0;
 

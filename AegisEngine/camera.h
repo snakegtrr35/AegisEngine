@@ -1,4 +1,6 @@
 #pragma once
+#ifndef CAMERA_H
+#define CAMERA_H
 
 #include	"Game_Object.h"
 
@@ -89,3 +91,5 @@ public:
 	}
 
 };
+
+#endif // !CAMERA_H

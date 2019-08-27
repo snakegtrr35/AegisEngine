@@ -3,12 +3,11 @@
 #ifndef BULLET_H
 #define BULLET_H
 
-#include	"Game_Object.h"
-#include	"texture.h"
-
 class CMODEL;
 class CIRCLE_SHADOW;
 class COLLISION;
+
+class GAME_OBJECT;
 
 class BULLET : public GAME_OBJECT {
 protected:

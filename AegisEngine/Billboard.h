@@ -3,8 +3,8 @@
 #ifndef BILL_BOARD_H
 #define	BILL_BOARD_H
 
-#include	"Game_Object.h"
-#include	"texture.h"
+class GAME_OBJECT;
+class TEXTURE;
 
 //==============================
 // ビルボードクラス

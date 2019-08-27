@@ -4,8 +4,9 @@
 #define	CIRCLE_SHADOW_H
 
 #include	"Game_Object.h"
-#include	"texture.h"
+#include	"Renderer.h"
 
+class TEXTURE;
 
 class CIRCLE_SHADOW : public GAME_OBJECT {
 private:
@@ -13,7 +14,6 @@ private:
 	ID3D11Buffer* pIndexBuffer;		// インデックスバッファ
 	VERTEX_3D Vertex[4];			// 頂点データ
 	TEXTURE* Texture;				// テクスチャ
-
 	XMFLOAT2 WH;					// 幅と高さ
 
 protected:

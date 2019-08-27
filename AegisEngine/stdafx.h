@@ -21,6 +21,9 @@
 
 #include	"common.h"
 
+#include	<DirectXMath.h>
+using namespace DirectX;
+
 #ifndef IMGUI
 #define IMGUI
 

@@ -1,4 +1,5 @@
 #include	"Renderer.h"
+#include	"texture.h"
 #include	"camera.h"
 #include	"Billboard.h"
 #include	"Scene.h"
