@@ -1,6 +1,7 @@
 #include	"Sprite.h"
 #include	"texture.h"
 #include	"Scene.h"
+#include	"main.h"
 
 unique_ptr<ID3D11Buffer, Release> SPRITE::pIndexBuffer;		// インデックスバッファ
 
@@ -88,11 +89,6 @@ SPRITE::SPRITE()
 	}
 }
 
-//==============================
-// コンストラクタ
-// position : 中心座標
-// size : サイズ
-//==============================
 SPRITE::SPRITE(XMFLOAT2 position, XMFLOAT4 size)
 {
 	Texture = nullptr;
@@ -266,17 +262,11 @@ void SPRITE::Uninit(void)
 	Children.clear();
 }
 
-//==============================
-// ポジションの設定
-//==============================
 void SPRITE::SetPosition(const XMFLOAT2& position)
 {
 	Position = position;
 }
 
-//==============================
-// ポジションの取得
-//==============================
 XMFLOAT2* const SPRITE::GetPosition()
 {
 	return &Position;
@@ -305,9 +295,6 @@ COLOR& const SPRITE::GetColor()
 	return Color;
 }
 
-//==============================
-// サイズ設定
-//==============================
 void SPRITE::SetSize(const XMFLOAT4& size)
 {
 	Size = size;
@@ -318,23 +305,17 @@ XMFLOAT4* const SPRITE::GetSize()
 	return &Size;
 }
 
-//==============================
-// テクスチャの設定
-//==============================
 void SPRITE::SetTexture(const string& const file_name)
 {
 	Texture->Set_Texture_Name(file_name);
 }
 
-//==============================
-// テクスチャの取得
-//==============================
 TEXTURE* const SPRITE::GetTexture()
 {
 	return Texture;
 }
 
-//////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////
 
 int SPRITE_ANIMATION::FrameCount = 0;
 
@@ -354,11 +335,6 @@ SPRITE_ANIMATION::SPRITE_ANIMATION()
 	SetTexture(string("Explosion.png"));
 }
 
-//==============================
-// コンストラクタ
-// position : 中心座標
-// size : サイズ
-//==============================
 SPRITE_ANIMATION::SPRITE_ANIMATION(XMFLOAT2 position, XMFLOAT4 size)
 {
 	WaitFrame = 0.f;
@@ -532,7 +508,6 @@ TEXTS::~TEXTS()
 
 void TEXTS::Init(void)
 {
-
 }
 
 void TEXTS::Draw(void)
@@ -544,12 +519,10 @@ void TEXTS::Draw(void)
 
 void TEXTS::Update(void)
 {
-
 }
 
 void TEXTS::Uninit(void)
 {
-
 }
 
 void TEXTS::Edit(const string& text)
