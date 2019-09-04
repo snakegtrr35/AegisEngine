@@ -3,9 +3,12 @@
 #ifndef MODEL_LOADER_H
 #define MODEL_LOADER_H
 
-#include	<assimp\Importer.hpp>
-#include	<assimp\scene.h>
-#include	<assimp\postprocess.h>
+
+#include	<assimp/Importer.hpp>
+#include	<assimp/cimport.h>
+#include	<assimp/scene.h>
+#include	<assimp/postprocess.h>
+#include	<assimp/matrix4x4.h>
 
 #pragma comment (lib, "assimp-vc141-mt.lib")
 

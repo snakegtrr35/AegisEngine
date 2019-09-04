@@ -54,7 +54,7 @@ bool CMODEL::Load(string& filename)
 
 	processNode(pScene->mRootNode, pScene);
 
-	
+	aiReleaseImport(pScene);
 
 	return true;
 }
