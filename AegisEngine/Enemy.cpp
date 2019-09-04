@@ -7,6 +7,7 @@
 #include	"Bullet.h"
 #include	"Axis.h"
 #include	"audio_clip.h"
+#include	"Math.h"
 
 static void Create_Bullet(XMFLOAT3& position, XMFLOAT3& front);
 
@@ -90,7 +91,7 @@ void ENEMY::Update(void)
 		vec = XMVectorScale(vec, 0.2f);
 		XMStoreFloat3(&move, vec);
 
-		if (Rand_Bool(Date.RL_Probability))
+		if (Random_Bool(Date.RL_Probability))
 		{
 			Date.RL = !Date.RL;
 		}
@@ -139,7 +140,7 @@ void ENEMY::Update(void)
 	}
 
 	// ’e‚ðŒ‚‚Â
-	if (Rand_Bool(Date.Attack_Probability))
+	if (Random_Bool(Date.Attack_Probability))
 	{
 		XMFLOAT3 f;
 		XMFLOAT3 pos = Position;

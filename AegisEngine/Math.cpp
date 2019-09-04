@@ -1,24 +1,41 @@
 #include	"Math.h"
 
-const int Get_Random(int min, int max)
+static random_device rnd;							// 非決定的な乱数生成器
+
+const int Math::Get_Random(int min, int max)
 {
-	static std::random_device rnd;							// 非決定的な乱数生成器を生成
-	std::mt19937_64 mt(rnd());								//  メルセンヌ・ツイスタの32ビット版、引数は初期シード値
-	std::uniform_int_distribution<> rand(min, max);			// [min, max] 範囲の一様乱数
+	mt19937_64 mt(rnd());								//  メルセンヌ・ツイスタの64ビット版、引数は初期シード値
+	uniform_int_distribution<> rand(min, max);			// [min, max] 範囲の一様乱数
 
 	return rand(mt);
 }
 
-bool Rand_Bool(const double probability) {
-	static std::random_device rnd;				// 非決定的な乱数生成器を生成
-	static std::mt19937_64 mt(rnd());			//  メルセンヌ・ツイスタの32ビット版、引数は初期シード値
+const float Math::Get_Random(float min, float max)
+{
+	mt19937_64 mt(rnd());								//  メルセンヌ・ツイスタの64ビット版、引数は初期シード値
+	uniform_real_distribution<> rand(min, max);			// [min, max] 範囲の一様乱数
 
-	std::bernoulli_distribution uid(probability);
+	return rand(mt);
+}
+
+const double Math::Get_Random(double min, double max)
+{
+	mt19937_64 mt(rnd());								//  メルセンヌ・ツイスタの64ビット版、引数は初期シード値
+	uniform_real_distribution<> rand(min, max);			// [min, max] 範囲の一様乱数
+
+	return rand(mt);
+}
+
+
+const bool Math::Random_Bool(const float probability) {
+	mt19937_64 mt(rnd());							//  メルセンヌ・ツイスタの64ビット版、引数は初期シード値
+	bernoulli_distribution uid(probability);
+
 	return uid(mt);
 }
 
 
-float Lerp(const float x1, const float y1, const float x2, const float y2, const float tx)
+float Math::Lerp(const float x1, const float y1, const float x2, const float y2, const float tx)
 {
 	float dx, dy;
 
@@ -28,12 +45,13 @@ float Lerp(const float x1, const float y1, const float x2, const float y2, const
 	return (y1 + (dy / dx) * (tx - x1));
 }
 
-short Loop_Plus(short tx, short max)
+
+short Math::Loop_Plus(short tx, short max)
 {
 	return (tx % max);
 }
 
-short Loop_Minus(short tx, short max)
+short Math::Loop_Minus(short tx, short max)
 {
 	return ((tx + max) % max);
 }
