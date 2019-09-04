@@ -2,7 +2,7 @@
 
 const int Get_Random(int min, int max)
 {
-	std::random_device rnd;									// 非決定的な乱数生成器を生成
+	static std::random_device rnd;							// 非決定的な乱数生成器を生成
 	std::mt19937_64 mt(rnd());								//  メルセンヌ・ツイスタの32ビット版、引数は初期シード値
 	std::uniform_int_distribution<> rand(min, max);			// [min, max] 範囲の一様乱数
 

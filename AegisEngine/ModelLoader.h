@@ -29,7 +29,6 @@ private:
 
 	bool Enable;
 
-public:
 	typedef struct {
 		CMODEL* model;
 		string file_name;
