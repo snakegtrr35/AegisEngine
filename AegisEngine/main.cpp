@@ -1,6 +1,6 @@
 #include	"main.h"
 #include	"manager.h"
-
+#include	"resource.h"
 
 #ifdef _DEBUG
 // メモリリークのためのインクルード
@@ -8,7 +8,7 @@
 #endif // _DEBUG
 
 static const wchar_t* CLASS_NAME = L"DX11AppClass";
-static const wchar_t* WINDOW_NAME = L"Front Line";
+static const wchar_t* WINDOW_NAME = L"AegisEngine";
 
 LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 
@@ -34,7 +34,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 		0,
 		0,
 		hInstance,
-		NULL,
+		LoadIcon(hInstance, MAKEINTRESOURCE(IDI_ICON1)),
 		LoadCursor(NULL, IDC_ARROW),
 		(HBRUSH)(COLOR_WINDOW + 1),
 		NULL,
