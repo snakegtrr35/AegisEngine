@@ -112,6 +112,7 @@
     <ClInclude Include="Player.h" />
     <ClInclude Include="Polygon_3D.h" />
     <ClInclude Include="Renderer.h" />
+    <ClInclude Include="resource.h" />
     <ClInclude Include="Scene.h" />
     <ClInclude Include="Score.h" />
     <ClInclude Include="Sprite.h" />
@@ -143,6 +144,12 @@
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(Filename).cso</ObjectFileOutput>
     </FxCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="AegisEngine.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="..\AegisEngine.ico" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
