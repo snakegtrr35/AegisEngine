@@ -509,6 +509,8 @@ void FONT::Load_Font()
 		a.push_back(name);
 
 		FontResource[a] = ShaderResourceView;
+
+		a.clear();
 	}
 }
 

@@ -22,6 +22,7 @@ struct Weight {
 struct Bone {
 	string name;
 	XMMATRIX offset;
+	//XMFLOAT4X4 offset;
 
 	vector<Weight> weights;
 };
@@ -62,12 +63,27 @@ public:
 		this->indices = indices;
 		this->textures = textures;
 
-		World = XMMatrixIdentity();
+		//World = XMMatrixIdentity();
 
 		setupMesh();
 	}
 
-	void Draw(XMFLOAT3 position, XMFLOAT3 rotation, XMFLOAT3 scaling )
+	Mesh(vector<VERTEX_3D> vertices, vector<UINT> indices, vector<TEXTURE_S> textures, vector<Bone> bones, XMMATRIX matrix, XMMATRIX parent_matrix)
+	{
+		this->vertices = vertices;
+		this->indices = indices;
+		this->textures = textures;
+		this->bones = bones;
+
+		World = XMMatrixIdentity();
+
+		Matrix = matrix;
+		ParentMatrix = parent_matrix;
+
+		setupMesh();
+	}
+
+	void Draw(XMFLOAT3 position, XMFLOAT3 rotation, XMFLOAT3 scaling)
 	{
 		CRenderer::SetVertexBuffers(VertexBuffer);
 
@@ -77,10 +93,17 @@ public:
 
 		// 3Dマトリックス設定
 		{
-			World = XMMatrixScaling(scaling.x, scaling.y, scaling.z);																						// 拡大縮小
-			World *= XMMatrixRotationRollPitchYaw( XMConvertToRadians(rotation.x), XMConvertToRadians(rotation.y), XMConvertToRadians(rotation.z) );		// 回転(ロールピッチヨウ)
-			World *= XMMatrixTranslation(position.x, position.y, position.z);																				// 移動
-			CRenderer::SetWorldMatrix(&World);
+			Matrix = XMMatrixMultiply(Matrix, ParentMatrix);
+
+			//World *= Matrix;
+			//World = XMMatrixMultiply(World, Scaling);
+			//World = XMMatrixMultiply(World, Rotation);
+			//World = XMMatrixMultiply(World, Translation);
+
+			//World = XMMatrixScaling(scaling.x, scaling.y, scaling.z);																						// 拡大縮小
+			//World *= XMMatrixRotationRollPitchYaw( XMConvertToRadians(rotation.x), XMConvertToRadians(rotation.y), XMConvertToRadians(rotation.z) );		// 回転(ロールピッチヨウ)
+			//World *= XMMatrixTranslation(position.x, position.y, position.z);																				// 移動
+			CRenderer::SetWorldMatrix(&Matrix);
 		}
 		
 		CRenderer::GetDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
@@ -97,11 +120,24 @@ public:
 
 		indices.clear();
 
+		for (auto bone : bones)
+		{
+			bone.weights.clear();
+		}
+		bones.clear();
+
 		for (auto tex : textures)
 		{
 			SAFE_RELEASE(tex.Texture);
 		}
 		textures.clear();
+
+
+	}
+
+	void SetAnimation(const vector<Anim>& animations)
+	{
+		this->animation = animations;
 	}
 
 private:
@@ -119,6 +155,8 @@ private:
 	ID3D11Buffer* IndexBuffer;
 
 	XMMATRIX World;
+
+	XMMATRIX Matrix, ParentMatrix;
 
 	/*  Functions    */
 	// Initializes all the buffer objects/arrays

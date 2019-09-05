@@ -52,7 +52,24 @@ bool CMODEL::Load(string& filename)
 
 	this->directory = filename.substr(0, filename.find_last_of('/'));
 
-	processNode(pScene->mRootNode, pScene);
+	processNode(nullptr, pScene->mRootNode, pScene);
+
+	{
+		vector<Anim> animation;
+
+		if (pScene->HasAnimations())
+		{
+			aiAnimation** anim = pScene->mAnimations;
+
+			for (UINT i = 0; i < pScene->mNumAnimations; i++)
+			{
+				animation.push_back(createAnimation(anim[i]));
+			}
+
+			// 1番目のメッシュにアニメーション情報を保存する
+			meshes.begin()->SetAnimation(animation);
+		}
+	}
 
 	return true;
 }
@@ -69,22 +86,33 @@ bool CMODEL::Reload(string& filename)
 
 	this->directory = filename.substr(0, filename.find_last_of('/'));
 
-	for (auto mesh : meshes)
-	{
-		mesh.Uninit();
-	}
-	meshes.clear();
+	processNode(pScene->mRootNode, pScene->mRootNode, pScene);
 
-	processNode(pScene->mRootNode, pScene);
+	{
+		vector<Anim> animation;
+
+		if (pScene->HasAnimations())
+		{
+			aiAnimation** anim = pScene->mAnimations;
+
+			for (UINT i = 0; i < pScene->mNumAnimations; i++)
+			{
+				animation.push_back(createAnimation(anim[i]));
+			}
+
+			// 1番目のメッシュにアニメーション情報を保存する
+			meshes.begin()->SetAnimation(animation);
+		}
+	}
 
 	return true;
 }
 
 void CMODEL::Draw()
 {
-	for (int i = 0; i < meshes.size(); i++)
+	for (auto mesh : meshes)
 	{
-		meshes[i].Draw(Position, Rotation, Scaling);
+		mesh.Draw(Position, Rotation, Scaling);
 	}
 
 	for (auto child : children)
@@ -141,7 +169,7 @@ void CMODEL::SetScaling(const XMFLOAT3& scaling)
 
 static string textype;
 
-Mesh CMODEL::processMesh(aiMesh * mesh, const aiScene * scene)
+Mesh CMODEL::processMesh(aiMesh* mesh, const aiScene* scene, aiNode* parent_node, aiNode* node)
 {
 	// Data to fill
 	vector<VERTEX_3D> vertices;
@@ -149,6 +177,9 @@ Mesh CMODEL::processMesh(aiMesh * mesh, const aiScene * scene)
 	vector<TEXTURE_S> textures;
 
 	vector<Bone> bones;
+
+	XMMATRIX matrix;
+	XMMATRIX parent_matrix;
 
 	if (mesh->mMaterialIndex >= 0)
 	{
@@ -197,6 +228,7 @@ Mesh CMODEL::processMesh(aiMesh * mesh, const aiScene * scene)
 		vertices.push_back(vertex);
 	}
 
+	// インデックスの設定
 	for (UINT i = 0; i < mesh->mNumFaces; i++)
 	{
 		aiFace face = mesh->mFaces[i];
@@ -205,6 +237,7 @@ Mesh CMODEL::processMesh(aiMesh * mesh, const aiScene * scene)
 			indices.push_back(face.mIndices[j]);
 	}
 
+	// テクスチャの設定
 	if (mesh->mMaterialIndex >= 0)
 	{
 		aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
@@ -213,6 +246,7 @@ Mesh CMODEL::processMesh(aiMesh * mesh, const aiScene * scene)
 		textures.insert(textures.end(), diffuseMaps.begin(), diffuseMaps.end());
 	}
 
+	// ボーン情報の設定
 	if (mesh->HasBones())
 	{
 		aiBone** b = mesh->mBones;
@@ -222,7 +256,25 @@ Mesh CMODEL::processMesh(aiMesh * mesh, const aiScene * scene)
 		}
 	}
 
-	return Mesh(vertices, indices, textures);
+	// マトリックスの設定
+	{
+		// 自身のマトリックスの設定
+		aiMatrix4x4 ai_matrix = node->mTransformation;
+
+		aiTransposeMatrix4(&ai_matrix);		// 転置行列 DirectX用にする
+
+		matrix = XMLoadFloat4x4((XMFLOAT4X4*)& ai_matrix);
+
+		// 親のマトリックスの設定
+		aiMatrix4x4 ai_parent_matrix = parent_node->mTransformation;
+
+		aiTransposeMatrix4(&ai_parent_matrix);		// 転置行列 DirectX用にする
+
+		parent_matrix = XMLoadFloat4x4((XMFLOAT4X4*)& ai_parent_matrix);
+	}
+
+
+	return Mesh(vertices, indices, textures, bones, matrix, parent_matrix);
 }
 
 vector<TEXTURE_S> CMODEL::loadMaterialTextures(aiMaterial * mat, aiTextureType type, string typeName, const aiScene * scene)
@@ -276,29 +328,17 @@ vector<TEXTURE_S> CMODEL::loadMaterialTextures(aiMaterial * mat, aiTextureType t
 	return textures;
 }
 
-void CMODEL::processNode(aiNode * node, const aiScene * scene)
+void CMODEL::processNode(aiNode* parent_node, aiNode* node, const aiScene* scene)
 {
-	if (scene->HasAnimations())
-	{
-		vector<Anim> animation;
-
-		aiAnimation** anim = scene->mAnimations;
-
-		for (UINT i = 0; i < scene->mNumAnimations; i++)
-		{
-			animation.push_back(createAnimation(anim[i]));
-		}
-	}
-
 	for (UINT i = 0; i < node->mNumMeshes; i++)
 	{
 		aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
-		meshes.push_back(this->processMesh(mesh, scene));
+		meshes.push_back(this->processMesh(mesh, scene, parent_node, node));
 	}
 
 	for (UINT i = 0; i < node->mNumChildren; i++)
 	{
-		this->processNode(node->mChildren[i], scene);
+		this->processNode(node, node->mChildren[i], scene);
 	}
 }
 

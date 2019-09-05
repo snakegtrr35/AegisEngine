@@ -79,16 +79,16 @@ void MAIN_MENU::Init()
 		camera->Set_Lenght(15.0f);
 		camera->Set_Viewing_Angle(55.0f);
 
-		camera->Set_Move_Enable(false);
-		camera->Set_Rotate_Enable(false);
+		//camera->Set_Move_Enable(false);
+		//camera->Set_Rotate_Enable(false);
 	}
 
 	// ƒvƒŒƒCƒ„[
 	{
 		CMODEL* player = Add_Game_Object<CMODEL>(LAYER_NAME::GAMEOBJECT);
 
-		string name("asset/model/herorifle.fbx");
-		//string name("asset/model/Walking3.fbx");
+		//string name("asset/model/herorifle.fbx");
+		string name("asset/model/tank.fbx");
 
 		player->Set_Object_Name("player");
 
@@ -207,13 +207,16 @@ void MAIN_MENU::Update()
 					break;
 			}
 
-			for (auto model : models)
+			if (2 != cnt)
 			{
-				if ("player" == model->Get_Object_Name())
+				for (auto model : models)
 				{
-					model->Reload(Model_Name);
+					if ("player" == model->Get_Object_Name())
+					{
+						model->Reload(Model_Name);
 
-					break;
+						break;
+					}
 				}
 			}
 
