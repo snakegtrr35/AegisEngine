@@ -1,6 +1,16 @@
 #include	"ModelLoader.h"
 #include	"WICTextureLoader.h"
 
+#include	<set>
+
+Anim createAnimation(const aiAnimation* anim);
+NodeAnim createNodeAnim(const aiNodeAnim* anim);
+
+VectorKey fromAssimp(const aiVectorKey& key);
+QuatKey fromAssimp(const aiQuatKey& key);
+
+Bone createBone(const aiBone* b);
+
 //static string g_ModelFiles[] = {
 //	{"number.png"},
 //	{"number02.png"},
@@ -36,13 +46,15 @@ bool CMODEL::Load(string& filename)
 
 	const aiScene* pScene = importer.ReadFile(filename,
 		aiProcess_Triangulate | aiProcess_ConvertToLeftHanded | aiProcessPreset_TargetRealtime_MaxQuality);
-
+	
 	if (pScene == NULL)
 		return false;
 
 	this->directory = filename.substr(0, filename.find_last_of('/'));
 
 	processNode(pScene->mRootNode, pScene);
+
+	aiReleaseImport(pScene);
 
 	return true;
 }
@@ -138,6 +150,8 @@ Mesh CMODEL::processMesh(aiMesh * mesh, const aiScene * scene)
 	vector<UINT> indices;
 	vector<TEXTURE_S> textures;
 
+	vector<Bone> bones;
+
 	if (mesh->mMaterialIndex >= 0)
 	{
 		aiMaterial* mat = scene->mMaterials[mesh->mMaterialIndex];
@@ -183,21 +197,6 @@ Mesh CMODEL::processMesh(aiMesh * mesh, const aiScene * scene)
 		}
 
 		vertices.push_back(vertex);
-
-		/*if (mesh->HasBones())
-		{
-			aiMatrix4x4 mtx = mesh->mBones[2]->mOffsetMatrix;
-
-			//XMMATRIX xm_mtx;
-
-			XMFLOAT4X4 a;
-
-			a._11 = mtx.a1;
-
-			XMMATRIX ntx = XMMatrixIdentity();
-
-			ntx = XMLoadFloat4x4(&a);
-		}*/
 	}
 
 	for (UINT i = 0; i < mesh->mNumFaces; i++)
@@ -216,6 +215,15 @@ Mesh CMODEL::processMesh(aiMesh * mesh, const aiScene * scene)
 		textures.insert(textures.end(), diffuseMaps.begin(), diffuseMaps.end());
 	}
 
+	if (mesh->HasBones())
+	{
+		aiBone** b = mesh->mBones;
+		for (UINT i = 0; i < mesh->mNumBones; ++i)
+		{
+			bones.push_back(createBone(b[i]));
+		}
+	}
+
 	return Mesh(vertices, indices, textures);
 }
 
@@ -226,6 +234,7 @@ vector<TEXTURE_S> CMODEL::loadMaterialTextures(aiMaterial * mat, aiTextureType t
 	{
 		aiString str;
 		mat->GetTexture(type, i, &str);
+
 		// Check if texture was loaded before and if so, continue to next iteration: skip loading a new texture
 		bool skip = false;
 		for (UINT j = 0; j < textures_loaded.size(); j++)
@@ -271,6 +280,18 @@ vector<TEXTURE_S> CMODEL::loadMaterialTextures(aiMaterial * mat, aiTextureType t
 
 void CMODEL::processNode(aiNode * node, const aiScene * scene)
 {
+	if (scene->HasAnimations())
+	{
+		vector<Anim> animation;
+
+		aiAnimation** anim = scene->mAnimations;
+
+		for (UINT i = 0; i < scene->mNumAnimations; i++)
+		{
+			animation.push_back(createAnimation(anim[i]));
+		}
+	}
+
 	for (UINT i = 0; i < node->mNumMeshes; i++)
 	{
 		aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
@@ -502,3 +523,103 @@ const bool CMODEL::Get_Child_Enable(string& const child_name)
 //{
 //
 //}
+
+
+
+// アニメーション情報を作成
+Anim createAnimation(const aiAnimation* anim) {
+	Anim animation;
+
+	animation.duration = anim->mDuration;
+
+	{
+		// 階層アニメーション
+		aiNodeAnim** node_anim = anim->mChannels;
+		for (UINT i = 0; i < anim->mNumChannels; ++i) {
+			animation.body.push_back(createNodeAnim(node_anim[i]));
+		}
+	}
+
+	{
+		// メッシュアニメーション
+#if 1
+		aiMeshAnim * *mesh_anim = anim->mMeshChannels;
+		for (UINT i = 0; i < anim->mNumMeshChannels; ++i) {
+
+		}
+#endif
+	}
+
+	return animation;
+}
+
+// ノードに付随するアニメーション情報を作成
+NodeAnim createNodeAnim(const aiNodeAnim * anim) {
+	NodeAnim animation;
+
+	animation.node_name = anim->mNodeName.C_Str();
+
+	// 平行移動
+	for (UINT i = 0; i < anim->mNumPositionKeys; ++i) {
+		animation.translate.push_back(fromAssimp(anim->mPositionKeys[i]));
+	}
+
+	// スケーリング
+	for (UINT i = 0; i < anim->mNumScalingKeys; ++i) {
+		animation.scaling.push_back(fromAssimp(anim->mScalingKeys[i]));
+	}
+
+	// 回転
+	for (UINT i = 0; i < anim->mNumRotationKeys; ++i) {
+		animation.rotation.push_back(fromAssimp(anim->mRotationKeys[i]));
+	}
+
+	return animation;
+}
+
+VectorKey fromAssimp(const aiVectorKey& key) {
+	VectorKey v;
+
+	v.time = key.mTime;
+
+	v.value.x = key.mValue.x;
+	v.value.y = key.mValue.y;
+	v.value.z = key.mValue.z;
+
+	return v;
+}
+
+QuatKey fromAssimp(const aiQuatKey& key) {
+	QuatKey v;
+
+	v.time = key.mTime;
+
+	v.value.x = key.mValue.x;
+	v.value.y = key.mValue.y;
+	v.value.z = key.mValue.z;
+	v.value.w = key.mValue.w;
+
+	return v;
+}
+
+// ボーンの情報を作成
+Bone createBone(const aiBone* b) {
+	Bone bone;
+
+	bone.name = b->mName.C_Str();
+
+	bone.offset = XMMatrixSet(	b->mOffsetMatrix.a1, b->mOffsetMatrix.a2, b->mOffsetMatrix.a3, b->mOffsetMatrix.a4,
+								b->mOffsetMatrix.b1, b->mOffsetMatrix.b2, b->mOffsetMatrix.b3, b->mOffsetMatrix.b4,
+								b->mOffsetMatrix.c1, b->mOffsetMatrix.c2, b->mOffsetMatrix.c3, b->mOffsetMatrix.c4,
+								b->mOffsetMatrix.d1, b->mOffsetMatrix.d2, b->mOffsetMatrix.d3, b->mOffsetMatrix.d4
+	);
+
+	const aiVertexWeight* w = b->mWeights;
+	for (u_int i = 0; i < b->mNumWeights; ++i)
+	{
+		Weight weight{ w[i].mVertexId, w[i].mWeight };
+		bone.weights.push_back(weight);
+	}
+
+	return bone;
+}

@@ -4,6 +4,7 @@
 #include	"manager.h"
 #include	"Component.h"
 #include	"audio_clip.h"
+#include	"Math.h"
 
 #include	"Fade.h"
 
@@ -87,8 +88,7 @@ void MAIN_MENU::Init()
 		CMODEL* player = Add_Game_Object<CMODEL>(LAYER_NAME::GAMEOBJECT);
 
 		string name("asset/model/herorifle.fbx");
-
-		player->Load(name);
+		//string name("asset/model/Walking3.fbx");
 
 		player->Set_Object_Name("player");
 
@@ -97,6 +97,8 @@ void MAIN_MENU::Init()
 		player->SetRotation(XMFLOAT3(0.f, 0.f, 0.f));
 
 		player->SetScaling(XMFLOAT3(2.0f, 2.0f, 2.0f));
+
+		player->Load(name);
 	}
 
 	// ÉKÉåÅ[ÉW

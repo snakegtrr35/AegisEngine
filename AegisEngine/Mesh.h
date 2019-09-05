@@ -12,6 +12,47 @@ struct TEXTURE_S {
 	ID3D11ShaderResourceView* Texture = nullptr;
 };
 
+
+
+struct Weight {
+	UINT vertex_id;
+	float value;
+};
+
+struct Bone {
+	string name;
+	XMMATRIX offset;
+
+	vector<Weight> weights;
+};
+
+
+struct VectorKey {
+	double time;
+	XMFLOAT3 value;
+};
+
+struct QuatKey {
+	double time;
+	XMFLOAT4 value;
+};
+
+
+struct NodeAnim {
+	std::string node_name;
+
+	std::vector<VectorKey> translate;
+	std::vector<VectorKey> scaling;
+	std::vector<QuatKey>   rotation;
+};
+
+struct Anim {
+	double duration;
+	std::vector<NodeAnim> body;
+};
+
+
+
 class Mesh{
 public:
 
@@ -68,6 +109,10 @@ private:
 	vector<VERTEX_3D> vertices;
 	vector<UINT> indices;
 	vector<TEXTURE_S> textures;
+
+	vector<Anim> animation;
+
+	vector<Bone> bones;
 
 	/*  Render data  */
 	ID3D11Buffer* VertexBuffer;

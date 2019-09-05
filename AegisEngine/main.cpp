@@ -8,7 +8,7 @@
 #endif // _DEBUG
 
 static const wchar_t* CLASS_NAME = L"DX11AppClass";
-static const wchar_t* WINDOW_NAME = L"Front Line";
+static const wchar_t* WINDOW_NAME = L"AegisEngine";
 
 LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 
