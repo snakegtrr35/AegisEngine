@@ -68,7 +68,7 @@ public:
 		setupMesh();
 	}
 
-	Mesh(vector<VERTEX_3D> vertices, vector<UINT> indices, vector<TEXTURE_S> textures, vector<Bone> bones, XMMATRIX matrix, XMMATRIX parent_matrix)
+	Mesh(vector<VERTEX_3D> vertices, vector<UINT> indices, vector<TEXTURE_S> textures, vector<Bone> bones, XMMATRIX matrix, XMMATRIX parent_matrix, string name, string p_name)
 	{
 		this->vertices = vertices;
 		this->indices = indices;
@@ -79,6 +79,9 @@ public:
 
 		Matrix = matrix;
 		ParentMatrix = parent_matrix;
+
+		Name = name;
+		ParentName = p_name;
 
 		setupMesh();
 	}
@@ -93,7 +96,9 @@ public:
 
 		// 3Dマトリックス設定
 		{
-			Matrix = XMMatrixMultiply(Matrix, ParentMatrix);
+			//Matrix = XMMatrixMultiply(Matrix, ParentMatrix);
+
+			Matrix *= ParentMatrix;
 
 			//World *= Matrix;
 			//World = XMMatrixMultiply(World, Scaling);
@@ -157,6 +162,8 @@ private:
 	XMMATRIX World;
 
 	XMMATRIX Matrix, ParentMatrix;
+
+	string Name, ParentName;
 
 	/*  Functions    */
 	// Initializes all the buffer objects/arrays

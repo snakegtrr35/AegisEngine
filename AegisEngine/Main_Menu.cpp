@@ -88,7 +88,7 @@ void MAIN_MENU::Init()
 		CMODEL* player = Add_Game_Object<CMODEL>(LAYER_NAME::GAMEOBJECT);
 
 		//string name("asset/model/herorifle.fbx");
-		string name("asset/model/tank.fbx");
+		string name("asset/model/human.fbx");
 
 		player->Set_Object_Name("player");
 
@@ -101,20 +101,20 @@ void MAIN_MENU::Init()
 		player->Load(name);
 	}
 
-	// ガレージ
-	{
-		CMODEL* garage = Add_Game_Object<CMODEL>(LAYER_NAME::GAMEOBJECT);
+	//// ガレージ
+	//{
+	//	CMODEL* garage = Add_Game_Object<CMODEL>(LAYER_NAME::GAMEOBJECT);
 
-		garage->Set_Object_Name("garage");
+	//	garage->Set_Object_Name("garage");
 
-		string name("asset/model/wall.fbx");
+	//	string name("asset/model/wall.fbx");
 
-		garage->Load(name);
+	//	garage->Load(name);
 
-		garage->SetRotation(XMFLOAT3(90.0f, 90.0f, 0.f));
+	//	garage->SetRotation(XMFLOAT3(90.0f, 90.0f, 0.f));
 
-		garage->SetScaling(XMFLOAT3(2.0f, 2.0f, 2.0f));
-	}
+	//	garage->SetScaling(XMFLOAT3(2.0f, 2.0f, 2.0f));
+	//}
 
 	cnt = 0;
 

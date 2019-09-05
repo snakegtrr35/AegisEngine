@@ -181,6 +181,8 @@ Mesh CMODEL::processMesh(aiMesh* mesh, const aiScene* scene, aiNode* parent_node
 	XMMATRIX matrix;
 	XMMATRIX parent_matrix;
 
+	string Name, ParentName;
+
 	if (mesh->mMaterialIndex >= 0)
 	{
 		aiMaterial* mat = scene->mMaterials[mesh->mMaterialIndex];
@@ -271,10 +273,12 @@ Mesh CMODEL::processMesh(aiMesh* mesh, const aiScene* scene, aiNode* parent_node
 		aiTransposeMatrix4(&ai_parent_matrix);		// “]’us—ñ DirectX—p‚É‚·‚é
 
 		parent_matrix = XMLoadFloat4x4((XMFLOAT4X4*)& ai_parent_matrix);
+
+		Name = node->mName.C_Str();
+		ParentName = parent_node->mName.C_Str();
 	}
 
-
-	return Mesh(vertices, indices, textures, bones, matrix, parent_matrix);
+	return Mesh(vertices, indices, textures, bones, matrix, parent_matrix, Name, ParentName);
 }
 
 vector<TEXTURE_S> CMODEL::loadMaterialTextures(aiMaterial * mat, aiTextureType type, string typeName, const aiScene * scene)
