@@ -24,7 +24,7 @@ private:
 	unique_ptr<TEXTURE> Texture;						// テクスチャ
 
 public:
-	MESH_DOOM() :Radius(50.0f) {};
+	MESH_DOOM() :Radius(500.0f) {};
 	~MESH_DOOM() {};
 
 	void Init();

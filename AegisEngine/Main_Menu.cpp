@@ -116,6 +116,16 @@ void MAIN_MENU::Init()
 	//	garage->SetScaling(XMFLOAT3(2.0f, 2.0f, 2.0f));
 	//}
 
+	{
+		MESH_DOOM* pmd = Add_Game_Object<MESH_DOOM>(LAYER_NAME::GAMEOBJECT);
+
+		pmd->Init();
+	}
+
+	{
+		Add_Game_Object<GRID>(LAYER_NAME::GAMEOBJECT);
+	}
+
 	cnt = 0;
 
 	FADE::Start_FadeIn(60);

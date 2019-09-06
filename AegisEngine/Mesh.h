@@ -96,9 +96,9 @@ public:
 
 		// 3Dマトリックス設定
 		{
-			//Matrix = XMMatrixMultiply(Matrix, ParentMatrix);
+			Matrix = XMMatrixMultiply(Matrix, ParentMatrix);
 
-			Matrix *= ParentMatrix;
+			//Matrix *= ParentMatrix;
 
 			//World *= Matrix;
 			//World = XMMatrixMultiply(World, Scaling);

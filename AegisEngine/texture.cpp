@@ -39,7 +39,7 @@ static TEXTURE_FILE g_TextureFiles[] = {
 
 	{"go.png", XMINT2(256, 128) },
 
-	{"sky.jpg", XMINT2(3072, 2048) },
+	{"sky.png", XMINT2(8192, 4096) },
 };
 
 
