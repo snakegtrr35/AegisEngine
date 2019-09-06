@@ -6,20 +6,20 @@
 
 void MESH_DOOM::Init()
 {
-	int cornerNum = (int)Radius * 10;
+	int cornerNum = 256;
 
 	// 頂点バッファの確保
-	VertexNum = (cornerNum + 1) * (cornerNum / 4 + 1);
+	VertexNum = (cornerNum + 1) * (cornerNum / 2 + 1);
 	VERTEX_3D* vertexArray = new VERTEX_3D[VertexNum];
 
 	// インデックスバッファの確保
-	IndexNum = (2 + (cornerNum * 2)) * cornerNum / 4 + (cornerNum / 4 - 1) * 2;
+	IndexNum = (2 + (cornerNum * 2)) * cornerNum / 2 + (cornerNum / 2 - 1) * 2;
 	unsigned short* indexArray = new unsigned short[IndexNum];
 
 	// 頂点バッファへの頂点情報の書き込み
 	float theta = 0.0f, phi = 0.0f;
-	float addAngle = 2.0f * XM_PI / (float)cornerNum;
-	for (int y = 0; y < cornerNum / 4 + 1; y++)
+	float addAngle = XM_2PI / (float)cornerNum;
+	for (int y = 0; y < cornerNum / 2 + 1; y++)
 	{
 		phi = 0.0f;
 		for (int x = 0; x < cornerNum + 1; x++)
@@ -27,7 +27,7 @@ void MESH_DOOM::Init()
 			vertexArray[x + (cornerNum + 1) * y].Position	= XMFLOAT3(Radius * sinf(theta) * cosf(phi), Radius * cosf(theta), Radius * sinf(theta) * sinf(phi));
 			vertexArray[x + (cornerNum + 1) * y].Normal		= XMFLOAT3(0.0f, 1.0f, 0.0f);
 			vertexArray[x + (cornerNum + 1) * y].Diffuse	= XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
-			vertexArray[x + (cornerNum + 1) * y].TexCoord	= XMFLOAT2(-phi / (XM_2PI), -theta / (XM_PI * 0.25f));
+			vertexArray[x + (cornerNum + 1) * y].TexCoord	= XMFLOAT2(-phi / XM_2PI, -theta / XM_PI);
 
 			phi -= addAngle;
 		}
@@ -38,8 +38,8 @@ void MESH_DOOM::Init()
 	// 頂点インデックスバッファへ頂点インデックスの書き込み
 	int indexNum = 0;
 	int indexFlapX = cornerNum - 1;
-	int indexFlapY = cornerNum / 4 - 1;
-	for (int y = 0; y < cornerNum / 4; y++)
+	int indexFlapY = cornerNum / 2 - 1;
+	for (int y = 0; y < cornerNum / 2; y++)
 	{
 		for (int x = 0; x < cornerNum + 1; x++)
 		{
@@ -108,7 +108,7 @@ void MESH_DOOM::Init()
 	Scaling		= XMFLOAT3(1.0f, 1.0f, 1.0f);
 
 	// テクスチャの設定
-	Texture.reset(new TEXTURE(string("sky.jpg")));
+	Texture.reset(new TEXTURE(string("sky.png")));
 }
 
 //***********************************************************************************************

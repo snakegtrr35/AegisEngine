@@ -79,16 +79,16 @@ void MAIN_MENU::Init()
 		camera->Set_Lenght(15.0f);
 		camera->Set_Viewing_Angle(55.0f);
 
-		camera->Set_Move_Enable(false);
-		camera->Set_Rotate_Enable(false);
+		//camera->Set_Move_Enable(false);
+		//camera->Set_Rotate_Enable(false);
 	}
 
 	// プレイヤー
 	{
 		CMODEL* player = Add_Game_Object<CMODEL>(LAYER_NAME::GAMEOBJECT);
 
-		string name("asset/model/herorifle.fbx");
-		//string name("asset/model/Walking3.fbx");
+		//string name("asset/model/herorifle.fbx");
+		string name("asset/model/human.fbx");
 
 		player->Set_Object_Name("player");
 
@@ -101,19 +101,29 @@ void MAIN_MENU::Init()
 		player->Load(name);
 	}
 
-	// ガレージ
+	//// ガレージ
+	//{
+	//	CMODEL* garage = Add_Game_Object<CMODEL>(LAYER_NAME::GAMEOBJECT);
+
+	//	garage->Set_Object_Name("garage");
+
+	//	string name("asset/model/wall.fbx");
+
+	//	garage->Load(name);
+
+	//	garage->SetRotation(XMFLOAT3(90.0f, 90.0f, 0.f));
+
+	//	garage->SetScaling(XMFLOAT3(2.0f, 2.0f, 2.0f));
+	//}
+
 	{
-		CMODEL* garage = Add_Game_Object<CMODEL>(LAYER_NAME::GAMEOBJECT);
+		MESH_DOOM* pmd = Add_Game_Object<MESH_DOOM>(LAYER_NAME::GAMEOBJECT);
 
-		garage->Set_Object_Name("garage");
+		pmd->Init();
+	}
 
-		string name("asset/model/wall.fbx");
-
-		garage->Load(name);
-
-		garage->SetRotation(XMFLOAT3(90.0f, 90.0f, 0.f));
-
-		garage->SetScaling(XMFLOAT3(2.0f, 2.0f, 2.0f));
+	{
+		Add_Game_Object<GRID>(LAYER_NAME::GAMEOBJECT);
 	}
 
 	cnt = 0;
@@ -207,13 +217,16 @@ void MAIN_MENU::Update()
 					break;
 			}
 
-			for (auto model : models)
+			if (2 != cnt)
 			{
-				if ("player" == model->Get_Object_Name())
+				for (auto model : models)
 				{
-					model->Reload(Model_Name);
+					if ("player" == model->Get_Object_Name())
+					{
+						model->Reload(Model_Name);
 
-					break;
+						break;
+					}
 				}
 			}
 

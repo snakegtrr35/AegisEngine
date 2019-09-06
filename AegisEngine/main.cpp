@@ -7,6 +7,8 @@
 #include	<crtdbg.h>
 #endif // _DEBUG
 
+
+
 static const wchar_t* CLASS_NAME = L"DX11AppClass";
 static const wchar_t* WINDOW_NAME = L"AegisEngine";
 
@@ -25,6 +27,8 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 	// ÉÅÉÇÉäÉäÅ[ÉNåüèo
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 #endif // _DEBUG
+
+	//_CrtSetBreakAlloc(75842);
 
 	WNDCLASSEX wcex =
 	{

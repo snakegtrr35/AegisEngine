@@ -11,6 +11,8 @@ QuatKey fromAssimp(const aiQuatKey& key);
 
 Bone createBone(const aiBone* b);
 
+XMMATRIX& Covert_Matrix(aiMatrix4x4* matrix);
+
 //static string g_ModelFiles[] = {
 //	{"number.png"},
 //	{"number02.png"},
@@ -52,9 +54,25 @@ bool CMODEL::Load(string& filename)
 
 	this->directory = filename.substr(0, filename.find_last_of('/'));
 
-	processNode(pScene->mRootNode, pScene);
+	processNode(pScene->mRootNode, pScene, Covert_Matrix(&(pScene->mRootNode->mTransformation)) );
+	//processNode(pScene->mRootNode, nullptr, pScene);
 
-	aiReleaseImport(pScene);
+	{
+		vector<Anim> animation;
+
+		if (pScene->HasAnimations())
+		{
+			aiAnimation** anim = pScene->mAnimations;
+
+			for (UINT i = 0; i < pScene->mNumAnimations; i++)
+			{
+				animation.push_back(createAnimation(anim[i]));
+			}
+
+			// 1番目のメッシュにアニメーション情報を保存する
+			meshes.begin()->SetAnimation(animation);
+		}
+	}
 
 	return true;
 }
@@ -64,29 +82,41 @@ bool CMODEL::Reload(string& filename)
 	Assimp::Importer importer;
 
 	const aiScene* pScene = importer.ReadFile(filename,
-		aiProcess_Triangulate | aiProcess_ConvertToLeftHanded | aiProcessPreset_TargetRealtime_MaxQuality);
+		aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_ConvertToLeftHanded | aiProcessPreset_TargetRealtime_MaxQuality);
 
 	if (pScene == NULL)
 		return false;
 
 	this->directory = filename.substr(0, filename.find_last_of('/'));
 
-	for (auto mesh : meshes)
-	{
-		mesh.Uninit();
-	}
-	meshes.clear();
+	processNode(pScene->mRootNode, pScene, Covert_Matrix(&(pScene->mRootNode->mTransformation)) );
+	//processNode(pScene->mRootNode, nullptr, pScene);
 
-	processNode(pScene->mRootNode, pScene);
+	{
+		vector<Anim> animation;
+
+		if (pScene->HasAnimations())
+		{
+			aiAnimation** anim = pScene->mAnimations;
+
+			for (UINT i = 0; i < pScene->mNumAnimations; i++)
+			{
+				animation.push_back(createAnimation(anim[i]));
+			}
+
+			// 1番目のメッシュにアニメーション情報を保存する
+			meshes.begin()->SetAnimation(animation);
+		}
+	}
 
 	return true;
 }
 
 void CMODEL::Draw()
 {
-	for (int i = 0; i < meshes.size(); i++)
+	for (auto mesh : meshes)
 	{
-		meshes[i].Draw(Position, Rotation, Scaling);
+		mesh.Draw(Position, Rotation, Scaling);
 	}
 
 	for (auto child : children)
@@ -143,7 +173,8 @@ void CMODEL::SetScaling(const XMFLOAT3& scaling)
 
 static string textype;
 
-Mesh CMODEL::processMesh(aiMesh * mesh, const aiScene * scene)
+Mesh CMODEL::processMesh(aiMesh* mesh, const aiScene* scene, XMMATRIX& matrix, XMMATRIX& parent_matrix)
+//Mesh CMODEL::processMesh(aiMesh* mesh, aiNode* node, aiNode* parent_node, const aiScene* scene)
 {
 	// Data to fill
 	vector<VERTEX_3D> vertices;
@@ -151,6 +182,11 @@ Mesh CMODEL::processMesh(aiMesh * mesh, const aiScene * scene)
 	vector<TEXTURE_S> textures;
 
 	vector<Bone> bones;
+
+	//XMMATRIX matrix;
+	//XMMATRIX parent_matrix;
+
+	string Name, ParentName;
 
 	if (mesh->mMaterialIndex >= 0)
 	{
@@ -169,19 +205,17 @@ Mesh CMODEL::processMesh(aiMesh * mesh, const aiScene * scene)
 		vertex.Position.y = mesh->mVertices[i].y;
 		vertex.Position.z = mesh->mVertices[i].z;
 
+		// 頂点カラーの設定
 		if (mesh->HasVertexColors(i))
 		{
-			// 頂点カラーの設定
 			vertex.Diffuse.x = mesh->mColors[i]->r;
 			vertex.Diffuse.y = mesh->mColors[i]->g;
-			vertex.Diffuse.y = mesh->mColors[i]->b;
-			vertex.Diffuse.z = mesh->mColors[i]->a;
+			vertex.Diffuse.z = mesh->mColors[i]->b;
+			vertex.Diffuse.w = mesh->mColors[i]->a;
 		}
 		else
 		{
-			// 頂点カラーの設定
 			vertex.Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
-			
 		}
 
 		// 法線ベクトルの設定
@@ -199,6 +233,7 @@ Mesh CMODEL::processMesh(aiMesh * mesh, const aiScene * scene)
 		vertices.push_back(vertex);
 	}
 
+	// インデックスの設定
 	for (UINT i = 0; i < mesh->mNumFaces; i++)
 	{
 		aiFace face = mesh->mFaces[i];
@@ -207,6 +242,7 @@ Mesh CMODEL::processMesh(aiMesh * mesh, const aiScene * scene)
 			indices.push_back(face.mIndices[j]);
 	}
 
+	// テクスチャの設定
 	if (mesh->mMaterialIndex >= 0)
 	{
 		aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
@@ -215,6 +251,7 @@ Mesh CMODEL::processMesh(aiMesh * mesh, const aiScene * scene)
 		textures.insert(textures.end(), diffuseMaps.begin(), diffuseMaps.end());
 	}
 
+	// ボーン情報の設定
 	if (mesh->HasBones())
 	{
 		aiBone** b = mesh->mBones;
@@ -224,7 +261,27 @@ Mesh CMODEL::processMesh(aiMesh * mesh, const aiScene * scene)
 		}
 	}
 
-	return Mesh(vertices, indices, textures);
+	// マトリックスの設定
+	{
+		//// 自身のマトリックスの設定
+		//aiMatrix4x4 ai_matrix = node->mTransformation;
+
+		//aiTransposeMatrix4(&ai_matrix);		// 転置行列 DirectX用にする
+
+		//matrix = XMLoadFloat4x4((XMFLOAT4X4*)& ai_matrix);
+
+		//// 親のマトリックスの設定
+		//aiMatrix4x4 ai_parent_matrix = parent_node->mTransformation;
+
+		//aiTransposeMatrix4(&ai_parent_matrix);		// 転置行列 DirectX用にする
+
+		//parent_matrix = XMLoadFloat4x4((XMFLOAT4X4*)& ai_parent_matrix);
+
+		//Name = node->mName.C_Str();
+		//ParentName = parent_node->mName.C_Str();
+	}
+
+	return Mesh(vertices, indices, textures, bones, matrix, parent_matrix);
 }
 
 vector<TEXTURE_S> CMODEL::loadMaterialTextures(aiMaterial * mat, aiTextureType type, string typeName, const aiScene * scene)
@@ -260,7 +317,6 @@ vector<TEXTURE_S> CMODEL::loadMaterialTextures(aiMaterial * mat, aiTextureType t
 				string filename = string(str.C_Str());
 				filename = directory + "/" + filename;
 				wstring filenamews = wstring(filename.begin(), filename.end());
-				//hr = CreateWICTextureFromFile(CRenderer::GetDevice(), CRenderer::GetDeviceContext(), filenamews.c_str(), nullptr, &texture.Texture);
 
 				{
 					hr = DirectX::CreateWICTextureFromFile(CRenderer::GetDevice(), CRenderer::GetDeviceContext(), filenamews.c_str(), nullptr, &texture.Texture);
@@ -278,29 +334,24 @@ vector<TEXTURE_S> CMODEL::loadMaterialTextures(aiMaterial * mat, aiTextureType t
 	return textures;
 }
 
-void CMODEL::processNode(aiNode * node, const aiScene * scene)
+void CMODEL::processNode(aiNode* node, const aiScene* scene, XMMATRIX& parent_matrix)
+//void CMODEL::processNode(aiNode* node, aiNode* parent_node, const aiScene* scene)
 {
-	if (scene->HasAnimations())
-	{
-		vector<Anim> animation;
-
-		aiAnimation** anim = scene->mAnimations;
-
-		for (UINT i = 0; i < scene->mNumAnimations; i++)
-		{
-			animation.push_back(createAnimation(anim[i]));
-		}
-	}
-
 	for (UINT i = 0; i < node->mNumMeshes; i++)
 	{
 		aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
-		meshes.push_back(this->processMesh(mesh, scene));
+		meshes.push_back(this->processMesh(mesh, scene, Covert_Matrix(&node->mTransformation), parent_matrix) );
+		//meshes.push_back(this->processMesh(mesh, node, parent_node, scene));
 	}
 
 	for (UINT i = 0; i < node->mNumChildren; i++)
 	{
-		this->processNode(node->mChildren[i], scene);
+		// 親マトリックスの作成
+		XMMATRIX matrix = Covert_Matrix(&node->mTransformation);
+		matrix *= parent_matrix;
+		this->processNode(node->mChildren[i], scene, matrix);
+
+		//this->processNode(node->mChildren[i], node, scene);
 	}
 }
 
@@ -608,11 +659,19 @@ Bone createBone(const aiBone* b) {
 
 	bone.name = b->mName.C_Str();
 
+	/*// マトリックスの設定
 	bone.offset = XMMatrixSet(	b->mOffsetMatrix.a1, b->mOffsetMatrix.a2, b->mOffsetMatrix.a3, b->mOffsetMatrix.a4,
 								b->mOffsetMatrix.b1, b->mOffsetMatrix.b2, b->mOffsetMatrix.b3, b->mOffsetMatrix.b4,
 								b->mOffsetMatrix.c1, b->mOffsetMatrix.c2, b->mOffsetMatrix.c3, b->mOffsetMatrix.c4,
 								b->mOffsetMatrix.d1, b->mOffsetMatrix.d2, b->mOffsetMatrix.d3, b->mOffsetMatrix.d4
-	);
+	);*/
+
+	// マトリックスの設定
+	aiMatrix4x4 ai_matrix = b->mOffsetMatrix;
+
+	aiTransposeMatrix4(&ai_matrix);		// 転置行列 DirectX用にする
+
+	bone.offset = XMLoadFloat4x4((XMFLOAT4X4*)& ai_matrix);
 
 	const aiVertexWeight* w = b->mWeights;
 	for (u_int i = 0; i < b->mNumWeights; ++i)
@@ -622,4 +681,25 @@ Bone createBone(const aiBone* b) {
 	}
 
 	return bone;
+}
+
+
+
+XMMATRIX& Covert_Matrix(aiMatrix4x4* matrix)
+{
+	//aiTransposeMatrix4(matrix);		// 転置行列 DirectX用にする
+
+	XMMATRIX m = XMLoadFloat4x4((XMFLOAT4X4*)& matrix);
+
+	/*m = XMMatrixSet(	matrix->a1, matrix->a2, matrix->a3, matrix->a4,
+						matrix->b1, matrix->b2, matrix->b3, matrix->b4,
+						matrix->c1, matrix->c2, matrix->c3, matrix->c4,
+						matrix->d1, matrix->d2, matrix->d3, matrix->d4
+	);*/
+
+	XMFLOAT4X4 mtx;
+
+	XMStoreFloat4x4(&mtx, m);
+
+	return m;
 }

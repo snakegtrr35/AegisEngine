@@ -144,8 +144,8 @@ void CCamera::Update()
 
 		XMStoreFloat3(&position, At);
 
-		position.x = std::clamp(position.x, -50.0f, 50.0f);
-		position.z = std::clamp(position.z, -50.0f, 50.0f);
+		//position.x = std::clamp(position.x, -50.0f, 50.0f);
+		//position.z = std::clamp(position.z, -50.0f, 50.0f);
 
 		At = XMLoadFloat3(&position);
 	}
