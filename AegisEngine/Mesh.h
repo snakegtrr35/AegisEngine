@@ -67,8 +67,6 @@ public:
 		this->textures = textures;
 		this->bones = bones;
 
-		World = XMMatrixIdentity();
-
 		Matrix = matrix;
 		ParentMatrix = parent_matrix;
 
@@ -154,8 +152,6 @@ private:
 	/*  Render data  */
 	ID3D11Buffer* VertexBuffer;
 	ID3D11Buffer* IndexBuffer;
-
-	XMMATRIX World;
 
 	XMMATRIX Matrix, ParentMatrix;
 

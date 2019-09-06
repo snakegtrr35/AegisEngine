@@ -23,7 +23,7 @@ private:
 	string directory;
 	vector<TEXTURE_S> textures_loaded;
 
-	void processNode(aiNode* node, const aiScene* scene, XMMATRIX& parent_matrix);
+	void processNode(aiNode* node, const aiScene* scene, XMMATRIX parent_matrix);
 	Mesh processMesh(aiMesh* mesh, const aiScene* scene, XMMATRIX& matrix, XMMATRIX& parent_matrix);
 
 	//void processNode(aiNode* node,aiNode* parent_node, const aiScene* scene);
@@ -85,6 +85,8 @@ public:
 
 	void Set_Child_Enable(string& const child_name, const bool flag);
 	const bool Get_Child_Enable(string& const child_name);
+
+	void Set_Matrix(XMMATRIX& matrix);
 };
 
 

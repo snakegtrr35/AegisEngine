@@ -88,7 +88,7 @@ void MAIN_MENU::Init()
 		CMODEL* player = Add_Game_Object<CMODEL>(LAYER_NAME::GAMEOBJECT);
 
 		//string name("asset/model/herorifle.fbx");
-		string name("asset/model/human.fbx");
+		string name("asset/model/tank.fbx");
 
 		player->Set_Object_Name("player");
 

@@ -11,7 +11,7 @@ QuatKey fromAssimp(const aiQuatKey& key);
 
 Bone createBone(const aiBone* b);
 
-XMMATRIX& Covert_Matrix(aiMatrix4x4* matrix);
+XMMATRIX Covert_Matrix(aiMatrix4x4* matrix);
 
 //static string g_ModelFiles[] = {
 //	{"number.png"},
@@ -334,13 +334,16 @@ vector<TEXTURE_S> CMODEL::loadMaterialTextures(aiMaterial * mat, aiTextureType t
 	return textures;
 }
 
-void CMODEL::processNode(aiNode* node, const aiScene* scene, XMMATRIX& parent_matrix)
+void CMODEL::processNode(aiNode* node, const aiScene* scene, XMMATRIX parent_matrix)
 //void CMODEL::processNode(aiNode* node, aiNode* parent_node, const aiScene* scene)
 {
 	for (UINT i = 0; i < node->mNumMeshes; i++)
 	{
 		aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
-		meshes.push_back(this->processMesh(mesh, scene, Covert_Matrix(&node->mTransformation), parent_matrix) );
+
+		XMMATRIX matrix = Covert_Matrix(&node->mTransformation);
+
+		meshes.push_back(this->processMesh(mesh, scene, matrix, parent_matrix) );	
 		//meshes.push_back(this->processMesh(mesh, node, parent_node, scene));
 	}
 
@@ -576,9 +579,16 @@ const bool CMODEL::Get_Child_Enable(string& const child_name)
 //}
 
 
+void CMODEL::Set_Matrix(XMMATRIX& matrix)
+{
+	//meshes.begin()->
+}
+
+
 
 // アニメーション情報を作成
-Anim createAnimation(const aiAnimation* anim) {
+Anim createAnimation(const aiAnimation* anim)
+{
 	Anim animation;
 
 	animation.duration = anim->mDuration;
@@ -605,7 +615,8 @@ Anim createAnimation(const aiAnimation* anim) {
 }
 
 // ノードに付随するアニメーション情報を作成
-NodeAnim createNodeAnim(const aiNodeAnim * anim) {
+NodeAnim createNodeAnim(const aiNodeAnim * anim)
+{
 	NodeAnim animation;
 
 	animation.node_name = anim->mNodeName.C_Str();
@@ -628,7 +639,8 @@ NodeAnim createNodeAnim(const aiNodeAnim * anim) {
 	return animation;
 }
 
-VectorKey fromAssimp(const aiVectorKey& key) {
+VectorKey fromAssimp(const aiVectorKey& key)
+{
 	VectorKey v;
 
 	v.time = key.mTime;
@@ -640,7 +652,8 @@ VectorKey fromAssimp(const aiVectorKey& key) {
 	return v;
 }
 
-QuatKey fromAssimp(const aiQuatKey& key) {
+QuatKey fromAssimp(const aiQuatKey& key)
+{
 	QuatKey v;
 
 	v.time = key.mTime;
@@ -654,17 +667,11 @@ QuatKey fromAssimp(const aiQuatKey& key) {
 }
 
 // ボーンの情報を作成
-Bone createBone(const aiBone* b) {
+Bone createBone(const aiBone* b)
+{
 	Bone bone;
 
 	bone.name = b->mName.C_Str();
-
-	/*// マトリックスの設定
-	bone.offset = XMMatrixSet(	b->mOffsetMatrix.a1, b->mOffsetMatrix.a2, b->mOffsetMatrix.a3, b->mOffsetMatrix.a4,
-								b->mOffsetMatrix.b1, b->mOffsetMatrix.b2, b->mOffsetMatrix.b3, b->mOffsetMatrix.b4,
-								b->mOffsetMatrix.c1, b->mOffsetMatrix.c2, b->mOffsetMatrix.c3, b->mOffsetMatrix.c4,
-								b->mOffsetMatrix.d1, b->mOffsetMatrix.d2, b->mOffsetMatrix.d3, b->mOffsetMatrix.d4
-	);*/
 
 	// マトリックスの設定
 	aiMatrix4x4 ai_matrix = b->mOffsetMatrix;
@@ -685,21 +692,13 @@ Bone createBone(const aiBone* b) {
 
 
 
-XMMATRIX& Covert_Matrix(aiMatrix4x4* matrix)
+XMMATRIX Covert_Matrix(aiMatrix4x4* matrix)
 {
-	//aiTransposeMatrix4(matrix);		// 転置行列 DirectX用にする
+	aiMatrix4x4 mtr = *matrix;
 
-	XMMATRIX m = XMLoadFloat4x4((XMFLOAT4X4*)& matrix);
+	aiTransposeMatrix4(&mtr);		// 転置行列 DirectX用にする
 
-	/*m = XMMatrixSet(	matrix->a1, matrix->a2, matrix->a3, matrix->a4,
-						matrix->b1, matrix->b2, matrix->b3, matrix->b4,
-						matrix->c1, matrix->c2, matrix->c3, matrix->c4,
-						matrix->d1, matrix->d2, matrix->d3, matrix->d4
-	);*/
-
-	XMFLOAT4X4 mtx;
-
-	XMStoreFloat4x4(&mtx, m);
+	XMMATRIX m = XMLoadFloat4x4((XMFLOAT4X4*)&mtr);
 
 	return m;
 }
