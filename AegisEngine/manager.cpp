@@ -49,8 +49,8 @@ bool CManager::Init()
 	AUDIO_MANAGER::Init();
 
 	pSceneManager->Init();
-	pSceneManager->Set_Scene<TITLE>();
-	//pSceneManager->Set_Scene<MAIN_MENU>();
+	//pSceneManager->Set_Scene<TITLE>();
+	pSceneManager->Set_Scene<MAIN_MENU>();
 
 	TEXTURE_MANEGER::Init();
 

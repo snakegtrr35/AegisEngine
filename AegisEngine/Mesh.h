@@ -21,7 +21,10 @@ struct Weight {
 
 struct Bone {
 	string name;
+	XMMATRIX animation;
 	XMMATRIX offset;
+
+	//XMFLOAT4X4 offset;
 	//XMFLOAT4X4 offset;
 
 	vector<Weight> weights;
@@ -57,18 +60,7 @@ struct Anim {
 class Mesh{
 public:
 
-	Mesh(vector<VERTEX_3D> vertices, vector<UINT> indices, vector<TEXTURE_S> textures)
-	{
-		this->vertices = vertices;
-		this->indices = indices;
-		this->textures = textures;
-
-		//World = XMMatrixIdentity();
-
-		setupMesh();
-	}
-
-	Mesh(vector<VERTEX_3D> vertices, vector<UINT> indices, vector<TEXTURE_S> textures, vector<Bone> bones, XMMATRIX matrix, XMMATRIX parent_matrix, string name, string p_name)
+	Mesh(vector<VERTEX_3D> vertices, vector<UINT> indices, vector<TEXTURE_S> textures, vector<Bone> bones, XMMATRIX& matrix, XMMATRIX& parent_matrix/*, string name, string p_name*/)
 	{
 		this->vertices = vertices;
 		this->indices = indices;
@@ -80,8 +72,8 @@ public:
 		Matrix = matrix;
 		ParentMatrix = parent_matrix;
 
-		Name = name;
-		ParentName = p_name;
+		//Name = name;
+		//ParentName = p_name;
 
 		setupMesh();
 	}
@@ -96,9 +88,11 @@ public:
 
 		// 3Dマトリックス設定
 		{
-			Matrix = XMMatrixMultiply(Matrix, ParentMatrix);
+			//Matrix = XMMatrixMultiply(Matrix, ParentMatrix);
 
-			//Matrix *= ParentMatrix;
+			Matrix *= ParentMatrix;
+
+			CRenderer::SetWorldMatrix(&Matrix);
 
 			//World *= Matrix;
 			//World = XMMatrixMultiply(World, Scaling);
@@ -108,7 +102,9 @@ public:
 			//World = XMMatrixScaling(scaling.x, scaling.y, scaling.z);																						// 拡大縮小
 			//World *= XMMatrixRotationRollPitchYaw( XMConvertToRadians(rotation.x), XMConvertToRadians(rotation.y), XMConvertToRadians(rotation.z) );		// 回転(ロールピッチヨウ)
 			//World *= XMMatrixTranslation(position.x, position.y, position.z);																				// 移動
-			CRenderer::SetWorldMatrix(&Matrix);
+
+			//CRenderer::SetWorldMatrix(&World);
+
 		}
 		
 		CRenderer::GetDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);

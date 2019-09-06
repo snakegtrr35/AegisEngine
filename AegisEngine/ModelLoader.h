@@ -23,8 +23,12 @@ private:
 	string directory;
 	vector<TEXTURE_S> textures_loaded;
 
-	void processNode(aiNode* parent_node, aiNode* node, const aiScene* scene);
-	Mesh processMesh(aiMesh* mesh, const aiScene* scene, aiNode* parent_node, aiNode* node);
+	void processNode(aiNode* node, const aiScene* scene, XMMATRIX& parent_matrix);
+	Mesh processMesh(aiMesh* mesh, const aiScene* scene, XMMATRIX& matrix, XMMATRIX& parent_matrix);
+
+	//void processNode(aiNode* node,aiNode* parent_node, const aiScene* scene);
+	//Mesh processMesh(aiMesh* mesh, aiNode* node, aiNode* parent_node, const aiScene* scene);
+
 	vector<TEXTURE_S> loadMaterialTextures(aiMaterial* mat, aiTextureType type, string typeName, const aiScene* scene);
 	string determineTextureType(const aiScene* scene, aiMaterial* mat);
 	int getTextureIndex(aiString* str);
