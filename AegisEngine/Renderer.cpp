@@ -551,11 +551,11 @@ void CRenderer::SetIndexBuffer( ID3D11Buffer* IndexBuffer )
 	m_ImmediateContext->IASetIndexBuffer( IndexBuffer, DXGI_FORMAT_R16_UINT, 0 );
 }
 
-void CRenderer::SetTexture( CTexture* Texture )
-{
-	ID3D11ShaderResourceView* srv[1] = { Texture->GetShaderResourceView() };
-	m_ImmediateContext->PSSetShaderResources( 0, 1, srv );
-}
+//void CRenderer::SetTexture( CTexture* Texture )
+//{
+//	ID3D11ShaderResourceView* srv[1] = { Texture->GetShaderResourceView() };
+//	m_ImmediateContext->PSSetShaderResources( 0, 1, srv );
+//}
 
 void CRenderer::DrawIndexed( unsigned int IndexCount, unsigned int StartIndexLocation, int BaseVertexLocation )
 {
