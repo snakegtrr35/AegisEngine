@@ -19,6 +19,12 @@
     <Filter Include="Input">
       <UniqueIdentifier>{f1016964-0009-47e9-85cf-aa6883ab1e92}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Library">
+      <UniqueIdentifier>{5f0109bd-8718-42d5-846e-795b7b3cc5bd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Library\TextuteLoader">
+      <UniqueIdentifier>{9c46f795-1dc8-44ec-adef-e4ffebb5817b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="audio_clip.cpp">
@@ -126,9 +132,6 @@
     <ClCompile Include="Title.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="WICTextureLoader.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
     <ClCompile Include="XYZ_Axis.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
@@ -161,6 +164,9 @@
     </ClCompile>
     <ClCompile Include="Math.cpp">
       <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="WICTextureLoader.cpp">
+      <Filter>Library\TextuteLoader</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -272,9 +278,6 @@
     <ClInclude Include="Timer.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="WICTextureLoader.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
     <ClInclude Include="XYZ_Axis.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
@@ -316,6 +319,9 @@
     </ClInclude>
     <ClInclude Include="resource.h">
       <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="WICTextureLoader.h">
+      <Filter>Library\TextuteLoader</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

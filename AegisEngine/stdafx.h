@@ -24,6 +24,8 @@
 #include	<DirectXMath.h>
 using namespace DirectX;
 
+#include	"WICTextureLoader.h"
+
 #ifndef IMGUI
 #define IMGUI
 
