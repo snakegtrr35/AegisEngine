@@ -530,20 +530,25 @@ void TEXTS::Edit(const string& text)
 	Text = text;
 }
 
+wstring stringTowstring1(string& font);
+
 void TEXTS::Text_Draw(const string& text)
 {
 	if (Enable)
 	{
 		SPRITE sprite;
 		ID3D11ShaderResourceView* shader_resource_view = nullptr;
-		string font;
+		wstring font;
 		short i = 0;
 
 		sprite.SetSize(Size);
 
 		sprite.SetColor(Color);
 
-		for (auto itr : text)
+		string ctext = text;
+		wstring wtext = stringTowstring1(ctext);
+
+		for (auto itr : wtext)
 		{
 			font.push_back(itr);
 			shader_resource_view = FONT::Get_Font_Resource(font);
@@ -559,4 +564,22 @@ void TEXTS::Text_Draw(const string& text)
 			font.pop_back();
 		}
 	}
+}
+
+wstring stringTowstring1(string& font)
+{
+	wstring f;
+	wchar_t	wStrW[1024];
+
+	size_t wLen = 0;
+	errno_t err = 0;
+
+	//ÉçÉPÅ[ÉãéwíË
+	setlocale(LC_ALL, "japanese");
+
+	err = mbstowcs_s(&wLen, wStrW, font.size(), font.c_str(), _TRUNCATE);
+
+	f = wStrW;
+
+	return f;
 }

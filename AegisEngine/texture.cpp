@@ -1,6 +1,8 @@
 #include	"Renderer.h"
 #include	"texture.h"
 
+#include	<locale.h>
+
 using namespace std;
 
 typedef struct {
@@ -193,55 +195,50 @@ ID3D11ShaderResourceView* const TEXTURE_MANEGER::GetShaderResourceView(const str
 
 
 
-map<string, ID3D11ShaderResourceView*> FONT::FontResource;
+map<wstring, ID3D11ShaderResourceView*> FONT::FontResource;
 ID3D11SamplerState* FONT::SamplerState = nullptr;
-unsigned short FONT::FontCnt = 0;
+//unsigned short FONT::FontCnt = 0;
+
+wstring stringTowstring(string& font);
 
 void FONT::Init()
 {
-	/*string a("あいうえお");
-
-	const char* e = u8"あいうえお";
-
-	const wchar_t* f = L"菅野翔吾aA";
-
-	wstring b(f);
-
-	f = (wchar_t*)e;
-
-	wchar_t c;
-
-	for (auto d : b)
-	{
-		c = d;
-
-		UINT code = (UINT)c;
-
-		int z = 0;
-	}*/
-
 	FONT::Load_Font();
+}
+
+wstring stringTowstring(string& font)
+{
+	wstring f;
+	wchar_t	wStrW[1024];
+
+	size_t wLen = 0;
+	errno_t err = 0;
+
+	//ロケール指定
+	setlocale(LC_ALL, "japanese");
+
+	err = mbstowcs_s(&wLen, wStrW, font.size(), font.c_str(), _TRUNCATE);
+
+	f = wStrW;
+
+	return f;
 }
 
 void FONT::Load_Font()
 {
 	// フォントデータ
-	//wstring Font;
-	//{
-	string Font01("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789 +-*=/^.,;!?()[]{}");
+	wstring Font;
+	{
+		string Font01("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789 +-*=/^.,;!?()[]{}");
 
-		//wstring Font02(L"あいおうおかきくけこさしすせそたちつてとなにぬねのはひふへほまみむめもやゆよらりるれろわをんがぎぐげござじずぜぞだぢづでどばびぶべぼぱぴぷぺぽゃゅょっ");
+		string Font02("あいおうえおかきくけこさしすせそたちつてとなにぬねのはひふへほまみむめもやゆよらりるれろわをんがぎぐげござじずぜぞだぢづでどばびぶべぼぱぴぷぺぽゃゅょっ");
 
-		//wstring Font03(L"アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲンガギグゲゴザジズゼゾダヂヅデドバビブベボパピプペポャュョッ");
+		//string Font03("アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲンガギグゲゴザジズゼゾダヂヅデドバビブベボパピプペポャュョッ");
 
-		//Font = wstring(Font01.begin(), Font01.end());
+		Font01 = Font01 + Font02;
 
-		//Font02 = Font02 + Font03;
-
-		//Font = Font + Font02;//
-
-		FontCnt = Font01.size();
-	//}
+		Font = stringTowstring(Font01);
+	}
 
 	// フォントハンドルの生成
 	int fontSize = 256;
@@ -316,7 +313,7 @@ void FONT::Load_Font()
 
 	ID3D11ShaderResourceView* ShaderResourceView;
 
-	for (auto font : Font01)
+	for (auto font : Font)
 	{
 		//// フォントビットマップ取得
 
@@ -393,11 +390,8 @@ void FONT::Load_Font()
 		// シェーダーリソースの作成
 		CRenderer::GetDevice()->CreateShaderResourceView(font_texture, &srvDesc, &ShaderResourceView);
 
-		char name = font;
-
-		string a;
-
-		a.push_back(name);
+		wstring a;
+		a.push_back(font);
 
 		FontResource[a] = ShaderResourceView;
 
@@ -405,7 +399,7 @@ void FONT::Load_Font()
 	}
 }
 
-void FONT::Load_Font(const string one_character)
+void FONT::Load_Font(const wstring& one_character)
 {
 	// フォントハンドルの生成
 	int fontSize = 256;
@@ -539,16 +533,15 @@ void FONT::Load_Font(const string one_character)
 
 	CRenderer::GetDevice()->CreateShaderResourceView(font_texture, &srvDesc, &ShaderResourceView);
 
-	char name = font;
-
-	string a;
-
-	a.push_back(name);
+	wstring a;
+	a.push_back(font);
 
 	FontResource[a] = ShaderResourceView;
+
+	a.clear();
 }
 
-void FONT::Add_Font(const string one_character)
+void FONT::Add_Font(const wstring& one_character)
 {
 	//wstring font(one_character.begin(), one_character.end());
 
@@ -563,35 +556,13 @@ void FONT::Add_Font(const string one_character)
 	FONT::Load_Font(one_character);
 }
 
-#include	<locale.h>
-
-ID3D11ShaderResourceView* FONT::Get_Font_Resource(const string one_character)
+ID3D11ShaderResourceView* FONT::Get_Font_Resource(const wstring& one_character)
 {
-	/*string a("Z");
-	wstring name;
+	//string a = one_character;
 
-	a = one_character + a;
+	//a += a;
 
-	wstring b(a.begin(), a.end());
-
-	for (auto font : b)
-	{
-		wchar_t c = font;
-
-		name.push_back(c);
-
-		int a = 0;
-	}
-
-	//// char* から wchar_t* への変換
-	//WCHAR name[8];
-
-	//size_t wlen = 0;
-	//errno_t err = 0;
-
-	//setlocale(LC_ALL, "Jananese");
-
-	//err = mbstowcs_s(&wlen, name, 8, one_character.c_str(), _TRUNCATE);*/
+	//wstring one = stringTowstring(a);
 
 	for (auto value : FontResource)
 	{

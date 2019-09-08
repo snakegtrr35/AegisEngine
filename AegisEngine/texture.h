@@ -55,12 +55,11 @@ public:
 
 class FONT {
 private:
-	static map<string, ID3D11ShaderResourceView*> FontResource;
+	static map<wstring, ID3D11ShaderResourceView*> FontResource;
 	static ID3D11SamplerState* SamplerState;
-	static unsigned short FontCnt;
 
 	static void Load_Font();
-	static void Load_Font(const string one_character);
+	static void Load_Font(const wstring& one_character);
 
 public:
 
@@ -74,9 +73,9 @@ public:
 		FontResource.clear();
 	};
 
-	static void Add_Font(const string one_character);
+	static void Add_Font(const wstring& one_character);
 
-	static ID3D11ShaderResourceView* Get_Font_Resource(const string one_character);
+	static ID3D11ShaderResourceView* Get_Font_Resource(const wstring& one_character);
 
 	static ID3D11SamplerState* Get_SamplerState();
 };
