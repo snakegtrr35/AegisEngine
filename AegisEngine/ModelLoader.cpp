@@ -375,8 +375,9 @@ bool CMODEL::Load(string& filename)
 
 	this->directory = filename.substr(0, filename.find_last_of('/'));
 
-	Meshes[pScene->mRootNode->mName.C_Str()] = MESH();
-	processNode(pScene->mRootNode, nullptr, pScene, Meshes);
+	//Meshes[pScene->mRootNode->mName.C_Str()] = MESH();
+	//processNode(pScene->mRootNode, nullptr, pScene, Meshes);
+	processNode(pScene->mRootNode, nullptr, pScene, Meshes.Get());
 
 	// アニメーション情報の設定
 	{
@@ -392,7 +393,8 @@ bool CMODEL::Load(string& filename)
 			}
 
 			// 1番目のメッシュにアニメーション情報を保存する
-			Meshes.begin()->second.SetAnimation(animation);
+			//Meshes.begin()->second.SetAnimation(animation);
+			Meshes.SetAnimation(animation);
 		}
 	}
 
@@ -411,8 +413,9 @@ bool CMODEL::Reload(string& filename)
 
 	this->directory = filename.substr(0, filename.find_last_of('/'));
 
-	Meshes[pScene->mRootNode->mName.C_Str()] = MESH();
-	processNode(pScene->mRootNode, nullptr, pScene, Meshes);
+	//Meshes[pScene->mRootNode->mName.C_Str()] = MESH();
+	//processNode(pScene->mRootNode, nullptr, pScene, Meshes);
+	processNode(pScene->mRootNode, nullptr, pScene, Meshes.Get());
 
 	{
 		vector<Anim> animation;
@@ -427,7 +430,8 @@ bool CMODEL::Reload(string& filename)
 			}
 
 			// 1番目のメッシュにアニメーション情報を保存する
-			Meshes.begin()->second.SetAnimation(animation);
+			//Meshes.begin()->second.SetAnimation(animation);
+			Meshes.SetAnimation(animation);
 		}
 	}
 
@@ -438,9 +442,25 @@ void CMODEL::Draw()
 {
 	XMMATRIX matrix = XMMatrixIdentity();
 
+	//XMMATRIX scaling = XMMatrixScaling(0.1f, 0.1f, 0.1f);
+
+	XMMATRIX rotation = XMMatrixRotationRollPitchYaw(XMConvertToRadians(0.0f), XMConvertToRadians(90.0f), XMConvertToRadians(0.0f));
+
+	XMMATRIX transform = XMMatrixTranslation(5.0f, 0.0f, 0.0f);
+
+	//matrix = XMMatrixMultiply(matrix, scaling);
+
+	matrix = XMMatrixMultiply(matrix, rotation);
+
+	matrix = XMMatrixMultiply(matrix, transform);
+
+	/*for (auto mesh : Meshes)
+	{
+		mesh.second.Get().begin()->second.Draw(matrix);
+	}*/
 
 
-	for (auto mesh : Meshes)
+	for (auto mesh : Meshes.Get())
 	{
 		mesh.second.Get().begin()->second.Draw(matrix);
 	}
@@ -448,11 +468,13 @@ void CMODEL::Draw()
 
 void CMODEL::Uninit()
 {
-	if(false == Meshes.empty())
+	/*if(false == Meshes.empty())
 	{
 		Meshes.begin()->second.Get().begin()->second.Uninit();
 		Meshes.clear();
-	}
+	}*/
+
+	Meshes.Uninit();
 
 	for (auto tex : textures_loaded)
 	{

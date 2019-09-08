@@ -283,10 +283,14 @@ private:
 public:
 
 	MESH() {
-
+		VertexBuffer = nullptr;
+		IndexBuffer = nullptr;
 	};
 
 	MESH(vector<VERTEX_3D> vertices, vector<UINT> indices, vector<TEXTURE_S> textures, vector<Bone> bones, XMMATRIX& matrix) {
+		VertexBuffer = nullptr;
+		IndexBuffer = nullptr;
+
 		Vertices = vertices;
 		Indices = indices;
 		Textures = textures;

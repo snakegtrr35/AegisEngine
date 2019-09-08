@@ -92,7 +92,8 @@
 
 class CMODEL : public GAME_OBJECT {
 private:
-	map<string, MESH> Meshes;		// メッシュ
+	//map<string, MESH> Meshes;		// メッシュ
+	MESH Meshes;		// メッシュ
 	string directory;
 	vector<TEXTURE_S> textures_loaded;
 
