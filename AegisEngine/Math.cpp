@@ -35,7 +35,7 @@ const bool Math::Random_Bool(const float probability) {
 }
 
 
-float Math::Lerp(const float x1, const float y1, const float x2, const float y2, const float tx)
+float Math::Lerp(const float y1, const float y2, const float tx, const float x1, const float x2)
 {
 	float dx, dy;
 
