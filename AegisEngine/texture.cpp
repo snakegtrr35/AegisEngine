@@ -1,10 +1,6 @@
 #include	"Renderer.h"
 #include	"texture.h"
 
-#include	<locale.h>
-
-using namespace std;
-
 typedef struct {
 	string Name;
 	XMINT2 WH;
@@ -197,32 +193,31 @@ ID3D11ShaderResourceView* const TEXTURE_MANEGER::GetShaderResourceView(const str
 
 map<wstring, ID3D11ShaderResourceView*> FONT::FontResource;
 ID3D11SamplerState* FONT::SamplerState = nullptr;
-//unsigned short FONT::FontCnt = 0;
 
-wstring stringTowstring(string& font);
+//wstring stringTowstring(string& font);
 
 void FONT::Init()
 {
 	FONT::Load_Font();
 }
 
-wstring stringTowstring(string& font)
-{
-	wstring f;
-	wchar_t	wStrW[1024];
-
-	size_t wLen = 0;
-	errno_t err = 0;
-
-	//ロケール指定
-	setlocale(LC_ALL, "japanese");
-
-	err = mbstowcs_s(&wLen, wStrW, font.size(), font.c_str(), _TRUNCATE);
-
-	f = wStrW;
-
-	return f;
-}
+//wstring stringTowstring(string& font)
+//{
+//	wstring f;
+//	wchar_t	wStrW[1024];
+//
+//	size_t wLen = 0;
+//	errno_t err = 0;
+//
+//	//ロケール指定
+//	setlocale(LC_ALL, "japanese");
+//
+//	err = mbstowcs_s(&wLen, wStrW, font.size(), font.c_str(), _TRUNCATE);
+//
+//	f = wStrW;
+//
+//	return f;
+//}
 
 void FONT::Load_Font()
 {

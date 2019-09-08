@@ -3,6 +3,7 @@
 #ifndef COMMON_H
 #define COMMON_H
 
+#include	<xstring>
 
 // ƒƒ‚ƒŠŠJ•ú
 #define SAFE_RELEASE(x)			if( nullptr != x ){ x->Release(); x = nullptr; }
@@ -36,5 +37,7 @@ struct Delete {
 		p = nullptr;
 	}
 };
+
+std::wstring stringTowstring(std::string& font);
 
 #endif // !COMMON_H

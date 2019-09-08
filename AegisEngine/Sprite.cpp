@@ -530,8 +530,6 @@ void TEXTS::Edit(const string& text)
 	Text = text;
 }
 
-wstring stringTowstring1(string& font);
-
 void TEXTS::Text_Draw(const string& text)
 {
 	if (Enable)
@@ -546,7 +544,7 @@ void TEXTS::Text_Draw(const string& text)
 		sprite.SetColor(Color);
 
 		string ctext = text;
-		wstring wtext = stringTowstring1(ctext);
+		wstring wtext = stringTowstring(ctext);
 
 		for (auto itr : wtext)
 		{
@@ -564,22 +562,4 @@ void TEXTS::Text_Draw(const string& text)
 			font.pop_back();
 		}
 	}
-}
-
-wstring stringTowstring1(string& font)
-{
-	wstring f;
-	wchar_t	wStrW[1024];
-
-	size_t wLen = 0;
-	errno_t err = 0;
-
-	//ÉçÉPÅ[ÉãéwíË
-	setlocale(LC_ALL, "japanese");
-
-	err = mbstowcs_s(&wLen, wStrW, font.size(), font.c_str(), _TRUNCATE);
-
-	f = wStrW;
-
-	return f;
 }
