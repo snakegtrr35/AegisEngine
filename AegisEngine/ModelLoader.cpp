@@ -1,7 +1,4 @@
 #include	"ModelLoader.h"
-#include	"WICTextureLoader.h"
-
-#include	<set>
 
 Anim createAnimation(const aiAnimation* anim);
 NodeAnim createNodeAnim(const aiNodeAnim* anim);
@@ -13,16 +10,8 @@ Bone createBone(const aiBone* b);
 
 XMMATRIX Covert_Matrix(aiMatrix4x4* matrix);
 
-//static string g_ModelFiles[] = {
-//	{"number.png"},
-//	{"number02.png"},
-//};
-//
-//
-//// 読み込みモデル数
-//static const int MODEL_FILE_COUNT = sizeof(g_ModelFiles) / sizeof(g_ModelFiles[0]);
 
-
+/*
 CMODEL::CMODEL()
 {
 	Enable = true;
@@ -118,11 +107,6 @@ void CMODEL::Draw()
 	{
 		mesh.Draw(Position, Rotation, Scaling);
 	}
-
-	for (auto child : children)
-	{
-		if(children[child.first].model->Get_Enable()) children[child.first].model->Draw();
-	}
 }
 
 void CMODEL::Uninit()
@@ -138,12 +122,6 @@ void CMODEL::Uninit()
 		SAFE_RELEASE(tex.Texture);
 	}
 	textures_loaded.clear();
-
-	for (auto child : children)
-	{
-		SAFE_DELETE(children[child.first].model);
-	}
-	children.clear();
 }
 
 void CMODEL::Set_Enable(const bool flag)
@@ -174,7 +152,6 @@ void CMODEL::SetScaling(const XMFLOAT3& scaling)
 static string textype;
 
 Mesh CMODEL::processMesh(aiMesh* mesh, const aiScene* scene, XMMATRIX& matrix, XMMATRIX& parent_matrix)
-//Mesh CMODEL::processMesh(aiMesh* mesh, aiNode* node, aiNode* parent_node, const aiScene* scene)
 {
 	// Data to fill
 	vector<VERTEX_3D> vertices;
@@ -182,9 +159,6 @@ Mesh CMODEL::processMesh(aiMesh* mesh, const aiScene* scene, XMMATRIX& matrix, X
 	vector<TEXTURE_S> textures;
 
 	vector<Bone> bones;
-
-	//XMMATRIX matrix;
-	//XMMATRIX parent_matrix;
 
 	string Name, ParentName;
 
@@ -261,26 +235,6 @@ Mesh CMODEL::processMesh(aiMesh* mesh, const aiScene* scene, XMMATRIX& matrix, X
 		}
 	}
 
-	// マトリックスの設定
-	{
-		//// 自身のマトリックスの設定
-		//aiMatrix4x4 ai_matrix = node->mTransformation;
-
-		//aiTransposeMatrix4(&ai_matrix);		// 転置行列 DirectX用にする
-
-		//matrix = XMLoadFloat4x4((XMFLOAT4X4*)& ai_matrix);
-
-		//// 親のマトリックスの設定
-		//aiMatrix4x4 ai_parent_matrix = parent_node->mTransformation;
-
-		//aiTransposeMatrix4(&ai_parent_matrix);		// 転置行列 DirectX用にする
-
-		//parent_matrix = XMLoadFloat4x4((XMFLOAT4X4*)& ai_parent_matrix);
-
-		//Name = node->mName.C_Str();
-		//ParentName = parent_node->mName.C_Str();
-	}
-
 	return Mesh(vertices, indices, textures, bones, matrix, parent_matrix);
 }
 
@@ -335,7 +289,6 @@ vector<TEXTURE_S> CMODEL::loadMaterialTextures(aiMaterial * mat, aiTextureType t
 }
 
 void CMODEL::processNode(aiNode* node, const aiScene* scene, XMMATRIX parent_matrix)
-//void CMODEL::processNode(aiNode* node, aiNode* parent_node, const aiScene* scene)
 {
 	for (UINT i = 0; i < node->mNumMeshes; i++)
 	{
@@ -343,8 +296,7 @@ void CMODEL::processNode(aiNode* node, const aiScene* scene, XMMATRIX parent_mat
 
 		XMMATRIX matrix = Covert_Matrix(&node->mTransformation);
 
-		meshes.push_back(this->processMesh(mesh, scene, matrix, parent_matrix) );	
-		//meshes.push_back(this->processMesh(mesh, node, parent_node, scene));
+		meshes.push_back(this->processMesh(mesh, scene, matrix, parent_matrix) );
 	}
 
 	for (UINT i = 0; i < node->mNumChildren; i++)
@@ -353,8 +305,6 @@ void CMODEL::processNode(aiNode* node, const aiScene* scene, XMMATRIX parent_mat
 		XMMATRIX matrix = Covert_Matrix(&node->mTransformation);
 		matrix *= parent_matrix;
 		this->processNode(node->mChildren[i], scene, matrix);
-
-		//this->processNode(node->mChildren[i], node, scene);
 	}
 }
 
@@ -400,190 +350,345 @@ ID3D11ShaderResourceView * CMODEL::getTextureFromModel(const aiScene * scene, in
 		FAILDE_ASSERT
 
 	return texture;
-}
+}*/
 
 
-CMODEL::CHILD_DATE& const CMODEL::Add_Child(const string& chile_name, const string& file_name)
+CMODEL::CMODEL()
 {
-	children[chile_name].file_name = file_name;
-	children[chile_name].model = new CMODEL();
-	children[chile_name].model->Load(children[chile_name].file_name);
-
-	return children[chile_name];
+	Enable = true;
 }
 
-CMODEL::CHILD_DATE& const CMODEL::Get_Child(const string& chile_name)
+CMODEL::~CMODEL()
 {
-	return children[chile_name];
+	Uninit();
 }
 
-
-void CMODEL::Set_Chile_Position(string& const child_name, const XMFLOAT3& position)
+bool CMODEL::Load(string& filename)
 {
-	children[child_name].model->Position = position;
+	Assimp::Importer importer;
+
+	const aiScene* pScene = importer.ReadFile(filename,
+		aiProcess_Triangulate | aiProcess_ConvertToLeftHanded | aiProcessPreset_TargetRealtime_MaxQuality);
+
+	if (pScene == NULL)
+		return false;
+
+	this->directory = filename.substr(0, filename.find_last_of('/'));
+
+	Meshes[pScene->mRootNode->mName.C_Str()] = MESH();
+	processNode(pScene->mRootNode, nullptr, pScene, Meshes);
+
+	// アニメーション情報の設定
+	{
+		vector<Anim> animation;
+
+		if (pScene->HasAnimations())
+		{
+			aiAnimation** anim = pScene->mAnimations;
+
+			for (UINT i = 0; i < pScene->mNumAnimations; i++)
+			{
+				animation.push_back(createAnimation(anim[i]));
+			}
+
+			// 1番目のメッシュにアニメーション情報を保存する
+			Meshes.begin()->second.SetAnimation(animation);
+		}
+	}
+
+	return true;
 }
 
-void CMODEL::Set_Chile_Rotation(string& const child_name, const XMFLOAT3& rotation)
+bool CMODEL::Reload(string& filename)
 {
-	children[child_name].model->Rotation = rotation;
+	Assimp::Importer importer;
+
+	const aiScene* pScene = importer.ReadFile(filename,
+		aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_ConvertToLeftHanded | aiProcessPreset_TargetRealtime_MaxQuality);
+
+	if (pScene == NULL)
+		return false;
+
+	this->directory = filename.substr(0, filename.find_last_of('/'));
+
+	Meshes[pScene->mRootNode->mName.C_Str()] = MESH();
+	processNode(pScene->mRootNode, nullptr, pScene, Meshes);
+
+	{
+		vector<Anim> animation;
+
+		if (pScene->HasAnimations())
+		{
+			aiAnimation** anim = pScene->mAnimations;
+
+			for (UINT i = 0; i < pScene->mNumAnimations; i++)
+			{
+				animation.push_back(createAnimation(anim[i]));
+			}
+
+			// 1番目のメッシュにアニメーション情報を保存する
+			Meshes.begin()->second.SetAnimation(animation);
+		}
+	}
+
+	return true;
 }
 
-void CMODEL::Set_Chile_Scaling(string& const child_name, const XMFLOAT3& scaling)
+void CMODEL::Draw()
 {
-	children[child_name].model->Scaling = scaling;
+	XMMATRIX matrix = XMMatrixIdentity();
+
+
+
+	for (auto mesh : Meshes)
+	{
+		mesh.second.Get().begin()->second.Draw(matrix);
+	}
 }
 
-void CMODEL::Add_Chile_Position(string child_name, const XMFLOAT3& position)
+void CMODEL::Uninit()
 {
-	children[child_name].model->Position.x += position.x;
-	children[child_name].model->Position.y += position.y;
-	children[child_name].model->Position.z += position.z;
+	if(false == Meshes.empty())
+	{
+		Meshes.begin()->second.Get().begin()->second.Uninit();
+		Meshes.clear();
+	}
+
+	for (auto tex : textures_loaded)
+	{
+		SAFE_RELEASE(tex.Texture);
+	}
+	textures_loaded.clear();
 }
 
-void CMODEL::Add_Chile_Rotation(string child_name, const XMFLOAT3& rotation)
+void CMODEL::Set_Enable(const bool flag)
 {
-	children[child_name].model->Rotation.x += rotation.x;
-	children[child_name].model->Rotation.y += rotation.y;
-	children[child_name].model->Rotation.z += rotation.z;
+	Enable = flag;
 }
 
-void CMODEL::Add_Chile_Scaling(string child_name, const XMFLOAT3& scaling)
+const bool CMODEL::Get_Enable()
 {
-	children[child_name].model->Scaling.x += scaling.x;
-	children[child_name].model->Scaling.y += scaling.y;
-	children[child_name].model->Scaling.z += scaling.z;
+	return Enable;
 }
 
-
-XMFLOAT3& const CMODEL::Get_Chile_Position(const string& child_name)
+void CMODEL::SetPosition(const XMFLOAT3& position)
 {
-	return children[child_name].model->Position;
+	Position = position;
 }
 
-XMFLOAT3& const CMODEL::Get_Chile_Rotation(const string& child_name)
+void CMODEL::SetRotation(const XMFLOAT3& rotation)
 {
-	return children[child_name].model->Rotation;
+	Rotation = rotation;
 }
 
-XMFLOAT3& const CMODEL::Get_Chile_Scaling(const string& child_name)
+void CMODEL::SetScaling(const XMFLOAT3& scaling)
 {
-	return children[child_name].model->Scaling;
+	Scaling = scaling;
 }
 
-void CMODEL::Set_Child_Enable(string& const child_name, const bool flag)
+static string textype;
+
+MESH CMODEL::processMesh(aiMesh* mesh, aiNode* node, const aiScene* scene)
 {
-	children[child_name].model->Set_Enable(flag);
+	// Data to fill
+	vector<VERTEX_3D> vertices;
+	vector<UINT> indices;
+	vector<TEXTURE_S> textures;
+
+	vector<Bone> bones;
+
+	XMMATRIX matrix;
+
+	if (mesh->mMaterialIndex >= 0)
+	{
+		aiMaterial* mat = scene->mMaterials[mesh->mMaterialIndex];
+
+		if (textype.empty()) textype = determineTextureType(scene, mat);
+	}
+
+	// Walk through each of the mesh's vertices
+	for (UINT i = 0; i < mesh->mNumVertices; i++)
+	{
+		VERTEX_3D vertex;
+
+		// 頂点データの設定
+		vertex.Position.x = mesh->mVertices[i].x;
+		vertex.Position.y = mesh->mVertices[i].y;
+		vertex.Position.z = mesh->mVertices[i].z;
+
+		// 頂点カラーの設定
+		if (mesh->HasVertexColors(i))
+		{
+			vertex.Diffuse.x = mesh->mColors[i]->r;
+			vertex.Diffuse.y = mesh->mColors[i]->g;
+			vertex.Diffuse.z = mesh->mColors[i]->b;
+			vertex.Diffuse.w = mesh->mColors[i]->a;
+		}
+		else
+		{
+			vertex.Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+		}
+
+		// 法線ベクトルの設定
+		vertex.Normal.x = mesh->mNormals[i].x;
+		vertex.Normal.y = mesh->mNormals[i].y;
+		vertex.Normal.z = mesh->mNormals[i].z;
+
+		// UV座標の設定
+		if (mesh->mTextureCoords[0])
+		{
+			vertex.TexCoord.x = (float)mesh->mTextureCoords[0][i].x;
+			vertex.TexCoord.y = (float)mesh->mTextureCoords[0][i].y;
+		}
+
+		vertices.push_back(vertex);
+	}
+
+	// インデックスの設定
+	for (UINT i = 0; i < mesh->mNumFaces; i++)
+	{
+		aiFace face = mesh->mFaces[i];
+
+		for (UINT j = 0; j < face.mNumIndices; j++)
+			indices.push_back(face.mIndices[j]);
+	}
+
+	// テクスチャの設定
+	if (mesh->mMaterialIndex >= 0)
+	{
+		aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
+
+		vector<TEXTURE_S> diffuseMaps = this->loadMaterialTextures(material, aiTextureType_DIFFUSE, "texture_diffuse", scene);
+		textures.insert(textures.end(), diffuseMaps.begin(), diffuseMaps.end());
+	}
+
+	// ボーン情報の設定
+	if (mesh->HasBones())
+	{
+		aiBone** b = mesh->mBones;
+		for (UINT i = 0; i < mesh->mNumBones; ++i)
+		{
+			bones.push_back(createBone(b[i]));
+		}
+	}
+
+	{
+		matrix = Covert_Matrix(&node->mTransformation);
+	}
+
+	return MESH(vertices, indices, textures, bones, matrix);
 }
 
-const bool CMODEL::Get_Child_Enable(string& const child_name)
+vector<TEXTURE_S> CMODEL::loadMaterialTextures(aiMaterial* mat, aiTextureType type, string typeName, const aiScene* scene)
 {
-	return children[child_name].model->Get_Enable();
+	vector<TEXTURE_S> textures;
+	for (UINT i = 0; i < mat->GetTextureCount(type); i++)
+	{
+		aiString str;
+		mat->GetTexture(type, i, &str);
+
+		// Check if texture was loaded before and if so, continue to next iteration: skip loading a new texture
+		bool skip = false;
+		for (UINT j = 0; j < textures_loaded.size(); j++)
+		{
+			if (std::strcmp(textures_loaded[j].path.c_str(), str.C_Str()) == 0)
+			{
+				textures.push_back(textures_loaded[j]);
+				skip = true; // A texture with the same filepath has already been loaded, continue to next one. (optimization)
+				break;
+			}
+		}
+		if (!skip)
+		{   // If texture hasn't been loaded already, load it
+			HRESULT hr;
+			TEXTURE_S texture;
+			if (textype == "embedded compressed texture")
+			{
+				int textureindex = getTextureIndex(&str);
+				texture.Texture = getTextureFromModel(scene, textureindex);
+			}
+			else
+			{
+				string filename = string(str.C_Str());
+				filename = directory + "/" + filename;
+				wstring filenamews = wstring(filename.begin(), filename.end());
+
+				{
+					hr = DirectX::CreateWICTextureFromFile(CRenderer::GetDevice(), CRenderer::GetDeviceContext(), filenamews.c_str(), nullptr, &texture.Texture);
+				}
+
+				if (FAILED(hr))
+					FAILDE_ASSERT
+			}
+			texture.type = typeName;
+			texture.path = str.C_Str();
+			textures.push_back(texture);
+			this->textures_loaded.push_back(texture);  // Store it as texture loaded for entire model, to ensure we won't unnecesery load duplicate textures.
+		}
+	}
+	return textures;
 }
 
-
-
-
-
-
-//map<string, CMODEL*> MODEL_MANEGER::ModelResource;
-//
-//void MODEL_MANEGER::Init()
-//{
-//	for (auto model : ModelResource)
-//	{
-//		model.second = nullptr;
-//	}
-//
-//	Load();
-//}
-//
-//void MODEL_MANEGER::Uninit()
-//{
-//	for (auto model : ModelResource)
-//	{
-//		SAFE_DELETE(model.second);
-//	}
-//	ModelResource.clear();
-//}
-//
-//void MODEL_MANEGER::Load()
-//{
-//	string path = "asset/model/";
-//	string file_name;
-//
-//	for (int i = 0; i < MODEL_FILE_COUNT; i++)
-//	{
-//		// char から wchar_t への変換
-//		file_name = g_ModelFiles[i];
-//
-//		path = "asset/model/";
-//
-//		path = path + file_name;
-//
-//		// モデルの読み込み
-//		if (nullptr == ModelResource[file_name])
-//		{
-//			ModelResource[file_name] = new CMODEL();
-//			ModelResource[file_name]->Load(path);
-//		}
-//
-//		path.clear();
-//		file_name.clear();
-//	}
-//}
-//
-//void MODEL_MANEGER::Add(const string& const name)
-//{
-//	string path = "asset/model/";
-//
-//	path = path + name;
-//
-//	// モデルの読み込み
-//	if (nullptr == ModelResource[name])
-//	{
-//		ModelResource[name] = new CMODEL();
-//		ModelResource[name]->Load(path);
-//	}
-//}
-//
-//void MODEL_MANEGER::Unload(const string& const name)
-//{
-//	SAFE_DELETE(ModelResource[name]);
-//
-//	ModelResource[name] = nullptr;
-//}
-//
-//
-//MODEL::MODEL(const string& const name)
-//{
-//	Name = name;
-//}
-//
-//MODEL::~MODEL()
-//{
-//}
-//
-//void MODEL::Set_Model_Name(const string& const name)
-//{
-//	Name = name;
-//}
-//
-//const string& MODEL::Get_Model_Name()
-//{
-//	return Name;
-//}
-//
-//void MODEL::Draw()
-//{
-//
-//}
-
-
-void CMODEL::Set_Matrix(XMMATRIX& matrix)
+void CMODEL::processNode(aiNode* node, aiNode* parent_node, const aiScene* scene, map<string, MESH>& mesh_map)
 {
-	//meshes.begin()->
+	for (UINT i = 0; i < node->mNumMeshes; i++)
+	{
+		aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
+
+		MESH ms = processMesh(mesh, node, scene);
+
+		mesh_map[node->mName.C_Str()] = ms;
+	}
+
+	for (UINT i = 0; i < node->mNumChildren; i++)
+	{
+		processNode(node->mChildren[i], node, scene, mesh_map[node->mName.C_Str()].Get() );
+	}
 }
 
+string CMODEL::determineTextureType(const aiScene* scene, aiMaterial* mat)
+{
+	aiString textypeStr;
+	mat->GetTexture(aiTextureType_DIFFUSE, 0, &textypeStr);
+	string textypeteststr = textypeStr.C_Str();
+	if (textypeteststr == "*0" || textypeteststr == "*1" || textypeteststr == "*2" || textypeteststr == "*3" || textypeteststr == "*4" || textypeteststr == "*5")
+	{
+		if (scene->mTextures[0]->mHeight == 0)
+		{
+			return "embedded compressed texture";
+		}
+		else
+		{
+			return "embedded non-compressed texture";
+		}
+	}
+	if (textypeteststr.find('.') != string::npos)
+	{
+		return "textures are on disk";
+	}
+}
+
+int CMODEL::getTextureIndex(aiString* str)
+{
+	string tistr;
+	tistr = str->C_Str();
+	tistr = tistr.substr(1);
+	return stoi(tistr);
+}
+
+ID3D11ShaderResourceView* CMODEL::getTextureFromModel(const aiScene* scene, int textureindex)
+{
+	HRESULT hr;
+	ID3D11ShaderResourceView* texture;
+
+	int* size = reinterpret_cast<int*>(&scene->mTextures[textureindex]->mWidth);
+
+	hr = CreateWICTextureFromMemory(CRenderer::GetDevice(), CRenderer::GetDeviceContext(), reinterpret_cast<unsigned char*>(scene->mTextures[textureindex]->pcData), *size, nullptr, &texture);
+	if (FAILED(hr))
+		FAILDE_ASSERT
+
+		return texture;
+}
 
 
 // アニメーション情報を作成
@@ -698,7 +803,14 @@ XMMATRIX Covert_Matrix(aiMatrix4x4* matrix)
 
 	aiTransposeMatrix4(&mtr);		// 転置行列 DirectX用にする
 
-	XMMATRIX m = XMLoadFloat4x4((XMFLOAT4X4*)&mtr);
-
-	return m;
+	return XMLoadFloat4x4((XMFLOAT4X4*)& mtr);
 }
+
+//XMMATRIX Covert_Matrix(aiMatrix4x4& matrix)
+//{
+//	aiMatrix4x4 mtr = matrix;
+//
+//	aiTransposeMatrix4(&mtr);		// 転置行列 DirectX用にする
+//
+//	return XMLoadFloat4x4((XMFLOAT4X4*)& mtr);
+//}

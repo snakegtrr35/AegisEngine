@@ -28,7 +28,7 @@ PLAYER::PLAYER(void)
 	{
 		string name = MAIN_MENU::Model_Name;
 
-		Model = new CMODEL(Position, Rotation, Scaling);
+		Model = new CMODEL();
 
 		Model->Load(name);
 

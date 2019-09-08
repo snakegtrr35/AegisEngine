@@ -19,13 +19,13 @@ ENEMY::ENEMY(void)
 
 	Scaling = XMFLOAT3(1.0f, 1.0f, 1.0f);
 
-	Model = new CMODEL(Position, Rotation, Scaling);
+	Model = new CMODEL();
 
 	{
 		//string name("asset/model/miku_01.obj");
 		string name("asset/model/viranrifle.fbx");
 
-		Model = new CMODEL(Position, Rotation, Scaling);
+		Model = new CMODEL();
 
 		Model->Load(name);
 

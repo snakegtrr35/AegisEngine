@@ -18,7 +18,7 @@ BULLET::BULLET()
 
 	Scaling = XMFLOAT3(0.3f, 0.3f, 0.3f);
 
-	Model = new CMODEL(Position, Rotation, Scaling);
+	Model = new CMODEL();
 
 	string name("asset/model/Bullet.obj");
 
@@ -48,7 +48,7 @@ BULLET::BULLET(XMFLOAT3& position, XMFLOAT3& move_vector)
 
 	Scaling = XMFLOAT3(0.3f, 0.3f, 0.3f);
 
-	Model = new CMODEL(Position, Rotation, Scaling);
+	Model = new CMODEL();
 
 	string name("asset/model/Bullet.obj");
 
