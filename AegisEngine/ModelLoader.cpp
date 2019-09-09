@@ -1,4 +1,5 @@
 #include	"ModelLoader.h"
+#include	"Library/DirectXTex/WICTextureLoader.h"
 
 Anim createAnimation(const aiAnimation* anim);
 NodeAnim createNodeAnim(const aiNodeAnim* anim);
@@ -636,7 +637,7 @@ vector<TEXTURE_S> CMODEL::loadMaterialTextures(aiMaterial* mat, aiTextureType ty
 				wstring filenamews = wstring(filename.begin(), filename.end());
 
 				{
-					hr = DirectX::CreateWICTextureFromFile(CRenderer::GetDevice(), CRenderer::GetDeviceContext(), filenamews.c_str(), nullptr, &texture.Texture);
+					hr = CreateWICTextureFromFile(CRenderer::GetDevice(), CRenderer::GetDeviceContext(), filenamews.c_str(), nullptr, &texture.Texture);
 				}
 
 				if (FAILED(hr))

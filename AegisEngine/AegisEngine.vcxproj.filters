@@ -22,7 +22,7 @@
     <Filter Include="Library">
       <UniqueIdentifier>{5f0109bd-8718-42d5-846e-795b7b3cc5bd}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Library\TextuteLoader">
+    <Filter Include="Library\DirectXTex">
       <UniqueIdentifier>{9c46f795-1dc8-44ec-adef-e4ffebb5817b}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
@@ -165,11 +165,14 @@
     <ClCompile Include="Math.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="WICTextureLoader.cpp">
-      <Filter>Library\TextuteLoader</Filter>
-    </ClCompile>
     <ClCompile Include="common.cpp">
       <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Library\DirectXTex\DDSTextureLoader.cpp">
+      <Filter>Library\DirectXTex</Filter>
+    </ClCompile>
+    <ClCompile Include="Library\DirectXTex\WICTextureLoader.cpp">
+      <Filter>Library\DirectXTex</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -323,8 +326,11 @@
     <ClInclude Include="resource.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="WICTextureLoader.h">
-      <Filter>Library\TextuteLoader</Filter>
+    <ClInclude Include="Library\DirectXTex\DDSTextureLoader.h">
+      <Filter>Library\DirectXTex</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\DirectXTex\WICTextureLoader.h">
+      <Filter>Library\DirectXTex</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

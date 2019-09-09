@@ -4,7 +4,6 @@
 #define TEXYUTE_H
 
 #include	"Renderer.h"
-#include	"WICTextureLoader.h"
 
 //========================================
 // テクスチャクラス

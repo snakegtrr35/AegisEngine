@@ -12,7 +12,7 @@ std::wstring stringTowstring(std::string& font)
 	//ÉçÉPÅ[ÉãéwíË
 	setlocale(LC_ALL, "japanese");
 
-	err = mbstowcs_s(&wLen, wStrW, font.size(), font.c_str(), _TRUNCATE);
+	err = mbstowcs_s(&wLen, wStrW, font.size() * 2, font.c_str(), _TRUNCATE);
 
 	f = wStrW;
 

@@ -1,6 +1,9 @@
 #include	"Renderer.h"
 #include	"texture.h"
 
+#include	"Library/DirectXTex/WICTextureLoader.h"
+#include	"Library/DirectXTex/DDSTextureLoader.h"
+
 typedef struct {
 	string Name;
 	XMINT2 WH;
@@ -117,21 +120,18 @@ void TEXTURE_MANEGER::Load(void)
 		HRESULT hr;
 
 		// char ‚©‚ç wchar_t ‚Ö‚Ì•ÏŠ·
-		file_name = wstring(g_TextureFiles[i].Name.begin(), g_TextureFiles[i].Name.end());
+		file_name = stringTowstring(g_TextureFiles[i].Name);
 
 		path = L"asset/texture/";
 
 		path = path + file_name;
 
-		hr = DirectX::CreateWICTextureFromFile(CRenderer::GetDevice(), CRenderer::GetDeviceContext(), path.c_str(), nullptr, &ShaderResourceView);
+		hr = CreateWICTextureFromFile(CRenderer::GetDevice(), CRenderer::GetDeviceContext(), path.c_str(), nullptr, &ShaderResourceView);
 		if (FAILED(hr))
 		{
 			FAILDE_ASSERT;
 			return;
 		}
-
-		path.clear();
-		file_name.clear();
 
 		TextureResource[g_TextureFiles[i].Name] = ShaderResourceView;
 	}
@@ -143,14 +143,16 @@ void TEXTURE_MANEGER::Add(const string& const file_name)
 
 	wstring path = L"asset/texture/";
 
+	string name = file_name;//
+
 	// char ‚©‚ç wchar_t ‚Ö‚Ì•ÏŠ·
-	wstring file = wstring(file_name.begin(), file_name.end());
+	wstring file = stringTowstring(name);
 
 	path = path + file;
 
 	HRESULT hr;
 
-	hr = DirectX::CreateWICTextureFromFile(CRenderer::GetDevice(), CRenderer::GetDeviceContext(), path.c_str(), nullptr, &ShaderResourceView);
+	hr = CreateWICTextureFromFile(CRenderer::GetDevice(), CRenderer::GetDeviceContext(), path.c_str(), nullptr, &ShaderResourceView);
 	if (FAILED(hr))
 	{
 		return;
