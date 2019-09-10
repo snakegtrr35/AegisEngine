@@ -90,13 +90,18 @@ void MAIN_MENU::Init()
 		//string name("asset/model/herorifle.fbx");
 		string name("asset/model/human.fbx");
 
+		XMFLOAT3 f3;
+
 		player->Set_Object_Name("player");
 
-		player->SetPosition(XMFLOAT3(2.5f, 0.f, -4.5f));
+		f3 = XMFLOAT3(2.5f, 0.f, -4.5f);
+		player->Set_Position(f3);
 
-		player->SetRotation(XMFLOAT3(0.f, 0.f, 0.f));
+		f3 = XMFLOAT3(0.f, 0.f, 0.f);
+		player->Set_Rotation(f3);
 
-		player->SetScaling(XMFLOAT3(2.0f, 2.0f, 2.0f));
+		f3 = XMFLOAT3(2.0f, 2.0f, 2.0f);
+		player->Set_Scaling(f3);
 
 		player->Load(name);
 	}
@@ -245,7 +250,7 @@ void MAIN_MENU::Update()
 
 				rotation->y += 1.0f;
 
-				player->SetRotation(*rotation);
+				player->Set_Rotation(rotation);
 			}
 		}
 	}

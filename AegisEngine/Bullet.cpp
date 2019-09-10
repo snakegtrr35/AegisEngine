@@ -97,9 +97,9 @@ void BULLET::Update(void)
 		Shadow->Set_Position(&pos);
 	}
 
-	Model->SetPosition(Position);
-	Model->SetRotation(Rotation);
-	Model->SetScaling(Scaling);
+	Model->Set_Position(Position);
+	Model->Set_Rotation(Rotation);
+	Model->Set_Scaling(Scaling);
 
 	//dynamic_cast<COLLISIION_SPHERE*>(Collision)->Set_Position(Position);
 	dynamic_cast<COLLISIION_AABB*>(Collision)->Set_Position(Position);

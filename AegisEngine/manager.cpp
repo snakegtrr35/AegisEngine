@@ -81,11 +81,11 @@ void CManager::Draw()
 
 	CRenderer::Begin();
 
-	//CRenderer::SetRenderTargetView(true);
-	//pSceneManager->Draw();//
+	CRenderer::SetRenderTargetView(true);//
+	pSceneManager->Draw();//
 
 	CRenderer::SetRenderTargetView(false);
-	pSceneManager->Draw();//
+	pSceneManager->Draw();
 	
 #ifdef _DEBUG
 	g_MyImgui->Draw();//

@@ -443,23 +443,17 @@ void CMODEL::Draw()
 {
 	XMMATRIX matrix = XMMatrixIdentity();
 
-	//XMMATRIX scaling = XMMatrixScaling(0.1f, 0.1f, 0.1f);
+	XMMATRIX scaling = XMMatrixScaling(Scaling.x, Scaling.y, Scaling.z);
 
-	XMMATRIX rotation = XMMatrixRotationRollPitchYaw(XMConvertToRadians(0.0f), XMConvertToRadians(90.0f), XMConvertToRadians(0.0f));
+	XMMATRIX rotation = XMMatrixRotationRollPitchYaw(XMConvertToRadians(Rotation.x), XMConvertToRadians(Rotation.y), XMConvertToRadians(Rotation.z));
 
-	XMMATRIX transform = XMMatrixTranslation(5.0f, 0.0f, 0.0f);
+	XMMATRIX transform = XMMatrixTranslation(Position.x, Position.y, Position.z);
 
-	//matrix = XMMatrixMultiply(matrix, scaling);
+	matrix = XMMatrixMultiply(matrix, scaling);
 
 	matrix = XMMatrixMultiply(matrix, rotation);
 
 	matrix = XMMatrixMultiply(matrix, transform);
-
-	/*for (auto mesh : Meshes)
-	{
-		mesh.second.Get().begin()->second.Draw(matrix);
-	}*/
-
 
 	for (auto mesh : Meshes.Get())
 	{
@@ -492,21 +486,6 @@ void CMODEL::Set_Enable(const bool flag)
 const bool CMODEL::Get_Enable()
 {
 	return Enable;
-}
-
-void CMODEL::SetPosition(const XMFLOAT3& position)
-{
-	Position = position;
-}
-
-void CMODEL::SetRotation(const XMFLOAT3& rotation)
-{
-	Rotation = rotation;
-}
-
-void CMODEL::SetScaling(const XMFLOAT3& scaling)
-{
-	Scaling = scaling;
 }
 
 static string textype;

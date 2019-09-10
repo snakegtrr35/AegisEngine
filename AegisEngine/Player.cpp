@@ -32,9 +32,9 @@ PLAYER::PLAYER(void)
 
 		Model->Load(name);
 
-		Model->SetPosition(Position);
-		Model->SetRotation(Rotation);
-		Model->SetScaling(Scaling);
+		Model->Set_Position(Position);
+		Model->Set_Rotation(Rotation);
+		Model->Set_Scaling(Scaling);
 	}
 
 	Collision = new COLLISIION_AABB();
@@ -136,9 +136,9 @@ void PLAYER::Update(void)
 	Rotation.y = rotate + 90.0f;
 
 	{
-		Model->SetPosition(Position);
-		Model->SetRotation(Rotation);
-		Model->SetScaling(Scaling);
+		Model->Set_Position(Position);
+		Model->Set_Rotation(Rotation);
+		Model->Set_Scaling(Scaling);
 	}
 
 	dynamic_cast<COLLISIION_AABB*>(Collision)->Set_Position(Position);

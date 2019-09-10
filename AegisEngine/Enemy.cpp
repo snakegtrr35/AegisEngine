@@ -29,9 +29,9 @@ ENEMY::ENEMY(void)
 
 		Model->Load(name);
 
-		Model->SetPosition(Position);
-		Model->SetRotation(Rotation);
-		Model->SetScaling(Scaling);
+		Model->Set_Position(Position);
+		Model->Set_Rotation(Rotation);
+		Model->Set_Scaling(Scaling);
 	}
 
 	Collision = new COLLISIION_AABB();
@@ -156,8 +156,8 @@ void ENEMY::Update(void)
 		AUDIO_MANAGER::Play_Sound_Object(SOUND_INDEX::SOUND_INDEX_SHOT, false);
 	}
 
-	Model->SetPosition(Position);
-	Model->SetRotation(Rotation);
+	Model->Set_Position(Position);
+	Model->Set_Rotation(Rotation);
 
 	//dynamic_cast<COLLISIION_SPHERE*>(Collision)->Set_Position(Position);
 	dynamic_cast<COLLISIION_AABB*>(Collision)->Set_Position(Position);

@@ -2,18 +2,14 @@
 
 #include	"My_imgui.h"
 #include	"Renderer.h"
-
 #include	"Scene.h"
-
-#include	"Player.h"
-#include	"Enemy.h"
-#include	"ModelLoader.h"
-
-#include "imgui/imgui.h"
-#include "imgui/imgui_impl_dx11.h"
-#include "imgui/imgui_impl_win32.h"
-
 #include	"main.h"
+
+#include	"imgui/imgui.h"
+#include	"imgui/imgui_impl_dx11.h"
+#include	"imgui/imgui_impl_win32.h"
+
+#include	"ModelLoader.h"
 
 POLYGON_3D* g_pPOLYGON = nullptr;
 
@@ -38,9 +34,6 @@ void My_imgui::Init(HWND hWnd)
 	ImGuiIO& io = ImGui::GetIO(); (void)io;
 	io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;  // Enable Keyboard Controls
 
-	//io.Fonts->AddFontDefault();
-	//io.Fonts->AddFontFromFileTTF("c:\\Windows\\Fonts\\meiryo.ttc", 16.0f, nullptr, io.Fonts->GetGlyphRangesJapanese());
-
 	// u8を使えば日本語の表示はできる
 	ImFontConfig config;
 
@@ -57,26 +50,6 @@ void My_imgui::Init(HWND hWnd)
 
 	// Setup Style
 	ImGui::StyleColorsDark();
-
-	// Load Fonts
-	// - If no fonts are loaded, dear imgui will use the default font. You can also load multiple fonts and use ImGui::PushFont()/PopFont() to select them. 
-	// - AddFontFromFileTTF() will return the ImFont* so you can store it if you need to select the font among multiple. 
-	// - If the file cannot be loaded, the function will return NULL. Please handle those errors in your application (e.g. use an assertion, or display an error and quit).
-	// - The fonts will be rasterized at a given size (w/ oversampling) and stored into a texture when calling ImFontAtlas::Build()/GetTexDataAsXXXX(), which ImGui_ImplXXXX_NewFrame below will call.
-	// - Read 'misc/fonts/README.txt' for more instructions and details.
-	// - Remember that in C/C++ if you want to include a backslash \ in a string literal you need to write a double backslash \\ !
-	//io.Fonts->AddFontDefault();
-	//io.Fonts->AddFontFromFileTTF("../../misc/fonts/Roboto-Medium.ttf", 16.0f);
-	//io.Fonts->AddFontFromFileTTF("../../misc/fonts/Cousine-Regular.ttf", 15.0f);
-	//io.Fonts->AddFontFromFileTTF("../../misc/fonts/DroidSans.ttf", 16.0f);
-	//io.Fonts->AddFontFromFileTTF("../../misc/fonts/ProggyTiny.ttf", 10.0f);
-	//ImFont* font = io.Fonts->AddFontFromFileTTF("c:\\Windows\\Fonts\\ArialUni.ttf", 18.0f, NULL, io.Fonts->GetGlyphRangesJapanese());
-	//IM_ASSERT(font != NULL);
-
-	ImGuiStyle& style = ImGui::GetStyle();
-
-	style.Colors[ImGuiCol_WindowBg] = ImVec4(0.f, 0.f, 0.f, 1.0f);
-	style.Colors[ImGuiCol_ChildBg] = ImVec4(0.f, 0.f, 0.f, 1.0f);
 }
 
 void My_imgui::Draw(void)
@@ -127,6 +100,9 @@ void My_imgui::Draw(void)
 
 		}
 
+		static bool show_app_style_editor = false;
+
+		// メニューバー
 		{
 			if (ImGui::BeginMainMenuBar())
 			{
@@ -154,6 +130,7 @@ void My_imgui::Draw(void)
 					}
 					ImGui::EndMenu();
 				}
+
 				if (ImGui::BeginMenu("Edit"))
 				{
 					if (ImGui::MenuItem("Undo", "CTRL+Z")) {}
@@ -164,17 +141,23 @@ void My_imgui::Draw(void)
 					if (ImGui::MenuItem("Paste", "CTRL+V")) {}
 					ImGui::EndMenu();
 				}
+
+				if (ImGui::BeginMenu("Setting"))
+				{
+					ImGui::MenuItem("Style Editor", NULL, &show_app_style_editor);
+					ImGui::EndMenu();
+				}
+
 				ImGui::EndMainMenuBar();
 			}
 		}
 
-		{
-			string name("garage");
+		if (show_app_style_editor) { ImGui::Begin("Style Editor", &show_app_style_editor, ImGuiWindowFlags_NoResize); ImGui::ShowStyleEditor(); ImGui::End(); }
 
-			//PLAYER* player = SCENE::Get_Game_Object<PLAYER>();
-			//MESH_WALL* wall = SCENE::Get_Game_Object<MESH_WALL>();
-			//ENEMY* wall = SCENE::Get_Game_Object<ENEMY>();
-			CMODEL* player = SCENE::Get_Game_Object<CMODEL>(name);
+		{
+			string name("player");
+
+			auto player = SCENE::Get_Game_Object<CMODEL>(name);
 
 			if (nullptr != player)
 			{
@@ -211,9 +194,11 @@ void My_imgui::Draw(void)
 					a = buf1;
 				}*/
 
-				static char buf1[128] = u8"";
+				static char buf1[128] = "";
 
-				ImGui::InputText(u8"あいうえお", buf1, 128);
+				ImGui::InputText((char*)u8"あいうえお", (char*)buf1, 128);
+
+				ImGui::Text(buf1);
 
 				ImGui::End();
 
@@ -229,21 +214,48 @@ void My_imgui::Draw(void)
 				}
 			}
 
-			/*// レンダリングテクスチャ
+			// ライトの設定
+			{
+				ImGuiWindowFlags window_flag = ImGuiWindowFlags_NoResize;
+
+				static float vec4_Direction[] = { 0.0f, 0.0f, 1.0f, 0.0f };
+				static float vec4_Diffuse[] = { 1.2f, 1.2f, 1.2f, 1.0f };
+				static float vec4_Ambient[] = { 0.2f, 0.2f, 0.2f, 1.0f };
+
+				ImGui::SetNextWindowSize(ImVec2(300, 150), ImGuiCond_Always);
+
+				ImGui::Begin("Light Setting", nullptr, window_flag);
+
+				ImGui::DragFloat3("Direction", vec4_Direction, 0.01f);
+
+				ImGui::DragFloat3("Diffuse", vec4_Diffuse, 0.01f);
+
+				ImGui::DragFloat3("Ambient", vec4_Ambient, 0.01f);
+
+				ImGui::End();
+
+				// ライトの設定
+				LIGHT light;
+				light.Direction = XMFLOAT4(vec4_Direction[0], vec4_Direction[1], vec4_Direction[2], vec4_Direction[3]);
+				light.Diffuse = COLOR(vec4_Diffuse[0], vec4_Diffuse[1], vec4_Diffuse[2], vec4_Diffuse[3]);
+				light.Ambient = COLOR(vec4_Ambient[0], vec4_Ambient[1], vec4_Ambient[2], vec4_Ambient[3]);
+				CRenderer::SetLight(&light);
+			}
+
+			// レンダリングテクスチャ
 			{
 				ImGuiWindowFlags window_flags = ImGuiWindowFlags_NoResize;
 
-				ImGui::SetWindowSize(ImVec2(737, 445), ImGuiCond_Always);
+				ImGui::SetNextWindowSize(ImVec2(737, 445), ImGuiCond_Always);
 
-				ImGui::Begin("RenderTexture", NULL, window_flags);
-				//ImGui::Begin("RenderTexture");
+				ImGui::Begin("RenderTexture", nullptr, window_flags);
 
 				ImTextureID image = CRenderer::Get_SRV();
 
 				ImGui::Image(image, ImVec2(480 * 1.5f, 270 * 1.5f));
 
 				ImGui::End();
-			}*/
+			}
 
 			/*list<GAME_OBJECT*> object_list = SCENE::Get();
 

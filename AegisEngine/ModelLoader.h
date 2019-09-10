@@ -120,10 +120,6 @@ public:
 	void Update() override {};
 	void Uninit() override;
 
-	void SetPosition(const XMFLOAT3& position);
-	void SetRotation(const XMFLOAT3& rotation);
-	void SetScaling(const XMFLOAT3& scaling);
-
 	void Set_Enable(const bool flag);
 	const bool Get_Enable();
 };
