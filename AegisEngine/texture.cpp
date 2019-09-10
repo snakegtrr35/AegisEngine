@@ -44,7 +44,7 @@ static TEXTURE_FILE g_TextureFiles[] = {
 };
 
 
-map<string, ID3D11ShaderResourceView*> TEXTURE_MANEGER::TextureResource;
+map<string, unique_ptr<ID3D11ShaderResourceView, Release> > TEXTURE_MANEGER::TextureResource;
 
 // 読み込みテクスチャ数
 static const int TEXTURE_FILE_COUNT = sizeof(g_TextureFiles) / sizeof(g_TextureFiles[0]);
@@ -101,9 +101,15 @@ void TEXTURE_MANEGER::Init()
 
 void TEXTURE_MANEGER::Uninit()
 {
-	for (auto tex : TextureResource)
+	/*for (auto tex : TextureResource)
 	{
 		tex.second->Release();
+	}
+	TextureResource.clear();*/
+
+	for (auto tex = TextureResource.begin(); tex != TextureResource.end(); tex++)
+	{
+		tex->second.reset(nullptr);
 	}
 	TextureResource.clear();
 }
@@ -133,7 +139,7 @@ void TEXTURE_MANEGER::Load(void)
 			return;
 		}
 
-		TextureResource[g_TextureFiles[i].Name] = ShaderResourceView;
+		TextureResource[g_TextureFiles[i].Name].reset(ShaderResourceView);
 	}
 }
 
@@ -158,7 +164,7 @@ void TEXTURE_MANEGER::Add(const string& const file_name)
 		return;
 	}
 
-	TextureResource[file_name] = ShaderResourceView;
+	TextureResource[file_name].reset(ShaderResourceView);
 }
 
 // テクスチャの解放
@@ -181,19 +187,28 @@ XMINT2* const TEXTURE_MANEGER::Get_WH(const string& file_name)
 
 ID3D11ShaderResourceView* const TEXTURE_MANEGER::GetShaderResourceView(const string& const file_name)
 {
-	for (auto tex : TextureResource)
+	/*for (auto tex : TextureResource)
 	{
 		if (file_name == tex.first)
 		{
 			return tex.second;
 		}
+	}*/
+
+	for (auto tex = TextureResource.begin(); tex != TextureResource.end(); tex++)
+	{
+		if (file_name == tex->first)
+		{
+			return tex->second.get();
+		}
 	}
+
 	return nullptr;
 }
 
 
 
-map<wstring, ID3D11ShaderResourceView*> FONT::FontResource;
+map<wstring,unique_ptr<ID3D11ShaderResourceView, Release>> FONT::FontResource;
 ID3D11SamplerState* FONT::SamplerState = nullptr;
 
 //wstring stringTowstring(string& font);
@@ -203,23 +218,14 @@ void FONT::Init()
 	FONT::Load_Font();
 }
 
-//wstring stringTowstring(string& font)
-//{
-//	wstring f;
-//	wchar_t	wStrW[1024];
-//
-//	size_t wLen = 0;
-//	errno_t err = 0;
-//
-//	//ロケール指定
-//	setlocale(LC_ALL, "japanese");
-//
-//	err = mbstowcs_s(&wLen, wStrW, font.size(), font.c_str(), _TRUNCATE);
-//
-//	f = wStrW;
-//
-//	return f;
-//}
+void FONT::Uninit()
+{
+	for (auto tex = FontResource.begin(); tex != FontResource.end(); tex++)
+	{
+		tex->second.reset(nullptr);
+	}
+	FontResource.clear();
+};
 
 void FONT::Load_Font()
 {
@@ -392,7 +398,7 @@ void FONT::Load_Font()
 		wstring a;
 		a.push_back(font);
 
-		FontResource[a] = ShaderResourceView;
+		FontResource[a].reset(ShaderResourceView);
 
 		a.clear();
 	}
@@ -535,39 +541,29 @@ void FONT::Load_Font(const wstring& one_character)
 	wstring a;
 	a.push_back(font);
 
-	FontResource[a] = ShaderResourceView;
+	FontResource[a].reset(ShaderResourceView);
 
 	a.clear();
 }
 
 void FONT::Add_Font(const wstring& one_character)
 {
-	//wstring font(one_character.begin(), one_character.end());
-
-	for (auto value : FontResource)
+	for (auto tex = FontResource.begin(); tex != FontResource.end(); tex++)
 	{
-		if (one_character == value.first)
+		if (one_character == tex->first)
 		{
 			return;
 		}
 	}
-
-	FONT::Load_Font(one_character);
 }
 
 ID3D11ShaderResourceView* FONT::Get_Font_Resource(const wstring& one_character)
 {
-	//string a = one_character;
-
-	//a += a;
-
-	//wstring one = stringTowstring(a);
-
-	for (auto value : FontResource)
+	for (auto tex = FontResource.begin(); tex != FontResource.end(); tex++)
 	{
-		if (one_character == value.first)
+		if (one_character == tex->first)
 		{
-			return FontResource[one_character];
+			return FontResource[one_character].get();
 		}
 	}
 

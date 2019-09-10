@@ -34,7 +34,7 @@ public:
 //========================================
 class TEXTURE_MANEGER {
 private:
-	static map<string, ID3D11ShaderResourceView*> TextureResource;
+	static map<string, unique_ptr<ID3D11ShaderResourceView, Release> > TextureResource;
 
 	static void Load();														// テクスチャの読み込み
 
@@ -54,7 +54,7 @@ public:
 
 class FONT {
 private:
-	static map<wstring, ID3D11ShaderResourceView*> FontResource;
+	static map<wstring, unique_ptr<ID3D11ShaderResourceView, Release>> FontResource;
 	static ID3D11SamplerState* SamplerState;
 
 	static void Load_Font();
@@ -64,13 +64,7 @@ public:
 
 	static void Init();
 
-	static void Uninit() {
-		for (auto font : FontResource)
-		{
-			font.second->Release();
-		}
-		FontResource.clear();
-	};
+	static void Uninit();
 
 	static void Add_Font(const wstring& one_character);
 

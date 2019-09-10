@@ -252,7 +252,7 @@ void SPRITE::Uninit(void)
 {	
 	SAFE_DELETE(Texture);
 
-	pVertexBuffer.reset();
+	pVertexBuffer.reset(nullptr);
 
 	for (CHILD_DATE child : Children)	
 	{
