@@ -414,9 +414,10 @@ void FONT::Load_Font(const wstring& one_character)
 		fontSize, 0, 0, 0, fontWeight, 0, 0, 0,
 		SHIFTJIS_CHARSET, OUT_TT_ONLY_PRECIS, CLIP_DEFAULT_PRECIS,
 		PROOF_QUALITY, DEFAULT_PITCH | FF_MODERN,
-		(WCHAR)"ÇlÇr Çoñæí©"
+		//(WCHAR)"ÇlÇr Çoñæí©"
 		//(WCHAR)"ÇlÇr ñæí©"
 		//(WCHAR)"ÇlÇr ÉSÉVÉbÉN"
+		(WCHAR)"ÉÅÉCÉäÉI"
 	};
 	HFONT hFont = CreateFontIndirectW(&lf);
 
