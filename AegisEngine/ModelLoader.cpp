@@ -378,7 +378,7 @@ bool CMODEL::Load(string& filename)
 
 	//Meshes[pScene->mRootNode->mName.C_Str()] = MESH();
 	//processNode(pScene->mRootNode, nullptr, pScene, Meshes);
-	processNode(pScene->mRootNode, nullptr, pScene, Meshes.Get());
+	processNode(pScene->mRootNode, pScene, Meshes.Get());
 
 	// アニメーション情報の設定
 	{
@@ -416,7 +416,7 @@ bool CMODEL::Reload(string& filename)
 
 	//Meshes[pScene->mRootNode->mName.C_Str()] = MESH();
 	//processNode(pScene->mRootNode, nullptr, pScene, Meshes);
-	processNode(pScene->mRootNode, nullptr, pScene, Meshes.Get());
+	processNode(pScene->mRootNode, pScene, Meshes.Get());
 
 	{
 		vector<Anim> animation;
@@ -631,7 +631,7 @@ vector<TEXTURE_S> CMODEL::loadMaterialTextures(aiMaterial* mat, aiTextureType ty
 	return textures;
 }
 
-void CMODEL::processNode(aiNode* node, aiNode* parent_node, const aiScene* scene, map<string, MESH>& mesh_map)
+void CMODEL::processNode(aiNode* node, const aiScene* scene, map<string, MESH>& mesh_map)
 {
 	for (UINT i = 0; i < node->mNumMeshes; i++)
 	{
@@ -644,7 +644,7 @@ void CMODEL::processNode(aiNode* node, aiNode* parent_node, const aiScene* scene
 
 	for (UINT i = 0; i < node->mNumChildren; i++)
 	{
-		processNode(node->mChildren[i], node, scene, mesh_map[node->mName.C_Str()].Get() );
+		processNode(node->mChildren[i], scene, mesh_map[node->mName.C_Str()].Get() );
 	}
 }
 

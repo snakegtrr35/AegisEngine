@@ -5,10 +5,6 @@
 #include	"Scene.h"
 #include	"main.h"
 
-#include	"imgui/imgui.h"
-#include	"imgui/imgui_impl_dx11.h"
-#include	"imgui/imgui_impl_win32.h"
-
 #include	"ModelLoader.h"
 
 POLYGON_3D* g_pPOLYGON = nullptr;
@@ -224,13 +220,16 @@ void My_imgui::Draw(void)
 
 				ImGui::SetNextWindowSize(ImVec2(300, 150), ImGuiCond_Always);
 
-				ImGui::Begin("Light Setting", nullptr, window_flag);
+				ImGui::Begin("Directional Light", nullptr, window_flag);
 
 				ImGui::DragFloat3("Direction", vec4_Direction, 0.01f);
+				ImGui::SameLine(); HelpMarker((char*)u8"\"ïΩçsåıåπ\" å¸Ç´\n");
 
 				ImGui::DragFloat3("Diffuse", vec4_Diffuse, 0.01f);
+				ImGui::SameLine(); HelpMarker((char*)u8"\"ïΩçsåıåπ\" íºê⁄åı\n");
 
 				ImGui::DragFloat3("Ambient", vec4_Ambient, 0.01f);
+				ImGui::SameLine(); HelpMarker((char*)u8"\"ïΩçsåıåπ\" ä¬ã´åı\n");
 
 				ImGui::End();
 
@@ -256,38 +255,6 @@ void My_imgui::Draw(void)
 
 				ImGui::End();
 			}
-
-			/*list<GAME_OBJECT*> object_list = SCENE::Get();
-
-			ImGui::Begin("size");
-			ImGui::Text("%d", object_list.size());
-			ImGui::End();
-
-			for (GAME_OBJECT* object : object_list)
-			{
-				PLAYER* player = dynamic_cast<PLAYER*>(object);
-
-				if (nullptr != player)
-				{
-					XMFLOAT3 vecF;
-					XMStoreFloat3(&vecF, player->Get_Front());
-
-					XMFLOAT3 vecU;
-					XMStoreFloat3(&vecU, player->Get_Up());
-
-					XMFLOAT3 vecR;
-					XMStoreFloat3(&vecR, player->Get_Right());
-
-					ImGui::Begin("Player");
-
-					ImGui::Text("Front : x = %.2f y = %.2f z = %.2f", vecF.x, vecF.y, vecF.z);
-					ImGui::Text("Up : x = %.2f y = %.2f z = %.2f", vecU.x, vecU.y, vecU.z);
-					ImGui::Text("Right : x = %.2f y = %.2f z = %.2f", vecR.x, vecR.y, vecR.z);
-
-					ImGui::End();
-				}
-				
-			}*/
 		}
 		// Rendering
 		ImGui::Render();
