@@ -11,6 +11,7 @@ Bone createBone(const aiBone* b);
 
 XMMATRIX Covert_Matrix(aiMatrix4x4* matrix);
 
+static string textype;
 
 /*
 CMODEL::CMODEL()
@@ -457,7 +458,8 @@ void CMODEL::Draw()
 
 	for (auto mesh : Meshes.Get())
 	{
-		mesh.second.Get().begin()->second.Draw(matrix);
+		for(auto i : mesh.second.Get())
+		i.second.Draw(matrix);
 	}
 }
 
@@ -487,8 +489,6 @@ const bool CMODEL::Get_Enable()
 {
 	return Enable;
 }
-
-static string textype;
 
 MESH CMODEL::processMesh(aiMesh* mesh, aiNode* node, const aiScene* scene)
 {

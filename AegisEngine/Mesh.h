@@ -204,8 +204,6 @@ private:
 
 	XMMATRIX Matrix;
 
-	/*string ParentName;*/
-
 	map<string, MESH> ChildMeshes;
 
 	void Draw_Mesh(XMMATRIX& parent_matrix) {
@@ -336,10 +334,6 @@ public:
 	void SetAnimation(const vector<Anim>& animations) {
 		Animation = animations;
 	}
-
-	/*string& Get_Parent_Name() {
-		return ParentName;
-	}*/
 
 	void Add(const string name, const MESH& mesh) {
 		ChildMeshes[name] = mesh;
