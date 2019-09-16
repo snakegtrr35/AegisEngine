@@ -65,8 +65,6 @@ void MAIN_MENU::Init()
 
 	FADE::Start_FadeIn(60);
 	flag = false;
-
-	AUDIO_MANAGER::Play_Sound_Object(SOUND_INDEX::SOUND_INDEX_BGM002, true);
 }
 
 void MAIN_MENU::Draw()
