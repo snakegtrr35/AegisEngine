@@ -41,6 +41,8 @@ static TEXTURE_FILE g_TextureFiles[] = {
 	{"go.png", XMINT2(256, 128) },
 
 	{"sky.png", XMINT2(8192, 4096) },
+
+	{"UVCheckerMap01-512.dds", XMINT2(8192, 4096) },
 };
 
 
@@ -121,6 +123,10 @@ void TEXTURE_MANEGER::Load(void)
 	wstring path = L"asset/texture/";
 	wstring file_name;
 
+	size_t pos;
+
+	wstring type;
+
 	for (int i = 0; i < TEXTURE_FILE_COUNT; i++)
 	{
 		HRESULT hr;
@@ -128,15 +134,31 @@ void TEXTURE_MANEGER::Load(void)
 		// char ‚©‚ç wchar_t ‚Ö‚Ì•ÏŠ·
 		file_name = stringTowstring(g_TextureFiles[i].Name);
 
+		pos = file_name.find_last_of(L".");
+
+		type = file_name.substr(pos + 1, 3);
+
 		path = L"asset/texture/";
 
 		path = path + file_name;
 
-		hr = CreateWICTextureFromFile(CRenderer::GetDevice(), CRenderer::GetDeviceContext(), path.c_str(), nullptr, &ShaderResourceView);
-		if (FAILED(hr))
+		if (L"dds" == type)	// dds
 		{
-			FAILDE_ASSERT;
-			return;
+			hr = CreateDDSTextureFromFile(CRenderer::GetDevice(), CRenderer::GetDeviceContext(), path.c_str(), nullptr, &ShaderResourceView);
+			if (FAILED(hr))
+			{
+				FAILDE_ASSERT;
+				return;
+			}
+		}
+		else	// jpg ‚© png
+		{
+			hr = CreateWICTextureFromFile(CRenderer::GetDevice(), CRenderer::GetDeviceContext(), path.c_str(), nullptr, &ShaderResourceView);
+			if (FAILED(hr))
+			{
+				FAILDE_ASSERT;
+				return;
+			}
 		}
 
 		TextureResource[g_TextureFiles[i].Name].reset(ShaderResourceView);

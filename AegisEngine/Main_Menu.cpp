@@ -137,6 +137,18 @@ void MAIN_MENU::Init()
 	flag = false;
 
 	AUDIO_MANAGER::Play_Sound_Object(SOUND_INDEX::SOUND_INDEX_BGM002, true);
+
+	{
+		SPRITE* test = Add_Game_Object<SPRITE>(LAYER_NAME::UI);
+
+		test->SetTexture("UVCheckerMap01-512.DDS");
+
+		test->SetSize(XMFLOAT4(100, 100, 100, 100));
+
+		test->Set_Object_Name("test");
+
+		test->SetPosition(XMFLOAT2(100, 100));
+	}
 }
 
 void MAIN_MENU::Draw()
