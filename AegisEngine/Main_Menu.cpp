@@ -26,7 +26,7 @@ void MAIN_MENU::Init()
 		//camera->Set_Rotate_Enable(false);
 	}
 
-	// プレイヤー
+	//プレイヤー
 	{
 		CMODEL* player = Add_Game_Object<CMODEL>(LAYER_NAME::GAMEOBJECT);
 
@@ -44,7 +44,7 @@ void MAIN_MENU::Init()
 		f3 = XMFLOAT3(0.f, 0.f, 0.f);
 		player->Set_Rotation(f3);
 
-		//f3 = XMFLOAT3(0.1f, 0.1f, 0.1f);
+		f3 = XMFLOAT3(0.1f, 0.1f, 0.1f);
 		f3 = XMFLOAT3(1.0f, 1.0f, 1.0f);
 		player->Set_Scaling(f3);
 

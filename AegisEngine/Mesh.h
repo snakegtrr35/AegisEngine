@@ -402,6 +402,15 @@ public:
 	vector<Anim>& Get_Anime() {
 		return Animation;
 	}
+
+	bool GetAnime() {
+		if (0 == Animation.size())
+		{
+			return false;
+		}
+
+		return true;
+	}
 };
 
 #endif

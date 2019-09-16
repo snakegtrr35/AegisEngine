@@ -454,24 +454,29 @@ void CMODEL::Draw()
 
 	matrix = XMMatrixMultiply(matrix, transform);
 
-	// アニメーション
-	for (auto mesh : Meshes.Get())
+	if (Meshes.GetAnime())
 	{
-		auto anime = Meshes.Get_Anime();
+		// アニメーション
+		for (auto mesh : Meshes.Get())
+		{
+			auto anime = Meshes.Get_Anime();
 
-		for(auto i : mesh.second.Get())
-		//i.second.Draw(matrix, anime, Frame);
-		i.second.Draw_Animation(matrix, anime, Frame);
+			for (auto i : mesh.second.Get())
+				//i.second.Draw(matrix, anime, Frame);
+				i.second.Draw_Animation(matrix, anime, Frame);
+		}
 	}
-
-	//// 普通の描画
-	//for (auto mesh : Meshes.Get())
-	//{
-	//	for (auto i : mesh.second.Get())
-	//	{
-	//		i.second.Draw(matrix);
-	//	}
-	//}
+	else
+	{
+		// 普通の描画
+		for (auto mesh : Meshes.Get())
+		{
+			for (auto i : mesh.second.Get())
+			{
+				i.second.Draw(matrix);
+			}
+		}
+	}
 }
 
 void CMODEL::Update()

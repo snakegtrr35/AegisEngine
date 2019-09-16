@@ -90,7 +90,7 @@ public:
 
 	// リストから特定の名前のオブジェクトの取得
 	template <typename T>
-	static T* Get_Game_Object(string& const name)
+	static T* Get_Game_Object(const string& name)
 	{
 		for (int i = 0; i < (int)LAYER_NAME::MAX_LAYER; i++)
 		{
@@ -129,7 +129,7 @@ public:
 	// リストから特定のオブジェクト（複数）の取得
 	// 引数 T* 型名 name オブジェクト名
 	template <typename T>
-	static vector<T*> Get_Game_Objects(const string& const name)
+	static vector<T*> Get_Game_Objects(const string& name)
 	{
 		vector<T*> objects;
 		for (int i = 0; i < (int)LAYER_NAME::MAX_LAYER; i++)
@@ -150,7 +150,7 @@ public:
 
 	// リストから特定のオブジェクト（複数）の取得
 	// 引数 name オブジェクト名
-	static vector<GAME_OBJECT*> Get_Game_Objects(const string& const name)
+	static vector<GAME_OBJECT*> Get_Game_Objects(const string& name)
 	{
 		vector<GAME_OBJECT*> objects;
 		for (int i = 0; i < (int)LAYER_NAME::MAX_LAYER; i++)
