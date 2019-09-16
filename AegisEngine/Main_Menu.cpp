@@ -31,7 +31,8 @@ void MAIN_MENU::Init()
 		CMODEL* player = Add_Game_Object<CMODEL>(LAYER_NAME::GAMEOBJECT);
 
 		//string name("asset/model/herorifle.fbx");
-		string name("asset/model/human02.fbx");
+		//string name("asset/model/human02.fbx");
+		string name("asset/model/untitled.fbx");
 
 		XMFLOAT3 f3;
 
