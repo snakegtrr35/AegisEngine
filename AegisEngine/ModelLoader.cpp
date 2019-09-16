@@ -9,7 +9,7 @@ QuatKey fromAssimp(const aiQuatKey& key);
 
 Bone createBone(const aiBone* b);
 
-XMMATRIX Covert_Matrix(aiMatrix4x4* matrix);
+XMMATRIX Covert_Matrix(const aiMatrix4x4* matrix);
 
 static string textype;
 
@@ -803,11 +803,7 @@ Bone createBone(const aiBone* b)
 	bone.name = b->mName.C_Str();
 
 	// マトリックスの設定
-	aiMatrix4x4 ai_matrix = b->mOffsetMatrix;
-
-	aiTransposeMatrix4(&ai_matrix);		// 転置行列 DirectX用にする
-
-	bone.offset = XMLoadFloat4x4((XMFLOAT4X4*)& ai_matrix);
+	bone.offset = Covert_Matrix(&(b->mOffsetMatrix));
 
 	const aiVertexWeight* w = b->mWeights;
 	for (u_int i = 0; i < b->mNumWeights; ++i)
@@ -820,8 +816,7 @@ Bone createBone(const aiBone* b)
 }
 
 
-
-XMMATRIX Covert_Matrix(aiMatrix4x4* matrix)
+XMMATRIX Covert_Matrix(const aiMatrix4x4* matrix)
 {
 	aiMatrix4x4 mtr = *matrix;
 
