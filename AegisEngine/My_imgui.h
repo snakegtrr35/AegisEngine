@@ -6,7 +6,10 @@
 #define MY_IMGUI_H
 
 #include	"main.h"
+
 #include	"imgui/imgui.h"
+#include	"imgui/imgui_impl_dx11.h"
+#include	"imgui/imgui_impl_win32.h"
 
 class My_imgui{
 private:
@@ -31,6 +34,19 @@ public:
 };
 
 void Draw_imgui(XMFLOAT3* position, XMFLOAT3* rotation, XMFLOAT3* scaling);
+
+static void HelpMarker(const char* desc)
+{
+	ImGui::TextDisabled("(?)");
+	if (ImGui::IsItemHovered())
+	{
+		ImGui::BeginTooltip();
+		ImGui::PushTextWrapPos(ImGui::GetFontSize() * 35.0f);
+		ImGui::TextUnformatted(desc);
+		ImGui::PopTextWrapPos();
+		ImGui::EndTooltip();
+	}
+}
 
 #endif // !MY_IMGUI_H
 

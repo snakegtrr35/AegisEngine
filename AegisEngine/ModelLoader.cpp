@@ -11,6 +11,7 @@ Bone createBone(const aiBone* b);
 
 XMMATRIX Covert_Matrix(aiMatrix4x4* matrix);
 
+static string textype;
 
 /*
 CMODEL::CMODEL()
@@ -357,6 +358,7 @@ ID3D11ShaderResourceView * CMODEL::getTextureFromModel(const aiScene * scene, in
 CMODEL::CMODEL()
 {
 	Enable = true;
+	Frame = 0;
 }
 
 CMODEL::~CMODEL()
@@ -378,7 +380,7 @@ bool CMODEL::Load(string& filename)
 
 	//Meshes[pScene->mRootNode->mName.C_Str()] = MESH();
 	//processNode(pScene->mRootNode, nullptr, pScene, Meshes);
-	processNode(pScene->mRootNode, nullptr, pScene, Meshes.Get());
+	processNode(pScene->mRootNode, pScene, Meshes.Get());
 
 	// アニメーション情報の設定
 	{
@@ -416,7 +418,7 @@ bool CMODEL::Reload(string& filename)
 
 	//Meshes[pScene->mRootNode->mName.C_Str()] = MESH();
 	//processNode(pScene->mRootNode, nullptr, pScene, Meshes);
-	processNode(pScene->mRootNode, nullptr, pScene, Meshes.Get());
+	processNode(pScene->mRootNode, pScene, Meshes.Get());
 
 	{
 		vector<Anim> animation;
@@ -442,11 +444,8 @@ bool CMODEL::Reload(string& filename)
 void CMODEL::Draw()
 {
 	XMMATRIX matrix = XMMatrixIdentity();
-
 	XMMATRIX scaling = XMMatrixScaling(Scaling.x, Scaling.y, Scaling.z);
-
 	XMMATRIX rotation = XMMatrixRotationRollPitchYaw(XMConvertToRadians(Rotation.x), XMConvertToRadians(Rotation.y), XMConvertToRadians(Rotation.z));
-
 	XMMATRIX transform = XMMatrixTranslation(Position.x, Position.y, Position.z);
 
 	matrix = XMMatrixMultiply(matrix, scaling);
@@ -455,20 +454,35 @@ void CMODEL::Draw()
 
 	matrix = XMMatrixMultiply(matrix, transform);
 
+	// アニメーション
 	for (auto mesh : Meshes.Get())
 	{
-		mesh.second.Get().begin()->second.Draw(matrix);
+		auto anime = Meshes.Get_Anime();
+
+		for(auto i : mesh.second.Get())
+		//i.second.Draw(matrix, anime, Frame);
+		i.second.Draw_Animation(matrix, anime, Frame);
 	}
+
+	//// 普通の描画
+	//for (auto mesh : Meshes.Get())
+	//{
+	//	for (auto i : mesh.second.Get())
+	//	{
+	//		i.second.Draw(matrix);
+	//	}
+	//}
+}
+
+void CMODEL::Update()
+{
+	Meshes.Update();
+
+	Frame++;
 }
 
 void CMODEL::Uninit()
 {
-	/*if(false == Meshes.empty())
-	{
-		Meshes.begin()->second.Get().begin()->second.Uninit();
-		Meshes.clear();
-	}*/
-
 	Meshes.Uninit();
 
 	for (auto tex : textures_loaded)
@@ -488,8 +502,6 @@ const bool CMODEL::Get_Enable()
 	return Enable;
 }
 
-static string textype;
-
 MESH CMODEL::processMesh(aiMesh* mesh, aiNode* node, const aiScene* scene)
 {
 	// Data to fill
@@ -500,6 +512,8 @@ MESH CMODEL::processMesh(aiMesh* mesh, aiNode* node, const aiScene* scene)
 	vector<Bone> bones;
 
 	XMMATRIX matrix;
+
+	string name;
 
 	if (mesh->mMaterialIndex >= 0)
 	{
@@ -574,11 +588,14 @@ MESH CMODEL::processMesh(aiMesh* mesh, aiNode* node, const aiScene* scene)
 		}
 	}
 
+	// マトリックスの設定
 	{
 		matrix = Covert_Matrix(&node->mTransformation);
 	}
 
-	return MESH(vertices, indices, textures, bones, matrix);
+	name = node->mName.C_Str();
+
+	return MESH(vertices, indices, textures, bones, matrix, name);
 }
 
 vector<TEXTURE_S> CMODEL::loadMaterialTextures(aiMaterial* mat, aiTextureType type, string typeName, const aiScene* scene)
@@ -631,7 +648,7 @@ vector<TEXTURE_S> CMODEL::loadMaterialTextures(aiMaterial* mat, aiTextureType ty
 	return textures;
 }
 
-void CMODEL::processNode(aiNode* node, aiNode* parent_node, const aiScene* scene, map<string, MESH>& mesh_map)
+void CMODEL::processNode(aiNode* node, const aiScene* scene, map<string, MESH>& mesh_map)
 {
 	for (UINT i = 0; i < node->mNumMeshes; i++)
 	{
@@ -644,7 +661,7 @@ void CMODEL::processNode(aiNode* node, aiNode* parent_node, const aiScene* scene
 
 	for (UINT i = 0; i < node->mNumChildren; i++)
 	{
-		processNode(node->mChildren[i], node, scene, mesh_map[node->mName.C_Str()].Get() );
+		processNode(node->mChildren[i], scene, mesh_map[node->mName.C_Str()].Get() );
 	}
 }
 
@@ -698,8 +715,6 @@ Anim createAnimation(const aiAnimation* anim)
 {
 	Anim animation;
 
-	animation.duration = anim->mDuration;
-
 	{
 		// 階層アニメーション
 		aiNodeAnim** node_anim = anim->mChannels;
@@ -729,19 +744,25 @@ NodeAnim createNodeAnim(const aiNodeAnim * anim)
 	animation.node_name = anim->mNodeName.C_Str();
 
 	// 平行移動
-	for (UINT i = 0; i < anim->mNumPositionKeys; ++i) {
+	for (UINT i = 0; i < anim->mNumPositionKeys; ++i)
+	{
 		animation.translate.push_back(fromAssimp(anim->mPositionKeys[i]));
 	}
+	animation.translate.begin()->time = anim->mNumPositionKeys;
 
 	// スケーリング
-	for (UINT i = 0; i < anim->mNumScalingKeys; ++i) {
+	for (UINT i = 0; i < anim->mNumScalingKeys; ++i)
+	{
 		animation.scaling.push_back(fromAssimp(anim->mScalingKeys[i]));
 	}
+	animation.scaling.begin()->time = anim->mNumScalingKeys;
 
 	// 回転
-	for (UINT i = 0; i < anim->mNumRotationKeys; ++i) {
+	for (UINT i = 0; i < anim->mNumRotationKeys; ++i)
+	{
 		animation.rotation.push_back(fromAssimp(anim->mRotationKeys[i]));
 	}
+	animation.rotation.begin()->time = anim->mNumRotationKeys;
 
 	return animation;
 }
@@ -749,8 +770,6 @@ NodeAnim createNodeAnim(const aiNodeAnim * anim)
 VectorKey fromAssimp(const aiVectorKey& key)
 {
 	VectorKey v;
-
-	v.time = key.mTime;
 
 	v.value.x = key.mValue.x;
 	v.value.y = key.mValue.y;
@@ -762,8 +781,6 @@ VectorKey fromAssimp(const aiVectorKey& key)
 QuatKey fromAssimp(const aiQuatKey& key)
 {
 	QuatKey v;
-
-	v.time = key.mTime;
 
 	v.value.x = key.mValue.x;
 	v.value.y = key.mValue.y;
@@ -807,12 +824,3 @@ XMMATRIX Covert_Matrix(aiMatrix4x4* matrix)
 
 	return XMLoadFloat4x4((XMFLOAT4X4*)& mtr);
 }
-
-//XMMATRIX Covert_Matrix(aiMatrix4x4& matrix)
-//{
-//	aiMatrix4x4 mtr = matrix;
-//
-//	aiTransposeMatrix4(&mtr);		// 転置行列 DirectX用にする
-//
-//	return XMLoadFloat4x4((XMFLOAT4X4*)& mtr);
-//}

@@ -97,7 +97,7 @@ private:
 	string directory;
 	vector<TEXTURE_S> textures_loaded;
 
-	void processNode(aiNode* node, aiNode* parent_node, const aiScene* scene, map<string, MESH>& mesh_map);
+	void processNode(aiNode* node, const aiScene* scene, map<string, MESH>& mesh_map);
 	MESH processMesh(aiMesh* mesh, aiNode* node, const aiScene* scene);
 
 	vector<TEXTURE_S> loadMaterialTextures(aiMaterial* mat, aiTextureType type, string typeName, const aiScene* scene);
@@ -106,6 +106,8 @@ private:
 	ID3D11ShaderResourceView* getTextureFromModel(const aiScene* scene, int textureindex);
 
 	bool Enable;
+
+	DWORD Frame;
 
 public:
 	CMODEL();
@@ -117,7 +119,7 @@ public:
 
 	void Init() override {};
 	void Draw() override;
-	void Update() override {};
+	void Update() override;
 	void Uninit() override;
 
 	void Set_Enable(const bool flag);
