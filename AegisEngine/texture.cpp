@@ -41,8 +41,6 @@ static TEXTURE_FILE g_TextureFiles[] = {
 	{"go.png", XMINT2(256, 128) },
 
 	{"sky.png", XMINT2(8192, 4096) },
-
-	{"UVCheckerMap01-512.DDS", XMINT2(8192, 4096) },
 };
 
 
@@ -142,7 +140,7 @@ void TEXTURE_MANEGER::Load(void)
 
 		path = path + file_name;
 
-		if (L"DDS" == type)	// dds
+		if (L"dds" == type)	// dds
 		{
 			hr = CreateDDSTextureFromFile(CRenderer::GetDevice(), CRenderer::GetDeviceContext(), path.c_str(), nullptr, &ShaderResourceView);
 			if (FAILED(hr))
