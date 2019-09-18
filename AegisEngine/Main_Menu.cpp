@@ -33,7 +33,7 @@ void MAIN_MENU::Init()
 		//string name("asset/model/herorifle.fbx");
 		//string name("asset/model/human02.fbx");
 		//string name("asset/model/untitled.fbx");
-		string name("asset/model/SambaDancing2.fbx");
+		string name("asset/model/BS01.fbx");
 
 		XMFLOAT3 f3;
 

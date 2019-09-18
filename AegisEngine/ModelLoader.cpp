@@ -371,7 +371,7 @@ bool CMODEL::Load(string& filename)
 	Assimp::Importer importer;
 
 	const aiScene* pScene = importer.ReadFile(filename,
-		aiProcess_Triangulate | aiProcess_ConvertToLeftHanded | aiProcessPreset_TargetRealtime_MaxQuality);
+		aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_ConvertToLeftHanded | aiProcessPreset_TargetRealtime_MaxQuality);
 
 	if (pScene == NULL)
 		return false;
