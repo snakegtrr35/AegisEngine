@@ -346,6 +346,9 @@
     <FxCompile Include="vertexShader_No_Light.hlsl">
       <Filter>リソース ファイル</Filter>
     </FxCompile>
+    <FxCompile Include="AnimationShader.hlsl">
+      <Filter>リソース ファイル</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="AegisEngine.rc">

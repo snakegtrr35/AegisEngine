@@ -514,11 +514,13 @@ MESH CMODEL::processMesh(aiMesh* mesh, aiNode* node, const aiScene* scene)
 	vector<UINT> indices;
 	vector<TEXTURE_S> textures;
 
-	vector<Bone> bones;
+	SUBSET Subset;//
 
 	XMMATRIX matrix;
 
-	string name;
+	vector<Bone> bones;
+
+	string name = node->mName.C_Str();
 
 	if (mesh->mMaterialIndex >= 0)
 	{
@@ -586,10 +588,22 @@ MESH CMODEL::processMesh(aiMesh* mesh, aiNode* node, const aiScene* scene)
 	// ƒ{[ƒ“î•ñ‚ÌÝ’è
 	if (mesh->HasBones())
 	{
+		auto bone = Meshes.Get_Bone();
+
 		aiBone** b = mesh->mBones;
 		for (UINT i = 0; i < mesh->mNumBones; ++i)
 		{
-			bones.push_back(createBone(b[i]));
+			//bones.push_back(createBone(b[i]));
+
+			aiVertexWeight* w = b[i]->mWeights;
+
+			for (u_int j = 0; j < b[i]->mNumWeights; ++j)
+			{
+				for (auto vertex : vertices)
+				{
+					//vertex.BoneIndex = w[j].mVertexId;
+				}
+			}
 		}
 	}
 
@@ -598,9 +612,7 @@ MESH CMODEL::processMesh(aiMesh* mesh, aiNode* node, const aiScene* scene)
 		matrix = Covert_Matrix(&node->mTransformation);
 	}
 
-	name = node->mName.C_Str();
-
-	return MESH(vertices, indices, textures, bones, matrix, name);
+	return MESH(vertices, indices, textures, matrix, name);
 }
 
 vector<TEXTURE_S> CMODEL::loadMaterialTextures(aiMaterial* mat, aiTextureType type, string typeName, const aiScene* scene)
