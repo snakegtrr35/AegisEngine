@@ -42,12 +42,33 @@ void CINPUT::onRawInput(WPARAM wParam, LPARAM lParam)
 	}
 	else if (raw->header.dwType == RIM_TYPEMOUSE)
 	{
-		POINT pos;
+		// ƒ}ƒEƒXˆÚ“®—Ê‚ÌŽæ“¾
+		{
+			POINT pos;
 
-		pos.x = raw->data.mouse.lLastX;
-		pos.y = raw->data.mouse.lLastY;
+			pos.x = raw->data.mouse.lLastX;
+			pos.y = raw->data.mouse.lLastY;
 
-		MOUSE::Set_Position(pos);
+			MOUSE::Set_Position(pos);
+		}
+
+		{
+			USHORT bf = raw->data.mouse.usButtonFlags;
+
+			// Wheel +-
+			if (bf & 0x400)
+			{
+				short w = (short)raw->data.mouse.usButtonData;
+				if (w > 0)
+				{
+					MOUSE::Set_Wheel_Move(1);
+				}
+				else
+				{
+					MOUSE::Set_Wheel_Move(-1);
+				}
+			}
+		}
 
 		if (FAILED(hResult))
 		{

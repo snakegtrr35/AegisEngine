@@ -4,6 +4,9 @@
 float MOUSE::Mouse_Sensitivity;
 bool MOUSE::MoveFlag = false;
 
+int MOUSE::DiffW = 0;
+int MOUSE::OldDiffW = 0;
+
 POINT MOUSE::ScreenPoint;
 XMFLOAT2 MOUSE::ScreenPosition;
 
@@ -79,4 +82,31 @@ float& const MOUSE::Get_Sensitivity()
 const bool MOUSE::Get_Move_Flag()
 {
 	return MoveFlag;
+}
+
+void MOUSE::Set_Wheel_Move(int w)
+{
+	OldDiffW = DiffW;
+
+	DiffW += w;
+}
+
+const WHEEL_MOVE_ENUM MOUSE::Get_Wheel_Move_Flag()
+{
+	if (DiffW > OldDiffW)
+	{
+		return WHEEL_MOVE_ENUM::UP;
+	}
+
+	if (DiffW < OldDiffW)
+	{
+		return WHEEL_MOVE_ENUM::DOWN;
+	}
+
+	return WHEEL_MOVE_ENUM::NONE;
+}
+
+void MOUSE::Reset_Wheel_Moveset()
+{
+	OldDiffW = DiffW;
 }

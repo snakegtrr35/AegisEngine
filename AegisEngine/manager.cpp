@@ -69,6 +69,8 @@ void CManager::Update()
 	CINPUT::Update();
 
 	pSceneManager->Update();
+
+	MOUSE::Reset_Wheel_Moveset();
 }
 
 void CManager::Draw()

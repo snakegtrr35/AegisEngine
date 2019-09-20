@@ -94,20 +94,20 @@ void CCamera::Update()
 		Up = XMVector3Normalize(Up);
 	}
 
-	////if (KEYBOARD::Press_Keyboard(VK_I))
-	//if (flag2 && MOUSE::Get_Move_Flag() && point.y > 0)
-	//{
-	//	XMMATRIX mtxRotation;
+	/*//if (KEYBOARD::Press_Keyboard(VK_I))
+	if (flag2 && MOUSE::Get_Move_Flag() && point.y > 0)
+	{
+		XMMATRIX mtxRotation;
 
-	//	//mtxRotation = XMMatrixRotationAxis(Right, XMConvertToRadians(1.0f));
-	//	mtxRotation = XMMatrixRotationAxis(Right, XMConvertToRadians(point.y));
+		//mtxRotation = XMMatrixRotationAxis(Right, XMConvertToRadians(1.0f));
+		mtxRotation = XMMatrixRotationAxis(Right, XMConvertToRadians(point.y));
 
-	//	Front = XMVector3TransformNormal(Front, mtxRotation);
-	//	Front = XMVector3Normalize(Front);
+		Front = XMVector3TransformNormal(Front, mtxRotation);
+		Front = XMVector3Normalize(Front);
 
-	//	Up = XMVector3TransformNormal(Up, mtxRotation);
-	//	Up = XMVector3Normalize(Up);
-	//}
+		Up = XMVector3TransformNormal(Up, mtxRotation);
+		Up = XMVector3Normalize(Up);
+	}*/
 
 	//if (KEYBOARD::Press_Keyboard(VK_L))
 	if (flag2 && MOUSE::Get_Move_Flag())
@@ -129,24 +129,24 @@ void CCamera::Update()
 		Right = XMVector3Normalize(Right);
 	}
 
-	////if (KEYBOARD::Press_Keyboard(VK_J))
-	//if (flag2 && MOUSE::Get_Move_Flag() && point.x < 0)
-	//{
-	//	XMMATRIX mtxRotation;
+	/*//if (KEYBOARD::Press_Keyboard(VK_J))
+	if (flag2 && MOUSE::Get_Move_Flag() && point.x < 0)
+	{
+		XMMATRIX mtxRotation;
 
-	//	mtxRotation = XMMatrixRotationY(XMConvertToRadians(point.x));
-	//	//mtxRotation = XMMatrixRotationAxis(Right, XMConvertToRadians(point.x));
-	//	//mtxRotation = XMMatrixRotationAxis(Up, XMConvertToRadians(point.x));//
+		mtxRotation = XMMatrixRotationY(XMConvertToRadians(point.x));
+		//mtxRotation = XMMatrixRotationAxis(Right, XMConvertToRadians(point.x));
+		//mtxRotation = XMMatrixRotationAxis(Up, XMConvertToRadians(point.x));//
 
-	//	Front = XMVector3TransformNormal(Front, mtxRotation);
-	//	Front = XMVector3Normalize(Front);
+		Front = XMVector3TransformNormal(Front, mtxRotation);
+		Front = XMVector3Normalize(Front);
 
-	//	Up = XMVector3TransformNormal(Up, mtxRotation);
-	//	Up = XMVector3Normalize(Up);
+		Up = XMVector3TransformNormal(Up, mtxRotation);
+		Up = XMVector3Normalize(Up);
 
-	//	Right = XMVector3TransformNormal(Right, mtxRotation);
-	//	Right = XMVector3Normalize(Right);
-	//}
+		Right = XMVector3TransformNormal(Right, mtxRotation);
+		Right = XMVector3Normalize(Right);
+	}*/
 	
 	{
 		XMFLOAT3 position;
@@ -165,12 +165,12 @@ void CCamera::Update()
 	// ˆÚ“®
 	if (MoveEnable)
 	{
-		if (KEYBOARD::Press_Keyboard(VK_W))
+		if (KEYBOARD::Press_Keyboard(VK_W) || (MOUSE::Get_Wheel_Move_Flag() == WHEEL_MOVE_ENUM::UP) )
 		{
 			Pos += f * 0.2f;
 		}
 
-		if (KEYBOARD::Press_Keyboard(VK_S))
+		if (KEYBOARD::Press_Keyboard(VK_S) || (MOUSE::Get_Wheel_Move_Flag() == WHEEL_MOVE_ENUM::DOWN))
 		{
 			Pos -= f * 0.2f;
 		}

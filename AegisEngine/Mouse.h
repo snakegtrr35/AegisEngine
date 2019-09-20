@@ -7,6 +7,12 @@
 
 #include	<algorithm>
 
+enum class WHEEL_MOVE_ENUM {
+	UP = 1,
+	DOWN = -1,
+	NONE
+};
+
 class MOUSE {
 private:
 	static float Mouse_Sensitivity;
@@ -20,6 +26,9 @@ private:
 	static POINT OldPos;
 
 	static bool MoveFlag;
+
+	static int DiffW;
+	static int OldDiffW;
 
 public:
 	static void Init(void);
@@ -36,6 +45,10 @@ public:
 	static float& const Get_Sensitivity();
 
 	static const bool Get_Move_Flag();
+
+	static void Set_Wheel_Move(int w);
+	static const WHEEL_MOVE_ENUM Get_Wheel_Move_Flag();
+	static void Reset_Wheel_Moveset();
 };
 
 #endif // !MOUSE_H
