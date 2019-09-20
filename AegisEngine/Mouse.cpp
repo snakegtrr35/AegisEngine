@@ -2,6 +2,7 @@
 #include	<algorithm>
 
 float MOUSE::Mouse_Sensitivity;
+bool MOUSE::MoveFlag = false;
 
 POINT MOUSE::ScreenPoint;
 XMFLOAT2 MOUSE::ScreenPosition;
@@ -13,7 +14,7 @@ void MOUSE::Init(void)
 {
 	OldPos.y = OldPos.x = Pos.y = Pos.x = 0;
 
-	Mouse_Sensitivity = 1.0f;
+	Mouse_Sensitivity = 1.5f;
 
 	ZeroMemory(&ScreenPoint, sizeof(ScreenPoint));
 }
@@ -36,6 +37,15 @@ XMFLOAT2& const MOUSE::Get_Screen_Position()
 
 void  MOUSE::Set_Position(POINT& pos)
 {
+	if (2 <= abs(OldPos.x - Pos.x) || 2 <= abs(OldPos.y - Pos.y))
+	{
+		MoveFlag = true;
+	}
+	else
+	{
+		MoveFlag = false;
+	}
+
 	OldPos.x = Pos.x;
 	OldPos.y = Pos.y;
 
@@ -43,9 +53,9 @@ void  MOUSE::Set_Position(POINT& pos)
 	Pos.y += std::clamp((int)pos.y, -20, 20);
 }
 
-POINT& const MOUSE::Get_Position()
+const XMFLOAT2 MOUSE::Get_Position()
 {
-	POINT pos;
+	XMFLOAT2 pos;
 
 	pos.x = Pos.x - OldPos.x;
 	pos.y = Pos.y - OldPos.y;
@@ -56,7 +66,7 @@ POINT& const MOUSE::Get_Position()
 	return pos;
 }
 
-void MOUSE::Set_Sensitivity(float& const sensitivity)
+void MOUSE::Set_Sensitivity(const float sensitivity)
 {
 	Mouse_Sensitivity = sensitivity;
 }
@@ -64,4 +74,9 @@ void MOUSE::Set_Sensitivity(float& const sensitivity)
 float& const MOUSE::Get_Sensitivity()
 {
 	return Mouse_Sensitivity;
+}
+
+const bool MOUSE::Get_Move_Flag()
+{
+	return MoveFlag;
 }
