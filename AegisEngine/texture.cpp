@@ -56,7 +56,7 @@ TEXTURE::TEXTURE()
 	FileName = "none";
 }
 
-TEXTURE::TEXTURE(const string& const file_name)
+TEXTURE::TEXTURE(const string& file_name)
 {
 	FileName = file_name;
 }

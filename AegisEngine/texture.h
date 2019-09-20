@@ -16,15 +16,11 @@ private:
 public:
 	TEXTURE();
 	TEXTURE(const string& const file_name);
-	~TEXTURE() {
-		//Uninit();
-	};
-	
-	//void Uninit() {};
+	~TEXTURE() {};
 
-	void Set_Texture();												// テクスチャを設定(Directx11)
-	void Set_Texture_Name(const string& const file_name);			// テクスチャ名の設定
-	const string& Get_Texture_Name();								// テクスチャ名の取得
+	void Set_Texture();											// テクスチャを設定(Directx11)
+	void Set_Texture_Name(const string& file_name);				// テクスチャ名の設定
+	const string& Get_Texture_Name();							// テクスチャ名の取得
 
 	XMINT2* const Get_WH();
 };
@@ -36,7 +32,7 @@ class TEXTURE_MANEGER {
 private:
 	static map<string, unique_ptr<ID3D11ShaderResourceView, Release> > TextureResource;
 
-	static void Load();														// テクスチャの読み込み
+	static void Load();		// テクスチャの読み込み
 
 public:
 
@@ -44,7 +40,7 @@ public:
 	static void Uninit();
 
 	static void Add(const string& const file_name);
-	static void Unload(const string& const file_name = "");				// テクスチャの解放
+	static void Unload(const string& const file_name = "");			// テクスチャの解放
 
 	static XMINT2* const Get_WH(const string& const file_name);
 
