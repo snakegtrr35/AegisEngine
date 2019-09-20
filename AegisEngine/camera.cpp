@@ -53,12 +53,19 @@ void CCamera::Uninit()
 
 void CCamera::Update()
 {
-	At = Front * Lenght + Pos;
+	XMFLOAT2 point = MOUSE::Get_Position();
+
+	bool flag = KEYBOARD::Press_Keyboard(VK_SHIFT);
+
+	bool flag2 = KEYBOARD::Press_Keyboard(VK_RBUTTON);
+
+	if (flag)
+		At = Front * Lenght + Pos;
 
 	XMVECTOR f(Front);
 	XMFLOAT4 front_vec;
 	XMStoreFloat4(&front_vec, f);
-	front_vec.y = 0.0f;
+	//front_vec.y = 0.0f;
 	f = XMLoadFloat4(&front_vec);
 
 	f = DirectX::XMVector3Normalize(f);
@@ -66,79 +73,81 @@ void CCamera::Update()
 	XMVECTOR r(Right);
 	XMFLOAT4 right_vec;
 	XMStoreFloat4(&right_vec, r);
-	right_vec.y = 0.0f;
+	//right_vec.y = 0.0f;
 	r = XMLoadFloat4(&right_vec);
 
 	r = DirectX::XMVector3Normalize(r);
 
 	// ‰ñ“]
-	if (RotateEnable)
+	//if (KEYBOARD::Press_Keyboard(VK_K))
+	if (flag2 && MOUSE::Get_Move_Flag())
 	{
-		if (KEYBOARD::Press_Keyboard(VK_K))
-		{
-			XMMATRIX mtxRotation;
+		XMMATRIX mtxRotation;
 
-			mtxRotation = XMMatrixRotationAxis(Right, XMConvertToRadians(-1.0f));
+		//mtxRotation = XMMatrixRotationAxis(Right, XMConvertToRadians(-1.0f));
+		mtxRotation = XMMatrixRotationAxis(Right, XMConvertToRadians(point.y));
 
-			Front = XMVector3TransformNormal(Front, mtxRotation);
-			Front = XMVector3Normalize(Front);
+		Front = XMVector3TransformNormal(Front, mtxRotation);
+		Front = XMVector3Normalize(Front);
 
-			Up = XMVector3TransformNormal(Up, mtxRotation);
-			Up = XMVector3Normalize(Up);
-		}
-
-		if (KEYBOARD::Press_Keyboard(VK_I))
-		{
-			XMMATRIX mtxRotation;
-
-			mtxRotation = XMMatrixRotationAxis(Right, XMConvertToRadians(1.0f));
-
-			Front = XMVector3TransformNormal(Front, mtxRotation);
-			Front = XMVector3Normalize(Front);
-
-			Up = XMVector3TransformNormal(Up, mtxRotation);
-			Up = XMVector3Normalize(Up);
-		}
-
-		if (KEYBOARD::Press_Keyboard(VK_L))
-		{
-			XMMATRIX mtxRotation;
-
-			mtxRotation = XMMatrixRotationY(XMConvertToRadians(1.0f));
-
-			Front = XMVector3TransformNormal(Front, mtxRotation);
-			Front = XMVector3Normalize(Front);
-
-			Up = XMVector3TransformNormal(Up, mtxRotation);
-			Up = XMVector3Normalize(Up);
-
-			Right = XMVector3TransformNormal(Right, mtxRotation);
-			Right = XMVector3Normalize(Right);
-
-			Rotate += 1.0f;
-		}
-
-		if (KEYBOARD::Press_Keyboard(VK_J))
-		{
-			XMMATRIX mtxRotation;
-
-			mtxRotation = XMMatrixRotationY(XMConvertToRadians(-1.0f));
-
-			Front = XMVector3TransformNormal(Front, mtxRotation);
-			Front = XMVector3Normalize(Front);
-
-			Up = XMVector3TransformNormal(Up, mtxRotation);
-			Up = XMVector3Normalize(Up);
-
-			Right = XMVector3TransformNormal(Right, mtxRotation);
-			Right = XMVector3Normalize(Right);
-
-			Rotate -= 1.0f;
-		}
+		Up = XMVector3TransformNormal(Up, mtxRotation);
+		Up = XMVector3Normalize(Up);
 	}
+
+	////if (KEYBOARD::Press_Keyboard(VK_I))
+	//if (flag2 && MOUSE::Get_Move_Flag() && point.y > 0)
+	//{
+	//	XMMATRIX mtxRotation;
+
+	//	//mtxRotation = XMMatrixRotationAxis(Right, XMConvertToRadians(1.0f));
+	//	mtxRotation = XMMatrixRotationAxis(Right, XMConvertToRadians(point.y));
+
+	//	Front = XMVector3TransformNormal(Front, mtxRotation);
+	//	Front = XMVector3Normalize(Front);
+
+	//	Up = XMVector3TransformNormal(Up, mtxRotation);
+	//	Up = XMVector3Normalize(Up);
+	//}
+
+	//if (KEYBOARD::Press_Keyboard(VK_L))
+	if (flag2 && MOUSE::Get_Move_Flag())
+	{
+		XMMATRIX mtxRotation;
+
+		mtxRotation = XMMatrixRotationY(XMConvertToRadians(point.x));
+		//mtxRotation = XMMatrixRotationAxis(Right, XMConvertToRadians(point.x));
+		//mtxRotation = XMMatrixRotationAxis(Up, XMConvertToRadians(point.x));//
+
+
+		Front = XMVector3TransformNormal(Front, mtxRotation);
+		Front = XMVector3Normalize(Front);
+
+		Up = XMVector3TransformNormal(Up, mtxRotation);
+		Up = XMVector3Normalize(Up);
+
+		Right = XMVector3TransformNormal(Right, mtxRotation);
+		Right = XMVector3Normalize(Right);
+	}
+
+	////if (KEYBOARD::Press_Keyboard(VK_J))
+	//if (flag2 && MOUSE::Get_Move_Flag() && point.x < 0)
+	//{
+	//	XMMATRIX mtxRotation;
+
+	//	mtxRotation = XMMatrixRotationY(XMConvertToRadians(point.x));
+	//	//mtxRotation = XMMatrixRotationAxis(Right, XMConvertToRadians(point.x));
+	//	//mtxRotation = XMMatrixRotationAxis(Up, XMConvertToRadians(point.x));//
+
+	//	Front = XMVector3TransformNormal(Front, mtxRotation);
+	//	Front = XMVector3Normalize(Front);
+
+	//	Up = XMVector3TransformNormal(Up, mtxRotation);
+	//	Up = XMVector3Normalize(Up);
+
+	//	Right = XMVector3TransformNormal(Right, mtxRotation);
+	//	Right = XMVector3Normalize(Right);
+	//}
 	
-
-
 	{
 		XMFLOAT3 position;
 
@@ -150,7 +159,8 @@ void CCamera::Update()
 		At = XMLoadFloat3(&position);
 	}
 
-	Pos = At - Front * Lenght;
+	if (flag)
+		Pos = At - Front * Lenght;
 
 	// ˆÚ“®
 	if (MoveEnable)
@@ -174,6 +184,12 @@ void CCamera::Update()
 		{
 			Pos -= r * 0.2f;
 		}
+	}
+
+	if (false == flag)
+	{
+		At = Front * Lenght + Pos;
+		Pos = At - Front * Lenght;
 	}
 }
 

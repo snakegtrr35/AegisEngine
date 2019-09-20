@@ -42,11 +42,6 @@ void CINPUT::onRawInput(WPARAM wParam, LPARAM lParam)
 	}
 	else if (raw->header.dwType == RIM_TYPEMOUSE)
 	{
-		if (raw->data.mouse.usButtonFlags & 1)
-		{
-			int a = 0;
-		}
-
 		POINT pos;
 
 		pos.x = raw->data.mouse.lLastX;

@@ -33,6 +33,7 @@ void MAIN_MENU::Init()
 		//string name("asset/model/herorifle.fbx");
 		//string name("asset/model/human02.fbx");
 		string name("asset/model/untitled.fbx");
+		//string name("asset/model/Dragon 2.5_fbx.fbx");
 
 		XMFLOAT3 f3;
 
@@ -44,7 +45,7 @@ void MAIN_MENU::Init()
 		f3 = XMFLOAT3(0.f, 0.f, 0.f);
 		player->Set_Rotation(f3);
 
-		f3 = XMFLOAT3(0.1f, 0.1f, 0.1f);
+		//f3 = XMFLOAT3(0.1f, 0.1f, 0.1f);
 		f3 = XMFLOAT3(1.0f, 1.0f, 1.0f);
 		player->Set_Scaling(f3);
 
@@ -59,6 +60,34 @@ void MAIN_MENU::Init()
 
 	{
 		Add_Game_Object<GRID>(LAYER_NAME::GAMEOBJECT);
+	}
+
+	// テキスト画像
+	{
+		XMFLOAT2 pos(50.0f, 50.0f);
+		TEXTS* text = Add_Game_Object<TEXTS>(LAYER_NAME::UI);
+
+		text->SetPosition(pos);
+
+		text->SetSize(XMFLOAT4(20, 20, 20, 20));
+
+		text->Set_Object_Name(string("text1"));
+
+		text->Edit("");
+	}
+
+	// テキスト画像
+	{
+		XMFLOAT2 pos(50.0f, 100.0f);
+		TEXTS* text = Add_Game_Object<TEXTS>(LAYER_NAME::UI);
+
+		text->SetPosition(pos);
+
+		text->SetSize(XMFLOAT4(20, 20, 20, 20));
+
+		text->Set_Object_Name(string("text2"));
+
+		text->Edit("true");
 	}
 
 	cnt = 0;
@@ -97,6 +126,48 @@ void MAIN_MENU::Update()
 			}
 		}
 	}*/
+
+	{
+		vector<TEXTS*> texts = Get_Game_Objects<TEXTS>();
+
+		for (auto obj : texts)
+		{
+			if ("text1" == obj->Get_Object_Name())
+			{
+				XMFLOAT2 point = MOUSE::Get_Position();
+
+				string space("  ");
+				string text;
+				string num;
+
+				num = to_string(point.x);
+
+				text = num;
+
+				text += space;
+
+				num.clear();
+
+				num = to_string(point.y);
+
+				text += num;
+
+				obj->Edit(text);
+			}
+
+			if ("text2" == obj->Get_Object_Name())
+			{
+				if (MOUSE::Get_Move_Flag())
+				{
+					obj->Edit("true");
+				}
+				else
+				{
+					obj->Edit("false");
+				}
+			}
+		}
+	}
 
 	if (FADE::End_Fade())
 	{

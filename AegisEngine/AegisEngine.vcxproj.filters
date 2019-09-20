@@ -93,9 +93,6 @@
     <ClCompile Include="ModelLoader.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Mouse.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
     <ClCompile Include="My_imgui.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
@@ -174,6 +171,9 @@
     <ClCompile Include="Library\DirectXTex\WICTextureLoader.cpp">
       <Filter>Library\DirectXTex</Filter>
     </ClCompile>
+    <ClCompile Include="Mouse.cpp">
+      <Filter>Input</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="audio_clip.h">
@@ -240,9 +240,6 @@
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="Mesh_Field.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="model.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="ModelLoader.h">
@@ -332,6 +329,9 @@
     <ClInclude Include="Library\DirectXTex\WICTextureLoader.h">
       <Filter>Library\DirectXTex</Filter>
     </ClInclude>
+    <ClInclude Include="model.h">
+      <Filter>Input</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="pixelShader.hlsl">
@@ -344,6 +344,9 @@
       <Filter>リソース ファイル</Filter>
     </FxCompile>
     <FxCompile Include="vertexShader_No_Light.hlsl">
+      <Filter>リソース ファイル</Filter>
+    </FxCompile>
+    <FxCompile Include="VertexShader_Animation.hlsl">
       <Filter>リソース ファイル</Filter>
     </FxCompile>
   </ItemGroup>

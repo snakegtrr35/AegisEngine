@@ -14,6 +14,17 @@ struct VERTEX_3D
     XMFLOAT2 TexCoord;
 };
 
+// 頂点構造体
+struct VERTEX_ANIME_3D
+{
+	XMFLOAT3 Position;
+	XMFLOAT3 Normal;
+	XMFLOAT4 Diffuse;
+	XMFLOAT2 TexCoord;
+	XMINT4 BoneIndex[4];
+	XMFLOAT4 BoneWeight[4];
+};
+
 
 // 色構造体
 struct COLOR
@@ -157,7 +168,7 @@ private:
 
 
 
-	static ID3D11VertexShader*		m_VertexShader[2];
+	static ID3D11VertexShader*		m_VertexShader[3];
 	static ID3D11PixelShader*		m_PixelShader[2];
 
 	static ID3D11InputLayout*		m_VertexLayout;
@@ -166,6 +177,8 @@ private:
 	static ID3D11Buffer*			m_ProjectionBuffer;
 	static ID3D11Buffer*			m_MaterialBuffer;
 	static ID3D11Buffer*			m_LightBuffer;
+
+	static ID3D11Buffer* m_Bone_Matrix_Buffer;
 
 /*
 	static XMMATRIX				m_WorldMatrix;
@@ -215,6 +228,8 @@ public:
 	static ID3D11ShaderResourceView*	Get_SRV(void);
 	static ID3D11RenderTargetView*		My_RenderTargetView;
 	static ID3D11ShaderResourceView*	My_ShaderResourceView;
+
+	static D3D11_INPUT_ELEMENT_DESC animation_layout[6];
 };
 
 #endif // !RENDER_H

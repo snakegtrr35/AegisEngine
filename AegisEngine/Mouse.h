@@ -19,6 +19,8 @@ private:
 	static POINT Pos;
 	static POINT OldPos;
 
+	static bool MoveFlag;
+
 public:
 	static void Init(void);
 	static void Update(void);
@@ -28,10 +30,12 @@ public:
 
 	static void Set_Position(POINT& pos);
 
-	static POINT& const Get_Position();
+	static const XMFLOAT2 Get_Position();
 
-	static void Set_Sensitivity(float& const sensitivity);
+	static void Set_Sensitivity(const float sensitivity);
 	static float& const Get_Sensitivity();
+
+	static const bool Get_Move_Flag();
 };
 
 #endif // !MOUSE_H
