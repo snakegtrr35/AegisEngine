@@ -270,42 +270,42 @@ bool CRenderer::Init()
 		}
 	}
 
-	// 頂点シェーダ生成 アニメーション
-	{
-		// 入力レイアウト生成
-		D3D11_INPUT_ELEMENT_DESC animation_layout[] =
-		{
-			{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-			{ "NORMAL",   0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 4 * 3, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-			{ "COLOR",    0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 4 * 6, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-			{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 4 * 10, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-			{ "BLENDINDICE", 0, DXGI_FORMAT_R32G32B32A32_UINT, 0, 4 * 12, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-			{ "BLENDWEIGHT", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 4 * 16, D3D11_INPUT_PER_VERTEX_DATA, 0 }
-		};
+	//// 頂点シェーダ生成 アニメーション
+	//{
+	//	// 入力レイアウト生成
+	//	D3D11_INPUT_ELEMENT_DESC animation_layout[] =
+	//	{
+	//		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+	//		{ "NORMAL",   0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 4 * 3, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+	//		{ "COLOR",    0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 4 * 6, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+	//		{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 4 * 10, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+	//		{ "BLENDINDICE", 0, DXGI_FORMAT_R32G32B32A32_UINT, 0, 4 * 12, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+	//		{ "BLENDWEIGHT", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 4 * 16, D3D11_INPUT_PER_VERTEX_DATA, 0 }
+	//	};
 
-		UINT numElements = ARRAYSIZE(animation_layout);
+	//	UINT numElements = ARRAYSIZE(animation_layout);
 
-		{
-			FILE* file;
-			long int fsize;
+	//	{
+	//		FILE* file;
+	//		long int fsize;
 
-			file = fopen("AnimationShader.cso", "rb");
-			fsize = _filelength(_fileno(file));
-			unsigned char* buffer = new unsigned char[fsize];
-			fread(buffer, fsize, 1, file);
-			fclose(file);
+	//		file = fopen("AnimationShader.cso", "rb");
+	//		fsize = _filelength(_fileno(file));
+	//		unsigned char* buffer = new unsigned char[fsize];
+	//		fread(buffer, fsize, 1, file);
+	//		fclose(file);
 
-			m_D3DDevice->CreateVertexShader(buffer, fsize, NULL, &m_VertexShader[2]);
+	//		m_D3DDevice->CreateVertexShader(buffer, fsize, NULL, &m_VertexShader[2]);
 
-			m_D3DDevice->CreateInputLayout(animation_layout,
-				numElements,
-				buffer,
-				fsize,
-				&m_VertexLayout);
+	//		m_D3DDevice->CreateInputLayout(animation_layout,
+	//			numElements,
+	//			buffer,
+	//			fsize,
+	//			&m_VertexLayout);
 
-			delete[] buffer;
-		}
-	}
+	//		delete[] buffer;
+	//	}
+	//}
 
 	// ピクセルシェーダ生成
 	{
@@ -368,20 +368,20 @@ bool CRenderer::Init()
 	m_D3DDevice->CreateBuffer(&hBufferDesc, NULL, &m_LightBuffer);
 	m_ImmediateContext->VSSetConstantBuffers( 4, 1, &m_LightBuffer );
 
-	{
-		// 定数バッファ生成
-		D3D11_BUFFER_DESC hBufferDesc;
-		hBufferDesc.ByteWidth = sizeof(XMMATRIX) * 256;
-		hBufferDesc.Usage = D3D11_USAGE_DEFAULT;
-		hBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-		hBufferDesc.CPUAccessFlags = 0;
-		hBufferDesc.MiscFlags = 0;
-		hBufferDesc.StructureByteStride = sizeof(float);
+	//{
+	//	// 定数バッファ生成
+	//	D3D11_BUFFER_DESC hBufferDesc;
+	//	hBufferDesc.ByteWidth = sizeof(XMMATRIX) * 256;
+	//	hBufferDesc.Usage = D3D11_USAGE_DEFAULT;
+	//	hBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+	//	hBufferDesc.CPUAccessFlags = 0;
+	//	hBufferDesc.MiscFlags = 0;
+	//	hBufferDesc.StructureByteStride = sizeof(float);
 
-		m_D3DDevice->CreateBuffer(&hBufferDesc, NULL, &m_Bone_Matrix_Buffer);
-		m_ImmediateContext->VSSetConstantBuffers(0, 1, &m_Bone_Matrix_Buffer);
+	//	m_D3DDevice->CreateBuffer(&hBufferDesc, NULL, &m_Bone_Matrix_Buffer);
+	//	m_ImmediateContext->VSSetConstantBuffers(0, 1, &m_Bone_Matrix_Buffer);
 
-	}
+	//}
 
 	// 入力レイアウト設定
 	m_ImmediateContext->IASetInputLayout( m_VertexLayout );

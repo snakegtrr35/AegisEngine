@@ -346,7 +346,7 @@
     <FxCompile Include="vertexShader_No_Light.hlsl">
       <Filter>リソース ファイル</Filter>
     </FxCompile>
-    <FxCompile Include="Animation_Matrix.hlsl">
+    <FxCompile Include="VertexShader_Animation.hlsl">
       <Filter>リソース ファイル</Filter>
     </FxCompile>
   </ItemGroup>
