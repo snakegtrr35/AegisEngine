@@ -73,7 +73,9 @@ void MAIN_MENU::Init()
 
 		text->Set_Object_Name(string("text1"));
 
-		text->Edit("");
+		string time = to_string(Time);
+
+		text->Edit(time);
 	}*/
 
 	cnt = 0;

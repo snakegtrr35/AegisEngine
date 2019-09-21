@@ -1,10 +1,10 @@
-#define _CRT_SECURE_NO_WARNINGS
-
-#include "main.h"
-#include "Renderer.h"
-#include "model.h"
-#include "texture.h"
-
+//#define _CRT_SECURE_NO_WARNINGS
+//
+//#include "main.h"
+//#include "Renderer.h"
+//#include "model.h"
+//#include "texture.h"
+//
 //CModel::CModel()
 //{
 //	Position = XMFLOAT3(0.0f, 1.0f, 0.0f);
@@ -52,7 +52,7 @@
 //		CRenderer::SetMaterial( SubsetArray[i].Material.Material );
 //
 //		// テクスチャ設定
-//		CRenderer::SetTexture( SubsetArray[i].Material.Texture );
+//		//CRenderer::SetTexture( SubsetArray[i].Material.Texture );
 //
 //		// ポリゴン描画
 //		CRenderer::DrawIndexed( SubsetArray[i].IndexNum, SubsetArray[i].StartIndex, 0 );
@@ -124,8 +124,8 @@
 //
 //			SubsetArray[i].Material.Material = model.SubsetArray[i].Material.Material;
 //
-//			SubsetArray[i].Material.Texture = new CTexture();
-//			SubsetArray[i].Material.Texture->Load( model.SubsetArray[i].Material.TextureName );
+//			//SubsetArray[i].Material.Texture = new CTexture();
+//			//SubsetArray[i].Material.Texture->Load( model.SubsetArray[i].Material.TextureName );
 //
 //		}
 //	}

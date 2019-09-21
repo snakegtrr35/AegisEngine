@@ -1,14 +1,7 @@
-#pragma once
-
-#ifndef MODEL_H
-#define MODEL_H
-
-//#include	<assimp/cimport.h>
-//#include	<assimp/scene.h>
-//#include	<assimp/postprocess.h>
-//#include	<assimp/matrix4x4.h>
+//#pragma once
 //
-//#pragma comment (lib, "assimp-vc141-mt.lib")
+//#ifndef MODEL_H
+//#define MODEL_H
 //
 //#include	"Renderer.h"
 //
@@ -68,5 +61,5 @@
 //	void SetPosition(const XMFLOAT3 position);
 //	void SetRotation(const XMFLOAT3 rotation);
 //};
-
-#endif // !MODEL_H
+//
+//#endif // !MODEL_H

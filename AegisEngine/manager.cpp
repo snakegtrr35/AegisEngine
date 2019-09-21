@@ -43,14 +43,7 @@ bool CManager::Init()
 	g_MyImgui->Init(GetWindow());
 #endif // _DEBUG
 
-	if (nullptr == pSceneManager)
-		pSceneManager = new SCENE_MANAGER();
-
 	AUDIO_MANAGER::Init();
-
-	pSceneManager->Init();
-	//pSceneManager->Set_Scene<TITLE>();
-	pSceneManager->Set_Scene<MAIN_MENU>();
 
 	TEXTURE_MANEGER::Init();
 
@@ -59,6 +52,13 @@ bool CManager::Init()
 	// ŠÔŠÖŒW‚Ì‰Šú‰»
 	TIMER::Init();
 	CROCK_TIMER::Init();
+
+	if (nullptr == pSceneManager)
+		pSceneManager = new SCENE_MANAGER();
+
+	pSceneManager->Init();
+	//pSceneManager->Set_Scene<TITLE>();
+	pSceneManager->Set_Scene<MAIN_MENU>();
 
 	return true;
 }
