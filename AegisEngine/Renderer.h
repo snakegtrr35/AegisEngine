@@ -21,8 +21,19 @@ struct VERTEX_ANIME_3D
 	XMFLOAT3 Normal;
 	XMFLOAT4 Diffuse;
 	XMFLOAT2 TexCoord;
-	XMINT4 BoneIndex[4];
-	XMFLOAT4 BoneWeight[4];
+	UINT BoneIndex[4];
+	float BoneWeight[4];
+
+	VERTEX_ANIME_3D() {
+		Normal = Position = XMFLOAT3(0.f, 0.f, 0.f);
+		Diffuse = XMFLOAT4(0.f, 0.f, 0.f, 0.f);
+		TexCoord = XMFLOAT2(0.f, 0.f);
+		for (int i = 0; i < 4; i++)
+		{
+			BoneIndex[i] = 0;
+			BoneWeight[i] = 0.f;
+		}
+	}
 };
 
 

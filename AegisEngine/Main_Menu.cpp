@@ -32,8 +32,8 @@ void MAIN_MENU::Init()
 
 		//string name("asset/model/herorifle.fbx");
 		//string name("asset/model/human02.fbx");
-		string name("asset/model/untitled.fbx");
-		//string name("asset/model/Dragon 2.5_fbx.fbx");
+		//string name("asset/model/untitled.fbx");
+		string name("asset/model/Dragon 2.5_fbx.fbx");
 
 		XMFLOAT3 f3;
 

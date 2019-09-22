@@ -12,7 +12,6 @@
 
 #pragma comment (lib, "assimp-vc141-mt.lib")
 
-#include	"main.h"
 #include	"Renderer.h"
 #include	"Mesh.h"
 #include	"Game_Object.h"

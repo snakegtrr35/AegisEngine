@@ -7,7 +7,8 @@ NodeAnim createNodeAnim(const aiNodeAnim* anim);
 VectorKey fromAssimp(const aiVectorKey& key);
 QuatKey fromAssimp(const aiQuatKey& key);
 
-Bone createBone(const aiBone* b);
+//Bone createBone(const aiBone* b);
+void createBone(const aiBone* bone, vector<VERTEX_ANIME_3D>& vertices, map<string, UINT>& bone_mapping, vector<BONEINFO>& bone_info, MESH_SUBSET& subset, UINT& num_bone);
 
 XMMATRIX Covert_Matrix(const aiMatrix4x4* matrix);
 
@@ -645,20 +646,25 @@ const bool CMODEL::Get_Enable()
 MESH CMODEL::processMesh(aiMesh* mesh, aiNode* node, const aiScene* scene)
 {
 	// Data to fill
-	vector<VERTEX_ANIME_3D> vertices;
+	vector<VERTEX_ANIME_3D> vertices;//
+	vertices.reserve(mesh->mNumVertices);//
 
 	vector<TEXTURE_S> textures;
 
 	XMMATRIX matrix;
 
-	vector<MESH_SUBSET> subset;
-	subset.resize(node->mNumMeshes);
+	MESH_SUBSET subset;//
+	map<string, UINT> bone_mapping;//
+	vector<BONEINFO> bone_info;//
+	UINT num_bone = 0;//
+
+	//vector<UINT> indices;
 
 	string name = node->mName.C_Str();
 
-	UINT num_vertices = 0;
-	UINT num_indices = 0;
-	UINT vertices_prim = 3;
+	UINT num_vertices = 0;//
+	UINT num_indices = 0;//
+	UINT vertices_prim = 3;//
 
 	if (mesh->mMaterialIndex >= 0)
 	{
@@ -667,15 +673,41 @@ MESH CMODEL::processMesh(aiMesh* mesh, aiNode* node, const aiScene* scene)
 		if (textype.empty()) textype = determineTextureType(scene, mat);
 	}
 
-	// 描画サブセットの描画
-	for (UINT i = 0; i < node->mNumMeshes; i++) {
-		subset[i].IndexNum = scene->mMeshes[i]->mNumFaces * vertices_prim;
-		subset[i].StartVertex = num_vertices;
-		subset[i].StartIndex = num_indices;
+	// 描画サブセットの設定
+	{
+		subset.IndexNum = mesh->mNumFaces * vertices_prim;
+		subset.StartVertex = num_vertices;
+		subset.StartIndex = num_indices;
 
-		num_vertices += scene->mMeshes[i]->mNumVertices;
-		num_indices += subset[i].IndexNum;
+		num_vertices += mesh->mNumVertices;
+		num_indices += subset.IndexNum;
+
+		for (UINT i = 0; i < mesh->mNumFaces; i++)
+		{
+			aiFace face = mesh->mFaces[i];
+
+			for (UINT j = 0; j < face.mNumIndices; j++)
+				subset.Indeces.push_back(face.mIndices[j]);
+		}
 	}
+
+	//vector<MESH_SUBSET> subset2;//
+	//subset2.reserve(node->mNumMeshes);//
+	//subset2.resize(node->mNumMeshes);//
+
+	//num_vertices = 0;//
+	//num_indices = 0;//
+	//vertices_prim = 3;//
+
+	//// 描画サブセットの設定
+	//for (UINT i = 0; i < node->mNumMeshes; i++) {
+	//	subset2[i].IndexNum = scene->mMeshes[i]->mNumFaces * vertices_prim;
+	//	subset2[i].StartVertex = num_vertices;
+	//	subset2[i].StartIndex = num_indices;
+
+	//	num_vertices += scene->mMeshes[i]->mNumVertices;
+	//	num_indices += subset2[i].IndexNum;
+	//}
 
 	for (UINT i = 0; i < mesh->mNumVertices; i++)
 	{
@@ -714,14 +746,14 @@ MESH CMODEL::processMesh(aiMesh* mesh, aiNode* node, const aiScene* scene)
 		vertices.push_back(vertex);
 	}
 
-	// インデックスの設定
-	//for (UINT i = 0; i < mesh->mNumFaces; i++)
-	//{
-	//	aiFace face = mesh->mFaces[i];
+	/*// インデックスの設定
+	for (UINT i = 0; i < mesh->mNumFaces; i++)
+	{
+		aiFace face = mesh->mFaces[i];
 
-	//	for (UINT j = 0; j < face.mNumIndices; j++)
-	//		indices.push_back(face.mIndices[j]);
-	//}
+		for (UINT j = 0; j < face.mNumIndices; j++)
+			indices.push_back(face.mIndices[j]);
+	}*/
 
 	// テクスチャの設定
 	if (mesh->mMaterialIndex >= 0)
@@ -735,7 +767,10 @@ MESH CMODEL::processMesh(aiMesh* mesh, aiNode* node, const aiScene* scene)
 	// ボーン情報の設定
 	if (mesh->HasBones())
 	{
-		
+		for (int i = 0; i < mesh->mNumBones; i++)
+		{
+			createBone(mesh->mBones[i], vertices, bone_mapping, bone_info, subset, num_bone);
+		}
 	}
 
 	// マトリックスの設定
@@ -743,7 +778,7 @@ MESH CMODEL::processMesh(aiMesh* mesh, aiNode* node, const aiScene* scene)
 		matrix = Covert_Matrix(&node->mTransformation);
 	}
 
-	return MESH(vertices, subset, textures, matrix, name);
+	return MESH(vertices, subset, textures, matrix, bone_mapping, bone_info, num_bone, name);
 }
 
 vector<TEXTURE_S> CMODEL::loadMaterialTextures(aiMaterial* mat, aiTextureType type, string typeName, const aiScene* scene)
@@ -939,23 +974,39 @@ QuatKey fromAssimp(const aiQuatKey& key)
 }
 
 // ボーンの情報を作成
-Bone createBone(const aiBone* b)
+void createBone(const aiBone* bone, vector<VERTEX_ANIME_3D>& vertices, map<string, UINT>& bone_mapping, vector<BONEINFO>& bone_info, MESH_SUBSET& subset, UINT& num_bone)
 {
-	Bone bone;
+	UINT BoneIndex = 0;
+	string BoneName(bone->mName.data);
 
-	bone.name = b->mName.C_Str();
-
-	// マトリックスの設定
-	bone.offset = Covert_Matrix(&(b->mOffsetMatrix));
-
-	const aiVertexWeight* w = b->mWeights;
-	for (u_int i = 0; i < b->mNumWeights; ++i)
-	{
-		Weight weight{ w[i].mVertexId, w[i].mWeight };
-		bone.weights.push_back(weight);
+	if (bone_mapping.find(BoneName) == bone_mapping.end()) {
+		// Allocate an index for a new bone
+		BoneIndex = num_bone;
+		num_bone++;
+		BONEINFO bi;
+		bone_info.push_back(bi);
+		bone_info[BoneIndex].BoneOffset = Covert_Matrix(&bone->mOffsetMatrix);
+		bone_mapping[BoneName] = BoneIndex;
+	}
+	else {
+		BoneIndex = bone_mapping[BoneName];
 	}
 
-	return bone;
+	for (UINT i = 0; i < bone->mNumWeights; i++) {
+		UINT VertexID = subset.StartVertex + bone->mWeights[i].mVertexId;
+		float Weight = bone->mWeights[i].mWeight;
+
+		for (int j = 0; j < NUM_BONES; j++)
+		{
+			if (0.f == vertices[VertexID].BoneWeight[j])
+			{
+				vertices[VertexID].BoneIndex[j] = BoneIndex;
+				vertices[VertexID].BoneWeight[j] = Weight;
+
+				break;
+			}
+		}
+	}
 }
 
 

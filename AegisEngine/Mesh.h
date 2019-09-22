@@ -16,10 +16,10 @@ struct TEXTURE_S {
 	ID3D11ShaderResourceView* Texture = nullptr;
 };
 
-struct Weight {
-	UINT vertex_id;
-	float value;
-};
+//struct Weight {
+//	UINT vertex_id;
+//	float value;
+//};
 
 struct Bone {
 	string name;
@@ -27,7 +27,7 @@ struct Bone {
 	XMMATRIX animation;
 	XMMATRIX offset;
 
-	vector<Weight> weights;
+	//vector<Weight> weights;
 };
 
 //
@@ -41,6 +41,14 @@ struct VERTEX_BONE_DATA
 {
 	UINT ID[NUM_BONES];
 	float Weights[NUM_BONES];
+
+	VERTEX_BONE_DATA() {
+		for (int i = 0; i < NUM_BONES; i++)
+		{
+			ID[i] = 0;
+			Weights[i] = 0.f;
+		}
+	}
 
 	void AddBoneData(UINT BoneID, float Weight)
 	{
@@ -62,7 +70,7 @@ struct MESH_SUBSET
 	UINT StartVertex;
 	UINT StartIndex;
 	UINT IndexNum;
-	DX11_MODEL_MATERIAL	Material;
+	vector<UINT> Indeces;
 
 	MESH_SUBSET() {
 		StartVertex = 0;
@@ -409,12 +417,13 @@ private:
 
 	XMMATRIX Matrix;
 
-	map<string, MESH> ChildMeshes;
-
+	//
 	UINT NumBones;
-	vector<BONEINFO> m_BoneInfo;
-	map<string, UINT> m_BoneMapping; // maps a bone name to its index
-	vector<MESH_SUBSET> Subset;
+	vector<BONEINFO> BoneInfo;
+	map<string, UINT> BoneMapping; // maps a bone name to its index
+	MESH_SUBSET Subset;
+
+	map<string, MESH> ChildMeshes;
 
 
 	void Draw_Mesh(XMMATRIX& parent_matrix) {
@@ -435,7 +444,7 @@ private:
 
 		CRenderer::GetDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-		//CRenderer::GetDeviceContext()->DrawIndexed(Indices.size(), 0, 0);
+		CRenderer::GetDeviceContext()->DrawIndexed(Subset.IndexNum, Subset.StartIndex, 0);
 
 		for (auto child : ChildMeshes)
 		{
@@ -483,7 +492,7 @@ private:
 
 		CRenderer::GetDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-		CRenderer::GetDeviceContext()->DrawIndexed(Subset.size(), 0, 0);
+		CRenderer::GetDeviceContext()->DrawIndexed(Subset.IndexNum, Subset.StartIndex, 0);
 
 		for (auto child : ChildMeshes)
 		{
@@ -561,7 +570,7 @@ private:
 		}
 	}
 
-	bool SetupMesh(vector<VERTEX_ANIME_3D>& vertices) {
+	bool SetupMesh(const vector<VERTEX_ANIME_3D>& vertices) {
 		HRESULT hr;
 
 		{
@@ -588,7 +597,7 @@ private:
 		{
 			D3D11_BUFFER_DESC ibd;
 			ibd.Usage = D3D11_USAGE_DEFAULT;
-			ibd.ByteWidth = sizeof(UINT) * Subset.size();
+			ibd.ByteWidth = sizeof(UINT) * Subset.IndexNum;
 			ibd.BindFlags = D3D11_BIND_INDEX_BUFFER;
 			ibd.CPUAccessFlags = 0;
 			ibd.MiscFlags = 0;
@@ -597,7 +606,7 @@ private:
 			D3D11_SUBRESOURCE_DATA initData;
 			ZeroMemory(&initData, sizeof(D3D11_SUBRESOURCE_DATA));
 
-			initData.pSysMem = &Subset[0];
+			initData.pSysMem = &Subset.Indeces[0];
 			initData.SysMemPitch = 0;
 			initData.SysMemSlicePitch = 0;
 
@@ -614,11 +623,17 @@ public:
 		IndexBuffer = nullptr;
 	};
 
-	MESH(vector<VERTEX_ANIME_3D>& vertices, vector<MESH_SUBSET>& subset, vector<TEXTURE_S>& textures, XMMATRIX& matrix, string name) {
+	MESH(const vector<VERTEX_ANIME_3D>& vertices, const MESH_SUBSET& subset, const vector<TEXTURE_S>& textures, const XMMATRIX& matrix,
+		const map<string, UINT>& bone_mapping, const vector<BONEINFO>& bone_info, const UINT num_bones, const string name)
+	{
 		VertexBuffer = nullptr;
 		IndexBuffer = nullptr;
 
-		Subset = subset;
+		Subset = subset;//
+		BoneMapping = bone_mapping;//
+		BoneInfo = bone_info;
+		NumBones = num_bones;
+
 		Textures = textures;
 		Matrix = matrix;
 
@@ -650,8 +665,6 @@ public:
 	void Uninit() {
 		SAFE_RELEASE(VertexBuffer);
 		SAFE_RELEASE(IndexBuffer);
-
-		Subset.clear();
 
 		for (auto tex : Textures)
 		{
