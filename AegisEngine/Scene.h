@@ -25,8 +25,6 @@
 #include	"Mesh_Cylinder.h"
 #include	"Mesh_Dome.h"
 
-using namespace std;
-
 class GAME_OBJECT;
 
 enum class LAYER_NAME {
@@ -58,6 +56,7 @@ protected:
 	static bool PauseEnable;
 
 public:
+
 	// リストへの追加
 	template <typename T>
 	static T* Add_Game_Object(LAYER_NAME layer)
@@ -161,6 +160,20 @@ public:
 				{
 					objects.push_back(object);
 				}
+			}
+		}
+		return objects;
+	}
+
+	// 全オブジェクトの取得
+	static vector<GAME_OBJECT*> Get_All_Game_Object()
+	{
+		vector<GAME_OBJECT*> objects;
+		for (int i = 0; i < (int)LAYER_NAME::MAX_LAYER; i++)
+		{
+			for (GAME_OBJECT* object : GameObjects[i])
+			{
+				objects.push_back(object);
 			}
 		}
 		return objects;

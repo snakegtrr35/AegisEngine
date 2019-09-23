@@ -17,7 +17,7 @@ void MOUSE::Init(void)
 {
 	OldPos.y = OldPos.x = Pos.y = Pos.x = 0;
 
-	Mouse_Sensitivity = 1.5f;
+	Mouse_Sensitivity = 1.0f;
 
 	ZeroMemory(&ScreenPoint, sizeof(ScreenPoint));
 }
@@ -52,8 +52,11 @@ void  MOUSE::Set_Position(POINT& pos)
 	OldPos.x = Pos.x;
 	OldPos.y = Pos.y;
 
-	Pos.x += std::clamp((int)pos.x, -20, 20);
-	Pos.y += std::clamp((int)pos.y, -20, 20);
+	//Pos.x += std::clamp((int)pos.x, -20, 20);
+	//Pos.y += std::clamp((int)pos.y, -20, 20);
+
+	Pos.x += pos.x;
+	Pos.y += pos.y;
 }
 
 const XMFLOAT2 MOUSE::Get_Position()

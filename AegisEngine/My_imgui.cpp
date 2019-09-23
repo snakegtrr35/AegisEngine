@@ -255,6 +255,48 @@ void My_imgui::Draw(void)
 
 				ImGui::End();
 			}
+
+			/*{
+				ImGuiWindowFlags window_flag = ImGuiWindowFlags_NoTitleBar;
+
+				ImGui::Begin("World", nullptr, window_flag);
+				if (ImGui::TreeNode("World"))
+				{
+					ImGui::PushStyleVar(ImGuiStyleVar_IndentSpacing, ImGui::GetFontSize() * 3); // Increase spacing to differentiate leaves from expanded contents.
+					//for (int i = 0; i < ; i++)
+					for (int i = 0; i < 6; i++)
+					{
+						// Disable the default open on single-click behavior and pass in Selected flag according to our selection state.
+						ImGuiTreeNodeFlags node_flags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_OpenOnDoubleClick;
+						if (i < 3)
+						{
+							// Items 0..2 are Tree Node
+							bool node_open = ImGui::TreeNodeEx((void*)(intptr_t)i, node_flags, "Selectable Object %d", i);
+							if (ImGui::IsItemClicked());
+
+							if (node_open)
+							{
+								ImGui::Text("Blah blah\nBlah Blah");
+								ImGui::TreePop();
+							}
+						}
+						else
+						{
+							// Items 3..5 are Tree Leaves
+							// The only reason we use TreeNode at all is to allow selection of the leaf.
+							// Otherwise we can use BulletText() or TreeAdvanceToLabelPos()+Text().
+							node_flags |= ImGuiTreeNodeFlags_Leaf | ImGuiTreeNodeFlags_NoTreePushOnOpen; // ImGuiTreeNodeFlags_Bullet
+							ImGui::TreeNodeEx((void*)(intptr_t)i, node_flags, "Selectable Leaf Object %d", i);
+							if (ImGui::IsItemClicked());
+
+						}
+					}
+					ImGui::PopStyleVar();
+					ImGui::TreePop();
+
+				}
+				ImGui::End();
+			}*/
 		}
 		// Rendering
 		ImGui::Render();
