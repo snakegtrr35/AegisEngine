@@ -167,22 +167,22 @@ void CCamera::Update()
 	{
 		if (KEYBOARD::Press_Keyboard(VK_W) || (MOUSE::Get_Wheel_Move_Flag() == WHEEL_MOVE_ENUM::UP) )
 		{
-			Pos += f * 0.2f;
+			Pos += f * 0.4f;
 		}
 
 		if (KEYBOARD::Press_Keyboard(VK_S) || (MOUSE::Get_Wheel_Move_Flag() == WHEEL_MOVE_ENUM::DOWN))
 		{
-			Pos -= f * 0.2f;
+			Pos -= f * 0.4f;
 		}
 
 		if (KEYBOARD::Press_Keyboard(VK_D))
 		{
-			Pos += r * 0.2f;
+			Pos += r * 0.4f;
 		}
 
 		if (KEYBOARD::Press_Keyboard(VK_A))
 		{
-			Pos -= r * 0.2f;
+			Pos -= r * 0.4f;
 		}
 	}
 
