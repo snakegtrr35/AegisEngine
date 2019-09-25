@@ -86,6 +86,9 @@ bool CRenderer::Init()
 	}
 	pBackBuffer->Release();
 
+	IDXGIFactory* factory = nullptr;
+
+	m_SwapChain->SetFullscreenState(TRUE, nullptr);
 
 
 	//ステンシル用テクスチャー作成
