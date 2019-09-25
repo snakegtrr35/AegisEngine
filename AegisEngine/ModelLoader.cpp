@@ -30,7 +30,7 @@ bool CMODEL::Load(string& filename)
 	Assimp::Importer importer;
 
 	const aiScene* pScene = importer.ReadFile(filename,
-		aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_ConvertToLeftHanded | aiProcessPreset_TargetRealtime_MaxQuality);
+		aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_LimitBoneWeights | aiProcess_ConvertToLeftHanded | aiProcessPreset_TargetRealtime_MaxQuality);
 
 	if (pScene == NULL)
 		return false;
@@ -68,7 +68,7 @@ bool CMODEL::Reload(string& filename)
 	Assimp::Importer importer;
 
 	const aiScene* pScene = importer.ReadFile(filename,
-		aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_ConvertToLeftHanded | aiProcessPreset_TargetRealtime_MaxQuality);
+		aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_LimitBoneWeights | aiProcess_ConvertToLeftHanded | aiProcessPreset_TargetRealtime_MaxQuality);
 
 	if (pScene == NULL)
 		return false;
@@ -120,10 +120,9 @@ void CMODEL::Draw()
 		{
 			auto anime = Meshes.Get_Anime();
 
-			for (auto i : mesh.Get())
-			{
-				i.Draw_Animation(matrix, anime, Frame);
-			}
+			for (auto i : mesh.second.Get())
+				//i.second.Draw(matrix, anime, Frame);
+				i.second.Draw_Animation(matrix, anime, Frame);
 		}
 	}
 	else
@@ -131,9 +130,9 @@ void CMODEL::Draw()
 		// 普通の描画
 		for (auto mesh : Meshes.Get())
 		{
-			for (auto i : mesh.Get())
+			for (auto i : mesh.second.Get())
 			{
-				i.Draw(matrix);
+				i.second.Draw(matrix);
 			}
 		}
 	}
@@ -245,7 +244,7 @@ MESH CMODEL::processMesh(aiMesh* mesh, aiNode* node, const aiScene* scene)
 		textures.insert(textures.end(), diffuseMaps.begin(), diffuseMaps.end());
 	}
 
-	/*// ボーン情報の設定
+	// ボーン情報の設定
 	if (mesh->HasBones())
 	{
 		auto bone = Meshes.Get_Bone();
@@ -265,7 +264,7 @@ MESH CMODEL::processMesh(aiMesh* mesh, aiNode* node, const aiScene* scene)
 				}
 			}
 		}
-	}*/
+	}
 
 	// マトリックスの設定
 	{
@@ -325,28 +324,20 @@ vector<TEXTURE_S> CMODEL::loadMaterialTextures(aiMaterial* mat, aiTextureType ty
 	return textures;
 }
 
-void CMODEL::processNode(aiNode* node, const aiScene* scene, vector<MESH>& mesh_map)
+void CMODEL::processNode(aiNode* node, const aiScene* scene, map<string, MESH>& mesh_map)
 {
 	for (UINT i = 0; i < node->mNumMeshes; i++)
 	{
 		aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
 
-		mesh_map.push_back(processMesh(mesh, node, scene));
+		MESH ms = processMesh(mesh, node, scene);
 
-		Meshes.MatrixData[node->mName.data] = Covert_Matrix(&node->mTransformation);
-		Meshes.Matrix_Data_Def[node->mName.data] = Covert_Matrix(&node->mTransformation);
+		mesh_map[node->mName.C_Str()] = ms;
 	}
 
 	for (UINT i = 0; i < node->mNumChildren; i++)
 	{
-		if (mesh_map.empty())
-		{
-			MESH mesh;
-
-			mesh_map.push_back(mesh);
-		}
-
-		processNode(node->mChildren[i], scene, mesh_map.begin()->Get() );
+		processNode(node->mChildren[i], scene, mesh_map[node->mName.C_Str()].Get() );
 	}
 }
 
@@ -410,7 +401,7 @@ Anim createAnimation(const aiAnimation* anim)
 
 	{
 		// メッシュアニメーション
-#if 1
+#if 0
 		aiMeshAnim * *mesh_anim = anim->mMeshChannels;
 		for (UINT i = 0; i < anim->mNumMeshChannels; ++i) {
 

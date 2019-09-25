@@ -31,7 +31,7 @@ void MAIN_MENU::Init()
 		CMODEL* player = Add_Game_Object<CMODEL>(LAYER_NAME::GAMEOBJECT);
 
 		//string name("asset/model/herorifle.fbx");
-		string name("asset/model/human02.fbx");
+		string name("asset/model/human01_Stop.fbx");
 		//string name("asset/model/untitled.fbx");
 		//string name("asset/model/Dragon 2.5_fbx.fbx");
 
@@ -114,6 +114,31 @@ void MAIN_MENU::Update()
 			}
 		}
 	}*/
+
+	{
+		auto player = Get_Game_Object<CMODEL>("player");
+
+		if (KEYBOARD::Trigger_Keyboard(VK_1))
+		{
+			string name("asset/model/human01_Stop.fbx");
+
+			player->Reload(name);
+		}
+
+		if (KEYBOARD::Trigger_Keyboard(VK_2))
+		{
+			string name("asset/model/human01_Walk.fbx");
+
+			player->Reload(name);
+		}
+
+		if (KEYBOARD::Trigger_Keyboard(VK_3))
+		{
+			string name("asset/model/human01_Jump.fbx");
+
+			player->Reload(name);
+		}
+	}
 
 	if (FADE::End_Fade())
 	{

@@ -23,7 +23,7 @@ private:
 	string directory;
 	vector<TEXTURE_S> textures_loaded;
 
-	void processNode(aiNode* node, const aiScene* scene, vector<MESH>& mesh_map);
+	void processNode(aiNode* node, const aiScene* scene, map<string, MESH>& mesh_map);
 	MESH processMesh(aiMesh* mesh, aiNode* node, const aiScene* scene);
 
 	vector<TEXTURE_S> loadMaterialTextures(aiMaterial* mat, aiTextureType type, string typeName, const aiScene* scene);

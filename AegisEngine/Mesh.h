@@ -119,13 +119,7 @@ private:
 
 	XMMATRIX Matrix;
 
-public:
-	map<string, XMMATRIX> MatrixData;//
-	map<string, XMMATRIX> Matrix_Data_Def;//
-private:
-	string ParentName;
-
-	vector<MESH> ChildMeshes;
+	map<string, MESH> ChildMeshes;
 
 	void Draw_Mesh(XMMATRIX& parent_matrix) {
 		XMMATRIX matrix;
@@ -149,6 +143,7 @@ private:
 
 			CRenderer::GetDeviceContext()->DrawIndexed(Indices.size(), 0, 0);
 		}
+
 		else
 		{
 			matrix = XMMatrixMultiply(Matrix, parent_matrix);
@@ -156,7 +151,7 @@ private:
 
 		for (auto child : ChildMeshes)
 		{
-			child.Draw_Mesh(matrix);
+			child.second.Draw_Mesh(matrix);
 		}
 	}
 
@@ -204,7 +199,7 @@ private:
 
 		for (auto child : ChildMeshes)
 		{
-			child.Draw_Mesh_Animation(world, anime, frame);
+			child.second.Draw_Mesh_Animation(world, anime, frame);
 		}
 	}
 
@@ -247,12 +242,12 @@ private:
 
 		for (auto child : ChildMeshes)
 		{
-			child.Update_MAtrix(world, anime, bones, frame);
+			child.second.Update_MAtrix(world, anime, bones, frame);
 		}
 	}
 
 	//
-	void Update_Bone_Matrix(vector<MESH> Childlen, map<string, vector<Bone>>& bones, XMMATRIX matrix = XMMatrixIdentity()) {
+	void Update_Bone_Matrix(map<string, MESH> Childlen, map<string, vector<Bone>>& bones, XMMATRIX matrix = XMMatrixIdentity()) {
 		XMMATRIX world = matrix;
 
 		for (auto mesh : Childlen)
@@ -274,7 +269,7 @@ private:
 
 		for (auto child : ChildMeshes)
 		{
-			Update_Bone_Matrix(child.Get(), bones, world);
+			Update_Bone_Matrix(child.second.Get(), bones, world);
 		}
 	}
 
@@ -359,7 +354,7 @@ public:
 		
 	}
 
-	void Update_SkynMesh(vector<MESH>& chiidren, XMMATRIX& matrix, vector<Anim> anime, map<string, vector<Bone>>& bones, DWORD frame) {
+	void Update_SkynMesh(map<string, MESH>& chiidren, XMMATRIX& matrix, vector<Anim> anime, map<string, vector<Bone>>& bones, DWORD frame) {
 		Update_MAtrix(matrix, anime, bones, frame);
 
 		Update_Bone_Matrix(chiidren, bones);
@@ -383,7 +378,7 @@ public:
 
 		for (auto child : ChildMeshes)
 		{
-			child.Uninit();
+			child.second.Uninit();
 		}
 		ChildMeshes.clear();
 	}
@@ -392,11 +387,11 @@ public:
 		Animation = animations;
 	}
 
-	/*void Add(const string name, const MESH& mesh) {
-		ChildMeshes.push_back(mesh);
-	}*/
+	void Add(const string name, const MESH& mesh) {
+		ChildMeshes[name] = mesh;
+	}
 
-	vector<MESH>& Get() {
+	map<string, MESH>& Get() {
 		return ChildMeshes;
 	}
 
@@ -405,7 +400,7 @@ public:
 	}
 
 	bool GetAnime() {
-		if (Animation.empty())
+		if (0 == Animation.size())
 		{
 			return false;
 		}
