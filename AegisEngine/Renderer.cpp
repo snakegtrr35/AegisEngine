@@ -89,7 +89,7 @@ bool CRenderer::Init()
 	IDXGIFactory* factory = nullptr;
 
 	// フルスクリーン
-	//m_SwapChain->SetFullscreenState(TRUE, nullptr);
+	m_SwapChain->SetFullscreenState(TRUE, nullptr);
 
 
 	//ステンシル用テクスチャー作成

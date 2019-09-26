@@ -160,7 +160,7 @@ void My_imgui::Draw(void)
 		{
 			string name("player");
 
-			auto player = SCENE::Get_Game_Object<CMODEL>(name);
+			auto player = SCENE::Get_Game_Object<PLAYER>(name);
 
 			if (nullptr != player)
 			{
@@ -168,6 +168,7 @@ void My_imgui::Draw(void)
 				static float vec4_Position[] = { player->Get_Position()->x, player->Get_Position()->y, player->Get_Position()->z };
 				static float vec4_Rotation[] = { player->Get_Rotation()->x, player->Get_Rotation()->y, player->Get_Rotation()->z };
 				static float vec4_Scaling[] = { player->Get_Scaling()->x, player->Get_Scaling()->y, player->Get_Scaling()->z };
+				static float* vec1 = player->Get();
 
 				ImGui::Begin("Setting");
 
@@ -178,7 +179,7 @@ void My_imgui::Draw(void)
 
 				ImGui::DragFloat3("Rotation", vec4_Rotation, 0.2f, -360.0f, 360.0f);
 
-				ImGui::DragFloat3("Scaling", vec4_Scaling, 0.02f);
+				ImGui::DragFloat3("Scaling", vec4_Scaling, 0.001f);
 
 				static int clicked = 0;
 				if (ImGui::Button("Add Component"))
@@ -202,6 +203,9 @@ void My_imgui::Draw(void)
 				ImGui::InputText((char*)u8"‚ ‚¢‚¤‚¦‚¨", (char*)buf1, 128);
 
 				ImGui::Text(buf1);
+
+				ImGui::SliderFloat("Blend", vec1, 0.0f, 1.0f);
+				//player->blend = vec1;
 
 				ImGui::End();
 

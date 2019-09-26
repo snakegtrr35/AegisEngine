@@ -102,13 +102,46 @@ struct Anim {
 	std::vector<NodeAnim> body;
 };
 
+
+// 球面線形補間関数
+// out   : 補間ベクトル（出力）
+// start : 開始ベクトル
+// end : 終了ベクトル
+// t : 補間値（0～1）
+//XMVECTOR* SphereLinear(XMVECTOR* out, XMVECTOR start, XMVECTOR end, float t) {
+//
+//	XMVECTOR s, e;
+//	s = XMVector3Normalize(start);
+//	e = XMVector3Normalize(end);
+//
+//
+//	// 2ベクトル間の角度（鋭角側
+//	XMVECTOR vec = XMVector3Dot(s, e);
+//
+//	float angle = acosf(XMVectorGetX(vec));
+//
+//	// sinθ
+//	float SinTh = sin(angle);
+//
+//	// 補間係数
+//	float Ps = sin(angle * (1 - t));
+//	float Pe = sin(angle * t);
+//
+//	*out = (Ps * s + Pe * e) / SinTh;
+//
+//	// 一応正規化して球面線形補間に
+//	*out = XMVector3Normalize(*out);
+//
+//	return out;
+//}
+
 class MESH {
 private:
 	//vector<VERTEX_3D> Vertices;
 	vector<UINT> Indices;
 	vector<TEXTURE_S> Textures;
 
-	vector<Anim> Animation;
+	unordered_map<string, Anim> Animation;
 
 	vector<Bone> Bones;
 
@@ -155,7 +188,7 @@ private:
 		}
 	}
 
-	void Draw_Mesh_Animation(XMMATRIX& parent_matrix, vector<Anim> anime, DWORD frame) {
+	void Draw_Mesh_Animation(XMMATRIX& parent_matrix, unordered_map<string, Anim>& anime, DWORD frame, const string& name1, const string& name2 = string("none"), float blend = 0.0f) {
 		XMMATRIX world;
 
 		CRenderer::SetVertexBuffers(VertexBuffer);
@@ -166,30 +199,85 @@ private:
 
 		// 3Dマトリックス設定
 		{
-			for (auto i : anime.begin()->body)
+			if ("none" == name2)
 			{
-				if (i.node_name == Name)
+				for (auto i : anime[name1].body)
 				{
-					unsigned int f = frame % i.translate.begin()->time;
+					if (i.node_name == Name)
+					{
+						unsigned int f = frame % i.translate.begin()->time;
 
-					XMFLOAT3 pos = i.translate[f].value;
-					XMMATRIX trans = XMMatrixTranslation(pos.x, pos.y, pos.z);
+						XMFLOAT3 pos = i.translate[f].value;
+						XMMATRIX trans = XMMatrixTranslation(pos.x, pos.y, pos.z);
 
-					f = frame % i.rotation.begin()->time;
+						f = frame % i.rotation.begin()->time;
 
-					XMFLOAT4 rotation = i.rotation[f].value;
-					XMVECTOR quat = XMLoadFloat4(&rotation);
+						XMFLOAT4 rotation = i.rotation[f].value;
+						XMVECTOR quat = XMLoadFloat4(&rotation);
 
-					world = XMMatrixRotationQuaternion(quat);
+						world = XMMatrixRotationQuaternion(quat);
 
-					world = XMMatrixMultiply(world, trans);
+						world = XMMatrixMultiply(world, trans);
 
-					world = XMMatrixMultiply(world, parent_matrix);
+						world = XMMatrixMultiply(world, parent_matrix);
 
-					CRenderer::SetWorldMatrix(&world);
+						CRenderer::SetWorldMatrix(&world);
 
-					break;
+						break;
+					}
 				}
+			}
+			else
+			{
+				XMMATRIX trans1, trans2, trans;
+				XMVECTOR quat1, quat2, puat;
+
+				for (auto i : anime[name1].body)
+				{
+					if (i.node_name == Name)
+					{
+						unsigned int f = frame % i.translate.begin()->time;
+
+						XMFLOAT3 pos = i.translate[f].value;
+						trans1 = XMMatrixTranslation(pos.x, pos.y, pos.z);
+
+						f = frame % i.rotation.begin()->time;
+
+						XMFLOAT4 rotation = i.rotation[f].value;
+						quat1 = XMLoadFloat4(&rotation);
+
+						break;
+					}
+				}
+
+				for (auto i : anime[name2].body)
+				{
+					if (i.node_name == Name)
+					{
+						unsigned int f = frame % i.translate.begin()->time;
+
+						XMFLOAT3 pos = i.translate[f].value;
+						trans2 = XMMatrixTranslation(pos.x, pos.y, pos.z);
+
+						f = frame % i.rotation.begin()->time;
+
+						XMFLOAT4 rotation = i.rotation[f].value;
+						quat2 = XMLoadFloat4(&rotation);
+
+						break;
+					}
+				}
+
+				trans = trans1 * (1.0f - blend) + trans2 * blend;
+				puat = quat1 * (1.0f - blend) + quat2 *  blend;
+
+				world = XMMatrixRotationQuaternion(puat);
+
+				world = XMMatrixMultiply(world, trans);
+
+				world = XMMatrixMultiply(world, parent_matrix);
+
+				CRenderer::SetWorldMatrix(&world);
 			}
 		}
 
@@ -199,7 +287,7 @@ private:
 
 		for (auto child : ChildMeshes)
 		{
-			child.second.Draw_Mesh_Animation(world, anime, frame);
+			child.second.Draw_Mesh_Animation(world, anime, frame, name1, name2, blend);
 		}
 	}
 
@@ -346,8 +434,8 @@ public:
 		Draw_Mesh(matrix);
 	}
 
-	void Draw_Animation(XMMATRIX& matrix, vector<Anim> anime, DWORD frame) {
-		Draw_Mesh_Animation(matrix, anime, frame);
+	void Draw_Animation(XMMATRIX& matrix, unordered_map<string, Anim>& anime, DWORD frame, const string& name1, const string& name2 = string("none"), float blend = 0.0f) {
+		Draw_Mesh_Animation(matrix, anime, frame, name1, name2, blend);
 	}
 
 	void Update() {
@@ -383,8 +471,8 @@ public:
 		ChildMeshes.clear();
 	}
 
-	void SetAnimation(const vector<Anim>& animations) {
-		Animation = animations;
+	void SetAnimation(const string& name, const Anim& animations) {
+		Animation[name] = animations;
 	}
 
 	void Add(const string name, const MESH& mesh) {
@@ -395,7 +483,7 @@ public:
 		return ChildMeshes;
 	}
 
-	vector<Anim>& Get_Anime() {
+	unordered_map<string, Anim>& Get_Anime() {
 		return Animation;
 	}
 

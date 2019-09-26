@@ -43,7 +43,7 @@ bool CMODEL::Load(string& filename)
 
 	// アニメーション情報の設定
 	{
-		vector<Anim> animation;
+		Anim animation;
 
 		if (pScene->HasAnimations())
 		{
@@ -51,14 +51,64 @@ bool CMODEL::Load(string& filename)
 
 			for (UINT i = 0; i < pScene->mNumAnimations; i++)
 			{
-				animation.push_back(createAnimation(anim[i]));
+				animation = createAnimation(anim[i]);
+
+				Meshes.SetAnimation(anim[i]->mName.data, animation);
+
+				Anime_State_Machine.Add_Name(anim[i]->mName.data);
 			}
 
 			// 1番目のメッシュにアニメーション情報を保存する
 			//Meshes.begin()->second.SetAnimation(animation);
-			Meshes.SetAnimation(animation);
+			//Meshes.SetAnimation(animation);
+		}
+
+		//
+		pScene = importer.ReadFile("asset/model/human01_Walk.fbx",
+			aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_LimitBoneWeights | aiProcess_ConvertToLeftHanded | aiProcessPreset_TargetRealtime_MaxQuality);
+
+		if (pScene->HasAnimations())
+		{
+			aiAnimation** anim = pScene->mAnimations;
+
+			for (UINT i = 0; i < pScene->mNumAnimations; i++)
+			{
+				animation = createAnimation(anim[i]);
+
+				Meshes.SetAnimation(anim[i]->mName.data, animation);
+
+				Anime_State_Machine.Add_Name(anim[i]->mName.data);
+			}
+
+			// 1番目のメッシュにアニメーション情報を保存する
+			//Meshes.begin()->second.SetAnimation(animation);
+			//Meshes.SetAnimation(animation);
+		}
+
+		//
+		pScene = importer.ReadFile("asset/model/human01_Jump.fbx",
+			aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_LimitBoneWeights | aiProcess_ConvertToLeftHanded | aiProcessPreset_TargetRealtime_MaxQuality);
+
+		if (pScene->HasAnimations())
+		{
+			aiAnimation** anim = pScene->mAnimations;
+
+			for (UINT i = 0; i < pScene->mNumAnimations; i++)
+			{
+				animation = createAnimation(anim[i]);
+
+				Meshes.SetAnimation(anim[i]->mName.data, animation);
+
+				Anime_State_Machine.Add_Name(anim[i]->mName.data);
+			}
+
+			// 1番目のメッシュにアニメーション情報を保存する
+			//Meshes.begin()->second.SetAnimation(animation);
+			//Meshes.SetAnimation(animation);
 		}
 	}
+
+	Anime_State_Machine.Set_Anime_Name("Stop");
 
 	return true;
 }
@@ -93,7 +143,7 @@ bool CMODEL::Reload(string& filename)
 
 			// 1番目のメッシュにアニメーション情報を保存する
 			//Meshes.begin()->second.SetAnimation(animation);
-			Meshes.SetAnimation(animation);
+			//Meshes.SetAnimation(animation);
 		}
 	}
 
@@ -121,8 +171,16 @@ void CMODEL::Draw()
 			auto anime = Meshes.Get_Anime();
 
 			for (auto i : mesh.second.Get())
-				//i.second.Draw(matrix, anime, Frame);
-				i.second.Draw_Animation(matrix, anime, Frame);
+			{
+				if (Anime_State_Machine.Get_Enable())
+				{
+					i.second.Draw_Animation(matrix, anime, Frame, Anime_State_Machine.Get_Anime_Name(), Anime_State_Machine.Get_Next_Anime_Name(), Anime_State_Machine.Get_Ratio());
+				}
+				else
+				{
+					i.second.Draw_Animation(matrix, anime, Frame, Anime_State_Machine.Get_Anime_Name());
+				}
+			}
 		}
 	}
 	else
@@ -141,6 +199,8 @@ void CMODEL::Draw()
 void CMODEL::Update()
 {
 	Meshes.Update();
+
+	Anime_State_Machine.Update();
 
 	Frame++;
 }

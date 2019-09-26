@@ -16,7 +16,9 @@ private:
 	CIRCLE_SHADOW* shadow;
 	COLLISION* Collision;
 
-	float HP;
+	// true = Stop false = Walk
+	bool AnimType;
+	float Blend;
 
 public:
 	PLAYER();
@@ -34,12 +36,8 @@ public:
 		return Collision;
 	}
 
-	const float Get_HP() {
-		return HP;
-	}
-
-	void Damage() {
-		HP -= 2.0f;
+	float* Get() {
+		return &Blend;
 	}
 };
 

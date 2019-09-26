@@ -75,6 +75,7 @@
     <ClCompile Include="XYZ_Axis.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Animetion_State_Machine.h" />
     <ClInclude Include="audio_clip.h" />
     <ClInclude Include="Axis.h" />
     <ClInclude Include="Billboard.h" />

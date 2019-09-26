@@ -28,28 +28,34 @@ void MAIN_MENU::Init()
 
 	//ÉvÉåÉCÉÑÅ[
 	{
-		CMODEL* player = Add_Game_Object<CMODEL>(LAYER_NAME::GAMEOBJECT);
+		//CMODEL* player = Add_Game_Object<CMODEL>(LAYER_NAME::GAMEOBJECT);
 
-		//string name("asset/model/herorifle.fbx");
-		string name("asset/model/human01_Stop.fbx");
-		//string name("asset/model/untitled.fbx");
-		//string name("asset/model/Dragon 2.5_fbx.fbx");
+		////string name("asset/model/herorifle.fbx");
+		//string name("asset/model/human01_Stop.fbx");
+		////string name("asset/model/untitled.fbx");
+		////string name("asset/model/Dragon 2.5_fbx.fbx");
 
-		XMFLOAT3 f3;
+		//XMFLOAT3 f3;
+
+		//player->Set_Object_Name("player");
+
+		//f3 = XMFLOAT3(0.f, 0.f, 0.f);
+		//player->Set_Position(f3);
+
+		//f3 = XMFLOAT3(0.f, 0.f, 0.f);
+		//player->Set_Rotation(f3);
+
+		////f3 = XMFLOAT3(0.1f, 0.1f, 0.1f);
+		//f3 = XMFLOAT3(1.0f, 1.0f, 1.0f);
+		//player->Set_Scaling(f3);
+
+		//player->Load(name);
+	}
+
+	{
+		auto player = Add_Game_Object<PLAYER>(LAYER_NAME::GAMEOBJECT);
 
 		player->Set_Object_Name("player");
-
-		f3 = XMFLOAT3(0.f, 0.f, 0.f);
-		player->Set_Position(f3);
-
-		f3 = XMFLOAT3(0.f, 0.f, 0.f);
-		player->Set_Rotation(f3);
-
-		//f3 = XMFLOAT3(0.1f, 0.1f, 0.1f);
-		f3 = XMFLOAT3(1.0f, 1.0f, 1.0f);
-		player->Set_Scaling(f3);
-
-		player->Load(name);
 	}
 
 	{
@@ -122,21 +128,21 @@ void MAIN_MENU::Update()
 		{
 			string name("asset/model/human01_Stop.fbx");
 
-			player->Reload(name);
+			//player->Reload(name);
 		}
 
 		if (KEYBOARD::Trigger_Keyboard(VK_2))
 		{
 			string name("asset/model/human01_Walk.fbx");
 
-			player->Reload(name);
+			//player->Reload(name);
 		}
 
 		if (KEYBOARD::Trigger_Keyboard(VK_3))
 		{
 			string name("asset/model/human01_Jump.fbx");
 
-			player->Reload(name);
+			//player->Reload(name);
 		}
 	}
 

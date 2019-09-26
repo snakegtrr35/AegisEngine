@@ -55,7 +55,7 @@ void CCamera::Update()
 {
 	XMFLOAT2 point = MOUSE::Get_Position();
 
-	bool flag = KEYBOARD::Press_Keyboard(VK_SHIFT);
+	bool flag = !KEYBOARD::Press_Keyboard(VK_SHIFT);
 
 	bool flag2 = KEYBOARD::Press_Keyboard(VK_RBUTTON);
 
@@ -165,22 +165,22 @@ void CCamera::Update()
 	// ˆÚ“®
 	if (MoveEnable)
 	{
-		if (KEYBOARD::Press_Keyboard(VK_W) || (MOUSE::Get_Wheel_Move_Flag() == WHEEL_MOVE_ENUM::UP) )
+		if (KEYBOARD::Press_Keyboard(VK_UP) || (MOUSE::Get_Wheel_Move_Flag() == WHEEL_MOVE_ENUM::UP) )
 		{
 			Pos += f * 0.4f;
 		}
 
-		if (KEYBOARD::Press_Keyboard(VK_S) || (MOUSE::Get_Wheel_Move_Flag() == WHEEL_MOVE_ENUM::DOWN))
+		if (KEYBOARD::Press_Keyboard(VK_DOWN) || (MOUSE::Get_Wheel_Move_Flag() == WHEEL_MOVE_ENUM::DOWN))
 		{
 			Pos -= f * 0.4f;
 		}
 
-		if (KEYBOARD::Press_Keyboard(VK_D))
+		if (KEYBOARD::Press_Keyboard(VK_RIGHT))
 		{
 			Pos += r * 0.4f;
 		}
 
-		if (KEYBOARD::Press_Keyboard(VK_A))
+		if (KEYBOARD::Press_Keyboard(VK_LEFT))
 		{
 			Pos -= r * 0.4f;
 		}
