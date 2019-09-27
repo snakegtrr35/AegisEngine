@@ -17,7 +17,7 @@ void MAIN_MENU::Init()
 {
 	// カメラ
 	{
-		CCamera* camera = Add_Game_Object<CCamera>(LAYER_NAME::BACKGROUND);
+		CCamera* camera = Add_Game_Object<CCamera>(LAYER_NAME::BACKGROUND, "camera");
 
 		camera->Set_Lenght(15.0f);
 		camera->Set_Viewing_Angle(55.0f);
@@ -53,19 +53,19 @@ void MAIN_MENU::Init()
 	}
 
 	{
-		auto player = Add_Game_Object<PLAYER>(LAYER_NAME::GAMEOBJECT);
+		auto player = Add_Game_Object<PLAYER>(LAYER_NAME::GAMEOBJECT, "player");
 
-		player->Set_Object_Name("player");
+		//player->Set_Object_Name("player");
 	}
 
 	{
-		MESH_DOOM* pmd = Add_Game_Object<MESH_DOOM>(LAYER_NAME::GAMEOBJECT);
+		MESH_DOOM* pmd = Add_Game_Object<MESH_DOOM>(LAYER_NAME::GAMEOBJECT, "sky_doom");
 
 		pmd->Init();
 	}
 
 	{
-		Add_Game_Object<GRID>(LAYER_NAME::GAMEOBJECT);
+		Add_Game_Object<GRID>(LAYER_NAME::GAMEOBJECT, "grid");
 	}
 
 	/*// テキスト画像

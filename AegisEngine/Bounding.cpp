@@ -1,11 +1,16 @@
 #include	"Bounding.h"
-#include	"texture.h"
+
+unique_ptr<ID3D11Buffer, Release> BOUNDING_SHPERE::pVertexBuffer;
+unique_ptr<ID3D11Buffer, Release> BOUNDING_SHPERE::pIndexBuffer;
+
+unique_ptr<ID3D11Buffer, Release> BOUNDING_AABB::pVertexBuffer;
+unique_ptr<ID3D11Buffer, Release> BOUNDING_AABB::pIndexBuffer;
+
 
 BOUNDING_SHPERE::BOUNDING_SHPERE()
 {
 	Radius = 0.f;
-
-	Cnt = 0;
+	IndexNum = 0;
 }
 
 BOUNDING_SHPERE::~BOUNDING_SHPERE()
@@ -15,130 +20,96 @@ BOUNDING_SHPERE::~BOUNDING_SHPERE()
 
 void BOUNDING_SHPERE::Init(void)
 {
+	if (nullptr == pVertexBuffer.get() && nullptr == pIndexBuffer.get())
+	{
+		const UINT cnt = 8 * (UINT)Radius;
+
+		VERTEX_3D* vertex = new VERTEX_3D[cnt];
+
+		IndexNum = cnt * 2;
+		WORD* index_array = new WORD[IndexNum];
+
+		float angle = XM_2PI / cnt;
+
+		for (int i = 0; i < cnt; i++)
+		{
+			vertex[i].Position = XMFLOAT3(cosf(angle * i) * Radius, sinf(angle * i) * Radius, 0.0f);
+			vertex[i].Normal = XMFLOAT3(0.0f, 0.0f, 0.0f);
+			vertex[i].Diffuse = XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f);
+			vertex[i].TexCoord = XMFLOAT2(0.0f, 0.0f);
+		}
+
+		for (int i = 0; i < cnt; i++)
+		{
+			index_array[i * 2] = i;
+			index_array[i * 2 + 1] = (i + 1) % cnt;
+		}
+
+		// 頂点バッファの設定
+		{
+			ID3D11Buffer* buffer;
+
+			D3D11_BUFFER_DESC bd;
+			ZeroMemory(&bd, sizeof(bd));
+			bd.Usage = D3D11_USAGE_DEFAULT;
+			bd.ByteWidth = sizeof(VERTEX_3D) * cnt;
+			bd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+			bd.CPUAccessFlags = 0;
+
+			D3D11_SUBRESOURCE_DATA sd;
+			ZeroMemory(&sd, sizeof(sd));
+			sd.pSysMem = vertex;
+
+			CRenderer::GetDevice()->CreateBuffer(&bd, &sd, &buffer);
+
+			pVertexBuffer.reset(buffer);
+		}
+
+		// インデックスバッファの設定
+		{
+			ID3D11Buffer* buffer;
+
+			D3D11_BUFFER_DESC bd;
+			ZeroMemory(&bd, sizeof(bd));
+			bd.Usage = D3D11_USAGE_DEFAULT;
+			bd.ByteWidth = sizeof(WORD) * IndexNum;
+			bd.BindFlags = D3D11_BIND_INDEX_BUFFER;
+			bd.CPUAccessFlags = 0;
+
+			D3D11_SUBRESOURCE_DATA sd;
+			ZeroMemory(&sd, sizeof(sd));
+			sd.pSysMem = index_array;
+
+			CRenderer::GetDevice()->CreateBuffer(&bd, &sd, &buffer);
+
+			pIndexBuffer.reset(buffer);
+		}
+
+		SAFE_DELETE(vertex);
+		SAFE_DELETE(index_array);
+	}
 }
 
 void BOUNDING_SHPERE::Draw(void)
 {
-	VERTEX_3D* vertex = new VERTEX_3D[Cnt];
+	// 入力アセンブラに頂点バッファを設定
+	CRenderer::SetVertexBuffers(pVertexBuffer.get());
 
-	// 横の円
-	int i;
-	float angle = XM_2PI / Cnt;
-
-	for (i = 0; i < Cnt; i++)
-	{
-		vertex[i].Position = XMFLOAT3((cosf(angle * i) * Radius), 0.0f, (sinf(angle * i) * Radius));
-		vertex[i].Normal = XMFLOAT3(0.0f, 1.0f, 0.0f);
-		vertex[i].TexCoord = XMFLOAT2(0.0f, 0.0f);
-		vertex[i].Diffuse = XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f);
-	}
-
-	// 頂点バッファの設定
-	{
-		HRESULT hr;
-
-		D3D11_BUFFER_DESC bd;
-		ZeroMemory(&bd, sizeof(D3D11_BUFFER_DESC));
-
-		bd.ByteWidth = sizeof(VERTEX_3D) * Cnt;
-		bd.Usage = D3D11_USAGE_DEFAULT;
-		bd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-		bd.CPUAccessFlags = 0;
-		bd.MiscFlags = 0;
-		bd.StructureByteStride = 0;
-
-		// サブリソースの設定
-		D3D11_SUBRESOURCE_DATA srd;
-		ZeroMemory(&srd, sizeof(D3D11_SUBRESOURCE_DATA));
-
-		srd.pSysMem = Vertex;
-		srd.SysMemPitch = 0;
-		srd.SysMemSlicePitch = 0;
-
-		// 頂点バッファの生成
-		hr = CRenderer::GetDevice()->CreateBuffer(&bd, &srd, &pVertexBuffer[0]);
-
-		if (FAILED(hr))
-		{
-			return;
-		}
-	}
-
-	delete vertex;
-
-	vertex = new VERTEX_3D[Cnt];
-
-	// 縦の円
-	angle = XM_2PI / Cnt;
-
-	for (i = 0; i < Cnt; i++)
-	{
-		vertex[i].Position = XMFLOAT3(0.0f, (sinf(angle * i) * Radius), (cosf(angle * i) * Radius));
-		vertex[i].Normal = XMFLOAT3(0.0f, 1.0f, 0.0f);
-		vertex[i].TexCoord = XMFLOAT2(0.0f, 0.0f);
-		vertex[i].Diffuse = XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f);
-	}
-
-	// 頂点バッファの設定
-	{
-		HRESULT hr;
-
-		D3D11_BUFFER_DESC bd;
-		ZeroMemory(&bd, sizeof(D3D11_BUFFER_DESC));
-
-		bd.ByteWidth = sizeof(VERTEX_3D) * Cnt;
-		bd.Usage = D3D11_USAGE_DEFAULT;
-		bd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-		bd.CPUAccessFlags = 0;
-		bd.MiscFlags = 0;
-		bd.StructureByteStride = 0;
-
-		// サブリソースの設定
-		D3D11_SUBRESOURCE_DATA srd;
-		ZeroMemory(&srd, sizeof(D3D11_SUBRESOURCE_DATA));
-
-		srd.pSysMem = Vertex;
-		srd.SysMemPitch = 0;
-		srd.SysMemSlicePitch = 0;
-
-		// 頂点バッファの生成
-		hr = CRenderer::GetDevice()->CreateBuffer(&bd, &srd, &pVertexBuffer[1]);
-
-		if (FAILED(hr))
-		{
-			return;
-		}
-	}
-
-	delete vertex;
-
-	// 3Dマトリックス設定
-	{
-		XMMATRIX world = XMMatrixIdentity();
-
-		world = XMMatrixScaling(Scaling.x, Scaling.y, Scaling.z);																						// 拡大縮小
-		world *= XMMatrixRotationRollPitchYaw(XMConvertToRadians(Rotation.x), XMConvertToRadians(Rotation.y), XMConvertToRadians(Rotation.z));			// 回転
-		world *= XMMatrixTranslation(Position.x, Position.y, Position.z);																				// 移動
-
-		CRenderer::SetWorldMatrix(&world);
-	}
+	// 入力アセンブラにインデックスバッファを設定
+	CRenderer::SetIndexBuffer(pIndexBuffer.get());
 
 	// トポロジの設定
 	CRenderer::GetDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_LINESTRIP);
 
-	// 
 	CRenderer::Set_Shader(SHADER_INDEX_V::NO_LIGHT, SHADER_INDEX_P::NO_TEXTURE);
 
-	for (char i = 0; i < 2; i++)
-	{
-		// 入力アセンブラに頂点バッファを設定.
-		CRenderer::SetVertexBuffers(pVertexBuffer[i]);
 
-		CRenderer::GetDeviceContext()->Draw(Cnt, 0);
-	}
+	Draw_Ring(XMFLOAT3(0.f, 0.f, 0.f));
 
-	// トポロジの設定
-	CRenderer::GetDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	Draw_Ring(XMFLOAT3(0.f, 90.0f, 0.f));
+
+	Draw_Ring(XMFLOAT3(90.0f, 0.f, 0.f));
+
 
 	CRenderer::Set_Shader();
 }
@@ -147,8 +118,21 @@ void BOUNDING_SHPERE::Update(void)
 {
 }
 
-void BOUNDING_SHPERE::Uninit(void)
+
+void BOUNDING_SHPERE::Draw_Ring(const XMFLOAT3& rotation)
 {
+	// 3Dマトリックス設定
+	{
+		XMMATRIX world = XMMatrixIdentity();
+
+		world = XMMatrixScaling(Scaling.x, Scaling.y, Scaling.z);																						// 拡大縮小
+		world *= XMMatrixRotationRollPitchYaw(XMConvertToRadians(rotation.x), XMConvertToRadians(rotation.y), XMConvertToRadians(rotation.z));			// 回転
+		world *= XMMatrixTranslation(Position.x, Position.y, Position.z);																				// 移動
+
+		CRenderer::SetWorldMatrix(&world);
+	}
+
+	CRenderer::GetDeviceContext()->DrawIndexed(IndexNum, 0, 0);
 }
 
 void BOUNDING_SHPERE::Set_Radius(const float radius)
@@ -161,11 +145,6 @@ const float BOUNDING_SHPERE::Get_Radius()
 	return Radius;
 }
 
-void BOUNDING_SHPERE::Set_Cnt(const unsigned char& cnt)
-{
-	Cnt = cnt;
-}
-
 
 
 
@@ -175,7 +154,7 @@ BOUNDING_AABB::BOUNDING_AABB()
 {
 	Radius = XMFLOAT3(1.0f, 1.0f, 1.0f);
 
-	Vertex = new VERTEX_3D[4];
+	//Vertex = new VERTEX_3D[4];
 }
 
 BOUNDING_AABB::~BOUNDING_AABB()

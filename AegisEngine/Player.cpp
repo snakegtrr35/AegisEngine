@@ -34,16 +34,21 @@ PLAYER::PLAYER(void)
 		Model->Set_Scaling(Scaling);
 	}
 
-	Collision = new COLLISIION_AABB();
+	Collision = new COLLISIION_SPHERE();
 
-	dynamic_cast<COLLISIION_AABB*>(Collision)->Set_Position(Position);
+	dynamic_cast<COLLISIION_SPHERE*>(Collision)->Set_Position(Position);
 
-	dynamic_cast<COLLISIION_AABB*>(Collision)->Set_Radius(XMFLOAT3(1.0f, 1.0f, 1.0f));
+	dynamic_cast<COLLISIION_SPHERE*>(Collision)->Set_Radius(10.0f);
 
-	shadow = new CIRCLE_SHADOW();
-	shadow->Set_Position(&Position);
+	Shpere = new BOUNDING_SHPERE();
 
-	shadow->SetWH(XMFLOAT2(0.8f, 0.8f));
+	Shpere->Set_Position(Position);
+	Shpere->Set_Radius(10.0f);
+	Shpere->Init();
+
+	//shadow = new CIRCLE_SHADOW();
+	//shadow->Set_Position(&Position);
+	//shadow->SetWH(XMFLOAT2(0.8f, 0.8f));
 }
 
 PLAYER::~PLAYER()
@@ -58,7 +63,9 @@ void PLAYER::Init(void)
 void PLAYER::Draw(void)
 {
 	Model->Draw();
-	shadow->Draw();
+	//shadow->Draw();
+
+	Shpere->Draw();
 }
 
 void PLAYER::Update(void)
@@ -150,15 +157,16 @@ void PLAYER::Update(void)
 		Blend = Model->Get().Get_Ratio();
 	}
 
-	dynamic_cast<COLLISIION_AABB*>(Collision)->Set_Position(Position);
+	dynamic_cast<COLLISIION_SPHERE*>(Collision)->Set_Position(Position);
+	Shpere->Set_Position(Position);
 
 	// 影の更新
 	{
-		XMFLOAT3 pos = Position;
+		//XMFLOAT3 pos = Position;
 
-		pos.y += 0.01f;
+		//pos.y += 0.01f;
 		
-		shadow->Set_Position(&pos);
+		//shadow->Set_Position(&pos);
 	}
 
 	if (KEYBOARD::Trigger_Keyboard(VK_1))
@@ -184,24 +192,27 @@ void PLAYER::Update(void)
 
 	if (KEYBOARD::Trigger_Keyboard(VK_F1))
 	{
-		Model->Get().Change_Anime("Stop", 360);
+		Model->Get().Change_Anime("Stop", 60);
 	}
 
 	if (KEYBOARD::Trigger_Keyboard(VK_F2))
 	{
-		Model->Get().Change_Anime("Walk", 360);
+		Model->Get().Change_Anime("Walk", 60);
 	}
 
 	if (KEYBOARD::Trigger_Keyboard(VK_F3))
 	{
-		Model->Get().Change_Anime("Jump", 360);
+		Model->Get().Change_Anime("Jump", 60);
 	}
 }
 
 void PLAYER::Uninit(void)
 {
 	SAFE_DELETE(Model);
-	SAFE_DELETE(shadow);
+	//SAFE_DELETE(shadow);
+
+	SAFE_DELETE(Collision);
+	SAFE_DELETE(Shpere);
 }
 
 // ポジションの設定

@@ -50,6 +50,8 @@ enum class SCENE_INDEX {
 class SCENE {
 private:
 
+	friend class GAME_OBJECT;
+
 protected:
 	static list<GAME_OBJECT*> GameObjects[(int)LAYER_NAME::MAX_LAYER];
 
@@ -64,6 +66,23 @@ public:
 		T* object = new T();
 
 		object->Init();
+
+		GameObjects[(int)layer].push_back(object);
+
+		return object;
+	}
+
+	// ƒŠƒXƒg‚Ö‚Ì’Ç‰Á
+	template <typename T>
+	static T* Add_Game_Object(LAYER_NAME layer, const string& name)
+	{
+		//if(GAME_OBJECT::Object_Name_Set.find(name) != GAME_OBJECT::Object_Name_Set.end())
+
+		T* object = new T();
+
+		object->Init();
+			
+		object->Set_Object_Name(name);
 
 		GameObjects[(int)layer].push_back(object);
 

@@ -8,13 +8,15 @@
 class CMODEL;
 class BULLET;
 class COLLISION;
-class CIRCLE_SHADOW;
+class BOUNDING_SHPERE;
+//class CIRCLE_SHADOW;
 
 class PLAYER : public GAME_OBJECT {
 private:
 	CMODEL* Model;
-	CIRCLE_SHADOW* shadow;
+	//CIRCLE_SHADOW* shadow;
 	COLLISION* Collision;
+	BOUNDING_SHPERE* Shpere;
 
 	// true = Stop false = Walk
 	bool AnimType;

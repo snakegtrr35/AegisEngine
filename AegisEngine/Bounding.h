@@ -10,47 +10,27 @@
 
 class BOUNDING : public GAME_OBJECT {
 private:
-
 protected:
-	VERTEX_3D* Vertex;					// 頂点データ
-	ID3D11Buffer* pVertexBuffer;		// 頂点バッファ
-	ID3D11Buffer* pIndexBuffer;			// インデックスバッファ
-
 public:
-	BOUNDING() {
-		Position = XMFLOAT3(0.f, 0.f, 0.f);
+	BOUNDING() {}
+	virtual ~BOUNDING() {}
 
-		Vertex = nullptr;
-
-		pIndexBuffer = pVertexBuffer = nullptr;
-	};
-	virtual ~BOUNDING() {
-		SAFE_RELEASE(pVertexBuffer);
-		SAFE_RELEASE(pIndexBuffer);
-		SAFE_DELETE(Vertex);
-	};
-
-	void Init(void) override {};
-	void Draw(void) override {};
-	void Update(void) override {};
-	void Uninit(void) override {};
-
-	void Set_Position(const XMFLOAT3& position) {
-		Position = position;
-	};
-
-	XMFLOAT3& const Get_Position() {
-		return Position;
-	};
+	void Init(void) override {}
+	void Draw(void) override {}
+	void Update(void) override {}
+	void Uninit(void) override {}
 };
 
 // 球
 class BOUNDING_SHPERE : public BOUNDING {
 private:
-	float Radius;
-	unsigned char Cnt;
+	static unique_ptr<ID3D11Buffer, Release> pVertexBuffer;			// 頂点バッファ
+	static unique_ptr<ID3D11Buffer, Release> pIndexBuffer;			// インデックスバッファ
 
-	ID3D11Buffer* pVertexBuffer[2];		// 頂点バッファ
+	float Radius;
+	UINT IndexNum;
+
+	void Draw_Ring(const XMFLOAT3& rotation);
 
 public:
 	BOUNDING_SHPERE ();
@@ -59,18 +39,19 @@ public:
 	void Init(void) override;
 	void Draw(void) override;
 	void Update(void) override;
-	void Uninit(void) override;
+	void Uninit(void) override {}
 
 	void Set_Radius(const float radius);
 
 	const float Get_Radius();
-
-	void Set_Cnt(const unsigned char& cnt);
 };
 
 // AABB
 class BOUNDING_AABB : public BOUNDING {
 private:
+	static unique_ptr<ID3D11Buffer, Release> pVertexBuffer;		// 頂点バッファ
+	static unique_ptr<ID3D11Buffer, Release> pIndexBuffer;			// インデックスバッファ
+
 	XMFLOAT3 Radius;
 
 public:

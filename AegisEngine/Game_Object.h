@@ -7,6 +7,7 @@
 
 class GAME_OBJECT {
 private:
+	static unordered_set<string> Object_Name_Set;
 
 protected:
 	string Object_Name;
@@ -53,9 +54,17 @@ public:
 	};
 
 	void Set_Object_Name(const string& name) {
-		Object_Name = name;
-	};
 
+		if (Object_Name_Set.find(name) == Object_Name_Set.end())
+		{
+			Object_Name_Set.insert(name);
+			Object_Name = name;
+		}
+		else
+		{
+			Object_Name_Set.insert("none");
+		}
+	};
 
 
 	XMFLOAT3* const Get_Position() {
@@ -96,7 +105,7 @@ public:
 		Scaling = scaling;
 	};
 
-	COMPONENT_MANEGER* Get_Component() {
+	COMPONENT_MANEGER* const Get_Component() {
 		return &Component;
 	}
 };
