@@ -22,44 +22,50 @@ void MAIN_MENU::Init()
 		camera->Set_Lenght(15.0f);
 		camera->Set_Viewing_Angle(55.0f);
 
+		camera->Set_Object_Name("camera");
+
 		//camera->Set_Move_Enable(false);
 		//camera->Set_Rotate_Enable(false);
 	}
 
-	////プレイヤー
-	//{
-	//	CMODEL* player = Add_Game_Object<CMODEL>(LAYER_NAME::GAMEOBJECT);
+	//プレイヤー
+	{
+		CMODEL* player = Add_Game_Object<CMODEL>(LAYER_NAME::GAMEOBJECT);
 
-	//	//string name("asset/model/herorifle.fbx");
-	//	//string name("asset/model/human02.fbx");
-	//	//string name("asset/model/untitled.fbx");
-	//	string name("asset/model/Dragon 2.5_fbx.fbx");
+		//string name("asset/model/herorifle.fbx");
+		string name("asset/model/human02.fbx");
+		//string name("asset/model/untitled.fbx");
+		//string name("asset/model/Dragon 2.5_fbx.fbx");
 
-	//	XMFLOAT3 f3;
+		XMFLOAT3 f3;
 
-	//	player->Set_Object_Name("player");
+		player->Set_Object_Name("player");
 
-	//	f3 = XMFLOAT3(0.f, 0.f, 0.f);
-	//	player->Set_Position(f3);
+		f3 = XMFLOAT3(0.f, 0.f, 0.f);
+		player->Set_Position(f3);
 
-	//	f3 = XMFLOAT3(0.f, 0.f, 0.f);
-	//	player->Set_Rotation(f3);
+		f3 = XMFLOAT3(0.f, 0.f, 0.f);
+		player->Set_Rotation(f3);
 
-	//	//f3 = XMFLOAT3(0.1f, 0.1f, 0.1f);
-	//	f3 = XMFLOAT3(1.0f, 1.0f, 1.0f);
-	//	player->Set_Scaling(f3);
+		//f3 = XMFLOAT3(0.1f, 0.1f, 0.1f);
+		f3 = XMFLOAT3(1.0f, 1.0f, 1.0f);
+		player->Set_Scaling(f3);
 
-	//	player->Load(name);
-	//}
+		player->Load(name);
+	}
 
 	{
 		MESH_DOOM* pmd = Add_Game_Object<MESH_DOOM>(LAYER_NAME::GAMEOBJECT);
 
 		pmd->Init();
+
+		pmd->Set_Object_Name("sky_doom");
 	}
 
 	{
-		Add_Game_Object<GRID>(LAYER_NAME::GAMEOBJECT);
+		auto grid = Add_Game_Object<GRID>(LAYER_NAME::GAMEOBJECT);
+
+		grid->Set_Object_Name("grid");
 	}
 
 	/*// テキスト画像

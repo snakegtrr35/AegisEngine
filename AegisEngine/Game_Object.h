@@ -53,6 +53,7 @@ public:
 	};
 
 	void Set_Object_Name(const string& name) {
+
 		Object_Name = name;
 	};
 
