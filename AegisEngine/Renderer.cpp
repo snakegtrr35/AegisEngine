@@ -12,7 +12,6 @@ ID3D11DeviceContext*    CRenderer::m_ImmediateContext = nullptr;
 IDXGISwapChain*         CRenderer::m_SwapChain = nullptr;
 ID3D11RenderTargetView* CRenderer::m_RenderTargetView = nullptr;
 ID3D11DepthStencilView* CRenderer::m_DepthStencilView = nullptr;
-IDXGIAdapter1*			CRenderer::m_Adapter = nullptr;
 
 
 ID3D11VertexShader*		CRenderer::m_VertexShader[3] = { nullptr };
@@ -41,60 +40,6 @@ bool CRenderer::Init()
 {
 	HRESULT hr = S_OK;
 
-	//// アダプターの作成
-	//{
-	//	IDXGIFactory* pFactory = nullptr;
-
-	//	if (m_Adapter == nullptr)
-	//	{
-	//		// ファクトリを作成する
-	//		hr = CreateDXGIFactory(__uuidof(IDXGIFactory), (void**)(&pFactory));
-	//		if (FAILED(hr))
-	//		{
-	//			FAILDE_ASSERT;
-	//			return false;
-	//		}
-
-	//		// デフォルトアダプターを取得
-	//		hr = pFactory->EnumAdapters(0, &m_Adapter);
-	//		if (FAILED(hr))
-	//		{
-	//			FAILDE_ASSERT;
-	//			return false;
-	//		}
-	//	}
-	//	SAFE_RELEASE(pFactory);
-	//}
-
-	// アダプターの作成
-	{
-		IDXGIFactory1* pFactory = nullptr;
-		hr = CreateDXGIFactory1(__uuidof(IDXGIFactory), (void**)(&pFactory));
-		if (FAILED(hr)) {
-			throw std::runtime_error("IDXGIFactoryクラスの作成に失敗しました。");
-		}
-
-		IDXGIAdapter1* pAdapterIt = nullptr;
-		for (UINT adapterIndex = 0; S_OK == pFactory->EnumAdapters1(adapterIndex, &pAdapterIt); adapterIndex++)
-		{
-			DXGI_ADAPTER_DESC1 desc;
-			pAdapterIt->GetDesc1(&desc);
-
-			// ...アダプタ情報のログ出力は省略
-
-			if (nullptr == m_Adapter)
-			{
-				if (desc.Flags ^= DXGI_ADAPTER_FLAG_SOFTWARE)
-				{
-					m_Adapter = pAdapterIt;
-				}
-			}
-			//使い終わったら必ずReleaseすること
-			SAFE_RELEASE(pAdapterIt);
-		}
-		SAFE_RELEASE(pFactory);
-	}
-
 	// デバイス、スワップチェーン、コンテキスト生成
 	DXGI_SWAP_CHAIN_DESC sd;
 	ZeroMemory( &sd, sizeof( sd ) );
@@ -110,7 +55,7 @@ bool CRenderer::Init()
 	sd.SampleDesc.Quality = 0;
 	sd.Windowed = TRUE;
 
-	hr = D3D11CreateDeviceAndSwapChain(	m_Adapter,
+	hr = D3D11CreateDeviceAndSwapChain(	NULL,
 										D3D_DRIVER_TYPE_HARDWARE,
 										NULL,
 										0,
@@ -140,29 +85,41 @@ bool CRenderer::Init()
 	}
 	pBackBuffer->Release();
 
+	// ウィンドウアソシエーション
+	{
+		IDXGIDevice* pDXGIDevice;
+		hr = m_D3DDevice->QueryInterface(__uuidof(IDXGIDevice), (void**)& pDXGIDevice);
+		if (FAILED(hr))
+		{
+			FAILDE_ASSERT;
+			return false;
+		}
+
+		IDXGIAdapter* pDXGIAdapter;
+		hr = pDXGIDevice->GetParent(__uuidof(IDXGIAdapter), (void**)& pDXGIAdapter);
+		if (FAILED(hr))
+		{
+			FAILDE_ASSERT;
+			return false;
+		}
+
+		IDXGIFactory* pIDXGIFactory;
+		hr = pDXGIAdapter->GetParent(__uuidof(IDXGIFactory), (void**)& pIDXGIFactory);
+		if (FAILED(hr))
+		{
+			FAILDE_ASSERT;
+			return false;
+		}
+
+		pIDXGIFactory->MakeWindowAssociation(GetWindow(), DXGI_MWA_NO_ALT_ENTER);
+
+		SAFE_RELEASE(pIDXGIFactory);
+		SAFE_RELEASE(pDXGIAdapter);
+		SAFE_RELEASE(pDXGIDevice);
+	}
+
 	// フルスクリーン
 	//Change_Window_Mode();
-
-	//// ウィンドウアソシエーション
-	//{
-	//	IDXGIFactory* pFactory = nullptr;
-
-	//	// ファクトリーを作成する
-	//	// CreateDXGIFactoryで作成したファクトリーを使用すると実行できるがワーニングエラーになるので IDXGIAdapter から作成する。
-	//	hr = m_Adapter->GetParent(__uuidof(IDXGIFactory), (void**)& pFactory);
-	//	if (FAILED(hr))
-	//	{
-	//		FAILDE_ASSERT;
-	//		return false;
-	//	}
-
-	//	// 表示モードの自動切換えを無効にする。
-	//	// MakeWindowAssociation
-	//	hr = pFactory->MakeWindowAssociation(GetWindow(), DXGI_MWA_NO_WINDOW_CHANGES);
-
-	//	SAFE_RELEASE(pFactory);
-	//}
-
 
 	//ステンシル用テクスチャー作成
 	ID3D11Texture2D* depthTexture = NULL;
@@ -492,7 +449,6 @@ void CRenderer::Uninit()
 	{
 		m_SwapChain->SetFullscreenState(FALSE, NULL);
 	}
-	SAFE_RELEASE(m_Adapter);
 
 	// オブジェクト解放
 	SAFE_RELEASE(m_WorldBuffer);

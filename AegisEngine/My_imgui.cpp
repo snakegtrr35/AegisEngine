@@ -7,7 +7,8 @@
 
 #include	"ModelLoader.h"
 
-POLYGON_3D* g_pPOLYGON = nullptr;
+extern XMFLOAT2 center;
+extern XMFLOAT2 wh;
 
 My_imgui::My_imgui()
 {
@@ -165,12 +166,17 @@ void My_imgui::Draw(void)
 			if (nullptr != player)
 			{
 
-				static float vec4_Position[] = { player->Get_Position()->x, player->Get_Position()->y, player->Get_Position()->z };
-				static float vec4_Rotation[] = { player->Get_Rotation()->x, player->Get_Rotation()->y, player->Get_Rotation()->z };
-				static float vec4_Scaling[] = { player->Get_Scaling()->x, player->Get_Scaling()->y, player->Get_Scaling()->z };
-				static float* vec1 = player->Get();
+				/*static*/ float vec4_Position[] = { player->Get_Position()->x, player->Get_Position()->y, player->Get_Position()->z };
+				/*static*/ float vec4_Rotation[] = { player->Get_Rotation()->x, player->Get_Rotation()->y, player->Get_Rotation()->z };
+				/*static*/ float vec4_Scaling[] = { player->Get_Scaling()->x, player->Get_Scaling()->y, player->Get_Scaling()->z };
+				/*static*/ float* vec1 = player->Get();
+
+				static float center2[2] = { center.x, center.y };
+				static float wh2[2] = { wh.x, wh.y };
 
 				ImGui::Begin("Setting");
+
+				ImGui::Text(player->Get_Object_Name().c_str());
 
 				static bool enable = false;
 				ImGui::Checkbox("Enable", &enable);
@@ -190,14 +196,6 @@ void My_imgui::Draw(void)
 					ImGui::Text("Thanks for clicking me!");
 				}
 
-				/*static char buf1[64] = ""; 
-				
-				if (ImGui::InputText("default", buf1, 64))
-				{
-					string a;
-					a = buf1;
-				}*/
-
 				static char buf1[128] = "";
 
 				ImGui::InputText((char*)u8"‚ ‚¢‚¤‚¦‚¨", (char*)buf1, 128);
@@ -206,6 +204,11 @@ void My_imgui::Draw(void)
 
 				ImGui::SliderFloat("Blend", vec1, 0.0f, 1.0f);
 				//player->blend = vec1;
+
+				{
+					ImGui::DragFloat2("Center Position", center2, 1.0f, 0.f);
+					ImGui::DragFloat2("WH", wh2, 1.0f, 0.f);
+				}
 
 				ImGui::End();
 
@@ -219,6 +222,12 @@ void My_imgui::Draw(void)
 					player->Set_Rotation(&vec2);
 					player->Set_Scaling(&vec3);
 				}
+
+				center.x = center2[0];
+				center.y = center2[1];
+
+				wh.x = wh2[0];
+				wh.y = wh2[1];
 			}
 
 			// ƒ‰ƒCƒg‚Ìİ’è

@@ -9,6 +9,9 @@ XMMATRIX CCamera::m_ViewMatrix;
 
 float CCamera::Lenght = 10.0f;
 
+XMFLOAT2 center = XMFLOAT2(SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.5f);
+XMFLOAT2 wh = XMFLOAT2(SCREEN_WIDTH, SCREEN_HEIGHT);
+
 void CCamera::Init()
 {
 	XMFLOAT4 at = XMFLOAT4(0.0f, 0.0f, 0.0f, 0.0f);
@@ -37,10 +40,15 @@ void CCamera::Init()
 	Pos = At - Front * Lenght;
 
 	// ビューポートの設定設定
-	Viewport.left = 0;
+	/*Viewport.left = 0;
 	Viewport.top = 0;
 	Viewport.right = SCREEN_WIDTH;
-	Viewport.bottom = SCREEN_HEIGHT;
+	Viewport.bottom = SCREEN_HEIGHT;*/
+
+	Viewport.left = center.x - wh.x * 0.5f;
+	Viewport.top = center.y - wh.y * 0.5f;
+	Viewport.right = center.x + wh.x * 0.5f;
+	Viewport.bottom = center.y + wh.y * 0.5f;
 
 	Rotate = 90.0f;
 
@@ -191,6 +199,11 @@ void CCamera::Update()
 		At = Front * Lenght + Pos;
 		Pos = At - Front * Lenght;
 	}
+
+	Viewport.left = center.x - wh.x * 0.5f;
+	Viewport.top = center.y - wh.y * 0.5f;
+	Viewport.right = center.x + wh.x * 0.5f;
+	Viewport.bottom = center.y + wh.y * 0.5f;
 }
 
 void CCamera::Draw()

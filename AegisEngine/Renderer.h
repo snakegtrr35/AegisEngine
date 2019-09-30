@@ -176,7 +176,6 @@ private:
 	static IDXGISwapChain*         m_SwapChain;
 	static ID3D11RenderTargetView* m_RenderTargetView;
 	static ID3D11DepthStencilView* m_DepthStencilView;
-	static IDXGIAdapter1* m_Adapter;                 // アダプター
 
 
 	static ID3D11VertexShader*		m_VertexShader[3];
