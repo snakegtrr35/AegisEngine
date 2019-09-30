@@ -1,12 +1,20 @@
 #include "main.h"
 #include "audio_clip.h"
 
+#ifdef UNICODE
 map<wstring, CAudioClip*> AUDIO_MANAGER::Sound_Dates;
+#else
+map<string, CAudioClip*> AUDIO_MANAGER::Sound_Dates;
+#endif // !UNICODE
 
 IXAudio2* AUDIO_MANAGER::Xaudio;
 IXAudio2MasteringVoice* AUDIO_MANAGER::MasteringVoice;
 
-void CAudioClip::Load(const wchar_t *FileName)
+#ifdef UNICODE
+void CAudioClip::Load(const wchar_t* FileName)
+#else
+void CAudioClip::Load(const char* FileName)
+#endif // !UNICODE
 {
 	// サウンドデータ読込
 	WAVEFORMATEX wfx = { 0 };
@@ -20,8 +28,11 @@ void CAudioClip::Load(const wchar_t *FileName)
 		UINT32 buflen;
 		LONG readlen;
 
-
+#ifdef UNICODE
 		hmmio = mmioOpen((LPWSTR)FileName, &mmioinfo, MMIO_READ);
+#else
+		hmmio = mmioOpen((LPSTR)FileName, &mmioinfo, MMIO_READ);
+#endif // !UNICODE
 		assert(hmmio);
 
 		riffchunkinfo.fccType = mmioFOURCC('W', 'A', 'V', 'E');
@@ -137,12 +148,20 @@ void CAudioClip::Stop()
 	}
 }
 
+#ifdef UNICODE
 void CAudioClip::Set_Name(const wstring& name)
+#else
+void CAudioClip::Set_Name(const string& name)
+#endif // !UNICODE
 {
 	Name = name;
 }
 
+#ifdef UNICODE
 wstring* const CAudioClip::Get_Name()
+#else
+string* const CAudioClip::Get_Name()
+#endif // !UNICODE
 {
 	return &Name;
 }
@@ -156,9 +175,6 @@ const SOUND_TAG CAudioClip::Get_Tag()
 {
 	return Tag;
 }
-
-
-
 
 
 

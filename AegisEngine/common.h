@@ -41,7 +41,11 @@ struct Delete {
 
 std::wstring stringTowstring(const std::string& font);
 
-void Erroer_Message(const std::wstring& str1, const std::wstring& str2 = std::wstring(L"エラーメッセージ") );
+#ifdef UNICODE
+void Erroer_Message(const std::wstring& str1, const std::wstring& str2 = std::wstring(L"エラーメッセージ"));
 void Erroer_Message(const std::string& str1, const std::string& str2 = std::string("エラーメッセージ"));
+#else
+void Erroer_Message(const std::string& str1, const std::string& str2 = std::string("エラーメッセージ"));
+#endif // !UNICODE
 
 #endif // !COMMON_H

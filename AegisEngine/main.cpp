@@ -16,9 +16,13 @@
 #endif // _DEBUG
 
 
-
+#ifdef UNICODE
 static const wchar_t* CLASS_NAME = L"DX11AppClass";
 static const wchar_t* WINDOW_NAME = L"AegisEngine";
+#else
+static const char* CLASS_NAME = "DX11AppClass";
+static const char* WINDOW_NAME = "AegisEngine";
+#endif // !UNICODE
 
 LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 

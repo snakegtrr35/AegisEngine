@@ -27,7 +27,8 @@ void CINPUT::onRawInput(WPARAM wParam, LPARAM lParam)
 
 	if (GetRawInputData((HRAWINPUT)lParam, RID_INPUT, lpb, &dwSize,
 		sizeof(RAWINPUTHEADER)) != dwSize)
-		OutputDebugString(TEXT("GetRawInputData does not return correct size !\n"));
+		//OutputDebugString(TEXT("GetRawInputData does not return correct size !\n"));
+		OutputDebugString("GetRawInputData does not return correct size !\n");
 
 	RAWINPUT* raw = (RAWINPUT*)lpb;
 

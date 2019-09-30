@@ -10,19 +10,6 @@
 extern XMFLOAT2 center;
 extern XMFLOAT2 wh;
 
-My_imgui::My_imgui()
-{
-	show_demo_window = false;
-	show_another_window = false;
-	clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
-	f = 0.0f;
-	counter = 0;
-}
-
-My_imgui::~My_imgui()
-{
-}
-
 void My_imgui::Init(HWND hWnd)
 {
 	// Setup Dear ImGui context
@@ -65,6 +52,7 @@ void My_imgui::Draw(void)
 			ImGui::ShowDemoWindow(&show_demo_window);
 
 		// 2. Show a simple window that we create ourselves. We use a Begin/End pair to created a named window.
+		if(show_default_window)
 		{
 			// Create a window called "Hello, world!" and append into it.
 			ImGui::Begin("Hello, world!");
@@ -149,6 +137,7 @@ void My_imgui::Draw(void)
 				if (ImGui::BeginMenu("Setting"))
 				{
 					ImGui::MenuItem("Style Editor", NULL, &show_app_style_editor);
+					ImGui::Checkbox("Default Window", &show_default_window);      // Edit bools storing our window open/close state
 					ImGui::EndMenu();
 				}
 
