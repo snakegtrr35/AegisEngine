@@ -54,14 +54,12 @@ void MAIN_MENU::Init()
 
 	{
 		auto player = Add_Game_Object<PLAYER>(LAYER_NAME::GAMEOBJECT, "player");
-
-		//player->Set_Object_Name("player");
 	}
 
 	{
 		MESH_DOOM* pmd = Add_Game_Object<MESH_DOOM>(LAYER_NAME::GAMEOBJECT, "sky_doom");
 
-		pmd->Init();
+		//pmd->Init();
 	}
 
 	{

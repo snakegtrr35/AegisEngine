@@ -11,14 +11,21 @@
 class BOUNDING : public GAME_OBJECT {
 private:
 protected:
+
+	COLOR Color;
+
 public:
-	BOUNDING() {}
+	BOUNDING() : Color(COLOR(0.f, 1.0f, 0.f, 1.0f)) {}
 	virtual ~BOUNDING() {}
 
 	void Init(void) override {}
 	void Draw(void) override {}
 	void Update(void) override {}
 	void Uninit(void) override {}
+
+	void Set_Color(const COLOR& color) {
+		Color = color;
+	}
 };
 
 // ‹…

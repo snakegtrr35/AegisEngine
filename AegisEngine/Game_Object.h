@@ -7,7 +7,7 @@
 
 class GAME_OBJECT {
 private:
-	static unordered_set<string> Object_Name_Set;
+	static unordered_map<size_t, string> Object_Name_Map;
 
 protected:
 	string Object_Name;
@@ -55,14 +55,18 @@ public:
 
 	void Set_Object_Name(const string& name) {
 
-		if (Object_Name_Set.find(name) == Object_Name_Set.end())
+		hash<string> hasher;
+
+		size_t hash = hasher(name);
+
+		if (Object_Name_Map.find(hash) == Object_Name_Map.end())
 		{
-			Object_Name_Set.insert(name);
+			Object_Name_Map[hash] = name;
 			Object_Name = name;
 		}
 		else
 		{
-			Object_Name_Set.insert("none");
+			Erroer_Message("Šù‚ÉŽg‚í‚ê‚Ä‚¢‚é–¼‘O‚Å‚·");
 		}
 	};
 

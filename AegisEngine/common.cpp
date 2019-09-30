@@ -1,7 +1,7 @@
 #include	"common.h"
 #include	<locale.h>
 
-std::wstring stringTowstring(std::string& font)
+std::wstring stringTowstring(const std::string& font)
 {
 	std::wstring f;
 	wchar_t	wStrW[1024];
@@ -17,4 +17,19 @@ std::wstring stringTowstring(std::string& font)
 	f = wStrW;
 
 	return f;
+}
+
+void Erroer_Message(const std::wstring& str1, const std::wstring& str2)
+{
+	MessageBox(GetWindow(), str1.c_str(), str2.c_str(), MB_OK | MB_ICONWARNING);
+}
+
+void Erroer_Message(const std::string& str1, const std::string& str2)
+{
+	std::wstring str01, str02;
+
+	str01 = stringTowstring(str1);
+	str02 = stringTowstring(str2);
+
+	MessageBox(GetWindow(), str01.c_str(), str02.c_str(), MB_OK | MB_ICONWARNING);
 }

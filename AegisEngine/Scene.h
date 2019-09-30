@@ -76,8 +76,6 @@ public:
 	template <typename T>
 	static T* Add_Game_Object(LAYER_NAME layer, const string& name)
 	{
-		//if(GAME_OBJECT::Object_Name_Set.find(name) != GAME_OBJECT::Object_Name_Set.end())
-
 		T* object = new T();
 
 		object->Init();

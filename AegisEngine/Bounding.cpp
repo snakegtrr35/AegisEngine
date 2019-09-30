@@ -35,7 +35,7 @@ void BOUNDING_SHPERE::Init(void)
 		{
 			vertex[i].Position = XMFLOAT3(cosf(angle * i) * Radius, sinf(angle * i) * Radius, 0.0f);
 			vertex[i].Normal = XMFLOAT3(0.0f, 0.0f, 0.0f);
-			vertex[i].Diffuse = XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f);
+			vertex[i].Diffuse = XMFLOAT4(Color.r, Color.g, Color.b, Color.a);
 			vertex[i].TexCoord = XMFLOAT2(0.0f, 0.0f);
 		}
 

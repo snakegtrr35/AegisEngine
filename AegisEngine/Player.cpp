@@ -38,13 +38,18 @@ PLAYER::PLAYER(void)
 
 	dynamic_cast<COLLISIION_SPHERE*>(Collision)->Set_Position(Position);
 
-	dynamic_cast<COLLISIION_SPHERE*>(Collision)->Set_Radius(10.0f);
+	dynamic_cast<COLLISIION_SPHERE*>(Collision)->Set_Radius(3.0f);
 
-	Shpere = new BOUNDING_SHPERE();
+	{
+		COLOR color(1.0f, 0.f, 0.f, 1.0f);
 
-	Shpere->Set_Position(Position);
-	Shpere->Set_Radius(10.0f);
-	Shpere->Init();
+		Shpere = new BOUNDING_SHPERE();
+
+		Shpere->Set_Position(Position);
+		Shpere->Set_Radius(3.0f);
+		Shpere->Set_Color(color);
+		Shpere->Init();
+	}
 
 	//shadow = new CIRCLE_SHADOW();
 	//shadow->Set_Position(&Position);
@@ -159,6 +164,7 @@ void PLAYER::Update(void)
 
 	dynamic_cast<COLLISIION_SPHERE*>(Collision)->Set_Position(Position);
 	Shpere->Set_Position(Position);
+	Shpere->Set_Scaling(Scaling);
 
 	// âeÇÃçXêV
 	{

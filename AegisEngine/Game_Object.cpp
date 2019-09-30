@@ -1,3 +1,3 @@
 #include	"Game_Object.h"
 
-unordered_set<string> GAME_OBJECT::Object_Name_Set;
+unordered_map<size_t, string> GAME_OBJECT::Object_Name_Map;
