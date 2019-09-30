@@ -14,7 +14,6 @@ ID3D11RenderTargetView* CRenderer::m_RenderTargetView = nullptr;
 ID3D11DepthStencilView* CRenderer::m_DepthStencilView = nullptr;
 
 
-
 ID3D11VertexShader*		CRenderer::m_VertexShader[3] = { nullptr };
 ID3D11PixelShader*      CRenderer::m_PixelShader[2] = { nullptr };
 ID3D11InputLayout*      CRenderer::m_VertexLayout = nullptr;
@@ -56,7 +55,7 @@ bool CRenderer::Init()
 	sd.SampleDesc.Quality = 0;
 	sd.Windowed = TRUE;
 
-	hr = D3D11CreateDeviceAndSwapChain( NULL,
+	hr = D3D11CreateDeviceAndSwapChain(	NULL,
 										D3D_DRIVER_TYPE_HARDWARE,
 										NULL,
 										0,
@@ -86,10 +85,20 @@ bool CRenderer::Init()
 	}
 	pBackBuffer->Release();
 
-	IDXGIFactory* factory = nullptr;
+	// ウィンドウアソシエーション
+	{
+		IDXGIDevice* pDXGIDevice;
+		hr = m_D3DDevice->QueryInterface(__uuidof(IDXGIDevice), (void**)& pDXGIDevice);
+		if (FAILED(hr))
+		{
+			FAILDE_ASSERT;
+			return false;
+		}
 
-	//m_SwapChain->SetFullscreenState(TRUE, nullptr);
+	m_SwapChain->SetFullscreenState(TRUE, nullptr);
 
+	// フルスクリーン
+	//Change_Window_Mode();
 
 	//ステンシル用テクスチャー作成
 	ID3D11Texture2D* depthTexture = NULL;
@@ -412,6 +421,14 @@ bool CRenderer::Init()
 
 void CRenderer::Uninit()
 {
+	BOOL FullScreen;
+	m_SwapChain->GetFullscreenState(&FullScreen, NULL);
+	// フルスクリーンのとき
+	if (FullScreen == TRUE)
+	{
+		m_SwapChain->SetFullscreenState(FALSE, NULL);
+	}
+
 	// オブジェクト解放
 	SAFE_RELEASE(m_WorldBuffer);
 	SAFE_RELEASE(m_ViewBuffer);
@@ -511,7 +528,22 @@ void CRenderer::Get2DBlendState(D3D11_BLEND_DESC& blend_state)
 	blend_state.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
 }
 
+void CRenderer::Change_Window_Mode()
+{
+	HRESULT hr = E_FAIL;
 
+	BOOL FullScreen;
+
+	// GetFullscreenState
+	hr = m_SwapChain->GetFullscreenState(&FullScreen, NULL);
+
+	// SetFullscreenState
+	hr = m_SwapChain->SetFullscreenState(!FullScreen, NULL);
+
+	// 初期起動をフルスクリーンモードにした場合、ウィンドウモードに変更すると
+	// ウィンドウがアクティブにならないので表示させる。
+	::ShowWindow(GetWindow(), SW_SHOW);
+}
 
 void CRenderer::Begin()
 {
@@ -654,7 +686,7 @@ void CRenderer::Set_Shader(const SHADER_INDEX_V v_index, const SHADER_INDEX_P p_
 	}
 }
 
-void CRenderer::CreateRenderTexture(void)
+void CRenderer::CreateRenderTexture()
 {
 	HRESULT hr;
 
@@ -768,7 +800,7 @@ void CRenderer::SetRenderTargetView(bool flag)
 	}
 }
 
-ID3D11ShaderResourceView* CRenderer::Get_SRV(void)
+ID3D11ShaderResourceView* CRenderer::Get_SRV()
 {
 	return My_ShaderResourceView;
 }

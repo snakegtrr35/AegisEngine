@@ -14,6 +14,7 @@
 
 #include	"Renderer.h"
 #include	"Mesh.h"
+#include	"Animetion_State_Machine.h"
 #include	"Game_Object.h"
 
 class CMODEL : public GAME_OBJECT {
@@ -35,6 +36,8 @@ private:
 
 	DWORD Frame;
 
+	ANIMETION_STATE Anime_State_Machine;
+
 public:
 	CMODEL();
 
@@ -50,6 +53,11 @@ public:
 
 	void Set_Enable(const bool flag);
 	const bool Get_Enable();
+
+	ANIMETION_STATE& Get() {
+		return Anime_State_Machine;
+	}
+
 };
 
 #endif // !MODEL_LOADER_H

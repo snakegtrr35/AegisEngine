@@ -8,15 +8,19 @@
 class CMODEL;
 class BULLET;
 class COLLISION;
-class CIRCLE_SHADOW;
+class BOUNDING_SHPERE;
+//class CIRCLE_SHADOW;
 
 class PLAYER : public GAME_OBJECT {
 private:
 	CMODEL* Model;
-	CIRCLE_SHADOW* shadow;
+	//CIRCLE_SHADOW* shadow;
 	COLLISION* Collision;
+	BOUNDING_SHPERE* Shpere;
 
-	float HP;
+	// true = Stop false = Walk
+	bool AnimType;
+	float Blend;
 
 public:
 	PLAYER();
@@ -34,12 +38,8 @@ public:
 		return Collision;
 	}
 
-	const float Get_HP() {
-		return HP;
-	}
-
-	void Damage() {
-		HP -= 2.0f;
+	float* Get() {
+		return &Blend;
 	}
 };
 

@@ -17,7 +17,7 @@ void MAIN_MENU::Init()
 {
 	// カメラ
 	{
-		CCamera* camera = Add_Game_Object<CCamera>(LAYER_NAME::BACKGROUND);
+		CCamera* camera = Add_Game_Object<CCamera>(LAYER_NAME::BACKGROUND, "camera");
 
 		camera->Set_Lenght(15.0f);
 		camera->Set_Viewing_Angle(55.0f);
@@ -28,44 +28,40 @@ void MAIN_MENU::Init()
 		//camera->Set_Rotate_Enable(false);
 	}
 
-	//プレイヤー
+	////プレイヤー
+	//{
+	//	CMODEL* player = Add_Game_Object<CMODEL>(LAYER_NAME::GAMEOBJECT);
+
+	//	//string name("asset/model/herorifle.fbx");
+	//	//string name("asset/model/human02.fbx");
+	//	//string name("asset/model/untitled.fbx");
+	//	string name("asset/model/Dragon 2.5_fbx.fbx");
+
+	//	XMFLOAT3 f3;
+
+	//	player->Set_Object_Name("player");
+
+	//	f3 = XMFLOAT3(0.f, 0.f, 0.f);
+	//	player->Set_Position(f3);
+
+	//	f3 = XMFLOAT3(0.f, 0.f, 0.f);
+	//	player->Set_Rotation(f3);
+
+	//	//f3 = XMFLOAT3(0.1f, 0.1f, 0.1f);
+	//	f3 = XMFLOAT3(1.0f, 1.0f, 1.0f);
+	//	player->Set_Scaling(f3);
+
+	//	player->Load(name);
+	//}
+
 	{
-		CMODEL* player = Add_Game_Object<CMODEL>(LAYER_NAME::GAMEOBJECT);
-
-		//string name("asset/model/herorifle.fbx");
-		string name("asset/model/human02.fbx");
-		//string name("asset/model/untitled.fbx");
-		//string name("asset/model/Dragon 2.5_fbx.fbx");
-
-		XMFLOAT3 f3;
-
-		player->Set_Object_Name("player");
-
-		f3 = XMFLOAT3(0.f, 0.f, 0.f);
-		player->Set_Position(f3);
-
-		f3 = XMFLOAT3(0.f, 0.f, 0.f);
-		player->Set_Rotation(f3);
-
-		//f3 = XMFLOAT3(0.1f, 0.1f, 0.1f);
-		f3 = XMFLOAT3(1.0f, 1.0f, 1.0f);
-		player->Set_Scaling(f3);
-
-		player->Load(name);
-	}
-
-	{
-		MESH_DOOM* pmd = Add_Game_Object<MESH_DOOM>(LAYER_NAME::GAMEOBJECT);
+		MESH_DOOM* pmd = Add_Game_Object<MESH_DOOM>(LAYER_NAME::GAMEOBJECT, "sky_doom");
 
 		pmd->Init();
-
-		pmd->Set_Object_Name("sky_doom");
 	}
 
 	{
-		auto grid = Add_Game_Object<GRID>(LAYER_NAME::GAMEOBJECT);
-
-		grid->Set_Object_Name("grid");
+		Add_Game_Object<GRID>(LAYER_NAME::GAMEOBJECT);
 	}
 
 	/*// テキスト画像
@@ -121,12 +117,42 @@ void MAIN_MENU::Update()
 		}
 	}*/
 
+	{
+		auto player = Get_Game_Object<CMODEL>("player");
+
+		if (KEYBOARD::Trigger_Keyboard(VK_1))
+		{
+			string name("asset/model/human01_Stop.fbx");
+
+			//player->Reload(name);
+		}
+
+		if (KEYBOARD::Trigger_Keyboard(VK_2))
+		{
+			string name("asset/model/human01_Walk.fbx");
+
+			//player->Reload(name);
+		}
+
+		if (KEYBOARD::Trigger_Keyboard(VK_3))
+		{
+			string name("asset/model/human01_Jump.fbx");
+
+			//player->Reload(name);
+		}
+	}
+
 	if (FADE::End_Fade())
 	{
 		if(flag)
 			SCENE_MANAGER::Set_Scene<GAME>();
 
 		flag = true;
+	}
+
+	if (KEYBOARD::Trigger_Keyboard(VK_TAB))
+	{
+		CRenderer::Change_Window_Mode();
 	}
 }
 

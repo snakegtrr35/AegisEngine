@@ -178,7 +178,6 @@ private:
 	static ID3D11DepthStencilView* m_DepthStencilView;
 
 
-
 	static ID3D11VertexShader*		m_VertexShader[3];
 	static ID3D11PixelShader*		m_PixelShader[2];
 
@@ -212,6 +211,7 @@ public:
 	static void GetSubtractBlendState(D3D11_BLEND_DESC& blend_state);
 	static void Get2DBlendState(D3D11_BLEND_DESC& blend_state);
 	static void SetDepthEnable(bool Enable);
+	static void Change_Window_Mode();
 
 	//==============================
 	// Scaling : ägëÂèkè¨ÇÃíl
@@ -228,15 +228,15 @@ public:
 	//static void SetTexture(CTexture* Texture );
 	static void DrawIndexed( unsigned int IndexCount, unsigned int StartIndexLocation, int BaseVertexLocation );
 
-	static ID3D11Device* GetDevice( void ){ return m_D3DDevice; }
+	static ID3D11Device* GetDevice(){ return m_D3DDevice; }
 	static ID3D11DeviceContext* GetDeviceContext( void ){ return m_ImmediateContext; }
 
 	static void Set_Shader(const SHADER_INDEX_V v_index = SHADER_INDEX_V::DEFAULT, const SHADER_INDEX_P p_index = SHADER_INDEX_P::DEFAULT);
 
 	// é©ëO
-	static void CreateRenderTexture(void);
+	static void CreateRenderTexture();
 	static void SetRenderTargetView(bool flag);
-	static ID3D11ShaderResourceView*	Get_SRV(void);
+	static ID3D11ShaderResourceView*	Get_SRV();
 	static ID3D11RenderTargetView*		My_RenderTargetView;
 	static ID3D11ShaderResourceView*	My_ShaderResourceView;
 

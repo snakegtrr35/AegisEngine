@@ -55,6 +55,7 @@ using namespace DirectX;
 #include	<unordered_set>
 #include	<memory>
 #include	<string>
+#include	<functional>
 #include	<random>
 #include	<algorithm>
 #include	<functional>

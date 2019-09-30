@@ -9,6 +9,9 @@ XMMATRIX CCamera::m_ViewMatrix;
 
 float CCamera::Lenght = 10.0f;
 
+XMFLOAT2 center = XMFLOAT2(SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.5f);
+XMFLOAT2 wh = XMFLOAT2(SCREEN_WIDTH, SCREEN_HEIGHT);
+
 void CCamera::Init()
 {
 	XMFLOAT4 at = XMFLOAT4(0.0f, 0.0f, 0.0f, 0.0f);
@@ -37,10 +40,15 @@ void CCamera::Init()
 	Pos = At - Front * Lenght;
 
 	// ビューポートの設定設定
-	Viewport.left = 0;
+	/*Viewport.left = 0;
 	Viewport.top = 0;
 	Viewport.right = SCREEN_WIDTH;
-	Viewport.bottom = SCREEN_HEIGHT;
+	Viewport.bottom = SCREEN_HEIGHT;*/
+
+	Viewport.left = center.x - wh.x * 0.5f;
+	Viewport.top = center.y - wh.y * 0.5f;
+	Viewport.right = center.x + wh.x * 0.5f;
+	Viewport.bottom = center.y + wh.y * 0.5f;
 
 	Rotate = 90.0f;
 
@@ -55,7 +63,7 @@ void CCamera::Update()
 {
 	XMFLOAT2 point = MOUSE::Get_Position();
 
-	bool flag = KEYBOARD::Press_Keyboard(VK_SHIFT);
+	bool flag = !KEYBOARD::Press_Keyboard(VK_SHIFT);
 
 	bool flag2 = KEYBOARD::Press_Keyboard(VK_RBUTTON);
 
@@ -165,24 +173,24 @@ void CCamera::Update()
 	// 移動
 	if (MoveEnable)
 	{
-		if (KEYBOARD::Press_Keyboard(VK_W) || (MOUSE::Get_Wheel_Move_Flag() == WHEEL_MOVE_ENUM::UP) )
+		if (KEYBOARD::Press_Keyboard(VK_UP) || (MOUSE::Get_Wheel_Move_Flag() == WHEEL_MOVE_ENUM::UP) )
 		{
-			Pos += f * 0.2f;
+			Pos += f * 0.4f;
 		}
 
-		if (KEYBOARD::Press_Keyboard(VK_S) || (MOUSE::Get_Wheel_Move_Flag() == WHEEL_MOVE_ENUM::DOWN))
+		if (KEYBOARD::Press_Keyboard(VK_DOWN) || (MOUSE::Get_Wheel_Move_Flag() == WHEEL_MOVE_ENUM::DOWN))
 		{
-			Pos -= f * 0.2f;
+			Pos -= f * 0.4f;
 		}
 
-		if (KEYBOARD::Press_Keyboard(VK_D))
+		if (KEYBOARD::Press_Keyboard(VK_RIGHT))
 		{
-			Pos += r * 0.2f;
+			Pos += r * 0.4f;
 		}
 
-		if (KEYBOARD::Press_Keyboard(VK_A))
+		if (KEYBOARD::Press_Keyboard(VK_LEFT))
 		{
-			Pos -= r * 0.2f;
+			Pos -= r * 0.4f;
 		}
 	}
 
@@ -191,6 +199,11 @@ void CCamera::Update()
 		At = Front * Lenght + Pos;
 		Pos = At - Front * Lenght;
 	}
+
+	Viewport.left = center.x - wh.x * 0.5f;
+	Viewport.top = center.y - wh.y * 0.5f;
+	Viewport.right = center.x + wh.x * 0.5f;
+	Viewport.bottom = center.y + wh.y * 0.5f;
 }
 
 void CCamera::Draw()

@@ -22,8 +22,6 @@ void GAME::Init()
 	// プレイヤー
 	{
 		PLAYER* player = Add_Game_Object<PLAYER>(LAYER_NAME::GAMEOBJECT);
-
-		hp = player->Get_HP();
 	}
 
 	// レティクル画像
@@ -378,11 +376,6 @@ void GAME::Update()
 				}
 			}
 		}
-
-		PLAYER* player = Get_Game_Object<PLAYER>();
-
-		if(nullptr != player)
-			hp = std::clamp(player->Get_HP(), 0.0f, 100.0f);
 	}
 
 	// 敵

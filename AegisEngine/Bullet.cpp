@@ -156,7 +156,6 @@ void BULLET::Update(void)
 			}
 
 			CManager::Get_Scene()->Destroy_Game_Object(this);
-			player->Damage();
 
 			AUDIO_MANAGER::Play_Sound_Object(SOUND_INDEX::SOUND_INDEX_EXPLOSION);
 		}

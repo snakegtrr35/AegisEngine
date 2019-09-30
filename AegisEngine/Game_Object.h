@@ -7,6 +7,7 @@
 
 class GAME_OBJECT {
 private:
+	static unordered_map<size_t, string> Object_Name_Map;
 
 protected:
 	string Object_Name;
@@ -53,10 +54,8 @@ public:
 	};
 
 	void Set_Object_Name(const string& name) {
-
 		Object_Name = name;
 	};
-
 
 
 	XMFLOAT3* const Get_Position() {
@@ -97,7 +96,7 @@ public:
 		Scaling = scaling;
 	};
 
-	COMPONENT_MANEGER* Get_Component() {
+	COMPONENT_MANEGER* const Get_Component() {
 		return &Component;
 	}
 };
