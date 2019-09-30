@@ -235,7 +235,7 @@ void My_imgui::Draw(void)
 				ImGuiWindowFlags window_flag = ImGuiWindowFlags_NoResize;
 
 				static float vec4_Direction[] = { 0.0f, 0.0f, 1.0f, 0.0f };
-				static float vec4_Diffuse[] = { 1.2f, 1.2f, 1.2f, 1.0f };
+				static float vec4_Diffuse[] = { 1.0f, 1.0f, 1.0f, 1.0f };
 				static float vec4_Ambient[] = { 0.2f, 0.2f, 0.2f, 1.0f };
 
 				ImGui::SetNextWindowSize(ImVec2(300, 150), ImGuiCond_Always);

@@ -54,7 +54,20 @@ public:
 	};
 
 	void Set_Object_Name(const string& name) {
-		Object_Name = name;
+
+		hash<string> hasher;
+
+		size_t hash = hasher(name);
+
+		if (Object_Name_Map.find(hash) == Object_Name_Map.end())
+		{
+			Object_Name_Map[hash] = name;
+			Object_Name = name;
+		}
+		else
+		{
+			Erroer_Message("Šù‚ÉŽg‚í‚ê‚Ä‚¢‚é–¼‘O‚Å‚·");
+		}
 	};
 
 

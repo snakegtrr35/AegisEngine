@@ -95,7 +95,28 @@ bool CRenderer::Init()
 			return false;
 		}
 
-	m_SwapChain->SetFullscreenState(TRUE, nullptr);
+		IDXGIAdapter* pDXGIAdapter;
+		hr = pDXGIDevice->GetParent(__uuidof(IDXGIAdapter), (void**)& pDXGIAdapter);
+		if (FAILED(hr))
+		{
+			FAILDE_ASSERT;
+			return false;
+		}
+
+		IDXGIFactory* pIDXGIFactory;
+		hr = pDXGIAdapter->GetParent(__uuidof(IDXGIFactory), (void**)& pIDXGIFactory);
+		if (FAILED(hr))
+		{
+			FAILDE_ASSERT;
+			return false;
+		}
+
+		pIDXGIFactory->MakeWindowAssociation(GetWindow(), DXGI_MWA_NO_ALT_ENTER);
+
+		SAFE_RELEASE(pIDXGIFactory);
+		SAFE_RELEASE(pDXGIAdapter);
+		SAFE_RELEASE(pDXGIDevice);
+	}
 
 	// フルスクリーン
 	//Change_Window_Mode();
@@ -405,7 +426,7 @@ bool CRenderer::Init()
 	// ライト初期化
 	LIGHT light;
 	light.Direction = XMFLOAT4(0.0f, 0.0f, 1.0f, 0.0f);
-	light.Diffuse = COLOR(1.2f, 1.2f, 1.2f, 1.0f);
+	light.Diffuse = COLOR(1.0f, 1.0f, 1.0f, 1.0f);
 	light.Ambient = COLOR(0.2f, 0.2f, 0.2f, 1.0f);
 	SetLight(&light);
 
@@ -542,7 +563,7 @@ void CRenderer::Change_Window_Mode()
 
 	// 初期起動をフルスクリーンモードにした場合、ウィンドウモードに変更すると
 	// ウィンドウがアクティブにならないので表示させる。
-	::ShowWindow(GetWindow(), SW_SHOW);
+	ShowWindow(GetWindow(), SW_SHOW);
 }
 
 void CRenderer::Begin()
@@ -623,7 +644,7 @@ void CRenderer::Light_Identity()
 	// ライト初期化
 	LIGHT light;
 	light.Direction = XMFLOAT4(0.0f, 0.0f, 1.0f, 0.0f);
-	light.Diffuse = COLOR(1.2f, 1.2f, 1.2f, 1.0f);
+	light.Diffuse = COLOR(1.0f, 1.0f, 1.0f, 1.0f);
 	light.Ambient = COLOR(0.2f, 0.2f, 0.2f, 1.0f);
 
 	m_ImmediateContext->UpdateSubresource(m_LightBuffer, 0, NULL, &light, 0, 0);
