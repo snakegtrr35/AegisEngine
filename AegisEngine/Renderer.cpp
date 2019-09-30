@@ -12,7 +12,7 @@ ID3D11DeviceContext*    CRenderer::m_ImmediateContext = nullptr;
 IDXGISwapChain*         CRenderer::m_SwapChain = nullptr;
 ID3D11RenderTargetView* CRenderer::m_RenderTargetView = nullptr;
 ID3D11DepthStencilView* CRenderer::m_DepthStencilView = nullptr;
-
+IDXGIAdapter1*			CRenderer::m_Adapter = nullptr;
 
 
 ID3D11VertexShader*		CRenderer::m_VertexShader[3] = { nullptr };
@@ -41,6 +41,60 @@ bool CRenderer::Init()
 {
 	HRESULT hr = S_OK;
 
+	//// アダプターの作成
+	//{
+	//	IDXGIFactory* pFactory = nullptr;
+
+	//	if (m_Adapter == nullptr)
+	//	{
+	//		// ファクトリを作成する
+	//		hr = CreateDXGIFactory(__uuidof(IDXGIFactory), (void**)(&pFactory));
+	//		if (FAILED(hr))
+	//		{
+	//			FAILDE_ASSERT;
+	//			return false;
+	//		}
+
+	//		// デフォルトアダプターを取得
+	//		hr = pFactory->EnumAdapters(0, &m_Adapter);
+	//		if (FAILED(hr))
+	//		{
+	//			FAILDE_ASSERT;
+	//			return false;
+	//		}
+	//	}
+	//	SAFE_RELEASE(pFactory);
+	//}
+
+	// アダプターの作成
+	{
+		IDXGIFactory1* pFactory = nullptr;
+		hr = CreateDXGIFactory1(__uuidof(IDXGIFactory), (void**)(&pFactory));
+		if (FAILED(hr)) {
+			throw std::runtime_error("IDXGIFactoryクラスの作成に失敗しました。");
+		}
+
+		IDXGIAdapter1* pAdapterIt = nullptr;
+		for (UINT adapterIndex = 0; S_OK == pFactory->EnumAdapters1(adapterIndex, &pAdapterIt); adapterIndex++)
+		{
+			DXGI_ADAPTER_DESC1 desc;
+			pAdapterIt->GetDesc1(&desc);
+
+			// ...アダプタ情報のログ出力は省略
+
+			if (nullptr == m_Adapter)
+			{
+				if (desc.Flags ^= DXGI_ADAPTER_FLAG_SOFTWARE)
+				{
+					m_Adapter = pAdapterIt;
+				}
+			}
+			//使い終わったら必ずReleaseすること
+			SAFE_RELEASE(pAdapterIt);
+		}
+		SAFE_RELEASE(pFactory);
+	}
+
 	// デバイス、スワップチェーン、コンテキスト生成
 	DXGI_SWAP_CHAIN_DESC sd;
 	ZeroMemory( &sd, sizeof( sd ) );
@@ -56,7 +110,7 @@ bool CRenderer::Init()
 	sd.SampleDesc.Quality = 0;
 	sd.Windowed = TRUE;
 
-	hr = D3D11CreateDeviceAndSwapChain( NULL,
+	hr = D3D11CreateDeviceAndSwapChain(	m_Adapter,
 										D3D_DRIVER_TYPE_HARDWARE,
 										NULL,
 										0,
@@ -87,7 +141,27 @@ bool CRenderer::Init()
 	pBackBuffer->Release();
 
 	// フルスクリーン
-	//m_SwapChain->SetFullscreenState(TRUE, nullptr);
+	//Change_Window_Mode();
+
+	//// ウィンドウアソシエーション
+	//{
+	//	IDXGIFactory* pFactory = nullptr;
+
+	//	// ファクトリーを作成する
+	//	// CreateDXGIFactoryで作成したファクトリーを使用すると実行できるがワーニングエラーになるので IDXGIAdapter から作成する。
+	//	hr = m_Adapter->GetParent(__uuidof(IDXGIFactory), (void**)& pFactory);
+	//	if (FAILED(hr))
+	//	{
+	//		FAILDE_ASSERT;
+	//		return false;
+	//	}
+
+	//	// 表示モードの自動切換えを無効にする。
+	//	// MakeWindowAssociation
+	//	hr = pFactory->MakeWindowAssociation(GetWindow(), DXGI_MWA_NO_WINDOW_CHANGES);
+
+	//	SAFE_RELEASE(pFactory);
+	//}
 
 
 	//ステンシル用テクスチャー作成
@@ -411,6 +485,15 @@ bool CRenderer::Init()
 
 void CRenderer::Uninit()
 {
+	BOOL FullScreen;
+	m_SwapChain->GetFullscreenState(&FullScreen, NULL);
+	// フルスクリーンのとき
+	if (FullScreen == TRUE)
+	{
+		m_SwapChain->SetFullscreenState(FALSE, NULL);
+	}
+	SAFE_RELEASE(m_Adapter);
+
 	// オブジェクト解放
 	SAFE_RELEASE(m_WorldBuffer);
 	SAFE_RELEASE(m_ViewBuffer);
@@ -510,7 +593,22 @@ void CRenderer::Get2DBlendState(D3D11_BLEND_DESC& blend_state)
 	blend_state.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
 }
 
+void CRenderer::Change_Window_Mode()
+{
+	HRESULT hr = E_FAIL;
 
+	BOOL FullScreen;
+
+	// GetFullscreenState
+	hr = m_SwapChain->GetFullscreenState(&FullScreen, NULL);
+
+	// SetFullscreenState
+	hr = m_SwapChain->SetFullscreenState(!FullScreen, NULL);
+
+	// 初期起動をフルスクリーンモードにした場合、ウィンドウモードに変更すると
+	// ウィンドウがアクティブにならないので表示させる。
+	::ShowWindow(GetWindow(), SW_SHOW);
+}
 
 void CRenderer::Begin()
 {
@@ -653,7 +751,7 @@ void CRenderer::Set_Shader(const SHADER_INDEX_V v_index, const SHADER_INDEX_P p_
 	}
 }
 
-void CRenderer::CreateRenderTexture(void)
+void CRenderer::CreateRenderTexture()
 {
 	HRESULT hr;
 
@@ -767,7 +865,7 @@ void CRenderer::SetRenderTargetView(bool flag)
 	}
 }
 
-ID3D11ShaderResourceView* CRenderer::Get_SRV(void)
+ID3D11ShaderResourceView* CRenderer::Get_SRV()
 {
 	return My_ShaderResourceView;
 }
