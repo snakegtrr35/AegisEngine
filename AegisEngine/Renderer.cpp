@@ -118,9 +118,6 @@ bool CRenderer::Init()
 		SAFE_RELEASE(pDXGIDevice);
 	}
 
-	// フルスクリーン
-	//Change_Window_Mode();
-
 	//ステンシル用テクスチャー作成
 	ID3D11Texture2D* depthTexture = NULL;
 	D3D11_TEXTURE2D_DESC td;
@@ -182,7 +179,6 @@ bool CRenderer::Init()
 	m_D3DDevice->CreateRasterizerState( &rd, &rs );
 
 	m_ImmediateContext->RSSetState( rs );
-
 
 
 

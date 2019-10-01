@@ -15,7 +15,7 @@ void My_imgui::Init(HWND hWnd)
 	// Setup Dear ImGui context
 	IMGUI_CHECKVERSION();
 	ImGui::CreateContext();
-	ImGuiIO& io = ImGui::GetIO(); (void)io;
+	ImGuiIO& io = ImGui::GetIO();
 	io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;  // Enable Keyboard Controls
 
 	// u8‚ðŽg‚¦‚Î“ú–{Œê‚Ì•\Ž¦‚Í‚Å‚«‚é
