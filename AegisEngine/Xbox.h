@@ -55,8 +55,8 @@ public:
 	//========================================
 	static bool Release(const int any_button, const unsigned char number = 0);
 
-	static XMINT2 const LeftStick(const int any_button, const unsigned char number = 0);
-	static XMINT2 const RightStick(const int any_button, const unsigned char number = 0);
+	static XMINT2 const LeftStick(const unsigned char number = 0);
+	static XMINT2 const RightStick(const unsigned char number = 0);
 };
 
 #endif // !XBOX_H

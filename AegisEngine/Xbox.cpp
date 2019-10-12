@@ -121,6 +121,7 @@ bool XBOX::Trigger(const int any_button, const unsigned char number)
 	{
 		return (Controllers[number].state.Gamepad.wButtons & any_button) ? true : false;
 	}
+	return false;
 }
 
 //========================================
@@ -154,12 +155,13 @@ bool XBOX::Release(const int any_button, const unsigned char number)
 			return false;
 		}
 	}
+	return false;
 }
 
 //========================================
 // 左スティック
 //========================================
-XMINT2 const XBOX::LeftStick(const int any_button, const unsigned char number)
+XMINT2 const XBOX::LeftStick(const unsigned char number)
 {
 	if (Controllers[number].ConnectEnable)
 	{
@@ -176,7 +178,7 @@ XMINT2 const XBOX::LeftStick(const int any_button, const unsigned char number)
 //========================================
 // 右スティック
 //========================================
-XMINT2 const XBOX::RightStick(const int any_button, const unsigned char number)
+XMINT2 const XBOX::RightStick(const unsigned char number)
 {
 	if (Controllers[number].ConnectEnable)
 	{
