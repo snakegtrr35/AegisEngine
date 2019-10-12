@@ -4,6 +4,7 @@
 #include "texture.h"
 #include <io.h>
 
+bool CRenderer::Stand_By_Enable = false;
 
 D3D_FEATURE_LEVEL       CRenderer::m_FeatureLevel = D3D_FEATURE_LEVEL_11_0;
 
@@ -218,9 +219,9 @@ bool CRenderer::Init()
 		return false;
 	}
 
-	//depthStencilDesc.DepthEnable = FALSE;
-	//depthStencilDesc.DepthWriteMask	= D3D11_DEPTH_WRITE_MASK_ZERO;
-	//m_D3DDevice->CreateDepthStencilState( &depthStencilDesc, &m_DepthStateDisable );//深度無効ステート
+	depthStencilDesc.DepthEnable = FALSE;
+	depthStencilDesc.DepthWriteMask	= D3D11_DEPTH_WRITE_MASK_ZERO;
+	m_D3DDevice->CreateDepthStencilState( &depthStencilDesc, &m_DepthStateDisable );//深度無効ステート
 
 	m_ImmediateContext->OMSetDepthStencilState( m_DepthStateEnable, NULL );
 
@@ -547,8 +548,7 @@ void CRenderer::Get2DBlendState(D3D11_BLEND_DESC& blend_state)
 
 void CRenderer::Change_Window_Mode()
 {
-	HRESULT hr = E_FAIL;
-
+	HRESULT hr;
 	BOOL FullScreen;
 
 	// GetFullscreenState
@@ -572,7 +572,26 @@ void CRenderer::Begin()
 
 void CRenderer::End()
 {
-	m_SwapChain->Present( 0, 0 );
+	if (false == Stand_By_Enable)
+	{
+		// 描画する
+	 	HRESULT hr = m_SwapChain->Present(0, 0);
+
+		if (DXGI_STATUS_OCCLUDED == hr)
+		{
+			Stand_By_Enable = true;		// スタンバイモードに入る
+		}
+	}
+	else
+	{
+		// 描画しない
+		HRESULT hr = m_SwapChain->Present(0, DXGI_PRESENT_TEST);
+
+		if (DXGI_STATUS_OCCLUDED != hr)
+		{
+			Stand_By_Enable = false;		// スタンバイモードを解除する
+		}
+	}
 }
 
 void CRenderer::SetDepthEnable( bool Enable )

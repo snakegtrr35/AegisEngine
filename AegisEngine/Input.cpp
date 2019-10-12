@@ -5,7 +5,8 @@ RAWINPUTDEVICE CINPUT::device[2];
 
 LRESULT CALLBACK CINPUT::subclassProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam, UINT_PTR uIdSubclass, DWORD_PTR dwRefData)
 {
-	if (uMsg == WM_INPUT) {
+	if (uMsg == WM_INPUT)
+	{
 		CINPUT* pInput = (CINPUT*)dwRefData;
 		pInput->onRawInput(wParam, lParam);
 	}

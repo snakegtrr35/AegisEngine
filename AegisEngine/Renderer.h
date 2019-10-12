@@ -241,6 +241,8 @@ public:
 	static ID3D11ShaderResourceView*	My_ShaderResourceView;
 
 	static D3D11_INPUT_ELEMENT_DESC animation_layout[6];
+
+	static bool Stand_By_Enable;
 };
 
 #endif // !RENDER_H

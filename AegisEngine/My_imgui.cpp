@@ -16,7 +16,7 @@ void My_imgui::Init(HWND hWnd)
 	IMGUI_CHECKVERSION();
 	ImGui::CreateContext();
 	ImGuiIO& io = ImGui::GetIO();
-	io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;  // Enable Keyboard Controls
+	io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard | ImGuiConfigFlags_DockingEnable;  // Enable Keyboard Controls
 
 	// u8を使えば日本語の表示はできる
 	ImFontConfig config;
@@ -232,13 +232,13 @@ void My_imgui::Draw(void)
 				ImGui::Begin("Directional Light", nullptr, window_flag);
 
 				ImGui::DragFloat3("Direction", vec4_Direction, 0.01f);
-				ImGui::SameLine(); HelpMarker((char*)u8"\"平行光源\" 向き\n");
+				ImGui::SameLine(); HelpMarker((char*)u8"\"平行光\" 向き\n");
 
 				ImGui::DragFloat3("Diffuse", vec4_Diffuse, 0.01f);
-				ImGui::SameLine(); HelpMarker((char*)u8"\"平行光源\" 直接光\n");
+				ImGui::SameLine(); HelpMarker((char*)u8"\"平行光\" 直接光\n");
 
 				ImGui::DragFloat3("Ambient", vec4_Ambient, 0.01f);
-				ImGui::SameLine(); HelpMarker((char*)u8"\"平行光源\" 環境光\n");
+				ImGui::SameLine(); HelpMarker((char*)u8"\"平行光\" 環境光\n");
 
 				ImGui::End();
 

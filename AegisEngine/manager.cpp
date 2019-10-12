@@ -7,7 +7,6 @@
 #include	"Timer.h"
 #include	"audio_clip.h"
 
-
 #ifdef _DEBUG
 #include	"My_imgui.h"
 #endif // _DEBUG
@@ -23,7 +22,7 @@ bool CManager::Init()
 {
 	HRESULT hr;
 
-	// DirectXTex‚Ì‰Šú‰»
+	// COM‚Ì‰Šú‰»
 	hr = CoInitializeEx(0, COINITBASE_MULTITHREADED);
 
 	if (FAILED(hr))
@@ -71,6 +70,11 @@ void CManager::Update()
 	pSceneManager->Update();
 
 	MOUSE::Reset_Wheel_Moveset();
+
+	if (KEYBOARD::Trigger_Keyboard(VK_F5))
+	{
+		CRenderer::Change_Window_Mode();
+	}
 }
 
 void CManager::Draw()
@@ -117,7 +121,7 @@ void CManager::Uninit()
 
 	CINPUT::Uninit();
 
-	// DirectXTex‚ÌI—¹ˆ—
+	// COM‚ÌI—¹ˆ—
 	CoUninitialize();
 }
 

@@ -20,6 +20,7 @@ public:
 	static SCENE* const Get_Scene();
 	static bool Get_GameEnd();
 	static void GameEnd();
+
 };
 
 #endif // !MANAGER_H

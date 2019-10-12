@@ -149,11 +149,6 @@ void MAIN_MENU::Update()
 
 		flag = true;
 	}
-
-	if (KEYBOARD::Trigger_Keyboard(VK_TAB))
-	{
-		CRenderer::Change_Window_Mode();
-	}
 }
 
 void MAIN_MENU::Uninit()

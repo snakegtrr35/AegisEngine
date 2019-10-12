@@ -269,7 +269,8 @@ private:
 				}
 
 				trans = trans1 * (1.0f - blend) + trans2 * blend;
-				puat = quat1 * (1.0f - blend) + quat2 *  blend;
+				//puat = quat1 * (1.0f - blend) + quat2 *  blend;
+				puat = XMQuaternionSlerp(quat1, quat2, blend);
 
 				world = XMMatrixRotationQuaternion(puat);
 
