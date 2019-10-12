@@ -64,6 +64,8 @@ bool CManager::Init()
 
 void CManager::Update()
 {
+	CROCK_TIMER::Update();
+
 	// インプットの更新
 	CINPUT::Update();
 
@@ -82,8 +84,6 @@ void CManager::Draw()
 #ifdef _DEBUG
 	g_MyImgui->Begin();
 #endif // _DEBUG
-
-	CROCK_TIMER::Update();
 
 	CRenderer::Begin();
 

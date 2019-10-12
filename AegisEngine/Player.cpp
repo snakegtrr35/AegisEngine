@@ -11,6 +11,8 @@
 
 #include	"audio_clip.h"
 
+float radius = 3.0f;
+
 PLAYER::PLAYER(void)
 {
 	Position = XMFLOAT3(0.0f, 0.0f, 0.0f);
@@ -46,9 +48,8 @@ PLAYER::PLAYER(void)
 		Shpere = new BOUNDING_SHPERE();
 
 		Shpere->Set_Position(Position);
-		Shpere->Set_Radius(3.0f);
+		Shpere->Set_Radius(radius);
 		Shpere->Set_Color(color);
-		Shpere->Init();
 	}
 
 	//shadow = new CIRCLE_SHADOW();
@@ -165,6 +166,7 @@ void PLAYER::Update(void)
 	dynamic_cast<COLLISIION_SPHERE*>(Collision)->Set_Position(Position);
 	Shpere->Set_Position(Position);
 	Shpere->Set_Scaling(Scaling);
+	Shpere->Set_Radius(radius);
 
 	// ‰e‚ÌXV
 	{

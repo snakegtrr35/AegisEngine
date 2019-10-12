@@ -43,7 +43,7 @@ ENEMY::ENEMY(void)
 	Aabb = CManager::Get_Scene()->Add_Game_Object<BOUNDING_AABB>(LAYER_NAME::GAMEOBJECT);
 
 	Aabb->Set_Position(Position);
-	Aabb->Set_Radius(XMFLOAT3(0.5f, 0.5f, 0.5f));
+	//Aabb->Set_Radius(XMFLOAT3(0.5f, 0.5f, 0.5f));
 }
 
 ENEMY::~ENEMY()

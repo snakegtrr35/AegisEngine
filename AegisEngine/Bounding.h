@@ -31,13 +31,15 @@ public:
 // 球
 class BOUNDING_SHPERE : public BOUNDING {
 private:
-	static unique_ptr<ID3D11Buffer, Release> pVertexBuffer;			// 頂点バッファ
-	static unique_ptr<ID3D11Buffer, Release> pIndexBuffer;			// インデックスバッファ
+	unique_ptr<ID3D11Buffer, Release> pVertexBuffer;		// 頂点バッファ
+	unique_ptr<ID3D11Buffer, Release> pIndexBuffer;			// インデックスバッファ
 
 	float Radius;
 	UINT IndexNum;
 
 	void Draw_Ring(const XMFLOAT3& rotation);
+
+	void Create_Buffer();
 
 public:
 	BOUNDING_SHPERE ();
@@ -46,7 +48,7 @@ public:
 	void Init(void) override;
 	void Draw(void) override;
 	void Update(void) override;
-	void Uninit(void) override {}
+	void Uninit(void) override;
 
 	void Set_Radius(const float radius);
 
@@ -56,10 +58,11 @@ public:
 // AABB
 class BOUNDING_AABB : public BOUNDING {
 private:
-	static unique_ptr<ID3D11Buffer, Release> pVertexBuffer;		// 頂点バッファ
+	static unique_ptr<ID3D11Buffer, Release> pVertexBuffer;			// 頂点バッファ
 	static unique_ptr<ID3D11Buffer, Release> pIndexBuffer;			// インデックスバッファ
+	static const char IndexNum;
 
-	XMFLOAT3 Radius;
+	//XMFLOAT3 Radius;
 
 public:
 	BOUNDING_AABB();
@@ -70,9 +73,9 @@ public:
 	void Update(void) override;
 	void Uninit(void) override;
 
-	void Set_Radius(const XMFLOAT3& radius);
+	//void Set_Radius(const XMFLOAT3& radius);
 
-	XMFLOAT3& const Get_Radius();
+	//XMFLOAT3& const Get_Radius();
 };
 
 #endif // !BOUNDING_H

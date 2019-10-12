@@ -10,6 +10,8 @@
 extern XMFLOAT2 center;
 extern XMFLOAT2 wh;
 
+extern float radius;
+
 void My_imgui::Init(HWND hWnd)
 {
 	// Setup Dear ImGui context
@@ -159,6 +161,7 @@ void My_imgui::Draw(void)
 				/*static*/ float vec4_Rotation[] = { player->Get_Rotation()->x, player->Get_Rotation()->y, player->Get_Rotation()->z };
 				/*static*/ float vec4_Scaling[] = { player->Get_Scaling()->x, player->Get_Scaling()->y, player->Get_Scaling()->z };
 				/*static*/ float* vec1 = player->Get();
+				float* r = &radius;
 
 				static float center2[2] = { center.x, center.y };
 				static float wh2[2] = { wh.x, wh.y };
@@ -198,6 +201,8 @@ void My_imgui::Draw(void)
 					ImGui::DragFloat2("Center Position", center2, 1.0f, 0.f);
 					ImGui::DragFloat2("WH", wh2, 1.0f, 0.f);
 				}
+
+				ImGui::DragFloat("Radius", r, 0.1f, 0.1f, 100.0f);
 
 				ImGui::End();
 
