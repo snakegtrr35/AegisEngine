@@ -42,7 +42,7 @@ void TITLE::Init()
 #ifdef _DEBUG
 	// テキスト画像
 	{
-		XMFLOAT2 pos(10.0f, 10.0f);
+		XMFLOAT2 pos(10.0f, 50.0f);
 		TEXTS* text = Add_Game_Object<TEXTS>(LAYER_NAME::UI);
 
 		text->SetPosition(pos);
@@ -51,17 +51,41 @@ void TITLE::Init()
 
 		text->Set_Object_Name(string("pos"));
 
-		COLOR color = COLOR(0.0f, 0.0f, 0.0f, 1.0f);
+		//COLOR color = COLOR(0.0f, 0.0f, 0.0f, 1.0f);
 
-		text->SetColor(color);
+		//text->SetColor(color);
+
+		string num = to_string(TIMER::Get_Time_Mili(2));
+
+		if(2 < num.size())
+			num.insert(num.size() - 2, ".");
+
+		text->Edit(num);
+	}
+#endif // _DEBUG
+
+#ifdef _DEBUG
+	// テキスト画像
+	{
+		XMFLOAT2 pos(10.0f, 80.0f);
+		TEXTS* text = Add_Game_Object<TEXTS>(LAYER_NAME::UI);
+
+		text->SetPosition(pos);
+
+		text->SetSize(XMFLOAT4(10, 10, 10, 10));
+
+		text->Set_Object_Name(string("clock"));
+
+		//string num = to_string(CLOCK_TIMER::Get_Time());
+		string num = to_string(TIMER::Get_Time_Sec());
+
+		text->Edit(num);
 	}
 #endif // _DEBUG
 
 	FADE::Start_FadeIn(5);
 	flag = false;
 	FADE::Set_Enable(false);
-
-	AUDIO_MANAGER::Play_Sound_Object(SOUND_INDEX::SOUND_INDEX_BGM001, true);
 }
 
 void TITLE::Draw()
@@ -91,24 +115,22 @@ void TITLE::Update()
 				string text;
 				string num;
 
-				//XMFLOAT2 pos = XMFLOAT2(MOUSE::Get_Position().x, MOUSE::Get_Position().y);
-
-				//num = to_string((int)pos.x);
-				//num = to_string(CROCK_TIMER::Get_Time());
-
-				//num = to_string(TIMER::Get_Time());
-				//num = to_string(TIMER::Get_Time_Sec());
-				num = to_string(TIMER::Get_Time_Mili(5));
+				num = to_string(TIMER::Get_Time_Mili(2));
 
 				text = num;
 
-				//text = text + space;
+				if (2 < text.size())
+					text.insert(text.size() - 2, ".");
 
-				//num.clear();
+				sprite->Edit(text);
+			}
 
-				//num = to_string((int)pos.y);
+			if (string("clock") == sprite->Get_Object_Name())
+			{
+				string text;
 
-				//text = text + num;
+				//text = to_string(CLOCK_TIMER::Get_Time());
+				text = to_string(TIMER::Get_Time_Sec());
 
 				sprite->Edit(text);
 			}

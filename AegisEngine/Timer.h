@@ -10,7 +10,7 @@
 
 /**
 * @brief タイマークラス
-* @details ゲームのFPSに依存しない(たぶん)タイマー
+* @details ゲームのFPSに依存しない(ほぼ)タイマー
 */
 class TIMER {
 private:
@@ -72,7 +72,7 @@ public:
 * @brief クロックタイマークラス
 * @details ゲームのFPSに依存するタイマー
 */
-class CROCK_TIMER {
+class CLOCK_TIMER {
 private:
 	static DWORD Time;		//! タイムが入る変数
 

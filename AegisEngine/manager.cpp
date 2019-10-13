@@ -50,7 +50,7 @@ bool CManager::Init()
 
 	// 時間関係の初期化
 	TIMER::Init();
-	CROCK_TIMER::Init();
+	CLOCK_TIMER::Init();
 
 	if (nullptr == pSceneManager)
 		pSceneManager = new SCENE_MANAGER();
@@ -59,12 +59,14 @@ bool CManager::Init()
 	//pSceneManager->Set_Scene<TITLE>();
 	pSceneManager->Set_Scene<MAIN_MENU>();
 
+	CRenderer::Change_Window_Mode();
+
 	return true;
 }
 
 void CManager::Update()
 {
-	CROCK_TIMER::Update();
+	CLOCK_TIMER::Update();
 
 	// インプットの更新
 	CINPUT::Update();

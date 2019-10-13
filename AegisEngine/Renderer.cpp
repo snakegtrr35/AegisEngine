@@ -401,7 +401,7 @@ bool CRenderer::Init()
 	//{
 	//	// 定数バッファ生成
 	//	D3D11_BUFFER_DESC hBufferDesc;
-	//	hBufferDesc.ByteWidth = sizeof(XMMATRIX) * 256;
+	//	hBufferDesc.ByteWidth = sizeof(XMMATRIX) * 128;
 	//	hBufferDesc.Usage = D3D11_USAGE_DEFAULT;
 	//	hBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
 	//	hBufferDesc.CPUAccessFlags = 0;

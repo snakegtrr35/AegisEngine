@@ -65,7 +65,7 @@ void BOUNDING_SHPERE::Create_Buffer()
 	// 頂点バッファの設定
 	if (nullptr == pVertexBuffer.get())
 	{
-		const UINT cnt = 8 * (UINT)Radius;
+		const UINT cnt = 10 * (UINT)Radius;
 
 		VERTEX_3D* vertex = new VERTEX_3D[cnt];
 
@@ -109,7 +109,7 @@ void BOUNDING_SHPERE::Create_Buffer()
 	// インデックスバッファの設定
 	if (nullptr == pIndexBuffer.get())
 	{
-		const UINT cnt = 8 * (UINT)Radius;
+		const UINT cnt = 10 * (UINT)Radius;
 
 		IndexNum = cnt * 2;
 		WORD* index_array = new WORD[IndexNum];

@@ -16,13 +16,6 @@ cbuffer ProjectionBuffer : register(b2)
     matrix Projection;
 }
 
-//cbuffer BoneBuffer : register(0)
-//{
-//    matrix BoneMatrix[256];
-//}
-
-
-
 // マテリアルバッファ
 struct MATERIAL
 {
@@ -39,7 +32,6 @@ cbuffer MaterialBuffer : register(b3)
     MATERIAL Material;
 }
 
-
 // ライトバッファ
 struct LIGHT
 {
@@ -53,38 +45,46 @@ cbuffer LightBuffer : register(b4)
     LIGHT Light;
 }
 
+cbuffer BoneBuffer : register(b5)
+{
+    matrix BoneMatrix[128];
+}
+
 
 
 //=============================================================================
 // 頂点シェーダ
 //=============================================================================
-void main(in float4 inPosition : POSITION0,
-						  in float4 inNormal : NORMAL0,
-						  in float4 inDiffuse : COLOR0,
-						  in float2 inTexCoord : TEXCOORD0,
-                          //in int4 indeces : BLENDINDICE,
-                          //in float4 weight : BLENDWEIGHT,
+void main(  in float4 inPosition : POSITION0,
+		    in float4 inNormal : NORMAL0,
+		    in float4 inDiffuse : COLOR0,
+		    in float2 inTexCoord : TEXCOORD0,
+            in int4 indeces : BLENDINDICE,
+            in float4 weight : BLENDWEIGHT,
 
-						  out float4 outPosition : SV_POSITION,
-						  out float4 outNormal : NORMAL0,
-						  out float2 outTexCoord : TEXCOORD0,
-						  out float4 outDiffuse : COLOR0)
+		    out float4 outPosition : SV_POSITION,
+		    out float4 outNormal : NORMAL0,
+		    out float2 outTexCoord : TEXCOORD0,
+		    out float4 outDiffuse : COLOR0)
 {
-    //matrix BoneTransform = BoneMatrix[indeces[0]] * weight[0]
-    //                        + BoneMatrix[indeces[1]] * weight[1]
-    //                        + BoneMatrix[indeces[2]] * weight[2]
-    //                        + BoneMatrix[indeces[3]] * weight[3];
+    matrix BoneTransform = BoneMatrix[indeces[0]] * weight[0]
+                         + BoneMatrix[indeces[1]] * weight[1]
+                         + BoneMatrix[indeces[2]] * weight[2]
+                         + BoneMatrix[indeces[3]] * weight[3];
 
     matrix wvp;
     wvp = mul(World, View);
     wvp = mul(wvp, Projection);
 
-    outPosition = mul(inPosition, wvp);
-    outNormal = inNormal;
+    float4 pos = mul(inPosition, BoneTransform);
+    outPosition = mul(pos, wvp);
+
+    outNormal = mul(inNormal, BoneTransform);
+
     outTexCoord = inTexCoord;
 	
     float4 worldNormal, normal;
-    normal = float4(inNormal.xyz, 0.0);
+    normal = float4(outNormal.xyz, 0.0);
     worldNormal = mul(normal, World);
     worldNormal = normalize(worldNormal);
 

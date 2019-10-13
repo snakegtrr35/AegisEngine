@@ -1,10 +1,8 @@
 #ifdef _DEBUG
 
 #include	"My_imgui.h"
-#include	"Renderer.h"
 #include	"Scene.h"
-#include	"main.h"
-
+#include	"manager.h"
 #include	"ModelLoader.h"
 
 extern XMFLOAT2 center;
@@ -23,9 +21,10 @@ void My_imgui::Init(HWND hWnd)
 	// u8‚ðŽg‚¦‚Î“ú–{Œê‚Ì•\Ž¦‚Í‚Å‚«‚é
 	ImFontConfig config;
 
-	config.OversampleH = 2;
+	config.OversampleH = 3;
 	config.OversampleV = 1;
-	config.GlyphExtraSpacing.x = 1.0f;
+	config.GlyphExtraSpacing.x = 0.0f;
+	config.GlyphExtraSpacing.y = 0.0f;
 
 	io.Fonts->AddFontFromFileTTF("c:\\Windows\\Fonts\\meiryo.ttc", 16.0f, &config, io.Fonts->GetGlyphRangesJapanese());
 	io.Fonts->AddFontFromFileTTF("c:\\Windows\\Fonts\\meiryo.ttc", 15.0f, &config, io.Fonts->GetGlyphRangesJapanese());
@@ -122,6 +121,12 @@ void My_imgui::Draw(void)
 						}
 						ImGui::EndMenu();
 					}
+
+					if (ImGui::MenuItem("Close"))
+					{
+						CManager::GameEnd();
+					}
+
 					ImGui::EndMenu();
 				}
 
@@ -188,11 +193,13 @@ void My_imgui::Draw(void)
 					ImGui::Text("Thanks for clicking me!");
 				}
 
-				static char buf1[128] = "";
+				{
+					static char str[128] = "";
 
-				ImGui::InputText((char*)u8"‚ ‚¢‚¤‚¦‚¨", (char*)buf1, 128);
+					ImGui::InputText((char*)u8"‚ ‚¢‚¤‚¦‚¨", str, 128);
 
-				ImGui::Text(buf1);
+					ImGui::Text(str);
+				}
 
 				ImGui::SliderFloat("Blend", vec1, 0.0f, 1.0f);
 				//player->blend = vec1;
@@ -270,7 +277,7 @@ void My_imgui::Draw(void)
 				ImGui::End();
 			}
 
-			/*{
+			{
 				ImGuiWindowFlags window_flag = ImGuiWindowFlags_NoTitleBar;
 
 				ImGui::Begin("World", nullptr, window_flag);
@@ -310,7 +317,7 @@ void My_imgui::Draw(void)
 
 				}
 				ImGui::End();
-			}*/
+			}
 		}
 		// Rendering
 		ImGui::Render();
