@@ -221,7 +221,7 @@ void BOUNDING_AABB::Init(void)
 		for (int i = 0; i < 8; i++)
 		{
 			vertexArray[i].Normal = XMFLOAT3(0.0f, 0.0f, -1.0f);
-			vertexArray[i].Diffuse = XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f);
+			vertexArray[i].Diffuse = XMFLOAT4(Color.r, Color.g, Color.b, Color.a);
 			vertexArray[i].TexCoord = XMFLOAT2(0.0f, 0.0f);
 		}
 
@@ -284,6 +284,8 @@ void BOUNDING_AABB::Init(void)
 			D3D11_SUBRESOURCE_DATA sd;
 			ZeroMemory(&sd, sizeof(sd));
 			sd.pSysMem = indexArray;
+			sd.SysMemPitch = 0;
+			sd.SysMemSlicePitch = 0;
 
 			CRenderer::GetDevice()->CreateBuffer(&bd, &sd, &buffer);
 
@@ -296,7 +298,7 @@ void BOUNDING_AABB::Init(void)
 	// 頂点バッファの設定
 	if (nullptr == pVertexBuffer.get())
 	{
-		VERTEX_3D Vertex[2];
+		VERTEX_3D Vertex[8];
 
 		Vertex[0].Position = XMFLOAT3(-0.5f, 0.5f, -0.5f);
 		Vertex[0].Normal = XMFLOAT3(0.0f, 0.0f, 1.0f);
@@ -308,36 +310,92 @@ void BOUNDING_AABB::Init(void)
 		Vertex[1].Diffuse = XMFLOAT4(Color.r, Color.g, Color.b, Color.a);
 		Vertex[1].TexCoord = XMFLOAT2(0.0f, 0.0f);
 
-		//Vertex[2].Position = XMFLOAT3(-0.5f, -0.5f, -0.5f);
-		//Vertex[2].Normal = XMFLOAT3(0.0f, 0.0f, -1.0f);
-		//Vertex[2].Diffuse = XMFLOAT4(Color.r, Color.g, Color.b, Color.a);
-		//Vertex[2].TexCoord = XMFLOAT2(0.0f, 0.0f);
+		Vertex[3].Position = XMFLOAT3(-0.5f, -0.5f, -0.5f);
+		Vertex[3].Normal = XMFLOAT3(0.0f, 0.0f, -1.0f);
+		Vertex[3].Diffuse = XMFLOAT4(Color.r, Color.g, Color.b, Color.a);
+		Vertex[3].TexCoord = XMFLOAT2(0.0f, 0.0f);
 
-		//Vertex[3].Position = XMFLOAT3(0.5f, -0.5f, -0.5f);
-		//Vertex[3].Normal = XMFLOAT3(0.0f, 0.0f, -1.0f);
-		//Vertex[3].Diffuse = XMFLOAT4(Color.r, Color.g, Color.b, Color.a);
-		//Vertex[3].TexCoord = XMFLOAT2(0.0f, 0.0f);
+		Vertex[2].Position = XMFLOAT3(0.5f, -0.5f, -0.5f);
+		Vertex[2].Normal = XMFLOAT3(0.0f, 0.0f, -1.0f);
+		Vertex[2].Diffuse = XMFLOAT4(Color.r, Color.g, Color.b, Color.a);
+		Vertex[2].TexCoord = XMFLOAT2(0.0f, 0.0f);
 
 
-		//Vertex[4].Position = XMFLOAT3(-0.5f, 0.5f, 0.5f);
-		//Vertex[4].Normal = XMFLOAT3(0.0f, 0.0f, 1.0f);
-		//Vertex[4].Diffuse = XMFLOAT4(Color.r, Color.g, Color.b, Color.a);
-		//Vertex[4].TexCoord = XMFLOAT2(0.0f, 0.0f);
+		Vertex[4].Position = XMFLOAT3(-0.5f, 0.5f, 0.5f);
+		Vertex[4].Normal = XMFLOAT3(0.0f, 0.0f, 1.0f);
+		Vertex[4].Diffuse = XMFLOAT4(Color.r, Color.g, Color.b, Color.a);
+		Vertex[4].TexCoord = XMFLOAT2(0.0f, 0.0f);
 
-		//Vertex[5].Position = XMFLOAT3(0.5f, 0.5f, 0.5f);
-		//Vertex[5].Normal = XMFLOAT3(0.0f, 0.0f, 1.0f);
-		//Vertex[5].Diffuse = XMFLOAT4(Color.r, Color.g, Color.b, Color.a);
-		//Vertex[5].TexCoord = XMFLOAT2(0.0f, 0.0f);
+		Vertex[5].Position = XMFLOAT3(0.5f, 0.5f, 0.5f);
+		Vertex[5].Normal = XMFLOAT3(0.0f, 0.0f, 1.0f);
+		Vertex[5].Diffuse = XMFLOAT4(Color.r, Color.g, Color.b, Color.a);
+		Vertex[5].TexCoord = XMFLOAT2(0.0f, 0.0f);
 
-		//Vertex[6].Position = XMFLOAT3(-0.5f, -0.5f, 0.5f);
-		//Vertex[6].Normal = XMFLOAT3(0.0f, 0.0f, 1.0f);
-		//Vertex[6].Diffuse = XMFLOAT4(Color.r, Color.g, Color.b, Color.a);
-		//Vertex[6].TexCoord = XMFLOAT2(0.0f, 0.0f);
+		Vertex[7].Position = XMFLOAT3(-0.5f, -0.5f, 0.5f);
+		Vertex[7].Normal = XMFLOAT3(0.0f, 0.0f, 1.0f);
+		Vertex[7].Diffuse = XMFLOAT4(Color.r, Color.g, Color.b, Color.a);
+		Vertex[7].TexCoord = XMFLOAT2(0.0f, 0.0f);
 
-		//Vertex[7].Position = XMFLOAT3(0.5f, -0.5f, 0.5f);
-		//Vertex[7].Normal = XMFLOAT3(0.0f, 0.0f, 1.0f);
-		//Vertex[7].Diffuse = XMFLOAT4(Color.r, Color.g, Color.b, Color.a);
-		//Vertex[7].TexCoord = XMFLOAT2(0.0f, 0.0f);
+		Vertex[6].Position = XMFLOAT3(0.5f, -0.5f, 0.5f);
+		Vertex[6].Normal = XMFLOAT3(0.0f, 0.0f, 1.0f);
+		Vertex[6].Diffuse = XMFLOAT4(Color.r, Color.g, Color.b, Color.a);
+		Vertex[6].TexCoord = XMFLOAT2(0.0f, 0.0f);
+
+		/*Vertex[0].Position = XMFLOAT3(-0.5f, 0.5f, -0.5f);
+		Vertex[1].Position = XMFLOAT3(0.5f, 0.5f, -0.5f);
+
+
+		Vertex[2].Position = XMFLOAT3(0.5f, 0.5f, -0.5f);
+		Vertex[3].Position = XMFLOAT3(0.5f, -0.5f, -0.5f);
+
+
+		Vertex[4].Position = XMFLOAT3(0.5f, -0.5f, -0.5f);
+		Vertex[5].Position = XMFLOAT3(-0.5f, -0.5f, -0.5f);
+
+
+		Vertex[6].Position = XMFLOAT3(-0.5f, -0.5f, -0.5f);
+		Vertex[7].Position = XMFLOAT3(-0.5f, 0.5f, -0.5f);
+
+
+
+		Vertex[8].Position = XMFLOAT3(-0.5f, 0.5f, 0.5f);
+		Vertex[9].Position = XMFLOAT3(0.5f, 0.5f, 0.5f);
+
+
+		Vertex[10].Position = XMFLOAT3(0.5f, 0.5f, 0.5f);
+		Vertex[11].Position = XMFLOAT3(0.5f, -0.5f, 0.5f);
+
+
+		Vertex[12].Position = XMFLOAT3(0.5f, -0.5f, 0.5f);
+		Vertex[13].Position = XMFLOAT3(-0.5f, -0.5f, 0.5f);
+
+
+		Vertex[14].Position = XMFLOAT3(-0.5f, -0.5f, 0.5f);
+		Vertex[15].Position = XMFLOAT3(-0.5f, 0.5f, 0.5f);
+
+
+
+		Vertex[16].Position = XMFLOAT3(-0.5f, 0.5f, -0.5f);
+		Vertex[17].Position = XMFLOAT3(-0.5f, 0.5f, 0.5f);
+
+
+		Vertex[16].Position = XMFLOAT3(0.5f, 0.5f, -0.5f);
+		Vertex[17].Position = XMFLOAT3(0.5f, 0.5f, 0.5f);
+
+
+		Vertex[20].Position = XMFLOAT3(0.5f, -0.5f, -0.5f);
+		Vertex[21].Position = XMFLOAT3(0.5f, -0.5f, 0.5f);
+
+
+		Vertex[22].Position = XMFLOAT3(-0.5f, -0.5f, -0.5f);
+		Vertex[23].Position = XMFLOAT3(-0.5f, -0.5f, 0.5f);*/
+
+		for (char i = 0; i < 8; i++)
+		{
+			Vertex[i].Normal = XMFLOAT3(0.0f, 0.0f, 1.0f);
+			Vertex[i].Diffuse = XMFLOAT4(Color.r, Color.g, Color.b, Color.a);
+			Vertex[i].TexCoord = XMFLOAT2(0.0f, 0.0f);
+		}
 
 		// 頂点バッファの設定
 		{
@@ -346,7 +404,7 @@ void BOUNDING_AABB::Init(void)
 			D3D11_BUFFER_DESC bd;
 			ZeroMemory(&bd, sizeof(bd));
 
-			bd.ByteWidth = sizeof(VERTEX_3D) * 2;
+			bd.ByteWidth = sizeof(VERTEX_3D) * 8;
 			bd.Usage = D3D11_USAGE_DEFAULT;
 			bd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
 			bd.CPUAccessFlags = 0;
@@ -364,64 +422,82 @@ void BOUNDING_AABB::Init(void)
 		}
 	}
 
-	//// インデックスバッファの設定
-	//{
-	//	ID3D11Buffer* buffer;
+	// インデックスバッファの設定
+	if (nullptr == pIndexBuffer.get())
+	{
+		ID3D11Buffer* buffer;
 
-	//	const WORD index[] = {
-	//	0, 1,
-	//	1, 2,
-	//	2, 3,
-	//	3, 0,
-	//	//4, 5,
-	//	//5, 6,
-	//	//6, 7,
-	//	//7, 4,
-	//	//0, 4,
-	//	//1, 5,
-	//	//2, 6,
-	//	//3, 7
-	//	};
+		const WORD index[] = {
+		0, 1,
+		1, 2,
+		2, 3,
+		3, 0,
 
-	//	D3D11_BUFFER_DESC bd;
-	//	ZeroMemory(&bd, sizeof(bd));
+		4, 5,
+		5, 6,
+		6, 7,
+		7, 4,
 
-	//	bd.ByteWidth = sizeof(WORD) * 8;
-	//	bd.Usage = D3D11_USAGE_DEFAULT;
-	//	bd.BindFlags = D3D11_BIND_INDEX_BUFFER;
-	//	bd.CPUAccessFlags = 0;
-	//	bd.MiscFlags = 0;
-	//	bd.StructureByteStride = 0;
+		0, 4,
+		1, 5,
+		2, 6,
+		3, 7
 
-	//	D3D11_SUBRESOURCE_DATA sd;
-	//	ZeroMemory(&sd, sizeof(sd));
-	//	sd.pSysMem = index;
+		//0, 1,
+		//1, 3,
+		//3, 2,
+		//2, 0,
 
-	//	CRenderer::GetDevice()->CreateBuffer(&bd, &sd, &buffer);
+		//4, 5,
+		//5, 7,
+		//7, 6,
+		//6, 4,
 
-	//	pIndexBuffer.reset(buffer);
-	//}
+		//0, 4,
+		//1, 5,
+		//2, 6,
+		//3, 7
+		};
 
-	// インデックスバッファの確保
+		D3D11_BUFFER_DESC bd;
+		ZeroMemory(&bd, sizeof(bd));
+
+		bd.ByteWidth = sizeof(WORD) * 24;
+		bd.Usage = D3D11_USAGE_DEFAULT;
+		bd.BindFlags = D3D11_BIND_INDEX_BUFFER;
+		bd.CPUAccessFlags = 0;
+		bd.MiscFlags = 0;
+		bd.StructureByteStride = 0;
+
+		D3D11_SUBRESOURCE_DATA sd;
+		ZeroMemory(&sd, sizeof(sd));
+		sd.pSysMem = index;
+
+		CRenderer::GetDevice()->CreateBuffer(&bd, &sd, &buffer);
+
+		pIndexBuffer.reset(buffer);
+	}
+
+	/*// インデックスバッファの確保
 	unsigned short indexArray[2];
 
-	//// インデックスバッファへインデックスの書き込み
-	//for (int i = 0; i < 4; i++)
-	//{
-	//	indexArray[i * 2] = i;
-	//	indexArray[i * 2 + 1] = (i + 1) % 4;
-	//
-	//	indexArray[8 + i * 2] = 4 + i;
-	//	indexArray[8 + i * 2 + 1] = 4 + (i + 1) % 4;
-	//}
-	//indexArray[16] = 0;
-	//indexArray[17] = 4;
-	//indexArray[18] = 1;
-	//indexArray[19] = 5;
-	//indexArray[20] = 2;
-	//indexArray[21] = 6;
-	//indexArray[22] = 3;
-	//indexArray[23] = 7;
+	// インデックスバッファへインデックスの書き込み
+	for (int i = 0; i < 4; i++)
+	{
+		indexArray[i * 2] = i;
+		indexArray[i * 2 + 1] = (i + 1) % 4;
+	
+		indexArray[8 + i * 2] = 4 + i;
+		indexArray[8 + i * 2 + 1] = 4 + (i + 1) % 4;
+	}
+	indexArray[16] = 0;
+	indexArray[17] = 4;
+	indexArray[18] = 1;
+	indexArray[19] = 5;
+	indexArray[20] = 2;
+	indexArray[21] = 6;
+	indexArray[22] = 3;
+	indexArray[23] = 7;
 
 	indexArray[0] = 0;
 	indexArray[1] = 1;
@@ -447,7 +523,7 @@ void BOUNDING_AABB::Init(void)
 		CRenderer::GetDevice()->CreateBuffer(&bd, &sd, &buffer);
 
 		pIndexBuffer.reset(buffer);
-	}
+	}*/
 }
 
 void BOUNDING_AABB::Draw(void)
@@ -467,11 +543,13 @@ void BOUNDING_AABB::Draw(void)
 	}
 
 	// トポロジの設定
-	CRenderer::GetDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_LINELIST);
+	CRenderer::GetDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_LINESTRIP);
 
 	CRenderer::Set_Shader(SHADER_INDEX_V::NO_LIGHT, SHADER_INDEX_P::NO_TEXTURE);
 
-	CRenderer::DrawIndexed(2, 0, 0);
+	CRenderer::DrawIndexed(24, 0, 0);
+
+	//CRenderer::GetDeviceContext()->Draw(16, 0);
 
 	CRenderer::Set_Shader();
 }

@@ -46,10 +46,12 @@ PLAYER::PLAYER(void)
 		COLOR color(1.0f, 0.f, 0.f, 1.0f);
 
 		Shpere = new BOUNDING_SHPERE();
+		//Shpere = new BOUNDING_AABB();
 
 		Shpere->Set_Position(Position);
 		Shpere->Set_Radius(radius);
 		Shpere->Set_Color(color);
+		//Shpere->Init();
 	}
 
 	//shadow = new CIRCLE_SHADOW();

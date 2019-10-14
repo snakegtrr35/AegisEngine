@@ -9,6 +9,7 @@ class CMODEL;
 class BULLET;
 class COLLISION;
 class BOUNDING_SHPERE;
+//class BOUNDING_AABB;
 //class CIRCLE_SHADOW;
 
 class PLAYER : public GAME_OBJECT {
@@ -17,6 +18,7 @@ private:
 	//CIRCLE_SHADOW* shadow;
 	COLLISION* Collision;
 	BOUNDING_SHPERE* Shpere;
+	//BOUNDING_AABB* Shpere;
 
 	// true = Stop false = Walk
 	bool AnimType;

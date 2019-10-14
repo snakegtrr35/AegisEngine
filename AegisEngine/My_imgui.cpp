@@ -264,7 +264,7 @@ void My_imgui::Draw(void)
 					int i = 0;
 					for (auto object : map)
 					{
-
+						// Mouse buttons : 0 = left, 1 = right, 2 = middle + extras
 
 						string str = object.second.c_str();
 

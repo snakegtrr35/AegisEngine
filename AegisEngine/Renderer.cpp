@@ -171,6 +171,7 @@ bool CRenderer::Init()
 	D3D11_RASTERIZER_DESC rd; 
 	ZeroMemory( &rd, sizeof( rd ) );
 	rd.FillMode = D3D11_FILL_SOLID;
+	//rd.FillMode = D3D11_FILL_WIREFRAME;
 	//rd.CullMode = D3D11_CULL_NONE;
 	rd.CullMode = D3D11_CULL_BACK;
 	rd.DepthClipEnable = TRUE; 
