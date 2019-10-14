@@ -34,7 +34,7 @@ public:
 	void Render(void);
 };
 
-void Draw_imgui(XMFLOAT3* position, XMFLOAT3* rotation, XMFLOAT3* scaling);
+void Draw_Inspector(const string& name);
 
 static void HelpMarker(const char* desc)
 {

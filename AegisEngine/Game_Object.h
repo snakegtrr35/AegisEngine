@@ -112,6 +112,10 @@ public:
 	COMPONENT_MANEGER* const Get_Component() {
 		return &Component;
 	}
+
+	static const unordered_map<size_t, string>& Get_Object_Name_Map() {
+		return Object_Name_Map;
+	}
 };
 
 #endif // !GAME_OBJECT_H

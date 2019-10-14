@@ -166,20 +166,19 @@ public:
 
 	// リストから特定のオブジェクト（複数）の取得
 	// 引数 name オブジェクト名
-	static vector<GAME_OBJECT*> Get_Game_Objects(const string& name)
+	static GAME_OBJECT* Get_Game_Object(const string& name)
 	{
-		vector<GAME_OBJECT*> objects;
 		for (int i = 0; i < (int)LAYER_NAME::MAX_LAYER; i++)
 		{
 			for (GAME_OBJECT* object : GameObjects[i])
 			{
 				if (name == object->Get_Object_Name())
 				{
-					objects.push_back(object);
+					return object;
 				}
 			}
 		}
-		return objects;
+		return nullptr;
 	}
 
 	// 全オブジェクトの取得
@@ -310,6 +309,15 @@ public:
 	static const bool Get_PauseEnable() {
 		return PauseEnable;
 	};
+
+	/**
+	* @brief オブジェクトの個数を取得する関数
+	* @details 特定レイヤーのオブジェクトの個数を返す
+	* @return UINT オブジェクトの個数
+	*/
+	static const UINT Get_Game_Object_Count(const LAYER_NAME layer) {
+		return GameObjects[(int)layer].size();
+	}
 };
 
 /**

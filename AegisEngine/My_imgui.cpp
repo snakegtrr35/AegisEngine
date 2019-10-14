@@ -2,6 +2,7 @@
 
 #include	"My_imgui.h"
 #include	"Scene.h"
+#include	"Game_Object.h"
 #include	"manager.h"
 #include	"ModelLoader.h"
 
@@ -42,6 +43,12 @@ void My_imgui::Init(HWND hWnd)
 
 	// Setup Style
 	ImGui::StyleColorsDark();
+
+	ImVec4 color = ImVec4(0.06f, 0.06f, 0.06f, 1.0f);
+
+	ImGuiStyle& style = ImGui::GetStyle();
+
+	style.Colors[ImGuiCol_WindowBg] = color;
 }
 
 void My_imgui::Draw(void)
@@ -154,44 +161,20 @@ void My_imgui::Draw(void)
 
 		if (show_app_style_editor) { ImGui::Begin("Style Editor", &show_app_style_editor, ImGuiWindowFlags_NoResize); ImGui::ShowStyleEditor(); ImGui::End(); }
 
+		static string s = GAME_OBJECT::Get_Object_Name_Map().begin()->second.c_str();
+
 		{
-			string name("player");
-
-			auto player = SCENE::Get_Game_Object<PLAYER>(name);
-
-			if (nullptr != player)
 			{
+				Draw_Inspector(s);
+			}
 
-				/*static*/ float vec4_Position[] = { player->Get_Position()->x, player->Get_Position()->y, player->Get_Position()->z };
-				/*static*/ float vec4_Rotation[] = { player->Get_Rotation()->x, player->Get_Rotation()->y, player->Get_Rotation()->z };
-				/*static*/ float vec4_Scaling[] = { player->Get_Scaling()->x, player->Get_Scaling()->y, player->Get_Scaling()->z };
-				/*static*/ float* vec1 = player->Get();
+			{
 				float* r = &radius;
 
 				static float center2[2] = { center.x, center.y };
 				static float wh2[2] = { wh.x, wh.y };
 
 				ImGui::Begin("Setting");
-
-				ImGui::Text(player->Get_Object_Name().c_str());
-
-				static bool enable = false;
-				ImGui::Checkbox("Enable", &enable);
-
-				ImGui::DragFloat3("Position", vec4_Position, 0.02f);
-
-				ImGui::DragFloat3("Rotation", vec4_Rotation, 0.2f, -360.0f, 360.0f);
-
-				ImGui::DragFloat3("Scaling", vec4_Scaling, 0.001f);
-
-				static int clicked = 0;
-				if (ImGui::Button("Add Component"))
-					clicked++;
-				if (clicked & 1)
-				{
-					ImGui::SameLine();
-					ImGui::Text("Thanks for clicking me!");
-				}
 
 				{
 					static char str[128] = "";
@@ -201,9 +184,6 @@ void My_imgui::Draw(void)
 					ImGui::Text(str);
 				}
 
-				ImGui::SliderFloat("Blend", vec1, 0.0f, 1.0f);
-				//player->blend = vec1;
-
 				{
 					ImGui::DragFloat2("Center Position", center2, 1.0f, 0.f);
 					ImGui::DragFloat2("WH", wh2, 1.0f, 0.f);
@@ -211,25 +191,16 @@ void My_imgui::Draw(void)
 
 				ImGui::DragFloat("Radius", r, 0.1f, 0.1f, 100.0f);
 
+				ImGui::Text("%s", s.c_str());
+
 				ImGui::End();
-
-				if (enable)
-				{
-					XMFLOAT3 vec1(vec4_Position[0], vec4_Position[1], vec4_Position[2]);
-					XMFLOAT3 vec2(vec4_Rotation[0], vec4_Rotation[1], vec4_Rotation[2]);
-					XMFLOAT3 vec3(vec4_Scaling[0], vec4_Scaling[1], vec4_Scaling[2]);
-
-					player->Set_Position(&vec1);
-					player->Set_Rotation(&vec2);
-					player->Set_Scaling(&vec3);
-				}
 
 				center.x = center2[0];
 				center.y = center2[1];
 
 				wh.x = wh2[0];
 				wh.y = wh2[1];
-			}
+				}
 
 			// ライトの設定
 			{
@@ -264,59 +235,52 @@ void My_imgui::Draw(void)
 
 			// レンダリングテクスチャ
 			{
+				// タイトルバーありの場合、imageyよりWindowSizeがImVec2(17, 40)分大きければ丁度いい
+				// タイトルバーなしの場合、imageyよりWindowSizeがImVec2(13, 16)分大きければ丁度いい
+
 				ImGuiWindowFlags window_flags = ImGuiWindowFlags_NoResize;
 
-				ImGui::SetNextWindowSize(ImVec2(737, 445), ImGuiCond_Always);
+				ImGui::SetNextWindowSize(ImVec2(1280 + 17, 720 + 40), ImGuiCond_Once);
 
-				ImGui::Begin("RenderTexture", nullptr, window_flags);
+				ImGui::Begin("Debug", nullptr, window_flags);
 
 				ImTextureID image = CRenderer::Get_SRV();
 
-				ImGui::Image(image, ImVec2(480 * 1.5f, 270 * 1.5f));
+				ImGui::Image(image, ImVec2(1280, 720));
 
 				ImGui::End();
 			}
 
 			{
 				ImGuiWindowFlags window_flag = ImGuiWindowFlags_NoTitleBar;
+				ImGuiTreeNodeFlags node_flags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_OpenOnDoubleClick;
+				auto map = GAME_OBJECT::Get_Object_Name_Map();
 
 				ImGui::Begin("World", nullptr, window_flag);
-				if (ImGui::TreeNode("World"))
+
+				ImGui::Unindent(ImGui::GetTreeNodeToLabelSpacing());
+
 				{
-					ImGui::PushStyleVar(ImGuiStyleVar_IndentSpacing, ImGui::GetFontSize() * 3); // Increase spacing to differentiate leaves from expanded contents.
-					//for (int i = 0; i < ; i++)
-					for (int i = 0; i < 6; i++)
+					int i = 0;
+					for (auto object : map)
 					{
-						// Disable the default open on single-click behavior and pass in Selected flag according to our selection state.
-						ImGuiTreeNodeFlags node_flags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_OpenOnDoubleClick;
-						if (i < 3)
-						{
-							// Items 0..2 are Tree Node
-							bool node_open = ImGui::TreeNodeEx((void*)(intptr_t)i, node_flags, "Selectable Object %d", i);
-							if (ImGui::IsItemClicked());
 
-							if (node_open)
-							{
-								ImGui::Text("Blah blah\nBlah Blah");
-								ImGui::TreePop();
-							}
-						}
-						else
-						{
-							// Items 3..5 are Tree Leaves
-							// The only reason we use TreeNode at all is to allow selection of the leaf.
-							// Otherwise we can use BulletText() or TreeAdvanceToLabelPos()+Text().
-							node_flags |= ImGuiTreeNodeFlags_Leaf | ImGuiTreeNodeFlags_NoTreePushOnOpen; // ImGuiTreeNodeFlags_Bullet
-							ImGui::TreeNodeEx((void*)(intptr_t)i, node_flags, "Selectable Leaf Object %d", i);
-							if (ImGui::IsItemClicked());
 
+						string str = object.second.c_str();
+
+						node_flags |= /*ImGuiTreeNodeFlags_Leaf |*/ ImGuiTreeNodeFlags_NoTreePushOnOpen; // ImGuiTreeNodeFlags_Bullet
+						ImGui::TreeNodeEx((void*)(intptr_t)i, node_flags, str.c_str());
+						if (ImGui::IsItemClicked())
+						{
+							s = str.c_str();
 						}
+
+						i++;
 					}
-					ImGui::PopStyleVar();
-					ImGui::TreePop();
-
 				}
+
 				ImGui::End();
+
 			}
 		}
 		// Rendering
@@ -352,36 +316,51 @@ void My_imgui::Render(void)
 	ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
 }
 
-void Draw_imgui(XMFLOAT3* position, XMFLOAT3* rotation, XMFLOAT3* scaling)
+void Draw_Inspector(const string& name)
 {
-	//float vec4_Position[3] = { position->x, position->y, position->z };
-	//float vec4_Rotation[3] = { rotation->x, rotation->y, rotation->z };
-	//float vec4_Scaling[3] = { scaling->x, scaling->y, scaling->z };
+	auto object = SCENE::Get_Game_Object(name);
 
-	////ImGui::
+	if (nullptr != object)
+	{
+		float vec4_Position[] = { object->Get_Position()->x, object->Get_Position()->y, object->Get_Position()->z };
+		float vec4_Rotation[] = { object->Get_Rotation()->x, object->Get_Rotation()->y, object->Get_Rotation()->z };
+		float vec4_Scaling[] = { object->Get_Scaling()->x, object->Get_Scaling()->y, object->Get_Scaling()->z };
 
-	//ImGui::BeginChildFrame(ImGui::GetID());
-	//{
-	//	ImGui::Begin("Setting");
+		ImGui::Begin("Inspector");
 
-	//	ImGui::InputFloat3("Position", vec4_Position);
-	//	ImGui::InputFloat3("Rotation", vec4_Rotation);
-	//	ImGui::InputFloat3("Scaling", vec4_Scaling);
+		ImGui::Text(object->Get_Object_Name().c_str());
 
-	//	ImGui::End();
+		static bool enable = false;
+		ImGui::Checkbox("Enable", &enable);
 
-	//	position->x = vec4_Position[0];
-	//	position->y = vec4_Position[1];
-	//	position->z = vec4_Position[2];
+		ImGui::DragFloat3("Position", vec4_Position, 0.02f);
 
-	//	rotation->x = vec4_Position[0];
-	//	rotation->y = vec4_Position[1];
-	//	rotation->z = vec4_Position[2];
+		ImGui::DragFloat3("Rotation", vec4_Rotation, 0.2f, -360.0f, 360.0f);
 
-	//	scaling->x = vec4_Position[0];
-	//	scaling->y = vec4_Position[1];
-	//	scaling->z = vec4_Position[2];
-	//}
+		ImGui::DragFloat3("Scaling", vec4_Scaling, 0.001f);
+
+		static int clicked = 0;
+		if (ImGui::Button("Add Component"))
+			clicked++;
+		if (clicked & 1)
+		{
+			ImGui::SameLine();
+			ImGui::Text("Thanks for clicking me!");
+		}
+
+		ImGui::End();
+
+		if (enable)
+		{
+			XMFLOAT3 vec1(vec4_Position[0], vec4_Position[1], vec4_Position[2]);
+			XMFLOAT3 vec2(vec4_Rotation[0], vec4_Rotation[1], vec4_Rotation[2]);
+			XMFLOAT3 vec3(vec4_Scaling[0], vec4_Scaling[1], vec4_Scaling[2]);
+
+			object->Set_Position(&vec1);
+			object->Set_Rotation(&vec2);
+			object->Set_Scaling(&vec3);
+		}
+	}
 }
 
 #endif // _DEBUG
