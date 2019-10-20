@@ -45,11 +45,13 @@ bool CRenderer::Init()
 	DXGI_SWAP_CHAIN_DESC sd;
 	ZeroMemory( &sd, sizeof( sd ) );
 	sd.BufferCount = 1;
+
 	sd.BufferDesc.Width = SCREEN_WIDTH;
 	sd.BufferDesc.Height = SCREEN_HEIGHT;
 	sd.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
 	sd.BufferDesc.RefreshRate.Numerator = 60;
 	sd.BufferDesc.RefreshRate.Denominator = 1;
+
 	sd.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
 	sd.OutputWindow = GetWindow();
 	sd.SampleDesc.Count = 1;
@@ -403,15 +405,10 @@ bool CRenderer::Init()
 	//	// 定数バッファ生成
 	//	D3D11_BUFFER_DESC hBufferDesc;
 	//	hBufferDesc.ByteWidth = sizeof(XMMATRIX) * 128;
-	//	hBufferDesc.Usage = D3D11_USAGE_DEFAULT;
-	//	hBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-	//	hBufferDesc.CPUAccessFlags = 0;
-	//	hBufferDesc.MiscFlags = 0;
 	//	hBufferDesc.StructureByteStride = sizeof(float);
 
 	//	m_D3DDevice->CreateBuffer(&hBufferDesc, NULL, &m_Bone_Matrix_Buffer);
 	//	m_ImmediateContext->VSSetConstantBuffers(0, 1, &m_Bone_Matrix_Buffer);
-
 	//}
 
 	// 入力レイアウト設定
@@ -432,7 +429,7 @@ bool CRenderer::Init()
 	MATERIAL material;
 	ZeroMemory( &material, sizeof(material) );
 	material.Diffuse = COLOR( 1.0f, 1.0f, 1.0f, 1.0f );
-	material.Ambient = COLOR( 1.0f, 1.0f, 1.0f, 1.0f );
+	material.Ambient = COLOR(0.2f, 0.2f, 0.2f, 1.0f );
 	SetMaterial( material );
 
 	return true;
@@ -608,8 +605,7 @@ void CRenderer::SetDepthEnable( bool Enable )
 //==============================
 void CRenderer::SetWorldViewProjection2D(const XMFLOAT3& scaling)
 {
-	XMMATRIX world;
-	world = XMMatrixIdentity();
+	XMMATRIX world = XMMatrixIdentity();
 
 	world = XMMatrixScaling(scaling.x, scaling.y, 1.0f);
 

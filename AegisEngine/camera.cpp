@@ -6,6 +6,7 @@
 
 CCamera* CCamera::pCamera = nullptr;
 XMMATRIX CCamera::m_ViewMatrix;
+XMMATRIX CCamera::m_ProjectionMatrix;
 
 float CCamera::Lenght = 10.0f;
 
@@ -209,7 +210,7 @@ void CCamera::Update()
 void CCamera::Draw()
 {
 	//XMMATRIX m_InvViewMatrix;
-	XMMATRIX m_ProjectionMatrix;
+	//XMMATRIX m_ProjectionMatrix;
 
 	// ビューポート設定
 	D3D11_VIEWPORT dxViewport;
@@ -246,4 +247,9 @@ CCamera* const CCamera::Get_Camera(void)
 const XMMATRIX CCamera::Get_Camera_View(void)
 {
 	return m_ViewMatrix;
+}
+
+const XMMATRIX CCamera::Get_Camera_Projection()
+{
+	return m_ProjectionMatrix;
 }

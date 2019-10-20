@@ -31,6 +31,7 @@ private:
 	float Viewing_Angle;
 
 	static XMMATRIX m_ViewMatrix;
+	static XMMATRIX m_ProjectionMatrix;
 
 	bool MoveEnable;
 	bool RotateEnable;
@@ -43,6 +44,7 @@ public:
 
 	static CCamera* const Get_Camera();
 	static const XMMATRIX Get_Camera_View();
+	static const XMMATRIX Get_Camera_Projection();
 
 	XMVECTOR* const  Get_Front() {
 		return &Front;
