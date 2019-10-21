@@ -77,7 +77,7 @@ void CManager::Update()
 
 	if (KEYBOARD::Trigger_Keyboard(VK_F5))
 	{
-		//CRenderer::Change_Window_Mode();
+		CRenderer::Change_Window_Mode();
 	}
 
 	if (KEYBOARD::Press_Keyboard(VK_ESCAPE) && KEYBOARD::Press_Keyboard(VK_CONTROL))

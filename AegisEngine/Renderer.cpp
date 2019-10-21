@@ -4,6 +4,8 @@
 #include "texture.h"
 #include <io.h>
 
+#include	"manager.h"
+
 bool CRenderer::Stand_By_Enable = false;
 
 D3D_FEATURE_LEVEL       CRenderer::m_FeatureLevel = D3D_FEATURE_LEVEL_11_0;
@@ -578,6 +580,31 @@ void CRenderer::End()
 		if (DXGI_STATUS_OCCLUDED == hr)
 		{
 			Stand_By_Enable = true;		// スタンバイモードに入る
+		}
+
+		// デバイスの消失
+		{
+			hr = m_D3DDevice->GetDeviceRemovedReason();
+
+			switch (hr)
+			{
+			case S_OK:
+				break;
+
+				// リセット
+			case DXGI_ERROR_DEVICE_HUNG:
+			case DXGI_ERROR_DEVICE_RESET:
+				CManager::GameEnd();
+				break;
+
+				// エラー 終了
+			case DXGI_ERROR_DEVICE_REMOVED:
+			case DXGI_ERROR_DRIVER_INTERNAL_ERROR:
+			case DXGI_ERROR_INVALID_CALL:
+			default:
+				CManager::GameEnd();
+				break;
+			}
 		}
 	}
 	else

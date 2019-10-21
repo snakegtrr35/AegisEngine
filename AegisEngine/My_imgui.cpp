@@ -13,7 +13,9 @@ extern XMFLOAT2 wh;
 
 extern float radius;
 
-void EditTransform(const float* cameraView, float* cameraProjection, float* matrix);
+static string old_name;
+
+void EditTransform(const float* cameraView, float* cameraProjection, float* matrix, bool enable, GAME_OBJECT* object);
 
 void My_imgui::Init(HWND hWnd)
 {
@@ -38,8 +40,6 @@ void My_imgui::Init(HWND hWnd)
 	io.Fonts->AddFontFromFileTTF("c:\\Windows\\Fonts\\msgothic.ttc", 16.0f, &config, io.Fonts->GetGlyphRangesJapanese());
 	io.Fonts->AddFontFromFileTTF("c:\\Windows\\Fonts\\msgothic.ttc", 15.0f, &config, io.Fonts->GetGlyphRangesJapanese());
 	io.Fonts->AddFontFromFileTTF("c:\\Windows\\Fonts\\msgothic.ttc", 14.0f, &config, io.Fonts->GetGlyphRangesJapanese());
-
-	//io.Fonts->AddFontFromFileTTF("asset/font/NotoSansCJKjp-Regular.otf", 16.0f, &config, io.Fonts->GetGlyphRangesJapanese());
 
 	// Setup Platform/Renderer bindings
 	ImGui_ImplWin32_Init(hWnd);
@@ -166,12 +166,9 @@ void My_imgui::Draw(void)
 		if (show_app_style_editor) { ImGui::Begin("Style Editor", &show_app_style_editor, ImGuiWindowFlags_NoResize); ImGui::ShowStyleEditor(); ImGui::End(); }
 
 		static string s = GAME_OBJECT::Get_Object_Name_Map().begin()->second.c_str();
+		old_name = s;
 
 		{
-			{
-				Draw_Inspector(s);
-			}
-
 			{
 				float* r = &radius;
 
@@ -189,8 +186,8 @@ void My_imgui::Draw(void)
 				}
 
 				{
-				ImGui::DragFloat2("Center Position", center2, 1.0f, 0.f);
-				ImGui::DragFloat2("WH", wh2, 1.0f, 0.f);
+					ImGui::DragFloat2("Center Position", center2, 1.0f, 0.f);
+					ImGui::DragFloat2("WH", wh2, 1.0f, 0.f);
 				}
 
 				ImGui::DragFloat("Radius", r, 0.1f, 0.1f, 100.0f);
@@ -208,33 +205,33 @@ void My_imgui::Draw(void)
 
 				// ライトの設定
 			{
-			ImGuiWindowFlags window_flag = ImGuiWindowFlags_NoResize;
+				ImGuiWindowFlags window_flag = ImGuiWindowFlags_NoResize;
 
-			static float vec4_Direction[] = { 0.0f, 0.0f, 1.0f, 0.0f };
-			static float vec4_Diffuse[] = { 1.0f, 1.0f, 1.0f, 1.0f };
-			static float vec4_Ambient[] = { 0.2f, 0.2f, 0.2f, 1.0f };
+				static float vec4_Direction[] = { 0.0f, 0.0f, 1.0f, 0.0f };
+				static float vec4_Diffuse[] = { 1.0f, 1.0f, 1.0f, 1.0f };
+				static float vec4_Ambient[] = { 0.2f, 0.2f, 0.2f, 1.0f };
 
-			ImGui::SetNextWindowSize(ImVec2(300, 150), ImGuiCond_Always);
+				ImGui::SetNextWindowSize(ImVec2(300, 150), ImGuiCond_Always);
 
-			ImGui::Begin("Directional Light", nullptr, window_flag);
+				ImGui::Begin("Directional Light", nullptr, window_flag);
 
-			ImGui::DragFloat3("Direction", vec4_Direction, 0.01f);
-			ImGui::SameLine(); HelpMarker((char*)u8"\"平行光\" 向き\n");
+				ImGui::DragFloat3("Direction", vec4_Direction, 0.01f);
+				ImGui::SameLine(); HelpMarker((char*)u8"\"平行光\" 向き\n");
 
-			ImGui::DragFloat3("Diffuse", vec4_Diffuse, 0.01f);
-			ImGui::SameLine(); HelpMarker((char*)u8"\"平行光\" 直接光\n");
+				ImGui::DragFloat3("Diffuse", vec4_Diffuse, 0.01f);
+				ImGui::SameLine(); HelpMarker((char*)u8"\"平行光\" 直接光\n");
 
-			ImGui::DragFloat3("Ambient", vec4_Ambient, 0.01f);
-			ImGui::SameLine(); HelpMarker((char*)u8"\"平行光\" 環境光\n");
+				ImGui::DragFloat3("Ambient", vec4_Ambient, 0.01f);
+				ImGui::SameLine(); HelpMarker((char*)u8"\"平行光\" 環境光\n");
 
-			ImGui::End();
+				ImGui::End();
 
-			// ライトの設定
-			LIGHT light;
-			light.Direction = XMFLOAT4(vec4_Direction[0], vec4_Direction[1], vec4_Direction[2], vec4_Direction[3]);
-			light.Diffuse = COLOR(vec4_Diffuse[0], vec4_Diffuse[1], vec4_Diffuse[2], vec4_Diffuse[3]);
-			light.Ambient = COLOR(vec4_Ambient[0], vec4_Ambient[1], vec4_Ambient[2], vec4_Ambient[3]);
-			CRenderer::SetLight(&light);
+				// ライトの設定
+				LIGHT light;
+				light.Direction = XMFLOAT4(vec4_Direction[0], vec4_Direction[1], vec4_Direction[2], vec4_Direction[3]);
+				light.Diffuse = COLOR(vec4_Diffuse[0], vec4_Diffuse[1], vec4_Diffuse[2], vec4_Diffuse[3]);
+				light.Ambient = COLOR(vec4_Ambient[0], vec4_Ambient[1], vec4_Ambient[2], vec4_Ambient[3]);
+				CRenderer::SetLight(&light);
 			}
 
 			// レンダリングテクスチャ
@@ -255,6 +252,7 @@ void My_imgui::Draw(void)
 				ImGui::End();
 			}
 
+			// オブジェクト一覧
 			{
 				ImGuiWindowFlags window_flag = ImGuiWindowFlags_NoTitleBar;
 				ImGuiTreeNodeFlags node_flags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_OpenOnDoubleClick;
@@ -269,15 +267,27 @@ void My_imgui::Draw(void)
 					for (auto object : map)
 					{
 						// Mouse buttons : 0 = left, 1 = right, 2 = middle + extras
-
 						string str = object.second.c_str();
 
 						node_flags |= /*ImGuiTreeNodeFlags_Leaf |*/ ImGuiTreeNodeFlags_NoTreePushOnOpen; // ImGuiTreeNodeFlags_Bullet
 						ImGui::TreeNodeEx((void*)(intptr_t)i, node_flags, str.c_str());
-						if (ImGui::IsItemClicked())
+
+						if (ImGui::IsMouseClicked(0))
 						{
-							s = str.c_str();
+							if (ImGui::IsItemClicked(0))
+							{
+								s = str.c_str();
+							}
 						}
+
+						if (ImGui::IsMouseClicked(1))
+						{
+							if (ImGui::IsItemClicked(1))
+							{
+								s = str.c_str();
+							}
+						}
+
 
 						i++;
 					}
@@ -288,48 +298,9 @@ void My_imgui::Draw(void)
 			}
 		}
 
+		// インスペクター
 		{
-			auto camera = SCENE::Get_Game_Object<CCamera>("camera");
-			auto player = SCENE::Get_Game_Object<PLAYER>("player");
-
-			if (nullptr != camera && nullptr != player)
-			{
-				XMMATRIX mtr = camera->Get_Camera_View();
-				XMFLOAT4X4 mat44;
-				XMStoreFloat4x4(&mat44, mtr);
-
-				float view[] = { mat44._11, mat44._12, mat44._13,mat44._14,
-								 mat44._21, mat44._22, mat44._23,mat44._24,
-								 mat44._31, mat44._32, mat44._33,mat44._34,
-								 mat44._41, mat44._42, mat44._43,mat44._44
-				};
-
-				mtr = camera->Get_Camera_Projection();
-				XMStoreFloat4x4(&mat44, mtr);
-
-				float pro[] = { mat44._11, mat44._12, mat44._13,mat44._14,
-								mat44._21, mat44._22, mat44._23,mat44._24,
-								mat44._31, mat44._32, mat44._33,mat44._34,
-								mat44._41, mat44._42, mat44._43,mat44._44
-				};
-
-				mtr = XMMatrixTranslation(player->Get_Position()->x, player->Get_Position()->y, player->Get_Position()->z);
-				XMStoreFloat4x4(&mat44, mtr);
-
-				static float pos[] = { mat44._11, mat44._12, mat44._13,mat44._14,
-								mat44._21, mat44._22, mat44._23,mat44._24,
-								mat44._31, mat44._32, mat44._33,mat44._34,
-								mat44._41, mat44._42, mat44._43,mat44._44
-				};
-
-				ImGui::SetNextWindowPos(ImVec2(10, 10));
-				ImGui::SetNextWindowSize(ImVec2(320, 340));
-				ImGui::Begin("Editor");
-
-				EditTransform(view, pro, pos);
-
-				ImGui::End();
-			}
+			Draw_Inspector(s);
 		}
 
 		// Rendering
@@ -369,6 +340,9 @@ void My_imgui::Render(void)
 
 void Draw_Inspector(const string& name)
 {
+	bool flag = false;
+	if (old_name != name) flag = true;
+
 	auto object = SCENE::Get_Game_Object(name);
 
 	if (nullptr != object)
@@ -381,14 +355,54 @@ void Draw_Inspector(const string& name)
 
 		ImGui::Text(object->Get_Object_Name().c_str());
 
-		static bool enable = false;
+		static bool enable = true;
 		ImGui::Checkbox("Enable", &enable);
 
-		ImGui::DragFloat3("Position", vec4_Position, 0.02f);
+		// 3Dギズモ
+		{
+			auto camera = SCENE::Get_Game_Object<CCamera>("camera");
+			XMMATRIX mtr = camera->Get_Camera_View();
+			XMFLOAT4X4 mat44;
+			XMStoreFloat4x4(&mat44, mtr);
 
-		ImGui::DragFloat3("Rotation", vec4_Rotation, 0.2f, -360.0f, 360.0f);
+			float view[16] = { mat44._11, mat44._12, mat44._13,mat44._14,
+								mat44._21, mat44._22, mat44._23,mat44._24,
+								mat44._31, mat44._32, mat44._33,mat44._34,
+								mat44._41, mat44._42, mat44._43,mat44._44
+			};
 
-		ImGui::DragFloat3("Scaling", vec4_Scaling, 0.001f);
+			mtr = camera->Get_Camera_Projection();
+			XMStoreFloat4x4(&mat44, mtr);
+
+			float pro[16] = { mat44._11, mat44._12, mat44._13,mat44._14,
+								mat44._21, mat44._22, mat44._23,mat44._24,
+								mat44._31, mat44._32, mat44._33,mat44._34,
+								mat44._41, mat44._42, mat44._43,mat44._44
+			};
+
+			mtr = XMMatrixTranslation(object->Get_Position()->x, object->Get_Position()->y, object->Get_Position()->z);
+			XMStoreFloat4x4(&mat44, mtr);
+
+			static float pos[16] = { mat44._11, mat44._12, mat44._13,mat44._14,
+									mat44._21, mat44._22, mat44._23,mat44._24,
+									mat44._31, mat44._32, mat44._33,mat44._34,
+									mat44._41, mat44._42, mat44._43,mat44._44
+			};
+
+			if (flag)
+			{
+				mtr = XMMatrixTranslation(object->Get_Position()->x, object->Get_Position()->y, object->Get_Position()->z);
+				XMStoreFloat4x4(&mat44, mtr);
+
+				pos[0] = mat44._11, pos[1] = mat44._12, pos[2] = mat44._13, pos[3] = mat44._14;
+				pos[4] = mat44._21, pos[5] = mat44._22, pos[6] = mat44._23, pos[7] = mat44._24;
+				pos[8] = mat44._31, pos[9] = mat44._32, pos[10] = mat44._33, pos[11] = mat44._34;
+				pos[12] = mat44._41, pos[13] = mat44._42, pos[14] = mat44._43, pos[15] = mat44._44;
+				
+			}
+
+			EditTransform(view, pro, pos, enable, object);
+		}
 
 		static int clicked = 0;
 		if (ImGui::Button("Add Component"))
@@ -400,40 +414,15 @@ void Draw_Inspector(const string& name)
 		}
 
 		ImGui::End();
-
-		if (enable)
-		{
-			XMFLOAT3 vec1(vec4_Position[0], vec4_Position[1], vec4_Position[2]);
-			XMFLOAT3 vec2(vec4_Rotation[0], vec4_Rotation[1], vec4_Rotation[2]);
-			XMFLOAT3 vec3(vec4_Scaling[0], vec4_Scaling[1], vec4_Scaling[2]);
-
-			//object->Set_Position(&vec1);
-			object->Set_Rotation(&vec2);
-			object->Set_Scaling(&vec3);
-		}
 	}
 }
 
 
-void EditTransform(const float* cameraView, float* cameraProjection, float* matrix)
+void EditTransform(const float* cameraView, float* cameraProjection, float* matrix, bool enable, GAME_OBJECT* object)
 {
-	auto player = SCENE::Get_Game_Object<PLAYER>("player");
-
 	static ImGuizmo::OPERATION mCurrentGizmoOperation(ImGuizmo::TRANSLATE);
-	static ImGuizmo::MODE mCurrentGizmoMode(ImGuizmo::LOCAL);
-	static bool useSnap = false;
-	static float snap[3] = { 1.f, 1.f, 1.f };
-	static float bounds[] = { -0.5f, -0.5f, -0.5f, 0.5f, 0.5f, 0.5f };
-	static float boundsSnap[] = { 0.1f, 0.1f, 0.1f };
-	static bool boundSizing = false;
-	static bool boundSizingSnap = false;
+	static float snap[3] = { 0.001f, 0.001f, 0.001f };
 
-	if (ImGui::IsKeyPressed(90))
-		mCurrentGizmoOperation = ImGuizmo::TRANSLATE;
-	if (ImGui::IsKeyPressed(69))
-		mCurrentGizmoOperation = ImGuizmo::ROTATE;
-	if (ImGui::IsKeyPressed(82)) // r Key
-		mCurrentGizmoOperation = ImGuizmo::SCALE;
 	if (ImGui::RadioButton("Translate", mCurrentGizmoOperation == ImGuizmo::TRANSLATE))
 		mCurrentGizmoOperation = ImGuizmo::TRANSLATE;
 	ImGui::SameLine();
@@ -443,66 +432,39 @@ void EditTransform(const float* cameraView, float* cameraProjection, float* matr
 	if (ImGui::RadioButton("Scale", mCurrentGizmoOperation == ImGuizmo::SCALE))
 		mCurrentGizmoOperation = ImGuizmo::SCALE;
 
-
-	float matrixTranslation[3], matrixRotation[3], matrixScale[3];
-
-	//static float	matrixTranslation[3] = { player->Get_Position()->x, player->Get_Position()->y, player->Get_Position()->z },
-	//	matrixRotation[3] = { player->Get_Rotation()->x, player->Get_Rotation()->y, player->Get_Rotation()->z },
-	//	matrixScale[3] = { player->Get_Scaling()->x, player->Get_Scaling()->y, player->Get_Scaling()->z };
-
-	ImGuizmo::DecomposeMatrixToComponents(matrix, matrixTranslation, matrixRotation, matrixScale);
-	ImGui::InputFloat3("Tr", matrixTranslation, 3);
-	ImGui::InputFloat3("Rt", matrixRotation, 3);
-	ImGui::InputFloat3("Sc", matrixScale, 3);
-	ImGuizmo::RecomposeMatrixFromComponents(matrixTranslation, matrixRotation, matrixScale, matrix);
-
-	XMFLOAT3 vec1(matrixTranslation[0], matrixTranslation[1], matrixTranslation[2]);
-	XMFLOAT3 vec2(matrixRotation[0], matrixRotation[1], matrixRotation[2]);
-	XMFLOAT3 vec3(matrixScale[0], matrixScale[1], matrixScale[2]);
-
-	player->Set_Position(&vec1);
-	player->Set_Rotation(&vec2);
-	player->Set_Scaling(&vec3);
-
-	if (mCurrentGizmoOperation != ImGuizmo::SCALE)
 	{
-		if (ImGui::RadioButton("Local", mCurrentGizmoMode == ImGuizmo::LOCAL))
-			mCurrentGizmoMode = ImGuizmo::LOCAL;
-		ImGui::SameLine();
-		if (ImGui::RadioButton("World", mCurrentGizmoMode == ImGuizmo::WORLD))
-			mCurrentGizmoMode = ImGuizmo::WORLD;
-	}
-	if (ImGui::IsKeyPressed(83))
-		useSnap = !useSnap;
-	ImGui::Checkbox("", &useSnap);
-	ImGui::SameLine();
+		float	Translation[3] = { object->Get_Position()->x, object->Get_Position()->y, object->Get_Position()->z },
+				Rotation[3] = { object->Get_Rotation()->x, object->Get_Rotation()->y, object->Get_Rotation()->z },
+				R[3] = { object->Get_Rotation()->x, object->Get_Rotation()->y, object->Get_Rotation()->z },
+				Scale[3] = { object->Get_Scaling()->x, object->Get_Scaling()->y, object->Get_Scaling()->z };
 
-	switch (mCurrentGizmoOperation)
-	{
-	case ImGuizmo::TRANSLATE:
-		ImGui::InputFloat3("Snap", &snap[0]);
-		break;
-	case ImGuizmo::ROTATE:
-		ImGui::InputFloat("Angle Snap", &snap[0]);
-		break;
-	case ImGuizmo::SCALE:
-		ImGui::InputFloat("Scale Snap", &snap[0]);
-		break;
-	}
-	ImGui::Checkbox("Bound Sizing", &boundSizing);
-	if (boundSizing)
-	{
-		ImGui::PushID(3);
-		ImGui::Checkbox("", &boundSizingSnap);
-		ImGui::SameLine();
-		ImGui::InputFloat3("Snap", boundsSnap);
-		ImGui::PopID();
+		ImGuizmo::DecomposeMatrixToComponents(matrix, Translation, Rotation, Scale);
+
+		ImGui::DragFloat3("Translation", Translation, 0.01f);
+		ImGui::DragFloat3("Rotate", Rotation, 0.1f);
+		ImGui::DragFloat3("Scale", Scale, 0.01f);
+
+		ImGuizmo::RecomposeMatrixFromComponents(Translation, Rotation, Scale, matrix);
+
+		if (enable)
+		{
+			XMFLOAT3 vec1(Translation[0], Translation[1], Translation[2]);
+			XMFLOAT3 vec2/*(Rotation[0], Rotation[1], Rotation[2])*/;
+			XMFLOAT3 vec3(Scale[0], Scale[1], Scale[2]);
+
+			object->Set_Position(vec1);
+			//object->Set_Rotation(vec2);
+			object->Set_Scaling(vec3);
+
+			ImGui::DragFloat3("Rotation", R, 0.2f, -180.f, 180.f);
+			vec2 = XMFLOAT3(R[0], R[1], R[2]);
+			object->Set_Rotation(vec2);
+		}
 	}
 
 	ImGuiIO& io = ImGui::GetIO();
 	ImGuizmo::SetRect(0, 0, io.DisplaySize.x, io.DisplaySize.y);
-	ImGuizmo::Manipulate(cameraView, cameraProjection, mCurrentGizmoOperation, mCurrentGizmoMode, matrix, NULL, useSnap ? &snap[0] : NULL, boundSizing ? bounds : NULL, boundSizingSnap ? boundsSnap : NULL);
-
+	ImGuizmo::Manipulate(cameraView, cameraProjection, mCurrentGizmoOperation, ImGuizmo::LOCAL, matrix, NULL, &snap[0], NULL, NULL);
 }
 
 #endif // _DEBUG
