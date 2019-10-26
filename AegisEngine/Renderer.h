@@ -21,7 +21,7 @@ struct VERTEX_ANIME_3D
 	XMFLOAT3 Normal;
 	XMFLOAT4 Diffuse;
 	XMFLOAT2 TexCoord;
-	UINT BoneIndex[4];
+	WORD BoneIndex[4];
 	float BoneWeight[4];
 
 	VERTEX_ANIME_3D() {
@@ -40,6 +40,11 @@ struct VERTEX_ANIME_3D
 // êFç\ë¢ëÃ
 struct COLOR
 {
+	float r;
+	float g;
+	float b;
+	float a;
+
 	COLOR() : r(1.0f), g(1.0f), b(1.0f), a(1.0f) {}
 	COLOR( float _r, float _g, float _b, float _a )
 	{
@@ -48,11 +53,6 @@ struct COLOR
 		b = _b;
 		a = _a;
 	}
-
-	float r;
-	float g;
-	float b;
-	float a;
 
 	// ë„ì¸ââéZ( = )
 	COLOR& operator = (const COLOR& color)
@@ -173,10 +173,13 @@ private:
 
 	static ID3D11Device*           m_D3DDevice;
 	static ID3D11DeviceContext*    m_ImmediateContext;
-	static IDXGISwapChain*         m_SwapChain;
+	static IDXGISwapChain1*		   m_SwapChain;//
 	static ID3D11RenderTargetView* m_RenderTargetView;
 	static ID3D11DepthStencilView* m_DepthStencilView;
-
+	static ID2D1Device* m_D2DDevice;//
+	static ID2D1DeviceContext* m_D2DDeviceContext;//
+	static ID2D1Bitmap1* m_D2DTargetBitmap;//
+	static IDXGIDevice1* m_dxgiDev;//
 
 	static ID3D11VertexShader*		m_VertexShader[3];
 	static ID3D11PixelShader*		m_PixelShader[2];
@@ -190,14 +193,10 @@ private:
 
 	static ID3D11Buffer* m_Bone_Matrix_Buffer;
 
-/*
-	static XMMATRIX				m_WorldMatrix;
-	static XMMATRIX				m_ViewMatrix;
-	static XMMATRIX				m_ProjectionMatrix;
-*/
 	static ID3D11DepthStencilState*		m_DepthStateEnable;
 	static ID3D11DepthStencilState*		m_DepthStateDisable;
 
+	static IDWriteTextFormat* m_DwriteTextFormat;
 
 public:
 	static bool Init();
@@ -230,6 +229,10 @@ public:
 
 	static ID3D11Device* GetDevice(){ return m_D3DDevice; }
 	static ID3D11DeviceContext* GetDeviceContext( void ){ return m_ImmediateContext; }
+
+	static ID2D1Device* Get2DDevice() { return m_D2DDevice; }
+	static ID2D1DeviceContext* Get2DDeviceContext(void) { return m_D2DDeviceContext; }
+	static IDWriteTextFormat* GetTextFormat() { return m_DwriteTextFormat; }
 
 	static void Set_Shader(const SHADER_INDEX_V v_index = SHADER_INDEX_V::DEFAULT, const SHADER_INDEX_P p_index = SHADER_INDEX_P::DEFAULT);
 

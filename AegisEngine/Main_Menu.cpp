@@ -51,7 +51,7 @@ void MAIN_MENU::Init()
 	//}
 
 	{
-		auto player = Add_Game_Object<PLAYER>(LAYER_NAME::GAMEOBJECT, "player");
+		//auto player = Add_Game_Object<PLAYER>(LAYER_NAME::GAMEOBJECT, "player");
 	}
 
 	{
@@ -64,7 +64,7 @@ void MAIN_MENU::Init()
 		Add_Game_Object<GRID>(LAYER_NAME::GAMEOBJECT, "grid");
 	}
 
-	/*// テキスト画像
+	// テキスト画像
 	{
 		XMFLOAT2 pos(50.0f, 50.0f);
 		TEXTS* text = Add_Game_Object<TEXTS>(LAYER_NAME::UI);
@@ -75,10 +75,10 @@ void MAIN_MENU::Init()
 
 		text->Set_Object_Name(string("text1"));
 
-		string time = to_string(Time);
+		//string time = to_string(Time);
 
-		text->Edit(time);
-	}*/
+		text->Edit("Hello HELL World!!!地球の未来にご奉仕するにゃん！");
+	}
 
 	cnt = 0;
 

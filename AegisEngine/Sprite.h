@@ -287,7 +287,7 @@ public:
 	* @details 特定のメニューイベントを有効無効化する関数
 	*/
 	template <typename T>
-	void Menu_Event_Enable(const bool const flag)
+	void Menu_Event_Enable(const bool flag)
 	{
 		for (auto component : MenuEvents)
 		{

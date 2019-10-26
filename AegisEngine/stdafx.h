@@ -34,6 +34,7 @@ using namespace DirectX;
 #include	"imgui/imgui_impl_win32.h"
 #include	"imgui/imstb_rectpack.h"
 #include	"imgui/imstb_truetype.h"
+#include	"imgui/ImGuizmo.h"
 
 #endif // !IMGUI
 

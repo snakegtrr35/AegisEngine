@@ -22,7 +22,7 @@ cbuffer MaterialBuffer : register( b1 )
 //*****************************************************************************
 // ƒOƒ[ƒoƒ‹•Ï”
 //*****************************************************************************
-Texture2D		g_Texture : register( t0 );
+Texture2D       g_Texture : register( t0 );
 SamplerState	g_SamplerState : register( s0 );
 
 

@@ -447,7 +447,6 @@ void FONT::Load_Font(const wstring& one_character)
 	HFONT oldFont = (HFONT)SelectObject(hdc, hFont);
 
 	// フォントビットマップ取得
-
 	wchar_t font = (wchar_t)one_character.c_str();
 
 	UINT code = (UINT)font;

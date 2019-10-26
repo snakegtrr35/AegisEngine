@@ -34,11 +34,11 @@ public:
 
 	virtual void Uninit() = 0;
 
-	void SetEnable(const bool const flag) {
+	void SetEnable(const bool flag) {
 		Enable = flag;
 	}
 
-	const bool const GetEnable() {
+	const bool GetEnable() {
 		return Enable;
 	}
 

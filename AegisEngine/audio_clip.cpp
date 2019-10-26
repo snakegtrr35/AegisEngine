@@ -248,8 +248,6 @@ IXAudio2* const AUDIO_MANAGER::Get_Xaudio()
 
 void AUDIO_MANAGER::Load()
 {
-	CAudioClip* sound;
-
 	for (int i = 0; i < SOUND_FILE_COUNT; i++)
 	{
 		Add_Sound_Object((SOUND_INDEX)i);

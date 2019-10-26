@@ -15,7 +15,7 @@ private:
 
 public:
 	TEXTURE();
-	TEXTURE(const string& const file_name);
+	TEXTURE(const string& file_name);
 	~TEXTURE() {};
 
 	void Set_Texture();											// テクスチャを設定(Directx11)
