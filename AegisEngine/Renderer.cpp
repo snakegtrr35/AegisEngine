@@ -210,9 +210,6 @@ bool CRenderer::Init()
 	// 描画するDirect2Dビットマップの設定
 	m_D2DDeviceContext->SetTarget(m_D2DTargetBitmap);
 
-
-
-
 	// DirectWriteのファクトリの作成
 	IDWriteFactory* dwriteFactory;
 	hr = DWriteCreateFactory(
@@ -228,7 +225,7 @@ bool CRenderer::Init()
 	// テキストフォーマットの作成
 	const float FONT_DEFAULT_SIZE = 48.0f;
 	hr = dwriteFactory->CreateTextFormat(
-		L"Meiryo UI", nullptr,
+		L"メイリオ", nullptr,
 		DWRITE_FONT_WEIGHT_NORMAL, DWRITE_FONT_STYLE_NORMAL, DWRITE_FONT_STRETCH_NORMAL,
 		FONT_DEFAULT_SIZE, L"", &m_DwriteTextFormat);
 	dwriteFactory->Release();
