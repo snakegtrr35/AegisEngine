@@ -149,6 +149,7 @@ struct LIGHT
 	XMFLOAT4	Direction;
 	COLOR		Diffuse;
 	COLOR		Ambient;
+	COLOR		Specular;
 };
 
 
@@ -224,7 +225,6 @@ public:
 	static void Light_Identity();
 	static void SetVertexBuffers( ID3D11Buffer* VertexBuffer );
 	static void SetIndexBuffer( ID3D11Buffer* IndexBuffer );
-	//static void SetTexture(CTexture* Texture );
 	static void DrawIndexed( unsigned int IndexCount, unsigned int StartIndexLocation, int BaseVertexLocation );
 
 	static ID3D11Device* GetDevice(){ return m_D3DDevice; }

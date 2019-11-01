@@ -123,8 +123,8 @@ void CManager::Draw()
 	color.g = 0.0f;
 	color.b = 0.0f;
 	color.a = 1.0f;
-	CRenderer::Get2DDeviceContext()->CreateSolidColorBrush(color, &brush);
 
+	brush->SetColor(color);
 
 
 	rect = D2D1::RectF(100, 100, 500, 200);

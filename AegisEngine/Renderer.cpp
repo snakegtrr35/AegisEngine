@@ -566,6 +566,7 @@ bool CRenderer::Init()
 	ZeroMemory(&material, sizeof(material));
 	material.Diffuse = COLOR(1.0f, 1.0f, 1.0f, 1.0f);
 	material.Ambient = COLOR(0.2f, 0.2f, 0.2f, 1.0f);
+	material.Specular = COLOR(1.0f, 1.0f, 1.0f, 0.5f);
 	SetMaterial(material);
 
 	return true;
@@ -845,12 +846,6 @@ void CRenderer::SetIndexBuffer( ID3D11Buffer* IndexBuffer )
 {
 	m_ImmediateContext->IASetIndexBuffer( IndexBuffer, DXGI_FORMAT_R16_UINT, 0 );
 }
-
-//void CRenderer::SetTexture( CTexture* Texture )
-//{
-//	ID3D11ShaderResourceView* srv[1] = { Texture->GetShaderResourceView() };
-//	m_ImmediateContext->PSSetShaderResources( 0, 1, srv );
-//}
 
 void CRenderer::DrawIndexed( unsigned int IndexCount, unsigned int StartIndexLocation, int BaseVertexLocation )
 {
