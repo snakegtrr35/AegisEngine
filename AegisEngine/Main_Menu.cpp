@@ -51,7 +51,7 @@ void MAIN_MENU::Init()
 	//}
 
 	{
-		//auto player = Add_Game_Object<PLAYER>(LAYER_NAME::GAMEOBJECT, "player");
+		auto player = Add_Game_Object<PLAYER>(LAYER_NAME::GAMEOBJECT, "player");
 	}
 
 	{

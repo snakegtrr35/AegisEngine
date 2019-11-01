@@ -49,157 +49,6 @@ bool CRenderer::Init()
 {
 	HRESULT hr = S_OK;
 
-	/*// デバイス、スワップチェーン、コンテキスト生成
-	DXGI_SWAP_CHAIN_DESC sd;
-	ZeroMemory( &sd, sizeof( sd ) );
-	sd.BufferCount = 1;
-
-	sd.BufferDesc.Width = SCREEN_WIDTH;
-	sd.BufferDesc.Height = SCREEN_HEIGHT;
-	sd.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
-	sd.BufferDesc.RefreshRate.Numerator = 60;
-	sd.BufferDesc.RefreshRate.Denominator = 1;
-
-	sd.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
-	sd.OutputWindow = GetWindow();
-	sd.SampleDesc.Count = 1;
-	sd.SampleDesc.Quality = 0;
-	sd.Windowed = TRUE;
-
-	//sd.BufferCount = 1;
-	//sd.Width = SCREEN_WIDTH;
-	//sd.Height = SCREEN_HEIGHT;
-	//sd.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
-	//sd.Scaling = DXGI_SCALING_STRETCH;
-	//sd.Stereo = 0;
-	//sd.AlphaMode = DXGI_ALPHA_MODE_UNSPECIFIED;
-
-	//sd.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
-	//sd.SwapEffect = DXGI_SWAP_EFFECT_SEQUENTIAL;
-	//sd.SampleDesc.Count = 1;
-	//sd.SampleDesc.Quality = 0;
-
-
-	D3D_FEATURE_LEVEL      Level;
-
-	//hr = D3D11CreateDeviceAndSwapChain(	NULL,
-	//									D3D_DRIVER_TYPE_HARDWARE,
-	//									NULL,
-	//									0,
-	//									NULL,
-	//									0,
-	//									D3D11_SDK_VERSION,
-	//									&sd,
-	//									&m_SwapChain,
-	//									&m_D3DDevice,
-	//									&m_FeatureLevel,
-	//									&m_ImmediateContext );
-
-	hr = D3D11CreateDevice(
-		nullptr,
-		D3D_DRIVER_TYPE_HARDWARE,
-		0,
-		0,
-		&m_FeatureLevel,
-		1,
-		D3D11_SDK_VERSION,
-		&m_D3DDevice,
-		nullptr,
-		&m_ImmediateContext);
-
-	if (FAILED(hr))
-	{
-		FAILDE_ASSERT;
-		return false;
-	}
-
-	// DXGIデバイスの作成
-	hr = m_D3DDevice->QueryInterface<IDXGIDevice1>(&m_dxgiDev);
-	if (FAILED(hr))
-	{
-		FAILDE_ASSERT;
-		return false;
-	}
-
-	// キューに格納されていく描画コマンドをスワップ時に全てフラッシュする
-	m_dxgiDev->SetMaximumFrameLatency(1);
-
-	// Direct2Dのファクトリーの作成
-	ID2D1Factory1* d2dFactory;
-	hr = D2D1CreateFactory(
-		D2D1_FACTORY_TYPE_SINGLE_THREADED,
-		__uuidof(ID2D1Factory1),
-		nullptr,
-		reinterpret_cast<void**>(&d2dFactory));
-	if (FAILED(hr))
-	{
-		FAILDE_ASSERT;
-		return false;
-	}
-
-	// Direct2Dデバイスの作成
-	hr = d2dFactory->CreateDevice(m_dxgiDev, &m_D2DDevice);
-	d2dFactory->Release();
-	if (FAILED(hr))
-	{
-		FAILDE_ASSERT;
-		return false;
-	}
-
-	//// Direct2Dデバイスコンテクストの作成
-	//hr = m_D2DDevice->CreateDeviceContext(
-	//	D2D1_DEVICE_CONTEXT_OPTIONS_ENABLE_MULTITHREADED_OPTIMIZATIONS,
-	//	&m_D2DDeviceContext);
-
-	//
-	// DXGIアダプタ（GPU）の取得
-	IDXGIAdapter* adapter;
-	hr = m_dxgiDev->GetAdapter(&adapter);
-	if (FAILED(hr))
-	{
-		FAILDE_ASSERT;
-		return false;
-	}
-
-	//
-	// DXGIのファクトリの作成
-	IDXGIFactory1* factory;
-	hr = adapter->GetParent(IID_PPV_ARGS(&factory));
-	if (FAILED(hr))
-	{
-		FAILDE_ASSERT;
-		return false;
-	}
-	adapter->Release();
-
-	//
-	// スワップチェインをHWNDから作成
-	factory->CreateSwapChain(m_D3DDevice, &sd, &m_SwapChain);
-	if (FAILED(hr))
-	{
-		FAILDE_ASSERT;
-		return false;
-	}
-	factory->MakeWindowAssociation(GetWindow(), DXGI_MWA_NO_ALT_ENTER);
-	factory->Release();
-
-	//// スワップチェインをHWNDから作成
-	//hr = factory->CreateSwapChainForHwnd(m_D3DDevice, GetWindow(),
-	//	&sd, nullptr, nullptr, &m_SwapChain);
-	//factory->Release();
-
-	//
-	// レンダーターゲットの取得（D3D11）
-	ID3D11Texture2D* pBackBuffer = NULL;
-	hr = m_SwapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (LPVOID*)&pBackBuffer);
-	hr = m_D3DDevice->CreateRenderTargetView(pBackBuffer, NULL, &m_RenderTargetView);
-	if (FAILED(hr))
-	{
-		FAILDE_ASSERT;
-		return false;
-	}
-	pBackBuffer->Release();*/
-
 	// デバイス、スワップチェーン、コンテキスト生成
 
 	DXGI_SWAP_CHAIN_DESC1 sc;
@@ -228,130 +77,8 @@ bool CRenderer::Init()
 	// フラグ
 	UINT d3dFlags = D3D11_CREATE_DEVICE_BGRA_SUPPORT; // BGRA テクスチャ有効
 #ifndef NDEBUG
-	d3dFlags |= D3D11_CREATE_DEVICE_DEBUG; // Debug ビルドならエラー報告を有効
+	//d3dFlags |= D3D11_CREATE_DEVICE_DEBUG; // Debug ビルドならエラー報告を有効
 #endif
-
-	/*// Direct3Dの作成
-	hr = D3D11CreateDevice(
-		nullptr, D3D_DRIVER_TYPE_HARDWARE, 0, d3dFlags,
-		&m_FeatureLevel, 1, D3D11_SDK_VERSION,
-		&m_D3DDevice, nullptr, &m_ImmediateContext);
-	if (FAILED(hr))
-	{
-		FAILDE_ASSERT;
-		return false;
-	}
-
-	// DXGIデバイスの作成
-	hr = m_D3DDevice->QueryInterface<IDXGIDevice1>(&m_dxgiDev);
-	if (FAILED(hr))
-	{
-		FAILDE_ASSERT;
-		return false;
-	}
-	// キューに格納されていく描画コマンドをスワップ時に全てフラッシュする
-	m_dxgiDev->SetMaximumFrameLatency(1);
-
-	// Direct2Dのファクトリーの作成
-	D2D1_FACTORY_OPTIONS d2dOpt;
-	ZeroMemory(&d2dOpt, sizeof d2dOpt);
-	ID2D1Factory1* d2dFactory;
-	hr = D2D1CreateFactory(
-		D2D1_FACTORY_TYPE_SINGLE_THREADED,
-		__uuidof(ID2D1Factory1),
-		&d2dOpt,
-		reinterpret_cast<void**>(&d2dFactory));
-	if (FAILED(hr))
-	{
-		FAILDE_ASSERT;
-		return false;
-	}
-
-	// Direct2Dデバイスの作成
-	hr = d2dFactory->CreateDevice(m_dxgiDev, &m_D2DDevice);
-	d2dFactory->Release();
-	if (FAILED(hr))
-	{
-		FAILDE_ASSERT;
-		return false;
-	}
-
-	// Direct2Dデバイスコンテクストの作成
-	hr = m_D2DDevice->CreateDeviceContext(
-		D2D1_DEVICE_CONTEXT_OPTIONS_ENABLE_MULTITHREADED_OPTIMIZATIONS,
-		&m_D2DDeviceContext);
-	if (FAILED(hr))
-	{
-		FAILDE_ASSERT;
-		return false;
-	}
-
-	// DXGIアダプタ（GPU）の取得
-	IDXGIAdapter* adapter;
-	hr = m_dxgiDev->GetAdapter(&adapter);
-	if (FAILED(hr))
-	{
-		FAILDE_ASSERT;
-		return false;
-	}
-
-	// DXGIのファクトリの作成
-	IDXGIFactory2* factory;
-	hr = adapter->GetParent(IID_PPV_ARGS(&factory));
-	adapter->Release();
-	if (FAILED(hr))
-	{
-		FAILDE_ASSERT;
-		return false;
-	}
-
-	// スワップチェインをHWNDから作成
-	hr = factory->CreateSwapChainForHwnd(m_D3DDevice, GetWindow(), &sc, nullptr, nullptr, &m_SwapChain);
-	if (FAILED(hr))
-	{
-		FAILDE_ASSERT;
-		return false;
-	}
-	factory->MakeWindowAssociation(GetWindow(), DXGI_MWA_NO_ALT_ENTER);
-	factory->Release();
-
-	// レンダーターゲットの取得（D3D11）
-	ID3D11Texture2D* pBackBuffer = NULL;
-	hr = m_SwapChain->GetBuffer(0, IID_PPV_ARGS(&pBackBuffer));
-	hr = m_D3DDevice->CreateRenderTargetView(pBackBuffer, NULL, &m_RenderTargetView);
-	if (FAILED(hr))
-	{
-		FAILDE_ASSERT;
-		return false;
-	}
-	pBackBuffer->Release();
-
-	// レンダーターゲットの取得（DXGI）
-	IDXGISurface* surf;
-	hr = m_SwapChain->GetBuffer(0, IID_PPV_ARGS(&surf));
-	if (FAILED(hr))
-	{
-		FAILDE_ASSERT;
-		return false;
-	}
-
-	// Direct2Dの描画先となるビットマップを作成
-	D2D1_BITMAP_PROPERTIES1 d2dProp =
-		D2D1::BitmapProperties1(
-			D2D1_BITMAP_OPTIONS_TARGET | D2D1_BITMAP_OPTIONS_CANNOT_DRAW,
-			D2D1::PixelFormat(DXGI_FORMAT_B8G8R8A8_UNORM, D2D1_ALPHA_MODE_PREMULTIPLIED));
-
-	hr = m_D2DDeviceContext->CreateBitmapFromDxgiSurface(
-		surf, &d2dProp, &m_D2DTargetBitmap);
-	surf->Release();
-	if (FAILED(hr))
-	{
-		FAILDE_ASSERT;
-		return false;
-	}
-
-	// 描画するDirect2Dビットマップの設定
-	m_D2DDeviceContext->SetTarget(m_D2DTargetBitmap);*/
 
 	// Direct3Dの作成
 	hr = D3D11CreateDevice(
@@ -712,42 +439,42 @@ bool CRenderer::Init()
 		}
 	}
 
-	//// 頂点シェーダ生成 アニメーション
-	//{
-	//	// 入力レイアウト生成
-	//	D3D11_INPUT_ELEMENT_DESC animation_layout[] =
-	//	{
-	//		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-	//		{ "NORMAL",   0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 4 * 3, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-	//		{ "COLOR",    0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 4 * 6, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-	//		{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 4 * 10, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-	//		{ "BLENDINDICE", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 4 * 12, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-	//		{ "BLENDWEIGHT", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 4 * 16, D3D11_INPUT_PER_VERTEX_DATA, 0 }
-	//	};
+	/*// 頂点シェーダ生成 アニメーション
+	{
+		// 入力レイアウト生成
+		D3D11_INPUT_ELEMENT_DESC animation_layout[] =
+		{
+			{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+			{ "NORMAL",   0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 4 * 3, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+			{ "COLOR",    0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 4 * 6, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+			{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 4 * 10, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+			{ "BLENDINDICE", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 4 * 12, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+			{ "BLENDWEIGHT", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 4 * 16, D3D11_INPUT_PER_VERTEX_DATA, 0 }
+		};
 
-	//	UINT numElements = ARRAYSIZE(animation_layout);
+		UINT numElements = ARRAYSIZE(animation_layout);
 
-	//	{
-	//		FILE* file;
-	//		long int fsize;
+		{
+			FILE* file;
+			long int fsize;
 
-	//		file = fopen("AnimationShader.cso", "rb");
-	//		fsize = _filelength(_fileno(file));
-	//		unsigned char* buffer = new unsigned char[fsize];
-	//		fread(buffer, fsize, 1, file);
-	//		fclose(file);
+			file = fopen("AnimationShader.cso", "rb");
+			fsize = _filelength(_fileno(file));
+			unsigned char* buffer = new unsigned char[fsize];
+			fread(buffer, fsize, 1, file);
+			fclose(file);
 
-	//		m_D3DDevice->CreateVertexShader(buffer, fsize, NULL, &m_VertexShader[2]);
+			m_D3DDevice->CreateVertexShader(buffer, fsize, NULL, &m_VertexShader[2]);
 
-	//		m_D3DDevice->CreateInputLayout(animation_layout,
-	//			numElements,
-	//			buffer,
-	//			fsize,
-	//			&m_VertexLayout);
+			m_D3DDevice->CreateInputLayout(animation_layout,
+				numElements,
+				buffer,
+				fsize,
+				&m_VertexLayout);
 
-	//		delete[] buffer;
-	//	}
-	//}
+			delete[] buffer;
+		}
+	}*/
 
 	// ピクセルシェーダ生成
 	{
@@ -810,15 +537,15 @@ bool CRenderer::Init()
 	m_D3DDevice->CreateBuffer(&hBufferDesc, NULL, &m_LightBuffer);
 	m_ImmediateContext->VSSetConstantBuffers(4, 1, &m_LightBuffer);
 
-	//{
-	//	// 定数バッファ生成
-	//	D3D11_BUFFER_DESC hBufferDesc;
-	//	hBufferDesc.ByteWidth = sizeof(XMMATRIX) * 128;
-	//	hBufferDesc.StructureByteStride = sizeof(float);
+	/*{
+		// 定数バッファ生成
+		D3D11_BUFFER_DESC hBufferDesc;
+		hBufferDesc.ByteWidth = sizeof(XMMATRIX) * 128;
+		hBufferDesc.StructureByteStride = sizeof(float);
 
-	//	m_D3DDevice->CreateBuffer(&hBufferDesc, NULL, &m_Bone_Matrix_Buffer);
-	//	m_ImmediateContext->VSSetConstantBuffers(0, 1, &m_Bone_Matrix_Buffer);
-	//}
+		m_D3DDevice->CreateBuffer(&hBufferDesc, NULL, &m_Bone_Matrix_Buffer);
+		m_ImmediateContext->VSSetConstantBuffers(0, 1, &m_Bone_Matrix_Buffer);
+	}*/
 
 	// 入力レイアウト設定
 	m_ImmediateContext->IASetInputLayout(m_VertexLayout);
@@ -846,12 +573,18 @@ bool CRenderer::Init()
 
 void CRenderer::Uninit()
 {
-	BOOL FullScreen = FALSE;
-	if(nullptr != m_SwapChain) m_SwapChain->GetFullscreenState(&FullScreen, NULL);
-	// フルスクリーンのとき
-	if (FullScreen == TRUE)
 	{
-		m_SwapChain->SetFullscreenState(FALSE, NULL);
+		BOOL FullScreen = FALSE;
+		if (nullptr != m_SwapChain)
+		{
+			m_SwapChain->GetFullscreenState(&FullScreen, NULL);
+
+			// フルスクリーンのとき
+			if (FullScreen == TRUE)
+			{
+				m_SwapChain->SetFullscreenState(FALSE, NULL);
+			}
+		}
 	}
 
 	// オブジェクト解放
@@ -868,7 +601,6 @@ void CRenderer::Uninit()
 	SAFE_RELEASE(m_VertexShader[1]);
 	SAFE_RELEASE(m_PixelShader[1]);
 
-	SAFE_RELEASE(m_ImmediateContext);
 	SAFE_RELEASE(m_RenderTargetView);
 	SAFE_RELEASE(m_SwapChain);
 	SAFE_RELEASE(m_ImmediateContext);

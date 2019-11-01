@@ -266,7 +266,7 @@ public:
 		{
 			for (GAME_OBJECT* object : GameObjects[i])
 			{
-				object->Uninit();
+				//object->Uninit();
 				SAFE_DELETE(object);
 			}
 			GameObjects[i].clear();
@@ -444,7 +444,7 @@ public:
 	};
 
 	void Uninit() {
-		pScene->Uninit();
+		//pScene->Uninit();
 		SAFE_DELETE(pScene);
 	};
 
