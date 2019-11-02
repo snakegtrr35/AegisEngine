@@ -252,7 +252,7 @@ void FONT::Load_Font()
 	// フォントデータ
 	wstring Font;
 	{
-		string Font01("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789 +-*=/^.,;!?()[]{}");
+		string Font01("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789 \+-*=/^.,;'\"!?()[]{}");
 
 		string Font02("あいおうえおかきくけこさしすせそたちつてとなにぬねのはひふへほまみむめもやゆよらりるれろわをんがぎぐげござじずぜぞだぢづでどばびぶべぼぱぴぷぺぽゃゅょっ");
 
@@ -266,16 +266,17 @@ void FONT::Load_Font()
 	}
 
 	// フォントハンドルの生成
-	int fontSize = 256;
+	int fontSize = 128;
 	int fontWeight = 1000;
 	LOGFONTW lf =
 	{
 		fontSize, 0, 0, 0, fontWeight, 0, 0, 0,
 		SHIFTJIS_CHARSET, OUT_TT_ONLY_PRECIS, CLIP_DEFAULT_PRECIS,
 		PROOF_QUALITY, DEFAULT_PITCH | FF_MODERN,
-		(WCHAR)"ＭＳ Ｐ明朝"
+		//(WCHAR)"ＭＳ Ｐ明朝"
 		//(WCHAR)"ＭＳ 明朝"
 		//(WCHAR)"ＭＳ ゴシック"
+		(WCHAR)"メイリオ"
 	};
 	HFONT hFont = CreateFontIndirectW(&lf);
 

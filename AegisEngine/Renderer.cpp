@@ -12,16 +12,18 @@ D3D_FEATURE_LEVEL       CRenderer::m_FeatureLevel = D3D_FEATURE_LEVEL_11_0;
 
 ID3D11Device*           CRenderer::m_D3DDevice = nullptr;
 ID3D11DeviceContext*    CRenderer::m_ImmediateContext = nullptr;
+IDXGIDevice1*			CRenderer::m_dxgiDev = nullptr;
 IDXGISwapChain1*         CRenderer::m_SwapChain = nullptr;
 ID3D11RenderTargetView* CRenderer::m_RenderTargetView = nullptr;
 ID3D11DepthStencilView* CRenderer::m_DepthStencilView = nullptr;
-ID2D1Device*			CRenderer::m_D2DDevice = nullptr;//
-ID2D1DeviceContext*		CRenderer::m_D2DDeviceContext = nullptr;//
-ID2D1Bitmap1*			CRenderer::m_D2DTargetBitmap = nullptr;//
-
-IDXGIDevice1*			CRenderer::m_dxgiDev = nullptr;
+ID2D1Device*			CRenderer::m_D2DDevice = nullptr;
+ID2D1DeviceContext*		CRenderer::m_D2DDeviceContext = nullptr;
+ID2D1Bitmap1*			CRenderer::m_D2DTargetBitmap = nullptr;
 
 IDWriteTextFormat*		CRenderer::m_DwriteTextFormat = nullptr;
+IDWriteTextLayout*		CRenderer::m_TextLayout = nullptr;
+
+IDWriteFactory*			CRenderer::m_DwriteFactory = nullptr;//
 
 ID3D11VertexShader*		CRenderer::m_VertexShader[3] = { nullptr };
 ID3D11PixelShader*      CRenderer::m_PixelShader[2] = { nullptr };
@@ -101,15 +103,13 @@ bool CRenderer::Init()
 	
 	// キューに格納されていく描画コマンドをスワップ時に全てフラッシュする
 	m_dxgiDev->SetMaximumFrameLatency(1);
-	
+
 	// Direct2Dのファクトリーの作成
-	D2D1_FACTORY_OPTIONS d2dOpt;
-	ZeroMemory(&d2dOpt, sizeof d2dOpt);
 	ID2D1Factory1* d2dFactory;
 	hr = D2D1CreateFactory(
 		D2D1_FACTORY_TYPE_SINGLE_THREADED,
 		__uuidof(ID2D1Factory1),
-		&d2dOpt,
+		nullptr,
 		reinterpret_cast<void**>(&d2dFactory));
 	if (FAILED(hr))
 	{
@@ -137,6 +137,9 @@ bool CRenderer::Init()
 		return false;
 	}
 	
+	float dx, dy;
+	m_D2DDeviceContext->GetDpi(&dx, &dy);
+
 	// DXGIアダプタ（GPU）の取得
 	IDXGIAdapter* adapter;
 	hr = m_dxgiDev->GetAdapter(&adapter);
@@ -196,7 +199,9 @@ bool CRenderer::Init()
 	D2D1_BITMAP_PROPERTIES1 d2dProp =
 	D2D1::BitmapProperties1(
 		D2D1_BITMAP_OPTIONS_TARGET | D2D1_BITMAP_OPTIONS_CANNOT_DRAW,
-		D2D1::PixelFormat(DXGI_FORMAT_B8G8R8A8_UNORM, D2D1_ALPHA_MODE_PREMULTIPLIED));
+		D2D1::PixelFormat(DXGI_FORMAT_B8G8R8A8_UNORM, D2D1_ALPHA_MODE_PREMULTIPLIED),
+		dx,
+		dy);
 	
 	hr = m_D2DDeviceContext->CreateBitmapFromDxgiSurface(
 		surf, &d2dProp, &m_D2DTargetBitmap);
@@ -211,11 +216,10 @@ bool CRenderer::Init()
 	m_D2DDeviceContext->SetTarget(m_D2DTargetBitmap);
 
 	// DirectWriteのファクトリの作成
-	IDWriteFactory* dwriteFactory;
 	hr = DWriteCreateFactory(
 		DWRITE_FACTORY_TYPE_SHARED,
-		__uuidof(dwriteFactory),
-		reinterpret_cast<IUnknown**>(&dwriteFactory));
+		__uuidof(m_DwriteFactory),
+		reinterpret_cast<IUnknown**>(&m_DwriteFactory));
 	if (FAILED(hr))
 	{
 		FAILDE_ASSERT;
@@ -223,12 +227,32 @@ bool CRenderer::Init()
 	}
 
 	// テキストフォーマットの作成
-	const float FONT_DEFAULT_SIZE = 48.0f;
-	hr = dwriteFactory->CreateTextFormat(
+	const float FONT_DEFAULT_SIZE = 32.0f;
+	hr = m_DwriteFactory->CreateTextFormat(
 		L"メイリオ", nullptr,
 		DWRITE_FONT_WEIGHT_NORMAL, DWRITE_FONT_STYLE_NORMAL, DWRITE_FONT_STRETCH_NORMAL,
 		FONT_DEFAULT_SIZE, L"", &m_DwriteTextFormat);
-	dwriteFactory->Release();
+	if (FAILED(hr))
+	{
+		FAILDE_ASSERT;
+		return false;
+	}
+
+	// テキストレイアウトを作成
+	wstring drawText /*= L"Hello HELL World!!!\n地球の未来にご奉仕するにゃん！"*/;
+
+	const string Text = "Hello HELL World!!!\n地球の未来にご奉仕するにゃん！";
+
+	drawText = stringTowstring(Text);
+
+	hr = m_DwriteFactory->CreateTextLayout(
+		drawText.c_str(),
+		drawText.size(),
+		m_DwriteTextFormat,
+		400,
+		50,
+		&m_TextLayout
+	);
 	if (FAILED(hr))
 	{
 		FAILDE_ASSERT;
@@ -250,8 +274,6 @@ bool CRenderer::Init()
 		FAILDE_ASSERT;
 		return false;
 	}
-
-
 
 
 	//ステンシル用テクスチャー作成
@@ -586,28 +608,30 @@ void CRenderer::Uninit()
 	}
 
 	// オブジェクト解放
-	SAFE_RELEASE(m_WorldBuffer);
-	SAFE_RELEASE(m_ViewBuffer);
-	SAFE_RELEASE(m_ProjectionBuffer);
+	SAFE_RELEASE(m_WorldBuffer)
+	SAFE_RELEASE(m_ViewBuffer)
+	SAFE_RELEASE(m_ProjectionBuffer)
 
-	SAFE_RELEASE(m_MaterialBuffer);
-	SAFE_RELEASE(m_VertexLayout);
+	SAFE_RELEASE(m_MaterialBuffer)
+	SAFE_RELEASE(m_VertexLayout)
 
-	SAFE_RELEASE(m_VertexShader[0]);
-	SAFE_RELEASE(m_PixelShader[0]);
+	SAFE_RELEASE(m_VertexShader[0])
+	SAFE_RELEASE(m_PixelShader[0])
 
-	SAFE_RELEASE(m_VertexShader[1]);
-	SAFE_RELEASE(m_PixelShader[1]);
+	SAFE_RELEASE(m_VertexShader[1])
+	SAFE_RELEASE(m_PixelShader[1])
 
-	SAFE_RELEASE(m_RenderTargetView);
-	SAFE_RELEASE(m_SwapChain);
-	SAFE_RELEASE(m_ImmediateContext);
-	SAFE_RELEASE(m_D3DDevice);
+	SAFE_RELEASE(m_RenderTargetView)
+	SAFE_RELEASE(m_SwapChain)
+	SAFE_RELEASE(m_ImmediateContext)
+	SAFE_RELEASE(m_D3DDevice)
 
-	SAFE_RELEASE(m_DwriteTextFormat);
-	SAFE_RELEASE(m_D2DDevice);
-	SAFE_RELEASE(m_D2DDeviceContext);
-	SAFE_RELEASE(m_dxgiDev);
+	SAFE_RELEASE(m_DwriteFactory)
+	SAFE_RELEASE(m_TextLayout)
+	SAFE_RELEASE(m_DwriteTextFormat)
+	SAFE_RELEASE(m_D2DDevice)
+	SAFE_RELEASE(m_D2DDeviceContext)
+	SAFE_RELEASE(m_dxgiDev)
 }
 
 void CRenderer::SetBlendState(D3D11_BLEND_DESC* blend_state, bool flag)

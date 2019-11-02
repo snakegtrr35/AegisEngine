@@ -198,6 +198,8 @@ private:
 	static ID3D11DepthStencilState*		m_DepthStateDisable;
 
 	static IDWriteTextFormat* m_DwriteTextFormat;
+	static IDWriteTextLayout* m_TextLayout;
+	static IDWriteFactory* m_DwriteFactory;
 
 public:
 	static bool Init();
@@ -233,6 +235,9 @@ public:
 	static ID2D1Device* Get2DDevice() { return m_D2DDevice; }
 	static ID2D1DeviceContext* Get2DDeviceContext(void) { return m_D2DDeviceContext; }
 	static IDWriteTextFormat* GetTextFormat() { return m_DwriteTextFormat; }
+
+	static IDWriteTextLayout* GetTextLayout() { return m_TextLayout; }
+	static IDWriteFactory* GetFactory() { return m_DwriteFactory; }
 
 	static void Set_Shader(const SHADER_INDEX_V v_index = SHADER_INDEX_V::DEFAULT, const SHADER_INDEX_P p_index = SHADER_INDEX_P::DEFAULT);
 
