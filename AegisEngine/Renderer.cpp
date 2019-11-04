@@ -577,14 +577,15 @@ bool CRenderer::Init()
 	LIGHT light;
 	light.Direction = XMFLOAT4(0.0f, 0.0f, 1.0f, 0.0f);
 	light.Diffuse = COLOR(1.0f, 1.0f, 1.0f, 1.0f);
-	light.Ambient = COLOR(0.2f, 0.2f, 0.2f, 1.0f);
+	light.Ambient = COLOR(1.0f, 1.0f, 1.0f, 1.0f);
+	light.Specular = COLOR(1.0f, 1.0f, 1.0f, 1.0f);
 	SetLight(&light);
 
 	// マテリアル初期化
 	MATERIAL material;
 	ZeroMemory(&material, sizeof(material));
 	material.Diffuse = COLOR(1.0f, 1.0f, 1.0f, 1.0f);
-	material.Ambient = COLOR(0.2f, 0.2f, 0.2f, 1.0f);
+	material.Ambient = COLOR(0.3f, 0.3f, 0.3f, 1.0f);
 	material.Specular = COLOR(1.0f, 1.0f, 1.0f, 0.5f);
 	SetMaterial(material);
 
@@ -613,6 +614,7 @@ void CRenderer::Uninit()
 	SAFE_RELEASE(m_ProjectionBuffer)
 
 	SAFE_RELEASE(m_MaterialBuffer)
+	SAFE_RELEASE(m_LightBuffer)
 	SAFE_RELEASE(m_VertexLayout)
 
 	SAFE_RELEASE(m_VertexShader[0])
@@ -746,6 +748,7 @@ void CRenderer::End()
 		if (DXGI_STATUS_OCCLUDED == hr)
 		{
 			Stand_By_Enable = true;		// スタンバイモードに入る
+			return;
 		}
 
 		// デバイスの消失
@@ -754,22 +757,22 @@ void CRenderer::End()
 
 			switch (hr)
 			{
-			case S_OK:
-				break;
+				case S_OK:
+					break;
 
-				// リセット
-			case DXGI_ERROR_DEVICE_HUNG:
-			case DXGI_ERROR_DEVICE_RESET:
-				CManager::GameEnd();
-				break;
+					// リセット
+				case DXGI_ERROR_DEVICE_HUNG:
+				case DXGI_ERROR_DEVICE_RESET:
+					CManager::GameEnd();
+					break;
 
-				// エラー 終了
-			case DXGI_ERROR_DEVICE_REMOVED:
-			case DXGI_ERROR_DRIVER_INTERNAL_ERROR:
-			case DXGI_ERROR_INVALID_CALL:
-			default:
-				CManager::GameEnd();
-				break;
+					// エラー 終了
+				case DXGI_ERROR_DEVICE_REMOVED:
+				case DXGI_ERROR_DRIVER_INTERNAL_ERROR:
+				case DXGI_ERROR_INVALID_CALL:
+				default:
+					CManager::GameEnd();
+					break;
 			}
 		}
 	}
