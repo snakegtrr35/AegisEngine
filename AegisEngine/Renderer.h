@@ -156,11 +156,12 @@ struct LIGHT
 enum class SHADER_INDEX_P {
 	DEFAULT,
 	NO_TEXTURE,
+	NO_LIGHT,
 };
 
 enum class SHADER_INDEX_V {
 	DEFAULT,
-	NO_LIGHT,
+	ANIMATION,
 };
 
 class CVertexBuffer;
@@ -182,8 +183,8 @@ private:
 	static ID2D1Bitmap1* m_D2DTargetBitmap;//
 	static IDXGIDevice1* m_dxgiDev;//
 
-	static ID3D11VertexShader*		m_VertexShader[3];
-	static ID3D11PixelShader*		m_PixelShader[2];
+	static ID3D11VertexShader*		m_VertexShader[2];
+	static ID3D11PixelShader*		m_PixelShader[3];
 
 	static ID3D11InputLayout*		m_VertexLayout;
 	static ID3D11Buffer*			m_WorldBuffer;
@@ -191,6 +192,8 @@ private:
 	static ID3D11Buffer*			m_ProjectionBuffer;
 	static ID3D11Buffer*			m_MaterialBuffer;
 	static ID3D11Buffer*			m_LightBuffer;
+
+	static ID3D11Buffer* m_CameraBuffer;//
 
 	static ID3D11Buffer* m_Bone_Matrix_Buffer;
 
@@ -225,6 +228,9 @@ public:
 	static void SetMaterial(MATERIAL Material);
 	static void SetLight(LIGHT* Light);
 	static void Light_Identity();
+
+	static void SetCamera(XMFLOAT4* position);//
+
 	static void SetVertexBuffers( ID3D11Buffer* VertexBuffer );
 	static void SetIndexBuffer( ID3D11Buffer* IndexBuffer );
 	static void DrawIndexed( unsigned int IndexCount, unsigned int StartIndexLocation, int BaseVertexLocation );

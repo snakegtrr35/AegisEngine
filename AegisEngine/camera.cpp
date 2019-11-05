@@ -174,24 +174,34 @@ void CCamera::Update()
 	// ˆÚ“®
 	if (MoveEnable)
 	{
-		if (KEYBOARD::Press_Keyboard(VK_UP) || (MOUSE::Get_Wheel_Move_Flag() == WHEEL_MOVE_ENUM::UP) )
+		if (KEYBOARD::Press_Keyboard(VK_UP))
 		{
-			Pos += f * 0.4f;
+			Pos += f * 0.5f;
 		}
 
-		if (KEYBOARD::Press_Keyboard(VK_DOWN) || (MOUSE::Get_Wheel_Move_Flag() == WHEEL_MOVE_ENUM::DOWN))
+		if (KEYBOARD::Press_Keyboard(VK_DOWN))
 		{
-			Pos -= f * 0.4f;
+			Pos -= f * 0.5f;
 		}
 
 		if (KEYBOARD::Press_Keyboard(VK_RIGHT))
 		{
-			Pos += r * 0.4f;
+			Pos += r * 0.5f;
 		}
 
 		if (KEYBOARD::Press_Keyboard(VK_LEFT))
 		{
-			Pos -= r * 0.4f;
+			Pos -= r * 0.5f;
+		}
+
+		if ((MOUSE::Get_Wheel_Move_Flag() == WHEEL_MOVE_ENUM::UP))
+		{
+			Pos += f * 2.0f;
+		}
+
+		if ((MOUSE::Get_Wheel_Move_Flag() == WHEEL_MOVE_ENUM::DOWN))
+		{
+			Pos -= f * 2.0f;
 		}
 	}
 

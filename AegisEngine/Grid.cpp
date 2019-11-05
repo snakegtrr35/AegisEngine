@@ -136,7 +136,7 @@ void GRID::Draw(void)
 	// ƒgƒ|ƒƒW‚ÌÝ’è
 	CRenderer::GetDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_LINELIST);
 
-	CRenderer::Set_Shader(SHADER_INDEX_V::NO_LIGHT, SHADER_INDEX_P::NO_TEXTURE);
+	CRenderer::Set_Shader(SHADER_INDEX_V::DEFAULT, SHADER_INDEX_P::NO_TEXTURE);
 
 	CRenderer::GetDeviceContext()->Draw(COUNT, 0);
 
