@@ -62,6 +62,7 @@ void main( in  float4 inPosition		: POSITION0,
 						  out float4 outPosition	: SV_POSITION,
 						  out float4 outNormal		: NORMAL0,
 						  out float2 outTexCoord	: TEXCOORD0,
+						  out float3 posLocal 	    : TEXCOORD1,
 						  out float4 outDiffuse		: COLOR0 )
 {
 	matrix wvp;
@@ -72,6 +73,8 @@ void main( in  float4 inPosition		: POSITION0,
 	outNormal = inNormal;
 	outTexCoord = inTexCoord;
     outDiffuse = inDiffuse;//
+
+    posLocal = inPosition.xyz;
 	
 	//float4 worldNormal, normal;
 	//normal = float4(inNormal.xyz, 0.0);

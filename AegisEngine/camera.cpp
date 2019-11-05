@@ -211,6 +211,11 @@ void CCamera::Update()
 		Pos = At - Front * Lenght;
 	}
 
+	XMFLOAT4 pos;
+	XMStoreFloat4(&pos, Pos);
+
+	CRenderer::SetCamera(&pos);
+
 	Viewport.left = center.x - wh.x * 0.5f;
 	Viewport.top = center.y - wh.y * 0.5f;
 	Viewport.right = center.x + wh.x * 0.5f;

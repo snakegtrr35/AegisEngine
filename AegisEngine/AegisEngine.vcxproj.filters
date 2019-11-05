@@ -341,6 +341,9 @@
     <ClInclude Include="imgui\ImGuizmo.h">
       <Filter>Imgui</Filter>
     </ClInclude>
+    <ClInclude Include="Cereal.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="pixelShader.hlsl">
@@ -350,9 +353,6 @@
       <Filter>リソース ファイル</Filter>
     </FxCompile>
     <FxCompile Include="vertexShader.hlsl">
-      <Filter>リソース ファイル</Filter>
-    </FxCompile>
-    <FxCompile Include="vertexShader_No_Light.hlsl">
       <Filter>リソース ファイル</Filter>
     </FxCompile>
     <FxCompile Include="VertexShader_Animation.hlsl">

@@ -6,6 +6,8 @@
 #include	"main.h"
 #include	"Renderer.h"
 
+#include	"camera.h"
+
 //
 #define NUM_BONES 4
 #define ARRAY_SIZE_IN_ELEMENTS(a) (sizeof(a)/sizeof(a[0]))

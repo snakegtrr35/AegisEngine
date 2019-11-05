@@ -4,17 +4,6 @@
 // 定数バッファ
 //*****************************************************************************
 
-//// マテリアルバッファ
-//cbuffer MaterialBuffer : register( b1 )
-//{
-//	float4		Ambient;
-//	float4		Diffuse;
-//	float4		Specular;
-//	float4		Emission;
-//	float		Shininess;
-//	float3		Dummy;//16bit境界用
-//}
-
 
 // マトリクスバッファ
 cbuffer WorldBuffer : register(b0)
@@ -91,6 +80,7 @@ float3 Phong
 void main( in  float4 inPosition		: POSITION0,
 						 in  float4 inNormal		: NORMAL0,
 						 in  float2 inTexCoord		: TEXCOORD0,
+						 in  float3 posLocal		: TEXCOORD1,
 						 in  float4 inDiffuse		: COLOR0,
 
 						 out float4 outDiffuse		: SV_Target )
@@ -121,26 +111,4 @@ void main( in  float4 inPosition		: POSITION0,
         discard;
 
     outDiffuse *= Color;
-
-   // float4 Out = (float4) 0;
-
-   //// デカールマップ
-   // float4 decalmap = g_Texture.Sample(g_SamplerState, inTexCoord);
-
-   //// 視線ベクトル
-   // float3 V = normalize(CameraPos.xyz - In.posLocal);
-
-   //// 平行光源の反射ベクトルを計算
-   // float3 R = reflect(-g_vecLightDir.xyz, In.normal);
-   
-   //// 反射ベクトルと視線ベクトルとの内積を計算
-   // float d = dot(R, V);
-   
-   //// Lambert
-   // float lambert = max(0.0f, g_fkd * dot(In.normal, g_vecLightDir.xyz));
-   
-   //// Phong
-   // float phong = g_fks * pow(max(0.0f, d), g_falpha);
-   
-   // outDiffuse = g_fka + (decalmap * lambert + phong).bgra;
 }
