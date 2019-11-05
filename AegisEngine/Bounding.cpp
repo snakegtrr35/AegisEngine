@@ -31,7 +31,7 @@ void BOUNDING_SHPERE::Draw(void)
 	// トポロジの設定
 	CRenderer::GetDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_LINESTRIP);
 
-	CRenderer::Set_Shader(SHADER_INDEX_V::NO_LIGHT, SHADER_INDEX_P::NO_TEXTURE);
+	CRenderer::Set_Shader(SHADER_INDEX_V::DEFAULT, SHADER_INDEX_P::NO_TEXTURE);
 
 
 	Draw_Ring(XMFLOAT3(0.f, 0.f, 0.f));
@@ -545,7 +545,7 @@ void BOUNDING_AABB::Draw(void)
 	// トポロジの設定
 	CRenderer::GetDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_LINESTRIP);
 
-	CRenderer::Set_Shader(SHADER_INDEX_V::NO_LIGHT, SHADER_INDEX_P::NO_TEXTURE);
+	CRenderer::Set_Shader(SHADER_INDEX_V::DEFAULT, SHADER_INDEX_P::NO_TEXTURE);
 
 	CRenderer::DrawIndexed(24, 0, 0);
 

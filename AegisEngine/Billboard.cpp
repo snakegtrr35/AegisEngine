@@ -242,7 +242,7 @@ void BILL_BOARD::Draw(void)
 		CRenderer::SetWorldMatrix(&world);
 	}
 
-	CRenderer::Set_Shader(SHADER_INDEX_V::NO_LIGHT, SHADER_INDEX_P::DEFAULT);
+	CRenderer::Set_Shader(SHADER_INDEX_V::DEFAULT, SHADER_INDEX_P::NO_LIGHT);
 
 	CRenderer::DrawIndexed(6, 0, 0);
 
@@ -420,7 +420,7 @@ void BILL_BOARD_ANIMATION::Draw(float tx, float ty)
 		CRenderer::SetWorldMatrix(&world);
 	}
 
-	CRenderer::Set_Shader(SHADER_INDEX_V::NO_LIGHT, SHADER_INDEX_P::DEFAULT);
+	CRenderer::Set_Shader(SHADER_INDEX_V::DEFAULT, SHADER_INDEX_P::NO_LIGHT);
 
 	CRenderer::DrawIndexed(6, 0, 0);
 

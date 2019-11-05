@@ -23,8 +23,8 @@ IDXGIDevice1*			CRenderer::m_dxgiDev = nullptr;
 
 IDWriteTextFormat*		CRenderer::m_DwriteTextFormat = nullptr;
 
-ID3D11VertexShader*		CRenderer::m_VertexShader[3] = { nullptr };
-ID3D11PixelShader*      CRenderer::m_PixelShader[2] = { nullptr };
+ID3D11VertexShader*		CRenderer::m_VertexShader[2] = { nullptr };
+ID3D11PixelShader*      CRenderer::m_PixelShader[3] = { nullptr };
 ID3D11InputLayout*      CRenderer::m_VertexLayout = nullptr;
 ID3D11Buffer*			CRenderer::m_WorldBuffer = nullptr;
 ID3D11Buffer*			CRenderer::m_ViewBuffer = nullptr;
@@ -416,27 +416,6 @@ bool CRenderer::Init()
 
 			delete[] buffer;
 		}
-
-		{
-			FILE* file;
-			long int fsize;
-
-			file = fopen("vertexShader_No_Light.cso", "rb");
-			fsize = _filelength(_fileno(file));
-			unsigned char* buffer = new unsigned char[fsize];
-			fread(buffer, fsize, 1, file);
-			fclose(file);
-
-			m_D3DDevice->CreateVertexShader(buffer, fsize, NULL, &m_VertexShader[1]);
-
-			m_D3DDevice->CreateInputLayout(layout,
-				numElements,
-				buffer,
-				fsize,
-				&m_VertexLayout);
-
-			delete[] buffer;
-		}
 	}
 
 	/*// 頂点シェーダ生成 アニメーション
@@ -478,6 +457,7 @@ bool CRenderer::Init()
 
 	// ピクセルシェーダ生成
 	{
+		// 標準
 		{
 			FILE* file;
 			long int fsize;
@@ -493,6 +473,7 @@ bool CRenderer::Init()
 			delete[] buffer;
 		}
 
+		// テクスチャなし
 		{
 			FILE* file;
 			long int fsize;
@@ -504,6 +485,22 @@ bool CRenderer::Init()
 			fclose(file);
 
 			m_D3DDevice->CreatePixelShader(buffer, fsize, NULL, &m_PixelShader[1]);
+
+			delete[] buffer;
+		}
+
+		// ライティングなし
+		{
+			FILE* file;
+			long int fsize;
+
+			file = fopen("pixelShader_No_Light.cso", "rb");
+			fsize = _filelength(_fileno(file));
+			unsigned char* buffer = new unsigned char[fsize];
+			fread(buffer, fsize, 1, file);
+			fclose(file);
+
+			m_D3DDevice->CreatePixelShader(buffer, fsize, NULL, &m_PixelShader[2]);
 
 			delete[] buffer;
 		}
@@ -520,6 +517,7 @@ bool CRenderer::Init()
 
 	m_D3DDevice->CreateBuffer(&hBufferDesc, NULL, &m_WorldBuffer);
 	m_ImmediateContext->VSSetConstantBuffers(0, 1, &m_WorldBuffer);
+	m_ImmediateContext->PSSetConstantBuffers(0, 1, &m_WorldBuffer);
 
 	m_D3DDevice->CreateBuffer(&hBufferDesc, NULL, &m_ViewBuffer);
 	m_ImmediateContext->VSSetConstantBuffers(1, 1, &m_ViewBuffer);
@@ -531,11 +529,13 @@ bool CRenderer::Init()
 
 	m_D3DDevice->CreateBuffer(&hBufferDesc, NULL, &m_MaterialBuffer);
 	m_ImmediateContext->VSSetConstantBuffers(3, 1, &m_MaterialBuffer);
+	m_ImmediateContext->PSSetConstantBuffers(3, 1, &m_MaterialBuffer);
 
 	hBufferDesc.ByteWidth = sizeof(LIGHT);
 
 	m_D3DDevice->CreateBuffer(&hBufferDesc, NULL, &m_LightBuffer);
 	m_ImmediateContext->VSSetConstantBuffers(4, 1, &m_LightBuffer);
+	m_ImmediateContext->PSSetConstantBuffers(4, 1, &m_LightBuffer);
 
 	/*{
 		// 定数バッファ生成
@@ -597,10 +597,11 @@ void CRenderer::Uninit()
 	SAFE_RELEASE(m_VertexLayout);
 
 	SAFE_RELEASE(m_VertexShader[0]);
-	SAFE_RELEASE(m_PixelShader[0]);
-
 	SAFE_RELEASE(m_VertexShader[1]);
+
+	SAFE_RELEASE(m_PixelShader[0]);
 	SAFE_RELEASE(m_PixelShader[1]);
+	SAFE_RELEASE(m_PixelShader[2]);
 
 	SAFE_RELEASE(m_RenderTargetView);
 	SAFE_RELEASE(m_SwapChain);
@@ -859,11 +860,7 @@ void CRenderer::Set_Shader(const SHADER_INDEX_V v_index, const SHADER_INDEX_P p_
 	switch ((int)v_index)
 	{
 		case (int)SHADER_INDEX_V::DEFAULT:
-			m_ImmediateContext->VSSetShader(m_VertexShader[0], NULL, 0);
-			break;
-
-		case (int)SHADER_INDEX_V::NO_LIGHT:
-			m_ImmediateContext->VSSetShader(m_VertexShader[1], NULL, 0);
+			m_ImmediateContext->VSSetShader(m_VertexShader[(int)SHADER_INDEX_V::DEFAULT], NULL, 0);
 			break;
 
 		default:
@@ -873,11 +870,15 @@ void CRenderer::Set_Shader(const SHADER_INDEX_V v_index, const SHADER_INDEX_P p_
 	switch ((int)p_index)
 	{
 		case (int)SHADER_INDEX_P::DEFAULT:
-			m_ImmediateContext->PSSetShader(m_PixelShader[0], NULL, 0);
+			m_ImmediateContext->PSSetShader(m_PixelShader[(int)SHADER_INDEX_P::DEFAULT], NULL, 0);
 			break;
 
 		case (int)SHADER_INDEX_P::NO_TEXTURE:
-			m_ImmediateContext->PSSetShader(m_PixelShader[1], NULL, 0);
+			m_ImmediateContext->PSSetShader(m_PixelShader[(int)SHADER_INDEX_P::NO_TEXTURE], NULL, 0);
+			break;
+
+		case (int)SHADER_INDEX_P::NO_LIGHT:
+			m_ImmediateContext->PSSetShader(m_PixelShader[(int)SHADER_INDEX_P::NO_LIGHT], NULL, 0);
 			break;
 
 		default:

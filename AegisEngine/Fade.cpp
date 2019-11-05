@@ -76,7 +76,7 @@ void FADE::Draw(void)
 	// 2Dマトリックス設定
 	CRenderer::SetWorldViewProjection2D(Scaling);
 
-	CRenderer::Set_Shader(SHADER_INDEX_V::NO_LIGHT, SHADER_INDEX_P::NO_TEXTURE);
+	CRenderer::Set_Shader(SHADER_INDEX_V::DEFAULT, SHADER_INDEX_P::NO_TEXTURE);
 
 	CRenderer::DrawIndexed(6, 0, 0);
 

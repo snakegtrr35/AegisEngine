@@ -233,7 +233,7 @@ void SPRITE::Draw(void)
 		// 2Dマトリックス設定
 		CRenderer::SetWorldViewProjection2D(Scaling);
 
-		CRenderer::Set_Shader(SHADER_INDEX_V::NO_LIGHT, SHADER_INDEX_P::DEFAULT);
+		CRenderer::Set_Shader(SHADER_INDEX_V::DEFAULT, SHADER_INDEX_P::NO_LIGHT);
 
 		CRenderer::DrawIndexed(6, 0, 0);
 
@@ -443,7 +443,7 @@ void SPRITE_ANIMATION::Draw2(float tx, float ty)
 	// 2Dマトリックス設定
 	CRenderer::SetWorldViewProjection2D(Scaling);
 
-	CRenderer::Set_Shader(SHADER_INDEX_V::NO_LIGHT, SHADER_INDEX_P::DEFAULT);
+	CRenderer::Set_Shader(SHADER_INDEX_V::DEFAULT, SHADER_INDEX_P::NO_LIGHT);
 
 	CRenderer::DrawIndexed(6, 0, 0);
 

@@ -156,11 +156,12 @@ struct LIGHT
 enum class SHADER_INDEX_P {
 	DEFAULT,
 	NO_TEXTURE,
+	NO_LIGHT,
 };
 
 enum class SHADER_INDEX_V {
 	DEFAULT,
-	NO_LIGHT,
+	ANIMATION,
 };
 
 class CVertexBuffer;
@@ -182,8 +183,8 @@ private:
 	static ID2D1Bitmap1* m_D2DTargetBitmap;//
 	static IDXGIDevice1* m_dxgiDev;//
 
-	static ID3D11VertexShader*		m_VertexShader[3];
-	static ID3D11PixelShader*		m_PixelShader[2];
+	static ID3D11VertexShader*		m_VertexShader[2];
+	static ID3D11PixelShader*		m_PixelShader[3];
 
 	static ID3D11InputLayout*		m_VertexLayout;
 	static ID3D11Buffer*			m_WorldBuffer;
