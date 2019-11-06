@@ -82,4 +82,16 @@ void main(  in float4 inPosition : POSITION0,
     outNormal = mul(inNormal, BoneTransform);
 
     outTexCoord = inTexCoord;
+	
+    float4 worldNormal, normal;
+    normal = float4(outNormal.xyz, 0.0);
+    worldNormal = mul(normal, World);
+    worldNormal = normalize(worldNormal);
+
+    float light = 0.5 - 0.5 * dot(Light.Direction.xyz, worldNormal.xyz);
+
+    outDiffuse = inDiffuse * Material.Diffuse * light * Light.Diffuse;
+    outDiffuse += inDiffuse * Material.Ambient * Light.Ambient;
+    outDiffuse.a = inDiffuse.a * Material.Diffuse.a;
+
 }

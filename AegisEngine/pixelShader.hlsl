@@ -4,17 +4,39 @@
 // 定数バッファ
 //*****************************************************************************
 
+
+// マトリクスバッファ
+cbuffer WorldBuffer : register(b0)
+{
+    matrix World;
+}
+
+
 // マテリアルバッファ
 struct MATERIAL
 {
-	float4		Ambient;
-	float4		Diffuse;
-	float4		Specular;
-	float4		Emission;
-	float		Shininess;
-	float3		Dummy;//16bit境界用
+    float4      Ambient;
+    float4      Diffuse;
+    float4      Specular;
+    float4      Emission;
+    float       Shininess;
+    float3      Dummy; //16bit境界用
+};
+
+cbuffer MaterialBuffer : register(b3)
+{
+    MATERIAL Material;
 }
 
+
+// ライトバッファ
+struct LIGHT
+{
+    float4      Direction;
+    float4      Diffuse;
+    float4      Ambient;
+    float4      Specular;
+};
 
 cbuffer LightBuffer : register(b4)
 {

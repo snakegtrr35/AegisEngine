@@ -23,8 +23,10 @@ ID2D1Bitmap1*			CRenderer::m_D2DTargetBitmap = nullptr;
 IDWriteTextFormat*		CRenderer::m_DwriteTextFormat = nullptr;
 IDWriteTextLayout*		CRenderer::m_TextLayout = nullptr;
 
-ID3D11VertexShader*		CRenderer::m_VertexShader[3] = { nullptr };
-ID3D11PixelShader*      CRenderer::m_PixelShader[2] = { nullptr };
+IDWriteFactory*			CRenderer::m_DwriteFactory = nullptr;//
+
+ID3D11VertexShader*		CRenderer::m_VertexShader[2] = { nullptr };
+ID3D11PixelShader*      CRenderer::m_PixelShader[3] = { nullptr };
 ID3D11InputLayout*      CRenderer::m_VertexLayout = nullptr;
 ID3D11Buffer*			CRenderer::m_WorldBuffer = nullptr;
 ID3D11Buffer*			CRenderer::m_ViewBuffer = nullptr;
@@ -507,6 +509,22 @@ bool CRenderer::Init()
 
 			delete[] buffer;
 		}
+
+		// ライティングなし
+		{
+			FILE* file;
+			long int fsize;
+
+			file = fopen("pixelShader_No_Light.cso", "rb");
+			fsize = _filelength(_fileno(file));
+			unsigned char* buffer = new unsigned char[fsize];
+			fread(buffer, fsize, 1, file);
+			fclose(file);
+
+			m_D3DDevice->CreatePixelShader(buffer, fsize, NULL, &m_PixelShader[2]);
+
+			delete[] buffer;
+		}
 	}
 
 	// 定数バッファ生成
@@ -538,6 +556,13 @@ bool CRenderer::Init()
 
 	m_D3DDevice->CreateBuffer(&hBufferDesc, NULL, &m_LightBuffer);
 	m_ImmediateContext->VSSetConstantBuffers(4, 1, &m_LightBuffer);
+	m_ImmediateContext->PSSetConstantBuffers(4, 1, &m_LightBuffer);
+
+	// カメラバッファ
+	hBufferDesc.ByteWidth = sizeof(XMFLOAT4);
+
+	m_D3DDevice->CreateBuffer(&hBufferDesc, NULL, &m_CameraBuffer);
+	m_ImmediateContext->PSSetConstantBuffers(5, 1, &m_CameraBuffer);
 
 	/*{
 		// 定数バッファ生成
@@ -602,9 +627,9 @@ void CRenderer::Uninit()
 	SAFE_RELEASE(m_VertexLayout)
 
 	SAFE_RELEASE(m_VertexShader[0]);
-	SAFE_RELEASE(m_PixelShader[0]);
-
 	SAFE_RELEASE(m_VertexShader[1]);
+
+	SAFE_RELEASE(m_PixelShader[0]);
 	SAFE_RELEASE(m_PixelShader[1]);
 	SAFE_RELEASE(m_PixelShader[2]);
 
