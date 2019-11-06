@@ -31,7 +31,7 @@ void BOUNDING_SHPERE::Draw(void)
 	// ƒgƒ|ƒƒW‚ÌÝ’è
 	CRenderer::GetDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_LINESTRIP);
 
-	CRenderer::Set_Shader(SHADER_INDEX_V::DEFAULT, SHADER_INDEX_P::NO_TEXTURE);
+	CRenderer::Set_Shader(SHADER_INDEX_V::NO_LIGHT, SHADER_INDEX_P::NO_TEXTURE);
 
 
 	Draw_Ring(XMFLOAT3(0.f, 0.f, 0.f));
@@ -39,7 +39,6 @@ void BOUNDING_SHPERE::Draw(void)
 	Draw_Ring(XMFLOAT3(0.f, 90.0f, 0.f));
 
 	Draw_Ring(XMFLOAT3(90.0f, 0.f, 0.f));
-
 
 	CRenderer::Set_Shader();
 }

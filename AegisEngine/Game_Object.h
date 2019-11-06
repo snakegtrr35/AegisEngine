@@ -21,12 +21,7 @@ protected:
 	COMPONENT_MANEGER Component;
 
 public:
-	GAME_OBJECT() {
-		Object_Name = "none";
-		DestroyFlag = false; 
-		Rotation = Position = XMFLOAT3(0.0f, 0.0f, 0.0f);
-		Scaling = XMFLOAT3(1.0f, 1.0f, 1.0f);
-	};
+	GAME_OBJECT() : Object_Name("none"), DestroyFlag(false), Rotation(XMFLOAT3(0.0f, 0.0f, 0.0f)), Position(XMFLOAT3(0.0f, 0.0f, 0.0f)), Scaling(XMFLOAT3(1.0f, 1.0f, 1.0f)) {}
 	virtual ~GAME_OBJECT() {};
 
 	virtual void Init(void) = 0;

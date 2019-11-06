@@ -12,25 +12,27 @@ D3D_FEATURE_LEVEL       CRenderer::m_FeatureLevel = D3D_FEATURE_LEVEL_11_0;
 
 ID3D11Device*           CRenderer::m_D3DDevice = nullptr;
 ID3D11DeviceContext*    CRenderer::m_ImmediateContext = nullptr;
+IDXGIDevice1*			CRenderer::m_dxgiDev = nullptr;
 IDXGISwapChain1*         CRenderer::m_SwapChain = nullptr;
 ID3D11RenderTargetView* CRenderer::m_RenderTargetView = nullptr;
 ID3D11DepthStencilView* CRenderer::m_DepthStencilView = nullptr;
-ID2D1Device*			CRenderer::m_D2DDevice = nullptr;//
-ID2D1DeviceContext*		CRenderer::m_D2DDeviceContext = nullptr;//
-ID2D1Bitmap1*			CRenderer::m_D2DTargetBitmap = nullptr;//
-
-IDXGIDevice1*			CRenderer::m_dxgiDev = nullptr;
+ID2D1Device*			CRenderer::m_D2DDevice = nullptr;
+ID2D1DeviceContext*		CRenderer::m_D2DDeviceContext = nullptr;
+ID2D1Bitmap1*			CRenderer::m_D2DTargetBitmap = nullptr;
 
 IDWriteTextFormat*		CRenderer::m_DwriteTextFormat = nullptr;
+IDWriteTextLayout*		CRenderer::m_TextLayout = nullptr;
 
-ID3D11VertexShader*		CRenderer::m_VertexShader[2] = { nullptr };
-ID3D11PixelShader*      CRenderer::m_PixelShader[3] = { nullptr };
+ID3D11VertexShader*		CRenderer::m_VertexShader[3] = { nullptr };
+ID3D11PixelShader*      CRenderer::m_PixelShader[2] = { nullptr };
 ID3D11InputLayout*      CRenderer::m_VertexLayout = nullptr;
 ID3D11Buffer*			CRenderer::m_WorldBuffer = nullptr;
 ID3D11Buffer*			CRenderer::m_ViewBuffer = nullptr;
 ID3D11Buffer*			CRenderer::m_ProjectionBuffer = nullptr;
 ID3D11Buffer*			CRenderer::m_MaterialBuffer = nullptr;
 ID3D11Buffer*			CRenderer::m_LightBuffer = nullptr;
+
+ID3D11Buffer*			CRenderer::m_CameraBuffer = nullptr;//
 
 ID3D11Buffer* CRenderer::m_Bone_Matrix_Buffer = nullptr;
 
@@ -101,15 +103,13 @@ bool CRenderer::Init()
 	
 	// キューに格納されていく描画コマンドをスワップ時に全てフラッシュする
 	m_dxgiDev->SetMaximumFrameLatency(1);
-	
+
 	// Direct2Dのファクトリーの作成
-	D2D1_FACTORY_OPTIONS d2dOpt;
-	ZeroMemory(&d2dOpt, sizeof d2dOpt);
 	ID2D1Factory1* d2dFactory;
 	hr = D2D1CreateFactory(
 		D2D1_FACTORY_TYPE_SINGLE_THREADED,
 		__uuidof(ID2D1Factory1),
-		&d2dOpt,
+		nullptr,
 		reinterpret_cast<void**>(&d2dFactory));
 	if (FAILED(hr))
 	{
@@ -137,6 +137,9 @@ bool CRenderer::Init()
 		return false;
 	}
 	
+	float dx, dy;
+	m_D2DDeviceContext->GetDpi(&dx, &dy);
+
 	// DXGIアダプタ（GPU）の取得
 	IDXGIAdapter* adapter;
 	hr = m_dxgiDev->GetAdapter(&adapter);
@@ -196,7 +199,9 @@ bool CRenderer::Init()
 	D2D1_BITMAP_PROPERTIES1 d2dProp =
 	D2D1::BitmapProperties1(
 		D2D1_BITMAP_OPTIONS_TARGET | D2D1_BITMAP_OPTIONS_CANNOT_DRAW,
-		D2D1::PixelFormat(DXGI_FORMAT_B8G8R8A8_UNORM, D2D1_ALPHA_MODE_PREMULTIPLIED));
+		D2D1::PixelFormat(DXGI_FORMAT_B8G8R8A8_UNORM, D2D1_ALPHA_MODE_PREMULTIPLIED),
+		dx,
+		dy);
 	
 	hr = m_D2DDeviceContext->CreateBitmapFromDxgiSurface(
 		surf, &d2dProp, &m_D2DTargetBitmap);
@@ -210,15 +215,11 @@ bool CRenderer::Init()
 	// 描画するDirect2Dビットマップの設定
 	m_D2DDeviceContext->SetTarget(m_D2DTargetBitmap);
 
-
-
-
 	// DirectWriteのファクトリの作成
-	IDWriteFactory* dwriteFactory;
 	hr = DWriteCreateFactory(
 		DWRITE_FACTORY_TYPE_SHARED,
-		__uuidof(dwriteFactory),
-		reinterpret_cast<IUnknown**>(&dwriteFactory));
+		__uuidof(m_DwriteFactory),
+		reinterpret_cast<IUnknown**>(&m_DwriteFactory));
 	if (FAILED(hr))
 	{
 		FAILDE_ASSERT;
@@ -226,12 +227,32 @@ bool CRenderer::Init()
 	}
 
 	// テキストフォーマットの作成
-	const float FONT_DEFAULT_SIZE = 48.0f;
-	hr = dwriteFactory->CreateTextFormat(
-		L"Meiryo UI", nullptr,
+	const float FONT_DEFAULT_SIZE = 32.0f;
+	hr = m_DwriteFactory->CreateTextFormat(
+		L"メイリオ", nullptr,
 		DWRITE_FONT_WEIGHT_NORMAL, DWRITE_FONT_STYLE_NORMAL, DWRITE_FONT_STRETCH_NORMAL,
 		FONT_DEFAULT_SIZE, L"", &m_DwriteTextFormat);
-	dwriteFactory->Release();
+	if (FAILED(hr))
+	{
+		FAILDE_ASSERT;
+		return false;
+	}
+
+	// テキストレイアウトを作成
+	wstring drawText /*= L"Hello HELL World!!!\n地球の未来にご奉仕するにゃん！"*/;
+
+	const string Text = "Hello HELL World!!!\n地球の未来にご奉仕するにゃん！";
+
+	drawText = stringTowstring(Text);
+
+	hr = m_DwriteFactory->CreateTextLayout(
+		drawText.c_str(),
+		drawText.size(),
+		m_DwriteTextFormat,
+		400,
+		50,
+		&m_TextLayout
+	);
 	if (FAILED(hr))
 	{
 		FAILDE_ASSERT;
@@ -253,8 +274,6 @@ bool CRenderer::Init()
 		FAILDE_ASSERT;
 		return false;
 	}
-
-
 
 
 	//ステンシル用テクスチャー作成
@@ -488,22 +507,6 @@ bool CRenderer::Init()
 
 			delete[] buffer;
 		}
-
-		// ライティングなし
-		{
-			FILE* file;
-			long int fsize;
-
-			file = fopen("pixelShader_No_Light.cso", "rb");
-			fsize = _filelength(_fileno(file));
-			unsigned char* buffer = new unsigned char[fsize];
-			fread(buffer, fsize, 1, file);
-			fclose(file);
-
-			m_D3DDevice->CreatePixelShader(buffer, fsize, NULL, &m_PixelShader[2]);
-
-			delete[] buffer;
-		}
 	}
 
 	// 定数バッファ生成
@@ -535,7 +538,6 @@ bool CRenderer::Init()
 
 	m_D3DDevice->CreateBuffer(&hBufferDesc, NULL, &m_LightBuffer);
 	m_ImmediateContext->VSSetConstantBuffers(4, 1, &m_LightBuffer);
-	m_ImmediateContext->PSSetConstantBuffers(4, 1, &m_LightBuffer);
 
 	/*{
 		// 定数バッファ生成
@@ -556,16 +558,18 @@ bool CRenderer::Init()
 
 	// ライト初期化
 	LIGHT light;
+	ZeroMemory(&light, sizeof(light));
 	light.Direction = XMFLOAT4(0.0f, 0.0f, 1.0f, 0.0f);
 	light.Diffuse = COLOR(1.0f, 1.0f, 1.0f, 1.0f);
-	light.Ambient = COLOR(0.2f, 0.2f, 0.2f, 1.0f);
+	light.Ambient = COLOR(0.5f, 0.5f, 0.5f, 1.0f);
+	light.Specular = COLOR(1.0f, 1.0f, 1.0f, 1.0f);
 	SetLight(&light);
 
 	// マテリアル初期化
 	MATERIAL material;
 	ZeroMemory(&material, sizeof(material));
 	material.Diffuse = COLOR(1.0f, 1.0f, 1.0f, 1.0f);
-	material.Ambient = COLOR(0.2f, 0.2f, 0.2f, 1.0f);
+	material.Ambient = COLOR(0.3f, 0.3f, 0.3f, 1.0f);
 	material.Specular = COLOR(1.0f, 1.0f, 1.0f, 0.5f);
 	SetMaterial(material);
 
@@ -589,29 +593,32 @@ void CRenderer::Uninit()
 	}
 
 	// オブジェクト解放
-	SAFE_RELEASE(m_WorldBuffer);
-	SAFE_RELEASE(m_ViewBuffer);
-	SAFE_RELEASE(m_ProjectionBuffer);
+	SAFE_RELEASE(m_WorldBuffer)
+	SAFE_RELEASE(m_ViewBuffer)
+	SAFE_RELEASE(m_ProjectionBuffer)
 
-	SAFE_RELEASE(m_MaterialBuffer);
-	SAFE_RELEASE(m_VertexLayout);
+	SAFE_RELEASE(m_MaterialBuffer)
+	SAFE_RELEASE(m_LightBuffer)
+	SAFE_RELEASE(m_VertexLayout)
 
 	SAFE_RELEASE(m_VertexShader[0]);
-	SAFE_RELEASE(m_VertexShader[1]);
-
 	SAFE_RELEASE(m_PixelShader[0]);
+
+	SAFE_RELEASE(m_VertexShader[1]);
 	SAFE_RELEASE(m_PixelShader[1]);
 	SAFE_RELEASE(m_PixelShader[2]);
 
-	SAFE_RELEASE(m_RenderTargetView);
-	SAFE_RELEASE(m_SwapChain);
-	SAFE_RELEASE(m_ImmediateContext);
-	SAFE_RELEASE(m_D3DDevice);
+	SAFE_RELEASE(m_RenderTargetView)
+	SAFE_RELEASE(m_SwapChain)
+	SAFE_RELEASE(m_ImmediateContext)
+	SAFE_RELEASE(m_D3DDevice)
 
-	SAFE_RELEASE(m_DwriteTextFormat);
-	SAFE_RELEASE(m_D2DDevice);
-	SAFE_RELEASE(m_D2DDeviceContext);
-	SAFE_RELEASE(m_dxgiDev);
+	SAFE_RELEASE(m_DwriteFactory)
+	SAFE_RELEASE(m_TextLayout)
+	SAFE_RELEASE(m_DwriteTextFormat)
+	SAFE_RELEASE(m_D2DDevice)
+	SAFE_RELEASE(m_D2DDeviceContext)
+	SAFE_RELEASE(m_dxgiDev)
 }
 
 void CRenderer::SetBlendState(D3D11_BLEND_DESC* blend_state, bool flag)
@@ -726,6 +733,7 @@ void CRenderer::End()
 		if (DXGI_STATUS_OCCLUDED == hr)
 		{
 			Stand_By_Enable = true;		// スタンバイモードに入る
+			return;
 		}
 
 		// デバイスの消失
@@ -734,22 +742,22 @@ void CRenderer::End()
 
 			switch (hr)
 			{
-			case S_OK:
-				break;
+				case S_OK:
+					break;
 
-				// リセット
-			case DXGI_ERROR_DEVICE_HUNG:
-			case DXGI_ERROR_DEVICE_RESET:
-				CManager::GameEnd();
-				break;
+					// リセット
+				case DXGI_ERROR_DEVICE_HUNG:
+				case DXGI_ERROR_DEVICE_RESET:
+					CManager::GameEnd();
+					break;
 
-				// エラー 終了
-			case DXGI_ERROR_DEVICE_REMOVED:
-			case DXGI_ERROR_DRIVER_INTERNAL_ERROR:
-			case DXGI_ERROR_INVALID_CALL:
-			default:
-				CManager::GameEnd();
-				break;
+					// エラー 終了
+				case DXGI_ERROR_DEVICE_REMOVED:
+				case DXGI_ERROR_DRIVER_INTERNAL_ERROR:
+				case DXGI_ERROR_INVALID_CALL:
+				default:
+					CManager::GameEnd();
+					break;
 			}
 		}
 	}
@@ -833,6 +841,12 @@ void CRenderer::Light_Identity()
 	light.Ambient = COLOR(0.2f, 0.2f, 0.2f, 1.0f);
 
 	m_ImmediateContext->UpdateSubresource(m_LightBuffer, 0, NULL, &light, 0, 0);
+}
+
+// カメラ
+void CRenderer::SetCamera(XMFLOAT4* position)
+{
+	m_ImmediateContext->UpdateSubresource(m_CameraBuffer, 0, NULL, position, 0, 0);
 }
 
 void CRenderer::SetVertexBuffers( ID3D11Buffer* VertexBuffer )

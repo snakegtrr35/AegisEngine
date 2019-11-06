@@ -193,12 +193,16 @@ private:
 	static ID3D11Buffer*			m_MaterialBuffer;
 	static ID3D11Buffer*			m_LightBuffer;
 
+	static ID3D11Buffer* m_CameraBuffer;//
+
 	static ID3D11Buffer* m_Bone_Matrix_Buffer;
 
 	static ID3D11DepthStencilState*		m_DepthStateEnable;
 	static ID3D11DepthStencilState*		m_DepthStateDisable;
 
 	static IDWriteTextFormat* m_DwriteTextFormat;
+	static IDWriteTextLayout* m_TextLayout;
+	static IDWriteFactory* m_DwriteFactory;
 
 public:
 	static bool Init();
@@ -224,6 +228,9 @@ public:
 	static void SetMaterial(MATERIAL Material);
 	static void SetLight(LIGHT* Light);
 	static void Light_Identity();
+
+	static void SetCamera(XMFLOAT4* position);//
+
 	static void SetVertexBuffers( ID3D11Buffer* VertexBuffer );
 	static void SetIndexBuffer( ID3D11Buffer* IndexBuffer );
 	static void DrawIndexed( unsigned int IndexCount, unsigned int StartIndexLocation, int BaseVertexLocation );
@@ -234,6 +241,9 @@ public:
 	static ID2D1Device* Get2DDevice() { return m_D2DDevice; }
 	static ID2D1DeviceContext* Get2DDeviceContext(void) { return m_D2DDeviceContext; }
 	static IDWriteTextFormat* GetTextFormat() { return m_DwriteTextFormat; }
+
+	static IDWriteTextLayout* GetTextLayout() { return m_TextLayout; }
+	static IDWriteFactory* GetFactory() { return m_DwriteFactory; }
 
 	static void Set_Shader(const SHADER_INDEX_V v_index = SHADER_INDEX_V::DEFAULT, const SHADER_INDEX_P p_index = SHADER_INDEX_P::DEFAULT);
 

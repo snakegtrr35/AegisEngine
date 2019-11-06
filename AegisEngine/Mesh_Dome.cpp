@@ -149,11 +149,15 @@ void MESH_DOOM::Draw()
 	CRenderer::SetIndexBuffer(IndexBuffer.get());
 
 	// ƒgƒ|ƒƒWÝ’è
-	CRenderer::GetDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);	
+	CRenderer::GetDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
 
 	Texture.get()->Set_Texture();
 
+	CRenderer::Set_Shader(SHADER_INDEX_V::DEFAULT, SHADER_INDEX_P::NO_LIGHT);
+
 	// ƒ|ƒŠƒSƒ“•`‰æ
 	CRenderer::GetDeviceContext()->DrawIndexed(IndexNum, 0, 0);
+
+	CRenderer::Set_Shader();
 
 }

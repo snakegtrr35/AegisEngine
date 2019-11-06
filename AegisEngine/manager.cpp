@@ -115,7 +115,7 @@ void CManager::Draw()
 	rect = D2D1::RectF(100, 100, 200, 200);
 
 	CRenderer::Get2DDeviceContext()->BeginDraw();
-	CRenderer::Get2DDeviceContext()->FillRectangle(&rect, brush);
+	//CRenderer::Get2DDeviceContext()->FillRectangle(&rect, brush);
 
 	// DirectWrite
 
@@ -126,12 +126,22 @@ void CManager::Draw()
 
 	brush->SetColor(color);
 
+	{
+		rect = D2D1::RectF(500, 100, 900, 200);
+		const wstring drawText = L"Hello HELL World!!!\n地球の未来にご奉仕するにゃん！";
 
-	rect = D2D1::RectF(100, 100, 500, 200);
-	const wstring drawText = L"Hello HELL World!!!\n地球の未来にご奉仕するにゃん！";
+		CRenderer::Get2DDeviceContext()->DrawText(
+			drawText.c_str(), drawText.size(), CRenderer::GetTextFormat(), &rect, brush);
+	}
 
-	CRenderer::Get2DDeviceContext()->DrawText(
-		drawText.c_str(), drawText.size(), CRenderer::GetTextFormat(), &rect, brush);
+	{
+		D2D1_POINT_2F points;
+		points.x = 100.0f;
+		points.y = 100.0f;
+
+		CRenderer::Get2DDeviceContext()->DrawTextLayout(
+			points, CRenderer::GetTextLayout(), brush);
+	}
 
 	CRenderer::Get2DDeviceContext()->EndDraw();
 	brush->Release();
