@@ -25,6 +25,7 @@
 using namespace DirectX;
 
 #include	"Math.h"
+using namespace Math;
 
 #ifndef IMGUI
 #define IMGUI

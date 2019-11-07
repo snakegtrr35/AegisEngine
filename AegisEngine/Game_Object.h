@@ -15,13 +15,16 @@ protected:
 	bool DestroyFlag;
 
 	XMFLOAT3 Position;
+	
 	XMFLOAT3 Rotation;
+	XMVECTOR Quaternion;
+
 	XMFLOAT3 Scaling;
 
 	COMPONENT_MANEGER Component;
 
 public:
-	GAME_OBJECT() : Object_Name("none"), DestroyFlag(false), Rotation(XMFLOAT3(0.0f, 0.0f, 0.0f)), Position(XMFLOAT3(0.0f, 0.0f, 0.0f)), Scaling(XMFLOAT3(1.0f, 1.0f, 1.0f)) {}
+	GAME_OBJECT() : Object_Name("none"), DestroyFlag(false), Rotation(XMFLOAT3(0.0f, 0.0f, 0.0f)), Position(XMFLOAT3(0.0f, 0.0f, 0.0f)), Scaling(XMFLOAT3(1.0f, 1.0f, 1.0f)), Quaternion(XMQuaternionIdentity()) {}
 	virtual ~GAME_OBJECT() {};
 
 	virtual void Init(void) = 0;

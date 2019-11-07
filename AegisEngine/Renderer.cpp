@@ -54,7 +54,6 @@ bool CRenderer::Init()
 	HRESULT hr = S_OK;
 
 	// デバイス、スワップチェーン、コンテキスト生成
-
 	DXGI_SWAP_CHAIN_DESC1 sc;
 	ZeroMemory(&sc, sizeof(sc));
 
@@ -80,9 +79,6 @@ bool CRenderer::Init()
 
 	// フラグ
 	UINT d3dFlags = D3D11_CREATE_DEVICE_BGRA_SUPPORT; // BGRA テクスチャ有効
-#ifndef NDEBUG
-	//d3dFlags |= D3D11_CREATE_DEVICE_DEBUG; // Debug ビルドならエラー報告を有効
-#endif
 
 	// Direct3Dの作成
 	hr = D3D11CreateDevice(
@@ -229,36 +225,33 @@ bool CRenderer::Init()
 	}
 
 	// テキストフォーマットの作成
-	const float FONT_DEFAULT_SIZE = 32.0f;
-	hr = m_DwriteFactory->CreateTextFormat(
-		L"メイリオ", nullptr,
-		DWRITE_FONT_WEIGHT_NORMAL, DWRITE_FONT_STYLE_NORMAL, DWRITE_FONT_STRETCH_NORMAL,
-		FONT_DEFAULT_SIZE, L"", &m_DwriteTextFormat);
-	if (FAILED(hr))
 	{
-		FAILDE_ASSERT;
-		return false;
+		TEXT_FOMAT fomat;
+		fomat.FontName = "メイリオ";
+
+		hr = Create_TextFormat(fomat);
+
+		if (FAILED(hr))
+		{
+			FAILDE_ASSERT;
+			return false;
+		}
 	}
 
 	// テキストレイアウトを作成
-	wstring drawText /*= L"Hello HELL World!!!\n地球の未来にご奉仕するにゃん！"*/;
-
-	const string Text = "Hello HELL World!!!\n地球の未来にご奉仕するにゃん！";
-
-	drawText = stringTowstring(Text);
-
-	hr = m_DwriteFactory->CreateTextLayout(
-		drawText.c_str(),
-		drawText.size(),
-		m_DwriteTextFormat,
-		400,
-		50,
-		&m_TextLayout
-	);
-	if (FAILED(hr))
 	{
-		FAILDE_ASSERT;
-		return false;
+		TEXT_LAYOUT layout;
+		layout.Text = "Hello HELL World!!!\n地球の未来にご奉仕するにゃん！";
+		layout.Width = 400;
+		layout.Height = 50;
+		
+		hr = Create_TextLayout(layout);
+
+		if (FAILED(hr))
+		{
+			FAILDE_ASSERT;
+			return false;
+		}
 	}
 
 	// 文字の位置の設定
@@ -868,10 +861,45 @@ void CRenderer::Light_Identity()
 	m_ImmediateContext->UpdateSubresource(m_LightBuffer, 0, NULL, &light, 0, 0);
 }
 
-// カメラ
 void CRenderer::SetCamera(XMFLOAT4* position)
 {
 	m_ImmediateContext->UpdateSubresource(m_CameraBuffer, 0, NULL, position, 0, 0);
+}
+
+HRESULT CRenderer::Create_TextFormat(const TEXT_FOMAT& fomat)
+{
+	SAFE_RELEASE(m_DwriteTextFormat)
+
+	wstring font_name = stringTowstring(fomat.FontName);
+
+	// テキストフォーマットの作成
+	HRESULT hr = m_DwriteFactory->CreateTextFormat(
+		font_name.c_str(), nullptr,
+		fomat.Weight, fomat.Style, fomat.Stretch,
+		fomat.FontSize, L"", &m_DwriteTextFormat);
+
+	return hr;
+}
+
+HRESULT CRenderer::Create_TextLayout(const TEXT_LAYOUT& layout)
+{
+	SAFE_RELEASE(m_TextLayout)
+
+	// テキストレイアウトを作成
+	wstring drawText;
+
+	drawText = stringTowstring(layout.Text);
+
+	HRESULT hr = m_DwriteFactory->CreateTextLayout(
+		drawText.c_str(),
+		drawText.size(),
+		m_DwriteTextFormat,
+		layout.Width,
+		layout.Height,
+		&m_TextLayout
+	);
+
+	return hr;
 }
 
 void CRenderer::SetVertexBuffers( ID3D11Buffer* VertexBuffer )

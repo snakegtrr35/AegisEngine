@@ -104,39 +104,6 @@ struct Anim {
 	std::vector<NodeAnim> body;
 };
 
-
-// 球面線形補間関数
-// out   : 補間ベクトル（出力）
-// start : 開始ベクトル
-// end : 終了ベクトル
-// t : 補間値（0～1）
-//XMVECTOR* SphereLinear(XMVECTOR* out, XMVECTOR start, XMVECTOR end, float t) {
-//
-//	XMVECTOR s, e;
-//	s = XMVector3Normalize(start);
-//	e = XMVector3Normalize(end);
-//
-//
-//	// 2ベクトル間の角度（鋭角側
-//	XMVECTOR vec = XMVector3Dot(s, e);
-//
-//	float angle = acosf(XMVectorGetX(vec));
-//
-//	// sinθ
-//	float SinTh = sin(angle);
-//
-//	// 補間係数
-//	float Ps = sin(angle * (1 - t));
-//	float Pe = sin(angle * t);
-//
-//	*out = (Ps * s + Pe * e) / SinTh;
-//
-//	// 一応正規化して球面線形補間に
-//	*out = XMVector3Normalize(*out);
-//
-//	return out;
-//}
-
 class MESH {
 private:
 	//vector<VERTEX_3D> Vertices;

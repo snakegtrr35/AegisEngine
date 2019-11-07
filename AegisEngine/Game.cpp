@@ -147,7 +147,7 @@ void GAME::Init()
 		hp->SetSize(XMFLOAT4(170, 25, 485, 25));	// HP MAX 655pixel
 		//hp->SetSize(XMFLOAT4(-485, 25, 485, 25));	// HP 0
 
-		hp->SetSize(XMFLOAT4(Lerp(-485.0f, 170.0f, 100.0f, 0.0f, 100.0f), 25, 485, 25));
+		hp->SetSize(XMFLOAT4(LerpEx(-485.0f, 170.0f, 100.0f, 0.0f, 100.0f), 25, 485, 25));
 	}
 
 	// ’e‚ÌUI
@@ -361,7 +361,7 @@ void GAME::Update()
 				{
 					if (string("hp") == child.Name)
 					{
-						child.Child->SetSize(XMFLOAT4(Lerp(-485.0f, 170.0f, hp, 0.0f, 100.0f), 25, 485, 25));
+						child.Child->SetSize(XMFLOAT4(LerpEx(-485.0f, 170.0f, hp, 0.0f, 100.0f), 25, 485, 25));
 
 						if (hp <= 50.0f)
 						{

@@ -145,6 +145,23 @@ void CMODEL::Draw()
 	XMMATRIX rotation = XMMatrixRotationRollPitchYaw(XMConvertToRadians(Rotation.x), XMConvertToRadians(Rotation.y), XMConvertToRadians(Rotation.z));
 	XMMATRIX transform = XMMatrixTranslation(Position.x, Position.y, Position.z);
 
+	// クォータニオン
+	if(0.0f != Rotation.x || 0.0f != Rotation.y || 0.0f != Rotation.z)
+	{
+		static XMVECTOR Quaternion = XMQuaternionIdentity();
+
+		XMFLOAT3 vz = XMFLOAT3(Rotation.x, Rotation.y, Rotation.z);
+		XMVECTOR axis = XMLoadFloat3(&vz);
+
+		XMVECTOR rotateX = XMQuaternionRotationAxis(axis, XMConvertToRadians(1.0f));
+
+		Quaternion = XMQuaternionMultiply(Quaternion, rotateX);
+
+		Quaternion = XMQuaternionNormalize(Quaternion);
+
+		rotation = XMMatrixRotationQuaternion(Quaternion);
+	}
+
 	matrix = XMMatrixMultiply(matrix, scaling);
 
 	matrix = XMMatrixMultiply(matrix, rotation);

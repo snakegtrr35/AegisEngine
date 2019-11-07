@@ -20,6 +20,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="audio_clip.cpp" />
+    <ClCompile Include="Ball.cpp" />
     <ClCompile Include="Billboard.cpp" />
     <ClCompile Include="Bounding.cpp" />
     <ClCompile Include="Bullet.cpp" />
@@ -79,6 +80,7 @@
     <ClInclude Include="Animetion_State_Machine.h" />
     <ClInclude Include="audio_clip.h" />
     <ClInclude Include="Axis.h" />
+    <ClInclude Include="Ball.h" />
     <ClInclude Include="Billboard.h" />
     <ClInclude Include="Bounding.h" />
     <ClInclude Include="Bullet.h" />
@@ -268,7 +270,7 @@
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
-      <ForcedIncludeFiles>stdafx.h;Math.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <ForcedIncludeFiles>stdafx.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
       <DisableSpecificWarnings>4227;%(DisableSpecificWarnings)</DisableSpecificWarnings>
     </ClCompile>
     <Link>
