@@ -75,7 +75,7 @@ void CManager::Update()
 
 	MOUSE::Reset_Wheel_Moveset();
 
-	if (KEYBOARD::Trigger_Keyboard(VK_F5))
+	if (KEYBOARD::Trigger_Keyboard(VK_F1))
 	{
 		CRenderer::Change_Window_Mode();
 	}
