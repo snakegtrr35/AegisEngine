@@ -159,30 +159,39 @@ void CMODEL::Draw()
 
 	XMMATRIX matrix = XMMatrixIdentity();
 	XMMATRIX scaling = XMMatrixScaling(Scaling.x, Scaling.y, Scaling.z);
-	XMMATRIX rotation  = XMMatrixIdentity()/*= XMMatrixRotationRollPitchYaw(XMConvertToRadians(Rotation.x), XMConvertToRadians(Rotation.y), XMConvertToRadians(Rotation.z))*/;
+	XMMATRIX rotation  = XMMatrixIdentity();/*= XMMatrixRotationRollPitchYaw(XMConvertToRadians(Rotation.x), XMConvertToRadians(Rotation.y), XMConvertToRadians(Rotation.z));*/
 	XMMATRIX transform = XMMatrixTranslation(Position.x, Position.y, Position.z);
 
 	// クォータニオン
 	if(0.0f != (Rotation.x + 0.0001f) && 0.0f != (Rotation.y + 0.0001f) && 0.0f != (Rotation.z + 0.0001f))
 	{
-		static XMVECTOR Quaternion = XMQuaternionIdentity();
+		XMVECTOR Quaternion = XMQuaternionIdentity();
 
-		//XMFLOAT3 vz = XMFLOAT3(Rotation.x, Rotation.y, Rotation.z);
-		//XMVECTOR axis = XMLoadFloat3(&vz);
+		XMVECTOR axisX = XMVectorSet(1.0f, 0.f, 0.f, 0.f);
+		XMVECTOR axisY = XMVectorSet(0.0f, 1.0f, 0.f, 0.f);
+		XMVECTOR axisZ = XMVectorSet(0.0f, 0.f, 1.0f, 0.f);
 
-		//XMVECTOR rotateX = XMQuaternionRotationAxis(axis, XMConvertToRadians(1.0f));
+		XMVECTOR rotateX = XMQuaternionRotationAxis(axisX, XMConvertToRadians(Rotation.x));
+		//rotateX = XMVector4Normalize(rotateX);
+		XMVECTOR rotateY = XMQuaternionRotationAxis(axisY, XMConvertToRadians(Rotation.y));
+		//rotateY = XMVector4Normalize(rotateY);
+		XMVECTOR rotateZ = XMQuaternionRotationAxis(axisZ, XMConvertToRadians(Rotation.z));
+		//rotateZ = XMVector4Normalize(rotateZ);
 
-		Quaternion = XMQuaternionRotationMatrix(XMMatrixRotationRollPitchYaw(XMConvertToRadians(Rotation.x), XMConvertToRadians(Rotation.y), XMConvertToRadians(Rotation.z)));
+		//Quaternion = XMQuaternionRotationMatrix(XMMatrixRotationRollPitchYaw(XMConvertToRadians(Rotation.x), XMConvertToRadians(Rotation.y), XMConvertToRadians(Rotation.z)));
+
+		//Quaternion = XMQuaternionNormalize(Quaternion);
+
+		//rotation = XMMatrixRotationQuaternion(Quaternion);
+
+		Quaternion = XMQuaternionMultiply(Quaternion, rotateX);
+		Quaternion = XMQuaternionMultiply(Quaternion, rotateY);
+		Quaternion = XMQuaternionMultiply(Quaternion, rotateZ);
 
 		Quaternion = XMQuaternionNormalize(Quaternion);
 
 		rotation = XMMatrixRotationQuaternion(Quaternion);
 
-		//Quaternion = XMQuaternionMultiply(Quaternion, rotateX);
-
-		//Quaternion = XMQuaternionNormalize(Quaternion);
-
-		//rotation = XMMatrixRotationQuaternion(Quaternion);
 	}
 
 	matrix = XMMatrixMultiply(matrix, scaling);

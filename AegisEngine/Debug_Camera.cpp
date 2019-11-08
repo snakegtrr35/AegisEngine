@@ -6,15 +6,14 @@ DEBUG_CAMERA* DEBUG_CAMERA::pDebugCamera = nullptr;
 XMMATRIX DEBUG_CAMERA::m_ViewMatrix;
 XMMATRIX DEBUG_CAMERA::m_ProjectionMatrix;
 
-float DEBUG_CAMERA::Lenght = 10.0f;
+float DEBUG_CAMERA::Lenght = 15.0f;
+
 
 void DEBUG_CAMERA::Init()
 {
 	XMFLOAT4 at = XMFLOAT4(0.0f, 0.0f, 0.0f, 0.0f);
 
 	Viewing_Angle = 55.0f;
-
-	Lenght = 5.0f;
 
 	Front = XMVectorSet(0.0f, -0.4f, 1.0f, 0.0f);
 	Front = XMVector3Normalize(Front);
@@ -54,7 +53,7 @@ void DEBUG_CAMERA::Update()
 {
 	XMFLOAT2 point = MOUSE::Get_Position();
 
-	bool flag = !KEYBOARD::Press_Keyboard(VK_SHIFT);
+	bool flag = KEYBOARD::Press_Keyboard(VK_SHIFT);
 
 	bool flag2 = KEYBOARD::Press_Keyboard(VK_RBUTTON);
 

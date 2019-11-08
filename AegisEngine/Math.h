@@ -628,6 +628,96 @@ namespace Math
 		return 	VECTOR3(vec.x, vec.y, vec.z);
 	}
 
+	//クォータニオンを回転行列にする
+	inline XMMATRIX QuaternionToMatrix(Quaternion& q) {
+		//MATRIX ret;
+		XMFLOAT4X4 ret;
+		float sx = q.x * q.x;
+		float sy = q.y * q.y;
+		float sz = q.z * q.z;
+		float cx = q.y * q.z;
+		float cy = q.x * q.z;
+		float cz = q.x * q.y;
+		float wx = q.w * q.x;
+		float wy = q.w * q.y;
+		float wz = q.w * q.z;
+
+		ret._11 = 1.0f - 2.0f * (sy + sz);
+		ret._12 = 2.0f * (cz + wz);
+		ret._13 = 2.0f * (cy - wy);
+		ret._21 = 2.0f * (cz - wz);
+		ret._22 = 1.0f - 2.0f * (sx + sz);
+		ret._23 = 2.0f * (cx + wx);
+		ret._31 = 2.0f * (cy + wy);
+		ret._32 = 2.0f * (cx - wx);
+		ret._33 = 1.0f - 2.0f * (sx + sy);
+		ret._41 = 0.0f;
+		ret._42 = 0.0f;
+		ret._43 = 0.0f;
+
+		//return ret;
+		return XMLoadFloat4x4(&ret);
+	}
+
+	//回転行列をクォータニオンにする
+	inline Quaternion MatrixToQuaternion(XMMATRIX& mat) {
+		Quaternion q;
+
+		XMFLOAT4X4 ret;
+		XMStoreFloat4x4(&ret, mat);
+
+		float s;
+		float tr = ret._11 + ret._22 + ret._33 + 1.0f;
+		if (tr >= 1.0f) {
+			s = 0.5f / sqrt(tr);
+			q.w = 0.25f / s;
+			q.x = (ret._23 - ret._32) * s;
+			q.y = (ret._31 - ret._13) * s;
+			q.z = (ret._12 - ret._21) * s;
+			return q;
+		}
+		else {
+			float max;
+			if (ret._22 > ret._33) {
+				max = ret._22;
+			}
+			else {
+				max = ret._33;
+			}
+
+			if (max < ret._11) {
+				s = sqrt(ret._11 - (ret._22 + ret._33) + 1.0f);
+				float x = s * 0.5f;
+				s = 0.5f / s;
+				q.x = x;
+				q.y = (ret._12 + ret._21) * s;
+				q.z = (ret._31 + ret._13) * s;
+				q.w = (ret._23 - ret._32) * s;
+				return q;
+			}
+			else if (max == ret._22) {
+				s = sqrt(ret._22 - (ret._33 + ret._11) + 1.0f);
+				float y = s * 0.5f;
+				s = 0.5f / s;
+				q.x = (ret._12 + ret._21) * s;
+				q.y = y;
+				q.z = (ret._23 + ret._32) * s;
+				q.w = (ret._31 - ret._13) * s;
+				return q;
+			}
+			else {
+				s = sqrt(ret._33 - (ret._11 + ret._22) + 1.0f);
+				float z = s * 0.5f;
+				s = 0.5f / s;
+				q.x = (ret._31 + ret._13) * s;
+				q.y = (ret._23 + ret._32) * s;
+				q.z = z;
+				q.w = (ret._12 - ret._21) * s;
+				return q;
+			}
+		}
+	}
+
 	// 定数
 
 	const INT2 INT2_Zero(0, 0);

@@ -62,9 +62,14 @@ void CCamera::Update()
 
 	{
 		auto player = CManager::Get_Scene()->Get_Game_Object("player");
-		At = XMLoadFloat3(player->Get_Position());
+		if (nullptr == player)
+		{
+			//At = XMLoadFloat3(player->Get_Position());
 
-		//At = Front * Lenght + Pos;
+			//At = Front * Lenght + Pos;
+
+			Pos = XMLoadFloat3(player->Get_Position());
+		}
 	}
 
 	XMVECTOR f(Front);
@@ -102,6 +107,8 @@ void CCamera::Update()
 
 			VECTOR3 f = Math::VECTOR3::Transform(XMVECTORToVECTOR3(Front), q);
 
+			At = Pos + Front * Lenght_Z;//
+
 			Front = VECTOR3ToXMVECTOR(f);
 			Front = XMVector3Normalize(Front);
 
@@ -128,6 +135,8 @@ void CCamera::Update()
 
 			VECTOR3 f = Math::VECTOR3::Transform(XMVECTORToVECTOR3(Front), q);
 
+			At = Pos + Front * Lenght_Z;//
+
 			Front = VECTOR3ToXMVECTOR(f);
 			Front = XMVector3Normalize(Front);
 
@@ -138,12 +147,15 @@ void CCamera::Update()
 		}
 
 		{
-			XMVECTOR vec = At;
+			/*XMVECTOR vec = At;
 
 			vec -= Front * Lenght_Z;
 			vec += Up * Lenght_Y;
 
-			Pos = vec;
+			Pos = vec;*/
+
+			//At = Pos - Front * Lenght_Z;
+			//At = Pos - Up * Lenght_Y;
 		}
 	}
 

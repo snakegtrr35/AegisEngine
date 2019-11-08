@@ -348,8 +348,24 @@ void Draw_Inspector(const string& name)
 
 		// 3DÉMÉYÉÇ
 		{
-			auto camera = SCENE::Get_Game_Object<CCamera>("camera");
-			XMMATRIX mtr = camera->Get_Camera_View();
+			XMMATRIX mtr;
+
+			CCamera* camera1;
+			DEBUG_CAMERA* camera2;
+
+			{
+				camera1 = SCENE::Get_Game_Object<CCamera>("camera");
+				if (nullptr == camera1)
+				{
+					camera2 = SCENE::Get_Game_Object<DEBUG_CAMERA>("camera");
+					mtr = camera2->Get_Camera_View();
+				}
+				else
+				{
+					mtr = camera1->Get_Camera_View();
+				}
+			}
+
 			XMFLOAT4X4 mat44;
 			XMStoreFloat4x4(&mat44, mtr);
 
@@ -359,7 +375,17 @@ void Draw_Inspector(const string& name)
 								mat44._41, mat44._42, mat44._43,mat44._44
 			};
 
-			mtr = camera->Get_Camera_Projection();
+			{
+				if (nullptr == camera1)
+				{
+					mtr = camera2->Get_Camera_Projection();
+				}
+				else
+				{
+					mtr = camera1->Get_Camera_Projection();
+				}
+			}
+
 			XMStoreFloat4x4(&mat44, mtr);
 
 			float pro[16] = { mat44._11, mat44._12, mat44._13,mat44._14,
