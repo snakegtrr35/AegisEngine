@@ -28,6 +28,7 @@
     <ClCompile Include="Circle_Shadow.cpp" />
     <ClCompile Include="Collision.cpp" />
     <ClCompile Include="common.cpp" />
+    <ClCompile Include="Debug_Camera.cpp" />
     <ClCompile Include="Enemy.cpp" />
     <ClCompile Include="Fade.cpp" />
     <ClCompile Include="Field.cpp" />
@@ -90,6 +91,7 @@
     <ClInclude Include="Collision.h" />
     <ClInclude Include="common.h" />
     <ClInclude Include="Component.h" />
+    <ClInclude Include="Debug_Camera.h" />
     <ClInclude Include="Enemy.h" />
     <ClInclude Include="Fade.h" />
     <ClInclude Include="Field.h" />

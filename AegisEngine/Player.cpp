@@ -78,13 +78,13 @@ void PLAYER::Draw(void)
 
 void PLAYER::Update(void)
 {
-	CCamera* camera = CManager::Get_Scene()->Get_Game_Object<CCamera>();
+	CCamera* camera = CManager::Get_Scene()->Get_Game_Object<CCamera>("camera");
+	//DEBUG_CAMERA* camera = CManager::Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
 
 	XMVECTOR* vec = camera->Get_At();
 	XMVECTOR* front = camera->Get_Front();
 	XMVECTOR* right = camera->Get_Right();
 	XMFLOAT3 pos;
-	float rotate = camera->Get();
 
 	XMStoreFloat3(&pos, *vec);
 

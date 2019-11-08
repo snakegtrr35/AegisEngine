@@ -17,9 +17,9 @@ void MAIN_MENU::Init()
 {
 	// カメラ
 	{
-		CCamera* camera = Add_Game_Object<CCamera>(LAYER_NAME::BACKGROUND, "camera");
+		auto camera = Add_Game_Object<CCamera>(LAYER_NAME::BACKGROUND, "camera");
+		//auto camera = Add_Game_Object<DEBUG_CAMERA>(LAYER_NAME::BACKGROUND, "camera");
 
-		camera->Set_Lenght(15.0f);
 		camera->Set_Viewing_Angle(55.0f);
 
 		//camera->Set_Move_Enable(false);
@@ -55,7 +55,7 @@ void MAIN_MENU::Init()
 	}
 
 	{
-		MESH_DOOM* pmd = Add_Game_Object<MESH_DOOM>(LAYER_NAME::GAMEOBJECT, "sky_doom");
+		auto pmd = Add_Game_Object<MESH_DOOM>(LAYER_NAME::GAMEOBJECT, "sky_doom");
 
 		//pmd->Init();
 	}
@@ -67,7 +67,7 @@ void MAIN_MENU::Init()
 	// テキスト画像
 	{
 		XMFLOAT2 pos(50.0f, 50.0f);
-		TEXTS* text = Add_Game_Object<TEXTS>(LAYER_NAME::UI);
+		auto text = Add_Game_Object<TEXTS>(LAYER_NAME::UI);
 
 		text->SetPosition(pos);
 

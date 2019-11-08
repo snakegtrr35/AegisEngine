@@ -8,10 +8,8 @@ CCamera* CCamera::pCamera = nullptr;
 XMMATRIX CCamera::m_ViewMatrix;
 XMMATRIX CCamera::m_ProjectionMatrix;
 
-float CCamera::Lenght = 10.0f;
-
-XMFLOAT2 center = XMFLOAT2(SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.5f);
-XMFLOAT2 wh = XMFLOAT2(SCREEN_WIDTH, SCREEN_HEIGHT);
+float CCamera::Lenght_Z = 15.0f;
+float CCamera::Lenght_Y = 4.0f;
 
 void CCamera::Init()
 {
@@ -19,13 +17,8 @@ void CCamera::Init()
 
 	Viewing_Angle = 55.0f;
 
-	Lenght = 5.0f;
-
 	Front = XMVectorSet(0.0f, 0.0f, 1.0f, 0.0f);
-	Front = XMVector3Normalize(Front);
-
 	Up = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
-
 	Right = XMVectorSet(1.0f, 0.0f, 0.0f, 0.0f);
 
 
@@ -37,21 +30,22 @@ void CCamera::Init()
 	Up = XMVector3Normalize(Up);
 
 	At = XMLoadFloat4(&at);
+	{
+		//Pos = At - Front * Lenght;
 
-	Pos = At - Front * Lenght;
+		XMVECTOR vec = At;
+
+		vec -= Front * Lenght_Z;
+		vec += Up * Lenght_Y;
+
+		Pos = vec;
+	}
 
 	// ビューポートの設定設定
-	/*Viewport.left = 0;
+	Viewport.left = 0;
 	Viewport.top = 0;
 	Viewport.right = SCREEN_WIDTH;
-	Viewport.bottom = SCREEN_HEIGHT;*/
-
-	Viewport.left = center.x - wh.x * 0.5f;
-	Viewport.top = center.y - wh.y * 0.5f;
-	Viewport.right = center.x + wh.x * 0.5f;
-	Viewport.bottom = center.y + wh.y * 0.5f;
-
-	Rotate = 90.0f;
+	Viewport.bottom = SCREEN_HEIGHT;
 
 	RotateEnable = MoveEnable = true;
 }
@@ -64,12 +58,14 @@ void CCamera::Update()
 {
 	XMFLOAT2 point = MOUSE::Get_Position();
 
-	bool flag = !KEYBOARD::Press_Keyboard(VK_SHIFT);
+	bool flag = KEYBOARD::Press_Keyboard(VK_RBUTTON);
 
-	bool flag2 = KEYBOARD::Press_Keyboard(VK_RBUTTON);
+	{
+		auto player = CManager::Get_Scene()->Get_Game_Object("player");
+		At = XMLoadFloat3(player->Get_Position());
 
-	if (flag)
-		At = Front * Lenght + Pos;
+		//At = Front * Lenght + Pos;
+	}
 
 	XMVECTOR f(Front);
 	XMFLOAT4 front_vec;
@@ -88,98 +84,69 @@ void CCamera::Update()
 	r = DirectX::XMVector3Normalize(r);
 
 	// 回転
-	if (flag2 && MOUSE::Get_Move_Flag())
 	{
-		XMMATRIX mtxRotation;
-
-		mtxRotation = XMMatrixRotationAxis(Right, XMConvertToRadians(point.y));
-
-		Front = XMVector3TransformNormal(Front, mtxRotation);
-		Front = XMVector3Normalize(Front);
-
-		Up = XMVector3TransformNormal(Up, mtxRotation);
-		Up = XMVector3Normalize(Up);
-
-		float angle;
-
-		
-		if (0 < point.y)
+		if (flag && MOUSE::Get_Move_Y_Flag())
 		{
-			angle = 2.0f;
+			float angle;
+
+			if (0 < point.y)
+			{
+				angle = 2.0f;
+			}
+			else
+			{
+				angle = -2.0f;
+			}
+
+			Math::Quaternion q(XMVECTORToVECTOR3(Right), angle);
+
+			VECTOR3 f = Math::VECTOR3::Transform(XMVECTORToVECTOR3(Front), q);
+
+			Front = VECTOR3ToXMVECTOR(f);
+			Front = XMVector3Normalize(Front);
+
+			f = Math::VECTOR3::Transform(XMVECTORToVECTOR3(Up), q);
+
+			Up = VECTOR3ToXMVECTOR(f);
+			Up = XMVector3Normalize(Up);
 		}
-		else
+
+		if (flag && MOUSE::Get_Move_X_Flag())
 		{
-			angle = -2.0f;
+			float angle;
+
+			if (0 < point.x)
+			{
+				angle = 2.0f;
+			}
+			else
+			{
+				angle = -2.0f;
+			}
+
+			Math::Quaternion q(XMVECTORToVECTOR3(Up), angle);
+
+			VECTOR3 f = Math::VECTOR3::Transform(XMVECTORToVECTOR3(Front), q);
+
+			Front = VECTOR3ToXMVECTOR(f);
+			Front = XMVector3Normalize(Front);
+
+			f = Math::VECTOR3::Transform(XMVECTORToVECTOR3(Right), q);
+
+			Right = VECTOR3ToXMVECTOR(f);
+			Right = XMVector3Normalize(Right);
 		}
 
-		Math::Quaternion q(XMVECTORToVECTOR3(Right), angle);
+		{
+			XMVECTOR vec = At;
 
-		VECTOR3 f = Math::VECTOR3::Transform(XMVECTORToVECTOR3(Front), q);
+			vec -= Front * Lenght_Z;
+			vec += Up * Lenght_Y;
 
-		Front = VECTOR3ToXMVECTOR(f);
-		Front = XMVector3Normalize(Front);
-
-		f = Math::VECTOR3::Transform(XMVECTORToVECTOR3(Up), q);
-
-		Up = VECTOR3ToXMVECTOR(f);
-		Up = XMVector3Normalize(Up);
+			Pos = vec;
+		}
 	}
 
-	if (flag2 && MOUSE::Get_Move_Flag())
-	{
-		/*XMMATRIX mtxRotation;
-
-		mtxRotation = XMMatrixRotationY(XMConvertToRadians(point.x));
-
-
-		Front = XMVector3TransformNormal(Front, mtxRotation);
-		Front = XMVector3Normalize(Front);
-
-		Up = XMVector3TransformNormal(Up, mtxRotation);
-		Up = XMVector3Normalize(Up);
-
-		Right = XMVector3TransformNormal(Right, mtxRotation);
-		Right = XMVector3Normalize(Right);*/
-
-		float angle;
-
-		//
-		if (0 < point.x)
-		{
-			angle = 2.0f;
-		}
-		else
-		{
-			angle = -2.0f;
-		}
-
-		Math::Quaternion q(XMVECTORToVECTOR3(Up), angle);
-
-		VECTOR3 f = Math::VECTOR3::Transform(XMVECTORToVECTOR3(Front), q);
-
-		Front = VECTOR3ToXMVECTOR(f);
-		Front = XMVector3Normalize(Front);
-
-		f = Math::VECTOR3::Transform(XMVECTORToVECTOR3(Right), q);
-
-		Right = VECTOR3ToXMVECTOR(f);
-		Right = XMVector3Normalize(Right);
-	}
-
-	
-	{
-		XMFLOAT3 position;
-
-		XMStoreFloat3(&position, At);
-
-		//position.x = std::clamp(position.x, -50.0f, 50.0f);
-		//position.z = std::clamp(position.z, -50.0f, 50.0f);
-
-		At = XMLoadFloat3(&position);
-	}
-
-	if (flag)
-		Pos = At - Front * Lenght;
 
 	// 移動
 	if (MoveEnable)
@@ -215,28 +182,14 @@ void CCamera::Update()
 		}
 	}
 
-	if (false == flag)
-	{
-		At = Front * Lenght + Pos;
-		Pos = At - Front * Lenght;
-	}
-
 	XMFLOAT4 pos;
 	XMStoreFloat4(&pos, Pos);
 
 	CRenderer::SetCamera(&pos);
-
-	Viewport.left = center.x - wh.x * 0.5f;
-	Viewport.top = center.y - wh.y * 0.5f;
-	Viewport.right = center.x + wh.x * 0.5f;
-	Viewport.bottom = center.y + wh.y * 0.5f;
 }
 
 void CCamera::Draw()
 {
-	//XMMATRIX m_InvViewMatrix;
-	//XMMATRIX m_ProjectionMatrix;
-
 	// ビューポート設定
 	D3D11_VIEWPORT dxViewport;
 	dxViewport.Width = (float)(Viewport.right - Viewport.left);
@@ -251,13 +204,6 @@ void CCamera::Draw()
 	// ビューマトリクス設定
 	m_ViewMatrix = XMMatrixLookAtLH(Pos, At, Up);
 	CRenderer::SetViewMatrix(&m_ViewMatrix);
-
-	//// ビューマトリクス設定
-	//m_InvViewMatrix = XMMatrixRotationRollPitchYaw(Rotation.x, Rotation.y, Rotation.z);
-	//m_InvViewMatrix *= XMMatrixTranslation(Position.x, Position.y, Position.z);
-
-	/*XMVECTOR det;
-	m_ViewMatrix = XMMatrixInverse(&det, m_InvViewMatrix);*/
 
 	// プロジェクションマトリクス設定
 	m_ProjectionMatrix = XMMatrixPerspectiveFovLH(XMConvertToRadians(Viewing_Angle), dxViewport.Width / dxViewport.Height, 1.0f, 1000.0f);
@@ -277,4 +223,27 @@ const XMMATRIX CCamera::Get_Camera_View(void)
 const XMMATRIX CCamera::Get_Camera_Projection()
 {
 	return m_ProjectionMatrix;
+}
+
+bool CCamera::Get_Visibility(const XMFLOAT3& position)
+{
+	XMVECTOR world_pos, view_pos, projection_pos;
+	XMFLOAT3 projection_pos_F;
+
+	world_pos = XMLoadFloat3(&position);
+
+	view_pos = XMVector3TransformCoord(world_pos, m_ViewMatrix);
+
+	projection_pos = XMVector3TransformCoord(view_pos, m_ProjectionMatrix);
+
+	XMStoreFloat3(&projection_pos_F, projection_pos);
+
+	if (-1.0f <= projection_pos_F.x && projection_pos_F.x <= 1.0f &&
+		-1.0f <= projection_pos_F.y && projection_pos_F.y <= 1.0f &&
+		0.0f < projection_pos_F.z && projection_pos_F.z < 1.0f)
+	{
+		return true;
+	}
+
+	return false;
 }

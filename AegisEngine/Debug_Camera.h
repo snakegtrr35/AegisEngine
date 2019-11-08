@@ -1,13 +1,13 @@
 #pragma once
 
-#ifndef CAMERA_H
-#define CAMERA_H
+#ifndef DEBUG_CAMERA_H
+#define DEBUG_CAMERA_H
 
 #include	"Game_Object.h"
 
-class CCamera : public GAME_OBJECT{
+class DEBUG_CAMERA : public GAME_OBJECT {
 private:
-	static CCamera* pCamera;
+	static DEBUG_CAMERA* pDebugCamera;
 
 	float HorzDist;			// êÖïΩãóó£
 	float VerDist;			// êÇíºãóó£
@@ -21,8 +21,9 @@ private:
 
 	XMVECTOR At;
 
-	static float Lenght_Z;
-	static float Lenght_Y;
+	static float Lenght;
+
+	float Rotate;
 
 	XMFLOAT3 Velocity;
 
@@ -42,7 +43,7 @@ public:
 	void Update() override;
 	void Draw() override;
 
-	static CCamera* const Get_Camera();
+	static DEBUG_CAMERA* const Get_Camera();
 	static const XMMATRIX Get_Camera_View();
 	static const XMMATRIX Get_Camera_Projection();
 
@@ -62,6 +63,20 @@ public:
 		return &At;
 	};
 
+	const float Get() {
+		return Rotate;
+	};
+
+	void  Set_Lenght(const float lenght) {
+		Lenght = lenght;
+
+		Pos = At - Front * Lenght;
+	};
+
+	const float Get_Lenght() {
+		return Lenght;
+	};
+
 	void  Set_Viewing_Angle(const float viewing_angle) {
 		Viewing_Angle = viewing_angle;
 	};
@@ -69,8 +84,6 @@ public:
 	const float Get_Viewing_Angle() {
 		return Viewing_Angle;
 	};
-
-	bool Get_Visibility(const XMFLOAT3& position);
 
 	void Set_Move_Enable(const bool flag) {
 		MoveEnable = flag;
@@ -82,4 +95,4 @@ public:
 
 };
 
-#endif // !CAMERA_H
+#endif // !DEBUG_CAMERA_H

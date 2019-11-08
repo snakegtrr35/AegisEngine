@@ -3,6 +3,8 @@
 
 float MOUSE::Mouse_Sensitivity;
 bool MOUSE::MoveFlag = false;
+bool MOUSE::Move_X_Flag = false;
+bool MOUSE::Move_Y_Flag = false;
 
 int MOUSE::DiffW = 0;
 int MOUSE::OldDiffW = 0;
@@ -49,6 +51,16 @@ void  MOUSE::Set_Position(POINT& pos)
 		MoveFlag = false;
 	}
 
+	if (3 <= abs(OldPos.x - Pos.x))
+	{
+		Move_X_Flag = true;
+	}
+
+	if (3 <= abs(OldPos.y - Pos.y))
+	{
+		Move_Y_Flag = true;
+	}
+
 	OldPos.x = Pos.x;
 	OldPos.y = Pos.y;
 
@@ -87,6 +99,16 @@ const bool MOUSE::Get_Move_Flag()
 	return MoveFlag;
 }
 
+const bool MOUSE::Get_Move_X_Flag()
+{
+	return Move_X_Flag;
+}
+
+const bool MOUSE::Get_Move_Y_Flag()
+{
+	return Move_Y_Flag;
+}
+
 void MOUSE::Set_Wheel_Move(int w)
 {
 	OldDiffW = DiffW;
@@ -112,4 +134,7 @@ const WHEEL_MOVE_ENUM MOUSE::Get_Wheel_Move_Flag()
 void MOUSE::Reset_Wheel_Moveset()
 {
 	OldDiffW = DiffW;
+	MoveFlag = false;
+	Move_X_Flag = false;
+	Move_Y_Flag = false;
 }

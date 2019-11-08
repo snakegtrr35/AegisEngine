@@ -1,6 +1,10 @@
 #include	"ModelLoader.h"
 #include	"Library/DirectXTex/WICTextureLoader.h"
 
+#include	"manager.h"
+#include	"Scene.h"
+#include	"camera.h"
+
 Anim createAnimation(const aiAnimation* anim);
 NodeAnim createNodeAnim(const aiNodeAnim* anim);
 
@@ -13,6 +17,8 @@ Bone createBone(const aiBone* b);
 XMMATRIX Covert_Matrix(const aiMatrix4x4* matrix);
 
 static string textype;
+
+bool flag = true;
 
 CMODEL::CMODEL()
 {
@@ -140,6 +146,17 @@ bool CMODEL::Reload(string& filename)
 
 void CMODEL::Draw()
 {
+	auto camera = CManager::Get_Scene()->Get_Game_Object<CCamera>("camera");
+
+	if (nullptr != camera)
+	{
+		if (false == camera->Get_Visibility(Position))
+		{
+			return;
+		}
+	}
+
+
 	XMMATRIX matrix = XMMatrixIdentity();
 	XMMATRIX scaling = XMMatrixScaling(Scaling.x, Scaling.y, Scaling.z);
 	XMMATRIX rotation  = XMMatrixIdentity()/*= XMMatrixRotationRollPitchYaw(XMConvertToRadians(Rotation.x), XMConvertToRadians(Rotation.y), XMConvertToRadians(Rotation.z))*/;
@@ -157,11 +174,15 @@ void CMODEL::Draw()
 
 		Quaternion = XMQuaternionRotationMatrix(XMMatrixRotationRollPitchYaw(XMConvertToRadians(Rotation.x), XMConvertToRadians(Rotation.y), XMConvertToRadians(Rotation.z)));
 
-		//Quaternion = XMQuaternionMultiply(Quaternion, rotateX);
-
 		Quaternion = XMQuaternionNormalize(Quaternion);
 
 		rotation = XMMatrixRotationQuaternion(Quaternion);
+
+		//Quaternion = XMQuaternionMultiply(Quaternion, rotateX);
+
+		//Quaternion = XMQuaternionNormalize(Quaternion);
+
+		//rotation = XMMatrixRotationQuaternion(Quaternion);
 	}
 
 	matrix = XMMatrixMultiply(matrix, scaling);

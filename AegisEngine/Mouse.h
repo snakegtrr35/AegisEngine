@@ -26,6 +26,8 @@ private:
 	static POINT OldPos;
 
 	static bool MoveFlag;
+	static bool Move_X_Flag;
+	static bool Move_Y_Flag;
 
 	static int DiffW;
 	static int OldDiffW;
@@ -45,6 +47,8 @@ public:
 	static float& const Get_Sensitivity();
 
 	static const bool Get_Move_Flag();
+	static const bool Get_Move_X_Flag();
+	static const bool Get_Move_Y_Flag();
 
 	static void Set_Wheel_Move(int w);
 	static const WHEEL_MOVE_ENUM Get_Wheel_Move_Flag();

@@ -8,9 +8,6 @@
 
 #include	"imgui/ImGuizmo.h"
 
-extern XMFLOAT2 center;
-extern XMFLOAT2 wh;
-
 extern float radius;
 
 static string old_name;
@@ -172,9 +169,6 @@ void My_imgui::Draw(void)
 			{
 				float* r = &radius;
 
-				static float center2[2] = { center.x, center.y };
-				static float wh2[2] = { wh.x, wh.y };
-
 				ImGui::Begin("Setting");
 
 				{
@@ -185,22 +179,11 @@ void My_imgui::Draw(void)
 					ImGui::Text(str);
 				}
 
-				{
-					ImGui::DragFloat2("Center Position", center2, 1.0f, 0.f);
-					ImGui::DragFloat2("WH", wh2, 1.0f, 0.f);
-				}
-
 				ImGui::DragFloat("Radius", r, 0.1f, 0.1f, 100.0f);
 
 				ImGui::Text("%s", s.c_str());
 
 				ImGui::End();
-
-				center.x = center2[0];
-				center.y = center2[1];
-
-				wh.x = wh2[0];
-				wh.y = wh2[1];
 				}
 
 				// ÉâÉCÉgÇÃê›íË

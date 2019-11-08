@@ -7,6 +7,7 @@
 #include	"Renderer.h"
 
 #include	"camera.h"
+#include	"Debug_Camera.h"
 #include	"Field.h"
 #include	"Player.h"
 #include	"Enemy.h"
@@ -164,7 +165,7 @@ public:
 		return objects;
 	}
 
-	// リストから特定のオブジェクト（複数）の取得
+	// リストから特定のオブジェクの取得
 	// 引数 name オブジェクト名
 	static GAME_OBJECT* Get_Game_Object(const string& name)
 	{
