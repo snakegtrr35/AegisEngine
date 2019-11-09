@@ -17,8 +17,8 @@ void MAIN_MENU::Init()
 {
 	// ÉJÉÅÉâ
 	{
-		auto camera = Add_Game_Object<CCamera>(LAYER_NAME::BACKGROUND, "camera");
-		//auto camera = Add_Game_Object<DEBUG_CAMERA>(LAYER_NAME::BACKGROUND, "camera");
+		//auto camera = Add_Game_Object<CCamera>(LAYER_NAME::BACKGROUND, "camera");
+		auto camera = Add_Game_Object<DEBUG_CAMERA>(LAYER_NAME::BACKGROUND, "camera");
 
 		camera->Set_Viewing_Angle(55.0f);
 

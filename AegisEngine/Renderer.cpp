@@ -6,8 +6,6 @@
 
 #include	"manager.h"
 
-bool CRenderer::Stand_By_Enable = false;
-
 D3D_FEATURE_LEVEL       CRenderer::m_FeatureLevel = D3D_FEATURE_LEVEL_11_0;
 
 ID3D11Device*           CRenderer::m_D3DDevice = nullptr;
@@ -23,7 +21,7 @@ ID2D1Bitmap1*			CRenderer::m_D2DTargetBitmap = nullptr;
 IDWriteTextFormat*		CRenderer::m_DwriteTextFormat = nullptr;
 IDWriteTextLayout*		CRenderer::m_TextLayout = nullptr;
 
-IDWriteFactory*			CRenderer::m_DwriteFactory = nullptr;//
+IDWriteFactory*			CRenderer::m_DwriteFactory = nullptr;
 
 ID3D11VertexShader*		CRenderer::m_VertexShader[2] = { nullptr };
 ID3D11PixelShader*      CRenderer::m_PixelShader[3] = { nullptr };
@@ -34,379 +32,42 @@ ID3D11Buffer*			CRenderer::m_ProjectionBuffer = nullptr;
 ID3D11Buffer*			CRenderer::m_MaterialBuffer = nullptr;
 ID3D11Buffer*			CRenderer::m_LightBuffer = nullptr;
 
-ID3D11Buffer*			CRenderer::m_CameraBuffer = nullptr;//
+ID3D11Buffer*			CRenderer::m_CameraBuffer = nullptr;
 
-ID3D11Buffer* CRenderer::m_Bone_Matrix_Buffer = nullptr;
+ID3D11Buffer*			CRenderer::m_Bone_Matrix_Buffer = nullptr;
 
+ID3D11DepthStencilState* CRenderer::m_DepthStateEnable = nullptr;
+ID3D11DepthStencilState* CRenderer::m_DepthStateDisable = nullptr;
 
-ID3D11DepthStencilState* CRenderer::m_DepthStateEnable;
-ID3D11DepthStencilState* CRenderer::m_DepthStateDisable;
-
+bool CRenderer::Stand_By_Enable = false;
 
 // 自前
 ID3D11RenderTargetView*			CRenderer::My_RenderTargetView = nullptr;
 ID3D11ShaderResourceView*		CRenderer::My_ShaderResourceView = nullptr;
 
-D3D11_INPUT_ELEMENT_DESC CRenderer::animation_layout[6];
-
 bool CRenderer::Init()
 {
 	HRESULT hr = S_OK;
 
-	// デバイス、スワップチェーン、コンテキスト生成
-	DXGI_SWAP_CHAIN_DESC1 sc;
-	ZeroMemory(&sc, sizeof(sc));
-
-	sc.Width = SCREEN_WIDTH;
-	sc.Height = SCREEN_HEIGHT;
-	sc.Format = DXGI_FORMAT_B8G8R8A8_UNORM;
-	// スケール方法
-	sc.Scaling = DXGI_SCALING_STRETCH;
-	// 立体視
-	sc.Stereo = 0;
-	// 半透明モード
-	sc.AlphaMode = DXGI_ALPHA_MODE_UNSPECIFIED;
-
-	sc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
-	sc.BufferCount = 1;
-	// 描画後のバッファの扱い
-	sc.SwapEffect = DXGI_SWAP_EFFECT_SEQUENTIAL;
-	// MSAA
-	sc.SampleDesc.Count = 1;
-	sc.SampleDesc.Quality = 0;
-	// フラグ
-	sc.Flags = DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH; // 解像度変更が有効
-
-	// フラグ
-	UINT d3dFlags = D3D11_CREATE_DEVICE_BGRA_SUPPORT; // BGRA テクスチャ有効
-
-	// Direct3Dの作成
-	hr = D3D11CreateDevice(
-		nullptr, D3D_DRIVER_TYPE_HARDWARE, 0, d3dFlags,
-		&m_FeatureLevel, 1, D3D11_SDK_VERSION,
-		&m_D3DDevice, nullptr, &m_ImmediateContext);
-	if (FAILED(hr))
+	if (false == Init3D())
 	{
-		FAILDE_ASSERT;
-		return false;
-	}
-	
-	// DXGIデバイスの作成
-	hr = m_D3DDevice->QueryInterface<IDXGIDevice1>(&m_dxgiDev);
-	if (FAILED(hr))
-	{
-		FAILDE_ASSERT;
-		return false;
-	}
-	
-	// キューに格納されていく描画コマンドをスワップ時に全てフラッシュする
-	m_dxgiDev->SetMaximumFrameLatency(1);
-
-	// Direct2Dのファクトリーの作成
-	ID2D1Factory1* d2dFactory;
-	hr = D2D1CreateFactory(
-		D2D1_FACTORY_TYPE_SINGLE_THREADED,
-		__uuidof(ID2D1Factory1),
-		nullptr,
-		reinterpret_cast<void**>(&d2dFactory));
-	if (FAILED(hr))
-	{
-		FAILDE_ASSERT;
-		return false;
-	}
-	
-	
-	// Direct2Dデバイスの作成
-	hr = d2dFactory->CreateDevice(m_dxgiDev, &m_D2DDevice);
-	d2dFactory->Release();
-	if (FAILED(hr))
-	{
-		FAILDE_ASSERT;
-		return false;
-	}
-	
-	// Direct2Dデバイスコンテクストの作成
-	hr = m_D2DDevice->CreateDeviceContext(
-		D2D1_DEVICE_CONTEXT_OPTIONS_ENABLE_MULTITHREADED_OPTIMIZATIONS,
-		&m_D2DDeviceContext);
-	if (FAILED(hr))
-	{
-		FAILDE_ASSERT;
-		return false;
-	}
-	
-	float dx, dy;
-	m_D2DDeviceContext->GetDpi(&dx, &dy);
-
-	// DXGIアダプタ（GPU）の取得
-	IDXGIAdapter* adapter;
-	hr = m_dxgiDev->GetAdapter(&adapter);
-	if (FAILED(hr))
-	{
-		FAILDE_ASSERT;
-		return false;
-	}
-	
-	// DXGIのファクトリの作成
-	IDXGIFactory2* factory;
-	hr = adapter->GetParent(IID_PPV_ARGS(&factory));
-	adapter->Release();
-	if (FAILED(hr))
-	{
-		FAILDE_ASSERT;
-		return false;
-	}
-	
-	// スワップチェインをHWNDから作成
-	hr = factory->CreateSwapChainForHwnd(m_D3DDevice, GetWindow(),
-		&sc, nullptr, nullptr, &m_SwapChain);
-	factory->Release();
-	if (FAILED(hr))
-	{
-		FAILDE_ASSERT;
-		return false;
-	}
-	
-	// レンダーターゲットの取得（D3D11）
-	ID3D11Texture2D* pBackBuffer = NULL;
-	hr = m_SwapChain->GetBuffer(0, IID_PPV_ARGS(&pBackBuffer));
-	if (FAILED(hr))
-	{
-		FAILDE_ASSERT;
-		return false;
-	}
-	
-	// レンダーターゲットビューの作成
-	hr = m_D3DDevice->CreateRenderTargetView(pBackBuffer, nullptr, &m_RenderTargetView);
-	if (FAILED(hr))
-	{
-		FAILDE_ASSERT;
-		return false;
-	}
-	
-	// レンダーターゲットの取得（DXGI）
-	IDXGISurface* surf;
-	hr = m_SwapChain->GetBuffer(0, IID_PPV_ARGS(&surf));
-	if (FAILED(hr))
-	{
-		FAILDE_ASSERT;
-		return false;
-	}
-	
-	// Direct2Dの描画先となるビットマップを作成
-	D2D1_BITMAP_PROPERTIES1 d2dProp =
-	D2D1::BitmapProperties1(
-		D2D1_BITMAP_OPTIONS_TARGET | D2D1_BITMAP_OPTIONS_CANNOT_DRAW,
-		D2D1::PixelFormat(DXGI_FORMAT_B8G8R8A8_UNORM, D2D1_ALPHA_MODE_PREMULTIPLIED),
-		dx,
-		dy);
-	
-	hr = m_D2DDeviceContext->CreateBitmapFromDxgiSurface(
-		surf, &d2dProp, &m_D2DTargetBitmap);
-	surf->Release();
-	if (FAILED(hr))
-	{
-		FAILDE_ASSERT;
-		return false;
-	}
-	
-	// 描画するDirect2Dビットマップの設定
-	m_D2DDeviceContext->SetTarget(m_D2DTargetBitmap);
-
-	// DirectWriteのファクトリの作成
-	hr = DWriteCreateFactory(
-		DWRITE_FACTORY_TYPE_SHARED,
-		__uuidof(m_DwriteFactory),
-		reinterpret_cast<IUnknown**>(&m_DwriteFactory));
-	if (FAILED(hr))
-	{
-		FAILDE_ASSERT;
 		return false;
 	}
 
-	// テキストフォーマットの作成
+	if (false == Init2D())
 	{
-		TEXT_FOMAT fomat;
-		fomat.FontName = "メイリオ";
-
-		hr = Create_TextFormat(fomat);
-
-		if (FAILED(hr))
-		{
-			FAILDE_ASSERT;
-			return false;
-		}
-	}
-
-	// テキストレイアウトを作成
-	{
-		TEXT_LAYOUT layout;
-		layout.Text = "Hello HELL World!!!\n地球の未来にご奉仕するにゃん！";
-		layout.Width = 400;
-		layout.Height = 50;
-		
-		hr = Create_TextLayout(layout);
-
-		if (FAILED(hr))
-		{
-			FAILDE_ASSERT;
-			return false;
-		}
-	}
-
-	// 文字の位置の設定
-	hr = m_DwriteTextFormat->SetTextAlignment(DWRITE_TEXT_ALIGNMENT_CENTER);
-	if (FAILED(hr))
-	{
-		FAILDE_ASSERT;
 		return false;
 	}
-
-	// パラグラフの指定
-	hr = m_DwriteTextFormat->SetParagraphAlignment(DWRITE_PARAGRAPH_ALIGNMENT_NEAR);
-	if (FAILED(hr))
-	{
-		FAILDE_ASSERT;
-		return false;
-	}
-
-
-	//ステンシル用テクスチャー作成
-	ID3D11Texture2D* depthTexture = NULL;
-	D3D11_TEXTURE2D_DESC td;
-	ZeroMemory(&td, sizeof(td));
-	td.Width = sc.Width;
-	td.Height = sc.Height;
-	td.MipLevels = 1;
-	td.ArraySize = 1;
-	td.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
-	td.SampleDesc = sc.SampleDesc;
-	td.Usage = D3D11_USAGE_DEFAULT;
-	td.BindFlags = D3D11_BIND_DEPTH_STENCIL;
-	td.CPUAccessFlags = 0;
-	td.MiscFlags = 0;
-	hr = m_D3DDevice->CreateTexture2D(&td, NULL, &depthTexture);
-	if (FAILED(hr))
-	{
-		FAILDE_ASSERT;
-		return false;
-	}
-
-	//ステンシルターゲット作成
-	D3D11_DEPTH_STENCIL_VIEW_DESC dsvd;
-	ZeroMemory(&dsvd, sizeof(dsvd));
-	dsvd.Format = td.Format;
-	dsvd.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
-	dsvd.Flags = 0;
-	hr = m_D3DDevice->CreateDepthStencilView(depthTexture, &dsvd, &m_DepthStencilView);
-	if (FAILED(hr))
-	{
-		FAILDE_ASSERT;
-		return false;
-	}
-
-	m_ImmediateContext->OMSetRenderTargets(1, &m_RenderTargetView, m_DepthStencilView);
-
-	// ビューポート設定
-	D3D11_VIEWPORT vp;
-	vp.Width = (FLOAT)SCREEN_WIDTH;
-	vp.Height = (FLOAT)SCREEN_HEIGHT;
-	vp.MinDepth = 0.0f;
-	vp.MaxDepth = 1.0f;
-	vp.TopLeftX = 0;
-	vp.TopLeftY = 0;
-	m_ImmediateContext->RSSetViewports(1, &vp);
-
-
-
-	// ラスタライザステート設定
-	D3D11_RASTERIZER_DESC rd;
-	ZeroMemory(&rd, sizeof(rd));
-	rd.FillMode = D3D11_FILL_SOLID;
-	//rd.FillMode = D3D11_FILL_WIREFRAME;
-	//rd.CullMode = D3D11_CULL_NONE;
-	rd.CullMode = D3D11_CULL_BACK;
-	rd.DepthClipEnable = TRUE;
-	rd.MultisampleEnable = FALSE;
-
-	ID3D11RasterizerState* rs;
-	m_D3DDevice->CreateRasterizerState(&rd, &rs);
-
-	m_ImmediateContext->RSSetState(rs);
-
-
-
-	// ブレンドステート設定
-	D3D11_BLEND_DESC blendDesc;
-	ZeroMemory(&blendDesc, sizeof(blendDesc));
-	blendDesc.AlphaToCoverageEnable = FALSE;
-	blendDesc.IndependentBlendEnable = FALSE;
-	blendDesc.RenderTarget[0].BlendEnable = TRUE;
-	blendDesc.RenderTarget[0].SrcBlend = D3D11_BLEND_SRC_ALPHA;
-	blendDesc.RenderTarget[0].DestBlend = D3D11_BLEND_INV_SRC_ALPHA;
-	blendDesc.RenderTarget[0].BlendOp = D3D11_BLEND_OP_ADD;
-	blendDesc.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_ONE;
-	blendDesc.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ZERO;
-	blendDesc.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
-	blendDesc.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
-
-	float blendFactor[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
-	ID3D11BlendState* blendState = NULL;
-	m_D3DDevice->CreateBlendState(&blendDesc, &blendState);
-	m_ImmediateContext->OMSetBlendState(blendState, blendFactor, 0xffffffff);
-
-
-
-	// 深度ステンシルステート設定
-	D3D11_DEPTH_STENCIL_DESC depthStencilDesc;
-	ZeroMemory(&depthStencilDesc, sizeof(depthStencilDesc));
-	depthStencilDesc.DepthEnable = TRUE;
-	depthStencilDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
-	depthStencilDesc.DepthFunc = D3D11_COMPARISON_LESS_EQUAL;
-	depthStencilDesc.StencilEnable = FALSE;
-
-	hr = m_D3DDevice->CreateDepthStencilState(&depthStencilDesc, &m_DepthStateEnable);//深度有効ステート
-	if (FAILED(hr))
-	{
-		FAILDE_ASSERT;
-		return false;
-	}
-
-	depthStencilDesc.DepthEnable = FALSE;
-	depthStencilDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ZERO;
-	m_D3DDevice->CreateDepthStencilState(&depthStencilDesc, &m_DepthStateDisable);//深度無効ステート
-
-	m_ImmediateContext->OMSetDepthStencilState(m_DepthStateEnable, NULL);
-
-
-
-	// サンプラーステート設定
-	D3D11_SAMPLER_DESC samplerDesc;
-	ZeroMemory(&samplerDesc, sizeof(samplerDesc));
-	samplerDesc.Filter = D3D11_FILTER_ANISOTROPIC;
-	samplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
-	samplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
-	samplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
-	samplerDesc.MipLODBias = 0;
-	samplerDesc.MaxAnisotropy = 16;
-	samplerDesc.ComparisonFunc = D3D11_COMPARISON_ALWAYS;
-	samplerDesc.MinLOD = 0;
-	samplerDesc.MaxLOD = D3D11_FLOAT32_MAX;
-
-	ID3D11SamplerState* samplerState = NULL;
-	m_D3DDevice->CreateSamplerState(&samplerDesc, &samplerState);
-
-	m_ImmediateContext->PSSetSamplers(0, 1, &samplerState);
 
 	// 頂点シェーダ生成
 	{
 		// 入力レイアウト生成
 		D3D11_INPUT_ELEMENT_DESC layout[] =
 		{
-			{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-			{ "NORMAL",   0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 4 * 3, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-			{ "COLOR",    0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 4 * 6, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-			{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 4 * 10, D3D11_INPUT_PER_VERTEX_DATA, 0 }
+			{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT,	 0, 0,		D3D11_INPUT_PER_VERTEX_DATA, 0 },
+			{ "NORMAL",   0, DXGI_FORMAT_R32G32B32_FLOAT,	 0, 4 * 3,	D3D11_INPUT_PER_VERTEX_DATA, 0 },
+			{ "COLOR",    0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 4 * 6,	D3D11_INPUT_PER_VERTEX_DATA, 0 },
+			{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT,		 0, 4 * 10,	D3D11_INPUT_PER_VERTEX_DATA, 0 }
 		};
 		UINT numElements = ARRAYSIZE(layout);
 
@@ -435,17 +96,17 @@ bool CRenderer::Init()
 	/*// 頂点シェーダ生成 アニメーション
 	{
 		// 入力レイアウト生成
-		D3D11_INPUT_ELEMENT_DESC animation_layout[] =
+		D3D11_INPUT_ELEMENT_DESC layout[] =
 		{
-			{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-			{ "NORMAL",   0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 4 * 3, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-			{ "COLOR",    0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 4 * 6, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-			{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 4 * 10, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-			{ "BLENDINDICE", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 4 * 12, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-			{ "BLENDWEIGHT", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 4 * 16, D3D11_INPUT_PER_VERTEX_DATA, 0 }
+			{ "POSITION",	 0, DXGI_FORMAT_R32G32B32_FLOAT,	0, 0,		D3D11_INPUT_PER_VERTEX_DATA, 0 },
+			{ "NORMAL",		 0, DXGI_FORMAT_R32G32B32_FLOAT,	0, 4 * 3,	D3D11_INPUT_PER_VERTEX_DATA, 0 },
+			{ "COLOR",		 0, DXGI_FORMAT_R32G32B32A32_FLOAT,	0, 4 * 6,	D3D11_INPUT_PER_VERTEX_DATA, 0 },
+			{ "TEXCOORD",	 0, DXGI_FORMAT_R32G32_FLOAT,		0, 4 * 10,	D3D11_INPUT_PER_VERTEX_DATA, 0 },
+			{ "BLENDINDICE", 0, DXGI_FORMAT_R32_UINT,			0, 4 * 12,	D3D11_INPUT_PER_VERTEX_DATA, 0 },
+			{ "BLENDWEIGHT", 0, DXGI_FORMAT_R32_FLOAT,			0, 4 * 13,	D3D11_INPUT_PER_VERTEX_DATA, 0 }
 		};
 
-		UINT numElements = ARRAYSIZE(animation_layout);
+		UINT numElements = ARRAYSIZE(layout);
 
 		{
 			FILE* file;
@@ -457,7 +118,7 @@ bool CRenderer::Init()
 			fread(buffer, fsize, 1, file);
 			fclose(file);
 
-			m_D3DDevice->CreateVertexShader(buffer, fsize, NULL, &m_VertexShader[2]);
+			m_D3DDevice->CreateVertexShader(buffer, fsize, NULL, &m_VertexShader[1]);
 
 			m_D3DDevice->CreateInputLayout(animation_layout,
 				numElements,
@@ -639,6 +300,368 @@ void CRenderer::Uninit()
 	SAFE_RELEASE(m_dxgiDev)
 }
 
+bool CRenderer::Init3D()
+{
+	HRESULT hr = S_OK;
+
+	// デバイス、スワップチェーン、コンテキスト生成
+	DXGI_SWAP_CHAIN_DESC1 sc;
+	ZeroMemory(&sc, sizeof(sc));
+
+	sc.Width = SCREEN_WIDTH;
+	sc.Height = SCREEN_HEIGHT;
+	sc.Format = DXGI_FORMAT_B8G8R8A8_UNORM;
+	// スケール方法
+	sc.Scaling = DXGI_SCALING_STRETCH;
+	// 立体視
+	sc.Stereo = 0;
+	// 半透明モード
+	sc.AlphaMode = DXGI_ALPHA_MODE_UNSPECIFIED;
+
+	sc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
+	sc.BufferCount = 1;
+	// 描画後のバッファの扱い
+	sc.SwapEffect = DXGI_SWAP_EFFECT_SEQUENTIAL;
+	// MSAA
+	sc.SampleDesc.Count = 1;
+	sc.SampleDesc.Quality = 0;
+	// フラグ
+	sc.Flags = DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH; // 解像度変更が有効
+
+	// フラグ
+	UINT d3dFlags = D3D11_CREATE_DEVICE_BGRA_SUPPORT; // BGRA テクスチャ有効(Direct2Dには必ず必要)
+
+	// Direct3Dの作成
+	hr = D3D11CreateDevice(
+		nullptr, D3D_DRIVER_TYPE_HARDWARE, 0, d3dFlags,
+		&m_FeatureLevel, 1, D3D11_SDK_VERSION,
+		&m_D3DDevice, nullptr, &m_ImmediateContext);
+	if (FAILED(hr))
+	{
+		FAILDE_ASSERT;
+		return false;
+	}
+
+	// DXGIデバイスの作成
+	hr = m_D3DDevice->QueryInterface<IDXGIDevice1>(&m_dxgiDev);
+	if (FAILED(hr))
+	{
+		FAILDE_ASSERT;
+		return false;
+	}
+
+	// キューに格納されていく描画コマンドをスワップ時に全てフラッシュする
+	m_dxgiDev->SetMaximumFrameLatency(1);
+
+	// DXGIアダプタ（GPU）の取得
+	IDXGIAdapter* adapter = nullptr;
+	hr = m_dxgiDev->GetAdapter(&adapter);
+	if (FAILED(hr))
+	{
+		FAILDE_ASSERT;
+		return false;
+	}
+
+	// DXGIのファクトリの作成
+	IDXGIFactory2* factory = nullptr;
+	hr = adapter->GetParent(IID_PPV_ARGS(&factory));
+	adapter->Release();
+	if (FAILED(hr))
+	{
+		FAILDE_ASSERT;
+		return false;
+	}
+
+	// スワップチェインをHWNDから作成
+	hr = factory->CreateSwapChainForHwnd(m_D3DDevice, GetWindow(),
+		&sc, nullptr, nullptr, &m_SwapChain);
+	factory->Release();
+	if (FAILED(hr))
+	{
+		FAILDE_ASSERT;
+		return false;
+	}
+
+	// レンダーターゲットの取得（D3D11）
+	ID3D11Texture2D* pBackBuffer = nullptr;
+	hr = m_SwapChain->GetBuffer(0, IID_PPV_ARGS(&pBackBuffer));
+	if (FAILED(hr))
+	{
+		FAILDE_ASSERT;
+		return false;
+	}
+
+	// レンダーターゲットビューの作成
+	hr = m_D3DDevice->CreateRenderTargetView(pBackBuffer, nullptr, &m_RenderTargetView);
+	if (FAILED(hr))
+	{
+		FAILDE_ASSERT;
+		return false;
+	}
+
+
+
+	//ステンシル用テクスチャー作成
+	ID3D11Texture2D* depthTexture = nullptr;
+	D3D11_TEXTURE2D_DESC td;
+	ZeroMemory(&td, sizeof(td));
+	td.Width = sc.Width;
+	td.Height = sc.Height;
+	td.MipLevels = 1;
+	td.ArraySize = 1;
+	td.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
+	td.SampleDesc = sc.SampleDesc;
+	td.Usage = D3D11_USAGE_DEFAULT;
+	td.BindFlags = D3D11_BIND_DEPTH_STENCIL;
+	td.CPUAccessFlags = 0;
+	td.MiscFlags = 0;
+	hr = m_D3DDevice->CreateTexture2D(&td, NULL, &depthTexture);
+	if (FAILED(hr))
+	{
+		FAILDE_ASSERT;
+		return false;
+	}
+
+	//ステンシルターゲット作成
+	D3D11_DEPTH_STENCIL_VIEW_DESC dsvd;
+	ZeroMemory(&dsvd, sizeof(dsvd));
+	dsvd.Format = td.Format;
+	dsvd.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
+	dsvd.Flags = 0;
+	hr = m_D3DDevice->CreateDepthStencilView(depthTexture, &dsvd, &m_DepthStencilView);
+	if (FAILED(hr))
+	{
+		FAILDE_ASSERT;
+		return false;
+	}
+
+	m_ImmediateContext->OMSetRenderTargets(1, &m_RenderTargetView, m_DepthStencilView);
+
+
+
+	// ビューポート設定
+	D3D11_VIEWPORT vp;
+	vp.Width = (FLOAT)SCREEN_WIDTH;
+	vp.Height = (FLOAT)SCREEN_HEIGHT;
+	vp.MinDepth = 0.0f;
+	vp.MaxDepth = 1.0f;
+	vp.TopLeftX = 0;
+	vp.TopLeftY = 0;
+	m_ImmediateContext->RSSetViewports(1, &vp);
+
+
+
+	// ラスタライザステート設定
+	D3D11_RASTERIZER_DESC rd;
+	ZeroMemory(&rd, sizeof(rd));
+	rd.FillMode = D3D11_FILL_SOLID;
+	//rd.FillMode = D3D11_FILL_WIREFRAME;
+	//rd.CullMode = D3D11_CULL_NONE;
+	rd.CullMode = D3D11_CULL_BACK;
+	rd.DepthClipEnable = TRUE;
+	rd.MultisampleEnable = FALSE;
+
+	ID3D11RasterizerState* rs;
+	m_D3DDevice->CreateRasterizerState(&rd, &rs);
+
+	m_ImmediateContext->RSSetState(rs);
+
+
+
+	// ブレンドステート設定
+	D3D11_BLEND_DESC blendDesc;
+	ZeroMemory(&blendDesc, sizeof(blendDesc));
+	blendDesc.AlphaToCoverageEnable = FALSE;
+	blendDesc.IndependentBlendEnable = FALSE;
+	blendDesc.RenderTarget[0].BlendEnable = TRUE;
+	blendDesc.RenderTarget[0].SrcBlend = D3D11_BLEND_SRC_ALPHA;
+	blendDesc.RenderTarget[0].DestBlend = D3D11_BLEND_INV_SRC_ALPHA;
+	blendDesc.RenderTarget[0].BlendOp = D3D11_BLEND_OP_ADD;
+	blendDesc.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_ONE;
+	blendDesc.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ZERO;
+	blendDesc.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
+	blendDesc.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
+
+	float blendFactor[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
+	ID3D11BlendState* blendState = NULL;
+	m_D3DDevice->CreateBlendState(&blendDesc, &blendState);
+	m_ImmediateContext->OMSetBlendState(blendState, blendFactor, 0xffffffff);
+
+
+
+	// 深度ステンシルステート設定
+	D3D11_DEPTH_STENCIL_DESC depthStencilDesc;
+	ZeroMemory(&depthStencilDesc, sizeof(depthStencilDesc));
+	depthStencilDesc.DepthEnable = TRUE;
+	depthStencilDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
+	depthStencilDesc.DepthFunc = D3D11_COMPARISON_LESS_EQUAL;
+	depthStencilDesc.StencilEnable = FALSE;
+
+	hr = m_D3DDevice->CreateDepthStencilState(&depthStencilDesc, &m_DepthStateEnable);//深度有効ステート
+	if (FAILED(hr))
+	{
+		FAILDE_ASSERT;
+		return false;
+	}
+
+	depthStencilDesc.DepthEnable = FALSE;
+	depthStencilDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ZERO;
+	m_D3DDevice->CreateDepthStencilState(&depthStencilDesc, &m_DepthStateDisable);//深度無効ステート
+
+	m_ImmediateContext->OMSetDepthStencilState(m_DepthStateEnable, NULL);
+
+
+
+	// サンプラーステート設定
+	D3D11_SAMPLER_DESC samplerDesc;
+	ZeroMemory(&samplerDesc, sizeof(samplerDesc));
+	samplerDesc.Filter = D3D11_FILTER_ANISOTROPIC;
+	samplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
+	samplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
+	samplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
+	samplerDesc.MipLODBias = 0;
+	samplerDesc.MaxAnisotropy = 16;
+	samplerDesc.ComparisonFunc = D3D11_COMPARISON_ALWAYS;
+	samplerDesc.MinLOD = 0;
+	samplerDesc.MaxLOD = D3D11_FLOAT32_MAX;
+
+	ID3D11SamplerState* samplerState = nullptr;
+	m_D3DDevice->CreateSamplerState(&samplerDesc, &samplerState);
+
+	m_ImmediateContext->PSSetSamplers(0, 1, &samplerState);
+
+	return true;
+}
+
+bool CRenderer::Init2D()
+{
+	HRESULT hr = S_OK;
+
+	// Direct2Dのファクトリーの作成
+	ID2D1Factory1* d2dFactory = nullptr;
+	hr = D2D1CreateFactory(
+		D2D1_FACTORY_TYPE_SINGLE_THREADED,
+		__uuidof(ID2D1Factory1),
+		nullptr,
+		reinterpret_cast<void**>(&d2dFactory));
+	if (FAILED(hr))
+	{
+		FAILDE_ASSERT;
+		return false;
+	}
+
+
+	// Direct2Dデバイスの作成
+	hr = d2dFactory->CreateDevice(m_dxgiDev, &m_D2DDevice);
+	d2dFactory->Release();
+	if (FAILED(hr))
+	{
+		FAILDE_ASSERT;
+		return false;
+	}
+
+	// Direct2Dデバイスコンテクストの作成
+	hr = m_D2DDevice->CreateDeviceContext(
+		D2D1_DEVICE_CONTEXT_OPTIONS_ENABLE_MULTITHREADED_OPTIMIZATIONS,
+		&m_D2DDeviceContext);
+	if (FAILED(hr))
+	{
+		FAILDE_ASSERT;
+		return false;
+	}
+
+	float dx, dy;
+	m_D2DDeviceContext->GetDpi(&dx, &dy);
+
+	// レンダーターゲットの取得（DXGI）
+	IDXGISurface* surf = nullptr;
+	hr = m_SwapChain->GetBuffer(0, IID_PPV_ARGS(&surf));
+	if (FAILED(hr))
+	{
+		FAILDE_ASSERT;
+		return false;
+	}
+
+	// Direct2Dの描画先となるビットマップを作成
+	D2D1_BITMAP_PROPERTIES1 d2dProp =
+		D2D1::BitmapProperties1(
+			D2D1_BITMAP_OPTIONS_TARGET | D2D1_BITMAP_OPTIONS_CANNOT_DRAW,
+			D2D1::PixelFormat(DXGI_FORMAT_B8G8R8A8_UNORM, D2D1_ALPHA_MODE_PREMULTIPLIED),
+			dx,
+			dy);
+
+	hr = m_D2DDeviceContext->CreateBitmapFromDxgiSurface(
+		surf, &d2dProp, &m_D2DTargetBitmap);
+	surf->Release();
+	if (FAILED(hr))
+	{
+		FAILDE_ASSERT;
+		return false;
+	}
+
+	// 描画するDirect2Dビットマップの設定
+	m_D2DDeviceContext->SetTarget(m_D2DTargetBitmap);
+
+	// DirectWriteのファクトリの作成
+	hr = DWriteCreateFactory(
+		DWRITE_FACTORY_TYPE_SHARED,
+		__uuidof(m_DwriteFactory),
+		reinterpret_cast<IUnknown**>(&m_DwriteFactory));
+	if (FAILED(hr))
+	{
+		FAILDE_ASSERT;
+		return false;
+	}
+
+	// テキストフォーマットの作成
+	{
+		TEXT_FOMAT fomat;
+		fomat.FontName = "メイリオ";
+
+		hr = Create_TextFormat(fomat);
+
+		if (FAILED(hr))
+		{
+			FAILDE_ASSERT;
+			return false;
+		}
+	}
+
+	// テキストレイアウトを作成
+	{
+		TEXT_LAYOUT layout;
+		layout.Text = "Hello HELL World!!!\n地球の未来にご奉仕するにゃん！";
+		layout.Width = 400;
+		layout.Height = 50;
+
+		hr = Create_TextLayout(layout);
+
+		if (FAILED(hr))
+		{
+			FAILDE_ASSERT;
+			return false;
+		}
+	}
+
+	// 文字の位置の設定
+	hr = m_DwriteTextFormat->SetTextAlignment(DWRITE_TEXT_ALIGNMENT_CENTER);
+	if (FAILED(hr))
+	{
+		FAILDE_ASSERT;
+		return false;
+	}
+
+	// パラグラフの指定
+	hr = m_DwriteTextFormat->SetParagraphAlignment(DWRITE_PARAGRAPH_ALIGNMENT_NEAR);
+	if (FAILED(hr))
+	{
+		FAILDE_ASSERT;
+		return false;
+	}
+
+	return true;
+}
+
 void CRenderer::SetBlendState(D3D11_BLEND_DESC* blend_state, bool flag)
 {
 	if (flag)
@@ -763,13 +786,13 @@ void CRenderer::End()
 				case S_OK:
 					break;
 
-					// リセット
+				// リセット
 				case DXGI_ERROR_DEVICE_HUNG:
 				case DXGI_ERROR_DEVICE_RESET:
 					CManager::GameEnd();
 					break;
 
-					// エラー 終了
+				// エラー 終了
 				case DXGI_ERROR_DEVICE_REMOVED:
 				case DXGI_ERROR_DRIVER_INTERNAL_ERROR:
 				case DXGI_ERROR_INVALID_CALL:
@@ -802,11 +825,12 @@ void CRenderer::SetDepthEnable( bool Enable )
 //==============================
 // Scaling : 拡大縮小の値
 //==============================
-void CRenderer::SetWorldViewProjection2D(const XMFLOAT3& scaling)
+void CRenderer::SetWorldViewProjection2D(const XMFLOAT3& scaling, const XMFLOAT3& rotation)
 {
 	XMMATRIX world = XMMatrixIdentity();
 
 	world = XMMatrixScaling(scaling.x, scaling.y, 1.0f);
+	world *= XMMatrixRotationRollPitchYaw(XMConvertToRadians(rotation.x), XMConvertToRadians(rotation.y), XMConvertToRadians(rotation.z));
 
 	m_ImmediateContext->UpdateSubresource(m_WorldBuffer, 0, NULL, &XMMatrixTranspose(world), 0, 0);
 
@@ -856,7 +880,8 @@ void CRenderer::Light_Identity()
 	LIGHT light;
 	light.Direction = XMFLOAT4(0.0f, 0.0f, 1.0f, 0.0f);
 	light.Diffuse = COLOR(1.0f, 1.0f, 1.0f, 1.0f);
-	light.Ambient = COLOR(0.2f, 0.2f, 0.2f, 1.0f);
+	light.Ambient = COLOR(0.5f, 0.5f, 0.5f, 1.0f);
+	light.Specular = COLOR(1.0f, 1.0f, 1.0f, 1.0f);
 
 	m_ImmediateContext->UpdateSubresource(m_LightBuffer, 0, NULL, &light, 0, 0);
 }

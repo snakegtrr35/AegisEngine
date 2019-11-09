@@ -472,7 +472,7 @@ public:
 	* @return XMFLOAT2 テクスチャの切り取り幅と高さ
 	* @details テクスチャの切り取り幅と高さを取得する関数
 	*/
-	const XMFLOAT2& Get_Twh() {
+	const XMFLOAT2 Get_Twh() {
 		return XMFLOAT2(Tw, Th);
 	};
 };

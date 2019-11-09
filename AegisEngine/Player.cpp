@@ -78,8 +78,8 @@ void PLAYER::Draw(void)
 
 void PLAYER::Update(void)
 {
-	CCamera* camera = CManager::Get_Scene()->Get_Game_Object<CCamera>("camera");
-	//DEBUG_CAMERA* camera = CManager::Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
+	//CCamera* camera = CManager::Get_Scene()->Get_Game_Object<CCamera>("camera");
+	DEBUG_CAMERA* camera = CManager::Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
 
 	XMVECTOR* vec = camera->Get_At();
 	XMVECTOR* front = camera->Get_Front();

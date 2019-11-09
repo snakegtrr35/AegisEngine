@@ -187,33 +187,33 @@ class CIndexBuffer;
 class CRenderer {
 private:
 
-	//! Directx11
-	static D3D_FEATURE_LEVEL       m_FeatureLevel;
-	//! Directx11のデバイス
-	static ID3D11Device*           m_D3DDevice;
-	//! Directx11のデバイスコンテキスト
-	static ID3D11DeviceContext*    m_ImmediateContext;
+	//! DirectXのフューチャーレベル
+	static D3D_FEATURE_LEVEL		m_FeatureLevel;
+	//! DirectX11のデバイス
+	static ID3D11Device*			m_D3DDevice;
+	//! DirectX11のデバイスコンテキスト
+	static ID3D11DeviceContext*		m_ImmediateContext;
 	//! スワップチェイン
-	static IDXGISwapChain1*		   m_SwapChain;
+	static IDXGISwapChain1*			m_SwapChain;
 	//! レンダーターゲットビュー
-	static ID3D11RenderTargetView* m_RenderTargetView;
+	static ID3D11RenderTargetView*	m_RenderTargetView;
 	//! デプスステンシル
-	static ID3D11DepthStencilView* m_DepthStencilView;
-	//! Directx2Dのデバイス
-	static ID2D1Device* m_D2DDevice;
-	//! Directx2Dのデバイスコンテキスト
-	static ID2D1DeviceContext* m_D2DDeviceContext;
-	//! Directx2Dのターゲットビットマップ
-	static ID2D1Bitmap1* m_D2DTargetBitmap;
+	static ID3D11DepthStencilView*	m_DepthStencilView;
+	//! Direct2Dのデバイス
+	static ID2D1Device*				m_D2DDevice;
+	//! Direct2Dのデバイスコンテキスト
+	static ID2D1DeviceContext*		m_D2DDeviceContext;
+	//! Direct2Dのターゲットビットマップ
+	static ID2D1Bitmap1*			m_D2DTargetBitmap;
 	//! Dxgi
-	static IDXGIDevice1* m_dxgiDev;
+	static IDXGIDevice1*			m_dxgiDev;
 
 	//! テキストフォーマット
-	static IDWriteTextFormat* m_DwriteTextFormat;
+	static IDWriteTextFormat*		m_DwriteTextFormat;
 	//! テキストレイアウト
-	static IDWriteTextLayout* m_TextLayout;
-	//! Directx2Dのライトファクトリー
-	static IDWriteFactory* m_DwriteFactory;
+	static IDWriteTextLayout*		m_TextLayout;
+	//! Direct2Dのライトファクトリー
+	static IDWriteFactory*			m_DwriteFactory;
 
 	static ID3D11VertexShader*		m_VertexShader[2];
 	static ID3D11PixelShader*		m_PixelShader[3];
@@ -234,9 +234,25 @@ private:
 	//! ライトバッファ
 	static ID3D11Buffer*			m_LightBuffer;
 	//! カメラバッファ
-	static ID3D11Buffer* m_CameraBuffer;//
+	static ID3D11Buffer*			m_CameraBuffer;
 	//! ボーン情報バッファ
-	static ID3D11Buffer* m_Bone_Matrix_Buffer;
+	static ID3D11Buffer*			m_Bone_Matrix_Buffer;
+	//! スタンバイモードフラグ
+	static bool Stand_By_Enable;
+
+	/**
+	* @brief Direct3Dの初期化
+	* @return bool 成功なら true 失敗なら false
+	* @details Direct3Dの初期化する
+	*/
+	static bool Init3D();
+
+	/**
+	* @brief Direct2Dの初期化
+	* @return bool 成功なら true 失敗なら false
+	* @details Direct2Dの初期化する
+	*/
+	static bool Init2D();
 
 public:
 	static bool Init();
@@ -252,48 +268,138 @@ public:
 	static void SetDepthEnable(bool Enable);
 	static void Change_Window_Mode();
 
-	//==============================
-	// Scaling : 拡大縮小の値
-	//==============================
-	static void SetWorldViewProjection2D(const XMFLOAT3& scaling = XMFLOAT3(1.0f, 1.0f, 1.0f));
+	/**
+	* @brief 2D用のワールドマトリックス設定
+	* @param[in] scaling　拡大縮小のマトリックス
+	* @param[in] rotation　回転のマトリックス
+	* @details 2D用のワールドマトリックス設定を設定する
+	*/
+	static void SetWorldViewProjection2D(const XMFLOAT3& scaling = XMFLOAT3(1.0f, 1.0f, 1.0f), const XMFLOAT3& rotation = XMFLOAT3(0.0f, 0.0f, 0.0f));
+
+	/**
+	* @brief ワールドマトリックス設定
+	* @param[in] WorldMatrix　ワールドマトリックス
+	* @details ワールドマトリックス設定を設定する
+	*/
 	static void SetWorldMatrix(XMMATRIX * WorldMatrix);
+
+	/**
+	* @brief ビューマトリックス設定
+	* @param[in] ViewMatrix　ビューマトリックス
+	* @details ビューマトリックス設定を設定する
+	*/
 	static void SetViewMatrix(XMMATRIX * ViewMatrix);
+
+	/**
+	* @brief プロジェクションマトリックス設定
+	* @param[in] ProjectionMatrix　プロジェクションマトリックス
+	* @details プロジェクションマトリックス設定を設定する
+	*/
 	static void SetProjectionMatrix(XMMATRIX * ProjectionMatrix);
+
+	/**
+	* @brief マテリアル設定
+	* @param[in] Material　マテリアル
+	* @details マテリアル設定を設定する
+	*/
 	static void SetMaterial(MATERIAL Material);
+
+	/**
+	* @brief ディレクショナルライト設定
+	* @param[in] Light　ディレクショナルライト
+	* @details ディレクショナルライト設定を設定する
+	*/
 	static void SetLight(LIGHT* Light);
+
+	/**
+	* @brief ディレクショナルライトの初期化
+	* @details ディレクショナルライト設定を初期化する
+	*/
 	static void Light_Identity();
 
-	static void SetCamera(XMFLOAT4* position);//
+	/**
+	* @brief カメラの初期化
+	* @details カメラ設定を初期化する
+	*/
+	static void SetCamera(XMFLOAT4* position);
 
+	/**
+	* @brief 頂点バッファの設定
+	* @details 頂点バッファ設定を設定する
+	*/
 	static void SetVertexBuffers( ID3D11Buffer* VertexBuffer );
+
+	/**
+	* @brief インデックスバッファの設定
+	* @details インデックスバッファ設定を設定する
+	*/
 	static void SetIndexBuffer( ID3D11Buffer* IndexBuffer );
+
 	static void DrawIndexed( unsigned int IndexCount, unsigned int StartIndexLocation, int BaseVertexLocation );
 
+	/**
+	* @brief デバイス3Dの取得
+	* @return ID3D11Device* デバイスのポインタ
+	* @details デバイス3Dの取得する
+	*/
 	static ID3D11Device* GetDevice(){ return m_D3DDevice; }
+
+	/**
+	* @brief デバイスコンテキスト3Dの取得
+	* @return ID3D11DeviceContext* デバイスコンテキストのポインタ
+	* @details デバイスコンテキスト3Dの取得する
+	*/
 	static ID3D11DeviceContext* GetDeviceContext( void ){ return m_ImmediateContext; }
 
-
+	/**
+	* @brief デバイス2Dの取得
+	* @return ID2D1Device* デバイスのポインタ
+	* @details デバイス2Dの取得する
+	*/
 	static ID2D1Device* Get2DDevice() { return m_D2DDevice; }
+
+	/**
+	* @brief デバイスコンテキスト2Dの取得
+	* @return ID2D1DeviceContext* デバイスコンテキストのポインタ
+	* @details デバイスコンテキスト2Dの取得する
+	*/
 	static ID2D1DeviceContext* Get2DDeviceContext(void) { return m_D2DDeviceContext; }
 
 	/**
 	* @brief テキストフォーマットの作成
 	* @param[in] TEXT_FOMAT テキストフォーマット
 	* @return HRESULT 戻り値
-	* @details テキストフォーマットの作成
+	* @details テキストフォーマットの作成する
 	*/
 	static HRESULT Create_TextFormat(const TEXT_FOMAT& fomat);
+
+	/**
+	* @brief テキストフォーマットの取得
+	* @return IDWriteTextFormat* テキストフォーマットのポインタ
+	* @details テキストフォーマットの取得する
+	*/
 	static IDWriteTextFormat* GetTextFormat() { return m_DwriteTextFormat; }
 
 	/**
 	* @brief テキストレイアウトを作成
 	* @param TEXT_LAYOUT テキストレイアウト
 	* @return HRESULT 戻り値
-	* @details テキストレイアウトを作成
+	* @details テキストレイアウトを作成する
 	*/
 	static HRESULT Create_TextLayout(const TEXT_LAYOUT& layout);
+
+	/**
+	* @brief テキストレイアウトを取得
+	* @return IDWriteTextLayout* テキストレイアウトのポインタ
+	* @details テキストレイアウトを取得する
+	*/
 	static IDWriteTextLayout* GetTextLayout() { return m_TextLayout; }
 
+	/**
+	* @brief ダイレクトファクトリを取得
+	* @return IDWriteFactory* ダイレクトファクトリのポインタ
+	* @details ダイレクトファクトリを取得する
+	*/
 	static IDWriteFactory* GetFactory() { return m_DwriteFactory; }
 
 	static void Set_Shader(const SHADER_INDEX_V v_index = SHADER_INDEX_V::DEFAULT, const SHADER_INDEX_P p_index = SHADER_INDEX_P::DEFAULT);
@@ -304,10 +410,6 @@ public:
 	static ID3D11ShaderResourceView*	Get_SRV();
 	static ID3D11RenderTargetView*		My_RenderTargetView;
 	static ID3D11ShaderResourceView*	My_ShaderResourceView;
-
-	static D3D11_INPUT_ELEMENT_DESC animation_layout[6];
-
-	static bool Stand_By_Enable;
 };
 
 #endif // !RENDER_H
