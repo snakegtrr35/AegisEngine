@@ -323,7 +323,7 @@ bool CRenderer::Init3D()
 	// 描画後のバッファの扱い
 	sc.SwapEffect = DXGI_SWAP_EFFECT_SEQUENTIAL;
 	// MSAA
-	sc.SampleDesc.Count = 1;
+	sc.SampleDesc.Count = 1;	// MSAA用 2 4 8 が使用可能(多分これだけ)
 	sc.SampleDesc.Quality = 0;
 	// フラグ
 	sc.Flags = DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH; // 解像度変更が有効
@@ -341,6 +341,20 @@ bool CRenderer::Init3D()
 		FAILDE_ASSERT;
 		return false;
 	}
+
+	//// MSAA用
+	//for (int i = 1; i <= D3D11_MAX_MULTISAMPLE_SAMPLE_COUNT; i <<= 1)
+	//{
+	//	UINT Quality;
+	//	if (SUCCEEDED(m_D3DDevice->CheckMultisampleQualityLevels(DXGI_FORMAT_D24_UNORM_S8_UINT, i, &Quality)))
+	//	{
+	//		if (0 < Quality)
+	//		{
+	//			sc.SampleDesc.Count = i;
+	//			sc.SampleDesc.Quality = Quality - 1;
+	//		}
+	//	}
+	//}
 
 	// DXGIデバイスの作成
 	hr = m_D3DDevice->QueryInterface<IDXGIDevice1>(&m_dxgiDev);
@@ -427,6 +441,7 @@ bool CRenderer::Init3D()
 	ZeroMemory(&dsvd, sizeof(dsvd));
 	dsvd.Format = td.Format;
 	dsvd.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
+	//dsvd.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2DMS;		// MSAA用
 	dsvd.Flags = 0;
 	hr = m_D3DDevice->CreateDepthStencilView(depthTexture, &dsvd, &m_DepthStencilView);
 	if (FAILED(hr))
@@ -570,6 +585,7 @@ bool CRenderer::Init2D()
 		return false;
 	}
 
+	// DPIの取得
 	float dx, dy;
 	m_D2DDeviceContext->GetDpi(&dx, &dy);
 
@@ -742,14 +758,13 @@ void CRenderer::Get2DBlendState(D3D11_BLEND_DESC& blend_state)
 
 void CRenderer::Change_Window_Mode()
 {
-	HRESULT hr;
 	BOOL FullScreen;
 
 	// GetFullscreenState
-	hr = m_SwapChain->GetFullscreenState(&FullScreen, NULL);
+	m_SwapChain->GetFullscreenState(&FullScreen, NULL);
 
 	// SetFullscreenState
-	hr = m_SwapChain->SetFullscreenState(!FullScreen, NULL);
+	m_SwapChain->SetFullscreenState(!FullScreen, NULL);
 
 	// 初期起動をフルスクリーンモードにした場合、ウィンドウモードに変更すると
 	// ウィンドウがアクティブにならないので表示させる。

@@ -445,7 +445,7 @@ void FONT::Load_Font(const wstring& one_character)
 	// 現在のウィンドウに適用
 	// デバイスにフォントを持たせないとGetGlyphOutline関数はエラーとなる
 	HDC hdc = GetDC(NULL);
-	HFONT oldFont = (HFONT)SelectObject(hdc, hFont);
+	//HFONT oldFont = (HFONT)SelectObject(hdc, hFont);
 
 	// フォントビットマップ取得
 	wchar_t font = (wchar_t)one_character.c_str();

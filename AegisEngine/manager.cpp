@@ -11,6 +11,8 @@
 #include	"My_imgui.h"
 #endif // _DEBUG
 
+#include	"Library/Effekseer/include/Effekseer.h"
+
 SCENE_MANAGER* CManager::pSceneManager;		// シーンマネージャー
 bool CManager::GameEnable = true;			// プログラム自体の終了のためのフラグ
 

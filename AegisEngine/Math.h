@@ -568,6 +568,54 @@ namespace Math
 
 			return retVal;
 		}
+
+		static XMVECTOR Euler(const XMFLOAT3& rotation)
+		{
+			XMVECTOR Quaternion = XMQuaternionIdentity();
+
+			static const XMVECTOR axisX = XMVectorSet(1.0f, 0.f, 0.f, 0.f);
+			static const XMVECTOR axisY = XMVectorSet(0.0f, 1.0f, 0.f, 0.f);
+			static const XMVECTOR axisZ = XMVectorSet(0.0f, 0.f, 1.0f, 0.f);
+
+			XMVECTOR rotateX = XMQuaternionRotationAxis(axisX, XMConvertToRadians(rotation.x));
+			rotateX = XMVector4Normalize(rotateX);
+			XMVECTOR rotateY = XMQuaternionRotationAxis(axisY, XMConvertToRadians(rotation.y));
+			rotateY = XMVector4Normalize(rotateY);
+			XMVECTOR rotateZ = XMQuaternionRotationAxis(axisZ, XMConvertToRadians(rotation.z));
+			rotateZ = XMVector4Normalize(rotateZ);
+
+			Quaternion = XMQuaternionMultiply(Quaternion, rotateX);
+			Quaternion = XMQuaternionMultiply(Quaternion, rotateY);
+			Quaternion = XMQuaternionMultiply(Quaternion, rotateZ);
+
+			return XMQuaternionNormalize(Quaternion);
+		}
+
+		static Quaternion Euler(const float x, const float y, const float z)
+		{
+			XMVECTOR Quaternion = XMQuaternionIdentity();
+
+			static const XMVECTOR axisX = XMVectorSet(1.0f, 0.f, 0.f, 0.f);
+			static const XMVECTOR axisY = XMVectorSet(0.0f, 1.0f, 0.f, 0.f);
+			static const XMVECTOR axisZ = XMVectorSet(0.0f, 0.f, 1.0f, 0.f);
+
+			XMVECTOR rotateX = XMQuaternionRotationAxis(axisX, XMConvertToRadians(x));
+			rotateX = XMVector4Normalize(rotateX);
+			XMVECTOR rotateY = XMQuaternionRotationAxis(axisY, XMConvertToRadians(y));
+			rotateY = XMVector4Normalize(rotateY);
+			XMVECTOR rotateZ = XMQuaternionRotationAxis(axisZ, XMConvertToRadians(z));
+			rotateZ = XMVector4Normalize(rotateZ);
+
+			Quaternion = XMQuaternionMultiply(Quaternion, rotateX);
+			Quaternion = XMQuaternionMultiply(Quaternion, rotateY);
+			Quaternion = XMQuaternionMultiply(Quaternion, rotateZ);
+			Quaternion = XMQuaternionNormalize(Quaternion);
+
+			XMFLOAT4 quat;
+			XMStoreFloat4(&quat, Quaternion);
+
+			return Quaternion::Quaternion(quat.x, quat.y, quat.z, quat.w);
+		}
 	};
 
 	// ëäå›ïœä∑ä÷êî

@@ -165,33 +165,25 @@ void CMODEL::Draw()
 	// クォータニオン
 	if(0.0f != (Rotation.x + 0.0001f) && 0.0f != (Rotation.y + 0.0001f) && 0.0f != (Rotation.z + 0.0001f))
 	{
-		XMVECTOR Quaternion = XMQuaternionIdentity();
+		//XMVECTOR Quaternion = XMQuaternionIdentity();
 
-		XMVECTOR axisX = XMVectorSet(1.0f, 0.f, 0.f, 0.f);
-		XMVECTOR axisY = XMVectorSet(0.0f, 1.0f, 0.f, 0.f);
-		XMVECTOR axisZ = XMVectorSet(0.0f, 0.f, 1.0f, 0.f);
+		//XMVECTOR axisX = XMVectorSet(1.0f, 0.f, 0.f, 0.f);
+		//XMVECTOR axisY = XMVectorSet(0.0f, 1.0f, 0.f, 0.f);
+		//XMVECTOR axisZ = XMVectorSet(0.0f, 0.f, 1.0f, 0.f);
 
-		XMVECTOR rotateX = XMQuaternionRotationAxis(axisX, XMConvertToRadians(Rotation.x));
+		//XMVECTOR rotateX = XMQuaternionRotationAxis(axisX, XMConvertToRadians(Rotation.x));
 		//rotateX = XMVector4Normalize(rotateX);
-		XMVECTOR rotateY = XMQuaternionRotationAxis(axisY, XMConvertToRadians(Rotation.y));
+		//XMVECTOR rotateY = XMQuaternionRotationAxis(axisY, XMConvertToRadians(Rotation.y));
 		//rotateY = XMVector4Normalize(rotateY);
-		XMVECTOR rotateZ = XMQuaternionRotationAxis(axisZ, XMConvertToRadians(Rotation.z));
+		//XMVECTOR rotateZ = XMQuaternionRotationAxis(axisZ, XMConvertToRadians(Rotation.z));
 		//rotateZ = XMVector4Normalize(rotateZ);
-
-		//Quaternion = XMQuaternionRotationMatrix(XMMatrixRotationRollPitchYaw(XMConvertToRadians(Rotation.x), XMConvertToRadians(Rotation.y), XMConvertToRadians(Rotation.z)));
 
 		//Quaternion = XMQuaternionNormalize(Quaternion);
 
 		//rotation = XMMatrixRotationQuaternion(Quaternion);
 
-		Quaternion = XMQuaternionMultiply(Quaternion, rotateX);
-		Quaternion = XMQuaternionMultiply(Quaternion, rotateY);
-		Quaternion = XMQuaternionMultiply(Quaternion, rotateZ);
 
-		Quaternion = XMQuaternionNormalize(Quaternion);
-
-		rotation = XMMatrixRotationQuaternion(Quaternion);
-
+		rotation = XMMatrixRotationQuaternion(Math::Quaternion::Euler(Rotation));
 	}
 
 	matrix = XMMatrixMultiply(matrix, scaling);
