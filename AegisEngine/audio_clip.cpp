@@ -7,8 +7,8 @@ map<wstring, CAudioClip*> AUDIO_MANAGER::Sound_Dates;
 map<string, CAudioClip*> AUDIO_MANAGER::Sound_Dates;
 #endif // !UNICODE
 
-IXAudio2* AUDIO_MANAGER::Xaudio;
-IXAudio2MasteringVoice* AUDIO_MANAGER::MasteringVoice;
+IXAudio2*					AUDIO_MANAGER::Xaudio;
+IXAudio2MasteringVoice*		AUDIO_MANAGER::MasteringVoice;
 
 #ifdef UNICODE
 void CAudioClip::Load(const wchar_t* FileName)

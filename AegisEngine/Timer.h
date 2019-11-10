@@ -18,6 +18,8 @@ private:
 	static LARGE_INTEGER end;		//! 現在時間が入っている変数
 	static LARGE_INTEGER frep;		//! タイム関係の値が入っている変数
 
+	TIMER() {}
+
 protected:
 
 public:
@@ -75,6 +77,8 @@ public:
 class CLOCK_TIMER {
 private:
 	static DWORD Time;		//! タイムが入る変数
+
+	CLOCK_TIMER() {}
 
 protected:
 

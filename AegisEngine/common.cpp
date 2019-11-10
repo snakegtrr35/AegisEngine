@@ -3,18 +3,18 @@
 
 std::wstring stringTowstring(const std::string& font)
 {
-	std::wstring f;
-	wchar_t	wStrW[1024];
+	wchar_t* wStrW = new wchar_t[font.size() * 2];
 
 	size_t wLen = 0;
-	errno_t err = 0;
 
 	//ÉçÉPÅ[ÉãéwíË
 	setlocale(LC_ALL, "japanese");
 
-	err = mbstowcs_s(&wLen, wStrW, font.size() * 2, font.c_str(), _TRUNCATE);
+	mbstowcs_s(&wLen, wStrW, font.size() * 2, font.c_str(), _TRUNCATE);
 
-	f = wStrW;
+	std::wstring f(wStrW);
+
+	delete wStrW;
 
 	return f;
 }

@@ -160,7 +160,12 @@ void My_imgui::Draw(void)
 			}
 		}
 
-		if (show_app_style_editor) { ImGui::Begin("Style Editor", &show_app_style_editor, ImGuiWindowFlags_NoResize); ImGui::ShowStyleEditor(); ImGui::End(); }
+		if (show_app_style_editor)
+		{
+			ImGui::Begin("Style Editor", &show_app_style_editor, ImGuiWindowFlags_NoResize);
+			ImGui::ShowStyleEditor();
+			ImGui::End();
+		}
 
 		static string s = GAME_OBJECT::Get_Object_Name_Map().begin()->second.c_str();
 		old_name = s;

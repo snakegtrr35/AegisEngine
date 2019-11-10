@@ -6,12 +6,8 @@
 // メモリリークのためのインクルード
 #include	<crtdbg.h>
 
-//#define _CRTDBG_MAP_ALLOC
-//#if defined(_DEBUG) && !defined(NEW)
-//#define NEW  ::new(_NORMAL_BLOCK, __FILE__, __LINE__)
-//#else
-//#define NEW  new
-//#endif
+#define _CRTDBG_MAP_ALLOC
+#define new new(_NORMAL_BLOCK, __FILE__, __LINE__)
 
 #endif // _DEBUG
 

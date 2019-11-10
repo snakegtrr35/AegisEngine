@@ -6,12 +6,11 @@
 #include	"texture.h"
 #include	"Timer.h"
 #include	"audio_clip.h"
+#include	"Effekseer.h"
 
 #ifdef _DEBUG
 #include	"My_imgui.h"
 #endif // _DEBUG
-
-#include	"Library/Effekseer/include/Effekseer.h"
 
 SCENE_MANAGER* CManager::pSceneManager;		// シーンマネージャー
 bool CManager::GameEnable = true;			// プログラム自体の終了のためのフラグ
@@ -53,6 +52,8 @@ bool CManager::Init()
 	// 時間関係の初期化
 	TIMER::Init();
 	CLOCK_TIMER::Init();
+
+	EFFEKSEER_MANAGER::Init();
 
 	if (nullptr == pSceneManager)
 		pSceneManager = new SCENE_MANAGER();
@@ -160,6 +161,8 @@ void CManager::Draw()
 void CManager::Uninit()
 {
 	SAFE_DELETE(pSceneManager);
+
+	EFFEKSEER_MANAGER::Uninit();
 
 	FONT::Uninit();
 
