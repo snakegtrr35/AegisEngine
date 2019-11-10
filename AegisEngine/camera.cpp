@@ -198,6 +198,8 @@ void CCamera::Update()
 	XMStoreFloat4(&pos, Pos);
 
 	CRenderer::SetCamera(&pos);
+
+	XMStoreFloat3(&Position, Pos);
 }
 
 void CCamera::Draw()

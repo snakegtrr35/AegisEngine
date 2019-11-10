@@ -34,12 +34,23 @@ private:
 
 	EFFEKSEER_MANAGER() {}
 
+	static void Set();
+
 public:
 
 	static bool Init();
-	static bool Uninit();
+	static void Uninit();
 
+	static void Draw();
+	static void Updata();
 
+	static void Play(const string& name);
+
+	static ::Effekseer::Manager* const Get_Manager();
+
+	static const map<string, EFFECT>& Get_Effects();
+
+	static const EFFECT& Get_Effect(const string& name);
 
 };
 

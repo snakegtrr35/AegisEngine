@@ -452,10 +452,10 @@ void EditTransform(const float* cameraView, float* cameraProjection, float* matr
 		mCurrentGizmoOperation = ImGuizmo::SCALE;
 
 	{
-		float	Translation[3] = { object->Get_Position()->x, object->Get_Position()->y, object->Get_Position()->z },
-				Rotation[3] = { object->Get_Rotation()->x, object->Get_Rotation()->y, object->Get_Rotation()->z },
-				R[3] = { object->Get_Rotation()->x, object->Get_Rotation()->y, object->Get_Rotation()->z },
-				Scale[3] = { object->Get_Scaling()->x, object->Get_Scaling()->y, object->Get_Scaling()->z };
+		float	Translation[3] = { object->Get_Position()->x, object->Get_Position()->y, object->Get_Position()->z };
+		float	Rotation[3] = { object->Get_Rotation()->x, object->Get_Rotation()->y, object->Get_Rotation()->z };
+		float	R[3] = { object->Get_Rotation()->x, object->Get_Rotation()->y, object->Get_Rotation()->z };
+		float	Scale[3] = { object->Get_Scaling()->x, object->Get_Scaling()->y, object->Get_Scaling()->z };
 
 		ImGuizmo::DecomposeMatrixToComponents(matrix, Translation, Rotation, Scale);
 

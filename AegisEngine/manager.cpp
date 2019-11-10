@@ -76,6 +76,11 @@ void CManager::Update()
 
 	pSceneManager->Update();
 
+	// Effekseer
+	{
+		EFFEKSEER_MANAGER::Updata();
+	}
+
 	MOUSE::Reset_Wheel_Moveset();
 
 	if (KEYBOARD::Trigger_Keyboard(VK_F1))
@@ -103,51 +108,57 @@ void CManager::Draw()
 	CRenderer::SetRenderTargetView(false);
 	pSceneManager->Draw();
 
+	// Effekseer
+	{
+		EFFEKSEER_MANAGER::Draw();
+	}
+
 	// Direct2D
-
-	D2D1_COLOR_F color;
-	color.r = 1.0f;
-	color.g = 1.0f;
-	color.b = 1.0f;
-	color.a = 1.0f;
-
-	ID2D1SolidColorBrush* brush;
-	CRenderer::Get2DDeviceContext()->CreateSolidColorBrush(color, &brush);
-
-	D2D1_RECT_F rect;
-	rect = D2D1::RectF(100, 100, 200, 200);
-
-	CRenderer::Get2DDeviceContext()->BeginDraw();
-	//CRenderer::Get2DDeviceContext()->FillRectangle(&rect, brush);
-
-	// DirectWrite
-
-	color.r = 1.0f;
-	color.g = 0.0f;
-	color.b = 0.0f;
-	color.a = 1.0f;
-
-	brush->SetColor(color);
-
 	{
-		rect = D2D1::RectF(500, 100, 900, 200);
-		const wstring drawText = L"Hello HELL World!!!\n地球の未来にご奉仕するにゃん！";
+		D2D1_COLOR_F color;
+		color.r = 1.0f;
+		color.g = 1.0f;
+		color.b = 1.0f;
+		color.a = 1.0f;
 
-		CRenderer::Get2DDeviceContext()->DrawText(
-			drawText.c_str(), drawText.size(), CRenderer::GetTextFormat(), &rect, brush);
+		ID2D1SolidColorBrush* brush;
+		CRenderer::Get2DDeviceContext()->CreateSolidColorBrush(color, &brush);
+
+		D2D1_RECT_F rect;
+		rect = D2D1::RectF(100, 100, 200, 200);
+
+		CRenderer::Get2DDeviceContext()->BeginDraw();
+		//CRenderer::Get2DDeviceContext()->FillRectangle(&rect, brush);
+
+		// DirectWrite
+
+		color.r = 1.0f;
+		color.g = 0.0f;
+		color.b = 0.0f;
+		color.a = 1.0f;
+
+		brush->SetColor(color);
+
+		{
+			rect = D2D1::RectF(500, 100, 900, 200);
+			const wstring drawText = L"Hello HELL World!!!\n地球の未来にご奉仕するにゃん！";
+
+			CRenderer::Get2DDeviceContext()->DrawText(
+				drawText.c_str(), drawText.size(), CRenderer::GetTextFormat(), &rect, brush);
+		}
+
+		{
+			D2D1_POINT_2F points;
+			points.x = 100.0f;
+			points.y = 100.0f;
+
+			CRenderer::Get2DDeviceContext()->DrawTextLayout(
+				points, CRenderer::GetTextLayout(), brush);
+		}
+
+		CRenderer::Get2DDeviceContext()->EndDraw();
+		brush->Release();
 	}
-
-	{
-		D2D1_POINT_2F points;
-		points.x = 100.0f;
-		points.y = 100.0f;
-
-		CRenderer::Get2DDeviceContext()->DrawTextLayout(
-			points, CRenderer::GetTextLayout(), brush);
-	}
-
-	CRenderer::Get2DDeviceContext()->EndDraw();
-	brush->Release();
 
 #ifdef _DEBUG
 	g_MyImgui->Draw();//
@@ -162,6 +173,7 @@ void CManager::Uninit()
 {
 	SAFE_DELETE(pSceneManager);
 
+	// Effekseer
 	EFFEKSEER_MANAGER::Uninit();
 
 	FONT::Uninit();
