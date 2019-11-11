@@ -87,8 +87,6 @@ void FADE::Update(void)
 {
 	Cnt++;
 
-	//Color.w = min( max((Color.w + AdditionalAlpha), 0.0f), 1.0f);
-
 	Color.w = clamp((Color.w + AdditionalAlpha), 0.0f, 1.0f);
 
 	if (Get_FadeEnable())

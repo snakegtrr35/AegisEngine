@@ -684,7 +684,7 @@ void CRenderer::SetBlendState(D3D11_BLEND_DESC* blend_state, bool flag)
 	{
 		// ブレンドステート設定
 		float blendFactor[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
-		ID3D11BlendState* blendState = NULL;
+		ID3D11BlendState* blendState = nullptr;
 		m_D3DDevice->CreateBlendState(blend_state, &blendState);
 		m_ImmediateContext->OMSetBlendState(blendState, blendFactor, 0xffffffff);
 	}
@@ -705,7 +705,7 @@ void CRenderer::SetBlendState(D3D11_BLEND_DESC* blend_state, bool flag)
 		blendDesc.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
 
 		float blendFactor[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
-		ID3D11BlendState* blendState = NULL;
+		ID3D11BlendState* blendState = nullptr;
 		m_D3DDevice->CreateBlendState(&blendDesc, &blendState);
 		m_ImmediateContext->OMSetBlendState(blendState, blendFactor, 0xffffffff);
 	}

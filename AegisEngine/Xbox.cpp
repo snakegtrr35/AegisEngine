@@ -133,10 +133,7 @@ bool XBOX::Press(const int any_button, const unsigned char number)
 	{
 		return true;
 	}
-	else
-	{
-		return false;
-	}
+	return false;
 }
 
 //========================================
@@ -149,10 +146,6 @@ bool XBOX::Release(const int any_button, const unsigned char number)
 		if ( (Old_Controllers[number].state.Gamepad.wButtons & any_button) != (Controllers[number].state.Gamepad.wButtons & any_button) )
 		{
 			return true;
-		}
-		else
-		{
-			return false;
 		}
 	}
 	return false;
