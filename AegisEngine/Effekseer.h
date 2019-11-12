@@ -30,7 +30,9 @@ private:
 	static ::EffekseerRenderer::Renderer*	Renderer;
 	static ::EffekseerSound::Sound*			Sound;
 
-	static map<string, EFFECT> Effects;
+	static map<string, ::Effekseer::Effect*> Effects;
+	static map<string, ::Effekseer::Handle> Handles;
+
 
 	EFFEKSEER_MANAGER() {}
 
@@ -45,12 +47,14 @@ public:
 	static void Updata();
 
 	static void Play(const string& name);
+	static void Play(const string& handle_name, const string& effect_name, const XMFLOAT3& position);
+	static void Play(const string& handle_name, const string& effect_name, const Math::VECTOR3& position);
 
 	static ::Effekseer::Manager* const Get_Manager();
 
-	static const map<string, EFFECT>& Get_Effects();
+	static const map<string, ::Effekseer::Effect*>& Get_Effects();
 
-	static const EFFECT& Get_Effect(const string& name);
+	//static const EFFECT& Get_Effect(const string& name);
 
 };
 
