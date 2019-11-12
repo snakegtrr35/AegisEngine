@@ -53,14 +53,14 @@ bool CManager::Init()
 	TIMER::Init();
 	CLOCK_TIMER::Init();
 
-	EFFEKSEER_MANAGER::Init();
-
 	if (nullptr == pSceneManager)
 		pSceneManager = new SCENE_MANAGER();
 
 	pSceneManager->Init();
 	//pSceneManager->Set_Scene<TITLE>();
 	pSceneManager->Set_Scene<MAIN_MENU>();
+
+	EFFEKSEER_MANAGER::Init();
 
 	//CRenderer::Change_Window_Mode();
 
@@ -91,6 +91,11 @@ void CManager::Update()
 	if (KEYBOARD::Press_Keyboard(VK_ESCAPE) && KEYBOARD::Press_Keyboard(VK_CONTROL))
 	{
 		CManager::GameEnd();
+	}
+
+	if (KEYBOARD::Trigger_Keyboard(VK_F2))
+	{
+		EFFEKSEER_MANAGER::Play("test");
 	}
 }
 

@@ -5,6 +5,57 @@
 
 #include	"Renderer.h"
 
+typedef struct {
+	string Name;
+	XMINT2 WH;
+
+	template<class T>
+	void serialize(T& archive) {
+		archive(Name, WH);
+	}
+
+}TEXTURE_FILE;
+
+
+//typedef struct {
+//	unique_ptr<ID3D11ShaderResourceView, Release> Resource;
+//	XMINT2 WH;
+//
+//	template<class T>
+//	void serialize(T& archive) {
+//		archive(WH);
+//	}
+//
+//}TEXTURE_DATA;
+
+//========================================
+// テクスチャマネージャークラス
+//========================================
+class TEXTURE_MANEGER {
+private:
+	static map<string, unique_ptr<ID3D11ShaderResourceView, Release> > TextureResource;
+	//static unordered_map<size_t, TEXTURE_DATA> TextureFiles;//
+
+	static void Load();		// テクスチャの読み込み
+
+public:
+
+	static void Init();
+	static void Uninit();
+
+	static void Add(const string& const file_name);
+	static void Unload(const string& const file_name);
+
+	static XMINT2* const Get_WH(const string& const file_name);
+
+	static ID3D11ShaderResourceView* const GetShaderResourceView(const string& const file_name);
+
+	//template<class T>
+	//void serialize(T& archive) {
+	//	archive(TextureFiles);
+	//}
+};
+
 //========================================
 // テクスチャクラス
 //========================================
@@ -24,29 +75,6 @@ public:
 
 	XMINT2* const Get_WH();
 };
-
-//========================================
-// テクスチャマネージャークラス
-//========================================
-class TEXTURE_MANEGER {
-private:
-	static map<string, unique_ptr<ID3D11ShaderResourceView, Release> > TextureResource;
-
-	static void Load();		// テクスチャの読み込み
-
-public:
-
-	static void Init();
-	static void Uninit();
-
-	static void Add(const string& const file_name);
-	static void Unload(const string& const file_name = "");			// テクスチャの解放
-
-	static XMINT2* const Get_WH(const string& const file_name);
-
-	static ID3D11ShaderResourceView* const GetShaderResourceView(const string& const file_name);
-};
-
 
 class FONT {
 private:
