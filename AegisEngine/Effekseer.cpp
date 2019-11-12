@@ -14,6 +14,7 @@
 
 map<string, EFFECT>				EFFEKSEER_MANAGER::Effects;
 
+Effekseer::Matrix44 To(XMMATRIX& mtr);
 
 bool EFFEKSEER_MANAGER::Init()
 {
@@ -40,7 +41,7 @@ bool EFFEKSEER_MANAGER::Init()
 		Manager->SetModelRenderer(Renderer->CreateModelRenderer());
 
 		// 座標系の指定( LHで左手系 )
-		Manager->SetCoordinateSystem(Effekseer::CoordinateSystem::RH);
+		Manager->SetCoordinateSystem(Effekseer::CoordinateSystem::LH);
 
 		// 描画用インスタンスからテクスチャの読込機能を設定
 		// 独自拡張可能、現在はファイルから読み込んでいる。
@@ -68,7 +69,7 @@ bool EFFEKSEER_MANAGER::Init()
 
 	Effects["test"].Handle = Manager->Play(Effects["test"].Effect, 0, 0, 0);
 	Manager->SetRotation(Effects["test"].Handle, Effekseer::Vector3D(0, 1, 0), 45.0f);
-	//Manager->SetSpeed(Effects["test"].Handle, 0.8f);
+	Manager->SetSpeed(Effects["test"].Handle, 0.1f);
 
 	return true;
 }
@@ -110,6 +111,10 @@ void EFFEKSEER_MANAGER::Draw()
 
 void EFFEKSEER_MANAGER::Updata()
 {
+	auto player = CManager::Get_Scene()->Get_Game_Object("player");
+
+	Manager->SetLocation(Effects["test"].Handle, Effekseer::Vector3D(player->Get_Position()->x, player->Get_Position()->y, player->Get_Position()->z) );
+
 	// エフェクトの更新処理を行う
 	Manager->Update();
 }
@@ -125,11 +130,14 @@ void EFFEKSEER_MANAGER::Set()
 
 	{
 		XMFLOAT3* pos;
-		float angle;
-		::Effekseer::Vector3D position;
-		::Effekseer::Vector3D at;
-		::Effekseer::Vector3D up;
-		if(nullptr != camera)
+		static float angle;
+		static ::Effekseer::Vector3D position;
+		static ::Effekseer::Vector3D at;
+		static ::Effekseer::Vector3D up;
+
+		static bool flag = true;
+
+		if (nullptr != camera)
 		{
 			position.X = camera->Get_Position()->x;
 			position.Y = camera->Get_Position()->y;
@@ -172,13 +180,29 @@ void EFFEKSEER_MANAGER::Set()
 			angle = D_camera->Get_Viewing_Angle();
 		}
 
+		XMMATRIX proje;
+		XMMATRIX view;
+
+		if (nullptr != camera)
+		{
+			proje = camera->Get_Camera_Projection();
+			view = camera->Get_Camera_View();
+		}
+		else
+		{
+			proje = D_camera->Get_Camera_Projection();
+			view = D_camera->Get_Camera_View();
+		}
+
 		// 投影行列を設定
-		Renderer->SetProjectionMatrix(
-			::Effekseer::Matrix44().PerspectiveFovRH(XMConvertToRadians(angle), (float)SCREEN_WIDTH / (float)SCREEN_HEIGHT, 1.0f, 1000.0f));
+		//Renderer->SetProjectionMatrix(
+		//	::Effekseer::Matrix44().PerspectiveFovRH(XMConvertToRadians(angle), (float)SCREEN_WIDTH / (float)SCREEN_HEIGHT, 1.0f, 1000.0f));
+		Renderer->SetProjectionMatrix(To(proje));
 
 		// カメラ行列を設定
-		Renderer->SetCameraMatrix(
-			::Effekseer::Matrix44().LookAtRH(position, at, up));
+		//Renderer->SetCameraMatrix(
+		//	::Effekseer::Matrix44().LookAtRH(position, at, up));
+		Renderer->SetCameraMatrix(To(view));
 
 		// 3Dサウンド用リスナー設定の更新
 		Sound->SetListener(position, at, up);
@@ -203,4 +227,24 @@ const map<string, EFFECT>& EFFEKSEER_MANAGER::Get_Effects()
 const EFFECT& EFFEKSEER_MANAGER::Get_Effect(const string& name)
 {
 	return Effects[name];
+}
+
+
+
+Effekseer::Matrix44 To(XMMATRIX& mtr)
+{
+	XMFLOAT4X4 m;
+	XMStoreFloat4x4(&m, mtr);
+
+	Effekseer::Matrix44 matrix;
+
+	for (int y = 0; y < 4; y++)
+	{
+		for (int x = 0; x < 4; x++)
+		{
+			matrix.Values[y][x] = m.m[y][x];
+		}
+	}
+
+	return matrix;
 }
