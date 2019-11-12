@@ -1,5 +1,4 @@
 #include	"Effekseer.h"
-#include	"main.h"
 #include	"Renderer.h"
 #include	"manager.h"
 #include	"Scene.h"
@@ -8,6 +7,8 @@
 #include	"camera.h"
 #include	"Debug_Camera.h"
 
+
+
 ::Effekseer::Manager*			EFFEKSEER_MANAGER::Manager = nullptr;
 ::EffekseerRenderer::Renderer*	EFFEKSEER_MANAGER::Renderer = nullptr;
 ::EffekseerSound::Sound*		EFFEKSEER_MANAGER::Sound = nullptr;
@@ -15,6 +16,12 @@
 map<string, ::Effekseer::Effect*>	EFFEKSEER_MANAGER::Effects;
 map<string, ::Effekseer::Handle>	EFFEKSEER_MANAGER::Handles;
 
+
+::Effekseer::Matrix44 XMMATRIXToMatrix44(const XMMATRIX& matrix)
+{
+	XMFLOAT4X4 m;
+
+	XMStoreFloat4x4(&m, matrix);
 
 	::Effekseer::Matrix44 mtr;
 
@@ -25,7 +32,6 @@ map<string, ::Effekseer::Handle>	EFFEKSEER_MANAGER::Handles;
 			mtr.Values[y][x] = m.m[y][x];
 		}
 	}
-
 	return mtr;
 }
 
@@ -43,7 +49,7 @@ bool EFFEKSEER_MANAGER::Init()
 	{
 		// エフェクト管理用インスタンスの生成
 		Manager = ::Effekseer::Manager::Create(2048);
-		if(nullptr == Manager)
+		if (nullptr == Manager)
 		{
 			return false;
 		}
@@ -57,16 +63,16 @@ bool EFFEKSEER_MANAGER::Init()
 
 		// 座標系の指定( LHで左手系 )
 		Manager->SetCoordinateSystem(Effekseer::CoordinateSystem::LH);
-
 		// 描画用インスタンスからテクスチャの読込機能を設定
-		// 独自拡張可能、現在はファイルから読み込んでいる。
 		Manager->SetTextureLoader(Renderer->CreateTextureLoader());
+		// 独自拡張可能、現在はファイルから読み込んでいる。
 		Manager->SetModelLoader(Renderer->CreateModelLoader());
 
 		//// カリングを行う範囲を設定
 		//// 範囲内にエフェクトが存在するとカリングが高速に実行される
 		//// layerCountが大きいほうが高速にカリングを行うがメモリも消費する。最大6程度。
 		//Manager->CreateCullingWorld(500.0f, 500.0f, 500.0f, 5);
+
 	}
 
 	{
@@ -87,12 +93,14 @@ bool EFFEKSEER_MANAGER::Init()
 
 	Effects["test"] = Effekseer::Effect::Create(Manager, (const EFK_CHAR*)L"test.efk");
 
-	Effects["test"].Handle = Manager->Play(Effects["test"].Effect, 0, 0, 0);
-	Manager->SetRotation(Effects["test"].Handle, Effekseer::Vector3D(0, 1, 0), 45.0f);
-	//Manager->SetSpeed(Effects["test"].Handle, 0.8f);
+	//Effects["test"].Handle = Manager->Play(Effects["test"].Effect, 0, 0, 0);
+	//Manager->SetRotation(Effects["test"].Handle, Effekseer::Vector3D(0, 1, 0), 45.0f);
+	//Manager->SetSpeed(Effects["test"].Handle, 0.5f);
 
 	return true;
 }
+
+
 
 void EFFEKSEER_MANAGER::Uninit()
 {
@@ -102,7 +110,6 @@ void EFFEKSEER_MANAGER::Uninit()
 	// エフェクトの破棄
 	for (auto effect : Effects)
 	{
-
 		if (nullptr != effect.second)
 		{
 			effect.second->Release();
@@ -123,6 +130,7 @@ void EFFEKSEER_MANAGER::Draw()
 	// エフェクトの描画開始処理を行う。
 	Renderer->BeginRendering();
 
+
 	//// 視錐体内に存在するエフェクトを計算する。
 	//// カリングの設定がないエフェクトは常に描画される。
 	//Manager->CalcCulling(Renderer->GetCameraProjectionMatrix(), false);
@@ -136,13 +144,22 @@ void EFFEKSEER_MANAGER::Draw()
 
 void EFFEKSEER_MANAGER::Updata()
 {
+	auto player = CManager::Get_Scene()->Get_Game_Object("player");
+
+	Set_Location("test", XMFLOAT3(player->Get_Position()->x, player->Get_Position()->y, player->Get_Position()->z));
+
+	//Manager->SetLocation(Handles["test"], Effekseer::Vector3D(player->Get_Position()->x, player->Get_Position()->y, player->Get_Position()->z));
+	Manager->SetScale(Handles["test"], 0.5f, 0.5f, 0.5f);
+	Manager->SetRotation(Handles["test"], Effekseer::Vector3D(0, 1, 0), XMConvertToRadians(90.0f));
+
+	Set();
+
 	// エフェクトの更新処理を行う
 	Manager->Update();
 }
 
 void EFFEKSEER_MANAGER::Set()
 {
-
 	DEBUG_CAMERA* D_camera = nullptr;
 	CCamera* camera = CManager::Get_Scene()->Get_Game_Object<CCamera>();
 	if (nullptr == camera)
@@ -152,11 +169,12 @@ void EFFEKSEER_MANAGER::Set()
 
 	{
 		XMFLOAT3* pos;
-		float angle;
-		::Effekseer::Vector3D position;
-		::Effekseer::Vector3D at;
-		::Effekseer::Vector3D up;
-		if(nullptr != camera)
+		static float angle;
+		static ::Effekseer::Vector3D position;
+		static ::Effekseer::Vector3D at;
+		static ::Effekseer::Vector3D up;
+
+		if (nullptr != camera)
 		{
 			position.X = camera->Get_Position()->x;
 			position.Y = camera->Get_Position()->y;
@@ -199,13 +217,40 @@ void EFFEKSEER_MANAGER::Set()
 			angle = D_camera->Get_Viewing_Angle();
 		}
 
-		// 投影行列を設定
-		Renderer->SetProjectionMatrix(
-			::Effekseer::Matrix44().PerspectiveFovRH(XMConvertToRadians(angle), (float)SCREEN_WIDTH / (float)SCREEN_HEIGHT, 1.0f, 1000.0f));
+		{
+			XMMATRIX mtr;
+			if (nullptr != camera)
+			{
+				mtr = camera->Get_Camera_Projection();
+			}
+			else
+			{
+				mtr = D_camera->Get_Camera_Projection();
+			}
 
-		// カメラ行列を設定
-		Renderer->SetCameraMatrix(
-			::Effekseer::Matrix44().LookAtRH(position, at, up));
+			::Effekseer::Matrix44 matrix = XMMATRIXToMatrix44(mtr);
+
+			// 投影行列を設定
+			Renderer->SetProjectionMatrix(matrix);
+		}
+
+		{
+			XMMATRIX mtr;
+
+			if (nullptr != camera)
+			{
+				mtr = camera->Get_Camera_View();
+			}
+			else
+			{
+				mtr = D_camera->Get_Camera_View();
+			}
+
+			::Effekseer::Matrix44 matrix = XMMATRIXToMatrix44(mtr);
+
+			// カメラ行列を設定
+			Renderer->SetCameraMatrix(matrix);
+		}
 
 		// 3Dサウンド用リスナー設定の更新
 		Sound->SetListener(position, at, up);
@@ -219,6 +264,7 @@ void EFFEKSEER_MANAGER::Play(const string& name)
 	auto player = CManager::Get_Scene()->Get_Game_Object("player");
 
 	Handles[name] = Manager->Play(Effects[name], player->Get_Position()->x, player->Get_Position()->y, player->Get_Position()->z);
+
 	//Effects[name].Handle = Manager->Play(Effects[name].Effect, 0, 0, 0);
 }
 
@@ -230,9 +276,8 @@ void EFFEKSEER_MANAGER::Play(const string& handle_name, const string& effect_nam
 	{
 		string text("存在しないエフェクトです\n");
 		string t(effect_name.c_str());
-
 		text += t;
-		
+
 		Erroer_Message(text);
 
 		return;
@@ -244,6 +289,8 @@ void EFFEKSEER_MANAGER::Play(const string& handle_name, const string& effect_nam
 	Handles[handle_name] = Manager->Play(Effects[effect_name], position.x, position.y, position.z);
 }
 
+
+
 void EFFEKSEER_MANAGER::Play(const string& handle_name, const string& effect_name, const Math::VECTOR3& position)
 {
 	// ロードしていないエフェクトの判定
@@ -252,7 +299,6 @@ void EFFEKSEER_MANAGER::Play(const string& handle_name, const string& effect_nam
 	{
 		string text("存在しないエフェクトです\n");
 		string t(effect_name.c_str());
-
 		text += t;
 
 		Erroer_Message(text);
@@ -308,5 +354,11 @@ void EFFEKSEER_MANAGER::Set_Scale(const string& handle_name, const Math::VECTOR3
 
 void EFFEKSEER_MANAGER::Set_Speed(const string& handle_name, const float speed)
 {
-	return Effects[name];
+	Manager->SetSpeed(Handles[handle_name], speed);
 }
+
+
+//const EFFECT& EFFEKSEER_MANAGER::Get_Effect(const string& name)
+//{
+//	return Effects[name];
+//}

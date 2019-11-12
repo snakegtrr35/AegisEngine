@@ -7,10 +7,6 @@
 
 #include	"main.h"
 
-#include	"imgui/imgui.h"
-#include	"imgui/imgui_impl_dx11.h"
-#include	"imgui/imgui_impl_win32.h"
-
 class My_imgui{
 private:
 	bool show_demo_window;
@@ -20,8 +16,14 @@ private:
 	float f;
 	int counter;
 
+	bool Texture_Import_Enable;
+	void Texture_Import();
+
 public:
-	My_imgui() : show_demo_window(false), show_another_window(false), show_default_window(false), clear_color(ImVec4(0.45f, 0.55f, 0.60f, 1.00f)), f(0.0f), counter(0) {}
+	My_imgui() : show_demo_window(false), show_another_window(false), show_default_window(false),
+				 Texture_Import_Enable(true), clear_color(ImVec4(0.45f, 0.55f, 0.60f, 1.00f)),
+				 f(0.0f), counter(0) {}
+
 	~My_imgui() {}
 
 	void Init(HWND hWnd);

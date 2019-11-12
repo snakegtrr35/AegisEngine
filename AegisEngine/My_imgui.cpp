@@ -1,12 +1,17 @@
 #ifdef _DEBUG
 
-#include	"My_imgui.h"
-#include	"Scene.h"
-#include	"Game_Object.h"
-#include	"manager.h"
-#include	"ModelLoader.h"
+#include	"imgui/imgui.h"
+#include	"imgui/imgui_impl_dx11.h"
+#include	"imgui/imgui_impl_win32.h"
 
+#include	"imgui/imgui_stdlib.h"
+
+#include	"My_imgui.h"
 #include	"imgui/ImGuizmo.h"
+
+#include	"Scene.h"
+#include	"manager.h"
+#include	"texture.h"
 
 extern float radius;
 
@@ -110,7 +115,9 @@ void My_imgui::Draw(void)
 				if (ImGui::BeginMenu("File"))
 				{
 					if (ImGui::MenuItem("New")) {}
+
 					if (ImGui::MenuItem("Open", "Ctrl+O")) {}
+
 					if (ImGui::BeginMenu("Open Recent"))
 					{
 						ImGui::MenuItem("fish_hat.c");
@@ -127,6 +134,25 @@ void My_imgui::Draw(void)
 							}
 							ImGui::EndMenu();
 						}
+						ImGui::EndMenu();
+					}
+
+					if (ImGui::BeginMenu("Import"))
+					{
+						//if (ImGui::BeginMenu("Object"))
+						{
+							if (ImGui::MenuItem("Texture"))
+							{
+								Texture_Import_Enable = true;
+							}
+							if (ImGui::MenuItem("model"))
+							{
+								int a = 0;
+							}
+
+							//ImGui::EndMenu();
+						}
+
 						ImGui::EndMenu();
 					}
 
@@ -177,11 +203,15 @@ void My_imgui::Draw(void)
 				ImGui::Begin("Setting");
 
 				{
-					static char str[128] = "";
+					//static char str[128] = "";
 
-					ImGui::InputText((char*)u8"あいうえお", str, 128);
+					//ImGui::InputText((char*)u8"あいうえお", str, 128);
 
-					ImGui::Text(str);
+					static string str;
+
+					ImGui::InputText((char*)u8"あいうえお", &str);
+
+					ImGui::Text(str.c_str());
 				}
 
 				ImGui::DragFloat("Radius", r, 0.1f, 0.1f, 100.0f);
@@ -191,8 +221,10 @@ void My_imgui::Draw(void)
 				ImGui::End();
 				}
 
-				// ライトの設定
+			// ライトの設定
 			{
+				static bool f = false;
+
 				ImGuiWindowFlags window_flag = ImGuiWindowFlags_NoResize;
 
 				static float vec4_Direction[] = { 0.0f, 0.0f, 1.0f, 0.0f };
@@ -295,6 +327,9 @@ void My_imgui::Draw(void)
 		{
 			Draw_Inspector(s);
 		}
+
+		// テクスチャにインポート
+		Texture_Import();
 
 		// Rendering
 		ImGui::Render();
@@ -484,6 +519,61 @@ void EditTransform(const float* cameraView, float* cameraProjection, float* matr
 	ImGuiIO& io = ImGui::GetIO();
 	ImGuizmo::SetRect(0, 0, io.DisplaySize.x, io.DisplaySize.y);
 	ImGuizmo::Manipulate(cameraView, cameraProjection, mCurrentGizmoOperation, ImGuizmo::LOCAL, matrix, NULL, &snap[0], NULL, NULL);
+}
+
+void My_imgui::Texture_Import()
+{
+	static bool flag = true;
+
+	static string file_name;
+	static int height = 0, width = 0;
+
+	ImGuiWindowFlags window_flags = ImGuiWindowFlags_NoResize;
+
+	if(Texture_Import_Enable)
+	{
+		ImGui::Begin(u8"テクスチャ インポート", &Texture_Import_Enable, window_flags);
+		{
+			ImGui::Indent(10.0f);
+
+			ImGui::InputText(u8"テクスチャ名", &file_name);
+
+			ImGui::Spacing();
+
+			ImGui::DragInt(u8"縦の長さ", &height, 0.5f, 0, TEXTURE_SIZE_MAX);
+
+			ImGui::Spacing();
+
+			ImGui::DragInt(u8"横の長さ", &width, 0.5f, 0, TEXTURE_SIZE_MAX);
+
+			ImGui::Spacing();
+			ImGui::Spacing();
+			ImGui::Spacing();
+			ImGui::Spacing();
+
+			ImGui::Indent(90);
+
+			ImVec2 size(80, 30);
+
+			if (ImGui::Button(u8"インポート", size))
+			{
+				TEXTURE_MANEGER::Add(file_name, width, height);
+			}
+		}
+		ImGui::End();
+
+		flag = true;
+	}
+	else
+	{
+		if (flag)
+		{
+			file_name = "";
+			height = width = 0;
+
+			flag = false;
+		}
+	}
 }
 
 #endif // _DEBUG

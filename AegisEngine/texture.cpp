@@ -41,62 +41,24 @@ static TEXTURE_FILE g_TextureFiles[] = {
 map<string, unique_ptr<ID3D11ShaderResourceView, Release> > TEXTURE_MANEGER::TextureResource;
 //unordered_map<size_t, TEXTURE_DATA> TEXTURE_MANEGER::TextureFiles;//
 
+unordered_set<string>					TEXTURE_MANEGER::TextureNames;//
+unordered_map<size_t, TEXTURE_DATA>		TEXTURE_MANEGER::TextureFiles;//
+
 // 読み込みテクスチャ数
 static const int TEXTURE_FILE_COUNT = sizeof(g_TextureFiles) / sizeof(g_TextureFiles[0]);
 
-
-
-TEXTURE::TEXTURE()
-{
-	FileName = "none";
-}
-
-TEXTURE::TEXTURE(const string& file_name)
-{
-	FileName = file_name;
-}
-
-//========================================
-// テクスチャを設定(Directx11)
-//========================================
-void TEXTURE::Set_Texture(void)
-{
-	ID3D11ShaderResourceView* shader_resouce_view = TEXTURE_MANEGER::GetShaderResourceView(FileName);
-
-	CRenderer::GetDeviceContext()->PSSetShaderResources(0, 1, &shader_resouce_view);
-}
-
-//========================================
-// テクスチャ名の設定
-//========================================
-void TEXTURE::Set_Texture_Name(const string& const file_name)
-{
-	FileName = file_name;
-}
-
-//========================================
-// テクスチャ名の取得
-//========================================
-const string& TEXTURE::Get_Texture_Name(void)
-{
-	return FileName;
-}
-
-XMINT2* const TEXTURE::Get_WH()
-{
-	return TEXTURE_MANEGER::Get_WH(FileName);
-}
 
 //================================================================================================================================================================
 
 void TEXTURE_MANEGER::Init()
 {
 	//{
-	//	std::ifstream is("texture.dat", std::ios::binary);
+	//	std::ofstream file("texture.dat", std::ios::binary);
 
-	//	if (is.is_open())
+	//	if (file.is_open())
 	//	{
-	//		cereal::BinaryInputArchive archive(is);
+	//		cereal::BinaryOutputArchive archive(file);
+	//		archive(TextureNames);
 	//		archive(TextureFiles);
 	//	}
 	//}
@@ -106,11 +68,24 @@ void TEXTURE_MANEGER::Init()
 
 void TEXTURE_MANEGER::Uninit()
 {
+	//{
+	//	std::ifstream file("texture.dat", std::ios::binary);
+
+	//	if (file.is_open())
+	//	{
+	//		cereal::BinaryInputArchive archive(file);
+	//		archive(TextureNames);
+	//		archive(TextureFiles);
+	//	}
+	//}
+
 	/*for (auto tex : TextureResource)
 	{
 		tex.second->Release();
 	}
 	TextureResource.clear();*/
+
+	TextureNames.clear();
 
 	for (auto tex = TextureResource.begin(); tex != TextureResource.end(); tex++)
 	{
@@ -168,16 +143,19 @@ void TEXTURE_MANEGER::Load(void)
 	}
 }
 
-void TEXTURE_MANEGER::Add(const string& const file_name)
+void TEXTURE_MANEGER::Add(const string& const file_name, const float width, const float height)
 {
+	if (false == File_Check(file_name))
+	{
+		return;
+	}
+
 	ID3D11ShaderResourceView* ShaderResourceView;
 
 	wstring path = L"asset/texture/";
 
-	string name = file_name;//
-
 	// char から wchar_t への変換
-	wstring file = stringTowstring(name);
+	wstring file = stringTowstring(file_name);
 
 	path = path + file;
 
@@ -188,6 +166,14 @@ void TEXTURE_MANEGER::Add(const string& const file_name)
 	{
 		return;
 	}
+
+	//hash<string> hasher;
+
+	//size_t hash = hasher(file_name);
+
+	//TextureFiles[hash].Resource.reset(ShaderResourceView);
+	//TextureFiles[hash].WH.x = width;
+	//TextureFiles[hash].WH.y = height;
 
 	TextureResource[file_name].reset(ShaderResourceView);
 }
@@ -231,6 +217,79 @@ ID3D11ShaderResourceView* const TEXTURE_MANEGER::GetShaderResourceView(const str
 	return nullptr;
 }
 
+bool TEXTURE_MANEGER::File_Check(const string& file_name)
+{
+	if (file_name.empty())
+	{
+		Erroer_Message("テクスチャ名を入力して下さい");
+		return false;
+	}
+
+	if (TextureNames.find(file_name) != TextureNames.end())
+	{
+		Erroer_Message("既に読み込んでいるテクスチャです");
+		return false;
+	}
+
+	string name = file_name;//
+
+	string path = "asset/texture/";
+	path += file_name;
+
+	// ファイルがあるかの判定
+	bool flag = std::filesystem::exists(path);
+	if (!flag)
+	{
+		name += " がありません";
+
+		Erroer_Message(name);
+		return false;
+	}
+
+	return true;
+}
+
+
+TEXTURE::TEXTURE()
+{
+	FileName = "none";
+}
+
+TEXTURE::TEXTURE(const string& file_name)
+{
+	FileName = file_name;
+}
+
+//========================================
+// テクスチャを設定(Directx11)
+//========================================
+void TEXTURE::Set_Texture(void)
+{
+	ID3D11ShaderResourceView* shader_resouce_view = TEXTURE_MANEGER::GetShaderResourceView(FileName);
+
+	CRenderer::GetDeviceContext()->PSSetShaderResources(0, 1, &shader_resouce_view);
+}
+
+//========================================
+// テクスチャ名の設定
+//========================================
+void TEXTURE::Set_Texture_Name(const string& const file_name)
+{
+	FileName = file_name;
+}
+
+//========================================
+// テクスチャ名の取得
+//========================================
+const string& TEXTURE::Get_Texture_Name(void)
+{
+	return FileName;
+}
+
+XMINT2* const TEXTURE::Get_WH()
+{
+	return TEXTURE_MANEGER::Get_WH(FileName);
+}
 
 
 map<wstring,unique_ptr<ID3D11ShaderResourceView, Release>> FONT::FontResource;
@@ -433,7 +492,7 @@ void FONT::Load_Font()
 void FONT::Load_Font(const wstring& one_character)
 {
 	// フォントハンドルの生成
-	int fontSize = 256;
+	int fontSize = 128;
 	int fontWeight = 1000;
 	LOGFONTW lf =
 	{

@@ -5,6 +5,8 @@
 
 #include	"Renderer.h"
 
+constexpr const int TEXTURE_SIZE_MAX = 8192;
+
 typedef struct {
 	string Name;
 	XMINT2 WH;
@@ -17,16 +19,22 @@ typedef struct {
 }TEXTURE_FILE;
 
 
-//typedef struct {
-//	unique_ptr<ID3D11ShaderResourceView, Release> Resource;
-//	XMINT2 WH;
-//
-//	template<class T>
-//	void serialize(T& archive) {
-//		archive(WH);
-//	}
-//
-//}TEXTURE_DATA;
+struct TEXTURE_DATA {
+	unique_ptr<ID3D11ShaderResourceView, Release> Resource;
+	XMINT2 WH;
+
+	TEXTURE_DATA() : WH(XMINT2(0, 0)) {};
+
+	TEXTURE_DATA(XMINT2 wh) : WH(wh) {};
+
+	TEXTURE_DATA(int w, int h) : WH(XMINT2(w, h)) {};
+
+	template<class T>
+	void serialize(T& archive) {
+		archive(WH);
+	}
+
+};
 
 //========================================
 // テクスチャマネージャークラス
@@ -34,26 +42,32 @@ typedef struct {
 class TEXTURE_MANEGER {
 private:
 	static map<string, unique_ptr<ID3D11ShaderResourceView, Release> > TextureResource;
-	//static unordered_map<size_t, TEXTURE_DATA> TextureFiles;//
+
+	//! テクスチャ名一覧
+	static unordered_set<string> TextureNames;//
+	static unordered_map<size_t, TEXTURE_DATA> TextureFiles;//
 
 	static void Load();		// テクスチャの読み込み
+
+	static bool File_Check(const string& file_name);
 
 public:
 
 	static void Init();
 	static void Uninit();
 
-	static void Add(const string& const file_name);
+	static void Add(const string& const file_name, const float width, const float height);
 	static void Unload(const string& const file_name);
 
 	static XMINT2* const Get_WH(const string& const file_name);
 
 	static ID3D11ShaderResourceView* const GetShaderResourceView(const string& const file_name);
 
-	//template<class T>
-	//void serialize(T& archive) {
-	//	archive(TextureFiles);
-	//}
+	template<class T>
+	void serialize(T& archive) {
+		archive(TextureNames);
+		archive(TextureFiles);
+	}
 };
 
 //========================================
