@@ -4,11 +4,6 @@
 #include	"Library/DirectXTex/WICTextureLoader.h"
 #include	"Library/DirectXTex/DDSTextureLoader.h"
 
-typedef struct {
-	string Name;
-	XMINT2 WH;
-}TEXTURE_FILE;
-
 static TEXTURE_FILE g_TextureFiles[] = {
 	{"number.png", XMINT2(512, 512) },
 	{"number02.png", XMINT2(320, 32) },
@@ -43,8 +38,8 @@ static TEXTURE_FILE g_TextureFiles[] = {
 	{"sky.png", XMINT2(8192, 4096) },
 };
 
-
 map<string, unique_ptr<ID3D11ShaderResourceView, Release> > TEXTURE_MANEGER::TextureResource;
+//unordered_map<size_t, TEXTURE_DATA> TEXTURE_MANEGER::TextureFiles;//
 
 // 読み込みテクスチャ数
 static const int TEXTURE_FILE_COUNT = sizeof(g_TextureFiles) / sizeof(g_TextureFiles[0]);
@@ -96,6 +91,16 @@ XMINT2* const TEXTURE::Get_WH()
 
 void TEXTURE_MANEGER::Init()
 {
+	//{
+	//	std::ifstream is("texture.dat", std::ios::binary);
+
+	//	if (is.is_open())
+	//	{
+	//		cereal::BinaryInputArchive archive(is);
+	//		archive(TextureFiles);
+	//	}
+	//}
+
 	Load();
 }
 

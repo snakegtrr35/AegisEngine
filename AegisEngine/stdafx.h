@@ -67,6 +67,7 @@ using namespace Math;
 #include	<string>
 #include	<functional>
 #include	<random>
+#include	<fstream>
 #include	<algorithm>
 #include	<functional>
 #include	<typeinfo>
