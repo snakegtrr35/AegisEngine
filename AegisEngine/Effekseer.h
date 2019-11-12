@@ -19,11 +19,6 @@
 #pragma comment(lib, "Library/Effekseer/lib/VS2017WIN64/Release/EffekseerSoundXAudio2.lib" )
 #endif
 
-struct EFFECT {
-	::Effekseer::Effect*	Effect = nullptr;
-	::Effekseer::Handle		Handle;
-};
-
 class EFFEKSEER_MANAGER {
 private:
 	static ::Effekseer::Manager*			Manager;
@@ -46,13 +41,25 @@ public:
 	static void Draw();
 	static void Updata();
 
+	static ::Effekseer::Manager* const Get_Manager();
+
+	static const map<string, ::Effekseer::Effect*>& Get_Effects();
+
 	static void Play(const string& name);
 	static void Play(const string& handle_name, const string& effect_name, const XMFLOAT3& position);
 	static void Play(const string& handle_name, const string& effect_name, const Math::VECTOR3& position);
 
-	static ::Effekseer::Manager* const Get_Manager();
+	static void Set_Location(const string& handle_name, const XMFLOAT3& position);
+	static void Set_Location(const string& handle_name, const Math::VECTOR3& position);
 
-	static const map<string, ::Effekseer::Effect*>& Get_Effects();
+	static void Set_Rotation(const string& handle_name, const XMFLOAT3& axis, const float angle);
+	static void Set_Rotation(const string& handle_name, const Math::VECTOR3& axis, const float angle);
+
+	static void Set_Scale(const string& handle_name, const XMFLOAT3& scale);
+	static void Set_Scale(const string& handle_name, const Math::VECTOR3& scale);
+
+
+	static void Set_Speed(const string& handle_name, const float speed);
 
 	//static const EFFECT& Get_Effect(const string& name);
 

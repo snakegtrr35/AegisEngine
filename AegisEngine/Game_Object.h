@@ -62,10 +62,12 @@ public:
 			Object_Name_Map[hash] = name;
 			Object_Name = name;
 		}
+#ifdef _DEBUG
 		else
 		{
 			Erroer_Message("Šù‚ÉŽg‚í‚ê‚Ä‚¢‚é–¼‘O‚Å‚·");
 		}
+#endif // _DEBUG
 	};
 
 

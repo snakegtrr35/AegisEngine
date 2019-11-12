@@ -15,15 +15,33 @@
 map<string, ::Effekseer::Effect*>	EFFEKSEER_MANAGER::Effects;
 map<string, ::Effekseer::Handle>	EFFEKSEER_MANAGER::Handles;
 
-::Effekseer::Matrix44 XMMATRIXToMatrix44(const XMMATRIX& matrix);
+::Effekseer::Matrix44 XMMATRIXToMatrix44(const XMMATRIX& matrix)
+{
+	XMFLOAT4X4 m;
+	XMStoreFloat4x4(&m, matrix);
+
+	::Effekseer::Matrix44 mtr;
+
+	for (char y = 0; y < 4; y++)
+	{
+		for (char x = 0; x < 4; x++)
+		{
+			mtr.Values[y][x] = m.m[y][x];
+		}
+	}
+
+	return mtr;
+}
 
 bool EFFEKSEER_MANAGER::Init()
 {
-	// 描画用インスタンスの生成
-	Renderer = ::EffekseerRendererDX11::Renderer::Create(CRenderer::GetDevice(), CRenderer::GetDeviceContext(), 2000);
-	if (nullptr == Renderer)
 	{
-		return false;
+		// 描画用インスタンスの生成
+		Renderer = ::EffekseerRendererDX11::Renderer::Create(CRenderer::GetDevice(), CRenderer::GetDeviceContext(), 2000);
+		if (nullptr == Renderer)
+		{
+			return false;
+		}
 	}
 
 	{
@@ -97,6 +115,8 @@ void EFFEKSEER_MANAGER::Uninit()
 	}
 	Effects.clear();
 
+	Handles.clear();
+
 	if (nullptr != Manager) Manager->Destroy(); Manager = nullptr;
 	if (nullptr != Sound) Sound->Destroy(); Sound = nullptr;
 	if (nullptr != Renderer) Renderer->Destroy(); Renderer = nullptr;
@@ -122,9 +142,11 @@ void EFFEKSEER_MANAGER::Updata()
 {
 	auto player = CManager::Get_Scene()->Get_Game_Object("player");
 
-	Manager->SetLocation(Handles["test"], Effekseer::Vector3D(player->Get_Position()->x, player->Get_Position()->y, player->Get_Position()->z));
+	Set_Location("test", XMFLOAT3(player->Get_Position()->x, player->Get_Position()->y, player->Get_Position()->z));
+
+	//Manager->SetLocation(Handles["test"], Effekseer::Vector3D(player->Get_Position()->x, player->Get_Position()->y, player->Get_Position()->z));
 	Manager->SetScale(Handles["test"], 0.5f, 0.5f, 0.5f);
-	Manager->SetRotation(Handles["test"], Effekseer::Vector3D(0, 1, 0), 45.0f);
+	Manager->SetRotation(Handles["test"], Effekseer::Vector3D(0, 1, 0), XMConvertToRadians(90.0f));
 
 	Set();
 
@@ -206,8 +228,6 @@ void EFFEKSEER_MANAGER::Set()
 			::Effekseer::Matrix44 matrix = XMMATRIXToMatrix44(mtr);
 
 			// 投影行列を設定
-			//Renderer->SetProjectionMatrix(
-			//	::Effekseer::Matrix44().PerspectiveFovRH(XMConvertToRadians(angle), (float)SCREEN_WIDTH / (float)SCREEN_HEIGHT, 1.0f, 1000.0f));
 			Renderer->SetProjectionMatrix(matrix);
 		}
 
@@ -224,8 +244,6 @@ void EFFEKSEER_MANAGER::Set()
 			::Effekseer::Matrix44 matrix = XMMATRIXToMatrix44(mtr);
 
 			// カメラ行列を設定
-			//Renderer->SetCameraMatrix(
-			//	::Effekseer::Matrix44().LookAtRH(position, at, up));
 			Renderer->SetCameraMatrix(matrix);
 		}
 
@@ -248,10 +266,20 @@ void EFFEKSEER_MANAGER::Play(const string& name)
 void EFFEKSEER_MANAGER::Play(const string& handle_name, const string& effect_name, const XMFLOAT3& position)
 {
 	// ロードしていないエフェクトの判定
+#ifdef _DEBUG
 	if (Effects.find(effect_name) == Effects.end())
 	{
+		string text("存在しないエフェクトです\n");
+		string t(effect_name.c_str());
+
+		text += t;
+		
+		Erroer_Message(text);
+
 		return;
 	}
+#endif // _DEBUG
+
 	Manager->StopEffect(Handles[handle_name]);
 
 	Handles[handle_name] = Manager->Play(Effects[effect_name], position.x, position.y, position.z);
@@ -260,10 +288,20 @@ void EFFEKSEER_MANAGER::Play(const string& handle_name, const string& effect_nam
 void EFFEKSEER_MANAGER::Play(const string& handle_name, const string& effect_name, const Math::VECTOR3& position)
 {
 	// ロードしていないエフェクトの判定
+#ifdef _DEBUG
 	if (Effects.find(effect_name) == Effects.end())
 	{
+		string text("存在しないエフェクトです\n");
+		string t(effect_name.c_str());
+
+		text += t;
+
+		Erroer_Message(text);
+
 		return;
 	}
+#endif // _DEBUG
+
 	Manager->StopEffect(Handles[handle_name]);
 
 	Handles[handle_name] = Manager->Play(Effects[effect_name], position.x, position.y, position.z);
@@ -279,26 +317,42 @@ const map<string, ::Effekseer::Effect*>& EFFEKSEER_MANAGER::Get_Effects()
 	return Effects;
 }
 
+void EFFEKSEER_MANAGER::Set_Location(const string& handle_name, const XMFLOAT3& position)
+{
+	Manager->SetLocation(Handles[handle_name], Effekseer::Vector3D(position.x, position.y, position.z));
+}
+
+void EFFEKSEER_MANAGER::Set_Location(const string& handle_name, const Math::VECTOR3& position)
+{
+	Manager->SetLocation(Handles[handle_name], Effekseer::Vector3D(position.x, position.y, position.z));
+}
+
+void EFFEKSEER_MANAGER::Set_Rotation(const string& handle_name, const XMFLOAT3& axis, const float angle)
+{
+	Manager->SetRotation(Handles[handle_name], Effekseer::Vector3D(axis.x, axis.y, axis.z), XMConvertToRadians(angle));
+}
+
+void EFFEKSEER_MANAGER::Set_Rotation(const string& handle_name, const Math::VECTOR3& axis, const float angle)
+{
+	Manager->SetRotation(Handles[handle_name], Effekseer::Vector3D(axis.x, axis.y, axis.z), XMConvertToRadians(angle));
+}
+
+void EFFEKSEER_MANAGER::Set_Scale(const string& handle_name, const XMFLOAT3& scale)
+{
+	Manager->SetScale(Handles[handle_name], scale.x, scale.y, scale.z);
+}
+
+void EFFEKSEER_MANAGER::Set_Scale(const string& handle_name, const Math::VECTOR3& scale)
+{
+	Manager->SetScale(Handles[handle_name], scale.x, scale.y, scale.z);
+}
+
+void EFFEKSEER_MANAGER::Set_Speed(const string& handle_name, const float speed)
+{
+	Manager->SetSpeed(Handles[handle_name], speed);
+}
+
 //const EFFECT& EFFEKSEER_MANAGER::Get_Effect(const string& name)
 //{
 //	return Effects[name];
 //}
-
-
-::Effekseer::Matrix44 XMMATRIXToMatrix44(const XMMATRIX& matrix)
-{
-	XMFLOAT4X4 m;
-	XMStoreFloat4x4(&m, matrix);
-
-	::Effekseer::Matrix44 mtr;
-
-	for (char y = 0; y < 4; y++)
-	{
-		for (char x = 0; x < 4; x++)
-		{
-			mtr.Values[y][x] = m.m[y][x];
-		}
-	}
-
-	return mtr;
-}
