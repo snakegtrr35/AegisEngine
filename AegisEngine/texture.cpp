@@ -133,6 +133,30 @@ void TEXTURE_MANEGER::Load()
 
 		file_name = path.substr(pos + 1);
 
+		//
+		time_t rtime;
+		struct tm* strtim;
+		strtim = localtime(&rtime);
+
+		filesystem::file_time_type file_time = filesystem::last_write_time(path);
+
+		auto sec = chrono::duration_cast<chrono::seconds>(file_time.time_since_epoch());
+
+		std::time_t t = sec.count();
+
+		const tm* lt = std::localtime(&t);
+
+		string s(asctime(lt));
+
+		/*void print_datetime(fs::file_time_type tp)
+		{
+			auto sec = chrono::duration_cast<chrono::seconds>(tp.time_since_epoch());
+
+			std::time_t t = sec.count();
+			const tm* lt = std::localtime(&t);
+			std::cout << std::put_time(lt, "%c") << std::endl;
+		}*/
+
 		h = hasher(file_name);
 		// 既に読み込んだテクスチャのスキップ
 		if (TextureFiles.find(h) != TextureFiles.end())
@@ -173,8 +197,10 @@ void TEXTURE_MANEGER::Load()
 			TextureFiles[h].WH.x = width;
 			TextureFiles[h].WH.y = height;
 
-			//// ファイル・ディレクトリの最終更新日時を取得
-			//file_time_type last_write_time(const path & p);
+			// ファイル・ディレクトリの最終更新日時を取得
+			//filesystem::file_time_type file_time = filesystem::last_write_time("regular.txt");
+
+			//filesystem::file_time_type file_time = filesystem::last_write_time(path);
 		}
 	}
 }

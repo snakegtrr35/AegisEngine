@@ -77,7 +77,10 @@ using namespace Math;
 #include	<algorithm>
 #include	<functional>
 #include	<typeinfo>
+#include	<chrono>
 #include	<filesystem>
+
+#include	<time.h>
 
 #endif // !INCLUDE
 
