@@ -291,7 +291,7 @@ void My_imgui::Draw(void)
 					int i = 0;
 					for (auto object : map)
 					{
-						// Mouse buttons : 0 = left, 1 = right, 2 = middle + extras
+						// マウスボタン : 0 = left, 1 = right, 2 = middle + extras
 						string str = object.second.c_str();
 
 						node_flags |= /*ImGuiTreeNodeFlags_Leaf |*/ ImGuiTreeNodeFlags_NoTreePushOnOpen; // ImGuiTreeNodeFlags_Bullet
@@ -524,27 +524,31 @@ void EditTransform(const float* cameraView, float* cameraProjection, float* matr
 void My_imgui::Texture_Import()
 {
 	static bool flag = true;
+	static bool flag2 = false;
 
 	static string file_name;
 	static int height = 0, width = 0;
 
-	ImGuiWindowFlags window_flags = ImGuiWindowFlags_NoResize;
+	ImGuiWindowFlags window_flags = ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse;
 
 	if(Texture_Import_Enable)
 	{
-		ImGui::Begin(u8"テクスチャ インポート", &Texture_Import_Enable, window_flags);
+
+		static char check;
+
+		ImGui::Begin((char*)u8"テクスチャ インポート", &Texture_Import_Enable, window_flags);
 		{
 			ImGui::Indent(10.0f);
 
-			ImGui::InputText(u8"テクスチャ名", &file_name);
+			ImGui::InputText((char*)u8"テクスチャ名", &file_name);
 
 			ImGui::Spacing();
 
-			ImGui::DragInt(u8"縦の長さ", &height, 0.5f, 0, TEXTURE_SIZE_MAX);
+			ImGui::DragInt((char*)u8"縦の長さ", &height, 0.5f, 0, TEXTURE_SIZE_MAX);
 
 			ImGui::Spacing();
 
-			ImGui::DragInt(u8"横の長さ", &width, 0.5f, 0, TEXTURE_SIZE_MAX);
+			ImGui::DragInt((char*)u8"横の長さ", &width, 0.5f, 0, TEXTURE_SIZE_MAX);
 
 			ImGui::Spacing();
 			ImGui::Spacing();
@@ -555,12 +559,63 @@ void My_imgui::Texture_Import()
 
 			ImVec2 size(80, 30);
 
-			if (ImGui::Button(u8"インポート", size))
+			if (ImGui::Button((char*)u8"インポート", size))
 			{
-				TEXTURE_MANEGER::Add(file_name, width, height);
+				check = File_Check(file_name, width, height);
+
+				if (1 == check)
+				{
+					TEXTURE_MANEGER::Add(file_name, width, height);
+
+					ImGui::Text((char*)u8"テクスチャが読み込まれました");
+				}
+				else
+				{
+					flag2 = true;
+				}
 			}
 		}
 		ImGui::End();
+
+		{
+			if (flag2)
+			{
+				window_flags |= ImGuiWindowFlags_NoMove;
+
+				ImGui::Begin((char*)u8"エラー", &flag2, window_flags);
+
+				ImGui::Indent(20.0f);
+
+				ImGui::Spacing();
+				ImGui::Spacing();
+				ImGui::Spacing();
+				ImGui::Spacing();
+
+				switch (check)
+				{
+					case -1:
+						ImGui::Text((char*)u8"高さか幅の値が不正です");
+						break;
+
+					case -2:
+						ImGui::Text((char*)u8"テクスチャ名が入力されてないです");
+						break;
+
+					case -3:
+						ImGui::Text((char*)u8"既に読み込んでいるテクスチャです");
+						break;
+
+					case -4:
+						ImGui::Text((char*)u8"テクスチャが存在しないです");
+						break;
+
+					default:
+						break;
+				}
+
+				ImGui::End();
+			}
+		}
 
 		flag = true;
 	}
@@ -573,7 +628,41 @@ void My_imgui::Texture_Import()
 
 			flag = false;
 		}
+
+		flag2 = false;
 	}
+}
+
+const char My_imgui::File_Check(const string& file_name, const float width, const float height)
+{
+	if (width <= 0 || TEXTURE_SIZE_MAX < width ||
+		height <= 0 || TEXTURE_SIZE_MAX < height)
+	{
+		// 高さか幅の値が不正
+		return -1;
+	}
+
+	if (file_name.empty())
+	{
+		// テクスチャ名が入力されていない
+		return -2;
+	}
+
+	if (TEXTURE_MANEGER::Get_TexturePath().find(file_name) != TEXTURE_MANEGER::Get_TexturePath().end())
+	{
+		// 既に読み込んでいるテクスチャ
+		return -3;
+	}
+
+	// ファイルがあるかの判定
+	bool flag = std::filesystem::exists(file_name);
+	if (false == flag)
+	{
+		// ファイルが存在しない
+		return -4;
+	}
+
+	return 1;
 }
 
 #endif // _DEBUG

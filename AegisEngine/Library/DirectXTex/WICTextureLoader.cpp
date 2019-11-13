@@ -648,6 +648,7 @@ namespace
                 SRVDesc.Texture2D.MipLevels = (autogen) ? -1 : 1;
 
                 hr = d3dDevice->CreateShaderResourceView(tex, &SRVDesc, textureView);
+
                 if (FAILED(hr))
                 {
                     tex->Release();
@@ -884,7 +885,7 @@ HRESULT DirectX::CreateWICTextureFromFile(
         fileName, maxsize,
         D3D11_USAGE_DEFAULT, D3D11_BIND_SHADER_RESOURCE, 0, 0,
         WIC_LOADER_DEFAULT,
-        texture, textureView);
+        texture, textureView, nullptr, nullptr);
 }
 
 _Use_decl_annotations_
@@ -894,6 +895,8 @@ HRESULT DirectX::CreateWICTextureFromFile(
     const wchar_t* fileName,
     ID3D11Resource** texture,
     ID3D11ShaderResourceView** textureView,
+	UINT* width,
+	UINT* height,
     size_t maxsize)
 {
     return CreateWICTextureFromFileEx(d3dDevice, d3dContext,
@@ -901,7 +904,7 @@ HRESULT DirectX::CreateWICTextureFromFile(
         maxsize,
         D3D11_USAGE_DEFAULT, D3D11_BIND_SHADER_RESOURCE, 0, 0,
         WIC_LOADER_DEFAULT,
-        texture, textureView);
+        texture, textureView, width, height);
 }
 
 _Use_decl_annotations_
@@ -922,7 +925,7 @@ HRESULT DirectX::CreateWICTextureFromFileEx(
         maxsize,
         usage, bindFlags, cpuAccessFlags, miscFlags,
         loadFlags,
-        texture, textureView);
+        texture, textureView, nullptr, nullptr);
 }
 
 _Use_decl_annotations_
@@ -937,7 +940,9 @@ HRESULT DirectX::CreateWICTextureFromFileEx(
     unsigned int miscFlags,
     unsigned int loadFlags,
     ID3D11Resource** texture,
-    ID3D11ShaderResourceView** textureView)
+    ID3D11ShaderResourceView** textureView,
+	UINT* width,
+	UINT* height)
 {
     if (texture)
     {
@@ -969,6 +974,13 @@ HRESULT DirectX::CreateWICTextureFromFileEx(
     hr = decoder->GetFrame(0, frame.GetAddressOf());
     if (FAILED(hr))
         return hr;
+
+	// ‰æ‘œƒTƒCƒY‚ÌŽæ“¾
+	if (nullptr != width && nullptr != height)
+	{
+		frame->GetSize(width, height);
+	}
+
 
     hr = CreateTextureFromWIC(d3dDevice, d3dContext,
         frame.Get(),

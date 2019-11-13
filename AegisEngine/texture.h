@@ -11,11 +11,6 @@ typedef struct {
 	string Name;
 	XMINT2 WH;
 
-	template<class T>
-	void serialize(T& archive) {
-		archive(Name, WH);
-	}
-
 }TEXTURE_FILE;
 
 
@@ -32,8 +27,8 @@ struct TEXTURE_DATA {
 	template<class T>
 	void serialize(T& archive) {
 		archive(WH);
+		archive(Resource);
 	}
-
 };
 
 //========================================
@@ -44,12 +39,10 @@ private:
 	static map<string, unique_ptr<ID3D11ShaderResourceView, Release> > TextureResource;
 
 	//! テクスチャ名一覧
-	static unordered_set<string> TextureNames;//
-	static unordered_map<size_t, TEXTURE_DATA> TextureFiles;//
+	static unordered_set<string> TexturePath;					// テクスチャのパス
+	static unordered_map<size_t, TEXTURE_DATA> TextureFiles;	// テクスチャデータ
 
 	static void Load();		// テクスチャの読み込み
-
-	static bool File_Check(const string& file_name);
 
 public:
 
@@ -63,9 +56,11 @@ public:
 
 	static ID3D11ShaderResourceView* const GetShaderResourceView(const string& const file_name);
 
+	static const unordered_set<string>& Get_TexturePath();
+
 	template<class T>
 	void serialize(T& archive) {
-		archive(TextureNames);
+		archive(TexturePath);
 		archive(TextureFiles);
 	}
 };

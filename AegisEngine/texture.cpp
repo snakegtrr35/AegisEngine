@@ -4,6 +4,7 @@
 #include	"Library/DirectXTex/WICTextureLoader.h"
 #include	"Library/DirectXTex/DDSTextureLoader.h"
 
+
 static TEXTURE_FILE g_TextureFiles[] = {
 	{"number.png", XMINT2(512, 512) },
 	{"number02.png", XMINT2(320, 32) },
@@ -41,7 +42,7 @@ static TEXTURE_FILE g_TextureFiles[] = {
 map<string, unique_ptr<ID3D11ShaderResourceView, Release> > TEXTURE_MANEGER::TextureResource;
 //unordered_map<size_t, TEXTURE_DATA> TEXTURE_MANEGER::TextureFiles;//
 
-unordered_set<string>					TEXTURE_MANEGER::TextureNames;//
+unordered_set<string>					TEXTURE_MANEGER::TexturePath;//
 unordered_map<size_t, TEXTURE_DATA>		TEXTURE_MANEGER::TextureFiles;//
 
 // 読み込みテクスチャ数
@@ -52,40 +53,50 @@ static const int TEXTURE_FILE_COUNT = sizeof(g_TextureFiles) / sizeof(g_TextureF
 
 void TEXTURE_MANEGER::Init()
 {
-	//{
-	//	std::ofstream file("texture.dat", std::ios::binary);
+	bool flag;
 
-	//	if (file.is_open())
-	//	{
-	//		cereal::BinaryOutputArchive archive(file);
-	//		archive(TextureNames);
-	//		archive(TextureFiles);
-	//	}
-	//}
+	{
+		std::ofstream file("texture.dat", std::ios::binary);
 
+		flag = file.is_open();
+
+		if (flag)
+		{
+			cereal::BinaryOutputArchive archive(file);
+			archive(TexturePath);
+			archive(TextureFiles);
+		}
+	}
+	// デフォルトの画像データの読み込み
 	Load();
+
+	//hash<string> hasher;
+
+	//for (int i = 0; i < TEXTURE_FILE_COUNT; i++)
+	//{
+	//	size_t hash = hasher(g_TextureFiles[i].Name);
+
+	//	TextureFiles[hash].Resource.reset(TextureResource[g_TextureFiles[i].Name].get());
+	//	TextureFiles[hash].WH.x = g_TextureFiles[i].WH.x;
+	//	TextureFiles[hash].WH.y = g_TextureFiles[i].WH.y;
+	//}
 }
 
 void TEXTURE_MANEGER::Uninit()
 {
-	//{
-	//	std::ifstream file("texture.dat", std::ios::binary);
-
-	//	if (file.is_open())
-	//	{
-	//		cereal::BinaryInputArchive archive(file);
-	//		archive(TextureNames);
-	//		archive(TextureFiles);
-	//	}
-	//}
-
-	/*for (auto tex : TextureResource)
 	{
-		tex.second->Release();
-	}
-	TextureResource.clear();*/
+		TEXTURE_MANEGER t;
 
-	TextureNames.clear();
+		std::ifstream file("texture.dat", std::ios::binary);
+
+		if (file.is_open())
+		{
+			cereal::BinaryInputArchive archive(file);
+			archive(t);
+		}
+	}
+
+	TexturePath.clear();
 
 	for (auto tex = TextureResource.begin(); tex != TextureResource.end(); tex++)
 	{
@@ -94,88 +105,107 @@ void TEXTURE_MANEGER::Uninit()
 	TextureResource.clear();
 }
 
-void TEXTURE_MANEGER::Load(void)
+void TEXTURE_MANEGER::Load()
 {
-	ID3D11ShaderResourceView* ShaderResourceView;
+	UINT width, height;
 
-	wstring path = L"asset/texture/";
-	wstring file_name;
+	string path;			// ファイル名(パス付き) 
+	string file_name;		// ファイル名(パスなし)
 
 	size_t pos;
+	size_t h;				// ハッシュ値
 
+	ID3D11ShaderResourceView* ShaderResourceView;
+	wstring name;
 	wstring type;
+	hash<string> hasher;
 
-	for (int i = 0; i < TEXTURE_FILE_COUNT; i++)
-	{
-		HRESULT hr;
+	std::filesystem::directory_iterator e = std::filesystem::directory_iterator("./asset/Default/texture");
+	for (auto f : e) {
+		
+		// 一つ一つのファイル名(パス付き)
+		path = f.path().string();
 
-		// char から wchar_t への変換
-		file_name = stringTowstring(g_TextureFiles[i].Name);
+		// 置換
+		replace(path.begin(), path.end(), '\\', '/');
 
-		pos = file_name.find_last_of(L".");
+		pos = path.find_last_of("/");
 
-		type = file_name.substr(pos + 1, 3);
+		file_name = path.substr(pos + 1);
 
-		path = L"asset/texture/";
+		h = hasher(file_name);
+		// 既に読み込んだテクスチャのスキップ
+		if (TextureFiles.find(h) != TextureFiles.end())
+			continue;
 
-		path = path + file_name;
+		// テクスチャ名の登録
+		TexturePath.insert(path);
 
-		if (L"dds" == type)	// dds
+		// テクスチャの読み込み
 		{
-			hr = CreateDDSTextureFromFile(CRenderer::GetDevice(), CRenderer::GetDeviceContext(), path.c_str(), nullptr, &ShaderResourceView);
-			if (FAILED(hr))
-			{
-				FAILDE_ASSERT;
-				return;
-			}
-		}
-		else	// jpg か png
-		{
-			hr = CreateWICTextureFromFile(CRenderer::GetDevice(), CRenderer::GetDeviceContext(), path.c_str(), nullptr, &ShaderResourceView);
-			if (FAILED(hr))
-			{
-				FAILDE_ASSERT;
-				return;
-			}
-		}
+			file_name = "asset/Default/texture/" + file_name;
 
-		TextureResource[g_TextureFiles[i].Name].reset(ShaderResourceView);
+			HRESULT hr;
+			
+			// char から wchar_t への変換
+			name = stringTowstring(file_name);
+			
+			if (L"dds" == type)	// dds
+			{
+				hr = CreateDDSTextureFromFile(CRenderer::GetDevice(), CRenderer::GetDeviceContext(), name.c_str(), nullptr, &ShaderResourceView);
+				if (FAILED(hr))
+				{
+					FAILDE_ASSERT;
+					return;
+				}
+			}
+			else	// jpg か png
+			{
+				hr = CreateWICTextureFromFile(CRenderer::GetDevice(), CRenderer::GetDeviceContext(), name.c_str(), nullptr, &ShaderResourceView, &width, &height);
+				if (FAILED(hr))
+				{
+					FAILDE_ASSERT;
+					return;
+				}
+			}
+
+			TextureFiles[h].Resource.reset(ShaderResourceView);
+			TextureFiles[h].WH.x = width;
+			TextureFiles[h].WH.y = height;
+
+			//// ファイル・ディレクトリの最終更新日時を取得
+			//file_time_type last_write_time(const path & p);
+		}
 	}
 }
 
 void TEXTURE_MANEGER::Add(const string& const file_name, const float width, const float height)
 {
-	if (false == File_Check(file_name))
-	{
-		return;
-	}
-
 	ID3D11ShaderResourceView* ShaderResourceView;
-
-	wstring path = L"asset/texture/";
 
 	// char から wchar_t への変換
 	wstring file = stringTowstring(file_name);
 
-	path = path + file;
+	// 置換
+	replace(file.begin(), file.end(), '\\', '/');
 
 	HRESULT hr;
 
-	hr = CreateWICTextureFromFile(CRenderer::GetDevice(), CRenderer::GetDeviceContext(), path.c_str(), nullptr, &ShaderResourceView);
+	hr = CreateWICTextureFromFile(CRenderer::GetDevice(), CRenderer::GetDeviceContext(), file.c_str(), nullptr, &ShaderResourceView, nullptr, nullptr);
 	if (FAILED(hr))
 	{
 		return;
 	}
 
-	//hash<string> hasher;
+	hash<string> hasher;
 
-	//size_t hash = hasher(file_name);
+	size_t hash = hasher(file_name);
 
-	//TextureFiles[hash].Resource.reset(ShaderResourceView);
-	//TextureFiles[hash].WH.x = width;
-	//TextureFiles[hash].WH.y = height;
+	TextureFiles[hash].Resource.reset(ShaderResourceView);
+	TextureFiles[hash].WH.x = width;
+	TextureFiles[hash].WH.y = height;
 
-	TextureResource[file_name].reset(ShaderResourceView);
+	//TextureResource[file_name].reset(ShaderResourceView);
 }
 
 // テクスチャの解放
@@ -185,12 +215,21 @@ void TEXTURE_MANEGER::Unload(const string& const file_name)
 
 XMINT2* const TEXTURE_MANEGER::Get_WH(const string& file_name)
 {
-	for (int i = 0; i < TEXTURE_FILE_COUNT; i++)
+	//for (int i = 0; i < TEXTURE_FILE_COUNT; i++)
+	//{
+	//	if (file_name == g_TextureFiles[i].Name)
+	//	{
+	//		return &g_TextureFiles[i].WH;
+	//	}
+	//}
+
+	hash<string> hasher;
+
+	size_t hash = hasher(file_name);
+
+	if (TextureFiles.find(hash) != TextureFiles.end())
 	{
-		if (file_name == g_TextureFiles[i].Name)
-		{
-			return &g_TextureFiles[i].WH;
-		}
+		return &TextureFiles[hash].WH;
 	}
 
 	return nullptr;
@@ -198,55 +237,29 @@ XMINT2* const TEXTURE_MANEGER::Get_WH(const string& file_name)
 
 ID3D11ShaderResourceView* const TEXTURE_MANEGER::GetShaderResourceView(const string& const file_name)
 {
-	/*for (auto tex : TextureResource)
-	{
-		if (file_name == tex.first)
-		{
-			return tex.second;
-		}
-	}*/
+	//for (auto tex = TextureResource.begin(); tex != TextureResource.end(); tex++)
+	//{
+	//	if (file_name == tex->first)
+	//	{
+	//		return tex->second.get();
+	//	}
+	//}
 
-	for (auto tex = TextureResource.begin(); tex != TextureResource.end(); tex++)
+	hash<string> hasher;
+
+	size_t hash = hasher(file_name);
+
+	if (TextureFiles.find(hash) != TextureFiles.end())
 	{
-		if (file_name == tex->first)
-		{
-			return tex->second.get();
-		}
+		return TextureFiles[hash].Resource.get();
 	}
 
 	return nullptr;
 }
 
-bool TEXTURE_MANEGER::File_Check(const string& file_name)
+const unordered_set<string>& TEXTURE_MANEGER::Get_TexturePath()
 {
-	if (file_name.empty())
-	{
-		Erroer_Message("テクスチャ名を入力して下さい");
-		return false;
-	}
-
-	if (TextureNames.find(file_name) != TextureNames.end())
-	{
-		Erroer_Message("既に読み込んでいるテクスチャです");
-		return false;
-	}
-
-	string name = file_name;//
-
-	string path = "asset/texture/";
-	path += file_name;
-
-	// ファイルがあるかの判定
-	bool flag = std::filesystem::exists(path);
-	if (!flag)
-	{
-		name += " がありません";
-
-		Erroer_Message(name);
-		return false;
-	}
-
-	return true;
+	return TexturePath;
 }
 
 

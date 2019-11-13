@@ -398,7 +398,7 @@ vector<TEXTURE_S> CMODEL::loadMaterialTextures(aiMaterial* mat, aiTextureType ty
 				wstring filenamews = wstring(filename.begin(), filename.end());
 
 				{
-					hr = CreateWICTextureFromFile(CRenderer::GetDevice(), CRenderer::GetDeviceContext(), filenamews.c_str(), nullptr, &texture.Texture);
+					hr = CreateWICTextureFromFile(CRenderer::GetDevice(), CRenderer::GetDeviceContext(), filenamews.c_str(), nullptr, &texture.Texture, nullptr, nullptr);
 				}
 
 				if (FAILED(hr))

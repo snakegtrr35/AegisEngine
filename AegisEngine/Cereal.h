@@ -8,7 +8,7 @@ namespace DirectX
 	// 非侵入型のシリアライズ定義
 
 	template<class Archive>
-	void serializeXMINT2(Archive& archive, XMINT2& vector)
+	void serialize(Archive& archive, XMINT2& vector)
 	{
 		archive(vector.x, vector.y);
 	}

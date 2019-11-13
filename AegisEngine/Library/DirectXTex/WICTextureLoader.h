@@ -67,7 +67,11 @@ namespace DirectX
         _In_z_ const wchar_t* szFileName,
         _Outptr_opt_ ID3D11Resource** texture,
         _Outptr_opt_ ID3D11ShaderResourceView** textureView,
+		UINT* width,
+		UINT* height,
         _In_ size_t maxsize = 0);
+
+
 
     // Extended version
     HRESULT CreateWICTextureFromMemoryEx(
@@ -121,5 +125,7 @@ namespace DirectX
         _In_ unsigned int miscFlags,
         _In_ unsigned int loadFlags,
         _Outptr_opt_ ID3D11Resource** texture,
-        _Outptr_opt_ ID3D11ShaderResourceView** textureView);
+        _Outptr_opt_ ID3D11ShaderResourceView** textureView,
+		UINT* width,
+		UINT* height);
 }
