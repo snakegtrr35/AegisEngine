@@ -471,7 +471,6 @@ void Draw_Inspector(const string& name)
 	}
 }
 
-
 void EditTransform(const float* cameraView, float* cameraProjection, float* matrix, bool enable, GAME_OBJECT* object)
 {
 	static ImGuizmo::OPERATION mCurrentGizmoOperation(ImGuizmo::TRANSLATE);
@@ -537,18 +536,19 @@ void My_imgui::Texture_Import()
 
 		ImGui::Begin((char*)u8"テクスチャ インポート", &Texture_Import_Enable, window_flags);
 		{
-			ImGui::Indent(10.0f);
+			ImGui::Indent(15.0f);
 
 			ImGui::InputText((char*)u8"テクスチャ名", &file_name);
+			ImGui::SameLine(); HelpMarker((char*)u8"対応フォーマットは 'png' 'jpg''dds'");
 
 			ImGui::Spacing();
 			ImGui::Spacing();
 			ImGui::Spacing();
 			ImGui::Spacing();
 
-			ImGui::Indent(90);
+			ImGui::Indent(100);
 
-			ImVec2 size(80, 30);
+			ImVec2 size(100, 40);
 
 			if (ImGui::Button((char*)u8"インポート", size))
 			{
@@ -571,7 +571,7 @@ void My_imgui::Texture_Import()
 		{
 			if (flag2)
 			{
-				window_flags |= ImGuiWindowFlags_NoMove;
+				ImGui::SetNextWindowPos(ImVec2(SCREEN_WIDTH * 0.5f - 120.0f, SCREEN_HEIGHT * 0.5f - 55.0f), ImGuiCond_Appearing);
 
 				ImGui::Begin((char*)u8"エラー", &flag2, window_flags);
 
