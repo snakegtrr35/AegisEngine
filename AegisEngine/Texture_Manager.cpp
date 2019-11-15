@@ -95,7 +95,7 @@ void TEXTURE_MANEGER::Updata()
 
 			if ("dds" == type)	// dds
 			{
-				hr = CreateDDSTextureFromFile(CRenderer::GetDevice(), CRenderer::GetDeviceContext(), name.c_str(), nullptr, &ShaderResourceView);
+				hr = CreateDDSTextureFromFile(CRenderer::GetDevice(), CRenderer::GetDeviceContext(), name.c_str(), nullptr, &ShaderResourceView, nullptr, nullptr);
 				if (FAILED(hr))
 				{
 					FAILDE_ASSERT;
@@ -120,7 +120,7 @@ void TEXTURE_MANEGER::Updata()
 
 void TEXTURE_MANEGER::Default_Load(const bool flag)
 {
-	UINT width, height;
+	int width, height;
 
 	string path;			// ファイル名(パス付き) 
 	string file_name;		// ファイル名(パスなし)
@@ -168,7 +168,7 @@ void TEXTURE_MANEGER::Default_Load(const bool flag)
 
 			if ("dds" == type)	// dds
 			{
-				hr = CreateDDSTextureFromFile(CRenderer::GetDevice(), CRenderer::GetDeviceContext(), name.c_str(), nullptr, &ShaderResourceView);
+				hr = CreateDDSTextureFromFile(CRenderer::GetDevice(), CRenderer::GetDeviceContext(), name.c_str(), nullptr, &ShaderResourceView, &width, &height);
 				if (FAILED(hr))
 				{
 					FAILDE_ASSERT;
@@ -194,7 +194,7 @@ void TEXTURE_MANEGER::Default_Load(const bool flag)
 
 void TEXTURE_MANEGER::Load(const bool flag)
 {
-	UINT width, height;
+	int width, height;
 
 	string path;			// ファイル名(パス付き) 
 	string file_name;		// ファイル名(パスなし)
@@ -241,7 +241,7 @@ void TEXTURE_MANEGER::Load(const bool flag)
 
 			if ("dds" == type)	// dds
 			{
-				hr = CreateDDSTextureFromFile(CRenderer::GetDevice(), CRenderer::GetDeviceContext(), name.c_str(), nullptr, &ShaderResourceView);
+				hr = CreateDDSTextureFromFile(CRenderer::GetDevice(), CRenderer::GetDeviceContext(), name.c_str(), nullptr, &ShaderResourceView, &width, &height);
 				if (FAILED(hr))
 				{
 					FAILDE_ASSERT;
