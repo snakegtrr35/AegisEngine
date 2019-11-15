@@ -11,7 +11,7 @@
 
 #include	"Scene.h"
 #include	"manager.h"
-#include	"texture.h"
+#include	"Texture_Manager.h"
 
 extern float radius;
 
@@ -633,7 +633,7 @@ void My_imgui::Texture_Import()
 	}
 }
 
-const char My_imgui::File_Check(const string& file_name, const float width, const float height)
+const char My_imgui::File_Check(string& file_name, const float width, const float height)
 {
 	if (width <= 0 || TEXTURE_SIZE_MAX < width ||
 		height <= 0 || TEXTURE_SIZE_MAX < height)
@@ -648,10 +648,19 @@ const char My_imgui::File_Check(const string& file_name, const float width, cons
 		return -2;
 	}
 
-	if (TEXTURE_MANEGER::Get_TexturePath().find(file_name) != TEXTURE_MANEGER::Get_TexturePath().end())
 	{
-		// 既に読み込んでいるテクスチャ
-		return -3;
+		// 置換
+		std:: replace(file_name.begin(), file_name.end(), '\\', '/');
+
+		size_t pos = file_name.find_last_of("/");
+
+		string name = file_name.substr(pos + 1);
+
+		if (TEXTURE_MANEGER::Get_TextureFile().find(name) != TEXTURE_MANEGER::Get_TextureFile().end())
+		{
+			// 既に読み込んでいるテクスチャ
+			return -3;
+		}
 	}
 
 	// ファイルがあるかの判定

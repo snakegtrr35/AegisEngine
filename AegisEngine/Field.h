@@ -5,6 +5,7 @@
 
 #include	"Game_Object.h"
 #include	"texture.h"
+#include	"Renderer.h"
 #include	"main.h"
 
 class FIELD : public GAME_OBJECT {

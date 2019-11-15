@@ -189,6 +189,9 @@
     <ClCompile Include="imgui\imgui_stdlib.cpp">
       <Filter>Imgui</Filter>
     </ClCompile>
+    <ClCompile Include="Texture_Manager.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="audio_clip.h">
@@ -364,6 +367,9 @@
     </ClInclude>
     <ClInclude Include="imgui\imgui_stdlib.h">
       <Filter>Imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="Texture_Manager.h">
+      <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

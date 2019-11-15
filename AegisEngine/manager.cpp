@@ -3,7 +3,7 @@
 #include	"Renderer.h"
 #include	"Input.h"
 #include	"Scene.h"
-#include	"texture.h"
+#include	"Texture_Manager.h"
 #include	"Timer.h"
 #include	"audio_clip.h"
 #include	"Effekseer.h"

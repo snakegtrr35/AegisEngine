@@ -1,292 +1,44 @@
-#include	"Renderer.h"
 #include	"texture.h"
+#include	"Texture_Manager.h"
+#include	"Renderer.h"
 
 #include	"Library/DirectXTex/WICTextureLoader.h"
 #include	"Library/DirectXTex/DDSTextureLoader.h"
 
 
-static TEXTURE_FILE g_TextureFiles[] = {
-	{"number.png", XMINT2(512, 512) },
-	{"number02.png", XMINT2(320, 32) },
-
-	{"title.png", XMINT2(1920, 1080) },
-	{"game_clear.png", XMINT2(1920, 1080) },
-	{"game_over.png", XMINT2(1920, 1080) },
-
-	{"field004.png", XMINT2(128, 128) },
-	{"shadow000.jpg", XMINT2(80, 80) },
-	{"Explosion.png", XMINT2(360, 360) },
-	{"arrow.png", XMINT2(665, 95) },
-	{"Reticule.png", XMINT2(512, 512) },
-
-	{"hp_rod.png", XMINT2(64, 256) },
-	{"hp.png", XMINT2(2, 2) },
-	{"bullet_icon.png", XMINT2(64, 128) },
-
-	{"pause.png", XMINT2(512, 512) },
-	{"select.png", XMINT2(60, 60) },
-
-	{"UVCheckerMap01-512.png", XMINT2(512, 512) },
-	{"UVCheckerMap01-1024.png", XMINT2(1024, 1024) },
-
-	{"asphalt01-pattern.jpg", XMINT2(1000, 1000) },
-
-	{"asult_rifl.png", XMINT2(512, 512) },
-	{"Bazooka.png", XMINT2(512, 512) },
-
-	{"go.png", XMINT2(256, 128) },
-
-	{"sky.png", XMINT2(8192, 4096) },
-};
-
-map<string, unique_ptr<ID3D11ShaderResourceView, Release> > TEXTURE_MANEGER::TextureResource;
-//unordered_map<size_t, TEXTURE_DATA> TEXTURE_MANEGER::TextureFiles;//
-
-unordered_set<string>					TEXTURE_MANEGER::TexturePath;//
-unordered_map<size_t, TEXTURE_DATA>		TEXTURE_MANEGER::TextureFiles;//
-
-// 読み込みテクスチャ数
-static const int TEXTURE_FILE_COUNT = sizeof(g_TextureFiles) / sizeof(g_TextureFiles[0]);
-
-
-//================================================================================================================================================================
-
-void TEXTURE_MANEGER::Init()
-{
-	bool flag;
-
-	{
-		std::ofstream file("texture.dat", std::ios::binary);
-
-		flag = file.is_open();
-
-		if (flag)
-		{
-			cereal::BinaryOutputArchive archive(file);
-			archive(TexturePath);
-			archive(TextureFiles);
-		}
-	}
-	// デフォルトの画像データの読み込み
-	Load();
-
-	//hash<string> hasher;
-
-	//for (int i = 0; i < TEXTURE_FILE_COUNT; i++)
-	//{
-	//	size_t hash = hasher(g_TextureFiles[i].Name);
-
-	//	TextureFiles[hash].Resource.reset(TextureResource[g_TextureFiles[i].Name].get());
-	//	TextureFiles[hash].WH.x = g_TextureFiles[i].WH.x;
-	//	TextureFiles[hash].WH.y = g_TextureFiles[i].WH.y;
-	//}
-}
-
-void TEXTURE_MANEGER::Uninit()
-{
-	{
-		TEXTURE_MANEGER t;
-
-		std::ifstream file("texture.dat", std::ios::binary);
-
-		if (file.is_open())
-		{
-			cereal::BinaryInputArchive archive(file);
-			archive(t);
-		}
-	}
-
-	TexturePath.clear();
-
-	for (auto tex = TextureResource.begin(); tex != TextureResource.end(); tex++)
-	{
-		tex->second.reset(nullptr);
-	}
-	TextureResource.clear();
-}
-
-void TEXTURE_MANEGER::Load()
-{
-	UINT width, height;
-
-	string path;			// ファイル名(パス付き) 
-	string file_name;		// ファイル名(パスなし)
-
-	size_t pos;
-	size_t h;				// ハッシュ値
-
-	ID3D11ShaderResourceView* ShaderResourceView;
-	wstring name;
-	wstring type;
-	hash<string> hasher;
-
-	std::filesystem::directory_iterator e = std::filesystem::directory_iterator("./asset/Default/texture");
-	for (auto f : e) {
-		
-		// 一つ一つのファイル名(パス付き)
-		path = f.path().string();
-
-		// 置換
-		replace(path.begin(), path.end(), '\\', '/');
-
-		pos = path.find_last_of("/");
-
-		file_name = path.substr(pos + 1);
-
-		//
-		time_t rtime;
-		struct tm* strtim;
-		strtim = localtime(&rtime);
-
-		filesystem::file_time_type file_time = filesystem::last_write_time(path);
-
-		auto sec = chrono::duration_cast<chrono::seconds>(file_time.time_since_epoch());
-
-		std::time_t t = sec.count();
-
-		const tm* lt = std::localtime(&t);
-
-		string s(asctime(lt));
-
-		/*void print_datetime(fs::file_time_type tp)
-		{
-			auto sec = chrono::duration_cast<chrono::seconds>(tp.time_since_epoch());
-
-			std::time_t t = sec.count();
-			const tm* lt = std::localtime(&t);
-			std::cout << std::put_time(lt, "%c") << std::endl;
-		}*/
-
-		h = hasher(file_name);
-		// 既に読み込んだテクスチャのスキップ
-		if (TextureFiles.find(h) != TextureFiles.end())
-			continue;
-
-		// テクスチャ名の登録
-		TexturePath.insert(path);
-
-		// テクスチャの読み込み
-		{
-			file_name = "asset/Default/texture/" + file_name;
-
-			HRESULT hr;
-			
-			// char から wchar_t への変換
-			name = stringTowstring(file_name);
-			
-			if (L"dds" == type)	// dds
-			{
-				hr = CreateDDSTextureFromFile(CRenderer::GetDevice(), CRenderer::GetDeviceContext(), name.c_str(), nullptr, &ShaderResourceView);
-				if (FAILED(hr))
-				{
-					FAILDE_ASSERT;
-					return;
-				}
-			}
-			else	// jpg か png
-			{
-				hr = CreateWICTextureFromFile(CRenderer::GetDevice(), CRenderer::GetDeviceContext(), name.c_str(), nullptr, &ShaderResourceView, &width, &height);
-				if (FAILED(hr))
-				{
-					FAILDE_ASSERT;
-					return;
-				}
-			}
-
-			TextureFiles[h].Resource.reset(ShaderResourceView);
-			TextureFiles[h].WH.x = width;
-			TextureFiles[h].WH.y = height;
-
-			// ファイル・ディレクトリの最終更新日時を取得
-			//filesystem::file_time_type file_time = filesystem::last_write_time("regular.txt");
-
-			//filesystem::file_time_type file_time = filesystem::last_write_time(path);
-		}
-	}
-}
-
-void TEXTURE_MANEGER::Add(const string& const file_name, const float width, const float height)
-{
-	ID3D11ShaderResourceView* ShaderResourceView;
-
-	// char から wchar_t への変換
-	wstring file = stringTowstring(file_name);
-
-	// 置換
-	replace(file.begin(), file.end(), '\\', '/');
-
-	HRESULT hr;
-
-	hr = CreateWICTextureFromFile(CRenderer::GetDevice(), CRenderer::GetDeviceContext(), file.c_str(), nullptr, &ShaderResourceView, nullptr, nullptr);
-	if (FAILED(hr))
-	{
-		return;
-	}
-
-	hash<string> hasher;
-
-	size_t hash = hasher(file_name);
-
-	TextureFiles[hash].Resource.reset(ShaderResourceView);
-	TextureFiles[hash].WH.x = width;
-	TextureFiles[hash].WH.y = height;
-
-	//TextureResource[file_name].reset(ShaderResourceView);
-}
-
-// テクスチャの解放
-void TEXTURE_MANEGER::Unload(const string& const file_name)
-{
-}
-
-XMINT2* const TEXTURE_MANEGER::Get_WH(const string& file_name)
-{
-	//for (int i = 0; i < TEXTURE_FILE_COUNT; i++)
-	//{
-	//	if (file_name == g_TextureFiles[i].Name)
-	//	{
-	//		return &g_TextureFiles[i].WH;
-	//	}
-	//}
-
-	hash<string> hasher;
-
-	size_t hash = hasher(file_name);
-
-	if (TextureFiles.find(hash) != TextureFiles.end())
-	{
-		return &TextureFiles[hash].WH;
-	}
-
-	return nullptr;
-}
-
-ID3D11ShaderResourceView* const TEXTURE_MANEGER::GetShaderResourceView(const string& const file_name)
-{
-	//for (auto tex = TextureResource.begin(); tex != TextureResource.end(); tex++)
-	//{
-	//	if (file_name == tex->first)
-	//	{
-	//		return tex->second.get();
-	//	}
-	//}
-
-	hash<string> hasher;
-
-	size_t hash = hasher(file_name);
-
-	if (TextureFiles.find(hash) != TextureFiles.end())
-	{
-		return TextureFiles[hash].Resource.get();
-	}
-
-	return nullptr;
-}
-
-const unordered_set<string>& TEXTURE_MANEGER::Get_TexturePath()
-{
-	return TexturePath;
-}
+//static TEXTURE_FILE g_TextureFiles[] = {
+//	{"number.png", XMINT2(512, 512) },
+//	{"number02.png", XMINT2(320, 32) },
+//
+//	{"title.png", XMINT2(1920, 1080) },
+//	{"game_clear.png", XMINT2(1920, 1080) },
+//	{"game_over.png", XMINT2(1920, 1080) },
+//
+//	{"field004.png", XMINT2(128, 128) },
+//	{"shadow000.jpg", XMINT2(80, 80) },
+//	{"Explosion.png", XMINT2(360, 360) },
+//	{"arrow.png", XMINT2(665, 95) },
+//	{"Reticule.png", XMINT2(512, 512) },
+//
+//	{"hp_rod.png", XMINT2(64, 256) },
+//	{"hp.png", XMINT2(2, 2) },
+//	{"bullet_icon.png", XMINT2(64, 128) },
+//
+//	{"pause.png", XMINT2(512, 512) },
+//	{"select.png", XMINT2(60, 60) },
+//
+//	{"UVCheckerMap01-512.png", XMINT2(512, 512) },
+//	{"UVCheckerMap01-1024.png", XMINT2(1024, 1024) },
+//
+//	{"asphalt01-pattern.jpg", XMINT2(1000, 1000) },
+//
+//	{"asult_rifl.png", XMINT2(512, 512) },
+//	{"Bazooka.png", XMINT2(512, 512) },
+//
+//	{"go.png", XMINT2(256, 128) },
+//
+//	{"sky.png", XMINT2(8192, 4096) },
+//};
 
 
 TEXTURE::TEXTURE()
