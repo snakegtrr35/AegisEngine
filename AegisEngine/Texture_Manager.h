@@ -5,12 +5,6 @@
 
 constexpr const int TEXTURE_SIZE_MAX = 8192;
 
-//typedef struct {
-//	string Name;
-//	XMINT2 WH;
-//
-//}TEXTURE_FILE;
-
 struct TEXTURE_FILE {
 	string Path;		//! テクスチャファイルのファイルパス
 	DWORD Time;			//!	テクスチャファイルの最終更新時間(UNIX時間)
@@ -27,7 +21,7 @@ struct TEXTURE_FILE {
 struct TEXTURE_DATA {
 	unique_ptr<ID3D11ShaderResourceView, Release> Resource;		//! リソースデータ
 	XMINT2 WH;													//!	テクスチャの幅と高さ
-	UINT Cnt;													//! 参照回数
+	unsigned int Cnt;											//! 参照回数
 
 	TEXTURE_DATA() : WH(XMINT2(0, 0)), Cnt(0) {}
 
@@ -35,7 +29,6 @@ struct TEXTURE_DATA {
 	void serialize(T& archive) {
 		archive(WH);
 		archive(Cnt);
-		archive(Resource);
 	}
 };
 
@@ -48,8 +41,8 @@ private:
 	static unordered_map<string, TEXTURE_FILE> TextureFile;			//! テクスチャのファイルデータ
 	static unordered_map<string, TEXTURE_DATA> TextureData;			//! テクスチャデータ
 
-	static void Default_Load();		// デフォルトのテクスチャの読み込み
-	static void Load();				// テクスチャの読み込み
+	static void Default_Load(const bool flag);		// デフォルトのテクスチャの読み込み
+	static void Load(const bool flag);				// テクスチャの読み込み
 
 	static DWORD Get_File_Time(const string& path);
 
@@ -73,7 +66,7 @@ public:
 
 	template<class T>
 	void serialize(T& archive) {
-		//archive(Default_Texture_File);
+		archive(Default_Texture_File);
 		archive(TextureFile);
 		archive(TextureData);
 	}

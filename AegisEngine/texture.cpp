@@ -2,8 +2,6 @@
 #include	"Texture_Manager.h"
 #include	"Renderer.h"
 
-#include	"Library/DirectXTex/WICTextureLoader.h"
-#include	"Library/DirectXTex/DDSTextureLoader.h"
 
 
 //static TEXTURE_FILE g_TextureFiles[] = {
@@ -49,6 +47,7 @@ TEXTURE::TEXTURE()
 TEXTURE::TEXTURE(const string& file_name)
 {
 	FileName = file_name;
+	TEXTURE_MANEGER::Add_ReferenceCnt(FileName);
 }
 
 //========================================
@@ -66,7 +65,9 @@ void TEXTURE::Set_Texture(void)
 //========================================
 void TEXTURE::Set_Texture_Name(const string& const file_name)
 {
+	TEXTURE_MANEGER::Sub_ReferenceCnt(FileName);
 	FileName = file_name;
+	TEXTURE_MANEGER::Add_ReferenceCnt(FileName);
 }
 
 //========================================

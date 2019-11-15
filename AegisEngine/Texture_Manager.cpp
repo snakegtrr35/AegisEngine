@@ -11,20 +11,27 @@ unordered_map<string, TEXTURE_DATA>		TEXTURE_MANEGER::TextureData;
 
 void TEXTURE_MANEGER::Init()
 {
-	{
-		std::ofstream file("texture.dat", std::ios::binary);
+	bool flag;
 
-			cereal::BinaryOutputArchive archive(file);
-			//archive(Default_Texture_File);
-			archive(TextureFile);
-			archive(TextureData);
+	{
+		TEXTURE_MANEGER t;
+
+		std::ifstream file("texture.dat", std::ios::binary);
+
+		flag = file.is_open();
+
+		if (flag)
+		{
+			cereal::BinaryInputArchive archive(file);
+			archive(t);
+		}
 	}
 
 	// デフォルトの画像データの読み込み
-	Default_Load();
+	Default_Load(flag);
 
 	// 画像データの読み込み
-	Load();
+	Load(flag);
 }
 
 void TEXTURE_MANEGER::Uninit()
@@ -32,13 +39,10 @@ void TEXTURE_MANEGER::Uninit()
 	{
 		TEXTURE_MANEGER t;
 
-		std::ifstream file("texture.dat", std::ios::binary);
+		std::ofstream file("texture.dat", std::ios::binary);
 
-		if (file.is_open())
-		{
-			cereal::BinaryInputArchive archive(file);
-			archive(t);
-		}
+		cereal::BinaryOutputArchive archive(file);
+		archive(t);
 	}
 
 	Default_Texture_File.clear();
@@ -114,7 +118,7 @@ void TEXTURE_MANEGER::Updata()
 	}
 }
 
-void TEXTURE_MANEGER::Default_Load()
+void TEXTURE_MANEGER::Default_Load(const bool flag)
 {
 	UINT width, height;
 
@@ -140,8 +144,17 @@ void TEXTURE_MANEGER::Default_Load()
 
 		file_name = path.substr(pos + 1);
 
-		// テクスチャ名の登録
-		Default_Texture_File[file_name] = path;
+		// バイナリファイルがない
+		if (false == flag)
+		{
+			// テクスチャの登録
+			Default_Texture_File[file_name] = path;
+
+			TextureFile[file_name].Path = path;
+			TextureFile[file_name].Time = Get_File_Time(path);
+
+			TextureData[file_name].Cnt = 0;
+		}
 
 		// テクスチャの読み込み
 		{
@@ -179,7 +192,7 @@ void TEXTURE_MANEGER::Default_Load()
 	}
 }
 
-void TEXTURE_MANEGER::Load()
+void TEXTURE_MANEGER::Load(const bool flag)
 {
 	UINT width, height;
 
@@ -202,13 +215,17 @@ void TEXTURE_MANEGER::Load()
 
 		file_name = path.substr(pos + 1);
 
-		// 既に読み込んだテクスチャのスキップ
-		if (TextureData.find(file_name) != TextureData.end())
-			continue;
+		// バイナリファイルがない
+		if (false == flag)
+		{
+			// テクスチャの登録
+			Default_Texture_File[file_name] = path;
 
-		// テクスチャ名の登録
-		TextureFile[file_name].Path = path;
-		TextureFile[file_name].Time = Get_File_Time(path);
+			TextureFile[file_name].Path = path;
+			TextureFile[file_name].Time = Get_File_Time(path);
+
+			TextureData[file_name].Cnt = 0;
+		}
 
 		// テクスチャの読み込み
 		{

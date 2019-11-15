@@ -649,14 +649,7 @@ const char My_imgui::File_Check(string& file_name, const float width, const floa
 	}
 
 	{
-		// 置換
-		std:: replace(file_name.begin(), file_name.end(), '\\', '/');
-
-		size_t pos = file_name.find_last_of("/");
-
-		string name = file_name.substr(pos + 1);
-
-		if (TEXTURE_MANEGER::Get_TextureFile().find(name) != TEXTURE_MANEGER::Get_TextureFile().end())
+		if (TEXTURE_MANEGER::Get_TextureFile().find(file_name) != TEXTURE_MANEGER::Get_TextureFile().end())
 		{
 			// 既に読み込んでいるテクスチャ
 			return -3;
@@ -664,7 +657,11 @@ const char My_imgui::File_Check(string& file_name, const float width, const floa
 	}
 
 	// ファイルがあるかの判定
-	bool flag = std::filesystem::exists(file_name);
+	string path = "asset/texture";
+
+	path += file_name;
+
+	bool flag = std::filesystem::exists(path);
 	if (false == flag)
 	{
 		// ファイルが存在しない
