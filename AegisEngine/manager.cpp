@@ -74,6 +74,8 @@ void CManager::Update()
 	// インプットの更新
 	CINPUT::Update();
 
+	TEXTURE_MANEGER::Update();
+
 	pSceneManager->Update();
 
 	// Effekseer

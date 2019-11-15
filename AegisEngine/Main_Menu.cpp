@@ -80,6 +80,21 @@ void MAIN_MENU::Init()
 		text->Edit("Hello HELL World!!!地球の未来にご奉仕するにゃん！");
 	}
 
+	// タイトル画面
+	{
+		XMFLOAT2 pos(SCREEN_WIDTH * 0.2f, SCREEN_HEIGHT * 0.2f);
+
+		SPRITE* title = Add_Game_Object<SPRITE>(LAYER_NAME::UI);
+
+		title->SetPosition(pos);
+
+		title->SetSize(XMFLOAT4(200, 200, 200, 200));
+
+		title->SetTexture(string("UVCheckerMap01-512.png"));
+
+		title->Set_Object_Name("sprite");
+	}
+
 	cnt = 0;
 
 	FADE::Start_FadeIn(60);

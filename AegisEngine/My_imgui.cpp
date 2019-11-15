@@ -527,7 +527,6 @@ void My_imgui::Texture_Import()
 	static bool flag2 = false;
 
 	static string file_name;
-	static int height = 0, width = 0;
 
 	ImGuiWindowFlags window_flags = ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse;
 
@@ -543,14 +542,6 @@ void My_imgui::Texture_Import()
 			ImGui::InputText((char*)u8"テクスチャ名", &file_name);
 
 			ImGui::Spacing();
-
-			ImGui::DragInt((char*)u8"縦の長さ", &height, 0.5f, 0, TEXTURE_SIZE_MAX);
-
-			ImGui::Spacing();
-
-			ImGui::DragInt((char*)u8"横の長さ", &width, 0.5f, 0, TEXTURE_SIZE_MAX);
-
-			ImGui::Spacing();
 			ImGui::Spacing();
 			ImGui::Spacing();
 			ImGui::Spacing();
@@ -561,11 +552,11 @@ void My_imgui::Texture_Import()
 
 			if (ImGui::Button((char*)u8"インポート", size))
 			{
-				check = File_Check(file_name, width, height);
+				check = File_Check(file_name);
 
 				if (1 == check)
 				{
-					TEXTURE_MANEGER::Add(file_name, width, height);
+					TEXTURE_MANEGER::Add(file_name);
 
 					ImGui::Text((char*)u8"テクスチャが読み込まれました");
 				}
@@ -594,18 +585,14 @@ void My_imgui::Texture_Import()
 				switch (check)
 				{
 					case -1:
-						ImGui::Text((char*)u8"高さか幅の値が不正です");
-						break;
-
-					case -2:
 						ImGui::Text((char*)u8"テクスチャ名が入力されてないです");
 						break;
 
-					case -3:
+					case -2:
 						ImGui::Text((char*)u8"既に読み込んでいるテクスチャです");
 						break;
 
-					case -4:
+					case -3:
 						ImGui::Text((char*)u8"テクスチャが存在しないです");
 						break;
 
@@ -624,7 +611,6 @@ void My_imgui::Texture_Import()
 		if (flag)
 		{
 			file_name = "";
-			height = width = 0;
 
 			flag = false;
 		}
@@ -633,39 +619,32 @@ void My_imgui::Texture_Import()
 	}
 }
 
-const char My_imgui::File_Check(string& file_name, const float width, const float height)
+const char My_imgui::File_Check(const string& file_name)
 {
-	if (width <= 0 || TEXTURE_SIZE_MAX < width ||
-		height <= 0 || TEXTURE_SIZE_MAX < height)
-	{
-		// 高さか幅の値が不正
-		return -1;
-	}
-
 	if (file_name.empty())
 	{
 		// テクスチャ名が入力されていない
+		return -1;
+	}
+
+	if (TEXTURE_MANEGER::Get_TextureFile().find(file_name) != TEXTURE_MANEGER::Get_TextureFile().end())
+	{
+		// 既に読み込んでいるテクスチャ
 		return -2;
 	}
 
+	// ファイルがあるかの判定
 	{
-		if (TEXTURE_MANEGER::Get_TextureFile().find(file_name) != TEXTURE_MANEGER::Get_TextureFile().end())
+		string path = "./asset/texture/";
+
+		path += file_name;
+
+		bool flag = std::filesystem::exists(path);
+		if (false == flag)
 		{
-			// 既に読み込んでいるテクスチャ
+			// ファイルが存在しない
 			return -3;
 		}
-	}
-
-	// ファイルがあるかの判定
-	string path = "asset/texture";
-
-	path += file_name;
-
-	bool flag = std::filesystem::exists(path);
-	if (false == flag)
-	{
-		// ファイルが存在しない
-		return -4;
 	}
 
 	return 1;

@@ -18,7 +18,7 @@ private:
 
 	bool Texture_Import_Enable;
 	void Texture_Import();
-	const char File_Check(string& file_name, const float width, const float height);
+	const char File_Check(const string& file_name);
 
 public:
 	My_imgui() : show_demo_window(false), show_another_window(false), show_default_window(false),
