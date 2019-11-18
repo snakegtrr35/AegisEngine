@@ -11,6 +11,8 @@
 
 #include	"audio_clip.h"
 
+#include	"Timer.h"
+
 float radius = 3.0f;
 
 PLAYER::PLAYER(void)
@@ -106,32 +108,32 @@ void PLAYER::Update(void)
 
 	if (KEYBOARD::Press_Keyboard(VK_W))
 	{
-		Position.x += front_vec.x * 0.1f;
-		Position.z += front_vec.z * 0.1f;
+		Position.x += front_vec.x * TIMER::Get_DeltaTime() * 8.0f;
+		Position.z += front_vec.z * TIMER::Get_DeltaTime() * 8.0f;
 
 		AnimType = false;
 	}
 
 	if (KEYBOARD::Press_Keyboard(VK_S))
 	{
-		Position.x -= front_vec.x * 0.1f;
-		Position.z -= front_vec.z * 0.1f;
+		Position.x -= front_vec.x * TIMER::Get_DeltaTime() * 8.0f;
+		Position.z -= front_vec.z * TIMER::Get_DeltaTime() * 8.0f;
 
 		AnimType = false;
 	}
 
 	if (KEYBOARD::Press_Keyboard(VK_A))
 	{
-		Position.x -= right_vec.x * 0.1f;
-		Position.z -= right_vec.z * 0.1f;
+		Position.x -= right_vec.x * TIMER::Get_DeltaTime() * 8.0f;
+		Position.z -= right_vec.z * TIMER::Get_DeltaTime() * 8.0f;
 
 		AnimType = false;
 	}
 
 	if (KEYBOARD::Press_Keyboard(VK_D))
 	{
-		Position.x += right_vec.x * 0.1f;
-		Position.z += right_vec.z * 0.1f;
+		Position.x += right_vec.x * TIMER::Get_DeltaTime() * 8.0f;
+		Position.z += right_vec.z * TIMER::Get_DeltaTime() * 8.0f;
 
 		AnimType = false;
 	}

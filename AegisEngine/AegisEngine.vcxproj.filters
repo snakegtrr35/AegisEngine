@@ -388,6 +388,9 @@
     <FxCompile Include="PixelShader_No_Light.hlsl">
       <Filter>リソース ファイル</Filter>
     </FxCompile>
+    <FxCompile Include="PixelShader1.hlsl">
+      <Filter>リソース ファイル</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="AegisEngine.rc">

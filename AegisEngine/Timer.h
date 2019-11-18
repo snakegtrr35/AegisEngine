@@ -18,6 +18,11 @@ private:
 	static LARGE_INTEGER end;		//! 現在時間が入っている変数
 	static LARGE_INTEGER frep;		//! タイム関係の値が入っている変数
 
+	static LARGE_INTEGER delta_start;		//!
+	static LARGE_INTEGER delta_end;			//!
+
+	static DWORD time;
+
 	TIMER() {}
 
 protected:
@@ -33,10 +38,15 @@ public:
 		memset(&end, 0, sizeof(end));
 		memset(&frep, 0, sizeof(frep));
 
+		memset(&delta_start, 0, sizeof(delta_start));
+		memset(&delta_end, 0, sizeof(delta_end));
+
 		QueryPerformanceFrequency(&frep);
 
 		QueryPerformanceCounter(&start);
-	};
+
+		QueryPerformanceCounter(&delta_start);
+	}
 
 	/**
 	* @brief 時間の取得関数
@@ -45,7 +55,7 @@ public:
 	static DWORD Get_Time() {
 		QueryPerformanceCounter(&end);
 		return (end.QuadPart - start.QuadPart);
-	};
+	}
 
 	/**
 	* @brief 時間の取得関数(単位 秒)
@@ -54,7 +64,7 @@ public:
 	static DWORD Get_Time_Sec() {
 		QueryPerformanceCounter(&end);
 		return (end.QuadPart - start.QuadPart) / frep.QuadPart;
-	};
+	}
 
 	/**
 	* @brief 時間の取得関数((単位 ミリ秒))
@@ -65,7 +75,24 @@ public:
 		QueryPerformanceCounter(&end);
 
 		return (end.QuadPart - start.QuadPart) * std::pow(10, digit) / frep.QuadPart;
-	};
+	}
+
+	static void Update() {
+		static bool flag = true;
+		if (flag)
+		{
+			QueryPerformanceCounter(&delta_start);
+			flag = false;
+		}
+		QueryPerformanceCounter(&delta_end);
+
+		time = (delta_end.QuadPart - delta_start.QuadPart) * 100000.0 / frep.QuadPart;
+		delta_start = delta_end;
+	}
+
+	static float Get_DeltaTime() {
+		return time * 0.00001f;
+	}
 };
 
 

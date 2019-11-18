@@ -2,6 +2,8 @@
 #include	"manager.h"
 #include	"resource.h"
 
+#include	"Timer.h"
+
 #ifdef _DEBUG
 // メモリリークのためのインクルード
 #include	<crtdbg.h>
@@ -86,6 +88,8 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 
 	// メッセージループ
 	MSG msg;
+	ZeroMemory(&msg, sizeof msg);
+
 	while(CManager::Get_GameEnd())
 	{
         if(PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
@@ -105,7 +109,8 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 		{
 			dwCurrentTime = timeGetTime();
 
-			if((dwCurrentTime - dwExecLastTime) >= (1000 / 60))
+			//if((dwCurrentTime - dwExecLastTime) >= (1000 / 60))
+			//if ((dwCurrentTime - dwExecLastTime) >= (1000 / 240))
 			{
 				dwExecLastTime = dwCurrentTime;
 
