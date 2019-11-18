@@ -110,32 +110,32 @@ void PLAYER::Update(void)
 
 	if (KEYBOARD::Press_Keyboard(VK_W))
 	{
-		Position.x += front_vec.x * TIMER::Get_DeltaTime() * 1.0f;
-		Position.z += front_vec.z * TIMER::Get_DeltaTime() * 1.0f;
+		Position.x += front_vec.x * TIMER::Get_DeltaTime() * 10.0f;
+		Position.z += front_vec.z * TIMER::Get_DeltaTime() * 10.0f;
 
 		AnimType = false;
 	}
 
 	if (KEYBOARD::Press_Keyboard(VK_S))
 	{
-		Position.x -= front_vec.x * TIMER::Get_DeltaTime() * 1.0f;
-		Position.z -= front_vec.z * TIMER::Get_DeltaTime() * 1.0f;
+		Position.x -= front_vec.x * TIMER::Get_DeltaTime() * 10.0f;
+		Position.z -= front_vec.z * TIMER::Get_DeltaTime() * 10.0f;
 
 		AnimType = false;
 	}
 
 	if (KEYBOARD::Press_Keyboard(VK_A))
 	{
-		Position.x -= right_vec.x * TIMER::Get_DeltaTime() * 1.0f;
-		Position.z -= right_vec.z * TIMER::Get_DeltaTime() * 1.0f;
+		Position.x -= right_vec.x * TIMER::Get_DeltaTime() * 10.0f;
+		Position.z -= right_vec.z * TIMER::Get_DeltaTime() * 10.0f;
 
 		AnimType = false;
 	}
 
 	if (KEYBOARD::Press_Keyboard(VK_D))
 	{
-		Position.x += right_vec.x * TIMER::Get_DeltaTime() * 1.0f;
-		Position.z += right_vec.z * TIMER::Get_DeltaTime() * 1.0f;
+		Position.x += right_vec.x * TIMER::Get_DeltaTime() * 10.0f;
+		Position.z += right_vec.z * TIMER::Get_DeltaTime() * 10.0f;
 
 		AnimType = false;
 	}
