@@ -5,17 +5,17 @@
 //*****************************************************************************
 
 // マトリクスバッファ
-cbuffer WorldBuffer : register( b0 )
+cbuffer WorldBuffer : register(b0)
 {
-	matrix World;
+    matrix World;
 }
-cbuffer ViewBuffer : register( b1 )
+cbuffer ViewBuffer : register(b1)
 {
-	matrix View;
+    matrix View;
 }
-cbuffer ProjectionBuffer : register( b2 )
+cbuffer ProjectionBuffer : register(b2)
 {
-	matrix Projection;
+    matrix Projection;
 }
 
 // マテリアルバッファ

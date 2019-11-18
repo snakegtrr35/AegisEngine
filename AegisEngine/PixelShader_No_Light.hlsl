@@ -55,17 +55,45 @@ void main(in float4 inPosition : POSITION0,
 
 						 out float4 outDiffuse : SV_Target)
 {
-    //float4 Color;
-
-    //Color = inDiffuse * Material.Diffuse * Light.Diffuse;
-    //Color += inDiffuse * Material.Ambient * Light.Ambient;
-    //Color.a = inDiffuse.a * Material.Diffuse.a;
-
     outDiffuse = g_Texture.Sample(g_SamplerState, inTexCoord);
 
     if (outDiffuse.a <= 0.0)
         discard;
 
-    //outDiffuse *= Color;
+    // グレースケール
+    /*float Y = outDiffuse.r * 0.29891f + outDiffuse.g * 0.58661f + outDiffuse.b * 0.11448f;
+
+    outDiffuse.r = Y;
+
+    outDiffuse.g = Y;
+
+    outDiffuse.b = Y;*/
+
+    // ネガティブフィルタ
+    /*float4 inverted_color = 1 - outDiffuse;
+    inverted_color.a = outDiffuse.a;
+    inverted_color.rgb *= inverted_color.a;
+    outDiffuse = inverted_color;*/
+
+    // セピア
+    /*outDiffuse = g_Texture.Sample(g_SamplerState, inTexCoord);
+
+    if (outDiffuse.a <= 0.0)
+        discard;
+
+    float Y = outDiffuse.r * 0.29891f + outDiffuse.g * 0.58661f + outDiffuse.b * 0.11448f;
+
+    outDiffuse.r = Y;
+
+    outDiffuse.g = Y;
+
+    outDiffuse.b = Y;
+
+    outDiffuse.r *= 1.07f;
+
+    outDiffuse.g *= 0.74f;
+
+    outDiffuse.b *= 0.43f;*/
+
     outDiffuse *= inDiffuse;
 }

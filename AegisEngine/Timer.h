@@ -21,7 +21,7 @@ private:
 	static LARGE_INTEGER delta_start;		//!
 	static LARGE_INTEGER delta_end;			//!
 
-	static DWORD time;
+	static double time;
 
 	TIMER() {}
 
@@ -86,12 +86,14 @@ public:
 		}
 		QueryPerformanceCounter(&delta_end);
 
-		time = (delta_end.QuadPart - delta_start.QuadPart) * 100000.0 / frep.QuadPart;
+		//time = (delta_end.QuadPart - delta_start.QuadPart) * 100000.0 / frep.QuadPart;
+		time = /*1000 /*/ ((delta_end.QuadPart - delta_start.QuadPart) * 1000.0 / frep.QuadPart);
 		delta_start = delta_end;
 	}
 
-	static float Get_DeltaTime() {
-		return time * 0.00001f;
+	static double Get_DeltaTime() {
+		//return time * 0.00001f;
+		return time * 100;
 	}
 };
 

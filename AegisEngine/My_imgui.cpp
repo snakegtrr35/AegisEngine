@@ -85,7 +85,7 @@ void My_imgui::Draw(void)
 			ImGui::SameLine();
 			ImGui::Text("counter = %d", counter);
 
-			ImGui::Text("Application average %.6f ms/frame (%.1f FPS)", (1000.0f / ImGui::GetIO().Framerate) * 0.001f, ImGui::GetIO().Framerate);
+			ImGui::Text("Application average %.6f ms/frame (%.1f FPS)", (1000.0f / ImGui::GetIO().Framerate) /** 0.001f*/, ImGui::GetIO().Framerate);
 
 			ImGui::Text("x = %f", ImGui::GetMousePos().x);
 			ImGui::Text("y = %f", ImGui::GetMousePos().y);
@@ -533,6 +533,8 @@ void My_imgui::Texture_Import()
 	{
 
 		static char check;
+
+		ImGui::SetNextWindowSize(ImVec2(360, 167), ImGuiCond_Appearing);
 
 		ImGui::Begin((char*)u8"テクスチャ インポート", &Texture_Import_Enable, window_flags);
 		{
