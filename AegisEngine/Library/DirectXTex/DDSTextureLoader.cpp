@@ -205,7 +205,9 @@ namespace
         std::unique_ptr<uint8_t[]>& ddsData,
         const DDS_HEADER** header,
         const uint8_t** bitData,
-        size_t* bitSize)
+        size_t* bitSize,
+		int* width,
+		int* height)
     {
         if (!header || !bitData || !bitSize)
         {
@@ -285,6 +287,12 @@ namespace
         }
 
         auto hdr = reinterpret_cast<const DDS_HEADER*>(ddsData.get() + sizeof(uint32_t));
+
+		if (nullptr != width && nullptr != height)
+		{
+			*width = hdr->width;
+			*height = hdr->height;
+		}
 
         // Verify header to validate DDS file
         if (hdr->size != sizeof(DDS_HEADER) ||
@@ -1686,23 +1694,23 @@ namespace
 } // anonymous namespace
 
 //--------------------------------------------------------------------------------------
-_Use_decl_annotations_
-HRESULT DirectX::CreateDDSTextureFromMemory(
-    ID3D11Device* d3dDevice,
-    const uint8_t* ddsData,
-    size_t ddsDataSize,
-    ID3D11Resource** texture,
-    ID3D11ShaderResourceView** textureView,
-    size_t maxsize,
-    DDS_ALPHA_MODE* alphaMode)
-{
-    return CreateDDSTextureFromMemoryEx(d3dDevice, nullptr,
-        ddsData, ddsDataSize,
-        maxsize,
-        D3D11_USAGE_DEFAULT, D3D11_BIND_SHADER_RESOURCE, 0, 0,
-        false,
-        texture, textureView, alphaMode);
-}
+//_Use_decl_annotations_
+//HRESULT DirectX::CreateDDSTextureFromMemory(
+//    ID3D11Device* d3dDevice,
+//    const uint8_t* ddsData,
+//    size_t ddsDataSize,
+//    ID3D11Resource** texture,
+//    ID3D11ShaderResourceView** textureView,
+//    size_t maxsize,
+//    DDS_ALPHA_MODE* alphaMode)
+//{
+//    return CreateDDSTextureFromMemoryEx(d3dDevice, nullptr,
+//        ddsData, ddsDataSize,
+//        maxsize,
+//        D3D11_USAGE_DEFAULT, D3D11_BIND_SHADER_RESOURCE, 0, 0,
+//        false,
+//        texture, textureView, alphaMode);
+//}
 
 _Use_decl_annotations_
 HRESULT DirectX::CreateDDSTextureFromMemory(
@@ -1723,28 +1731,28 @@ HRESULT DirectX::CreateDDSTextureFromMemory(
         texture, textureView, alphaMode);
 }
 
-_Use_decl_annotations_
-HRESULT DirectX::CreateDDSTextureFromMemoryEx(
-    ID3D11Device* d3dDevice,
-    const uint8_t* ddsData,
-    size_t ddsDataSize,
-    size_t maxsize,
-    D3D11_USAGE usage,
-    unsigned int bindFlags,
-    unsigned int cpuAccessFlags,
-    unsigned int miscFlags,
-    bool forceSRGB,
-    ID3D11Resource** texture,
-    ID3D11ShaderResourceView** textureView,
-    DDS_ALPHA_MODE* alphaMode)
-{
-    return CreateDDSTextureFromMemoryEx(d3dDevice, nullptr,
-        ddsData, ddsDataSize,
-        maxsize,
-        usage, bindFlags, cpuAccessFlags, miscFlags,
-        forceSRGB,
-        texture, textureView, alphaMode);
-}
+//_Use_decl_annotations_
+//HRESULT DirectX::CreateDDSTextureFromMemoryEx(
+//    ID3D11Device* d3dDevice,
+//    const uint8_t* ddsData,
+//    size_t ddsDataSize,
+//    size_t maxsize,
+//    D3D11_USAGE usage,
+//    unsigned int bindFlags,
+//    unsigned int cpuAccessFlags,
+//    unsigned int miscFlags,
+//    bool forceSRGB,
+//    ID3D11Resource** texture,
+//    ID3D11ShaderResourceView** textureView,
+//    DDS_ALPHA_MODE* alphaMode)
+//{
+//    return CreateDDSTextureFromMemoryEx(d3dDevice, nullptr,
+//        ddsData, ddsDataSize,
+//        maxsize,
+//        usage, bindFlags, cpuAccessFlags, miscFlags,
+//        forceSRGB,
+//        texture, textureView, alphaMode);
+//}
 
 _Use_decl_annotations_
 HRESULT DirectX::CreateDDSTextureFromMemoryEx(
@@ -1826,21 +1834,21 @@ HRESULT DirectX::CreateDDSTextureFromMemoryEx(
 }
 
 //--------------------------------------------------------------------------------------
-_Use_decl_annotations_
-HRESULT DirectX::CreateDDSTextureFromFile(
-    ID3D11Device* d3dDevice,
-    const wchar_t* fileName,
-    ID3D11Resource** texture,
-    ID3D11ShaderResourceView** textureView,
-    size_t maxsize,
-    DDS_ALPHA_MODE* alphaMode)
-{
-    return CreateDDSTextureFromFileEx(d3dDevice, nullptr,
-        fileName, maxsize,
-        D3D11_USAGE_DEFAULT, D3D11_BIND_SHADER_RESOURCE, 0, 0,
-        false,
-        texture, textureView, alphaMode);
-}
+//_Use_decl_annotations_
+//HRESULT DirectX::CreateDDSTextureFromFile(
+//    ID3D11Device* d3dDevice,
+//    const wchar_t* fileName,
+//    ID3D11Resource** texture,
+//    ID3D11ShaderResourceView** textureView,
+//    size_t maxsize,
+//    DDS_ALPHA_MODE* alphaMode)
+//{
+//    return CreateDDSTextureFromFileEx(d3dDevice, nullptr,
+//        fileName, maxsize,
+//        D3D11_USAGE_DEFAULT, D3D11_BIND_SHADER_RESOURCE, 0, 0,
+//        false,
+//        texture, textureView, alphaMode);
+//}
 
 _Use_decl_annotations_
 HRESULT DirectX::CreateDDSTextureFromFile(
@@ -1849,6 +1857,8 @@ HRESULT DirectX::CreateDDSTextureFromFile(
     const wchar_t* fileName,
     ID3D11Resource** texture,
     ID3D11ShaderResourceView** textureView,
+	int* width,
+	int* height,
     size_t maxsize,
     DDS_ALPHA_MODE* alphaMode)
 {
@@ -1857,30 +1867,30 @@ HRESULT DirectX::CreateDDSTextureFromFile(
         maxsize,
         D3D11_USAGE_DEFAULT, D3D11_BIND_SHADER_RESOURCE, 0, 0,
         false,
-        texture, textureView, alphaMode);
+        texture, textureView, width, height, alphaMode);
 }
 
-_Use_decl_annotations_
-HRESULT DirectX::CreateDDSTextureFromFileEx(
-    ID3D11Device* d3dDevice,
-    const wchar_t* fileName,
-    size_t maxsize,
-    D3D11_USAGE usage,
-    unsigned int bindFlags,
-    unsigned int cpuAccessFlags,
-    unsigned int miscFlags,
-    bool forceSRGB,
-    ID3D11Resource** texture,
-    ID3D11ShaderResourceView** textureView,
-    DDS_ALPHA_MODE* alphaMode)
-{
-    return CreateDDSTextureFromFileEx(d3dDevice, nullptr,
-        fileName,
-        maxsize,
-        usage, bindFlags, cpuAccessFlags, miscFlags,
-        forceSRGB,
-        texture, textureView, alphaMode);
-}
+//_Use_decl_annotations_
+//HRESULT DirectX::CreateDDSTextureFromFileEx(
+//    ID3D11Device* d3dDevice,
+//    const wchar_t* fileName,
+//    size_t maxsize,
+//    D3D11_USAGE usage,
+//    unsigned int bindFlags,
+//    unsigned int cpuAccessFlags,
+//    unsigned int miscFlags,
+//    bool forceSRGB,
+//    ID3D11Resource** texture,
+//    ID3D11ShaderResourceView** textureView,
+//    DDS_ALPHA_MODE* alphaMode)
+//{
+//    return CreateDDSTextureFromFileEx(d3dDevice, nullptr,
+//        fileName,
+//        maxsize,
+//        usage, bindFlags, cpuAccessFlags, miscFlags,
+//        forceSRGB,
+//        texture, textureView, alphaMode);
+//}
 
 _Use_decl_annotations_
 HRESULT DirectX::CreateDDSTextureFromFileEx(
@@ -1895,6 +1905,8 @@ HRESULT DirectX::CreateDDSTextureFromFileEx(
     bool forceSRGB,
     ID3D11Resource** texture,
     ID3D11ShaderResourceView** textureView,
+	int* width,
+	int* height,
     DDS_ALPHA_MODE* alphaMode)
 {
     if (texture)
@@ -1929,7 +1941,8 @@ HRESULT DirectX::CreateDDSTextureFromFileEx(
         ddsData,
         &header,
         &bitData,
-        &bitSize
+        &bitSize,
+		width, height//
     );
     if (FAILED(hr))
     {

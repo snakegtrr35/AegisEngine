@@ -8,6 +8,8 @@
 
 #include	"Fade.h"
 
+#include	"Timer.h"
+
 string MAIN_MENU::Model_Name = "asset/model/herorifle.fbx";
 
 static bool flag = false;
@@ -80,6 +82,37 @@ void MAIN_MENU::Init()
 		text->Edit("Hello HELL World!!!地球の未来にご奉仕するにゃん！");
 	}
 
+	// タイトル画面
+	{
+		XMFLOAT2 pos(SCREEN_WIDTH * 0.2f, SCREEN_HEIGHT * 0.2f);
+
+		SPRITE* title = Add_Game_Object<SPRITE>(LAYER_NAME::UI);
+
+		title->SetPosition(pos);
+
+		title->SetSize(XMFLOAT4(200, 200, 200, 200));
+
+		title->SetTexture(string("UVCheckerMap01-512.png"));
+
+		title->Set_Object_Name("sprite");
+	}
+
+	{
+		auto text = Add_Game_Object<TEXTS>(LAYER_NAME::UI);
+
+		XMFLOAT2 pos(100.0f, 300.0f);
+
+		text->SetPosition(pos);
+
+		text->SetSize(XMFLOAT4(20, 20, 20, 20));
+
+		text->Set_Object_Name(string("delta_time"));
+
+		//string time = to_string(Time);
+
+		text->Edit("0.000");
+	}
+
 	cnt = 0;
 
 	FADE::Start_FadeIn(60);
@@ -140,6 +173,20 @@ void MAIN_MENU::Update()
 
 			//player->Reload(name);
 		}
+	}
+
+	{
+		auto text = Get_Game_Object<TEXTS>("delta_time");
+
+		auto time = TIMER::Get_DeltaTime();
+
+		//string s = "0." + to_string(time);
+
+		//float t = stof(s);
+
+
+
+		text->Edit(to_string(time));
 	}
 
 	if (FADE::End_Fade())

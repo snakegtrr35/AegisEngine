@@ -74,6 +74,10 @@ void CManager::Update()
 	// インプットの更新
 	CINPUT::Update();
 
+	TIMER::Update();//
+
+	TEXTURE_MANEGER::Update();
+
 	pSceneManager->Update();
 
 	// Effekseer
@@ -107,10 +111,10 @@ void CManager::Draw()
 
 	CRenderer::Begin();
 
-	CRenderer::SetRenderTargetView(true);//
-	pSceneManager->Draw();//
+	//CRenderer::SetRenderTargetView(true);//
+	//pSceneManager->Draw();//
 
-	CRenderer::SetRenderTargetView(false);
+	//CRenderer::SetRenderTargetView(false);
 	pSceneManager->Draw();
 
 	// Effekseer

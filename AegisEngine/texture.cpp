@@ -63,11 +63,14 @@ void TEXTURE::Set_Texture(void)
 //========================================
 // テクスチャ名の設定
 //========================================
-void TEXTURE::Set_Texture_Name(const string& const file_name)
+void TEXTURE::Set_Texture_Name(const string& file_name)
 {
-	TEXTURE_MANEGER::Sub_ReferenceCnt(FileName);
-	FileName = file_name;
-	TEXTURE_MANEGER::Add_ReferenceCnt(FileName);
+	if (file_name != FileName)
+	{
+		TEXTURE_MANEGER::Sub_ReferenceCnt(FileName);
+		FileName = file_name;
+		TEXTURE_MANEGER::Add_ReferenceCnt(FileName);
+	}
 }
 
 //========================================
@@ -141,7 +144,7 @@ void FONT::Load_Font()
 	HDC hdc = GetDC(NULL);
 	HFONT oldFont = (HFONT)SelectObject(hdc, hFont);
 
-	const int gradFlag = GGO_GRAY8_BITMAP;
+	const int gradFlag = GGO_GRAY4_BITMAP;
 	// 階調の最大値
 	int grad = 0;
 	switch (gradFlag)
@@ -272,12 +275,12 @@ void FONT::Load_Font()
 		// シェーダーリソースの作成
 		CRenderer::GetDevice()->CreateShaderResourceView(font_texture, &srvDesc, &ShaderResourceView);
 
-		wstring a;
-		a.push_back(font);
+		wstring f;
+		f.push_back(font);
 
-		FontResource[a].reset(ShaderResourceView);
+		FontResource[f].reset(ShaderResourceView);
 
-		a.clear();
+		f.clear();
 	}
 }
 
@@ -308,7 +311,7 @@ void FONT::Load_Font(const wstring& one_character)
 
 	UINT code = (UINT)font;
 
-	const int gradFlag = GGO_GRAY8_BITMAP;
+	const int gradFlag = GGO_GRAY4_BITMAP;
 	// 階調の最大値
 	int grad = 0;
 	switch (gradFlag)

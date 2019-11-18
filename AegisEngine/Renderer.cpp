@@ -11,7 +11,7 @@ D3D_FEATURE_LEVEL       CRenderer::m_FeatureLevel = D3D_FEATURE_LEVEL_11_0;
 ID3D11Device*           CRenderer::m_D3DDevice = nullptr;
 ID3D11DeviceContext*    CRenderer::m_ImmediateContext = nullptr;
 IDXGIDevice1*			CRenderer::m_dxgiDev = nullptr;
-IDXGISwapChain1*         CRenderer::m_SwapChain = nullptr;
+IDXGISwapChain1*		CRenderer::m_SwapChain = nullptr;//
 ID3D11RenderTargetView* CRenderer::m_RenderTargetView = nullptr;
 ID3D11DepthStencilView* CRenderer::m_DepthStencilView = nullptr;
 ID2D1Device*			CRenderer::m_D2DDevice = nullptr;
@@ -64,10 +64,10 @@ bool CRenderer::Init()
 		// 入力レイアウト生成
 		D3D11_INPUT_ELEMENT_DESC layout[] =
 		{
-			{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT,	 0, 0,		D3D11_INPUT_PER_VERTEX_DATA, 0 },
-			{ "NORMAL",   0, DXGI_FORMAT_R32G32B32_FLOAT,	 0, 4 * 3,	D3D11_INPUT_PER_VERTEX_DATA, 0 },
-			{ "COLOR",    0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 4 * 6,	D3D11_INPUT_PER_VERTEX_DATA, 0 },
-			{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT,		 0, 4 * 10,	D3D11_INPUT_PER_VERTEX_DATA, 0 }
+			{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT,    0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+			{ "NORMAL",   0, DXGI_FORMAT_R32G32B32_FLOAT,    0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+			{ "COLOR",    0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+			{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT,       0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 }
 		};
 		UINT numElements = ARRAYSIZE(layout);
 
@@ -317,7 +317,7 @@ bool CRenderer::Init3D()
 	sc.Stereo = 0;
 	// 半透明モード
 	sc.AlphaMode = DXGI_ALPHA_MODE_UNSPECIFIED;
-
+	// 使用方法
 	sc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
 	sc.BufferCount = 1;
 	// 描画後のバッファの扱い
@@ -1012,6 +1012,7 @@ void CRenderer::CreateRenderTexture()
 	texDesc.SampleDesc.Quality = 0;
 	
 	ID3D11Texture2D* pTex;
+	ID3D11Texture2D* backBufferTex_;
 
 	// 2次元テクスチャの生成
 	hr = m_D3DDevice->CreateTexture2D(&texDesc, NULL, &pTex);
@@ -1026,15 +1027,25 @@ void CRenderer::CreateRenderTexture()
 	memset(&rtvDesc, 0, sizeof(rtvDesc));
 	rtvDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
 	rtvDesc.ViewDimension = D3D11_RTV_DIMENSION_TEXTURE2D;
-	
+
+	// レンダーターゲットの取得（D3D11）
+	m_SwapChain->GetBuffer(0, IID_PPV_ARGS(&backBufferTex_));
+
 	// レンダーターゲットビューの生成
-	hr = m_D3DDevice->CreateRenderTargetView(pTex, &rtvDesc, &My_RenderTargetView);
+	hr = m_D3DDevice->CreateRenderTargetView(backBufferTex_, nullptr, &My_RenderTargetView);
 	if (FAILED(hr))
 	{
 		FAILDE_ASSERT;
 	}
 
-	 // シェーダリソースビューの設定
+	//// レンダーターゲットビューの生成
+	//hr = m_D3DDevice->CreateRenderTargetView(pTex, &rtvDesc, &My_RenderTargetView);
+	//if (FAILED(hr))
+	//{
+	//	FAILDE_ASSERT;
+	//}
+
+	// シェーダリソースビューの設定
 	D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc;
 	memset(&srvDesc, 0, sizeof(srvDesc));
 	srvDesc.Format = rtvDesc.Format;
@@ -1042,11 +1053,11 @@ void CRenderer::CreateRenderTexture()
 	srvDesc.Texture2D.MipLevels = 1;
 	
 	// シェーダリソースビューの生成
-	hr = m_D3DDevice->CreateShaderResourceView(pTex, &srvDesc, &My_ShaderResourceView);
-	if(FAILED(hr))
-	{
-		FAILDE_ASSERT;
-	}
+	//hr = m_D3DDevice->CreateShaderResourceView(backBufferTex_, &srvDesc, &My_ShaderResourceView);
+	//if(FAILED(hr))
+	//{
+	//	FAILDE_ASSERT;
+	//}
 }
 
 void CRenderer::SetRenderTargetView(bool flag)
@@ -1055,44 +1066,6 @@ void CRenderer::SetRenderTargetView(bool flag)
 
 	if (flag)
 	{
-		//XMFLOAT3 Position = XMFLOAT3(0.0f, 5.0f, 10.0f);
-		//XMFLOAT3 Rotation = XMFLOAT3(0.5f, 0.0f, 0.0f);
-
-		//RECT Viewport;
-		//Viewport.left = 0;
-		//Viewport.top = 0;
-		//Viewport.right = SCREEN_WIDTH;
-		//Viewport.bottom = SCREEN_HEIGHT;
-
-		//XMMATRIX m_ViewMatrix;
-		//XMMATRIX m_InvViewMatrix;
-		//XMMATRIX m_ProjectionMatrix;
-
-		//// ビューポート設定
-		//D3D11_VIEWPORT dxViewport;
-		//dxViewport.Width = (float)(Viewport.right - Viewport.left);
-		//dxViewport.Height = (float)(Viewport.bottom - Viewport.top);
-		//dxViewport.MinDepth = 0.0f;
-		//dxViewport.MaxDepth = 1.0f;
-		//dxViewport.TopLeftX = (float)Viewport.left;
-		//dxViewport.TopLeftY = (float)Viewport.top;
-
-		//CRenderer::GetDeviceContext()->RSSetViewports(1, &dxViewport);
-
-		//// ビューマトリクス設定
-		//m_InvViewMatrix = XMMatrixRotationRollPitchYaw(Rotation.x, Rotation.y, Rotation.z);
-		//m_InvViewMatrix *= XMMatrixTranslation(Position.x, Position.y, Position.z);
-
-		//XMVECTOR det;
-		//m_ViewMatrix = XMMatrixInverse(&det, m_InvViewMatrix);
-
-		//CRenderer::SetViewMatrix(&m_ViewMatrix);
-
-		//// プロジェクションマトリクス設定
-		//m_ProjectionMatrix = XMMatrixPerspectiveFovLH(1.0f, dxViewport.Width / dxViewport.Height, 1.0f, 1000.0f);
-
-		//CRenderer::SetProjectionMatrix(&m_ProjectionMatrix);
-
 		// 自前のレンダーターゲットビューに切り替え
 		m_ImmediateContext->OMSetRenderTargets(1, &My_RenderTargetView, m_DepthStencilView);
 		m_ImmediateContext->ClearRenderTargetView(My_RenderTargetView, clearColor);

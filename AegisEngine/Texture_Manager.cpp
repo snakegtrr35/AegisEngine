@@ -55,7 +55,7 @@ void TEXTURE_MANEGER::Uninit()
 	TextureData.clear();
 }
 
-void TEXTURE_MANEGER::Updata()
+void TEXTURE_MANEGER::Update()
 {
 	string path;			// ファイル名(パス付き)
 	string file_name;		// ファイル名(パスなし)
@@ -88,14 +88,12 @@ void TEXTURE_MANEGER::Updata()
 			pos = file_name.find_last_of(".");
 			type = file_name.substr(pos + 1, 3);
 
-			file_name = "asset/texture/" + file_name;
-
 			// char から wchar_t への変換
-			name = stringTowstring(file_name);
+			name = stringTowstring("asset/texture/" + file_name);
 
 			if ("dds" == type)	// dds
 			{
-				hr = CreateDDSTextureFromFile(CRenderer::GetDevice(), CRenderer::GetDeviceContext(), name.c_str(), nullptr, &ShaderResourceView);
+				hr = CreateDDSTextureFromFile(CRenderer::GetDevice(), CRenderer::GetDeviceContext(), name.c_str(), nullptr, &ShaderResourceView, nullptr, nullptr);
 				if (FAILED(hr))
 				{
 					FAILDE_ASSERT;
@@ -112,6 +110,8 @@ void TEXTURE_MANEGER::Updata()
 				}
 			}
 
+			TextureFile[file_name].Time = time;
+
 			//TextureData[file_name].Resource.reset(nullptr);
 			TextureData[file_name].Resource.reset(ShaderResourceView);
 		}
@@ -120,7 +120,7 @@ void TEXTURE_MANEGER::Updata()
 
 void TEXTURE_MANEGER::Default_Load(const bool flag)
 {
-	UINT width, height;
+	int width, height;
 
 	string path;			// ファイル名(パス付き) 
 	string file_name;		// ファイル名(パスなし)
@@ -150,9 +150,6 @@ void TEXTURE_MANEGER::Default_Load(const bool flag)
 			// テクスチャの登録
 			Default_Texture_File[file_name] = path;
 
-			TextureFile[file_name].Path = path;
-			TextureFile[file_name].Time = Get_File_Time(path);
-
 			TextureData[file_name].Cnt = 0;
 		}
 
@@ -164,11 +161,11 @@ void TEXTURE_MANEGER::Default_Load(const bool flag)
 			HRESULT hr;
 
 			// char から wchar_t への変換
-			name = stringTowstring("asset/Default/texture/" + file_name);
+			name = stringTowstring(path);
 
 			if ("dds" == type)	// dds
 			{
-				hr = CreateDDSTextureFromFile(CRenderer::GetDevice(), CRenderer::GetDeviceContext(), name.c_str(), nullptr, &ShaderResourceView);
+				hr = CreateDDSTextureFromFile(CRenderer::GetDevice(), CRenderer::GetDeviceContext(), name.c_str(), nullptr, &ShaderResourceView, &width, &height);
 				if (FAILED(hr))
 				{
 					FAILDE_ASSERT;
@@ -194,7 +191,7 @@ void TEXTURE_MANEGER::Default_Load(const bool flag)
 
 void TEXTURE_MANEGER::Load(const bool flag)
 {
-	UINT width, height;
+	int width, height;
 
 	string path;			// ファイル名(パス付き) 
 	string file_name;		// ファイル名(パスなし)
@@ -219,8 +216,6 @@ void TEXTURE_MANEGER::Load(const bool flag)
 		if (false == flag)
 		{
 			// テクスチャの登録
-			Default_Texture_File[file_name] = path;
-
 			TextureFile[file_name].Path = path;
 			TextureFile[file_name].Time = Get_File_Time(path);
 
@@ -237,11 +232,11 @@ void TEXTURE_MANEGER::Load(const bool flag)
 			type = file_name.substr(pos + 1);
 
 			// char から wchar_t への変換
-			name = stringTowstring("asset/texture/" + file_name);
+			name = stringTowstring(path);
 
 			if ("dds" == type)	// dds
 			{
-				hr = CreateDDSTextureFromFile(CRenderer::GetDevice(), CRenderer::GetDeviceContext(), name.c_str(), nullptr, &ShaderResourceView);
+				hr = CreateDDSTextureFromFile(CRenderer::GetDevice(), CRenderer::GetDeviceContext(), name.c_str(), nullptr, &ShaderResourceView, &width, &height);
 				if (FAILED(hr))
 				{
 					FAILDE_ASSERT;
@@ -265,29 +260,59 @@ void TEXTURE_MANEGER::Load(const bool flag)
 	}
 }
 
-void TEXTURE_MANEGER::Add(const string& const file_name, const float width, const float height)
+void TEXTURE_MANEGER::Add(const string& file_name)
 {
-	ID3D11ShaderResourceView* ShaderResourceView;
+	int width, height;
 
-	// char から wchar_t への変換
-	wstring file = stringTowstring(file_name);
+	string path;	// ファイル名
+	string type;
 
-	// 置換
-	replace(file.begin(), file.end(), '\\', '/');
+	size_t pos;
 
-	HRESULT hr;
-
-	hr = CreateWICTextureFromFile(CRenderer::GetDevice(), CRenderer::GetDeviceContext(), file.c_str(), nullptr, &ShaderResourceView, nullptr, nullptr);
-	if (FAILED(hr))
 	{
-		return;
+		pos = file_name.find_last_of("/");
+
+		path = file_name.substr(pos + 1);
+
+		// テクスチャの読み込み
+		{
+			ID3D11ShaderResourceView* ShaderResourceView;
+			HRESULT hr;
+			wstring name;
+
+			pos = path.find_last_of(".");
+			type = path.substr(pos + 1);
+
+			// char から wchar_t への変換
+			name = stringTowstring("asset/texture/" + path);
+
+			if ("dds" == type)	// dds
+			{
+				hr = CreateDDSTextureFromFile(CRenderer::GetDevice(), CRenderer::GetDeviceContext(), name.c_str(), nullptr, &ShaderResourceView, &width, &height);
+				if (FAILED(hr))
+				{
+					FAILDE_ASSERT;
+					return;
+				}
+			}
+			else	// jpg か png
+			{
+				hr = CreateWICTextureFromFile(CRenderer::GetDevice(), CRenderer::GetDeviceContext(), name.c_str(), nullptr, &ShaderResourceView, &width, &height);
+				if (FAILED(hr))
+				{
+					FAILDE_ASSERT;
+					return;
+				}
+			}
+
+			TextureFile[file_name].Path = "asset/texture/" + path;
+			TextureFile[file_name].Time = Get_File_Time(path);
+
+			TextureData[file_name].Resource.reset(ShaderResourceView);
+			TextureData[file_name].WH.x = width;
+			TextureData[file_name].WH.y = height;
+		}
 	}
-
-	TextureData[file_name].Resource.reset(ShaderResourceView);
-	TextureData[file_name].WH.x = width;
-	TextureData[file_name].WH.y = height;
-
-	//TextureResource[file_name].reset(ShaderResourceView);
 }
 
 const bool TEXTURE_MANEGER::Unload(const string& const file_name)
@@ -303,6 +328,8 @@ const bool TEXTURE_MANEGER::Unload(const string& const file_name)
 	TextureData[file_name].Resource.reset(nullptr);
 	TextureData.erase(file_name);
 
+	TextureFile.erase(file_name);
+
 	return true;
 }
 
@@ -313,7 +340,7 @@ DWORD TEXTURE_MANEGER::Get_File_Time(const string& path)
 	SYSTEMTIME stFileTime;
 
 	hFile = CreateFile(
-		path.c_str(), GENERIC_READ, 0, NULL,
+		path.c_str(), GENERIC_READ | GENERIC_WRITE, 0, NULL,
 		OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL
 	);
 

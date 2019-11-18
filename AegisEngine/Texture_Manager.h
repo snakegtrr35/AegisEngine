@@ -24,12 +24,6 @@ struct TEXTURE_DATA {
 	unsigned int Cnt;											//! éQè∆âÒêî
 
 	TEXTURE_DATA() : WH(XMINT2(0, 0)), Cnt(0) {}
-
-	template<class T>
-	void serialize(T& archive) {
-		archive(WH);
-		archive(Cnt);
-	}
 };
 
 //========================================
@@ -49,10 +43,10 @@ private:
 public:
 
 	static void Init();
-	static void Updata();
+	static void Update();
 	static void Uninit();
 
-	static void Add(const string& const file_name, const float width, const float height);
+	static void Add(const string& file_name);
 	static const bool Unload(const string& const file_name);
 
 	static void Add_ReferenceCnt(const string& const file_name);
@@ -68,7 +62,6 @@ public:
 	void serialize(T& archive) {
 		archive(Default_Texture_File);
 		archive(TextureFile);
-		archive(TextureData);
 	}
 };
 
