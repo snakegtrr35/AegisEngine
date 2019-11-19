@@ -527,11 +527,10 @@ void My_imgui::Texture_Import()
 
 	static string file_name;
 
-	ImGuiWindowFlags window_flags = ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse;
+	ImGuiWindowFlags window_flags = ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoDocking;
 
 	if(Texture_Import_Enable)
 	{
-
 		static char check;
 
 		ImGui::SetNextWindowSize(ImVec2(360, 167), ImGuiCond_Appearing);

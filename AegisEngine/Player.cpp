@@ -85,7 +85,9 @@ void PLAYER::Update(void)
 
 	XMVECTOR* vec = camera->Get_At();
 	XMVECTOR* front = camera->Get_Front();
+	*front = XMVector4Normalize(*front);
 	XMVECTOR* right = camera->Get_Right();
+	*right = XMVector4Normalize(*right);
 	XMFLOAT3 pos;
 
 	XMStoreFloat3(&pos, *vec);
@@ -108,32 +110,32 @@ void PLAYER::Update(void)
 
 	if (KEYBOARD::Press_Keyboard(VK_W))
 	{
-		Position.x += front_vec.x * TIMER::Get_DeltaTime() * 8.0f;
-		Position.z += front_vec.z * TIMER::Get_DeltaTime() * 8.0f;
+		Position.x += front_vec.x * TIMER::Get_DeltaTime() * 10.0f;
+		Position.z += front_vec.z * TIMER::Get_DeltaTime() * 10.0f;
 
 		AnimType = false;
 	}
 
 	if (KEYBOARD::Press_Keyboard(VK_S))
 	{
-		Position.x -= front_vec.x * TIMER::Get_DeltaTime() * 8.0f;
-		Position.z -= front_vec.z * TIMER::Get_DeltaTime() * 8.0f;
+		Position.x -= front_vec.x * TIMER::Get_DeltaTime() * 10.0f;
+		Position.z -= front_vec.z * TIMER::Get_DeltaTime() * 10.0f;
 
 		AnimType = false;
 	}
 
 	if (KEYBOARD::Press_Keyboard(VK_A))
 	{
-		Position.x -= right_vec.x * TIMER::Get_DeltaTime() * 8.0f;
-		Position.z -= right_vec.z * TIMER::Get_DeltaTime() * 8.0f;
+		Position.x -= right_vec.x * TIMER::Get_DeltaTime() * 10.0f;
+		Position.z -= right_vec.z * TIMER::Get_DeltaTime() * 10.0f;
 
 		AnimType = false;
 	}
 
 	if (KEYBOARD::Press_Keyboard(VK_D))
 	{
-		Position.x += right_vec.x * TIMER::Get_DeltaTime() * 8.0f;
-		Position.z += right_vec.z * TIMER::Get_DeltaTime() * 8.0f;
+		Position.x += right_vec.x * TIMER::Get_DeltaTime() * 10.0f;
+		Position.z += right_vec.z * TIMER::Get_DeltaTime() * 10.0f;
 
 		AnimType = false;
 	}

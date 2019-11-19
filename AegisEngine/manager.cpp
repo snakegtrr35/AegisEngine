@@ -69,12 +69,11 @@ bool CManager::Init()
 
 void CManager::Update()
 {
+	TIMER::Update();//
 	CLOCK_TIMER::Update();
 
 	// インプットの更新
 	CINPUT::Update();
-
-	TIMER::Update();//
 
 	TEXTURE_MANEGER::Update();
 

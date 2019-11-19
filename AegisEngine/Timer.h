@@ -86,14 +86,13 @@ public:
 		}
 		QueryPerformanceCounter(&delta_end);
 
-		//time = (delta_end.QuadPart - delta_start.QuadPart) * 100000.0 / frep.QuadPart;
-		time = /*1000 /*/ ((delta_end.QuadPart - delta_start.QuadPart) * 1000.0 / frep.QuadPart);
+		time = ((delta_end.QuadPart - delta_start.QuadPart) * 1000.0 / frep.QuadPart) * 0.001;
+		//time = 1 / ( ( (delta_end.QuadPart - delta_start.QuadPart) * 1000.0 / frep.QuadPart ) * 0.001 ); //1フレームレート(ms)
 		delta_start = delta_end;
 	}
 
 	static double Get_DeltaTime() {
-		//return time * 0.00001f;
-		return time * 100;
+		return time;
 	}
 };
 
