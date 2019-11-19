@@ -244,7 +244,7 @@ void SPRITE::Draw(void)
 	CRenderer::Set_Shader();
 }
 
-void SPRITE::Update(void)
+void SPRITE::Update(float delta_time)
 {
 }
 
@@ -450,7 +450,7 @@ void SPRITE_ANIMATION::Draw2(float tx, float ty)
 	CRenderer::Set_Shader();
 }
 
-void SPRITE_ANIMATION::Update(void)
+void SPRITE_ANIMATION::Update(float delta_time)
 {
 	Age++;
 
@@ -517,7 +517,7 @@ void TEXTS::Draw(void)
 	Draw_Child();
 }
 
-void TEXTS::Update(void)
+void TEXTS::Update(float delta_time)
 {
 }
 

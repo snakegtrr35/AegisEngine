@@ -100,7 +100,7 @@ FIELD::~FIELD()
 	Uninit();
 }
 
-void FIELD::Init(void)
+void FIELD::Init()
 {
 	HRESULT hr;
 
@@ -181,7 +181,7 @@ void FIELD::Init(void)
 
 }
 
-void FIELD::Draw(void)
+void FIELD::Draw()
 {
 	HRESULT hr;
 
@@ -277,13 +277,13 @@ void FIELD::Draw(void)
 }
 
 
-void FIELD::Update(void)
+void FIELD::Update(float delta_time)
 {
 
 }
 
 
-void FIELD::Uninit(void)
+void FIELD::Uninit()
 {
 	SAFE_RELEASE(pVertexBuffer);
 

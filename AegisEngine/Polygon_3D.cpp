@@ -232,7 +232,7 @@ void POLYGON_3D::Draw(void)
 	CRenderer::GetDeviceContext()->Draw(4 * 6, 0);
 }
 
-void POLYGON_3D::Update(void)
+void POLYGON_3D::Update(float delta_time)
 {
 }
 

@@ -78,7 +78,7 @@ void PLAYER::Draw(void)
 	Shpere->Draw();
 }
 
-void PLAYER::Update(void)
+void PLAYER::Update(float delta_time)
 {
 	//CCamera* camera = CManager::Get_Scene()->Get_Game_Object<CCamera>("camera");
 	DEBUG_CAMERA* camera = CManager::Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
@@ -110,32 +110,32 @@ void PLAYER::Update(void)
 
 	if (KEYBOARD::Press_Keyboard(VK_W))
 	{
-		Position.x += front_vec.x * TIMER::Get_DeltaTime() * 10.0f;
-		Position.z += front_vec.z * TIMER::Get_DeltaTime() * 10.0f;
+		Position.x += front_vec.x * delta_time * 10.0f;
+		Position.z += front_vec.z * delta_time * 10.0f;
 
 		AnimType = false;
 	}
 
 	if (KEYBOARD::Press_Keyboard(VK_S))
 	{
-		Position.x -= front_vec.x * TIMER::Get_DeltaTime() * 10.0f;
-		Position.z -= front_vec.z * TIMER::Get_DeltaTime() * 10.0f;
+		Position.x -= front_vec.x * delta_time * 10.0f;
+		Position.z -= front_vec.z * delta_time * 10.0f;
 
 		AnimType = false;
 	}
 
 	if (KEYBOARD::Press_Keyboard(VK_A))
 	{
-		Position.x -= right_vec.x * TIMER::Get_DeltaTime() * 10.0f;
-		Position.z -= right_vec.z * TIMER::Get_DeltaTime() * 10.0f;
+		Position.x -= right_vec.x * delta_time * 10.0f;
+		Position.z -= right_vec.z * delta_time * 10.0f;
 
 		AnimType = false;
 	}
 
 	if (KEYBOARD::Press_Keyboard(VK_D))
 	{
-		Position.x += right_vec.x * TIMER::Get_DeltaTime() * 10.0f;
-		Position.z += right_vec.z * TIMER::Get_DeltaTime() * 10.0f;
+		Position.x += right_vec.x * delta_time * 10.0f;
+		Position.z += right_vec.z * delta_time * 10.0f;
 
 		AnimType = false;
 	}
@@ -164,7 +164,7 @@ void PLAYER::Update(void)
 		Model->Set_Rotation(Rotation);
 		Model->Set_Scaling(Scaling);
 
-		Model->Update();
+		Model->Update(delta_time);
 
 		Blend = Model->Get().Get_Ratio();
 	}

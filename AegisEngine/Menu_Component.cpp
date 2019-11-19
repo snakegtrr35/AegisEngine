@@ -13,7 +13,7 @@ MOUSE_EVENT_COMPONENT::~MOUSE_EVENT_COMPONENT()
 	Uninit();
 }
 
-void MOUSE_EVENT_COMPONENT::Update()
+void MOUSE_EVENT_COMPONENT::Update(float delta_time)
 {
 }
 
@@ -193,7 +193,7 @@ KEYBOARD_EVENT_COMPONENT::~KEYBOARD_EVENT_COMPONENT()
 	Uninit();
 }
 
-void KEYBOARD_EVENT_COMPONENT::Update()
+void KEYBOARD_EVENT_COMPONENT::Update(float delta_time)
 {
 }
 

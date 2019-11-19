@@ -72,17 +72,17 @@ BULLET::~BULLET()
 	Uninit();
 }
 
-void BULLET::Init(void)
+void BULLET::Init()
 {
 }
 
-void BULLET::Draw(void)
+void BULLET::Draw()
 {
 	Model->Draw();
 	Shadow->Draw();
 }
 
-void BULLET::Update(void)
+void BULLET::Update(float delta_time)
 {
 	Position.x += MoveVector.x * 0.2f;
 	Position.y += MoveVector.y * 0.2f;
@@ -162,7 +162,7 @@ void BULLET::Update(void)
 	}
 }
 
-void BULLET::Uninit(void)
+void BULLET::Uninit()
 {
 	SAFE_DELETE(Model);
 	SAFE_DELETE(Shadow);

@@ -164,11 +164,11 @@ CIRCLE_SHADOW::~CIRCLE_SHADOW()
 	SAFE_DELETE(Texture);
 }
 
-void CIRCLE_SHADOW::Init(void)
+void CIRCLE_SHADOW::Init()
 {
 }
 
-void CIRCLE_SHADOW::Draw(void)
+void CIRCLE_SHADOW::Draw()
 {
 	Vertex[0].Position = XMFLOAT3(-WH.x, 0.f, WH.y);
 	Vertex[0].Normal = XMFLOAT3(0.0f, 1.0f, 0.0f);
@@ -238,11 +238,11 @@ void CIRCLE_SHADOW::Draw(void)
 	CRenderer::SetMaterial(material);
 }
 
-void CIRCLE_SHADOW::Update(void)
+void CIRCLE_SHADOW::Update(float delta_time)
 {
 }
 
-void CIRCLE_SHADOW::Uninit(void)
+void CIRCLE_SHADOW::Uninit()
 {
 	SAFE_RELEASE(pVertexBuffer);
 	SAFE_DELETE(Texture);

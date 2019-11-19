@@ -145,7 +145,7 @@ void MESH_FIELD::Uninit()
 	SAFE_DELETE(Texture);
 }
 
-void MESH_FIELD::Update()
+void MESH_FIELD::Update(float delta_time)
 {
 }
 
@@ -393,7 +393,7 @@ void MESH_WALL::Uninit()
 	SAFE_DELETE(Texture);
 }
 
-void MESH_WALL::Update()
+void MESH_WALL::Update(float delta_time)
 {
 }
 

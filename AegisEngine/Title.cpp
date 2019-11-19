@@ -99,9 +99,9 @@ void TITLE::Draw()
 	}
 }
 
-void TITLE::Update()
+void TITLE::Update(float delta_time)
 {
-	SCENE::Update();
+	SCENE::Update(delta_time);
 
 #ifdef _DEBUG
 	{

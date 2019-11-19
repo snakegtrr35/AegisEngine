@@ -29,10 +29,10 @@ public:
 	BILL_BOARD(XMFLOAT3 position, XMFLOAT2 wh);
 	virtual ~BILL_BOARD();
 
-	void Init(void) override;
-	void Draw(void) override;
-	void Update(void) override;
-	void Uninit(void) override;
+	void Init() override;
+	void Draw() override;
+	void Update(float delta_time) override;
+	void Uninit() override;
 
 	// 幅と高さの設定
 	void SetWH(const XMFLOAT2 wh)
@@ -83,10 +83,10 @@ public:
 	BILL_BOARD_ANIMATION(XMFLOAT3 position, XMFLOAT2 wh);
 	~BILL_BOARD_ANIMATION();
 
-	void Init(void) override;
-	void Draw(void) override;
-	void Update(void) override;
-	void Uninit(void) override;
+	void Init() override;
+	void Draw() override;
+	void Update(float delta_time) override;
+	void Uninit() override;
 
 	// テクスチャアニメーションのパラメーターの設定
 	//

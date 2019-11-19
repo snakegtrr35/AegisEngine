@@ -40,7 +40,7 @@ private:
 public:
 	void Init() override;
 	void Uninit() override;
-	void Update() override;
+	void Update(float delta_time) override;
 	void Draw() override;
 
 	static DEBUG_CAMERA* const Get_Camera();

@@ -11,7 +11,7 @@
 
 static void Create_Bullet(XMFLOAT3& position, XMFLOAT3& front);
 
-ENEMY::ENEMY(void)
+ENEMY::ENEMY()
 {
 	Position = XMFLOAT3(3.0f, 1.0f, 3.0f);
 
@@ -51,16 +51,16 @@ ENEMY::~ENEMY()
 	Uninit();
 }
 
-void ENEMY::Init(void)
+void ENEMY::Init()
 {
 }
 
-void ENEMY::Draw(void)
+void ENEMY::Draw()
 {
 	Model->Draw();
 }
 
-void ENEMY::Update(void)
+void ENEMY::Update(float delta_time)
 {
 	// Axis‚ÌXV
 	{

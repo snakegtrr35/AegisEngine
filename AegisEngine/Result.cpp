@@ -48,9 +48,9 @@ void RESULT::Draw()
 	}
 }
 
-void RESULT::Update()
+void RESULT::Update(float delta_time)
 {
-	SCENE::Update();
+	SCENE::Update(delta_time);
 
 	if (KEYBOARD::Trigger_Keyboard(VK_RETURN))
 	{

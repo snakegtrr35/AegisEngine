@@ -48,7 +48,7 @@ public:
 
 	void Init() override {};
 	void Draw() override;
-	void Update() override;
+	void Update(float delta_time) override;
 	void Uninit() override;
 
 	void Set_Enable(const bool flag);

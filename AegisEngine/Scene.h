@@ -228,12 +228,12 @@ public:
 	* @return bool 戻り値の説明
 	* @details 詳細な説明
 	*/
-	virtual void Update(void) {
+	virtual void Update(float delta_time) {
 		if (true == PauseEnable)	// ポーズ中
 		{
 			for (GAME_OBJECT* object : GameObjects[(int)LAYER_NAME::UI])
 			{
-					object->Update();
+					object->Update(delta_time);
 			}
 
 			for (int i = 0; i < (int)LAYER_NAME::MAX_LAYER; i++)
@@ -247,7 +247,7 @@ public:
 			{
 				for (GAME_OBJECT* object : GameObjects[i])
 				{
-					object->Update();
+					object->Update(delta_time);
 				}
 
 				GameObjects[i].remove_if([](GAME_OBJECT* object) { return object->Destroy(); }); // リストから削除
@@ -338,7 +338,7 @@ public:
 
 	void Init() override;
 	void Draw() override;
-	void Update() override;
+	void Update(float delta_time) override;
 	void Uninit() override;
 };
 
@@ -359,7 +359,7 @@ public:
 
 	void Init() override;
 	void Draw() override;
-	void Update() override;
+	void Update(float delta_time) override;
 	void Uninit() override;
 };
 
@@ -380,7 +380,7 @@ public:
 
 	void Init() override;
 	void Draw() override;
-	void Update() override;
+	void Update(float delta_time) override;
 	void Uninit() override;
 
 	static bool Clear_Flag;
@@ -404,7 +404,7 @@ public:
 
 	void Init() override;
 	void Draw() override;
-	void Update() override;
+	void Update(float delta_time) override;
 	void Uninit() override;
 
 	static string Model_Name;
@@ -440,8 +440,8 @@ public:
 		pScene->Draw();
 	};
 
-	void Update() {
-		pScene->Update();
+	void Update(float delta_time) {
+		pScene->Update(delta_time);
 	};
 
 	void Uninit() {

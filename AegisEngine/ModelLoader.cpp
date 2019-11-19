@@ -225,7 +225,7 @@ void CMODEL::Draw()
 	}
 }
 
-void CMODEL::Update()
+void CMODEL::Update(float delta_time)
 {
 	Meshes.Update();
 

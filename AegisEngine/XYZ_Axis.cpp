@@ -228,7 +228,7 @@ void AXIS::Draw(void)
 	CRenderer::Set_Shader();
 }
 
-void AXIS::Update(void)
+void AXIS::Update(float delta_time)
 {
 }
 

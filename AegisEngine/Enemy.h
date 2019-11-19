@@ -30,10 +30,10 @@ public:
 	ENEMY();
 	~ENEMY();
 
-	void Init(void) override;
-	void Draw(void) override;
-	void Update(void) override;
-	void Uninit(void) override;
+	void Init() override;
+	void Draw() override;
+	void Update(float delta_time) override;
+	void Uninit() override;
 
 	void SetPosition(const XMFLOAT3& position);					// ƒ|ƒWƒVƒ‡ƒ“‚Ìİ’è
 	void SetRotation(const XMFLOAT3& position);					// ‰ñ“]‚Ìİ’è

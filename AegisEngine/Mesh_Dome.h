@@ -27,9 +27,9 @@ public:
 	MESH_DOOM() :Radius(500.0f) {};
 	~MESH_DOOM() {};
 
-	void Init();
-	void Uninit();
-	void Update();
-	void Draw();
+	void Init() override;
+	void Uninit() override;
+	void Update(float delta_time) override;
+	void Draw() override;
 
 };

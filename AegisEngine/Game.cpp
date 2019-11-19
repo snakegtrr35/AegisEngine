@@ -237,9 +237,9 @@ void GAME::Draw()
 	}
 }
 
-void GAME::Update()
+void GAME::Update(float delta_time)
 {
-	SCENE::Update();
+	SCENE::Update(delta_time);
 
 	// ƒ|[ƒY‰æ–Ê‚ÌØ‚è‘Ö‚¦
 	if (KEYBOARD::Trigger_Keyboard(VK_Q))

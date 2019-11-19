@@ -23,11 +23,11 @@ FADE::~FADE()
 	Uninit();
 }
 
-void FADE::Init(void)
+void FADE::Init()
 {
 }
 
-void FADE::Draw(void)
+void FADE::Draw()
 {
 	Vertex[0].Position = XMFLOAT3(Position.x - WH.x, Position.y - WH.y, 0.0f);
 	Vertex[0].Normal = XMFLOAT3(0.0f, 1.0f, 0.0f);
@@ -83,7 +83,7 @@ void FADE::Draw(void)
 	CRenderer::Set_Shader();
 }
 
-void FADE::Update(void)
+void FADE::Update(float delta_time)
 {
 	Cnt++;
 
@@ -96,7 +96,7 @@ void FADE::Update(void)
 	}
 }
 
-void FADE::Uninit(void)
+void FADE::Uninit()
 {
 	//FadeEnable = false;
 }

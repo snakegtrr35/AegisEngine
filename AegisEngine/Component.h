@@ -30,7 +30,7 @@ public:
 		Owner = owner;
 	}
 
-	virtual void Update() = 0;
+	virtual void Update(float delta_time) = 0;
 
 	virtual void Uninit() = 0;
 
@@ -109,10 +109,10 @@ public:
 		Uninit();
 	}
 
-	void Update() {
+	void Update(float delta_time) {
 		for (auto object : Conponent_List)
 		{
-			object->Update();
+			object->Update(delta_time);
 		}
 
 		Conponent_List.remove_if([](COMPONENT* object) { return object->Destroy(); }); // ƒŠƒXƒg‚©‚çíœ

@@ -33,7 +33,7 @@ public:
 
 	void Init(void) override;
 	void Draw(void) override;
-	void Update(void) override;
+	void Update(float delta_time) override;
 	void Uninit(void) override;
 
 	void SetPosition(const XMFLOAT3 position);					// ƒ|ƒWƒVƒ‡ƒ“‚Ìİ’è

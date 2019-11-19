@@ -15,12 +15,12 @@ BOUNDING_SHPERE::~BOUNDING_SHPERE()
 	Uninit();
 }
 
-void BOUNDING_SHPERE::Init(void)
+void BOUNDING_SHPERE::Init()
 {
 	Create_Buffer();
 }
 
-void BOUNDING_SHPERE::Draw(void)
+void BOUNDING_SHPERE::Draw()
 {
 	// 入力アセンブラに頂点バッファを設定
 	CRenderer::SetVertexBuffers(pVertexBuffer.get());
@@ -42,11 +42,11 @@ void BOUNDING_SHPERE::Draw(void)
 	CRenderer::Set_Shader();
 }
 
-void BOUNDING_SHPERE::Update(void)
+void BOUNDING_SHPERE::Update(float delta_time)
 {
 }
 
-void BOUNDING_SHPERE::Uninit(void)
+void BOUNDING_SHPERE::Uninit()
 {
 	pVertexBuffer.reset(nullptr);
 	pIndexBuffer.reset(nullptr);
@@ -190,7 +190,7 @@ BOUNDING_AABB::~BOUNDING_AABB()
 	Uninit();
 }
 
-void BOUNDING_AABB::Init(void)
+void BOUNDING_AABB::Init()
 {
 	/*{
 		// 頂点バッファの確保
@@ -524,7 +524,7 @@ void BOUNDING_AABB::Init(void)
 	}*/
 }
 
-void BOUNDING_AABB::Draw(void)
+void BOUNDING_AABB::Draw()
 {
 	// 入力アセンブラに頂点バッファを設定.
 	CRenderer::SetVertexBuffers(pVertexBuffer.get());
@@ -552,11 +552,11 @@ void BOUNDING_AABB::Draw(void)
 	CRenderer::Set_Shader();
 }
 
-void BOUNDING_AABB::Update(void)
+void BOUNDING_AABB::Update(float delta_time)
 {
 }
 
-void BOUNDING_AABB::Uninit(void)
+void BOUNDING_AABB::Uninit()
 {
 }
 

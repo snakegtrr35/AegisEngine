@@ -114,11 +114,11 @@ GRID::~GRID()
 	Uninit();
 }
 
-void GRID::Init(void)
+void GRID::Init()
 {
 }
 
-void GRID::Draw(void)
+void GRID::Draw()
 {
 	// 入力アセンブラに頂点バッファを設定.
 	CRenderer::SetVertexBuffers(pVertexBuffer);
@@ -143,12 +143,12 @@ void GRID::Draw(void)
 	CRenderer::Set_Shader();
 }
 
-void GRID::Update(void)
+void GRID::Update(float delta_time)
 {
 
 }
 
-void GRID::Uninit(void)
+void GRID::Uninit()
 {
 	SAFE_RELEASE(pVertexBuffer);
 }

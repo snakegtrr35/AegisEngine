@@ -4,16 +4,16 @@ BALL::BALL() : Quaternion(XMQuaternionIdentity())
 {
 }
 
-void BALL::Init(void)
+void BALL::Init()
 {
 }
 
-void BALL::Draw(void)
+void BALL::Draw()
 {
 
 }
 
-void BALL::Update(void)
+void BALL::Update(float delta_time)
 {
 	// ÉLÅ[ì¸óÕ
 	{
@@ -29,7 +29,7 @@ void BALL::Update(void)
 	}
 }
 
-void BALL::Uninit(void)
+void BALL::Uninit()
 {
 	pVertexBuffer.reset(nullptr);
 	pIndexBuffer.reset(nullptr);

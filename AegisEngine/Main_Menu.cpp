@@ -130,9 +130,9 @@ void MAIN_MENU::Draw()
 	}
 }
 
-void MAIN_MENU::Update()
+void MAIN_MENU::Update(float delta_time)
 {
-	SCENE::Update();
+	SCENE::Update(delta_time);
 
 	/*{
 		vector<CMODEL*> models = Get_Game_Objects<CMODEL>();

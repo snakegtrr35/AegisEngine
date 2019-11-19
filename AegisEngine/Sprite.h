@@ -121,7 +121,7 @@ public:
 	* @brief 更新関数
 	* @details 更新する関数
 	*/
-	void Update() override;
+	void Update(float delta_time) override;
 
 	/**
 	* @brief 終了処理関数
@@ -442,7 +442,7 @@ public:
 	* @brief 更新関数
 	* @details 更新する関数
 	*/
-	void Update() override;
+	void Update(float delta_time) override;
 
 	/**
 	* @brief 終了処理関数
@@ -521,7 +521,7 @@ public:
 	* @brief 更新関数
 	* @details 更新する関数
 	*/
-	void Update() override;
+	void Update(float delta_time) override;
 
 	/**
 	* @brief 終了処理関数

@@ -135,6 +135,6 @@ void MESH_CYlLINDER::Draw()
 	CRenderer::GetDeviceContext()->DrawIndexed(IndexNum, 0, 0);
 }
 
-void MESH_CYlLINDER::Update()
+void MESH_CYlLINDER::Update(float delta_time)
 {
 }

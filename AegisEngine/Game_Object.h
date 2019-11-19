@@ -27,10 +27,10 @@ public:
 	GAME_OBJECT() : Object_Name("none"), DestroyFlag(false), Rotation(XMFLOAT3(0.0f, 0.0f, 0.0f)), Position(XMFLOAT3(0.0f, 0.0f, 0.0f)), Scaling(XMFLOAT3(1.0f, 1.0f, 1.0f)), Quaternion(XMQuaternionIdentity()) {}
 	virtual ~GAME_OBJECT() {};
 
-	virtual void Init(void) = 0;
-	virtual void Draw(void) = 0;
-	virtual void Update(void) = 0;
-	virtual void Uninit(void) = 0;
+	virtual void Init() = 0;
+	virtual void Draw() = 0;
+	virtual void Update(float delta_time) = 0;
+	virtual void Uninit() = 0;
 
 	void Set_Destroy() {
 		DestroyFlag = true;

@@ -14,10 +14,10 @@ public:
 	GRID();
 	~GRID();
 
-	void Init(void) override;
-	void Draw(void) override;
-	void Update(void) override;
-	void Uninit(void) override;
+	void Init() override;
+	void Draw() override;
+	void Update(float delta_time) override;
+	void Uninit() override;
 };
 
 #endif // !CUBE_H

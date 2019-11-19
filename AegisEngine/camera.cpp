@@ -54,7 +54,7 @@ void CCamera::Uninit()
 {
 }
 
-void CCamera::Update()
+void CCamera::Update(float delta_time)
 {
 	XMFLOAT2 point = MOUSE::Get_Position();
 

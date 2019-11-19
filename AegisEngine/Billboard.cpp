@@ -170,11 +170,11 @@ BILL_BOARD::~BILL_BOARD()
 	SAFE_DELETE(Texture);
 }
 
-void BILL_BOARD::Init(void)
+void BILL_BOARD::Init()
 {
 }
 
-void BILL_BOARD::Draw(void)
+void BILL_BOARD::Draw()
 {
 	Vertex[0].Position = XMFLOAT3(-WH.x, WH.y, 0.0f);
 	Vertex[0].Normal = XMFLOAT3(0.0f, 0.0f, 1.0f);
@@ -249,11 +249,11 @@ void BILL_BOARD::Draw(void)
 	CRenderer::Set_Shader();
 }
 
-void BILL_BOARD::Update(void)
+void BILL_BOARD::Update(float delta_time)
 {
 }
 
-void BILL_BOARD::Uninit(void)
+void BILL_BOARD::Uninit()
 {
 	SAFE_RELEASE(pVertexBuffer);
 	SAFE_RELEASE(pIndexBuffer);
@@ -314,11 +314,11 @@ BILL_BOARD_ANIMATION::~BILL_BOARD_ANIMATION()
 	Uninit();
 }
 
-void BILL_BOARD_ANIMATION::Init(void)
+void BILL_BOARD_ANIMATION::Init()
 {
 }
 
-void BILL_BOARD_ANIMATION::Draw(void)
+void BILL_BOARD_ANIMATION::Draw()
 {
 	Draw(Tx_Param, Ty_Param);
 }
@@ -427,7 +427,7 @@ void BILL_BOARD_ANIMATION::Draw(float tx, float ty)
 	CRenderer::Set_Shader();
 }
 
-void BILL_BOARD_ANIMATION::Update(void)
+void BILL_BOARD_ANIMATION::Update(float delta_time)
 {
 	Age++;
 
@@ -439,7 +439,7 @@ void BILL_BOARD_ANIMATION::Update(void)
 	}
 }
 
-void BILL_BOARD_ANIMATION::Uninit(void)
+void BILL_BOARD_ANIMATION::Uninit()
 {
 }
 

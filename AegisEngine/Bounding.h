@@ -18,10 +18,10 @@ public:
 	BOUNDING() : Color(COLOR(0.f, 1.0f, 0.f, 1.0f)) {}
 	virtual ~BOUNDING() {}
 
-	void Init(void) override {}
-	void Draw(void) override {}
-	void Update(void) override {}
-	void Uninit(void) override {}
+	void Init() override {}
+	void Draw() override {}
+	void Update(float delta_time) override {}
+	void Uninit() override {}
 
 	void Set_Color(const COLOR& color) {
 		Color = color;
@@ -45,10 +45,10 @@ public:
 	BOUNDING_SHPERE ();
 	~BOUNDING_SHPERE ();
 
-	void Init(void) override;
-	void Draw(void) override;
-	void Update(void) override;
-	void Uninit(void) override;
+	void Init() override;
+	void Draw() override;
+	void Update(float delta_time) override;
+	void Uninit() override;
 
 	void Set_Radius(const float radius);
 
@@ -68,10 +68,10 @@ public:
 	BOUNDING_AABB();
 	~BOUNDING_AABB();
 
-	void Init(void) override;
-	void Draw(void) override;
-	void Update(void) override;
-	void Uninit(void) override;
+	void Init() override;
+	void Draw() override;
+	void Update(float delta_time) override;
+	void Uninit() override;
 
 	//void Set_Radius(const XMFLOAT3& radius);
 

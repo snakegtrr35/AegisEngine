@@ -77,11 +77,11 @@ void CManager::Update()
 
 	TEXTURE_MANEGER::Update();
 
-	pSceneManager->Update();
+	pSceneManager->Update(TIMER::Get_DeltaTime());
 
 	// Effekseer
 	{
-		EFFEKSEER_MANAGER::Updata();
+		EFFEKSEER_MANAGER::Updata(TIMER::Get_DeltaTime());
 	}
 
 	MOUSE::Reset_Wheel_Moveset();

@@ -49,7 +49,7 @@ void DEBUG_CAMERA::Uninit()
 {
 }
 
-void DEBUG_CAMERA::Update()
+void DEBUG_CAMERA::Update(float delta_time)
 {
 	XMFLOAT2 point = MOUSE::Get_Position();
 

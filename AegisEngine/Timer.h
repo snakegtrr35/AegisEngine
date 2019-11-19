@@ -79,16 +79,24 @@ public:
 
 	static void Update() {
 		static bool flag = true;
+		//static DWORD cnt = 0;
+
 		if (flag)
 		{
 			QueryPerformanceCounter(&delta_start);
 			flag = false;
 		}
+
 		QueryPerformanceCounter(&delta_end);
 
-		time = ((delta_end.QuadPart - delta_start.QuadPart) * 1000.0 / frep.QuadPart) * 0.001;
-		//time = 1 / ( ( (delta_end.QuadPart - delta_start.QuadPart) * 1000.0 / frep.QuadPart ) * 0.001 ); //1フレームレート(ms)
+		//if (0 == (cnt % 10))
+		{
+			time = ((delta_end.QuadPart - delta_start.QuadPart) * 1000.0 / frep.QuadPart) * 0.001;
+			//time = 1 / (((delta_end.QuadPart - delta_start.QuadPart) * 1000.0 / frep.QuadPart) * 0.001); //1フレームレート(ms)
+		}
 		delta_start = delta_end;
+
+		//cnt++;
 	}
 
 	static double Get_DeltaTime() {
