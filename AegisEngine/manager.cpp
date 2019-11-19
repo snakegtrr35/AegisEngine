@@ -75,7 +75,9 @@ void CManager::Update()
 	// インプットの更新
 	CINPUT::Update();
 
+#ifdef _DEBUG
 	TEXTURE_MANEGER::Update();
+#endif // _DEBUG
 
 	pSceneManager->Update(TIMER::Get_DeltaTime());
 
@@ -86,10 +88,10 @@ void CManager::Update()
 
 	MOUSE::Reset_Wheel_Moveset();
 
-	if (KEYBOARD::Trigger_Keyboard(VK_F1))
+	/*if (KEYBOARD::Trigger_Keyboard(VK_F1))
 	{
 		CRenderer::Change_Window_Mode();
-	}
+	}*/
 
 	if (KEYBOARD::Press_Keyboard(VK_ESCAPE) && KEYBOARD::Press_Keyboard(VK_CONTROL))
 	{

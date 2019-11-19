@@ -230,9 +230,6 @@ private:
 
 						f = frame % i.rotation.begin()->time;
 
-						XMFLOAT4 rotation = i.rotation[f].value;
-						quat2 = XMLoadFloat4(&rotation);
-
 						break;
 					}
 				}

@@ -186,12 +186,12 @@ DEBUG_CAMERA* const DEBUG_CAMERA::Get_Camera(void)
 	return pDebugCamera;
 }
 
-const XMMATRIX DEBUG_CAMERA::Get_Camera_View(void)
+XMMATRIX DEBUG_CAMERA::Get_Camera_View(void)
 {
 	return m_ViewMatrix;
 }
 
-const XMMATRIX DEBUG_CAMERA::Get_Camera_Projection()
+XMMATRIX DEBUG_CAMERA::Get_Camera_Projection()
 {
 	return m_ProjectionMatrix;
 }

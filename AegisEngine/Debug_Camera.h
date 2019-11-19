@@ -44,8 +44,8 @@ public:
 	void Draw() override;
 
 	static DEBUG_CAMERA* const Get_Camera();
-	static const XMMATRIX Get_Camera_View();
-	static const XMMATRIX Get_Camera_Projection();
+	static XMMATRIX Get_Camera_View();
+	static XMMATRIX Get_Camera_Projection();
 
 	XMVECTOR* const  Get_Front() {
 		return &Front;

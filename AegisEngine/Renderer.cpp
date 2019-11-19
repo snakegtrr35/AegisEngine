@@ -45,6 +45,11 @@ bool CRenderer::Stand_By_Enable = false;
 ID3D11RenderTargetView*			CRenderer::My_RenderTargetView = nullptr;
 ID3D11ShaderResourceView*		CRenderer::My_ShaderResourceView = nullptr;
 
+
+ID3D11Buffer*	CRenderer::m_ConstantBuffer;//
+CONSTANT		CRenderer::m_Constant;//
+
+
 bool CRenderer::Init()
 {
 	HRESULT hr = S_OK;
@@ -190,7 +195,7 @@ bool CRenderer::Init()
 	hBufferDesc.MiscFlags = 0;
 	hBufferDesc.StructureByteStride = sizeof(float);
 
-	m_D3DDevice->CreateBuffer(&hBufferDesc, NULL, &m_WorldBuffer);
+	/*m_D3DDevice->CreateBuffer(&hBufferDesc, NULL, &m_WorldBuffer);
 	m_ImmediateContext->VSSetConstantBuffers(0, 1, &m_WorldBuffer);
 	m_ImmediateContext->PSSetConstantBuffers(0, 1, &m_WorldBuffer);
 
@@ -198,7 +203,7 @@ bool CRenderer::Init()
 	m_ImmediateContext->VSSetConstantBuffers(1, 1, &m_ViewBuffer);
 
 	m_D3DDevice->CreateBuffer(&hBufferDesc, NULL, &m_ProjectionBuffer);
-	m_ImmediateContext->VSSetConstantBuffers(2, 1, &m_ProjectionBuffer);
+	m_ImmediateContext->VSSetConstantBuffers(2, 1, &m_ProjectionBuffer);*/
 
 	hBufferDesc.ByteWidth = sizeof(MATERIAL);
 
@@ -217,6 +222,11 @@ bool CRenderer::Init()
 
 	m_D3DDevice->CreateBuffer(&hBufferDesc, NULL, &m_CameraBuffer);
 	m_ImmediateContext->PSSetConstantBuffers(5, 1, &m_CameraBuffer);
+
+	hBufferDesc.ByteWidth = sizeof(CONSTANT);
+	m_D3DDevice->CreateBuffer(&hBufferDesc, NULL, &m_ConstantBuffer);
+	m_ImmediateContext->VSSetConstantBuffers(0, 1, &m_ConstantBuffer);
+	m_ImmediateContext->PSSetConstantBuffers(0, 1, &m_ConstantBuffer);
 
 	/*{
 		// 定数バッファ生成
@@ -298,6 +308,8 @@ void CRenderer::Uninit()
 	SAFE_RELEASE(m_D2DDevice)
 	SAFE_RELEASE(m_D2DDeviceContext)
 	SAFE_RELEASE(m_dxgiDev)
+
+	SAFE_RELEASE(m_ConstantBuffer);
 }
 
 bool CRenderer::Init3D()
@@ -847,36 +859,48 @@ void CRenderer::SetWorldViewProjection2D(const XMFLOAT3& scaling, const XMFLOAT3
 	world = XMMatrixScaling(scaling.x, scaling.y, 1.0f);
 	world *= XMMatrixRotationRollPitchYaw(XMConvertToRadians(rotation.x), XMConvertToRadians(rotation.y), XMConvertToRadians(rotation.z));
 
-	m_ImmediateContext->UpdateSubresource(m_WorldBuffer, 0, NULL, &XMMatrixTranspose(world), 0, 0);
+	//m_ImmediateContext->UpdateSubresource(m_WorldBuffer, 0, NULL, &XMMatrixTranspose(world), 0, 0);
 
 	XMMATRIX view;
 	view = XMMatrixIdentity();
-	m_ImmediateContext->UpdateSubresource(m_ViewBuffer, 0, NULL, &XMMatrixTranspose(view), 0, 0);
+	//m_ImmediateContext->UpdateSubresource(m_ViewBuffer, 0, NULL, &XMMatrixTranspose(view), 0, 0);
 
 	XMMATRIX projection;
 	projection = XMMatrixOrthographicOffCenterLH(0.0f, SCREEN_WIDTH, SCREEN_HEIGHT, 0.0f, 0.0f, 1.0f);
-	m_ImmediateContext->UpdateSubresource(m_ProjectionBuffer, 0, NULL, &XMMatrixTranspose(projection), 0, 0);
+	//m_ImmediateContext->UpdateSubresource(m_ProjectionBuffer, 0, NULL, &XMMatrixTranspose(projection), 0, 0);
+
+	m_Constant.WorldMatrix = XMMatrixTranspose(world);
+	m_Constant.ViewMatrix = XMMatrixTranspose(view);
+	m_Constant.ProjectionMatrix = XMMatrixTranspose(projection);
+
+	CRenderer::GetDeviceContext()->UpdateSubresource(m_ConstantBuffer, 0, NULL, &m_Constant, 0, 0);
 }
 
 void CRenderer::SetWorldMatrix( XMMATRIX *WorldMatrix )
 {
 	XMMATRIX world;
 	world = *WorldMatrix;
-	m_ImmediateContext->UpdateSubresource(m_WorldBuffer, 0, NULL, &XMMatrixTranspose(world), 0, 0);
+	//m_ImmediateContext->UpdateSubresource(m_WorldBuffer, 0, NULL, &XMMatrixTranspose(world), 0, 0);
+
+	m_Constant.WorldMatrix = XMMatrixTranspose(world);
 }
 
 void CRenderer::SetViewMatrix( XMMATRIX *ViewMatrix )
 {
 	XMMATRIX view;
 	view = *ViewMatrix;
-	m_ImmediateContext->UpdateSubresource(m_ViewBuffer, 0, NULL, &XMMatrixTranspose(view), 0, 0);
+	//->UpdateSubresource(m_ViewBuffer, 0, NULL, &XMMatrixTranspose(view), 0, 0);
+
+	m_Constant.ViewMatrix = XMMatrixTranspose(view);
 }
 
 void CRenderer::SetProjectionMatrix( XMMATRIX *ProjectionMatrix )
 {
 	XMMATRIX projection;
 	projection = *ProjectionMatrix;
-	m_ImmediateContext->UpdateSubresource(m_ProjectionBuffer, 0, NULL, &XMMatrixTranspose(projection), 0, 0);
+	//m_ImmediateContext->UpdateSubresource(m_ProjectionBuffer, 0, NULL, &XMMatrixTranspose(projection), 0, 0);
+
+	m_Constant.ProjectionMatrix = XMMatrixTranspose(projection);
 }
 
 void CRenderer::SetMaterial( MATERIAL Material )

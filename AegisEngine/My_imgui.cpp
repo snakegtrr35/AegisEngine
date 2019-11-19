@@ -13,6 +13,8 @@
 #include	"manager.h"
 #include	"Texture_Manager.h"
 
+#include	"common.h"
+
 extern float radius;
 
 static string old_name;
@@ -553,6 +555,8 @@ void My_imgui::Texture_Import()
 
 			if (ImGui::Button((char*)u8"インポート", size))
 			{
+				Erroer_Message("テスト");
+
 				check = File_Check(file_name);
 
 				if (1 == check)

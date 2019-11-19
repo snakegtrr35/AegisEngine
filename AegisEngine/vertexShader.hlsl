@@ -5,18 +5,25 @@
 //*****************************************************************************
 
 // マトリクスバッファ
-cbuffer WorldBuffer : register(b0)
+cbuffer ConstantBuffer : register(b0)
 {
     matrix World;
-}
-cbuffer ViewBuffer : register(b1)
-{
     matrix View;
-}
-cbuffer ProjectionBuffer : register(b2)
-{
     matrix Projection;
 }
+
+//cbuffer WorldBuffer : register(b0)
+//{
+//    matrix World;
+//}
+//cbuffer ViewBuffer : register(b1)
+//{
+//    matrix View;
+//}
+//cbuffer ProjectionBuffer : register(b2)
+//{
+//    matrix Projection;
+//}
 
 // マテリアルバッファ
 struct MATERIAL

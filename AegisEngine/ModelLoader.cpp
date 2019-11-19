@@ -5,6 +5,8 @@
 #include	"Scene.h"
 #include	"camera.h"
 
+
+
 Anim createAnimation(const aiAnimation* anim);
 NodeAnim createNodeAnim(const aiNodeAnim* anim);
 
@@ -156,7 +158,6 @@ void CMODEL::Draw()
 		}
 	}
 
-
 	XMMATRIX matrix = XMMatrixIdentity();
 	XMMATRIX scaling = XMMatrixScaling(Scaling.x, Scaling.y, Scaling.z);
 	XMMATRIX rotation  = XMMatrixIdentity();/*= XMMatrixRotationRollPitchYaw(XMConvertToRadians(Rotation.x), XMConvertToRadians(Rotation.y), XMConvertToRadians(Rotation.z));*/
@@ -191,6 +192,8 @@ void CMODEL::Draw()
 	matrix = XMMatrixMultiply(matrix, rotation);
 
 	matrix = XMMatrixMultiply(matrix, transform);
+
+
 
 	if (Meshes.GetAnime())
 	{

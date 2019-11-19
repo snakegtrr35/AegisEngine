@@ -180,6 +180,13 @@ enum class SHADER_INDEX_V {
 class CVertexBuffer;
 class CIndexBuffer;
 
+struct CONSTANT
+{
+	XMMATRIX WorldMatrix;
+	XMMATRIX ViewMatrix;
+	XMMATRIX ProjectionMatrix;
+};
+
 /**
 * @brief Directxのデバイスクラス
 * @details Directx11のデバイスクラス
@@ -410,6 +417,18 @@ public:
 	static ID3D11ShaderResourceView*	Get_SRV();
 	static ID3D11RenderTargetView*		My_RenderTargetView;
 	static ID3D11ShaderResourceView*	My_ShaderResourceView;
+
+	static ID3D11Buffer*	m_ConstantBuffer;//
+	static CONSTANT		m_Constant;//
+
+	static void Set(XMMATRIX world, XMMATRIX view, XMMATRIX projection)
+	{
+		m_Constant.WorldMatrix = XMMatrixTranspose(world);
+		m_Constant.ViewMatrix = XMMatrixTranspose(view);
+		m_Constant.ProjectionMatrix = XMMatrixTranspose(projection);
+
+		CRenderer::GetDeviceContext()->UpdateSubresource(m_ConstantBuffer, 0, NULL, &m_Constant, 0, 0);
+	}
 };
 
 #endif // !RENDER_H
