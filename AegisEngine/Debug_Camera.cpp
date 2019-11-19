@@ -81,7 +81,7 @@ void DEBUG_CAMERA::Update(float delta_time)
 	{
 		XMMATRIX mtxRotation;
 
-		mtxRotation = XMMatrixRotationAxis(Right, XMConvertToRadians(point.y));
+		mtxRotation = XMMatrixRotationAxis(Right, XMConvertToRadians(point.y * delta_time * 20.0));
 
 		Front = XMVector3TransformNormal(Front, mtxRotation);
 		Front = XMVector3Normalize(Front);
@@ -94,7 +94,7 @@ void DEBUG_CAMERA::Update(float delta_time)
 	{
 		XMMATRIX mtxRotation;
 
-		mtxRotation = XMMatrixRotationY(XMConvertToRadians(point.x));
+		mtxRotation = XMMatrixRotationY(XMConvertToRadians(point.x * delta_time * 20.0));
 
 
 		Front = XMVector3TransformNormal(Front, mtxRotation);
@@ -115,32 +115,32 @@ void DEBUG_CAMERA::Update(float delta_time)
 	{
 		if (KEYBOARD::Press_Keyboard(VK_UP))
 		{
-			Pos += f * 0.5f;
+			Pos += f * delta_time * 15.0f;
 		}
 
 		if (KEYBOARD::Press_Keyboard(VK_DOWN))
 		{
-			Pos -= f * 0.5f;
+			Pos -= f * delta_time * 15.0f;
 		}
 
 		if (KEYBOARD::Press_Keyboard(VK_RIGHT))
 		{
-			Pos += r * 0.5f;
+			Pos += r * delta_time * 15.0f;
 		}
 
 		if (KEYBOARD::Press_Keyboard(VK_LEFT))
 		{
-			Pos -= r * 0.5f;
+			Pos -= r * delta_time * 15.0f;
 		}
 
 		if ((MOUSE::Get_Wheel_Move_Flag() == WHEEL_MOVE_ENUM::UP))
 		{
-			Pos += f * 2.0f;
+			Pos += f * delta_time * 150.0f;
 		}
 
 		if ((MOUSE::Get_Wheel_Move_Flag() == WHEEL_MOVE_ENUM::DOWN))
 		{
-			Pos -= f * 2.0f;
+			Pos -= f * delta_time * 150.0f;
 		}
 	}
 
