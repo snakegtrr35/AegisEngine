@@ -1,6 +1,9 @@
 #include	"Circle_Shadow.h"
 #include	"texture.h"
 
+#include	"manager.h"
+#include	"Scene.h"
+
 CIRCLE_SHADOW::CIRCLE_SHADOW()
 {
 	pVertexBuffer = nullptr;
@@ -225,7 +228,19 @@ void CIRCLE_SHADOW::Draw()
 		world = XMMatrixScaling(Scaling.x, Scaling.y, Scaling.z);				// Šg‘åk¬
 		world *= XMMatrixRotationRollPitchYaw(0.0f, 0.0f, 0.0f);				// ‰ñ“](ƒ[ƒ‹ƒsƒbƒ`ƒˆƒE)
 		world *= XMMatrixTranslation(Position.x, Position.y, Position.z);		// ˆÚ“®
-		CRenderer::SetWorldMatrix(&world);
+
+		auto camera01 = CManager::Get_Scene()->Get_Game_Object<CCamera>();
+		auto camera02 = CManager::Get_Scene()->Get_Game_Object<DEBUG_CAMERA>();
+
+		if (nullptr != camera01)
+
+		{
+			CRenderer::Set_MatrixBuffer(world, camera01->Get_Camera_View(), camera01->Get_Camera_Projection());
+		}
+		else
+		{
+			CRenderer::Set_MatrixBuffer(world, camera02->Get_Camera_View(), camera02->Get_Camera_Projection());
+		}
 	}
 
 	CRenderer::DrawIndexed(6, 0, 0);

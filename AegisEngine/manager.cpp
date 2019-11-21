@@ -93,7 +93,7 @@ void CManager::Update()
 		CRenderer::Change_Window_Mode();
 	}*/
 
-	if (KEYBOARD::Press_Keyboard(VK_ESCAPE) && KEYBOARD::Press_Keyboard(VK_CONTROL))
+	if (KEYBOARD::Press_Keyboard(VK_ESCAPE))
 	{
 		CManager::GameEnd();
 	}

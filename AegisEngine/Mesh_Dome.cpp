@@ -2,7 +2,8 @@
 #include	"texture.h"
 #include	"Mesh_Dome.h"
 
-
+#include	"manager.h"
+#include	"Scene.h"
 
 void MESH_DOOM::Init()
 {
@@ -142,7 +143,18 @@ void MESH_DOOM::Draw()
 		world *= XMMatrixRotationRollPitchYaw(XMConvertToRadians(Rotation.x), XMConvertToRadians(Rotation.y), XMConvertToRadians(Rotation.z));			// ‰ñ“]
 		world *= XMMatrixTranslation(Position.x, Position.y, Position.z);																				// ˆÚ“®
 
-		CRenderer::SetWorldMatrix(&world);
+		auto camera01 = CManager::Get_Scene()->Get_Game_Object<CCamera>();
+		auto camera02 = CManager::Get_Scene()->Get_Game_Object<DEBUG_CAMERA>();
+
+		if (nullptr != camera01)
+
+		{
+			CRenderer::Set_MatrixBuffer(world, camera01->Get_Camera_View(), camera01->Get_Camera_Projection());
+		}
+		else
+		{
+			CRenderer::Set_MatrixBuffer(world, camera02->Get_Camera_View(), camera02->Get_Camera_Projection());
+		}
 	}
 
 	CRenderer::SetVertexBuffers(VertexBuffer.get());

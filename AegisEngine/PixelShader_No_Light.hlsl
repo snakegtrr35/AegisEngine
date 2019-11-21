@@ -24,10 +24,11 @@ cbuffer MaterialBuffer : register(b3)
 // ライトバッファ
 struct LIGHT
 {
-    float4 Direction;
-    float4 Diffuse;
-    float4 Ambient;
-    float4 Specular;
+    float4      Direction;
+    float4      Position;
+    float4      Diffuse;
+    float4      Ambient;
+    float4      Specular;
 };
 
 cbuffer LightBuffer : register(b4)
@@ -47,13 +48,13 @@ SamplerState g_SamplerState : register(s0);
 //=============================================================================
 // ピクセルシェーダ
 //=============================================================================
-void main(in float4 inPosition : POSITION0,
-						 in float4 inNormal     : NORMAL0,
-						 in float2 inTexCoord   : TEXCOORD0,
-						 in float3 posLocal     : TEXCOORD1,
-						 in float4 inDiffuse    : COLOR0,
+void main( in float4 inPosition      : POSITION0,
+		   in float4 inNormal        : NORMAL0,
+		   in float2 inTexCoord      : TEXCOORD0,
+		   in float4 inDiffuse       : COLOR0,
+		   in float4 outWPos         : TEXCOORD1,
 
-						 out float4 outDiffuse : SV_Target)
+		   out float4 outDiffuse     : SV_Target)
 {
     outDiffuse = g_Texture.Sample(g_SamplerState, inTexCoord);
 

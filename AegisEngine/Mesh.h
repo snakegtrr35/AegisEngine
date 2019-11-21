@@ -3,10 +3,10 @@
 #ifndef MESH_H
 #define MESH_H
 
-#include	"main.h"
 #include	"Renderer.h"
 
-#include	"camera.h"
+#include	"manager.h"
+#include	"Scene.h"
 
 //
 #define NUM_BONES 4
@@ -138,14 +138,24 @@ private:
 			{
 				matrix = XMMatrixMultiply(Matrix, parent_matrix);
 
-				CRenderer::SetWorldMatrix(&matrix);
+				auto camera01 = CManager::Get_Scene()->Get_Game_Object<CCamera>();
+				auto camera02 = CManager::Get_Scene()->Get_Game_Object<DEBUG_CAMERA>();
+
+				if (nullptr != camera01)
+
+				{
+					CRenderer::Set_MatrixBuffer(matrix, camera01->Get_Camera_View(), camera01->Get_Camera_Projection());
+				}
+				else
+				{
+					CRenderer::Set_MatrixBuffer(matrix, camera02->Get_Camera_View(), camera02->Get_Camera_Projection());
+				}
 			}
 
 			CRenderer::GetDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 			CRenderer::GetDeviceContext()->DrawIndexed(Indices.size(), 0, 0);
 		}
-
 		else
 		{
 			matrix = XMMatrixMultiply(Matrix, parent_matrix);
@@ -190,7 +200,18 @@ private:
 
 						world = XMMatrixMultiply(world, parent_matrix);
 
-						CRenderer::SetWorldMatrix(&world);
+						auto camera01 = CManager::Get_Scene()->Get_Game_Object<CCamera>();
+						auto camera02 = CManager::Get_Scene()->Get_Game_Object<DEBUG_CAMERA>();
+
+						if (nullptr != camera01)
+
+						{
+							CRenderer::Set_MatrixBuffer(world, camera01->Get_Camera_View(), camera01->Get_Camera_Projection());
+						}
+						else
+						{
+							CRenderer::Set_MatrixBuffer(world, camera02->Get_Camera_View(), camera02->Get_Camera_Projection());
+						}
 
 						break;
 					}
@@ -230,6 +251,9 @@ private:
 
 						f = frame % i.rotation.begin()->time;
 
+						XMFLOAT4 rotation = i.rotation[f].value;
+						quat2 = XMLoadFloat4(&rotation);
+
 						break;
 					}
 				}
@@ -244,7 +268,18 @@ private:
 
 				world = XMMatrixMultiply(world, parent_matrix);
 
-				CRenderer::SetWorldMatrix(&world);
+				auto camera01 = CManager::Get_Scene()->Get_Game_Object<CCamera>();
+				auto camera02 = CManager::Get_Scene()->Get_Game_Object<DEBUG_CAMERA>();
+
+				if (nullptr != camera01)
+
+				{
+					CRenderer::Set_MatrixBuffer(world, camera01->Get_Camera_View(), camera01->Get_Camera_Projection());
+				}
+				else
+				{
+					CRenderer::Set_MatrixBuffer(world, camera02->Get_Camera_View(), camera02->Get_Camera_Projection());
+				}
 			}
 		}
 

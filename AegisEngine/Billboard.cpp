@@ -1,7 +1,8 @@
 #include	"Renderer.h"
 #include	"texture.h"
-#include	"camera.h"
 #include	"Billboard.h"
+
+#include	"manager.h"
 #include	"Scene.h"
 
 ID3D11Buffer* BILL_BOARD::pIndexBuffer = nullptr;		// インデックスバッファ
@@ -239,7 +240,20 @@ void BILL_BOARD::Draw()
 		world *= XMMatrixRotationRollPitchYaw(Rotation.x, Rotation.y, Rotation.z);			// 回転
 		world *= XMMatrixTranslation(Position.x, Position.y, Position.z);					// 移動
 
-		CRenderer::SetWorldMatrix(&world);
+		//CRenderer::SetWorldMatrix(&world);
+
+		auto camera01 = CManager::Get_Scene()->Get_Game_Object<CCamera>();
+		auto camera02 = CManager::Get_Scene()->Get_Game_Object<DEBUG_CAMERA>();
+
+		if (nullptr != camera01)
+
+		{
+			CRenderer::Set_MatrixBuffer(world, camera01->Get_Camera_View(), camera01->Get_Camera_Projection());
+		}
+		else
+		{
+			CRenderer::Set_MatrixBuffer(world, camera02->Get_Camera_View(), camera02->Get_Camera_Projection());
+		}
 	}
 
 	CRenderer::Set_Shader(SHADER_INDEX_V::DEFAULT, SHADER_INDEX_P::NO_LIGHT);

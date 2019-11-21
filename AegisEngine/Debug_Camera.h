@@ -43,13 +43,25 @@ public:
 	void Update(float delta_time) override;
 	void Draw() override;
 
-	static DEBUG_CAMERA* const Get_Camera();
-	static XMMATRIX Get_Camera_View();
-	static XMMATRIX Get_Camera_Projection();
+	static DEBUG_CAMERA* const Get_Camera() {
+		return pDebugCamera;
+	}
+	
+	static const XMMATRIX& Get_Camera_View() {
+		return m_ViewMatrix;
+	}
+
+	static const XMMATRIX& Get_Camera_Projection() {
+		return m_ProjectionMatrix;
+	}
 
 	XMVECTOR* const  Get_Front() {
 		return &Front;
 	};
+
+	XMVECTOR* Get_Pos() {
+		return &Pos;
+	}
 
 	XMVECTOR* const  Get_Up() {
 		return &Up;

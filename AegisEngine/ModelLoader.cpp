@@ -5,7 +5,7 @@
 #include	"Scene.h"
 #include	"camera.h"
 
-
+#include	"Renderer.h"
 
 Anim createAnimation(const aiAnimation* anim);
 NodeAnim createNodeAnim(const aiNodeAnim* anim);
@@ -193,7 +193,41 @@ void CMODEL::Draw()
 
 	matrix = XMMatrixMultiply(matrix, transform);
 
+	{
+		auto camera01 = CManager::Get_Scene()->Get_Game_Object<CCamera>();
+		auto camera02 = CManager::Get_Scene()->Get_Game_Object<DEBUG_CAMERA>();
 
+		{
+			XMVECTOR camera_pos;
+			LIGHT light = *CRenderer::Get_Light();
+
+			XMVECTOR light_pos = XMVectorSet(light.Direction.x, light.Direction.y, light.Direction.z, light.Direction.w);
+
+			light_pos = XMVectorScale(light_pos, 10.0f);
+
+			if (nullptr != camera01)
+			{
+				camera_pos = *camera01->Get_Pos();
+
+				XMFLOAT4 pos;
+				XMStoreFloat4(&pos, camera_pos);
+				//pos.w = 1.0f;
+				camera_pos = XMLoadFloat4(&pos);
+				
+			}
+			else
+			{
+				camera_pos = *camera02->Get_Pos();
+
+				XMFLOAT4 pos;
+				XMStoreFloat4(&pos, camera_pos);
+				//pos.w = 1.0f;
+				camera_pos = XMLoadFloat4(&pos);
+			}
+
+			CRenderer::Set_MatrixBuffer01(camera_pos);
+		}
+	}
 
 	if (Meshes.GetAnime())
 	{

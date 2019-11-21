@@ -1,6 +1,8 @@
-#include "main.h"
 #include "renderer.h"
 #include "Mesh_Cylinder.h"
+
+#include	"manager.h"
+#include	"Scene.h"
 
 void MESH_CYlLINDER::Init()
 {
@@ -117,12 +119,26 @@ void MESH_CYlLINDER::Uninit()
 
 void MESH_CYlLINDER::Draw()
 {
-	XMMATRIX world;
+	{
+		XMMATRIX world;
 
-	world = XMMatrixScaling(Scaling.x, Scaling.y, Scaling.z);							// 拡大・縮小
-	world *= XMMatrixRotationRollPitchYaw(Rotation.x, Rotation.y, Rotation.z);			// 回転
-	world *= XMMatrixTranslation(Position.x, Position.y, Position.z);					// 移動
-	CRenderer::SetWorldMatrix(&world);													// 更新
+		world = XMMatrixScaling(Scaling.x, Scaling.y, Scaling.z);
+		world *= XMMatrixRotationRollPitchYaw(Rotation.x, Rotation.y, Rotation.z);
+		world *= XMMatrixTranslation(Position.x, Position.y, Position.z);
+
+		auto camera01 = CManager::Get_Scene()->Get_Game_Object<CCamera>();
+		auto camera02 = CManager::Get_Scene()->Get_Game_Object<DEBUG_CAMERA>();
+
+		if (nullptr != camera01)
+
+		{
+			CRenderer::Set_MatrixBuffer(world, camera01->Get_Camera_View(), camera01->Get_Camera_Projection());
+		}
+		else
+		{
+			CRenderer::Set_MatrixBuffer(world, camera02->Get_Camera_View(), camera02->Get_Camera_Projection());
+		}
+	}
 
 	CRenderer::SetVertexBuffers(VertexBuffer.get());	// 頂点バッファ設定
 	CRenderer::SetIndexBuffer(IndexBuffer.get());		// インデックスバッファ設定

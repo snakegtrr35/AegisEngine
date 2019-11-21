@@ -58,8 +58,6 @@ void MAIN_MENU::Init()
 
 	{
 		auto pmd = Add_Game_Object<MESH_DOOM>(LAYER_NAME::GAMEOBJECT, "sky_doom");
-
-		//pmd->Init();
 	}
 
 	{
@@ -82,7 +80,7 @@ void MAIN_MENU::Init()
 		text->Edit("Hello HELL World!!!地球の未来にご奉仕するにゃん！");
 	}
 
-	// タイトル画面
+	// 画像
 	{
 		XMFLOAT2 pos(SCREEN_WIDTH * 0.2f, SCREEN_HEIGHT * 0.2f);
 

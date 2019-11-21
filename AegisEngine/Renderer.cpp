@@ -32,8 +32,6 @@ ID3D11Buffer*			CRenderer::m_ProjectionBuffer = nullptr;
 ID3D11Buffer*			CRenderer::m_MaterialBuffer = nullptr;
 ID3D11Buffer*			CRenderer::m_LightBuffer = nullptr;
 
-ID3D11Buffer*			CRenderer::m_CameraBuffer = nullptr;
-
 ID3D11Buffer*			CRenderer::m_Bone_Matrix_Buffer = nullptr;
 
 ID3D11DepthStencilState* CRenderer::m_DepthStateEnable = nullptr;
@@ -47,7 +45,12 @@ ID3D11ShaderResourceView*		CRenderer::My_ShaderResourceView = nullptr;
 
 
 ID3D11Buffer*	CRenderer::m_ConstantBuffer;//
-CONSTANT		CRenderer::m_Constant;//
+ID3D11Buffer* CRenderer::m_ConstantBuffer_02;
+
+
+// ライト
+LIGHT CRenderer::m_Light;//
+
 
 
 bool CRenderer::Init()
@@ -217,16 +220,15 @@ bool CRenderer::Init()
 	m_ImmediateContext->VSSetConstantBuffers(4, 1, &m_LightBuffer);
 	m_ImmediateContext->PSSetConstantBuffers(4, 1, &m_LightBuffer);
 
-	// カメラバッファ
-	hBufferDesc.ByteWidth = sizeof(XMFLOAT4);
-
-	m_D3DDevice->CreateBuffer(&hBufferDesc, NULL, &m_CameraBuffer);
-	m_ImmediateContext->PSSetConstantBuffers(5, 1, &m_CameraBuffer);
-
 	hBufferDesc.ByteWidth = sizeof(CONSTANT);
 	m_D3DDevice->CreateBuffer(&hBufferDesc, NULL, &m_ConstantBuffer);
 	m_ImmediateContext->VSSetConstantBuffers(0, 1, &m_ConstantBuffer);
 	m_ImmediateContext->PSSetConstantBuffers(0, 1, &m_ConstantBuffer);
+
+	hBufferDesc.ByteWidth = sizeof(CONSTANT_02);
+	m_D3DDevice->CreateBuffer(&hBufferDesc, NULL, &m_ConstantBuffer_02);
+	m_ImmediateContext->VSSetConstantBuffers(5, 1, &m_ConstantBuffer_02);
+	m_ImmediateContext->PSSetConstantBuffers(5, 1, &m_ConstantBuffer_02);
 
 	/*{
 		// 定数バッファ生成
@@ -246,20 +248,20 @@ bool CRenderer::Init()
 	m_ImmediateContext->PSSetShader(m_PixelShader[0], NULL, 0);
 
 	// ライト初期化
-	LIGHT light;
-	ZeroMemory(&light, sizeof(light));
-	light.Direction = XMFLOAT4(0.0f, 0.0f, 1.0f, 0.0f);
-	light.Diffuse = COLOR(1.0f, 1.0f, 1.0f, 1.0f);
-	light.Ambient = COLOR(0.5f, 0.5f, 0.5f, 1.0f);
-	light.Specular = COLOR(1.0f, 1.0f, 1.0f, 1.0f);
-	SetLight(&light);
+	ZeroMemory(&m_Light, sizeof(m_Light));
+	m_Light.Direction = XMFLOAT4(0.f, -1.0f, 1.0f, -1.0f);
+	m_Light.Position = XMFLOAT4(0.f, 0.f, 10.0f, 1.0f);
+	m_Light.Diffuse = COLOR(1.0f, 1.0f, 1.0f, 1.0f);
+	m_Light.Ambient = COLOR(1.0f, 1.0f, 1.0f, 1.0f);
+	m_Light.Specular = COLOR(1.0f, 1.0f, 1.0f, 1.0f);
+	SetLight(&m_Light);
 
 	// マテリアル初期化
 	MATERIAL material;
 	ZeroMemory(&material, sizeof(material));
 	material.Diffuse = COLOR(1.0f, 1.0f, 1.0f, 1.0f);
 	material.Ambient = COLOR(0.3f, 0.3f, 0.3f, 1.0f);
-	material.Specular = COLOR(1.0f, 1.0f, 1.0f, 0.5f);
+	material.Specular = COLOR(1.0f, 1.0f, 1.0f, 1.0f);
 	SetMaterial(material);
 
 	return true;
@@ -310,6 +312,8 @@ void CRenderer::Uninit()
 	SAFE_RELEASE(m_dxgiDev)
 
 	SAFE_RELEASE(m_ConstantBuffer);
+
+	SAFE_RELEASE(m_ConstantBuffer_02);
 }
 
 bool CRenderer::Init3D()
@@ -869,11 +873,12 @@ void CRenderer::SetWorldViewProjection2D(const XMFLOAT3& scaling, const XMFLOAT3
 	projection = XMMatrixOrthographicOffCenterLH(0.0f, SCREEN_WIDTH, SCREEN_HEIGHT, 0.0f, 0.0f, 1.0f);
 	//m_ImmediateContext->UpdateSubresource(m_ProjectionBuffer, 0, NULL, &XMMatrixTranspose(projection), 0, 0);
 
-	m_Constant.WorldMatrix = XMMatrixTranspose(world);
-	m_Constant.ViewMatrix = XMMatrixTranspose(view);
-	m_Constant.ProjectionMatrix = XMMatrixTranspose(projection);
+	CONSTANT constant;
+	constant.WorldMatrix = XMMatrixTranspose(world);
+	constant.ViewMatrix = XMMatrixTranspose(view);
+	constant.ProjectionMatrix = XMMatrixTranspose(projection);
 
-	CRenderer::GetDeviceContext()->UpdateSubresource(m_ConstantBuffer, 0, NULL, &m_Constant, 0, 0);
+	CRenderer::GetDeviceContext()->UpdateSubresource(m_ConstantBuffer, 0, NULL, &constant, 0, 0);
 }
 
 void CRenderer::SetWorldMatrix( XMMATRIX *WorldMatrix )
@@ -882,7 +887,7 @@ void CRenderer::SetWorldMatrix( XMMATRIX *WorldMatrix )
 	world = *WorldMatrix;
 	//m_ImmediateContext->UpdateSubresource(m_WorldBuffer, 0, NULL, &XMMatrixTranspose(world), 0, 0);
 
-	m_Constant.WorldMatrix = XMMatrixTranspose(world);
+	//m_Constant.WorldMatrix = XMMatrixTranspose(world);
 }
 
 void CRenderer::SetViewMatrix( XMMATRIX *ViewMatrix )
@@ -891,7 +896,7 @@ void CRenderer::SetViewMatrix( XMMATRIX *ViewMatrix )
 	view = *ViewMatrix;
 	//->UpdateSubresource(m_ViewBuffer, 0, NULL, &XMMatrixTranspose(view), 0, 0);
 
-	m_Constant.ViewMatrix = XMMatrixTranspose(view);
+	//m_Constant.ViewMatrix = XMMatrixTranspose(view);
 }
 
 void CRenderer::SetProjectionMatrix( XMMATRIX *ProjectionMatrix )
@@ -900,7 +905,17 @@ void CRenderer::SetProjectionMatrix( XMMATRIX *ProjectionMatrix )
 	projection = *ProjectionMatrix;
 	//m_ImmediateContext->UpdateSubresource(m_ProjectionBuffer, 0, NULL, &XMMatrixTranspose(projection), 0, 0);
 
-	m_Constant.ProjectionMatrix = XMMatrixTranspose(projection);
+	//m_Constant.ProjectionMatrix = XMMatrixTranspose(projection);
+}
+
+void CRenderer::Set_MatrixBuffer(const XMMATRIX world, const XMMATRIX view, const XMMATRIX projection)
+{
+	CONSTANT constant;
+	constant.WorldMatrix = XMMatrixTranspose(world);
+	constant.ViewMatrix = XMMatrixTranspose(view);
+	constant.ProjectionMatrix = XMMatrixTranspose(projection);
+
+	CRenderer::GetDeviceContext()->UpdateSubresource(m_ConstantBuffer, 0, NULL, &constant, 0, 0);
 }
 
 void CRenderer::SetMaterial( MATERIAL Material )
@@ -923,11 +938,6 @@ void CRenderer::Light_Identity()
 	light.Specular = COLOR(1.0f, 1.0f, 1.0f, 1.0f);
 
 	m_ImmediateContext->UpdateSubresource(m_LightBuffer, 0, NULL, &light, 0, 0);
-}
-
-void CRenderer::SetCamera(XMFLOAT4* position)
-{
-	m_ImmediateContext->UpdateSubresource(m_CameraBuffer, 0, NULL, position, 0, 0);
 }
 
 HRESULT CRenderer::Create_TextFormat(const TEXT_FOMAT& fomat)

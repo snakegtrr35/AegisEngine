@@ -147,6 +147,7 @@ struct DX11_SUBSET
 struct LIGHT
 {
 	XMFLOAT4	Direction;
+	XMFLOAT4	Position;
 	COLOR		Diffuse;
 	COLOR		Ambient;
 	COLOR		Specular;
@@ -185,6 +186,11 @@ struct CONSTANT
 	XMMATRIX WorldMatrix;
 	XMMATRIX ViewMatrix;
 	XMMATRIX ProjectionMatrix;
+};
+
+struct CONSTANT_02
+{
+	XMVECTOR Camera_Pos;	// カメラの座標
 };
 
 /**
@@ -240,12 +246,19 @@ private:
 	static ID3D11Buffer*			m_MaterialBuffer;
 	//! ライトバッファ
 	static ID3D11Buffer*			m_LightBuffer;
-	//! カメラバッファ
-	static ID3D11Buffer*			m_CameraBuffer;
 	//! ボーン情報バッファ
 	static ID3D11Buffer*			m_Bone_Matrix_Buffer;
+	//! コンスタントバッファ
+	static ID3D11Buffer*			m_ConstantBuffer;
+	
+	static ID3D11Buffer* m_ConstantBuffer_02;
+
 	//! スタンバイモードフラグ
-	static bool Stand_By_Enable;
+	static bool						Stand_By_Enable;
+
+	// ライト
+	static LIGHT m_Light;//
+
 
 	/**
 	* @brief Direct3Dの初期化
@@ -305,6 +318,24 @@ public:
 	static void SetProjectionMatrix(XMMATRIX * ProjectionMatrix);
 
 	/**
+	* @brief コンスタントバッファ設定
+	* @param[in] world　ワールドマトリックス
+	* @param[in] view　ビューマトリックス
+	* @param[in] projection　プロジェクションマトリックス
+	* @details コンスタントバッファを設定する
+	*/
+	static void Set_MatrixBuffer(const XMMATRIX world, const XMMATRIX view, const XMMATRIX projection);
+
+	static void Set_MatrixBuffer01(const XMVECTOR camera_pos)
+	{
+		CONSTANT_02 cons;
+
+		cons.Camera_Pos = camera_pos;
+
+		CRenderer::GetDeviceContext()->UpdateSubresource(m_ConstantBuffer_02, 0, NULL, &cons, 0, 0);
+	}
+
+	/**
 	* @brief マテリアル設定
 	* @param[in] Material　マテリアル
 	* @details マテリアル設定を設定する
@@ -323,12 +354,6 @@ public:
 	* @details ディレクショナルライト設定を初期化する
 	*/
 	static void Light_Identity();
-
-	/**
-	* @brief カメラの初期化
-	* @details カメラ設定を初期化する
-	*/
-	static void SetCamera(XMFLOAT4* position);
 
 	/**
 	* @brief 頂点バッファの設定
@@ -418,16 +443,10 @@ public:
 	static ID3D11RenderTargetView*		My_RenderTargetView;
 	static ID3D11ShaderResourceView*	My_ShaderResourceView;
 
-	static ID3D11Buffer*	m_ConstantBuffer;//
-	static CONSTANT		m_Constant;//
 
-	static void Set(XMMATRIX world, XMMATRIX view, XMMATRIX projection)
+	static LIGHT* Get_Light()
 	{
-		m_Constant.WorldMatrix = XMMatrixTranspose(world);
-		m_Constant.ViewMatrix = XMMatrixTranspose(view);
-		m_Constant.ProjectionMatrix = XMMatrixTranspose(projection);
-
-		CRenderer::GetDeviceContext()->UpdateSubresource(m_ConstantBuffer, 0, NULL, &m_Constant, 0, 0);
+		return &m_Light;
 	}
 };
 

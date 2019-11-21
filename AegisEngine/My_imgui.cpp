@@ -229,36 +229,43 @@ void My_imgui::Draw(void)
 
 				ImGuiWindowFlags window_flag = ImGuiWindowFlags_NoResize;
 
-				static float vec4_Direction[] = { 0.0f, 0.0f, 1.0f, 0.0f };
-				static float vec4_Diffuse[] = { 1.0f, 1.0f, 1.0f, 1.0f };
-				static float vec4_Ambient[] = { 0.5f, 0.5f, 0.5f, 1.0f };
-				static float vec4_Specular[] = { 1.0f, 1.0f, 1.0f, 1.0f };
+				LIGHT* light = CRenderer::Get_Light();
 
-				ImGui::SetNextWindowSize(ImVec2(300, 150), ImGuiCond_Always);
+				static float vec4_Direction[] = { light->Direction.x, light->Direction.y, light->Direction.z, light->Direction.w };
+				static float vec4_Position[] = { light->Position.x, light->Position.y, light->Position.z, light->Position.w };
+				static float vec4_Diffuse[] = { light->Diffuse.r, light->Diffuse.g, light->Diffuse.b, light->Diffuse.a };
+				static float vec4_Ambient[] = { light->Ambient.r, light->Ambient.g, light->Ambient.b, light->Ambient.a };
+				static float vec4_Specular[] = { light->Specular.r, light->Specular.g, light->Specular.b, light->Specular.a };
 
-				ImGui::Begin("Directional Light", nullptr, window_flag);
+				//ImGui::SetNextWindowSize(ImVec2(300, 150), ImGuiCond_Always);
 
-				ImGui::DragFloat3("Direction", vec4_Direction, 0.01f);
+				ImGui::Begin("Directional Light", nullptr/*, window_flag*/);
+
+				ImGui::DragFloat4("Direction", vec4_Direction, 0.01f);
 				ImGui::SameLine(); HelpMarker((char*)u8"\"平行光\" 向き\n");
 
-				ImGui::DragFloat3("Diffuse", vec4_Diffuse, 0.01f);
+				ImGui::DragFloat4("Position", vec4_Position, 0.01f);
+				//ImGui::SameLine(); HelpMarker((char*)u8"\"平行光\" 向き\n");
+
+				ImGui::DragFloat4("Diffuse", vec4_Diffuse, 0.01f);
 				ImGui::SameLine(); HelpMarker((char*)u8"\"平行光\" 拡散(直接)光\n");
 
-				ImGui::DragFloat3("Ambient", vec4_Ambient, 0.01f);
+				ImGui::DragFloat4("Ambient", vec4_Ambient, 0.01f);
 				ImGui::SameLine(); HelpMarker((char*)u8"\"平行光\" 環境光\n");
 
-				ImGui::DragFloat3("Specular", vec4_Specular, 0.01f);
+				ImGui::DragFloat4("Specular", vec4_Specular, 0.01f);
 				ImGui::SameLine(); HelpMarker((char*)u8"\"平行光\" 鏡面光\n");
 
 				ImGui::End();
 
-				// ライトの設定
-				LIGHT light;
-				light.Direction = XMFLOAT4(vec4_Direction[0], vec4_Direction[1], vec4_Direction[2], vec4_Direction[3]);
-				light.Diffuse = COLOR(vec4_Diffuse[0], vec4_Diffuse[1], vec4_Diffuse[2], vec4_Diffuse[3]);
-				light.Ambient = COLOR(vec4_Ambient[0], vec4_Ambient[1], vec4_Ambient[2], vec4_Ambient[3]);
-				light.Specular = COLOR(vec4_Specular[0], vec4_Specular[1], vec4_Specular[2], vec4_Specular[3]);
-				CRenderer::SetLight(&light);
+				//// ライトの設定
+				//LIGHT light;
+				light->Direction = XMFLOAT4(vec4_Direction[0], vec4_Direction[1], vec4_Direction[2], vec4_Direction[3]);
+				light->Position = XMFLOAT4(vec4_Position[0], vec4_Position[1], vec4_Position[2], vec4_Position[3]);
+				light->Diffuse = COLOR(vec4_Diffuse[0], vec4_Diffuse[1], vec4_Diffuse[2], vec4_Diffuse[3]);
+				light->Ambient = COLOR(vec4_Ambient[0], vec4_Ambient[1], vec4_Ambient[2], vec4_Ambient[3]);
+				light->Specular = COLOR(vec4_Specular[0], vec4_Specular[1], vec4_Specular[2], vec4_Specular[3]);
+				CRenderer::SetLight(light);
 			}
 
 			// レンダリングテクスチャ

@@ -3,6 +3,8 @@
 #ifndef BILL_BOARD_H
 #define	BILL_BOARD_H
 
+#include	"Game_Object.h"
+
 class GAME_OBJECT;
 class TEXTURE;
 

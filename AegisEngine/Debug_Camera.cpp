@@ -153,7 +153,6 @@ void DEBUG_CAMERA::Update(float delta_time)
 	XMFLOAT4 pos;
 	XMStoreFloat4(&pos, Pos);
 
-	CRenderer::SetCamera(&pos);
 
 	XMStoreFloat3(&Position, Pos);
 }
@@ -174,24 +173,9 @@ void DEBUG_CAMERA::Draw()
 
 	// ビューマトリクス設定
 	m_ViewMatrix = XMMatrixLookAtLH(Pos, At, Up);
-	CRenderer::SetViewMatrix(&m_ViewMatrix);
+	//CRenderer::SetViewMatrix(&m_ViewMatrix);
 
 	// プロジェクションマトリクス設定
 	m_ProjectionMatrix = XMMatrixPerspectiveFovLH(XMConvertToRadians(Viewing_Angle), dxViewport.Width / dxViewport.Height, 1.0f, 1000.0f);
-	CRenderer::SetProjectionMatrix(&m_ProjectionMatrix);
-}
-
-DEBUG_CAMERA* const DEBUG_CAMERA::Get_Camera(void)
-{
-	return pDebugCamera;
-}
-
-XMMATRIX DEBUG_CAMERA::Get_Camera_View(void)
-{
-	return m_ViewMatrix;
-}
-
-XMMATRIX DEBUG_CAMERA::Get_Camera_Projection()
-{
-	return m_ProjectionMatrix;
+	//CRenderer::SetProjectionMatrix(&m_ProjectionMatrix);
 }

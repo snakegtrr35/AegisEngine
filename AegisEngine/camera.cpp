@@ -41,11 +41,16 @@ void CCamera::Init()
 		Pos = vec;
 	}
 
-	// ビューポートの設定設定
-	Viewport.left = 0;
-	Viewport.top = 0;
-	Viewport.right = SCREEN_WIDTH;
-	Viewport.bottom = SCREEN_HEIGHT;
+	// ビューポート設定
+	D3D11_VIEWPORT dxViewport;
+	dxViewport.Width = (float)SCREEN_WIDTH;
+	dxViewport.Height = (float)SCREEN_HEIGHT;
+	dxViewport.MinDepth = 0.0f;
+	dxViewport.MaxDepth = 1.0f;
+	dxViewport.TopLeftX = 0.0f;
+	dxViewport.TopLeftY = 0.0f;
+
+	CRenderer::GetDeviceContext()->RSSetViewports(1, &dxViewport);
 
 	RotateEnable = MoveEnable = true;
 }
@@ -197,46 +202,32 @@ void CCamera::Update(float delta_time)
 	XMFLOAT4 pos;
 	XMStoreFloat4(&pos, Pos);
 
-	CRenderer::SetCamera(&pos);
-
 	XMStoreFloat3(&Position, Pos);
 }
 
 void CCamera::Draw()
 {
+	RECT rect;
+	GetWindowRect(GetWindow(), &rect);
+
 	// ビューポート設定
 	D3D11_VIEWPORT dxViewport;
-	dxViewport.Width = (float)(Viewport.right - Viewport.left);
-	dxViewport.Height = (float)(Viewport.bottom - Viewport.top);
+	dxViewport.Width = (float)(rect.right - rect.left);
+	dxViewport.Height = (float)(rect.bottom - rect.top);
 	dxViewport.MinDepth = 0.0f;
 	dxViewport.MaxDepth = 1.0f;
-	dxViewport.TopLeftX = (float)Viewport.left;
-	dxViewport.TopLeftY = (float)Viewport.top;
+	dxViewport.TopLeftX = (float)rect.left;
+	dxViewport.TopLeftY = (float)rect.top;
 
 	CRenderer::GetDeviceContext()->RSSetViewports(1, &dxViewport);
 
 	// ビューマトリクス設定
 	m_ViewMatrix = XMMatrixLookAtLH(Pos, At, Up);
-	CRenderer::SetViewMatrix(&m_ViewMatrix);
+	//CRenderer::SetViewMatrix(&m_ViewMatrix);
 
 	// プロジェクションマトリクス設定
 	m_ProjectionMatrix = XMMatrixPerspectiveFovLH(XMConvertToRadians(Viewing_Angle), dxViewport.Width / dxViewport.Height, 1.0f, 1000.0f);
-	CRenderer::SetProjectionMatrix(&m_ProjectionMatrix);
-}
-
-CCamera* const CCamera::Get_Camera(void)
-{
-	return pCamera;
-}
-
-const XMMATRIX CCamera::Get_Camera_View(void)
-{
-	return m_ViewMatrix;
-}
-
-const XMMATRIX CCamera::Get_Camera_Projection()
-{
-	return m_ProjectionMatrix;
+	//CRenderer::SetProjectionMatrix(&m_ProjectionMatrix);
 }
 
 bool CCamera::Get_Visibility(const XMFLOAT3& position)

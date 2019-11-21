@@ -1,5 +1,8 @@
 #include	"Bounding.h"
 
+#include	"manager.h"
+#include	"Scene.h"
+
 unique_ptr<ID3D11Buffer, Release> BOUNDING_AABB::pVertexBuffer;
 unique_ptr<ID3D11Buffer, Release> BOUNDING_AABB::pIndexBuffer;
 const char BOUNDING_AABB::IndexNum = 24;
@@ -151,11 +154,22 @@ void BOUNDING_SHPERE::Draw_Ring(const XMFLOAT3& rotation)
 	{
 		XMMATRIX world = XMMatrixIdentity();
 
-		world = XMMatrixScaling(Scaling.x, Scaling.y, Scaling.z);																						// Šg‘åk¬
-		world *= XMMatrixRotationRollPitchYaw(XMConvertToRadians(rotation.x), XMConvertToRadians(rotation.y), XMConvertToRadians(rotation.z));			// ‰ñ“]
-		world *= XMMatrixTranslation(Position.x, Position.y, Position.z);																				// ˆÚ“®
+		world = XMMatrixScaling(Scaling.x, Scaling.y, Scaling.z);
+		world *= XMMatrixRotationRollPitchYaw(XMConvertToRadians(rotation.x), XMConvertToRadians(rotation.y), XMConvertToRadians(rotation.z));
+		world *= XMMatrixTranslation(Position.x, Position.y, Position.z);
 
-		CRenderer::SetWorldMatrix(&world);
+		auto camera01 = CManager::Get_Scene()->Get_Game_Object<CCamera>();
+		auto camera02 = CManager::Get_Scene()->Get_Game_Object<DEBUG_CAMERA>();
+
+		if (nullptr != camera01)
+
+		{
+			CRenderer::Set_MatrixBuffer(world, camera01->Get_Camera_View(), camera01->Get_Camera_Projection());
+		}
+		else
+		{
+			CRenderer::Set_MatrixBuffer(world, camera02->Get_Camera_View(), camera02->Get_Camera_Projection());
+		}
 	}
 
 	CRenderer::GetDeviceContext()->DrawIndexed(IndexNum, 0, 0);
