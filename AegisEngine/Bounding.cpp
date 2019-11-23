@@ -3,9 +3,6 @@
 #include	"manager.h"
 #include	"Scene.h"
 
-unique_ptr<ID3D11Buffer, Release> BOUNDING_AABB::pVertexBuffer;
-unique_ptr<ID3D11Buffer, Release> BOUNDING_AABB::pIndexBuffer;
-const char BOUNDING_AABB::IndexNum = 24;
 
 BOUNDING_SHPERE::BOUNDING_SHPERE()
 {
@@ -189,14 +186,15 @@ const float BOUNDING_SHPERE::Get_Radius()
 
 
 
+unique_ptr<ID3D11Buffer, Release> BOUNDING_AABB::pVertexBuffer;
+unique_ptr<ID3D11Buffer, Release> BOUNDING_AABB::pIndexBuffer;
+const char BOUNDING_AABB::IndexNum = 24;
 
 
 
 BOUNDING_AABB::BOUNDING_AABB()
 {
 	//Radius = XMFLOAT3(1.0f, 1.0f, 1.0f);
-
-	//Vertex = new VERTEX_3D[4];
 }
 
 BOUNDING_AABB::~BOUNDING_AABB()
@@ -353,55 +351,6 @@ void BOUNDING_AABB::Init()
 		Vertex[6].Diffuse = XMFLOAT4(Color.r, Color.g, Color.b, Color.a);
 		Vertex[6].TexCoord = XMFLOAT2(0.0f, 0.0f);
 
-		/*Vertex[0].Position = XMFLOAT3(-0.5f, 0.5f, -0.5f);
-		Vertex[1].Position = XMFLOAT3(0.5f, 0.5f, -0.5f);
-
-
-		Vertex[2].Position = XMFLOAT3(0.5f, 0.5f, -0.5f);
-		Vertex[3].Position = XMFLOAT3(0.5f, -0.5f, -0.5f);
-
-
-		Vertex[4].Position = XMFLOAT3(0.5f, -0.5f, -0.5f);
-		Vertex[5].Position = XMFLOAT3(-0.5f, -0.5f, -0.5f);
-
-
-		Vertex[6].Position = XMFLOAT3(-0.5f, -0.5f, -0.5f);
-		Vertex[7].Position = XMFLOAT3(-0.5f, 0.5f, -0.5f);
-
-
-
-		Vertex[8].Position = XMFLOAT3(-0.5f, 0.5f, 0.5f);
-		Vertex[9].Position = XMFLOAT3(0.5f, 0.5f, 0.5f);
-
-
-		Vertex[10].Position = XMFLOAT3(0.5f, 0.5f, 0.5f);
-		Vertex[11].Position = XMFLOAT3(0.5f, -0.5f, 0.5f);
-
-
-		Vertex[12].Position = XMFLOAT3(0.5f, -0.5f, 0.5f);
-		Vertex[13].Position = XMFLOAT3(-0.5f, -0.5f, 0.5f);
-
-
-		Vertex[14].Position = XMFLOAT3(-0.5f, -0.5f, 0.5f);
-		Vertex[15].Position = XMFLOAT3(-0.5f, 0.5f, 0.5f);
-
-
-
-		Vertex[16].Position = XMFLOAT3(-0.5f, 0.5f, -0.5f);
-		Vertex[17].Position = XMFLOAT3(-0.5f, 0.5f, 0.5f);
-
-
-		Vertex[16].Position = XMFLOAT3(0.5f, 0.5f, -0.5f);
-		Vertex[17].Position = XMFLOAT3(0.5f, 0.5f, 0.5f);
-
-
-		Vertex[20].Position = XMFLOAT3(0.5f, -0.5f, -0.5f);
-		Vertex[21].Position = XMFLOAT3(0.5f, -0.5f, 0.5f);
-
-
-		Vertex[22].Position = XMFLOAT3(-0.5f, -0.5f, -0.5f);
-		Vertex[23].Position = XMFLOAT3(-0.5f, -0.5f, 0.5f);*/
-
 		for (char i = 0; i < 8; i++)
 		{
 			Vertex[i].Normal = XMFLOAT3(0.0f, 0.0f, 1.0f);
@@ -424,7 +373,7 @@ void BOUNDING_AABB::Init()
 			bd.StructureByteStride = 0;
 
 			D3D11_SUBRESOURCE_DATA sd;
-			sd.pSysMem = &Vertex[0];
+			sd.pSysMem = Vertex;
 			sd.SysMemPitch = 0;
 			sd.SysMemSlicePitch = 0;
 

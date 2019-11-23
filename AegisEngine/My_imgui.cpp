@@ -245,7 +245,7 @@ void My_imgui::Draw(void)
 				ImGui::SameLine(); HelpMarker((char*)u8"\"平行光\" 向き\n");
 
 				ImGui::DragFloat4("Position", vec4_Position, 0.01f);
-				//ImGui::SameLine(); HelpMarker((char*)u8"\"平行光\" 向き\n");
+				ImGui::SameLine(); HelpMarker((char*)u8"\"平行光源の位置\"");
 
 				ImGui::DragFloat4("Diffuse", vec4_Diffuse, 0.01f);
 				ImGui::SameLine(); HelpMarker((char*)u8"\"平行光\" 拡散(直接)光\n");
