@@ -78,42 +78,45 @@ void TEXTURE_MANEGER::Update()
 
 		time = Get_File_Time(path);
 
-		if (time != TextureFile[file_name].Time)
+		if (TextureFile.find(file_name) != TextureFile.end())
 		{
-			// ファイルが更新された
-			wstring name;
-			HRESULT hr;
-			ID3D11ShaderResourceView* ShaderResourceView;
-
-			pos = file_name.find_last_of(".");
-			type = file_name.substr(pos + 1, 3);
-
-			// char から wchar_t への変換
-			name = stringTowstring("asset/texture/" + file_name);
-
-			if ("dds" == type)	// dds
+			if (time != TextureFile[file_name].Time)
 			{
-				hr = CreateDDSTextureFromFile(CRenderer::GetDevice(), CRenderer::GetDeviceContext(), name.c_str(), nullptr, &ShaderResourceView, nullptr, nullptr);
-				if (FAILED(hr))
-				{
-					FAILDE_ASSERT;
-					return;
-				}
-			}
-			else	// jpg か png
-			{
-				hr = CreateWICTextureFromFile(CRenderer::GetDevice(), CRenderer::GetDeviceContext(), name.c_str(), nullptr, &ShaderResourceView, nullptr, nullptr);
-				if (FAILED(hr))
-				{
-					FAILDE_ASSERT;
-					return;
-				}
-			}
+				// ファイルが更新された
+				wstring name;
+				HRESULT hr;
+				ID3D11ShaderResourceView* ShaderResourceView;
 
-			TextureFile[file_name].Time = time;
+				pos = file_name.find_last_of(".");
+				type = file_name.substr(pos + 1, 3);
 
-			//TextureData[file_name].Resource.reset(nullptr);
-			TextureData[file_name].Resource.reset(ShaderResourceView);
+				// char から wchar_t への変換
+				name = stringTowstring("asset/texture/" + file_name);
+
+				if ("dds" == type)	// dds
+				{
+					hr = CreateDDSTextureFromFile(CRenderer::GetDevice(), CRenderer::GetDeviceContext(), name.c_str(), nullptr, &ShaderResourceView, nullptr, nullptr);
+					if (FAILED(hr))
+					{
+						FAILDE_ASSERT;
+						return;
+					}
+				}
+				else	// jpg か png
+				{
+					hr = CreateWICTextureFromFile(CRenderer::GetDevice(), CRenderer::GetDeviceContext(), name.c_str(), nullptr, &ShaderResourceView, nullptr, nullptr);
+					if (FAILED(hr))
+					{
+						FAILDE_ASSERT;
+						return;
+					}
+				}
+
+				TextureFile[file_name].Time = time;
+
+				//TextureData[file_name].Resource.reset(nullptr);
+				TextureData[file_name].Resource.reset(ShaderResourceView);
+			}
 		}
 	}
 }
