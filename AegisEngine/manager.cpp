@@ -8,6 +8,7 @@
 #include	"audio_clip.h"
 #include	"Effekseer.h"
 
+
 #ifdef _DEBUG
 #include	"My_imgui.h"
 #endif // _DEBUG
@@ -31,6 +32,7 @@ bool CManager::Init()
 		FAILDE_ASSERT;
 		return false;
 	}
+
 
 	CINPUT::Init();
 

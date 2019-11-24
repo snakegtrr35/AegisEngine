@@ -41,7 +41,7 @@ private:
 protected:
 	  string Name;
 	  string ParentName;
-	  map<string, COLLISION*> Childlen;
+	  unordered_map<string, COLLISION*> Childlen;
 
 public:
 	COLLISION() {
