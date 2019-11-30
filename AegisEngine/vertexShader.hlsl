@@ -12,6 +12,14 @@ cbuffer ConstantBuffer : register(b0)
     matrix Projection;
 }
 
+// シャドウマップ用のマトリックス
+cbuffer ShadowBuffer : register(b1)
+{
+    matrix ShadowWorld;
+    matrix ShadowView;
+    matrix ShadowProjection;
+}
+
 // マテリアルバッファ
 struct MATERIAL
 {
@@ -63,7 +71,8 @@ void main( in float4 inPosition		: POSITION0,
 		   out float4 outNormal		: NORMAL0,
 		   out float2 outTexCoord	: TEXCOORD0,
 		   out float4 outDiffuse	: COLOR0,
-		   out float4 outWPos       : TEXCOORD1)
+		   out float4 outWPos       : TEXCOORD1,
+           out float4 outShadowMapPos : POSITION_SHADOWMAP)
 {
 	matrix wvp;
 	wvp = mul(World, View);
@@ -81,5 +90,9 @@ void main( in float4 inPosition		: POSITION0,
 	outTexCoord = inTexCoord;
     outDiffuse = inDiffuse;
     outWPos = mul(inPosition, World);
+    
+    wvp = mul(ShadowWorld, ShadowView);
+    wvp = mul(wvp, ShadowProjection);
+    outShadowMapPos = mul(inPosition, wvp);
 }
 

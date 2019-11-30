@@ -175,6 +175,7 @@ enum class SHADER_INDEX_P {
 
 enum class SHADER_INDEX_V {
 	DEFAULT,
+	SHADOW_MAP,
 	ANIMATION,
 };
 
@@ -228,7 +229,7 @@ private:
 	//! Direct2Dのライトファクトリー
 	static IDWriteFactory*			m_DwriteFactory;
 
-	static ID3D11VertexShader*		m_VertexShader[2];
+	static ID3D11VertexShader*		m_VertexShader[3];
 	static ID3D11PixelShader*		m_PixelShader[3];
 
 	static ID3D11DepthStencilState* m_DepthStateEnable;
@@ -438,7 +439,7 @@ public:
 
 	// 自前
 	static void CreateRenderTexture();
-	static void SetRenderTargetView(bool flag);
+	static void SetRenderTargetView();
 	static ID3D11ShaderResourceView*	Get_SRV();
 	static ID3D11RenderTargetView*		My_RenderTargetView;
 	static ID3D11ShaderResourceView*	My_ShaderResourceView;

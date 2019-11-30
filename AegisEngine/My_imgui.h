@@ -17,12 +17,17 @@ private:
 	int counter;
 
 	bool Texture_Import_Enable;
+	bool Texture_Delete_Enable;
+
 	void Texture_Import();
 	const char File_Check(const string& file_name);
 
+	void Texture_Delete();
+
 public:
 	My_imgui() : show_demo_window(false), show_another_window(false), show_default_window(false),
-				 Texture_Import_Enable(true), clear_color(ImVec4(0.45f, 0.55f, 0.60f, 1.00f)),
+				 Texture_Import_Enable(true), Texture_Delete_Enable(false),
+				 clear_color(ImVec4(0.45f, 0.55f, 0.60f, 1.00f)),
 				 f(0.0f), counter(0) {}
 
 	~My_imgui() {}

@@ -23,7 +23,7 @@ IDWriteTextLayout*		CRenderer::m_TextLayout = nullptr;
 
 IDWriteFactory*			CRenderer::m_DwriteFactory = nullptr;
 
-ID3D11VertexShader*		CRenderer::m_VertexShader[2] = { nullptr };
+ID3D11VertexShader*		CRenderer::m_VertexShader[3] = { nullptr };
 ID3D11PixelShader*      CRenderer::m_PixelShader[3] = { nullptr };
 ID3D11InputLayout*      CRenderer::m_VertexLayout = nullptr;
 ID3D11Buffer*			CRenderer::m_WorldBuffer = nullptr;
@@ -101,6 +101,41 @@ bool CRenderer::Init()
 		}
 	}
 
+	// 頂点シェーダ生成 シャドウマップ
+	{
+		// 入力レイアウト生成
+		D3D11_INPUT_ELEMENT_DESC layout[] =
+		{
+			{ "POSITION",	0, DXGI_FORMAT_R32G32B32_FLOAT,		0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+			{ "NORMAL",		0, DXGI_FORMAT_R32G32B32_FLOAT,		0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+			{ "COLOR",		0, DXGI_FORMAT_R32G32B32A32_FLOAT,	0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+			{ "TEXCOORD",	0, DXGI_FORMAT_R32G32_FLOAT,		0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 }
+		};
+
+		UINT numElements = ARRAYSIZE(layout);
+
+		{
+			FILE* file;
+			long int fsize;
+
+			file = fopen("VertexShader_ShadowMap.cso", "rb");
+			fsize = _filelength(_fileno(file));
+			unsigned char* buffer = new unsigned char[fsize];
+			fread(buffer, fsize, 1, file);
+			fclose(file);
+
+			m_D3DDevice->CreateVertexShader(buffer, fsize, NULL, &m_VertexShader[1]);
+
+			m_D3DDevice->CreateInputLayout(layout,
+				numElements,
+				buffer,
+				fsize,
+				&m_VertexLayout);
+
+			delete[] buffer;
+		}
+	}
+
 	/*// 頂点シェーダ生成 アニメーション
 	{
 		// 入力レイアウト生成
@@ -126,7 +161,7 @@ bool CRenderer::Init()
 			fread(buffer, fsize, 1, file);
 			fclose(file);
 
-			m_D3DDevice->CreateVertexShader(buffer, fsize, NULL, &m_VertexShader[1]);
+			m_D3DDevice->CreateVertexShader(buffer, fsize, NULL, &m_VertexShader[2]);
 
 			m_D3DDevice->CreateInputLayout(animation_layout,
 				numElements,
@@ -294,6 +329,7 @@ void CRenderer::Uninit()
 
 	SAFE_RELEASE(m_VertexShader[0]);
 	SAFE_RELEASE(m_VertexShader[1]);
+	SAFE_RELEASE(m_VertexShader[2]);
 
 	SAFE_RELEASE(m_PixelShader[0]);
 	SAFE_RELEASE(m_PixelShader[1]);
@@ -334,8 +370,7 @@ bool CRenderer::Init3D()
 	// 半透明モード
 	sc.AlphaMode = DXGI_ALPHA_MODE_UNSPECIFIED;
 	// 使用方法
-	sc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
-	sc.BufferCount = 1;
+	sc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;	sc.BufferCount = 1;
 	// 描画後のバッファの扱い
 	sc.SwapEffect = DXGI_SWAP_EFFECT_SEQUENTIAL;
 	// MSAA
@@ -1004,6 +1039,10 @@ void CRenderer::Set_Shader(const SHADER_INDEX_V v_index, const SHADER_INDEX_P p_
 			m_ImmediateContext->VSSetShader(m_VertexShader[(int)SHADER_INDEX_V::DEFAULT], NULL, 0);
 			break;
 
+		case (int)SHADER_INDEX_V::SHADOW_MAP:
+			m_ImmediateContext->VSSetShader(m_VertexShader[(int)SHADER_INDEX_V::SHADOW_MAP], NULL, 0);
+			break;
+
 		default:
 			break;
 	}
@@ -1094,23 +1133,17 @@ void CRenderer::CreateRenderTexture()
 	//}
 }
 
-void CRenderer::SetRenderTargetView(bool flag)
+void CRenderer::SetRenderTargetView()
 {
 	float clearColor[4] = { 0.5f, 0.5f, 0.5f, 1.0f };
 
-	if (flag)
-	{
-		// 自前のレンダーターゲットビューに切り替え
-		m_ImmediateContext->OMSetRenderTargets(1, &My_RenderTargetView, m_DepthStencilView);
-		m_ImmediateContext->ClearRenderTargetView(My_RenderTargetView, clearColor);
-		m_ImmediateContext->ClearDepthStencilView(m_DepthStencilView, D3D11_CLEAR_DEPTH, 1.0f, 0);
-	}
-	else
 	{
 		// デフォルトのレンダーターゲットビューに切り替え
 		m_ImmediateContext->OMSetRenderTargets(1, &m_RenderTargetView, m_DepthStencilView);
 		m_ImmediateContext->ClearRenderTargetView(m_RenderTargetView, clearColor);
 		m_ImmediateContext->ClearDepthStencilView(m_DepthStencilView, D3D11_CLEAR_DEPTH, 1.0f, 0);
+
+		Set_Shader();
 	}
 }
 

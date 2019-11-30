@@ -4,6 +4,7 @@
 
 #include	"manager.h"
 #include	"Scene.h"
+#include	"ShadowMap.h"
 
 void MESH_DOOM::Init()
 {
@@ -136,40 +137,42 @@ void MESH_DOOM::Update(float delta_time)
 //***********************************************************************************************
 void MESH_DOOM::Draw()
 {
+	if (false == CManager::Get_ShadowMap()->Get_Enable())
 	{
-		XMMATRIX world;
-
-		world = XMMatrixScaling(Scaling.x, Scaling.y, Scaling.z);																						// Šg‘åk¬
-		world *= XMMatrixRotationRollPitchYaw(XMConvertToRadians(Rotation.x), XMConvertToRadians(Rotation.y), XMConvertToRadians(Rotation.z));			// ‰ñ“]
-		world *= XMMatrixTranslation(Position.x, Position.y, Position.z);																				// ˆÚ“®
-
-		auto camera01 = CManager::Get_Scene()->Get_Game_Object<CCamera>();
-		auto camera02 = CManager::Get_Scene()->Get_Game_Object<DEBUG_CAMERA>();
-
-		if (nullptr != camera01)
-
 		{
-			CRenderer::Set_MatrixBuffer(world, camera01->Get_Camera_View(), camera01->Get_Camera_Projection());
+			XMMATRIX world;
+
+			world = XMMatrixScaling(Scaling.x, Scaling.y, Scaling.z);																						// Šg‘åk¬
+			world *= XMMatrixRotationRollPitchYaw(XMConvertToRadians(Rotation.x), XMConvertToRadians(Rotation.y), XMConvertToRadians(Rotation.z));			// ‰ñ“]
+			world *= XMMatrixTranslation(Position.x, Position.y, Position.z);																				// ˆÚ“®
+
+			auto camera01 = CManager::Get_Scene()->Get_Game_Object<CCamera>();
+			auto camera02 = CManager::Get_Scene()->Get_Game_Object<DEBUG_CAMERA>();
+
+			if (nullptr != camera01)
+
+			{
+				CRenderer::Set_MatrixBuffer(world, camera01->Get_Camera_View(), camera01->Get_Camera_Projection());
+			}
+			else
+			{
+				CRenderer::Set_MatrixBuffer(world, camera02->Get_Camera_View(), camera02->Get_Camera_Projection());
+			}
 		}
-		else
-		{
-			CRenderer::Set_MatrixBuffer(world, camera02->Get_Camera_View(), camera02->Get_Camera_Projection());
-		}
+
+		CRenderer::SetVertexBuffers(VertexBuffer.get());
+		CRenderer::SetIndexBuffer(IndexBuffer.get());
+
+		// ƒgƒ|ƒƒWÝ’è
+		CRenderer::GetDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
+
+		Texture.get()->Set_Texture();
+
+		CRenderer::Set_Shader(SHADER_INDEX_V::DEFAULT, SHADER_INDEX_P::NO_LIGHT);
+
+		// ƒ|ƒŠƒSƒ“•`‰æ
+		CRenderer::GetDeviceContext()->DrawIndexed(IndexNum, 0, 0);
+
+		CRenderer::Set_Shader();
 	}
-
-	CRenderer::SetVertexBuffers(VertexBuffer.get());
-	CRenderer::SetIndexBuffer(IndexBuffer.get());
-
-	// ƒgƒ|ƒƒWÝ’è
-	CRenderer::GetDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
-
-	Texture.get()->Set_Texture();
-
-	CRenderer::Set_Shader(SHADER_INDEX_V::DEFAULT, SHADER_INDEX_P::NO_LIGHT);
-
-	// ƒ|ƒŠƒSƒ“•`‰æ
-	CRenderer::GetDeviceContext()->DrawIndexed(IndexNum, 0, 0);
-
-	CRenderer::Set_Shader();
-
 }

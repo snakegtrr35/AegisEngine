@@ -114,7 +114,6 @@ void TEXTURE_MANEGER::Update()
 
 				TextureFile[file_name].Time = time;
 
-				//TextureData[file_name].Resource.reset(nullptr);
 				TextureData[file_name].Resource.reset(ShaderResourceView);
 			}
 		}
@@ -226,6 +225,7 @@ void TEXTURE_MANEGER::Load(const bool flag)
 		}
 
 		// テクスチャの読み込み
+		if(TextureFile.find(file_name) != TextureFile.end())
 		{
 			ID3D11ShaderResourceView* ShaderResourceView;
 			HRESULT hr;
@@ -321,7 +321,7 @@ void TEXTURE_MANEGER::Add(const string& file_name)
 const bool TEXTURE_MANEGER::Unload(const string& const file_name)
 {
 #ifdef _DEBUG
-	if (TextureData[file_name].Cnt == 0)
+	if (TextureData[file_name].Cnt != 0)
 	{
 		// 参照しているこのがある
 		return false;
@@ -329,6 +329,8 @@ const bool TEXTURE_MANEGER::Unload(const string& const file_name)
 #endif // _DEBUG
 
 	TextureData[file_name].Resource.reset(nullptr);
+	TextureData[file_name].Resource.release();
+
 	TextureData.erase(file_name);
 
 	TextureFile.erase(file_name);
@@ -343,7 +345,7 @@ DWORD TEXTURE_MANEGER::Get_File_Time(const string& path)
 	SYSTEMTIME stFileTime;
 
 	hFile = CreateFile(
-		path.c_str(), GENERIC_READ | GENERIC_WRITE, 0, NULL,
+		path.c_str(), GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE, NULL,
 		OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL
 	);
 

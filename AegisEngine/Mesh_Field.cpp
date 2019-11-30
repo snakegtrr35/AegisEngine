@@ -4,6 +4,7 @@
 
 #include	"manager.h"
 #include	"Scene.h"
+#include	"ShadowMap.h"
 
 MESH_FIELD::MESH_FIELD()
 {
@@ -154,41 +155,44 @@ void MESH_FIELD::Update(float delta_time)
 
 void MESH_FIELD::Draw()
 {
-	// 3Dマトリックス設定
+	if (false == CManager::Get_ShadowMap()->Get_Enable())
 	{
-		XMMATRIX world;
-
-		world = XMMatrixScaling(Scaling.x, Scaling.y, Scaling.z);																						// 拡大縮小
-		world *= XMMatrixRotationRollPitchYaw(XMConvertToRadians(Rotation.x), XMConvertToRadians(Rotation.y), XMConvertToRadians(Rotation.z));			// 回転
-		world *= XMMatrixTranslation(Position.x, Position.y, Position.z);																				// 移動
-		
-		auto camera01 = CManager::Get_Scene()->Get_Game_Object<CCamera>();
-		auto camera02 = CManager::Get_Scene()->Get_Game_Object<DEBUG_CAMERA>();
-
-		if (nullptr != camera01)
-
+		// 3Dマトリックス設定
 		{
-			CRenderer::Set_MatrixBuffer(world, camera01->Get_Camera_View(), camera01->Get_Camera_Projection());
+			XMMATRIX world;
+
+			world = XMMatrixScaling(Scaling.x, Scaling.y, Scaling.z);																						// 拡大縮小
+			world *= XMMatrixRotationRollPitchYaw(XMConvertToRadians(Rotation.x), XMConvertToRadians(Rotation.y), XMConvertToRadians(Rotation.z));			// 回転
+			world *= XMMatrixTranslation(Position.x, Position.y, Position.z);																				// 移動
+
+			auto camera01 = CManager::Get_Scene()->Get_Game_Object<CCamera>();
+			auto camera02 = CManager::Get_Scene()->Get_Game_Object<DEBUG_CAMERA>();
+
+			if (nullptr != camera01)
+
+			{
+				CRenderer::Set_MatrixBuffer(world, camera01->Get_Camera_View(), camera01->Get_Camera_Projection());
+			}
+			else
+			{
+				CRenderer::Set_MatrixBuffer(world, camera02->Get_Camera_View(), camera02->Get_Camera_Projection());
+			}
 		}
-		else
-		{
-			CRenderer::Set_MatrixBuffer(world, camera02->Get_Camera_View(), camera02->Get_Camera_Projection());
-		}
+
+		// 頂点バッファ設定
+		CRenderer::SetVertexBuffers(VertexBuffer);
+
+		// インデックスバッファ設定
+		CRenderer::SetIndexBuffer(IndexBuffer);
+
+		// テクスチャの設定
+		Texture->Set_Texture();
+
+		// トポロジ設定
+		CRenderer::GetDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
+
+		CRenderer::GetDeviceContext()->DrawIndexed(IndexNum, 0, 0);
 	}
-
-	// 頂点バッファ設定
-	CRenderer::SetVertexBuffers(VertexBuffer);
-
-	// インデックスバッファ設定
-	CRenderer::SetIndexBuffer(IndexBuffer);
-
-	// テクスチャの設定
-	Texture->Set_Texture();
-
-	// トポロジ設定
-	CRenderer::GetDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);	
-
-	CRenderer::GetDeviceContext()->DrawIndexed(IndexNum, 0, 0);
 }
 
 const float MESH_FIELD::Get_Height(const XMFLOAT3& position)

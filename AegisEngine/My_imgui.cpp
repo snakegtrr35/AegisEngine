@@ -158,6 +158,22 @@ void My_imgui::Draw(void)
 						ImGui::EndMenu();
 					}
 
+					if (ImGui::BeginMenu("Delete"))
+					{
+						{
+							if (ImGui::MenuItem("Texture"))
+							{
+								Texture_Delete_Enable = true;
+							}
+							if (ImGui::MenuItem("model"))
+							{
+								int a = 0;
+							}
+						}
+
+						ImGui::EndMenu();
+					}
+
 					if (ImGui::MenuItem("Close"))
 					{
 						CManager::GameEnd();
@@ -339,6 +355,9 @@ void My_imgui::Draw(void)
 
 		// テクスチャにインポート
 		Texture_Import();
+
+		// テクスチャの削除
+		Texture_Delete();
 
 		// Rendering
 		ImGui::Render();
@@ -660,6 +679,101 @@ const char My_imgui::File_Check(const string& file_name)
 	}
 
 	return 1;
+}
+
+void My_imgui::Texture_Delete()
+{
+	static bool flag = true;
+	static bool flag2 = false;
+
+	static string file_name;
+
+	ImGuiWindowFlags window_flags = ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoDocking;
+
+	if (Texture_Import_Enable)
+	{
+		static char check;
+
+		ImGui::SetNextWindowSize(ImVec2(360, 167), ImGuiCond_Appearing);
+
+		ImGui::Begin((char*)u8"テクスチャ 削除", &Texture_Import_Enable, window_flags);
+		{
+			ImGui::Indent(15.0f);
+
+			ImGui::InputText((char*)u8"テクスチャ名", &file_name);
+
+			ImGui::Spacing();
+			ImGui::Spacing();
+			ImGui::Spacing();
+			ImGui::Spacing();
+
+			ImGui::Indent(100);
+
+			ImVec2 size(100, 40);
+
+			if (ImGui::Button((char*)u8"削除", size))
+			{
+				check = File_Check(file_name);
+
+				if (-1 != check)
+				{
+					TEXTURE_MANEGER::Unload(file_name);
+
+					ImGui::Text((char*)u8"テクスチャが削除されました");
+				}
+				else
+				{
+					flag2 = true;
+				}
+			}
+		}
+		ImGui::End();
+
+		{
+			if (flag2)
+			{
+				ImGui::SetNextWindowPos(ImVec2(SCREEN_WIDTH * 0.5f - 120.0f, SCREEN_HEIGHT * 0.5f - 55.0f), ImGuiCond_Appearing);
+
+				ImGui::Begin((char*)u8"エラー", &flag2, window_flags);
+
+				ImGui::Indent(20.0f);
+
+				ImGui::Spacing();
+				ImGui::Spacing();
+				ImGui::Spacing();
+				ImGui::Spacing();
+
+				switch (check)
+				{
+				case -1:
+					ImGui::Text((char*)u8"テクスチャ名が入力されてないです");
+					break;
+
+				case -3:
+					ImGui::Text((char*)u8"テクスチャが存在しないです");
+					break;
+
+				default:
+					break;
+				}
+
+				ImGui::End();
+			}
+		}
+
+		flag = true;
+	}
+	else
+	{
+		if (flag)
+		{
+			file_name = "";
+
+			flag = false;
+		}
+
+		flag2 = false;
+	}
 }
 
 #endif // _DEBUG

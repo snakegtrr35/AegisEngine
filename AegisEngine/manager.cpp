@@ -6,6 +6,7 @@
 #include	"Texture_Manager.h"
 #include	"Timer.h"
 #include	"audio_clip.h"
+#include	"ShadowMap.h"
 #include	"Effekseer.h"
 
 
@@ -13,8 +14,10 @@
 #include	"My_imgui.h"
 #endif // _DEBUG
 
-SCENE_MANAGER* CManager::pSceneManager;		// シーンマネージャー
+SCENE_MANAGER* CManager::pSceneManager = nullptr;		// シーンマネージャー
 bool CManager::GameEnable = true;			// プログラム自体の終了のためのフラグ
+
+SHADOW_MAP* CManager::pShadowMap = nullptr;
 
 #ifdef _DEBUG
 My_imgui* g_MyImgui;		// Imguiのクラス
@@ -44,8 +47,10 @@ bool CManager::Init()
 	g_MyImgui = new My_imgui();
 	g_MyImgui->Init(GetWindow());
 #endif // _DEBUG
-
 	AUDIO_MANAGER::Init();
+
+	pShadowMap = new SHADOW_MAP();//
+	pShadowMap->Init(2048.0f, 2048.0f);
 
 	TEXTURE_MANEGER::Init();
 
@@ -83,9 +88,14 @@ void CManager::Update()
 
 	pSceneManager->Update(TIMER::Get_DeltaTime());
 
+	// シャドウマップの更新
+	{
+		//pShadowMap->Update();//
+	}
+
 	// Effekseer
 	{
-		EFFEKSEER_MANAGER::Updata(TIMER::Get_DeltaTime());
+		EFFEKSEER_MANAGER::Update(TIMER::Get_DeltaTime());
 	}
 
 	MOUSE::Reset_Wheel_Moveset();
@@ -114,10 +124,11 @@ void CManager::Draw()
 
 	CRenderer::Begin();
 
-	//CRenderer::SetRenderTargetView(true);//
+	//pShadowMap->Begin();//
 	//pSceneManager->Draw();//
+	//pShadowMap->End();//
 
-	//CRenderer::SetRenderTargetView(false);
+	CRenderer::SetRenderTargetView();
 	pSceneManager->Draw();
 
 	// Effekseer
@@ -194,6 +205,8 @@ void CManager::Uninit()
 
 	AUDIO_MANAGER::Uninit();
 
+	delete pShadowMap;//
+
 #ifdef _DEBUG
 	g_MyImgui->Uninit();
 	delete g_MyImgui;
@@ -213,6 +226,11 @@ SCENE* const CManager::Get_Scene()
 		return pSceneManager->Get_Scene();
 	else
 		return nullptr;
+}
+
+SHADOW_MAP* const CManager::Get_ShadowMap()
+{
+	return pShadowMap;
 }
 
 bool CManager::Get_GameEnd()

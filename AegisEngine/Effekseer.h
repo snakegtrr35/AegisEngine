@@ -39,7 +39,7 @@ public:
 	static void Uninit();
 
 	static void Draw();
-	static void Updata(float delta_time);
+	static void Update(float delta_time);
 
 	static ::Effekseer::Manager* const Get_Manager();
 

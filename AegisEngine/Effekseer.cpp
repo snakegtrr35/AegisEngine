@@ -142,7 +142,7 @@ void EFFEKSEER_MANAGER::Draw()
 	Renderer->EndRendering();
 }
 
-void EFFEKSEER_MANAGER::Updata(float delta_time)
+void EFFEKSEER_MANAGER::Update(float delta_time)
 {
 	auto player = CManager::Get_Scene()->Get_Game_Object("player");
 

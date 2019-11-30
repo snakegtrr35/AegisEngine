@@ -3,6 +3,7 @@
 
 #include	"manager.h"
 #include	"Scene.h"
+#include	"ShadowMap.h"
 
 void MESH_CYlLINDER::Init()
 {
@@ -119,36 +120,39 @@ void MESH_CYlLINDER::Uninit()
 
 void MESH_CYlLINDER::Draw()
 {
+	if (false == CManager::Get_ShadowMap()->Get_Enable())
 	{
-		XMMATRIX world;
-
-		world = XMMatrixScaling(Scaling.x, Scaling.y, Scaling.z);
-		world *= XMMatrixRotationRollPitchYaw(Rotation.x, Rotation.y, Rotation.z);
-		world *= XMMatrixTranslation(Position.x, Position.y, Position.z);
-
-		auto camera01 = CManager::Get_Scene()->Get_Game_Object<CCamera>();
-		auto camera02 = CManager::Get_Scene()->Get_Game_Object<DEBUG_CAMERA>();
-
-		if (nullptr != camera01)
-
 		{
-			CRenderer::Set_MatrixBuffer(world, camera01->Get_Camera_View(), camera01->Get_Camera_Projection());
+			XMMATRIX world;
+
+			world = XMMatrixScaling(Scaling.x, Scaling.y, Scaling.z);
+			world *= XMMatrixRotationRollPitchYaw(Rotation.x, Rotation.y, Rotation.z);
+			world *= XMMatrixTranslation(Position.x, Position.y, Position.z);
+
+			auto camera01 = CManager::Get_Scene()->Get_Game_Object<CCamera>();
+			auto camera02 = CManager::Get_Scene()->Get_Game_Object<DEBUG_CAMERA>();
+
+			if (nullptr != camera01)
+
+			{
+				CRenderer::Set_MatrixBuffer(world, camera01->Get_Camera_View(), camera01->Get_Camera_Projection());
+			}
+			else
+			{
+				CRenderer::Set_MatrixBuffer(world, camera02->Get_Camera_View(), camera02->Get_Camera_Projection());
+			}
 		}
-		else
-		{
-			CRenderer::Set_MatrixBuffer(world, camera02->Get_Camera_View(), camera02->Get_Camera_Projection());
-		}
+
+		CRenderer::SetVertexBuffers(VertexBuffer.get());	// 頂点バッファ設定
+		CRenderer::SetIndexBuffer(IndexBuffer.get());		// インデックスバッファ設定
+
+		Texture.get()->Set_Texture();
+
+		CRenderer::GetDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);	// トポロジ設定
+
+		// ポリゴン描画
+		CRenderer::GetDeviceContext()->DrawIndexed(IndexNum, 0, 0);
 	}
-
-	CRenderer::SetVertexBuffers(VertexBuffer.get());	// 頂点バッファ設定
-	CRenderer::SetIndexBuffer(IndexBuffer.get());		// インデックスバッファ設定
-
-	Texture.get()->Set_Texture();
-
-	CRenderer::GetDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);	// トポロジ設定
-
-	// ポリゴン描画
-	CRenderer::GetDeviceContext()->DrawIndexed(IndexNum, 0, 0);
 }
 
 void MESH_CYlLINDER::Update(float delta_time)

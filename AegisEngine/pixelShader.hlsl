@@ -57,7 +57,10 @@ cbuffer CameraBuffer : register(b5)
 // グローバル変数
 //*****************************************************************************
 Texture2D       g_Texture : register( t0 );
+Texture2D       g_ShadowMap : register(t1);     // シャドウマップ
+
 SamplerState	g_SamplerState : register( s0 );
+SamplerState    g_ShadowSamplerState : register(s1);        // シャドウマップ用のサンプラー
 
 
 //=============================================================================
@@ -68,7 +71,7 @@ void main( in float4 inPosition     : POSITION0,
 		   in float2 inTexCoord     : TEXCOORD0,
 		   in float4 inDiffuse      : COLOR0,
 		   in float4 outWPos        : TEXCOORD1,
-
+           in float4 inShadowMapPos : POSITION_SHADOWMAP,
            
 		   out float4 outDiffuse	: SV_Target )
 {
@@ -121,6 +124,11 @@ void main( in float4 inPosition     : POSITION0,
     //float specular = pow(saturate(dot(halfDir, inNormal.xyz)), Light.Specular.w);//
     float specular = pow(saturate(dot(R, inNormal.xyz)), Light.Specular.w);
 
+    /*// シャドウマップ
+    float sm = g_ShadowMap.Sample(g_ShadowSamplerState, inShadowMapPos.xy);
+    float sma = (inShadowMapPos.z < sm) ? 1.0 : 0.5;*/
+
+    
     color = (diffuse * g_Texture.Sample(g_SamplerState, inTexCoord)) + specular
             + (ambient * g_Texture.Sample(g_SamplerState, inTexCoord));
 
