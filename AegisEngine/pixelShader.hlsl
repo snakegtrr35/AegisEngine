@@ -1,5 +1,3 @@
-
-
 //*****************************************************************************
 // 定数バッファ
 //*****************************************************************************
@@ -124,17 +122,39 @@ void main( in float4 inPosition     : POSITION0,
     //float specular = pow(saturate(dot(halfDir, inNormal.xyz)), Light.Specular.w);//
     float specular = pow(saturate(dot(R, inNormal.xyz)), Light.Specular.w);
 
-    /*// シャドウマップ
-    float sm = g_ShadowMap.Sample(g_ShadowSamplerState, inShadowMapPos.xy);
-    float sma = (inShadowMapPos.z < sm) ? 1.0 : 0.5;*/
+    // シャドウマップ
+    float shadow;
+    float2 ShadowTexCoord;
+    ShadowTexCoord.x = inShadowMapPos.x / inShadowMapPos.w / 2.0f + 0.5f;
+    ShadowTexCoord.y = -inShadowMapPos.y / inShadowMapPos.w / 2.0f + 0.5f;
+    
+    if ((saturate(ShadowTexCoord.x) == ShadowTexCoord.x) && (saturate(ShadowTexCoord.y) == ShadowTexCoord.y))
+    {
+        float depthValue = g_ShadowMap.Sample(g_ShadowSamplerState, ShadowTexCoord).r;
 
+        float lightDepthValue = inShadowMapPos.z / inShadowMapPos.w;
+
+        lightDepthValue = lightDepthValue - 0.005f;
+
+        if (lightDepthValue < depthValue)
+        {
+            shadow = 1.0f;
+            //shadow = 0.5f;
+        }
+        else
+        {
+            //shadow = 1.0f;
+            shadow = 0.5f;
+        }
+    }
     
     color = (diffuse * g_Texture.Sample(g_SamplerState, inTexCoord)) + specular
             + (ambient * g_Texture.Sample(g_SamplerState, inTexCoord));
 
+    color *= shadow;
+    
     outDiffuse = color;
 
     if (outDiffuse.a <= 0.0)
         discard;
-
 }

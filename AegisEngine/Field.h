@@ -13,7 +13,6 @@ class FIELD : public GAME_OBJECT {
 	ID3D11Buffer* pVertexBuffer;	// 頂点バッファ
 	ID3D11Buffer* pIndexBuffer;		// インデックスバッファ
 	TEXTURE* Texture;				// テクスチャ
-	XMFLOAT3 Position;				// ポジション
 	XMFLOAT2 WH;					// 幅と高さ
 
 protected:

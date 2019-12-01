@@ -15,7 +15,6 @@ cbuffer ConstantBuffer : register(b0)
 // シャドウマップ用のマトリックス
 cbuffer ShadowBuffer : register(b1)
 {
-    matrix ShadowWorld;
     matrix ShadowView;
     matrix ShadowProjection;
 }
@@ -91,8 +90,20 @@ void main( in float4 inPosition		: POSITION0,
     outDiffuse = inDiffuse;
     outWPos = mul(inPosition, World);
     
-    wvp = mul(ShadowWorld, ShadowView);
+    
+    //wvp = mul(World, ShadowView);
+    //wvp = mul(wvp, ShadowProjection);
+    
+    //// 頂点座標　モデル座標系→透視座標系(シャドウマップ)
+    //float4 pos4 = mul(float4(inPosition.xyz, 1.0), wvp);
+    //pos4.xyz = pos4.xyz / pos4.w;
+    //outShadowMapPos.x = (pos4.x + 1.0) / 2.0;
+    //outShadowMapPos.y = (-pos4.y + 1.0) / 2.0;
+    //outShadowMapPos.z = pos4.z;
+    
+    wvp = mul(World, ShadowView);
     wvp = mul(wvp, ShadowProjection);
-    outShadowMapPos = mul(inPosition, wvp);
+    outShadowMapPos = mul(float4(inPosition.xyz, 1.0f), wvp);
+
 }
 

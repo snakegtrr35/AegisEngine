@@ -26,14 +26,18 @@
 #include	"Mesh_Cylinder.h"
 #include	"Mesh_Dome.h"
 
+#include	"manager.h"
+#include	"ShadowMap.h"
+
 class GAME_OBJECT;
 
 enum class LAYER_NAME {
 
-	BACKGROUND = 0,
-	GAMEOBJECT,
-	EFFECT,
-	UI,
+	BACKGROUND = 0,		//! 背景のためのレイヤー
+	GAMEOBJECT,			//! ゲームオブジェクトのためのレイヤー
+	EFFECT,				//! エフェクトのためのレイヤー
+	//DEBUG,			//! デバッグ標準のためのレイヤー
+	UI,					//! UIのためのレイヤー
 	MAX_LAYER
 };
 
@@ -219,6 +223,19 @@ public:
 	* @details 詳細な説明
 	*/
 	virtual void Draw(void) {
+		for (int i = 0; i < (int)LAYER_NAME::MAX_LAYER; i++)
+		{
+			//if ( ( true == CManager::Get_ShadowMap()->Get_Enable() ) && (i == (int)LAYER_NAME::UI /*|| i == (int)LAYER_NAME::DEBUG*/ ) )
+			//{
+			//	continue;
+			//}
+
+
+			for (GAME_OBJECT* object : GameObjects[i])
+			{
+				object->Draw();
+			}
+		}
 	};
 
 	/**

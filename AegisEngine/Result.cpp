@@ -39,13 +39,7 @@ void RESULT::Init()
 
 void RESULT::Draw()
 {
-	for (int i = 0; i < (int)LAYER_NAME::MAX_LAYER; i++)
-	{
-		for (GAME_OBJECT* object : GameObjects[i])
-		{
-			object->Draw();
-		}
-	}
+	SCENE::Draw();
 }
 
 void RESULT::Update(float delta_time)

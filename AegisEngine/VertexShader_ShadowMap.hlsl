@@ -25,6 +25,8 @@ void main( in float4 inPosition     : POSITION0,
 {
     matrix wvp;
 
+    inPosition.w = 1.0f;
+    
     wvp = mul(World, View);
     wvp = mul(wvp, Projection);
     outPosition = mul(inPosition, wvp);

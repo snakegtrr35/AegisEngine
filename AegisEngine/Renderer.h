@@ -171,6 +171,7 @@ enum class SHADER_INDEX_P {
 	DEFAULT,
 	NO_TEXTURE,
 	NO_LIGHT,
+	SHADOW_MAP,
 };
 
 enum class SHADER_INDEX_V {
@@ -229,8 +230,8 @@ private:
 	//! Direct2Dのライトファクトリー
 	static IDWriteFactory*			m_DwriteFactory;
 
-	static ID3D11VertexShader*		m_VertexShader[3];
-	static ID3D11PixelShader*		m_PixelShader[3];
+	static ID3D11VertexShader*		m_VertexShader[2];
+	static ID3D11PixelShader*		m_PixelShader[4];
 
 	static ID3D11DepthStencilState* m_DepthStateEnable;
 	static ID3D11DepthStencilState* m_DepthStateDisable;
@@ -440,10 +441,14 @@ public:
 	// 自前
 	static void CreateRenderTexture();
 	static void SetRenderTargetView();
-	static ID3D11ShaderResourceView*	Get_SRV();
-	static ID3D11RenderTargetView*		My_RenderTargetView;
-	static ID3D11ShaderResourceView*	My_ShaderResourceView;
 
+	static ID3D11RenderTargetView* Get() {
+		return m_RenderTargetView;
+	}
+
+	static ID3D11DepthStencilView* Get2() {
+		return m_DepthStencilView;
+	}
 
 	static LIGHT* Get_Light()
 	{

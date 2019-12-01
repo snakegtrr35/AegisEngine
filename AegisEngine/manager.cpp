@@ -90,7 +90,7 @@ void CManager::Update()
 
 	// シャドウマップの更新
 	{
-		//pShadowMap->Update();//
+		pShadowMap->Update();//
 	}
 
 	// Effekseer
@@ -124,9 +124,9 @@ void CManager::Draw()
 
 	CRenderer::Begin();
 
-	//pShadowMap->Begin();//
-	//pSceneManager->Draw();//
-	//pShadowMap->End();//
+	pShadowMap->Begin();//
+	pSceneManager->Draw();//
+	pShadowMap->End();//
 
 	CRenderer::SetRenderTargetView();
 	pSceneManager->Draw();

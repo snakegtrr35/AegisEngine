@@ -7,8 +7,6 @@
 #include	"camera.h"
 #include	"Debug_Camera.h"
 
-
-
 ::Effekseer::Manager*			EFFEKSEER_MANAGER::Manager = nullptr;
 ::EffekseerRenderer::Renderer*	EFFEKSEER_MANAGER::Renderer = nullptr;
 ::EffekseerSound::Sound*		EFFEKSEER_MANAGER::Sound = nullptr;
@@ -146,7 +144,7 @@ void EFFEKSEER_MANAGER::Update(float delta_time)
 {
 	auto player = CManager::Get_Scene()->Get_Game_Object("player");
 
-	Set_Location("test", XMFLOAT3(player->Get_Position()->x, player->Get_Position()->y, player->Get_Position()->z));
+	//	Set_Location("test", XMFLOAT3(player->Get_Position()->x, player->Get_Position()->y, player->Get_Position()->z));
 
 	//Manager->SetLocation(Handles["test"], Effekseer::Vector3D(player->Get_Position()->x, player->Get_Position()->y, player->Get_Position()->z));
 	Manager->SetScale(Handles["test"], 0.5f, 0.5f, 0.5f);

@@ -227,6 +227,15 @@ void CMODEL::Draw()
 
 			CRenderer::Set_MatrixBuffer01(camera_pos);
 		}
+
+		if (CManager::Get_ShadowMap()->Get_Enable())
+		{
+			CRenderer::Set_Shader(SHADER_INDEX_V::SHADOW_MAP, SHADER_INDEX_P::SHADOW_MAP);
+		}
+		else
+		{
+			CRenderer::Set_Shader();
+		}
 	}
 
 	if (Meshes.GetAnime())
@@ -260,6 +269,8 @@ void CMODEL::Draw()
 			}
 		}
 	}
+
+	CRenderer::Set_Shader();
 }
 
 void CMODEL::Update(float delta_time)

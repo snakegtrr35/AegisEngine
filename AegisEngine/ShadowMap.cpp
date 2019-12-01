@@ -5,19 +5,32 @@ SHADOW_MAP::SHADOW_MAP()
 {
 	LightPos = XMFLOAT3(10.0f, 10.0f, -10.0f);
 
-	Enable = true;
+	Enable = false;
 
 	{
 		// ビューマトリックス(光源から見る)
-		XMVECTOR at = { 0.0f, 0.0f,  0.0f };  // 注視点
-		XMVECTOR up = { 0.0f, 1.0f,  0.0f };  // カメラの上方向
-
-		ViewMatrix = XMMatrixLookAtLH(XMLoadFloat3(&LightPos), at, up);
+		ViewMatrix = XMMatrixLookAtLH(XMLoadFloat3(&LightPos), XMVectorSet(0.f, 0.f, 0.f, 0.f), XMVectorSet(0.f, 1.0f, 0.f, 0.f));
 	}
 
 	{
 		// プロジェクションマトリックス
-		PlojectionMatrix = XMMatrixPerspectiveFovLH(XMConvertToRadians(80.0f), SCREEN_WIDTH / SCREEN_HEIGHT, 1.0f, 1000.0f);
+		PlojectionMatrix = XMMatrixPerspectiveFovLH(XMConvertToRadians(80.0f), SCREEN_WIDTH / SCREEN_HEIGHT, 1.0f, 100.0f);
+	}
+
+	{
+		// ビューポートの設定設定
+		Viewport.left = 0;
+		Viewport.top = 0;
+		Viewport.right = 2048;
+		Viewport.bottom = 2048;
+
+		// ビューポート設定
+		DxViewport.Width = (float)(Viewport.right - Viewport.left);
+		DxViewport.Height = (float)(Viewport.bottom - Viewport.top);
+		DxViewport.MinDepth = 0.0f;
+		DxViewport.MaxDepth = 1.0f;
+		DxViewport.TopLeftX = (float)Viewport.left;
+		DxViewport.TopLeftY = (float)Viewport.top;
 	}
 }
 
@@ -25,36 +38,34 @@ bool SHADOW_MAP::Init(const float width, const float height )
 {
 	HRESULT hr;
 
-	// テクスチャの作成
-	ID3D11Texture2D* pTex = nullptr;
+	// デプスステンシルビューの作成
 	{
+		ID3D11DepthStencilView* dsv = nullptr;
+		ID3D11Texture2D* pTex = nullptr;
+
+		// テクスチャの作成
 		D3D11_TEXTURE2D_DESC td;
 		td.Width = width;
 		td.Height = height;
 		td.MipLevels = 1;
 		td.ArraySize = 1;
-		td.Format = DXGI_FORMAT_R32_TYPELESS;
+		td.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
 		td.SampleDesc.Count = 1;
 		td.SampleDesc.Quality = 0;
 		td.Usage = D3D11_USAGE_DEFAULT;
-		td.BindFlags = D3D11_BIND_DEPTH_STENCIL | D3D11_BIND_SHADER_RESOURCE;
+		td.BindFlags = D3D11_BIND_DEPTH_STENCIL;
 		td.CPUAccessFlags = 0;
 		td.MiscFlags = 0;
 
-		hr = CRenderer::GetDevice()->CreateTexture2D(&td, NULL, &pTex);
+		hr = CRenderer::GetDevice()->CreateTexture2D(&td, nullptr, &pTex);
 		if (FAILED(hr))
 		{
 			FAILDE_ASSERT;
 			return false;
 		}
-	}
-
-	// デプスステンシルビューの作成
-    {
-		ID3D11DepthStencilView* dsv = nullptr;
 
 		D3D11_DEPTH_STENCIL_VIEW_DESC desc;
-		desc.Format = DXGI_FORMAT_D32_FLOAT;
+		desc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
 		desc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
 		desc.Flags = 0;
 		desc.Texture2D.MipSlice = 0;
@@ -72,22 +83,63 @@ bool SHADOW_MAP::Init(const float width, const float height )
 	// シェーダリソースビューの作成
 	{
 		ID3D11ShaderResourceView* srv = nullptr;
+		ID3D11Texture2D* pTex = nullptr;
 
-		// レンダーターゲットビューの設定
-		D3D11_SHADER_RESOURCE_VIEW_DESC desc;
-		desc.Format = DXGI_FORMAT_R32_FLOAT;
-		desc.ViewDimension = D3D_SRV_DIMENSION_TEXTURE2D;
-		desc.Texture2D.MostDetailedMip = 0;
-		desc.Texture2D.MipLevels = -1;
+		// テクスチャの作成
+		D3D11_TEXTURE2D_DESC td;
+		td.Width = width;
+		td.Height = height;
+		td.MipLevels = 1;
+		td.ArraySize = 1;
+		td.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+		td.SampleDesc.Count = 1;
+		td.SampleDesc.Quality = 0;
+		td.Usage = D3D11_USAGE_DEFAULT;
+		td.BindFlags = D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE;
+		td.CPUAccessFlags = 0;
+		td.MiscFlags = 0;
 
-		hr = CRenderer::GetDevice()->CreateShaderResourceView(pTex, &desc, &srv);
+		hr = CRenderer::GetDevice()->CreateTexture2D(&td, nullptr, &pTex);
 		if (FAILED(hr))
 		{
 			FAILDE_ASSERT;
 			return false;
 		}
 
-		ShaderResourceView.reset(srv);
+		// レンダーターゲットビューの設定
+		{
+			ID3D11RenderTargetView* pRtv;
+
+			D3D11_RENDER_TARGET_VIEW_DESC desc;
+			desc.Format = td.Format;
+			desc.ViewDimension = D3D11_RTV_DIMENSION_TEXTURE2D;
+			desc.Texture2D.MipSlice = 0;
+
+			hr = CRenderer::GetDevice()->CreateRenderTargetView(pTex, &desc, &pRtv);
+			if (FAILED(hr))
+			{
+				return false;
+			}
+
+			RenderTargetView.reset(pRtv);
+		}
+
+		{
+			// シェーダーリソースビューの設定
+			D3D11_SHADER_RESOURCE_VIEW_DESC desc;
+			desc.Format = td.Format;
+			desc.ViewDimension = D3D_SRV_DIMENSION_TEXTURE2D;
+			desc.Texture2D.MostDetailedMip = 0;
+			desc.Texture2D.MipLevels = 1;
+
+			hr = CRenderer::GetDevice()->CreateShaderResourceView(pTex, &desc, &ShaderResourceView);
+			if (FAILED(hr))
+			{
+				FAILDE_ASSERT;
+				return false;
+			}
+			//ShaderResourceView.reset(srv);
+		}
 	}
 
 	// サンプラーステートの生成.
@@ -103,11 +155,11 @@ bool SHADOW_MAP::Init(const float width, const float height )
 		desc.BorderColor[2] = 1.0f;
 		desc.BorderColor[3] = 1.0f;
 		desc.ComparisonFunc = D3D11_COMPARISON_NEVER;
-		desc.Filter = D3D11_FILTER_ANISOTROPIC;
+		desc.Filter = D3D11_FILTER_COMPARISON_MIN_MAG_MIP_POINT;
 		desc.MaxAnisotropy = 1;
 		desc.MipLODBias = 0;
 		desc.MaxLOD = FLT_MAX;
-		desc.MinLOD = -FLT_MAX;
+		desc.MinLOD = 0.f;
 
 		// サンプラーステートを生成.
 		HRESULT hr = CRenderer::GetDevice()->CreateSamplerState(&desc, &sampler);
@@ -118,6 +170,8 @@ bool SHADOW_MAP::Init(const float width, const float height )
 		}
 
 		Sampler.reset(sampler);
+
+		CRenderer::GetDeviceContext()->PSSetSamplers(1, 1, &sampler);
 	}
 
 	// 定数バッファ作成
@@ -125,7 +179,7 @@ bool SHADOW_MAP::Init(const float width, const float height )
 		ID3D11Buffer* buffer = nullptr;
 
 		D3D11_BUFFER_DESC hBufferDesc;
-		hBufferDesc.ByteWidth = sizeof(CONSTANT);
+		hBufferDesc.ByteWidth = sizeof(CONSTANT_SHADOW_MAP);
 		hBufferDesc.Usage = D3D11_USAGE_DEFAULT;
 		hBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
 		hBufferDesc.CPUAccessFlags = 0;
@@ -144,16 +198,28 @@ bool SHADOW_MAP::Init(const float width, const float height )
 		ShadowBuffer.reset(buffer);
 	}
 
+	Shadow.ViewMatrix = XMMatrixTranspose(ViewMatrix);
+	Shadow.ProjectionMatrix = XMMatrixTranspose(PlojectionMatrix);
+
+	// シャドウ生成パスの定数バッファを更新
+	CRenderer::GetDeviceContext()->UpdateSubresource(ShadowBuffer.get(), 0, nullptr, &Shadow, 0, 0);
+
     return true;
 }
 
 void SHADOW_MAP::Begin()
 {
 	ID3D11DepthStencilView* pDSV = DepthStencilView.get();
-    CRenderer::GetDeviceContext()->OMSetRenderTargets( 0, nullptr, pDSV );
+	ID3D11RenderTargetView* pRTV = RenderTargetView.get();
+
+    CRenderer::GetDeviceContext()->OMSetRenderTargets( 1, &pRTV, pDSV );
+
+	CRenderer::GetDeviceContext()->RSSetViewports(1, &DxViewport);
+
+	// バックバッファクリア
+	float ClearColor[4] = { 0.5f, 0.5f, 0.5f, 1.0f };
+	CRenderer::GetDeviceContext()->ClearRenderTargetView( pRTV, ClearColor );
     CRenderer::GetDeviceContext()->ClearDepthStencilView( pDSV, D3D11_CLEAR_DEPTH, 1.0f, 0 );
-
-
 
 	Enable = true;
 }
@@ -161,35 +227,35 @@ void SHADOW_MAP::Begin()
 void SHADOW_MAP::End()
 {
 	Enable = false;
+
+	//ID3D11ShaderResourceView* srv = ShaderResourceView.get();
+
+	//CRenderer::GetDeviceContext()->PSSetShaderResources(1, 1, &srv);
+	CRenderer::GetDeviceContext()->PSSetShaderResources(1, 1, &ShaderResourceView);
+
+	// シャドウ生成パスの定数バッファを更新
+	//CRenderer::GetDeviceContext()->UpdateSubresource(ShadowBuffer.get(), 0, nullptr, &Shadow, 0, 0);
 }
 
 void SHADOW_MAP::Update()
 {
-	{
-		XMVECTOR at = XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f);
-		XMVECTOR up = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
-
-		ViewMatrix = XMMatrixLookAtLH(XMLoadFloat3(&LightPos), at, up);
-	}
-
-	Shadow.ViewMatrix = XMMatrixTranspose(ViewMatrix);
-	Shadow.ProjectionMatrix = XMMatrixTranspose(PlojectionMatrix);
 }
 
 void SHADOW_MAP::Uninit()
 {
+	RenderTargetView.reset(nullptr);
 	DepthStencilView.reset(nullptr);
-	ShaderResourceView.reset(nullptr);
+	//ShaderResourceView.reset(nullptr);
+	SAFE_RELEASE(ShaderResourceView);
 	Sampler.reset(nullptr);
-
-	SAFE_RELEASE(ShadowBuffer);
+	ShadowBuffer.reset(nullptr);
 }
 
 void SHADOW_MAP::Set_ShaderResourceView()
 {
-	ID3D11ShaderResourceView* srv = ShaderResourceView.get();
+	//ID3D11ShaderResourceView* srv = ShaderResourceView.get();
 
-	CRenderer::GetDeviceContext()->PSSetShaderResources(1, 1, &srv);
+	//CRenderer::GetDeviceContext()->PSSetShaderResources(1, 1, &srv);
 }
 
 void SHADOW_MAP::Set_SamplerState()
@@ -197,14 +263,6 @@ void SHADOW_MAP::Set_SamplerState()
 	ID3D11SamplerState* samp = Sampler.get();
 
 	CRenderer::GetDeviceContext()->PSSetSamplers(1, 1, &samp);
-}
-
-void SHADOW_MAP::Set_Buffer(const XMMATRIX& world)
-{
-	Shadow.WorldMatrix = XMMatrixTranspose(world);
-
-	// シャドウ生成パスの定数バッファを更新
-	CRenderer::GetDeviceContext()->UpdateSubresource(ShadowBuffer.get(), 0, nullptr, &Shadow, 0, 0);
 }
 
 void SHADOW_MAP::Set_LightPos(const XMFLOAT3& pos)

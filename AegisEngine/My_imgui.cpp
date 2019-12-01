@@ -11,6 +11,7 @@
 
 #include	"Scene.h"
 #include	"manager.h"
+#include	"ShadowMap.h"
 #include	"Texture_Manager.h"
 
 #include	"common.h"
@@ -295,14 +296,15 @@ void My_imgui::Draw(void)
 
 				ImGui::Begin("Debug", nullptr, window_flags);
 
-				ImTextureID image = CRenderer::Get_SRV();
+				ImTextureID image = CManager::Get_ShadowMap()->Get();
+				//ImTextureID image = CRenderer::Get_SRV();
 
 				ImGui::Image(image, ImVec2(1280, 720));
 
 				ImGui::End();
 			}
 
-			// オブジェクト一覧
+			// オブジェクト一覧9
 			{
 				ImGuiWindowFlags window_flag = ImGuiWindowFlags_NoTitleBar;
 				ImGuiTreeNodeFlags node_flags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_OpenOnDoubleClick;

@@ -1,7 +1,8 @@
 #include	"Sprite.h"
 #include	"texture.h"
+#include	"manager.h"
+#include	"ShadowMap.h"
 #include	"Scene.h"
-#include	"main.h"
 
 unique_ptr<ID3D11Buffer, Release> SPRITE::pIndexBuffer;		// インデックスバッファ
 
@@ -184,64 +185,67 @@ void SPRITE::Init(void)
 
 void SPRITE::Draw(void)
 {
-	if (Enable)
+	if (false == CManager::Get_ShadowMap()->Get_Enable())
 	{
-		Vertex[0].Position = XMFLOAT3(Position.x - Size.w, Position.y - Size.x, 0.0f);
-		Vertex[0].Normal = XMFLOAT3(0.0f, 1.0f, 0.0f);
-		Vertex[0].Diffuse = XMFLOAT4(Color.r, Color.g, Color.b, Color.a);
-		Vertex[0].TexCoord = XMFLOAT2(0.0f, 0.0f);
-
-		Vertex[1].Position = XMFLOAT3(Position.x + Size.y, Position.y - Size.x, 0.0f);
-		Vertex[1].Normal = XMFLOAT3(0.0f, 1.0f, 0.0f);
-		Vertex[1].Diffuse = XMFLOAT4(Color.r, Color.g, Color.b, Color.a);
-		Vertex[1].TexCoord = XMFLOAT2(1.0f, 0.0f);
-
-		Vertex[2].Position = XMFLOAT3(Position.x - Size.w, Position.y + Size.z, 0.0f);
-		Vertex[2].Normal = XMFLOAT3(0.0f, 1.0f, 0.0f);
-		Vertex[2].Diffuse = XMFLOAT4(Color.r, Color.g, Color.b, Color.a);
-		Vertex[2].TexCoord = XMFLOAT2(0.0f, 1.0f);
-
-		Vertex[3].Position = XMFLOAT3(Position.x + Size.y, Position.y + Size.z, 0.0f);
-		Vertex[3].Normal = XMFLOAT3(0.0f, 1.0f, 0.0f);
-		Vertex[3].Diffuse = XMFLOAT4(Color.r, Color.g, Color.b, Color.a);
-		Vertex[3].TexCoord = XMFLOAT2(1.0f, 1.0f);
-
-		// 頂点バッファの書き換え
+		if (Enable)
 		{
-			D3D11_MAPPED_SUBRESOURCE msr;
-			CRenderer::GetDeviceContext()->Map(pVertexBuffer.get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &msr);
-			memcpy(msr.pData, Vertex, sizeof(VERTEX_3D) * 4);
-			CRenderer::GetDeviceContext()->Unmap(pVertexBuffer.get(), 0);
+			Vertex[0].Position = XMFLOAT3(Position.x - Size.w, Position.y - Size.x, 0.0f);
+			Vertex[0].Normal = XMFLOAT3(0.0f, 1.0f, 0.0f);
+			Vertex[0].Diffuse = XMFLOAT4(Color.r, Color.g, Color.b, Color.a);
+			Vertex[0].TexCoord = XMFLOAT2(0.0f, 0.0f);
+
+			Vertex[1].Position = XMFLOAT3(Position.x + Size.y, Position.y - Size.x, 0.0f);
+			Vertex[1].Normal = XMFLOAT3(0.0f, 1.0f, 0.0f);
+			Vertex[1].Diffuse = XMFLOAT4(Color.r, Color.g, Color.b, Color.a);
+			Vertex[1].TexCoord = XMFLOAT2(1.0f, 0.0f);
+
+			Vertex[2].Position = XMFLOAT3(Position.x - Size.w, Position.y + Size.z, 0.0f);
+			Vertex[2].Normal = XMFLOAT3(0.0f, 1.0f, 0.0f);
+			Vertex[2].Diffuse = XMFLOAT4(Color.r, Color.g, Color.b, Color.a);
+			Vertex[2].TexCoord = XMFLOAT2(0.0f, 1.0f);
+
+			Vertex[3].Position = XMFLOAT3(Position.x + Size.y, Position.y + Size.z, 0.0f);
+			Vertex[3].Normal = XMFLOAT3(0.0f, 1.0f, 0.0f);
+			Vertex[3].Diffuse = XMFLOAT4(Color.r, Color.g, Color.b, Color.a);
+			Vertex[3].TexCoord = XMFLOAT2(1.0f, 1.0f);
+
+			// 頂点バッファの書き換え
+			{
+				D3D11_MAPPED_SUBRESOURCE msr;
+				CRenderer::GetDeviceContext()->Map(pVertexBuffer.get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &msr);
+				memcpy(msr.pData, Vertex, sizeof(VERTEX_3D) * 4);
+				CRenderer::GetDeviceContext()->Unmap(pVertexBuffer.get(), 0);
+			}
+
+			// 入力アセンブラに頂点バッファを設定
+			CRenderer::SetVertexBuffers(pVertexBuffer.get());
+
+			// 入力アセンブラにインデックスバッファを設定
+			CRenderer::SetIndexBuffer(pIndexBuffer.get());
+
+			if (nullptr == ShaderResourceView)
+			{
+				// テクスチャの設定
+				Texture->Set_Texture();
+			}
+			else
+			{
+				CRenderer::GetDeviceContext()->PSSetShaderResources(0, 1, &ShaderResourceView);
+			}
+
+			// 2Dマトリックス設定
+			CRenderer::SetWorldViewProjection2D(Scaling);
+
+			CRenderer::Set_Shader(SHADER_INDEX_V::DEFAULT, SHADER_INDEX_P::NO_LIGHT);
+
+			CRenderer::DrawIndexed(6, 0, 0);
+
 		}
 
-		// 入力アセンブラに頂点バッファを設定
-		CRenderer::SetVertexBuffers(pVertexBuffer.get());
+		Draw_Child();
 
-		// 入力アセンブラにインデックスバッファを設定
-		CRenderer::SetIndexBuffer(pIndexBuffer.get());
-
-		if (nullptr == ShaderResourceView)
-		{
-			// テクスチャの設定
-			Texture->Set_Texture();
-		}
-		else
-		{
-			CRenderer::GetDeviceContext()->PSSetShaderResources(0, 1, &ShaderResourceView);
-		}
-
-		// 2Dマトリックス設定
-		CRenderer::SetWorldViewProjection2D(Scaling);
-
-		CRenderer::Set_Shader(SHADER_INDEX_V::DEFAULT, SHADER_INDEX_P::NO_LIGHT);
-
-		CRenderer::DrawIndexed(6, 0, 0);
-
+		CRenderer::Set_Shader();
 	}
-
-	Draw_Child();
-
-	CRenderer::Set_Shader();
 }
 
 void SPRITE::Update(float delta_time)
@@ -366,7 +370,10 @@ void SPRITE_ANIMATION::Init(void)
 
 void SPRITE_ANIMATION::Draw(void)
 {
-	Draw2(Tx_Param, Ty_Param);
+	if (false == CManager::Get_ShadowMap()->Get_Enable())
+	{
+		Draw2(Tx_Param, Ty_Param);
+	}
 }
 
 void SPRITE_ANIMATION::Draw2(float tx, float ty)
@@ -512,9 +519,12 @@ void TEXTS::Init(void)
 
 void TEXTS::Draw(void)
 {
-	Text_Draw(Text);
+	if (false == CManager::Get_ShadowMap()->Get_Enable())
+	{
+		Text_Draw(Text);
 
-	Draw_Child();
+		Draw_Child();
+	}
 }
 
 void TEXTS::Update(float delta_time)

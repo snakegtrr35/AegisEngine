@@ -4,6 +4,7 @@
 #include	"My_imgui.h"
 
 #include	"manager.h"
+#include	"ShadowMap.h"
 #include	"Scene.h"
 
 static float roll = 0.0f;
@@ -15,11 +16,7 @@ POLYGON_3D::POLYGON_3D()
 	pVertexBuffer = nullptr;
 	Texture = nullptr;
 
-	XYZ = Position = XMFLOAT3(0.0f, 0.0f, 0.0f);
-
-	Scaling = XMFLOAT3(1.0f, 1.0f, 1.0f);
-
-	Rotation = XMFLOAT3(0.0f, 0.0f, 0.0f);
+	XYZ = XMFLOAT3(0.5f, 0.5f, 0.5f);
 
 	// テクスチャの設定
 	Texture = new TEXTURE(string("field004.png"));
@@ -48,10 +45,6 @@ POLYGON_3D::~POLYGON_3D()
 }
 
 void POLYGON_3D::Init(void)
-{
-}
-
-void POLYGON_3D::Draw(void)
 {
 	HRESULT hr;
 
@@ -212,7 +205,10 @@ void POLYGON_3D::Draw(void)
 			return;
 		}
 	}
+}
 
+void POLYGON_3D::Draw(void)
+{
 	// 入力アセンブラに頂点バッファを設定.
 	CRenderer::SetVertexBuffers(pVertexBuffer);
 
@@ -225,19 +221,48 @@ void POLYGON_3D::Draw(void)
 
 		world = XMMatrixScaling(Scaling.x , Scaling.y, Scaling.z);																						// 拡大縮小
 		world *= XMMatrixRotationRollPitchYaw( XMConvertToRadians(Rotation.x), XMConvertToRadians(Rotation.y), XMConvertToRadians(Rotation.z) );		// 回転(ロールピッチヨウ)
-		world *= XMMatrixTranslation(Position.x, Position.y, Position.z);																				// 移動
+		world *= XMMatrixTranslation(Position.x + 2.0f, Position.y + 5.0f, Position.z + -2.0f);																				// 移動
 		
 		auto camera01 = CManager::Get_Scene()->Get_Game_Object<CCamera>();
 		auto camera02 = CManager::Get_Scene()->Get_Game_Object<DEBUG_CAMERA>();
 
 		if (nullptr != camera01)
-
 		{
-			CRenderer::Set_MatrixBuffer(world, camera01->Get_Camera_View(), camera01->Get_Camera_Projection());
+			// シャドウマップ用の描画か?
+			if (CManager::Get_ShadowMap()->Get_Enable())
+			{
+				XMMATRIX view = CManager::Get_ShadowMap()->Get_View();
+				XMMATRIX proj = CManager::Get_ShadowMap()->Get_Plojection();
+
+				CRenderer::Set_MatrixBuffer(world, view, proj);
+
+				CRenderer::Set_Shader(SHADER_INDEX_V::SHADOW_MAP, SHADER_INDEX_P::SHADOW_MAP);
+			}
+			else
+			{
+				CRenderer::Set_MatrixBuffer(world, camera01->Get_Camera_View(), camera01->Get_Camera_Projection());
+
+				CRenderer::Set_Shader();
+			}
 		}
 		else
 		{
-			CRenderer::Set_MatrixBuffer(world, camera02->Get_Camera_View(), camera02->Get_Camera_Projection());
+			// シャドウマップ用の描画か?
+			if (CManager::Get_ShadowMap()->Get_Enable())
+			{
+				XMMATRIX view = CManager::Get_ShadowMap()->Get_View();
+				XMMATRIX proj = CManager::Get_ShadowMap()->Get_Plojection();
+
+				CRenderer::Set_MatrixBuffer(world, view, proj);
+
+				CRenderer::Set_Shader(SHADER_INDEX_V::SHADOW_MAP, SHADER_INDEX_P::SHADOW_MAP);
+			}
+			else
+			{
+				CRenderer::Set_MatrixBuffer(world, camera02->Get_Camera_View(), camera02->Get_Camera_Projection());
+
+				CRenderer::Set_Shader();
+			}
 		}
 	}
 

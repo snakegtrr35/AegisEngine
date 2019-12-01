@@ -23,8 +23,8 @@ IDWriteTextLayout*		CRenderer::m_TextLayout = nullptr;
 
 IDWriteFactory*			CRenderer::m_DwriteFactory = nullptr;
 
-ID3D11VertexShader*		CRenderer::m_VertexShader[3] = { nullptr };
-ID3D11PixelShader*      CRenderer::m_PixelShader[3] = { nullptr };
+ID3D11VertexShader*		CRenderer::m_VertexShader[2] = { nullptr };
+ID3D11PixelShader*      CRenderer::m_PixelShader[4] = { nullptr };
 ID3D11InputLayout*      CRenderer::m_VertexLayout = nullptr;
 ID3D11Buffer*			CRenderer::m_WorldBuffer = nullptr;
 ID3D11Buffer*			CRenderer::m_ViewBuffer = nullptr;
@@ -38,10 +38,6 @@ ID3D11DepthStencilState* CRenderer::m_DepthStateEnable = nullptr;
 ID3D11DepthStencilState* CRenderer::m_DepthStateDisable = nullptr;
 
 bool CRenderer::Stand_By_Enable = false;
-
-// 自前
-ID3D11RenderTargetView*			CRenderer::My_RenderTargetView = nullptr;
-ID3D11ShaderResourceView*		CRenderer::My_ShaderResourceView = nullptr;
 
 
 ID3D11Buffer*	CRenderer::m_ConstantBuffer;//
@@ -222,6 +218,22 @@ bool CRenderer::Init()
 
 			delete[] buffer;
 		}
+
+		// シャドウマップ
+		{
+			FILE* file;
+			long int fsize;
+
+			file = fopen("PixelShader_ShadowMap.cso", "rb");
+			fsize = _filelength(_fileno(file));
+			unsigned char* buffer = new unsigned char[fsize];
+			fread(buffer, fsize, 1, file);
+			fclose(file);
+
+			m_D3DDevice->CreatePixelShader(buffer, fsize, NULL, &m_PixelShader[3]);
+
+			delete[] buffer;
+		}
 	}
 
 	// 定数バッファ生成
@@ -299,6 +311,7 @@ bool CRenderer::Init()
 	material.Specular = COLOR(1.0f, 1.0f, 1.0f, 1.0f);
 	SetMaterial(material);
 
+
 	return true;
 }
 
@@ -329,7 +342,6 @@ void CRenderer::Uninit()
 
 	SAFE_RELEASE(m_VertexShader[0]);
 	SAFE_RELEASE(m_VertexShader[1]);
-	SAFE_RELEASE(m_VertexShader[2]);
 
 	SAFE_RELEASE(m_PixelShader[0]);
 	SAFE_RELEASE(m_PixelShader[1]);
@@ -463,7 +475,6 @@ bool CRenderer::Init3D()
 		FAILDE_ASSERT;
 		return false;
 	}
-
 
 
 	//ステンシル用テクスチャー作成
@@ -1043,6 +1054,10 @@ void CRenderer::Set_Shader(const SHADER_INDEX_V v_index, const SHADER_INDEX_P p_
 			m_ImmediateContext->VSSetShader(m_VertexShader[(int)SHADER_INDEX_V::SHADOW_MAP], NULL, 0);
 			break;
 
+		/*case (int)SHADER_INDEX_V::ANIMATION:
+			m_ImmediateContext->VSSetShader(m_VertexShader[(int)SHADER_INDEX_V::ANIMATION], NULL, 0);
+			break;*/
+
 		default:
 			break;
 	}
@@ -1061,6 +1076,10 @@ void CRenderer::Set_Shader(const SHADER_INDEX_V v_index, const SHADER_INDEX_P p_
 			m_ImmediateContext->PSSetShader(m_PixelShader[(int)SHADER_INDEX_P::NO_LIGHT], NULL, 0);
 			break;
 
+		case (int)SHADER_INDEX_P::SHADOW_MAP:
+			m_ImmediateContext->PSSetShader(m_PixelShader[(int)SHADER_INDEX_P::SHADOW_MAP], NULL, 0);
+			break;
+
 		default:
 			break;
 	}
@@ -1068,65 +1087,41 @@ void CRenderer::Set_Shader(const SHADER_INDEX_V v_index, const SHADER_INDEX_P p_
 
 void CRenderer::CreateRenderTexture()
 {
-	HRESULT hr;
+	//HRESULT hr;
 
-	// 2次元テクスチャの設定
-	D3D11_TEXTURE2D_DESC texDesc;
-	memset(&texDesc, 0, sizeof(texDesc));
-	texDesc.Usage = D3D11_USAGE_DEFAULT;
-	texDesc.Format = DXGI_FORMAT_R8G8B8A8_TYPELESS;
-	texDesc.BindFlags = D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE;
-	texDesc.Width = SCREEN_WIDTH;
-	texDesc.Height = SCREEN_HEIGHT;
-	texDesc.CPUAccessFlags = 0;
-	texDesc.MipLevels = 1;
-	texDesc.ArraySize = 1;
-	texDesc.SampleDesc.Count = 1;
-	texDesc.SampleDesc.Quality = 0;
-	
-	ID3D11Texture2D* pTex;
-	ID3D11Texture2D* backBufferTex_;
+	//// 2次元テクスチャの設定
+	//D3D11_TEXTURE2D_DESC texDesc;
+	//memset(&texDesc, 0, sizeof(texDesc));
+	//texDesc.Usage = D3D11_USAGE_DEFAULT;
+	//texDesc.Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
+	//texDesc.BindFlags = D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE;
+	//texDesc.Width = SCREEN_WIDTH;
+	//texDesc.Height = SCREEN_HEIGHT;
+	//texDesc.CPUAccessFlags = 0;
+	//texDesc.MipLevels = 1;
+	//texDesc.ArraySize = 1;
+	//texDesc.SampleDesc.Count = 1;
+	//texDesc.SampleDesc.Quality = 0;
+	//
+	//ID3D11Texture2D* pTex;
 
-	// 2次元テクスチャの生成
-	hr = m_D3DDevice->CreateTexture2D(&texDesc, NULL, &pTex);
+	//// 2次元テクスチャの生成
+	//hr = m_D3DDevice->CreateTexture2D(&texDesc, nullptr, &pTex);
 
-	if (FAILED(hr))
-	{
-		FAILDE_ASSERT;
-	}
-
-	// レンダーターゲットビューの設定
-	D3D11_RENDER_TARGET_VIEW_DESC rtvDesc;
-	memset(&rtvDesc, 0, sizeof(rtvDesc));
-	rtvDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
-	rtvDesc.ViewDimension = D3D11_RTV_DIMENSION_TEXTURE2D;
-
-	// レンダーターゲットの取得（D3D11）
-	m_SwapChain->GetBuffer(0, IID_PPV_ARGS(&backBufferTex_));
-
-	// レンダーターゲットビューの生成
-	hr = m_D3DDevice->CreateRenderTargetView(backBufferTex_, nullptr, &My_RenderTargetView);
-	if (FAILED(hr))
-	{
-		FAILDE_ASSERT;
-	}
-
-	//// レンダーターゲットビューの生成
-	//hr = m_D3DDevice->CreateRenderTargetView(pTex, &rtvDesc, &My_RenderTargetView);
 	//if (FAILED(hr))
 	//{
 	//	FAILDE_ASSERT;
 	//}
 
-	// シェーダリソースビューの設定
-	D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc;
-	memset(&srvDesc, 0, sizeof(srvDesc));
-	srvDesc.Format = rtvDesc.Format;
-	srvDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
-	srvDesc.Texture2D.MipLevels = 1;
-	
-	// シェーダリソースビューの生成
-	//hr = m_D3DDevice->CreateShaderResourceView(backBufferTex_, &srvDesc, &My_ShaderResourceView);
+	//// シェーダリソースビューの設定
+	//D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc;
+	//memset(&srvDesc, 0, sizeof(srvDesc));
+	//srvDesc.Format = texDesc.Format;
+	//srvDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
+	//srvDesc.Texture2D.MipLevels = 1;
+	//
+	//// シェーダリソースビューの生成
+	//hr = m_D3DDevice->CreateShaderResourceView(pTex, &srvDesc, &ShaderResourceView);
 	//if(FAILED(hr))
 	//{
 	//	FAILDE_ASSERT;
@@ -1143,11 +1138,19 @@ void CRenderer::SetRenderTargetView()
 		m_ImmediateContext->ClearRenderTargetView(m_RenderTargetView, clearColor);
 		m_ImmediateContext->ClearDepthStencilView(m_DepthStencilView, D3D11_CLEAR_DEPTH, 1.0f, 0);
 
+		{
+			// ビューポート設定
+			D3D11_VIEWPORT dxViewport;
+			dxViewport.Width = (float)SCREEN_WIDTH;
+			dxViewport.Height = (float)SCREEN_HEIGHT;
+			dxViewport.MinDepth = 0.0f;
+			dxViewport.MaxDepth = 1.0f;
+			dxViewport.TopLeftX = 0.0f;
+			dxViewport.TopLeftY = 0.0f;
+
+			m_ImmediateContext->RSSetViewports(1, &dxViewport);
+		}
+
 		Set_Shader();
 	}
-}
-
-ID3D11ShaderResourceView* CRenderer::Get_SRV()
-{
-	return My_ShaderResourceView;
 }

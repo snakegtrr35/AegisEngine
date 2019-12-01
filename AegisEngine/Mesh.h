@@ -6,6 +6,7 @@
 #include	"Renderer.h"
 
 #include	"manager.h"
+#include	"ShadowMap.h"
 #include	"Scene.h"
 
 //
@@ -140,15 +141,37 @@ private:
 
 				auto camera01 = CManager::Get_Scene()->Get_Game_Object<CCamera>();
 				auto camera02 = CManager::Get_Scene()->Get_Game_Object<DEBUG_CAMERA>();
-
+				
+				// 普通のカメラかデバッグカメラか?
 				if (nullptr != camera01)
-
 				{
-					CRenderer::Set_MatrixBuffer(matrix, camera01->Get_Camera_View(), camera01->Get_Camera_Projection());
+					// シャドウマップ用の描画か?
+					if (CManager::Get_ShadowMap()->Get_Enable())
+					{
+						XMMATRIX view = CManager::Get_ShadowMap()->Get_View();
+						XMMATRIX proj = CManager::Get_ShadowMap()->Get_Plojection();
+
+						CRenderer::Set_MatrixBuffer(matrix, view, proj);
+					}
+					else
+					{
+						CRenderer::Set_MatrixBuffer(matrix, camera01->Get_Camera_View(), camera01->Get_Camera_Projection());
+					}
 				}
 				else
 				{
-					CRenderer::Set_MatrixBuffer(matrix, camera02->Get_Camera_View(), camera02->Get_Camera_Projection());
+					// シャドウマップ用の描画か?
+					if (CManager::Get_ShadowMap()->Get_Enable())
+					{
+						XMMATRIX view = CManager::Get_ShadowMap()->Get_View();
+						XMMATRIX proj = CManager::Get_ShadowMap()->Get_Plojection();
+
+						CRenderer::Set_MatrixBuffer(matrix, view, proj);
+					}
+					else
+					{
+						CRenderer::Set_MatrixBuffer(matrix, camera02->Get_Camera_View(), camera02->Get_Camera_Projection());
+					}
 				}
 			}
 
@@ -271,14 +294,36 @@ private:
 				auto camera01 = CManager::Get_Scene()->Get_Game_Object<CCamera>();
 				auto camera02 = CManager::Get_Scene()->Get_Game_Object<DEBUG_CAMERA>();
 
+				// 普通のカメラかデバッグカメラか?
 				if (nullptr != camera01)
-
 				{
-					CRenderer::Set_MatrixBuffer(world, camera01->Get_Camera_View(), camera01->Get_Camera_Projection());
+					// シャドウマップ用の描画か?
+					if (CManager::Get_ShadowMap()->Get_Enable())
+					{
+						XMMATRIX view = CManager::Get_ShadowMap()->Get_View();
+						XMMATRIX proj = CManager::Get_ShadowMap()->Get_Plojection();
+
+						CRenderer::Set_MatrixBuffer(world, view, proj);
+					}
+					else
+					{
+						CRenderer::Set_MatrixBuffer(world, camera01->Get_Camera_View(), camera01->Get_Camera_Projection());
+					}
 				}
 				else
 				{
-					CRenderer::Set_MatrixBuffer(world, camera02->Get_Camera_View(), camera02->Get_Camera_Projection());
+					// シャドウマップ用の描画か?
+					if (CManager::Get_ShadowMap()->Get_Enable())
+					{
+						XMMATRIX view = CManager::Get_ShadowMap()->Get_View();
+						XMMATRIX proj = CManager::Get_ShadowMap()->Get_Plojection();
+
+						CRenderer::Set_MatrixBuffer(world, view, proj);
+					}
+					else
+					{
+						CRenderer::Set_MatrixBuffer(world, camera02->Get_Camera_View(), camera02->Get_Camera_Projection());
+					}
 				}
 			}
 		}

@@ -169,7 +169,7 @@ void DEBUG_CAMERA::Draw()
 	dxViewport.TopLeftX = (float)Viewport.left;
 	dxViewport.TopLeftY = (float)Viewport.top;
 
-	CRenderer::GetDeviceContext()->RSSetViewports(1, &dxViewport);
+	//CRenderer::GetDeviceContext()->RSSetViewports(1, &dxViewport);
 
 	// ビューマトリクス設定
 	m_ViewMatrix = XMMatrixLookAtLH(Pos, At, Up);
