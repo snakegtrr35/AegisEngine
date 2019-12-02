@@ -128,8 +128,8 @@ void main( in float4 inPosition     : POSITION0,
     ShadowTexCoord.x = inShadowMapPos.x / inShadowMapPos.w / 2.0f + 0.5f;
     ShadowTexCoord.y = -inShadowMapPos.y / inShadowMapPos.w / 2.0f + 0.5f;
     
-    if ((saturate(ShadowTexCoord.x) == ShadowTexCoord.x) && (saturate(ShadowTexCoord.y) == ShadowTexCoord.y))
-    {
+    //if ((saturate(ShadowTexCoord.x) == ShadowTexCoord.x) && (saturate(ShadowTexCoord.y) == ShadowTexCoord.y))
+    //{
         float depthValue = g_ShadowMap.Sample(g_ShadowSamplerState, ShadowTexCoord).r;
 
         float lightDepthValue = inShadowMapPos.z / inShadowMapPos.w;
@@ -146,15 +146,17 @@ void main( in float4 inPosition     : POSITION0,
             //shadow = 1.0f;
             shadow = 0.5f;
         }
-    }
+   // }
     
     color = (diffuse * g_Texture.Sample(g_SamplerState, inTexCoord)) + specular
             + (ambient * g_Texture.Sample(g_SamplerState, inTexCoord));
 
-    color *= shadow;
+    color.rgb *= shadow;
+    
+   // color = float4(.0f, 0.f, 0.f, 1.0f);
     
     outDiffuse = color;
 
-    if (outDiffuse.a <= 0.0)
-        discard;
+    //if (outDiffuse.a <= 0.0)
+    //    discard;
 }

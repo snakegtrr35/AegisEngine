@@ -15,6 +15,8 @@ SHADOW_MAP::SHADOW_MAP()
 	{
 		// プロジェクションマトリックス
 		PlojectionMatrix = XMMatrixPerspectiveFovLH(XMConvertToRadians(80.0f), SCREEN_WIDTH / SCREEN_HEIGHT, 1.0f, 100.0f);
+
+		//XMMatrixOrthographicLH
 	}
 
 	{
@@ -222,6 +224,10 @@ void SHADOW_MAP::Begin()
     CRenderer::GetDeviceContext()->ClearDepthStencilView( pDSV, D3D11_CLEAR_DEPTH, 1.0f, 0 );
 
 	Enable = true;
+
+	ID3D11SamplerState* s = Sampler.get();
+
+	CRenderer::GetDeviceContext()->PSSetSamplers(1, 1, &s);
 }
 
 void SHADOW_MAP::End()

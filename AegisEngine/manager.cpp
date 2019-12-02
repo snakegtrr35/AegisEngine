@@ -126,9 +126,9 @@ void CManager::Draw()
 
 	pShadowMap->Begin();//
 	pSceneManager->Draw();//
-	pShadowMap->End();//
 
 	CRenderer::SetRenderTargetView();
+	pShadowMap->End();//
 	pSceneManager->Draw();
 
 	// Effekseer
