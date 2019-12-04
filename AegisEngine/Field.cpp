@@ -9,8 +9,6 @@
 FIELD::FIELD()
 {
 	pVertexBuffer = nullptr;
-
-
 }
 
 FIELD::FIELD(XMFLOAT3 position, XMFLOAT2 wh)
