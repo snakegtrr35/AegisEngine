@@ -249,10 +249,14 @@ void BILL_BOARD::Draw()
 
 		{
 			CRenderer::Set_MatrixBuffer(world, camera01->Get_Camera_View(), camera01->Get_Camera_Projection());
+
+			CRenderer::Set_MatrixBuffer01(*camera01->Get_Pos());
 		}
 		else
 		{
 			CRenderer::Set_MatrixBuffer(world, camera02->Get_Camera_View(), camera02->Get_Camera_Projection());
+
+			CRenderer::Set_MatrixBuffer01(*camera02->Get_Pos());
 		}
 	}
 
@@ -431,7 +435,53 @@ void BILL_BOARD_ANIMATION::Draw(float tx, float ty)
 		world *= XMMatrixTranslation(Position.x, Position.y, Position.z);				// 移動
 		//world *= XMMatrixRotationRollPitchYaw(Rotation.x, Rotation.y, Rotation.z);		// 回転
 
-		CRenderer::SetWorldMatrix(&world);
+		//CRenderer::Set_MatrixBufferSetWorldMatrix(&world);
+
+		auto camera01 = CManager::Get_Scene()->Get_Game_Object<CCamera>();
+		auto camera02 = CManager::Get_Scene()->Get_Game_Object<DEBUG_CAMERA>();
+
+		if (nullptr != camera01)
+		{
+			//// シャドウマップ用の描画か?
+			//if (CManager::Get_ShadowMap()->Get_Enable())
+			//{
+			//	XMMATRIX view = CManager::Get_ShadowMap()->Get_View();
+			//	XMMATRIX proj = CManager::Get_ShadowMap()->Get_Plojection();
+
+			//	CRenderer::Set_MatrixBuffer(world, view, proj);
+
+			//	CRenderer::Set_Shader(SHADER_INDEX_V::SHADOW_MAP, SHADER_INDEX_P::SHADOW_MAP);
+			//}
+			//else
+			{
+				CRenderer::Set_MatrixBuffer(world, camera01->Get_Camera_View(), camera01->Get_Camera_Projection());
+
+				CRenderer::Set_MatrixBuffer01(*camera01->Get_Pos());
+
+				CRenderer::Set_Shader();
+			}
+		}
+		else
+		{
+			//// シャドウマップ用の描画か?
+			//if (CManager::Get_ShadowMap()->Get_Enable())
+			//{
+			//	XMMATRIX view = CManager::Get_ShadowMap()->Get_View();
+			//	XMMATRIX proj = CManager::Get_ShadowMap()->Get_Plojection();
+
+			//	CRenderer::Set_MatrixBuffer(world, view, proj);
+
+			//	CRenderer::Set_Shader(SHADER_INDEX_V::SHADOW_MAP, SHADER_INDEX_P::SHADOW_MAP);
+			//}
+			//else
+			{
+				CRenderer::Set_MatrixBuffer(world, camera02->Get_Camera_View(), camera02->Get_Camera_Projection());
+
+				CRenderer::Set_MatrixBuffer01(*camera02->Get_Pos());
+
+				CRenderer::Set_Shader();
+			}
+		}
 	}
 
 	CRenderer::Set_Shader(SHADER_INDEX_V::DEFAULT, SHADER_INDEX_P::NO_LIGHT);

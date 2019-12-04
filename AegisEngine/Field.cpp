@@ -229,6 +229,8 @@ void FIELD::Draw()
 			{
 				CRenderer::Set_MatrixBuffer(world, camera01->Get_Camera_View(), camera01->Get_Camera_Projection());
 
+				CRenderer::Set_MatrixBuffer01(*camera02->Get_Pos());
+
 				CRenderer::Set_Shader();
 			}
 		}
@@ -247,6 +249,8 @@ void FIELD::Draw()
 			else
 			{
 				CRenderer::Set_MatrixBuffer(world, camera02->Get_Camera_View(), camera02->Get_Camera_Projection());
+
+				CRenderer::Set_MatrixBuffer01(*camera02->Get_Pos());
 
 				CRenderer::Set_Shader();
 			}

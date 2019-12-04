@@ -141,9 +141,9 @@ void PLAYER::Update(float delta_time)
 	}
 
 	// メッシュフィールドとの当たり判定
-	MESH_FIELD* pfield = CManager::Get_Scene()->Get_Game_Object<MESH_FIELD>();
-	if (nullptr != pfield)
-		Position.y = pfield->Get_Height(Position);
+	//MESH_FIELD* pfield = CManager::Get_Scene()->Get_Game_Object<MESH_FIELD>();
+	//if (nullptr != pfield)
+	//	Position.y = pfield->Get_Height(Position);
 
 	// カメラに合わせた回転
 	//Rotation.y = rotate + 90.0f;

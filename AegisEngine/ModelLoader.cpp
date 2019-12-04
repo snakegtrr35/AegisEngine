@@ -160,7 +160,7 @@ void CMODEL::Draw()
 
 	XMMATRIX matrix = XMMatrixIdentity();
 	XMMATRIX scaling = XMMatrixScaling(Scaling.x, Scaling.y, Scaling.z);
-	XMMATRIX rotation  = XMMatrixIdentity();/*= XMMatrixRotationRollPitchYaw(XMConvertToRadians(Rotation.x), XMConvertToRadians(Rotation.y), XMConvertToRadians(Rotation.z));*/
+	XMMATRIX rotation  = /*XMMatrixIdentity();=*/ XMMatrixRotationRollPitchYaw(XMConvertToRadians(Rotation.x), XMConvertToRadians(Rotation.y), XMConvertToRadians(Rotation.z));
 	XMMATRIX transform = XMMatrixTranslation(Position.x, Position.y, Position.z);
 
 	// クォータニオン
@@ -184,7 +184,7 @@ void CMODEL::Draw()
 		//rotation = XMMatrixRotationQuaternion(Quaternion);
 
 
-		rotation = XMMatrixRotationQuaternion(Math::Quaternion::Euler(Rotation));
+		//rotation = XMMatrixRotationQuaternion(Math::Quaternion::Euler(Rotation));
 	}
 
 	matrix = XMMatrixMultiply(matrix, scaling);

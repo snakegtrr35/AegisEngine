@@ -136,10 +136,14 @@ void MESH_CYlLINDER::Draw()
 
 			{
 				CRenderer::Set_MatrixBuffer(world, camera01->Get_Camera_View(), camera01->Get_Camera_Projection());
+
+				CRenderer::Set_MatrixBuffer01(*camera01->Get_Pos());
 			}
 			else
 			{
 				CRenderer::Set_MatrixBuffer(world, camera02->Get_Camera_View(), camera02->Get_Camera_Projection());
+
+				CRenderer::Set_MatrixBuffer01(*camera02->Get_Pos());
 			}
 		}
 

@@ -1,5 +1,7 @@
 ﻿#include	"ShadowMap.h"
 
+float SHADOW_MAP::WIDTH = 2048.0f;
+float SHADOW_MAP::HEIGHT = 2048.0f;
 
 SHADOW_MAP::SHADOW_MAP()
 {
@@ -14,17 +16,17 @@ SHADOW_MAP::SHADOW_MAP()
 
 	{
 		// プロジェクションマトリックス
-		PlojectionMatrix = XMMatrixPerspectiveFovLH(XMConvertToRadians(80.0f), SCREEN_WIDTH / SCREEN_HEIGHT, 1.0f, 100.0f);
+		//PlojectionMatrix = XMMatrixPerspectiveFovLH(XMConvertToRadians(80.0f), WIDTH / HEIGHT, 1.0f, 100.0f);
 
-		//XMMatrixOrthographicLH
+		PlojectionMatrix = XMMatrixOrthographicLH(40.0f, 40.0f, 1.0f, 100.0f);
 	}
 
 	{
 		// ビューポートの設定設定
 		Viewport.left = 0;
 		Viewport.top = 0;
-		Viewport.right = 2048;
-		Viewport.bottom = 2048;
+		Viewport.right = WIDTH;
+		Viewport.bottom = HEIGHT;
 
 		// ビューポート設定
 		DxViewport.Width = (float)(Viewport.right - Viewport.left);
@@ -36,7 +38,7 @@ SHADOW_MAP::SHADOW_MAP()
 	}
 }
 
-bool SHADOW_MAP::Init(const float width, const float height )
+bool SHADOW_MAP::Init()
 {
 	HRESULT hr;
 
@@ -47,8 +49,8 @@ bool SHADOW_MAP::Init(const float width, const float height )
 
 		// テクスチャの作成
 		D3D11_TEXTURE2D_DESC td;
-		td.Width = width;
-		td.Height = height;
+		td.Width = WIDTH;
+		td.Height = HEIGHT;
 		td.MipLevels = 1;
 		td.ArraySize = 1;
 		td.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
@@ -84,16 +86,15 @@ bool SHADOW_MAP::Init(const float width, const float height )
 
 	// シェーダリソースビューの作成
 	{
-		ID3D11ShaderResourceView* srv = nullptr;
 		ID3D11Texture2D* pTex = nullptr;
 
 		// テクスチャの作成
 		D3D11_TEXTURE2D_DESC td;
-		td.Width = width;
-		td.Height = height;
+		td.Width = WIDTH;
+		td.Height = HEIGHT;
 		td.MipLevels = 1;
 		td.ArraySize = 1;
-		td.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+		td.Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
 		td.SampleDesc.Count = 1;
 		td.SampleDesc.Quality = 0;
 		td.Usage = D3D11_USAGE_DEFAULT;
@@ -108,7 +109,7 @@ bool SHADOW_MAP::Init(const float width, const float height )
 			return false;
 		}
 
-		// レンダーターゲットビューの設定
+		// レンダーターゲットビュー設定
 		{
 			ID3D11RenderTargetView* pRtv;
 
@@ -126,7 +127,10 @@ bool SHADOW_MAP::Init(const float width, const float height )
 			RenderTargetView.reset(pRtv);
 		}
 
+		// シェーダーリソースビュー設定
 		{
+			ID3D11ShaderResourceView* srv = nullptr;
+
 			// シェーダーリソースビューの設定
 			D3D11_SHADER_RESOURCE_VIEW_DESC desc;
 			desc.Format = td.Format;
@@ -134,14 +138,31 @@ bool SHADOW_MAP::Init(const float width, const float height )
 			desc.Texture2D.MostDetailedMip = 0;
 			desc.Texture2D.MipLevels = 1;
 
-			hr = CRenderer::GetDevice()->CreateShaderResourceView(pTex, &desc, &ShaderResourceView);
+			hr = CRenderer::GetDevice()->CreateShaderResourceView(pTex, &desc, &srv);
 			if (FAILED(hr))
 			{
 				FAILDE_ASSERT;
 				return false;
 			}
-			//ShaderResourceView.reset(srv);
+			ShaderResourceView.reset(srv);
 		}
+	}
+
+	// ラスタライズステートの設定
+	{
+		ID3D11RasterizerState* rs = nullptr;
+
+		// ラスタライザステート設定
+		D3D11_RASTERIZER_DESC rd;
+		ZeroMemory(&rd, sizeof(rd));
+		rd.FillMode = D3D11_FILL_SOLID;
+		rd.CullMode = D3D11_CULL_FRONT;
+		rd.DepthClipEnable = TRUE;
+		rd.MultisampleEnable = FALSE;
+
+		CRenderer::GetDevice()->CreateRasterizerState(&rd, &rs);
+
+		RasterizerState.reset(rs);
 	}
 
 	// サンプラーステートの生成.
@@ -225,22 +246,20 @@ void SHADOW_MAP::Begin()
 
 	Enable = true;
 
-	ID3D11SamplerState* s = Sampler.get();
-
-	CRenderer::GetDeviceContext()->PSSetSamplers(1, 1, &s);
+	CRenderer::GetDeviceContext()->RSSetState(RasterizerState.get());
 }
 
 void SHADOW_MAP::End()
 {
 	Enable = false;
 
-	//ID3D11ShaderResourceView* srv = ShaderResourceView.get();
+	ID3D11ShaderResourceView* srv = ShaderResourceView.get();
 
-	//CRenderer::GetDeviceContext()->PSSetShaderResources(1, 1, &srv);
-	CRenderer::GetDeviceContext()->PSSetShaderResources(1, 1, &ShaderResourceView);
+	CRenderer::GetDeviceContext()->PSSetShaderResources(1, 1, &srv);
 
-	// シャドウ生成パスの定数バッファを更新
-	//CRenderer::GetDeviceContext()->UpdateSubresource(ShadowBuffer.get(), 0, nullptr, &Shadow, 0, 0);
+	ID3D11SamplerState* s = Sampler.get();
+
+	CRenderer::GetDeviceContext()->PSSetSamplers(1, 1, &s);
 }
 
 void SHADOW_MAP::Update()
@@ -251,17 +270,10 @@ void SHADOW_MAP::Uninit()
 {
 	RenderTargetView.reset(nullptr);
 	DepthStencilView.reset(nullptr);
-	//ShaderResourceView.reset(nullptr);
-	SAFE_RELEASE(ShaderResourceView);
+	ShaderResourceView.reset(nullptr);
+	RasterizerState.reset(nullptr);
 	Sampler.reset(nullptr);
 	ShadowBuffer.reset(nullptr);
-}
-
-void SHADOW_MAP::Set_ShaderResourceView()
-{
-	//ID3D11ShaderResourceView* srv = ShaderResourceView.get();
-
-	//CRenderer::GetDeviceContext()->PSSetShaderResources(1, 1, &srv);
 }
 
 void SHADOW_MAP::Set_SamplerState()
