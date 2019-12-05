@@ -1131,7 +1131,8 @@ XMMATRIX Covert_Matrix(const aiMatrix4x4* matrix)
 //		BoneIndex = bone_mapping[BoneName];
 //	}
 //
-//	for (UINT i = 0; i < bone->mNumWeights; i++) {
+//	for (UINT i = 0; i < bone->mNumWeights; i++)
+//	{
 //		UINT VertexID = subset.StartVertex + bone->mWeights[i].mVertexId;
 //		float Weight = bone->mWeights[i].mWeight;
 //
