@@ -15,11 +15,18 @@ protected:
 	bool DestroyFlag;
 
 	XMFLOAT3 Position;
+	XMFLOAT3 Edit_Position;
 	
 	XMFLOAT3 Rotation;
+	XMFLOAT3 Edit_Rotation;
+
 	XMVECTOR Quaternion;
+	XMVECTOR Edit_Quaternion;
+	XMFLOAT4 Q_num;
+	XMFLOAT4 Edit_Q_num;
 
 	XMFLOAT3 Scaling;
+	XMFLOAT3 Edit_Scaling;
 
 	COMPONENT_MANEGER Component;
 
@@ -40,8 +47,6 @@ public:
 	bool Destroy() {
 		if (DestroyFlag)
 		{
-			Uninit();
-			delete this;
 			return true;
 		}
 		return false;
@@ -116,6 +121,17 @@ public:
 	static const unordered_map<size_t, string>& Get_Object_Name_Map() {
 		return Object_Name_Map;
 	}
+
+	//template<class Archive>
+	//void serialize( Archive& archive, XMFLOAT3& position, XMFLOAT3& edit_position,
+	//				XMFLOAT3& rotation, XMFLOAT3& edit_rotation,
+	//				XMFLOAT3& scaling, XMFLOAT3& edit_scaling,
+	//				XMFLOAT4 q_num, XMFLOAT4 edit_q_num,
+	//				unordered_map<size_t, string>& object_name_map,
+	//				COMPONENT_MANEGER& Component )
+	//{
+	//	archive(position.x, position.y, position.z);
+	//}
 };
 
 #endif // !GAME_OBJECT_H

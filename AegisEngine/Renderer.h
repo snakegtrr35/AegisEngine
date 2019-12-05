@@ -192,7 +192,7 @@ struct CONSTANT
 
 struct CONSTANT_02
 {
-	XMVECTOR Camera_Pos;	// カメラの座標
+	XMFLOAT4 Camera_Pos;	// カメラの座標
 };
 
 /**
@@ -235,15 +235,10 @@ private:
 
 	static ID3D11DepthStencilState* m_DepthStateEnable;
 	static ID3D11DepthStencilState* m_DepthStateDisable;
+	static ID3D11RasterizerState*	m_RasterizerState;
 
 	//! 頂点レイアウト
 	static ID3D11InputLayout*		m_VertexLayout;
-	//! ワールドバッファ
-	static ID3D11Buffer*			m_WorldBuffer;
-	//! ビューバッファ
-	static ID3D11Buffer*			m_ViewBuffer;
-	//! プロジェクションバッファ
-	static ID3D11Buffer*			m_ProjectionBuffer;
 	//! マテリアルバッファ
 	static ID3D11Buffer*			m_MaterialBuffer;
 	//! ライトバッファ
@@ -253,7 +248,7 @@ private:
 	//! コンスタントバッファ
 	static ID3D11Buffer*			m_ConstantBuffer;
 	
-	static ID3D11Buffer* m_ConstantBuffer_02;
+	static ID3D11Buffer*			m_ConstantBuffer_02;
 
 	//! スタンバイモードフラグ
 	static bool						Stand_By_Enable;
@@ -299,27 +294,6 @@ public:
 	static void SetWorldViewProjection2D(const XMFLOAT3& scaling = XMFLOAT3(1.0f, 1.0f, 1.0f), const XMFLOAT3& rotation = XMFLOAT3(0.0f, 0.0f, 0.0f));
 
 	/**
-	* @brief ワールドマトリックス設定
-	* @param[in] WorldMatrix　ワールドマトリックス
-	* @details ワールドマトリックス設定を設定する
-	*/
-	static void SetWorldMatrix(XMMATRIX * WorldMatrix);
-
-	/**
-	* @brief ビューマトリックス設定
-	* @param[in] ViewMatrix　ビューマトリックス
-	* @details ビューマトリックス設定を設定する
-	*/
-	static void SetViewMatrix(XMMATRIX * ViewMatrix);
-
-	/**
-	* @brief プロジェクションマトリックス設定
-	* @param[in] ProjectionMatrix　プロジェクションマトリックス
-	* @details プロジェクションマトリックス設定を設定する
-	*/
-	static void SetProjectionMatrix(XMMATRIX * ProjectionMatrix);
-
-	/**
 	* @brief コンスタントバッファ設定
 	* @param[in] world　ワールドマトリックス
 	* @param[in] view　ビューマトリックス
@@ -332,7 +306,14 @@ public:
 	{
 		CONSTANT_02 cons;
 
-		cons.Camera_Pos = camera_pos;
+		XMFLOAT4 pos;
+
+		XMStoreFloat4(&pos, camera_pos);
+
+		cons.Camera_Pos.x = pos.x;
+		cons.Camera_Pos.y = pos.y;
+		cons.Camera_Pos.z = pos.z;
+		cons.Camera_Pos.w = 0.0f;
 
 		CRenderer::GetDeviceContext()->UpdateSubresource(m_ConstantBuffer_02, 0, NULL, &cons, 0, 0);
 	}
@@ -356,6 +337,12 @@ public:
 	* @details ディレクショナルライト設定を初期化する
 	*/
 	static void Light_Identity();
+
+	/**
+	* @brief	ラスタライズステートの設定
+	* @details 
+	*/
+	static void Set_RasterizerState();
 
 	/**
 	* @brief 頂点バッファの設定

@@ -50,7 +50,7 @@ bool CManager::Init()
 	AUDIO_MANAGER::Init();
 
 	pShadowMap = new SHADOW_MAP();//
-	pShadowMap->Init(2048.0f, 2048.0f);
+	pShadowMap->Init();
 
 	TEXTURE_MANEGER::Init();
 
@@ -126,9 +126,9 @@ void CManager::Draw()
 
 	pShadowMap->Begin();//
 	pSceneManager->Draw();//
-	pShadowMap->End();//
 
 	CRenderer::SetRenderTargetView();
+	pShadowMap->End();//
 	pSceneManager->Draw();
 
 	// Effekseer

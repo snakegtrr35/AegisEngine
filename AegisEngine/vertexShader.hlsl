@@ -1,5 +1,3 @@
-
-
 //*****************************************************************************
 // 定数バッファ
 //*****************************************************************************
@@ -60,18 +58,18 @@ cbuffer CameraBuffer : register(b5)
 //=============================================================================
 // 頂点シェーダ
 //=============================================================================
-void main( in float4 inPosition		: POSITION0,
-		   in float4 inNormal		: NORMAL0,
-		   in float4 inDiffuse		: COLOR0,
-		   in float2 inTexCoord		: TEXCOORD0,
-		   in uint   inInstansID    : SV_InstanceID,
+void main( in float4 inPosition		    : POSITION0,
+		   in float4 inNormal		    : NORMAL0,
+		   in float4 inDiffuse		    : COLOR0,
+		   in float2 inTexCoord		    : TEXCOORD0,
+		   in uint   inInstansID        : SV_InstanceID,
            
-		   out float4 outPosition	: SV_POSITION,
-		   out float4 outNormal		: NORMAL0,
-		   out float2 outTexCoord	: TEXCOORD0,
-		   out float4 outDiffuse	: COLOR0,
-		   out float4 outWPos       : TEXCOORD1,
-           out float4 outShadowMapPos : POSITION_SHADOWMAP)
+		   out float4 outPosition	    : SV_POSITION,
+		   out float4 outNormal		    : NORMAL0,
+		   out float2 outTexCoord	    : TEXCOORD0,
+		   out float4 outDiffuse	    : COLOR0,
+		   out float4 outWPos           : POSITION1,
+           out float4 outShadowMapPos   : POSITION_SHADOWMAP)
 {
 	matrix wvp;
 	wvp = mul(World, View);
@@ -82,28 +80,18 @@ void main( in float4 inPosition		: POSITION0,
 
 	outPosition = mul( inPosition, wvp);
 
-    //outNormal = float4(inNormal.xyz, 0.0);
+    inNormal.w = 0.0f;
     outNormal = mul(inNormal, World);
-    outNormal = normalize(outNormal);
 
 	outTexCoord = inTexCoord;
+    
     outDiffuse = inDiffuse;
+    
     outWPos = mul(inPosition, World);
-    
-    
-    //wvp = mul(World, ShadowView);
-    //wvp = mul(wvp, ShadowProjection);
-    
-    //// 頂点座標　モデル座標系→透視座標系(シャドウマップ)
-    //float4 pos4 = mul(float4(inPosition.xyz, 1.0), wvp);
-    //pos4.xyz = pos4.xyz / pos4.w;
-    //outShadowMapPos.x = (pos4.x + 1.0) / 2.0;
-    //outShadowMapPos.y = (-pos4.y + 1.0) / 2.0;
-    //outShadowMapPos.z = pos4.z;
     
     wvp = mul(World, ShadowView);
     wvp = mul(wvp, ShadowProjection);
-    outShadowMapPos = mul(float4(inPosition.xyz, 1.0f), wvp);
+    outShadowMapPos = mul(inPosition, wvp);
 
 }
 

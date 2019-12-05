@@ -58,7 +58,8 @@ private:
 	friend class GAME_OBJECT;
 
 protected:
-	static list<GAME_OBJECT*> GameObjects[(int)LAYER_NAME::MAX_LAYER];
+	//static list<GAME_OBJECT*> GameObjects[(int)LAYER_NAME::MAX_LAYER];
+	static list<unique_ptr<GAME_OBJECT>> GameObjects[(int)LAYER_NAME::MAX_LAYER];
 
 	static bool PauseEnable;
 
@@ -72,7 +73,7 @@ public:
 
 		object->Init();
 
-		GameObjects[(int)layer].push_back(object);
+		GameObjects[(int)layer].emplace_back(object);
 
 		return object;
 	}
@@ -87,7 +88,7 @@ public:
 			
 		object->Set_Object_Name(name);
 
-		GameObjects[(int)layer].push_back(object);
+		GameObjects[(int)layer].emplace_back(object);
 
 		return object;
 	}
@@ -98,11 +99,12 @@ public:
 	{
 		for (int i = 0; i < (int)LAYER_NAME::MAX_LAYER; i++)
 		{
-			for (GAME_OBJECT* object : GameObjects[i])
+			//for (GAME_OBJECT* object : GameObjects[i])
+			for (auto object = GameObjects[i].begin(); object != GameObjects[i].end(); object++)
 			{
-				if (typeid(T) == typeid(*object))
+				if (typeid(T) == typeid(*object->get()))
 				{
-					return (T*)object;
+					return (T*)object->get();
 				}
 			}
 		}
@@ -115,13 +117,14 @@ public:
 	{
 		for (int i = 0; i < (int)LAYER_NAME::MAX_LAYER; i++)
 		{
-			for (GAME_OBJECT* object : GameObjects[i])
+			//for (GAME_OBJECT* object : GameObjects[i])
+			for (auto object = GameObjects[i].begin(); object != GameObjects[i].end(); object++)
 			{
-				if (typeid(T) == typeid(*object))
+				if (typeid(T) == typeid(*object->get()))
 				{
-					if (name == object->Get_Object_Name())
+					if (name == object->get()->Get_Object_Name())
 					{
-						return (T*)object;
+						return (T*)object->get();
 					}
 				}
 			}
@@ -136,11 +139,12 @@ public:
 		vector<T*> objects;
 		for (int i = 0; i < (int)LAYER_NAME::MAX_LAYER; i++)
 		{
-			for (GAME_OBJECT* object : GameObjects[i])
+			//for (GAME_OBJECT* object : GameObjects[i])
+			for (auto object = GameObjects[i].begin(); object != GameObjects[i].end(); object++)
 			{
-				if (typeid(T) == typeid(*object))
+				if (typeid(T) == typeid( *object->get()) )
 				{
-					objects.push_back((T*)object);
+					objects.push_back( (T*)object->get() );
 				}
 			}
 		}
@@ -155,13 +159,14 @@ public:
 		vector<T*> objects;
 		for (int i = 0; i < (int)LAYER_NAME::MAX_LAYER; i++)
 		{
-			for (GAME_OBJECT* object : GameObjects[i])
+			//for (GAME_OBJECT* object : GameObjects[i])
+			for (auto object = GameObjects[i].begin(); object != GameObjects[i].end(); object++)
 			{
-				if (typeid(T) == typeid(*object))
+				if (typeid(T) == typeid(*object->get()))
 				{
-					if (name == object->Get_Object_Name())
+					if (name == object->get()->Get_Object_Name())
 					{
-						objects.push_back((T*)object);
+						objects.push_back((T*)object->get());
 					}
 				}
 			}
@@ -175,11 +180,12 @@ public:
 	{
 		for (int i = 0; i < (int)LAYER_NAME::MAX_LAYER; i++)
 		{
-			for (GAME_OBJECT* object : GameObjects[i])
+			//for (GAME_OBJECT* object : GameObjects[i])
+			for (auto object = GameObjects[i].begin(); object != GameObjects[i].end(); object++)
 			{
-				if (name == object->Get_Object_Name())
+				if (name == object->get()->Get_Object_Name())
 				{
-					return object;
+					return object->get();
 				}
 			}
 		}
@@ -192,9 +198,10 @@ public:
 		vector<GAME_OBJECT*> objects;
 		for (int i = 0; i < (int)LAYER_NAME::MAX_LAYER; i++)
 		{
-			for (GAME_OBJECT* object : GameObjects[i])
+			//for (GAME_OBJECT* object : GameObjects[i])
+			for (auto object = GameObjects[i].begin(); object != GameObjects[i].end(); object++)
 			{
-				objects.push_back(object);
+				objects.push_back(object->get());
 			}
 		}
 		return objects;
@@ -225,15 +232,10 @@ public:
 	virtual void Draw(void) {
 		for (int i = 0; i < (int)LAYER_NAME::MAX_LAYER; i++)
 		{
-			//if ( ( true == CManager::Get_ShadowMap()->Get_Enable() ) && (i == (int)LAYER_NAME::UI /*|| i == (int)LAYER_NAME::DEBUG*/ ) )
-			//{
-			//	continue;
-			//}
-
-
-			for (GAME_OBJECT* object : GameObjects[i])
+			//for (GAME_OBJECT* object : GameObjects[i])
+			for (auto object = GameObjects[i].begin(); object != GameObjects[i].end(); object++)
 			{
-				object->Draw();
+				object->get()->Draw();
 			}
 		}
 	};
@@ -248,26 +250,28 @@ public:
 	virtual void Update(float delta_time) {
 		if (true == PauseEnable)	// ポーズ中
 		{
-			for (GAME_OBJECT* object : GameObjects[(int)LAYER_NAME::UI])
+			//for (GAME_OBJECT* object : GameObjects[(int)LAYER_NAME::UI])
+			for (auto object = GameObjects[(int)LAYER_NAME::UI].begin(); object != GameObjects[(int)LAYER_NAME::UI].end(); object++)
 			{
-					object->Update(delta_time);
+					object->get()->Update(delta_time);
 			}
 
 			for (int i = 0; i < (int)LAYER_NAME::MAX_LAYER; i++)
 			{
-				GameObjects[i].remove_if([](GAME_OBJECT* object) { return object->Destroy(); }); // リストから削除
+				GameObjects[i].remove_if([](auto& object) { return object->Destroy(); }); // リストから削除
 			}
 		}
 		else	// ポーズ中ではない
 		{
 			for (int i = 0; i < (int)LAYER_NAME::MAX_LAYER; i++)
 			{
-				for (GAME_OBJECT* object : GameObjects[i])
+				//for (GAME_OBJECT* object : GameObjects[i])
+				for (auto object = GameObjects[i].begin(); object != GameObjects[i].end(); object++)
 				{
-					object->Update(delta_time);
+					object->get()->Update(delta_time);
 				}
 
-				GameObjects[i].remove_if([](GAME_OBJECT* object) { return object->Destroy(); }); // リストから削除
+				GameObjects[i].remove_if([](auto& object) { return object->Destroy(); }); // リストから削除
 			}
 		}
 	};
@@ -282,10 +286,11 @@ public:
 	virtual void Uninit(void) {
 		for (int i = 0; i < (int)LAYER_NAME::MAX_LAYER; i++)
 		{
-			for (GAME_OBJECT* object : GameObjects[i])
+			//for (GAME_OBJECT* object : GameObjects[i])
+			for (auto object = GameObjects[i].begin(); object != GameObjects[i].end(); object++)
 			{
-				//object->Uninit();
-				SAFE_DELETE(object);
+				//SAFE_DELETE(object);
+				object->reset(nullptr);
 			}
 			GameObjects[i].clear();
 		}

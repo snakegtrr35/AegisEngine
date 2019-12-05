@@ -292,14 +292,14 @@ void My_imgui::Draw(void)
 
 				ImGuiWindowFlags window_flags = ImGuiWindowFlags_NoResize;
 
-				ImGui::SetNextWindowSize(ImVec2(1280 + 17, 720 + 40), ImGuiCond_Once);
+				ImGui::SetNextWindowSize(ImVec2(1024 + 17, 1024 + 40), ImGuiCond_Once);
 
 				ImGui::Begin("Debug", nullptr, window_flags);
 
 				ImTextureID image = CManager::Get_ShadowMap()->Get();
 				//ImTextureID image = CRenderer::Get_SRV();
 
-				ImGui::Image(image, ImVec2(1280, 720));
+				ImGui::Image(image, ImVec2(1024, 1024));
 
 				ImGui::End();
 			}
@@ -405,10 +405,6 @@ void Draw_Inspector(const string& name)
 
 	if (nullptr != object)
 	{
-		float vec4_Position[] = { object->Get_Position()->x, object->Get_Position()->y, object->Get_Position()->z };
-		float vec4_Rotation[] = { object->Get_Rotation()->x, object->Get_Rotation()->y, object->Get_Rotation()->z };
-		float vec4_Scaling[] = { object->Get_Scaling()->x, object->Get_Scaling()->y, object->Get_Scaling()->z };
-
 		ImGui::Begin("Inspector");
 
 		ImGui::Text(object->Get_Object_Name().c_str());

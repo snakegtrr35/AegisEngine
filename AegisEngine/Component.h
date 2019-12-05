@@ -50,7 +50,6 @@ public:
 	bool Destroy() {
 		if (DestroyFlag)
 		{
-			delete this;
 			return true;
 		}
 		return false;
@@ -64,7 +63,7 @@ public:
 class COMPONENT_MANEGER {
 private:
 
-	list<COMPONENT*> Conponent_List;
+	list< unique_ptr<COMPONENT> > Conponent_List;
 
 protected:
 
@@ -74,30 +73,29 @@ public:
 	template <typename T>
 	T* Add_Component()
 	{
-		for (auto object : Conponent_List)
+		for (auto object = Conponent_List.begin(); object != Conponent_List.end(); object++)
 		{
-			if (typeid(T) == typeid(*object))
+			if (typeid(T) == typeid(*object->get()))
 			{
-				return (T*)object;
+				return (T*)object->get();
 			}
 		}
 
 		T* object = new T();
 
-		Conponent_List.push_back(object);
+		Conponent_List.emplace_back(object);
 
 		return object;
 	}
 
 	// リストから特定のメニューオブジェクトの取得
 	template <typename T>
-	T* Get_Component()
-	{
-		for (auto object : Conponent_List)
+	T* Get_Component() {
+		for (auto object = Conponent_List.begin(); object != Conponent_List.end(); object++)
 		{
-			if (typeid(T) == typeid(*object))
+			if (typeid(T) == typeid(*object->get()))
 			{
-				return (T*)object;
+				return (T*)object->get();
 			}
 		}
 		return nullptr;
@@ -110,18 +108,18 @@ public:
 	}
 
 	void Update(float delta_time) {
-		for (auto object : Conponent_List)
+		for (auto object = Conponent_List.begin(); object != Conponent_List.end(); object++)
 		{
-			object->Update(delta_time);
+			object->get()->Update(delta_time);
 		}
 
-		Conponent_List.remove_if([](COMPONENT* object) { return object->Destroy(); }); // リストから削除
+		Conponent_List.remove_if([](auto& object) { return object->Destroy(); }); // リストから削除
 	}
 
 	void Uninit() {
-		for (auto object : Conponent_List)
+		for (auto object = Conponent_List.begin(); object != Conponent_List.end(); object++)
 		{
-			SAFE_DELETE(object);
+			object->reset(nullptr);
 		}
 		Conponent_List.clear();
 	}

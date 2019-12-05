@@ -148,7 +148,6 @@ void MESH_DOOM::Draw()
 			auto camera02 = CManager::Get_Scene()->Get_Game_Object<DEBUG_CAMERA>();
 
 			if (nullptr != camera01)
-
 			{
 				CRenderer::Set_MatrixBuffer(world, camera01->Get_Camera_View(), camera01->Get_Camera_Projection());
 			}

@@ -221,7 +221,7 @@ void POLYGON_3D::Draw(void)
 
 		world = XMMatrixScaling(Scaling.x , Scaling.y, Scaling.z);																						// Šg‘åk¬
 		world *= XMMatrixRotationRollPitchYaw( XMConvertToRadians(Rotation.x), XMConvertToRadians(Rotation.y), XMConvertToRadians(Rotation.z) );		// ‰ñ“](ƒ[ƒ‹ƒsƒbƒ`ƒˆƒE)
-		world *= XMMatrixTranslation(Position.x + 2.0f, Position.y + 5.0f, Position.z + -2.0f);																				// ˆÚ“®
+		world *= XMMatrixTranslation(Position.x, Position.y, Position.z);																				// ˆÚ“®
 		
 		auto camera01 = CManager::Get_Scene()->Get_Game_Object<CCamera>();
 		auto camera02 = CManager::Get_Scene()->Get_Game_Object<DEBUG_CAMERA>();
@@ -242,6 +242,8 @@ void POLYGON_3D::Draw(void)
 			{
 				CRenderer::Set_MatrixBuffer(world, camera01->Get_Camera_View(), camera01->Get_Camera_Projection());
 
+				CRenderer::Set_MatrixBuffer01(*camera01->Get_Pos());
+
 				CRenderer::Set_Shader();
 			}
 		}
@@ -260,6 +262,8 @@ void POLYGON_3D::Draw(void)
 			else
 			{
 				CRenderer::Set_MatrixBuffer(world, camera02->Get_Camera_View(), camera02->Get_Camera_Projection());
+
+				CRenderer::Set_MatrixBuffer01(*camera02->Get_Pos());
 
 				CRenderer::Set_Shader();
 			}

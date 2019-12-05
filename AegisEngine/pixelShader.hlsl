@@ -68,93 +68,65 @@ void main( in float4 inPosition     : POSITION0,
 		   in float4 inNormal       : NORMAL0,
 		   in float2 inTexCoord     : TEXCOORD0,
 		   in float4 inDiffuse      : COLOR0,
-		   in float4 outWPos        : TEXCOORD1,
+		   in float4 inWPos         : POSITION1,
            in float4 inShadowMapPos : POSITION_SHADOWMAP,
            
 		   out float4 outDiffuse	: SV_Target )
 {
-    /*{
-        float4 worldNormal, normal;
-        normal = float4(inNormal.xyz, 0.0);
-        worldNormal = mul(normal, World);
-        worldNormal = normalize(worldNormal);
-
-        float light = 0.5 - 0.5 * dot(normalize(Light.Direction.xyz), inNormal.xyz);
-
-        float4 Color;
-
-        Color = inDiffuse * Material.Diffuse * light * Light.Diffuse;
-        Color += inDiffuse * float4(Material.Ambient.rgb * Light.Ambient.rgb, 1.0f);
-        float4 diffuse = inDiffuse * float4(Material.Diffuse.rgb * light * Light.Diffuse.rgb, 1.0f);
-        float4 ambient = inDiffuse * Material.Ambient * Light.Ambient;
-        Color.a = inDiffuse.a * Material.Diffuse.a;
-    }*/
-
-
-    float3 L = normalize(-Light.Position.xyz - outWPos.xyz);
-    float3 N = normalize(inNormal);
-    float LN = 0.5 - 0.5 * dot(L, N);
+    float4 TexColor = g_Texture.Sample(g_SamplerState, inTexCoord);
+    //float4 TexColor = float4(1.0f, 1.0, 1.0, 1.0f);
+    
+    if (TexColor.a <= 0.0)
+        discard;
+    
+    inNormal = normalize(inNormal);
+    float light = 0.5 - 0.5 * dot(Light.Direction.xyz, inNormal.xyz);
  
     // 環境反射光
     float4 ambient = inDiffuse * float4(Material.Ambient.rgb * Light.Ambient.rgb, 1.0f);
     // 拡散反射光
-    float4 diffuse = inDiffuse * float4(Material.Diffuse.rgb * LN * Light.Diffuse.rgb, 1.0f);
+    float4 diffuse = inDiffuse * float4(Material.Diffuse.rgb * (light * Light.Diffuse.rgb), 1.0f);
 
     float4 color = (float4)0.0;
 
     //
-    // ワールド空間でのライトの位置
-    float3 lightPosWorld = -Light.Position.xyz;
-
-    // 現在参照している物体表面からライトへの方向を求める
-    float3 toLightDir = normalize(lightPosWorld.xyz - outWPos.xyz);
-
-    // 現在参照している物体表面から視線への方向を計算
-    //float3 toCameraDir = normalize(CameraPos.xyz - outWPos.xyz);//
-
-    // 反射ベクトルをハーフベクトルで近似
-    //float3 halfDir = normalize(toLightDir + toCameraDir);//
-    float3 toCameraDir = normalize(CameraPos.xyz - outWPos.xyz);
-    float3 R = -toCameraDir + 2.0f * dot(inNormal.xyz, toCameraDir) * inNormal.xyz;
-    
+    float3 refrect = reflect(Light.Direction.xyz, inNormal.xyz);
+    refrect = normalize(refrect);
+    // 視線ベクトル
+    float3 eye_vec = inWPos - CameraPos;
+    eye_vec = normalize(eye_vec);
     // スペキュラ成分を求める
-    //float specular = pow( saturate( dot(halfDir, inNormal.xyz) ), Light.Specular.w );//
-    //float specular = pow(saturate(dot(halfDir, inNormal.xyz)), Light.Specular.w);//
-    float specular = pow(saturate(dot(R, inNormal.xyz)), Light.Specular.w);
-
+    float speculer = -dot(eye_vec, refrect);
+    speculer = saturate(speculer);
+    speculer = pow(speculer, 60);
+    //
+    
     // シャドウマップ
     float shadow;
-    float2 ShadowTexCoord;
-    ShadowTexCoord.x = inShadowMapPos.x / inShadowMapPos.w / 2.0f + 0.5f;
-    ShadowTexCoord.y = -inShadowMapPos.y / inShadowMapPos.w / 2.0f + 0.5f;
-    
-    if ((saturate(ShadowTexCoord.x) == ShadowTexCoord.x) && (saturate(ShadowTexCoord.y) == ShadowTexCoord.y))
     {
+        float2 ShadowTexCoord;
+        ShadowTexCoord.x = inShadowMapPos.x / inShadowMapPos.w / 2.0f + 0.5f;
+        ShadowTexCoord.y = -inShadowMapPos.y / inShadowMapPos.w / 2.0f + 0.5f;
+        
         float depthValue = g_ShadowMap.Sample(g_ShadowSamplerState, ShadowTexCoord).r;
 
         float lightDepthValue = inShadowMapPos.z / inShadowMapPos.w;
 
-        lightDepthValue = lightDepthValue - 0.005f;
+        lightDepthValue = lightDepthValue - 0.001f;
 
-        if (lightDepthValue < depthValue)
+        if (lightDepthValue <= depthValue)
         {
             shadow = 1.0f;
-            //shadow = 0.5f;
         }
         else
         {
-            //shadow = 1.0f;
             shadow = 0.5f;
         }
     }
     
-    color = (diffuse * g_Texture.Sample(g_SamplerState, inTexCoord)) + specular
-            + (ambient * g_Texture.Sample(g_SamplerState, inTexCoord));
+    color = (diffuse * TexColor) + speculer + (ambient * TexColor);
 
-    color *= shadow;
+    color.rgb *= shadow;
     
     outDiffuse = color;
-
-    if (outDiffuse.a <= 0.0)
-        discard;
 }

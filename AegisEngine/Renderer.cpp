@@ -6,36 +6,34 @@
 
 #include	"manager.h"
 
-D3D_FEATURE_LEVEL       CRenderer::m_FeatureLevel = D3D_FEATURE_LEVEL_11_0;
+D3D_FEATURE_LEVEL			CRenderer::m_FeatureLevel = D3D_FEATURE_LEVEL_11_0;
 
-ID3D11Device*           CRenderer::m_D3DDevice = nullptr;
-ID3D11DeviceContext*    CRenderer::m_ImmediateContext = nullptr;
-IDXGIDevice1*			CRenderer::m_dxgiDev = nullptr;
-IDXGISwapChain1*		CRenderer::m_SwapChain = nullptr;//
-ID3D11RenderTargetView* CRenderer::m_RenderTargetView = nullptr;
-ID3D11DepthStencilView* CRenderer::m_DepthStencilView = nullptr;
-ID2D1Device*			CRenderer::m_D2DDevice = nullptr;
-ID2D1DeviceContext*		CRenderer::m_D2DDeviceContext = nullptr;
-ID2D1Bitmap1*			CRenderer::m_D2DTargetBitmap = nullptr;
+ID3D11Device*				CRenderer::m_D3DDevice = nullptr;
+ID3D11DeviceContext*		CRenderer::m_ImmediateContext = nullptr;
+IDXGIDevice1*				CRenderer::m_dxgiDev = nullptr;
+IDXGISwapChain1*			CRenderer::m_SwapChain = nullptr;//
+ID3D11RenderTargetView*		CRenderer::m_RenderTargetView = nullptr;
+ID3D11DepthStencilView*		CRenderer::m_DepthStencilView = nullptr;
+ID2D1Device*				CRenderer::m_D2DDevice = nullptr;
+ID2D1DeviceContext*			CRenderer::m_D2DDeviceContext = nullptr;
+ID2D1Bitmap1*				CRenderer::m_D2DTargetBitmap = nullptr;
 
-IDWriteTextFormat*		CRenderer::m_DwriteTextFormat = nullptr;
-IDWriteTextLayout*		CRenderer::m_TextLayout = nullptr;
+IDWriteTextFormat*			CRenderer::m_DwriteTextFormat = nullptr;
+IDWriteTextLayout*			CRenderer::m_TextLayout = nullptr;
 
-IDWriteFactory*			CRenderer::m_DwriteFactory = nullptr;
+IDWriteFactory*				CRenderer::m_DwriteFactory = nullptr;
 
-ID3D11VertexShader*		CRenderer::m_VertexShader[2] = { nullptr };
-ID3D11PixelShader*      CRenderer::m_PixelShader[4] = { nullptr };
-ID3D11InputLayout*      CRenderer::m_VertexLayout = nullptr;
-ID3D11Buffer*			CRenderer::m_WorldBuffer = nullptr;
-ID3D11Buffer*			CRenderer::m_ViewBuffer = nullptr;
-ID3D11Buffer*			CRenderer::m_ProjectionBuffer = nullptr;
-ID3D11Buffer*			CRenderer::m_MaterialBuffer = nullptr;
-ID3D11Buffer*			CRenderer::m_LightBuffer = nullptr;
+ID3D11VertexShader*			CRenderer::m_VertexShader[2] = { nullptr };
+ID3D11PixelShader*			CRenderer::m_PixelShader[4] = { nullptr };
+ID3D11InputLayout*			CRenderer::m_VertexLayout = nullptr;
+ID3D11Buffer*				CRenderer::m_MaterialBuffer = nullptr;
+ID3D11Buffer*				CRenderer::m_LightBuffer = nullptr;
 
-ID3D11Buffer*			CRenderer::m_Bone_Matrix_Buffer = nullptr;
+ID3D11Buffer*				CRenderer::m_Bone_Matrix_Buffer = nullptr;
 
-ID3D11DepthStencilState* CRenderer::m_DepthStateEnable = nullptr;
-ID3D11DepthStencilState* CRenderer::m_DepthStateDisable = nullptr;
+ID3D11DepthStencilState*	CRenderer::m_DepthStateEnable = nullptr;
+ID3D11DepthStencilState*	CRenderer::m_DepthStateDisable = nullptr;
+ID3D11RasterizerState*		CRenderer::m_RasterizerState = nullptr;
 
 bool CRenderer::Stand_By_Enable = false;
 
@@ -238,22 +236,11 @@ bool CRenderer::Init()
 
 	// 定数バッファ生成
 	D3D11_BUFFER_DESC hBufferDesc;
-	hBufferDesc.ByteWidth = sizeof(XMMATRIX);
 	hBufferDesc.Usage = D3D11_USAGE_DEFAULT;
 	hBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
 	hBufferDesc.CPUAccessFlags = 0;
 	hBufferDesc.MiscFlags = 0;
 	hBufferDesc.StructureByteStride = sizeof(float);
-
-	/*m_D3DDevice->CreateBuffer(&hBufferDesc, NULL, &m_WorldBuffer);
-	m_ImmediateContext->VSSetConstantBuffers(0, 1, &m_WorldBuffer);
-	m_ImmediateContext->PSSetConstantBuffers(0, 1, &m_WorldBuffer);
-
-	m_D3DDevice->CreateBuffer(&hBufferDesc, NULL, &m_ViewBuffer);
-	m_ImmediateContext->VSSetConstantBuffers(1, 1, &m_ViewBuffer);
-
-	m_D3DDevice->CreateBuffer(&hBufferDesc, NULL, &m_ProjectionBuffer);
-	m_ImmediateContext->VSSetConstantBuffers(2, 1, &m_ProjectionBuffer);*/
 
 	hBufferDesc.ByteWidth = sizeof(MATERIAL);
 
@@ -299,7 +286,7 @@ bool CRenderer::Init()
 	m_Light.Direction = XMFLOAT4(0.f, -1.0f, 1.0f, -1.0f);
 	m_Light.Position = XMFLOAT4(0.f, 0.f, 10.0f, 1.0f);
 	m_Light.Diffuse = COLOR(1.0f, 1.0f, 1.0f, 1.0f);
-	m_Light.Ambient = COLOR(1.0f, 1.0f, 1.0f, 1.0f);
+	m_Light.Ambient = COLOR(0.5f, 0.5f, 0.5f, 1.0f);
 	m_Light.Specular = COLOR(1.0f, 1.0f, 1.0f, 1.0f);
 	SetLight(&m_Light);
 
@@ -307,7 +294,7 @@ bool CRenderer::Init()
 	MATERIAL material;
 	ZeroMemory(&material, sizeof(material));
 	material.Diffuse = COLOR(1.0f, 1.0f, 1.0f, 1.0f);
-	material.Ambient = COLOR(0.3f, 0.3f, 0.3f, 1.0f);
+	material.Ambient = COLOR(0.5f, 0.5f, 0.5f, 1.0f);
 	material.Specular = COLOR(1.0f, 1.0f, 1.0f, 1.0f);
 	SetMaterial(material);
 
@@ -332,10 +319,6 @@ void CRenderer::Uninit()
 	}
 
 	// オブジェクト解放
-	SAFE_RELEASE(m_WorldBuffer)
-	SAFE_RELEASE(m_ViewBuffer)
-	SAFE_RELEASE(m_ProjectionBuffer)
-
 	SAFE_RELEASE(m_MaterialBuffer)
 	SAFE_RELEASE(m_LightBuffer)
 	SAFE_RELEASE(m_VertexLayout)
@@ -538,10 +521,9 @@ bool CRenderer::Init3D()
 	rd.DepthClipEnable = TRUE;
 	rd.MultisampleEnable = FALSE;
 
-	ID3D11RasterizerState* rs;
-	m_D3DDevice->CreateRasterizerState(&rd, &rs);
+	m_D3DDevice->CreateRasterizerState(&rd, &m_RasterizerState);
 
-	m_ImmediateContext->RSSetState(rs);
+	m_ImmediateContext->RSSetState(m_RasterizerState);
 
 
 
@@ -927,33 +909,6 @@ void CRenderer::SetWorldViewProjection2D(const XMFLOAT3& scaling, const XMFLOAT3
 	CRenderer::GetDeviceContext()->UpdateSubresource(m_ConstantBuffer, 0, NULL, &constant, 0, 0);
 }
 
-void CRenderer::SetWorldMatrix( XMMATRIX *WorldMatrix )
-{
-	XMMATRIX world;
-	world = *WorldMatrix;
-	//m_ImmediateContext->UpdateSubresource(m_WorldBuffer, 0, NULL, &XMMatrixTranspose(world), 0, 0);
-
-	//m_Constant.WorldMatrix = XMMatrixTranspose(world);
-}
-
-void CRenderer::SetViewMatrix( XMMATRIX *ViewMatrix )
-{
-	XMMATRIX view;
-	view = *ViewMatrix;
-	//->UpdateSubresource(m_ViewBuffer, 0, NULL, &XMMatrixTranspose(view), 0, 0);
-
-	//m_Constant.ViewMatrix = XMMatrixTranspose(view);
-}
-
-void CRenderer::SetProjectionMatrix( XMMATRIX *ProjectionMatrix )
-{
-	XMMATRIX projection;
-	projection = *ProjectionMatrix;
-	//m_ImmediateContext->UpdateSubresource(m_ProjectionBuffer, 0, NULL, &XMMatrixTranspose(projection), 0, 0);
-
-	//m_Constant.ProjectionMatrix = XMMatrixTranspose(projection);
-}
-
 void CRenderer::Set_MatrixBuffer(const XMMATRIX world, const XMMATRIX view, const XMMATRIX projection)
 {
 	CONSTANT constant;
@@ -984,6 +939,11 @@ void CRenderer::Light_Identity()
 	light.Specular = COLOR(1.0f, 1.0f, 1.0f, 1.0f);
 
 	m_ImmediateContext->UpdateSubresource(m_LightBuffer, 0, NULL, &light, 0, 0);
+}
+
+void CRenderer::Set_RasterizerState()
+{
+	m_ImmediateContext->RSSetState(m_RasterizerState);
 }
 
 HRESULT CRenderer::Create_TextFormat(const TEXT_FOMAT& fomat)
@@ -1152,5 +1112,6 @@ void CRenderer::SetRenderTargetView()
 		}
 
 		Set_Shader();
+		Set_RasterizerState();
 	}
 }

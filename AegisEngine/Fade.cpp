@@ -16,6 +16,8 @@ FADE::FADE()
 	AdditionalAlpha = 0.f;
 
 	FadeEnable = false;
+
+	Object_Name = "Fade";
 }
 
 FADE::~FADE()

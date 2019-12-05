@@ -162,8 +162,14 @@ void MESH_FIELD::Draw()
 		{
 			XMMATRIX world;
 
+			float angle = 0.0f;
+			if (CManager::Get_ShadowMap()->Get_Enable())
+			{
+				angle = 180.0f;
+			}
+
 			world = XMMatrixScaling(Scaling.x, Scaling.y, Scaling.z);																						// Šg‘åk¬
-			world *= XMMatrixRotationRollPitchYaw(XMConvertToRadians(Rotation.x), XMConvertToRadians(Rotation.y), XMConvertToRadians(Rotation.z));			// ‰ñ“]
+			world *= XMMatrixRotationRollPitchYaw(XMConvertToRadians(Rotation.x), XMConvertToRadians(Rotation.y), XMConvertToRadians(Rotation.z + angle));			// ‰ñ“]
 			world *= XMMatrixTranslation(Position.x, Position.y, Position.z);																				// ˆÚ“®
 
 			auto camera01 = CManager::Get_Scene()->Get_Game_Object<CCamera>();
@@ -185,6 +191,8 @@ void MESH_FIELD::Draw()
 				{
 					CRenderer::Set_MatrixBuffer(world, camera01->Get_Camera_View(), camera01->Get_Camera_Projection());
 
+					CRenderer::Set_MatrixBuffer01(*camera01->Get_Pos());
+
 					CRenderer::Set_Shader();
 				}
 			}
@@ -203,6 +211,8 @@ void MESH_FIELD::Draw()
 				else
 				{
 					CRenderer::Set_MatrixBuffer(world, camera02->Get_Camera_View(), camera02->Get_Camera_Projection());
+
+					CRenderer::Set_MatrixBuffer01(*camera02->Get_Pos());
 
 					CRenderer::Set_Shader();
 				}
@@ -476,6 +486,8 @@ void MESH_WALL::Draw()
 				{
 					CRenderer::Set_MatrixBuffer(world, camera01->Get_Camera_View(), camera01->Get_Camera_Projection());
 
+					CRenderer::Set_MatrixBuffer01(*camera02->Get_Pos());
+
 					CRenderer::Set_Shader();
 				}
 			}
@@ -494,6 +506,8 @@ void MESH_WALL::Draw()
 				else
 				{
 					CRenderer::Set_MatrixBuffer(world, camera02->Get_Camera_View(), camera02->Get_Camera_Projection());
+
+					CRenderer::Set_MatrixBuffer01(*camera02->Get_Pos());
 
 					CRenderer::Set_Shader();
 				}

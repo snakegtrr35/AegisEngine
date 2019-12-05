@@ -53,7 +53,7 @@ void MAIN_MENU::Init()
 	//}
 
 	{
-		//auto player = Add_Game_Object<PLAYER>(LAYER_NAME::GAMEOBJECT, "player");
+		auto player = Add_Game_Object<PLAYER>(LAYER_NAME::GAMEOBJECT, "player");
 	}
 
 	{
@@ -65,13 +65,13 @@ void MAIN_MENU::Init()
 	}
 
 	{
-		Add_Game_Object<FIELD>(LAYER_NAME::GAMEOBJECT, "field");
+		//Add_Game_Object<FIELD>(LAYER_NAME::GAMEOBJECT, "field");
 
-		//Add_Game_Object<MESH_FIELD>(LAYER_NAME::GAMEOBJECT, "field");
+		Add_Game_Object<MESH_FIELD>(LAYER_NAME::GAMEOBJECT, "field");
 	}
 
 	{
-		Add_Game_Object<POLYGON_3D>(LAYER_NAME::GAMEOBJECT, "cube");
+		//Add_Game_Object<POLYGON_3D>(LAYER_NAME::GAMEOBJECT, "cube");
 	}
 
 	//// テキスト画像

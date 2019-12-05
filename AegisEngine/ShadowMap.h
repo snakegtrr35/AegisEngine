@@ -14,10 +14,11 @@ private:
 	};
 
 	//! デプスステンシルビュー
-	unique_ptr<ID3D11DepthStencilView, Release>		DepthStencilView;
+	unique_ptr<ID3D11DepthStencilView, Release>			DepthStencilView;
 	//! シェーダーリソースビュー
-	//unique_ptr<ID3D11ShaderResourceView, Release>		ShaderResourceView;
-	ID3D11ShaderResourceView*		ShaderResourceView;
+	unique_ptr<ID3D11ShaderResourceView, Release>		ShaderResourceView;
+	//! ラスタライザステート
+	unique_ptr < ID3D11RasterizerState, Release>		RasterizerState;
 	//! サンプラー
 	unique_ptr < ID3D11SamplerState, Release>			Sampler;
 	//! コンスタントバッファ
@@ -36,18 +37,20 @@ private:
 
 	unique_ptr<ID3D11RenderTargetView, Release> RenderTargetView;
 
+	static float WIDTH;
+	static float HEIGHT;
+
 public:
 
     SHADOW_MAP();
 	virtual ~SHADOW_MAP() { Uninit(); }
 
-    bool Init(const float width, const float height );
+    bool Init();
 	void Update();
 	void Uninit();
     void Begin();
 	void End();
 
-	void Set_ShaderResourceView();
 	void Set_SamplerState();
 
 	void Set_LightPos(const XMFLOAT3& pos);
@@ -65,7 +68,7 @@ public:
 	}
 
 	ID3D11ShaderResourceView* Get() {
-		return ShaderResourceView/*.get()*/;
+		return ShaderResourceView.get();
 	}
 };
 

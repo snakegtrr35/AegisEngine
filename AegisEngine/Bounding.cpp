@@ -22,24 +22,27 @@ void BOUNDING_SHPERE::Init()
 
 void BOUNDING_SHPERE::Draw()
 {
-	// 入力アセンブラに頂点バッファを設定
-	CRenderer::SetVertexBuffers(pVertexBuffer.get());
+	if (false == CManager::Get_ShadowMap()->Get_Enable())
+	{
+		// 入力アセンブラに頂点バッファを設定
+		CRenderer::SetVertexBuffers(pVertexBuffer.get());
 
-	// 入力アセンブラにインデックスバッファを設定
-	CRenderer::SetIndexBuffer(pIndexBuffer.get());
+		// 入力アセンブラにインデックスバッファを設定
+		CRenderer::SetIndexBuffer(pIndexBuffer.get());
 
-	// トポロジの設定
-	CRenderer::GetDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_LINESTRIP);
+		// トポロジの設定
+		CRenderer::GetDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_LINESTRIP);
 
-	CRenderer::Set_Shader(SHADER_INDEX_V::DEFAULT, SHADER_INDEX_P::NO_TEXTURE);
+		CRenderer::Set_Shader(SHADER_INDEX_V::DEFAULT, SHADER_INDEX_P::NO_TEXTURE);
 
-	Draw_Ring(XMFLOAT3(0.f, 0.f, 0.f));
+		Draw_Ring(XMFLOAT3(0.f, 0.f, 0.f));
 
-	Draw_Ring(XMFLOAT3(0.f, 90.0f, 0.f));
+		Draw_Ring(XMFLOAT3(0.f, 90.0f, 0.f));
 
-	Draw_Ring(XMFLOAT3(90.0f, 0.f, 0.f));
+		Draw_Ring(XMFLOAT3(90.0f, 0.f, 0.f));
 
-	CRenderer::Set_Shader();
+		CRenderer::Set_Shader();
+	}
 }
 
 void BOUNDING_SHPERE::Update(float delta_time)
@@ -162,10 +165,14 @@ void BOUNDING_SHPERE::Draw_Ring(const XMFLOAT3& rotation)
 
 		{
 			CRenderer::Set_MatrixBuffer(world, camera01->Get_Camera_View(), camera01->Get_Camera_Projection());
+
+			CRenderer::Set_MatrixBuffer01(*camera01->Get_Pos());
 		}
 		else
 		{
 			CRenderer::Set_MatrixBuffer(world, camera02->Get_Camera_View(), camera02->Get_Camera_Projection());
+
+			CRenderer::Set_MatrixBuffer01(*camera02->Get_Pos());
 		}
 	}
 
@@ -489,30 +496,73 @@ void BOUNDING_AABB::Init()
 
 void BOUNDING_AABB::Draw()
 {
-	// 入力アセンブラに頂点バッファを設定.
-	CRenderer::SetVertexBuffers(pVertexBuffer.get());
-
-	CRenderer::SetIndexBuffer(pIndexBuffer.get());
-
-	// 3Dマトリックス設定
+	if (false == CManager::Get_ShadowMap()->Get_Enable())
 	{
-		XMMATRIX world = XMMatrixScaling(Scaling.x, Scaling.y, Scaling.z);																				// 拡大縮小
-		world *= XMMatrixRotationRollPitchYaw(XMConvertToRadians(Rotation.x), XMConvertToRadians(Rotation.y), XMConvertToRadians(Rotation.z));			// 回転
-		world *= XMMatrixTranslation(Position.x, Position.y, Position.z);																				// 移動
+		// 入力アセンブラに頂点バッファを設定.
+		CRenderer::SetVertexBuffers(pVertexBuffer.get());
 
-		CRenderer::SetWorldMatrix(&world);
+		CRenderer::SetIndexBuffer(pIndexBuffer.get());
+
+		// 3Dマトリックス設定
+		{
+			XMMATRIX world = XMMatrixScaling(Scaling.x, Scaling.y, Scaling.z);																				// 拡大縮小
+			world *= XMMatrixRotationRollPitchYaw(XMConvertToRadians(Rotation.x), XMConvertToRadians(Rotation.y), XMConvertToRadians(Rotation.z));			// 回転
+			world *= XMMatrixTranslation(Position.x, Position.y, Position.z);																				// 移動
+
+			//auto camera01 = CManager::Get_Scene()->Get_Game_Object<CCamera>();
+			//auto camera02 = CManager::Get_Scene()->Get_Game_Object<DEBUG_CAMERA>();
+
+			//if (nullptr != camera01)
+			//{
+			//	// シャドウマップ用の描画か?
+			//	if (CManager::Get_ShadowMap()->Get_Enable())
+			//	{
+			//		XMMATRIX view = CManager::Get_ShadowMap()->Get_View();
+			//		XMMATRIX proj = CManager::Get_ShadowMap()->Get_Plojection();
+
+			//		CRenderer::Set_MatrixBuffer(world, view, proj);
+
+			//		CRenderer::Set_Shader(SHADER_INDEX_V::SHADOW_MAP, SHADER_INDEX_P::SHADOW_MAP);
+			//	}
+			//	else
+			//	{
+			//		CRenderer::Set_MatrixBuffer(world, camera01->Get_Camera_View(), camera01->Get_Camera_Projection());
+
+			//		CRenderer::Set_Shader();
+			//	}
+			//}
+			//else
+			//{
+			//	// シャドウマップ用の描画か?
+			//	if (CManager::Get_ShadowMap()->Get_Enable())
+			//	{
+			//		XMMATRIX view = CManager::Get_ShadowMap()->Get_View();
+			//		XMMATRIX proj = CManager::Get_ShadowMap()->Get_Plojection();
+
+			//		CRenderer::Set_MatrixBuffer(world, view, proj);
+
+			//		CRenderer::Set_Shader(SHADER_INDEX_V::SHADOW_MAP, SHADER_INDEX_P::SHADOW_MAP);
+			//	}
+			//	else
+			//	{
+			//		CRenderer::Set_MatrixBuffer(world, camera02->Get_Camera_View(), camera02->Get_Camera_Projection());
+
+			//		CRenderer::Set_Shader();
+			//	}
+			//}
+		}
+
+		// トポロジの設定
+		CRenderer::GetDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_LINESTRIP);
+
+		CRenderer::Set_Shader(SHADER_INDEX_V::DEFAULT, SHADER_INDEX_P::NO_TEXTURE);
+
+		CRenderer::DrawIndexed(24, 0, 0);
+
+		//CRenderer::GetDeviceContext()->Draw(16, 0);
+
+		CRenderer::Set_Shader();
 	}
-
-	// トポロジの設定
-	CRenderer::GetDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_LINESTRIP);
-
-	CRenderer::Set_Shader(SHADER_INDEX_V::DEFAULT, SHADER_INDEX_P::NO_TEXTURE);
-
-	CRenderer::DrawIndexed(24, 0, 0);
-
-	//CRenderer::GetDeviceContext()->Draw(16, 0);
-
-	CRenderer::Set_Shader();
 }
 
 void BOUNDING_AABB::Update(float delta_time)
