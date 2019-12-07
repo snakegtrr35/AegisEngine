@@ -4,6 +4,8 @@
 #include	"main.h"
 #include	"Renderer.h"
 
+class GAME_OBJECT;
+
 class SHADOW_MAP {
 private:
 
@@ -36,6 +38,8 @@ private:
 	bool Enable;
 
 	unique_ptr<ID3D11RenderTargetView, Release> RenderTargetView;
+
+	GAME_OBJECT* Target;
 
 	static float WIDTH;
 	static float HEIGHT;
@@ -70,6 +74,8 @@ public:
 	ID3D11ShaderResourceView* Get() {
 		return ShaderResourceView.get();
 	}
+
+	void Set_Target(GAME_OBJECT* object);
 };
 
 #endif // !SHADOW_MAP_H

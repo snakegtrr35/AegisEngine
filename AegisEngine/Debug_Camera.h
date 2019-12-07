@@ -13,13 +13,18 @@ private:
 	float VerDist;			// 垂直距離
 	float TargetDist;		// ターゲット距離
 
-	XMVECTOR Pos;
-
 	XMVECTOR Front;
 	XMVECTOR Up;
 	XMVECTOR Right;
 
+	XMVECTOR Pos;
 	XMVECTOR At;
+
+	XMFLOAT3 F;
+	XMFLOAT3 U;
+	XMFLOAT3 R;
+
+	XMFLOAT3 A;
 
 	static float Lenght;
 

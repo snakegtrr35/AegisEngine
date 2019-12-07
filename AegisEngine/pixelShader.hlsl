@@ -103,16 +103,18 @@ void main( in float4 inPosition     : POSITION0,
     
     // シャドウマップ
     float shadow;
+    
+    float2 ShadowTexCoord;
+    ShadowTexCoord.x = inShadowMapPos.x / inShadowMapPos.w / 2.0f + 0.5f;
+    ShadowTexCoord.y = -inShadowMapPos.y / inShadowMapPos.w / 2.0f + 0.5f;
+    
+    //if ((saturate(ShadowTexCoord.x) == ShadowTexCoord.x) && (saturate(ShadowTexCoord.y) == ShadowTexCoord.y))
     {
-        float2 ShadowTexCoord;
-        ShadowTexCoord.x = inShadowMapPos.x / inShadowMapPos.w / 2.0f + 0.5f;
-        ShadowTexCoord.y = -inShadowMapPos.y / inShadowMapPos.w / 2.0f + 0.5f;
-        
         float depthValue = g_ShadowMap.Sample(g_ShadowSamplerState, ShadowTexCoord).r;
 
         float lightDepthValue = inShadowMapPos.z / inShadowMapPos.w;
 
-        lightDepthValue = lightDepthValue - 0.001f;
+        lightDepthValue = lightDepthValue - 0.002f;
 
         if (lightDepthValue <= depthValue)
         {
@@ -124,9 +126,11 @@ void main( in float4 inPosition     : POSITION0,
         }
     }
     
-    color = (diffuse * TexColor) + speculer + (ambient * TexColor);
+    color = (diffuse * TexColor) + speculer;
 
     color.rgb *= shadow;
+    
+    color.rgb += (ambient * TexColor);
     
     outDiffuse = color;
 }
