@@ -267,20 +267,22 @@ void SHADOW_MAP::End()
 
 void SHADOW_MAP::Update()
 {
-	if(Target)
-	XMFLOAT3* at = Target->Get_Position();
+	if (Target)
+	{
+		XMFLOAT3* at = Target->Get_Position();
 
-	XMFLOAT3 pos;
-	pos.x = at->x + LightPos.x;
-	pos.y = at->y + LightPos.y;
-	pos.z = at->z + LightPos.z;
+		XMFLOAT3 pos;
+		pos.x = at->x + LightPos.x;
+		pos.y = at->y + LightPos.y;
+		pos.z = at->z + LightPos.z;
 
-	ViewMatrix = XMMatrixLookAtLH(XMLoadFloat3(&pos), XMVectorSet(at->x, at->y, at->z, 0.f), XMVectorSet(0.f, 1.0f, 0.f, 0.f));
+		ViewMatrix = XMMatrixLookAtLH(XMLoadFloat3(&pos), XMVectorSet(at->x, at->y, at->z, 0.f), XMVectorSet(0.f, 1.0f, 0.f, 0.f));
 
-	Shadow.ViewMatrix = XMMatrixTranspose(ViewMatrix);
+		Shadow.ViewMatrix = XMMatrixTranspose(ViewMatrix);
 
-	// シャドウ生成パスの定数バッファを更新
-	CRenderer::GetDeviceContext()->UpdateSubresource(ShadowBuffer.get(), 0, nullptr, &Shadow, 0, 0);
+		// シャドウ生成パスの定数バッファを更新
+		CRenderer::GetDeviceContext()->UpdateSubresource(ShadowBuffer.get(), 0, nullptr, &Shadow, 0, 0);
+	}
 }
 
 void SHADOW_MAP::Uninit()
