@@ -114,7 +114,7 @@ void main( in float4 inPosition     : POSITION0,
 
         float lightDepthValue = inShadowMapPos.z / inShadowMapPos.w;
 
-        lightDepthValue = lightDepthValue - 0.002f;
+        lightDepthValue = lightDepthValue - 0.001f;
 
         if (lightDepthValue <= depthValue)
         {

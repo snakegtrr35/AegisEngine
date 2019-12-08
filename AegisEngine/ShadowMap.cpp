@@ -168,7 +168,7 @@ bool SHADOW_MAP::Init()
 		RasterizerState.reset(rs);
 	}
 
-	// サンプラーステートの生成.
+	// サンプラーステートの生成
 	{
 		ID3D11SamplerState* sampler = nullptr;
 
@@ -187,7 +187,7 @@ bool SHADOW_MAP::Init()
 		desc.MaxLOD = FLT_MAX;
 		desc.MinLOD = 0.f;
 
-		// サンプラーステートを生成.
+		// サンプラーステートを生成
 		HRESULT hr = CRenderer::GetDevice()->CreateSamplerState(&desc, &sampler);
 		if (FAILED(hr))
 		{
