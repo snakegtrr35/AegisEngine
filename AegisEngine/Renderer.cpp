@@ -286,7 +286,7 @@ bool CRenderer::Init()
 	m_Light.Direction = XMFLOAT4(0.f, -1.0f, 1.0f, -1.0f);
 	m_Light.Position = XMFLOAT4(0.f, 0.f, 10.0f, 1.0f);
 	m_Light.Diffuse = COLOR(1.0f, 1.0f, 1.0f, 1.0f);
-	m_Light.Ambient = COLOR(0.5f, 0.5f, 0.5f, 1.0f);
+	m_Light.Ambient = COLOR(1.0f, 1.0f, 1.0f, 1.0f);
 	m_Light.Specular = COLOR(1.0f, 1.0f, 1.0f, 1.0f);
 	SetLight(&m_Light);
 
@@ -294,7 +294,7 @@ bool CRenderer::Init()
 	MATERIAL material;
 	ZeroMemory(&material, sizeof(material));
 	material.Diffuse = COLOR(1.0f, 1.0f, 1.0f, 1.0f);
-	material.Ambient = COLOR(0.5f, 0.5f, 0.5f, 1.0f);
+	material.Ambient = COLOR(0.6f, 0.6f, 0.6f, 1.0f);
 	material.Specular = COLOR(1.0f, 1.0f, 1.0f, 1.0f);
 	SetMaterial(material);
 
