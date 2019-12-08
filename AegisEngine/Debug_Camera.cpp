@@ -150,16 +150,11 @@ void DEBUG_CAMERA::Update(float delta_time)
 		Pos = At - Front * Lenght;
 	}
 
-	XMFLOAT4 pos;
-	XMStoreFloat4(&pos, Pos);
-
-
 	XMStoreFloat3(&Position, Pos);
 }
 
 void DEBUG_CAMERA::Draw()
 {
-
 	// ビューポート設定
 	D3D11_VIEWPORT dxViewport;
 	dxViewport.Width = (float)(Viewport.right - Viewport.left);

@@ -10,28 +10,34 @@ private:
 	static unordered_map<size_t, string> Object_Name_Map;
 
 protected:
-	string Object_Name;
+	string Object_Name;					//! オブジェクトの名前
 
-	bool DestroyFlag;
+	bool DestroyFlag;					//! 削除するかのフラグ
 
-	XMFLOAT3 Position;
-	XMFLOAT3 Edit_Position;
+	XMFLOAT3 Position;					//! 座標
 	
-	XMFLOAT3 Rotation;
-	XMFLOAT3 Edit_Rotation;
+	XMFLOAT3 Rotation;					//! 回転量
 
-	XMVECTOR Quaternion;
-	XMVECTOR Edit_Quaternion;
-	XMFLOAT4 Q_num;
-	XMFLOAT4 Edit_Q_num;
+	//XMVECTOR Quaternion;				//! クオータニオン
+	//XMVECTOR Edit_Quaternion;			//! デバッグ用のクオータニオン
+	//XMFLOAT4 Q_num;					//! クオータニオン用の入れ物
 
-	XMFLOAT3 Scaling;
-	XMFLOAT3 Edit_Scaling;
 
-	COMPONENT_MANEGER Component;
+	XMFLOAT3 Scaling;					//! 拡大縮小値
+
+
+	COMPONENT_MANEGER Component;		//! コンポーネント
+
+#ifdef _DEBUG
+	XMFLOAT3 Edit_Position;				//! デバッグ用の座標
+	XMFLOAT3 Edit_Rotation;				//! デバッグ用の回転量
+	XMFLOAT3 Edit_Scaling;				//! デバッグ用の拡大縮小値
+
+	//XMFLOAT4 Edit_Q_num;				//! デバッグ用のクオータニオン用の入れ物
+#endif // _DEBUG
 
 public:
-	GAME_OBJECT() : Object_Name("none"), DestroyFlag(false), Rotation(XMFLOAT3(0.0f, 0.0f, 0.0f)), Position(XMFLOAT3(0.0f, 0.0f, 0.0f)), Scaling(XMFLOAT3(1.0f, 1.0f, 1.0f)), Quaternion(XMQuaternionIdentity()) {}
+	GAME_OBJECT() : Object_Name("none"), DestroyFlag(false), Rotation(XMFLOAT3(0.0f, 0.0f, 0.0f)), Position(XMFLOAT3(0.0f, 0.0f, 0.0f)), Scaling(XMFLOAT3(1.0f, 1.0f, 1.0f))/*, Quaternion(XMQuaternionIdentity())*/ {}
 	virtual ~GAME_OBJECT() {};
 
 	virtual void Init() = 0;
@@ -122,16 +128,45 @@ public:
 		return Object_Name_Map;
 	}
 
-	//template<class Archive>
-	//void serialize( Archive& archive, XMFLOAT3& position, XMFLOAT3& edit_position,
-	//				XMFLOAT3& rotation, XMFLOAT3& edit_rotation,
-	//				XMFLOAT3& scaling, XMFLOAT3& edit_scaling,
-	//				XMFLOAT4 q_num, XMFLOAT4 edit_q_num,
-	//				unordered_map<size_t, string>& object_name_map,
-	//				COMPONENT_MANEGER& Component )
-	//{
-	//	archive(position.x, position.y, position.z);
-	//}
+	template<class Archive>
+	void serialize( Archive& archive,
+					string& name,
+					XMFLOAT3& position,
+					XMFLOAT3& rotation,
+					XMFLOAT3& scaling,
+					//XMFLOAT4 q_num,
+
+#ifdef _DEBUG
+					XMFLOAT3& edit_position,
+					XMFLOAT3& edit_rotation,
+					XMFLOAT3& edit_scaling
+					//XMFLOAT4 edit_q_num,
+#endif // _DEBUG
+
+					/*unordered_map<size_t, string>& object_name_map,
+					COMPONENT_MANEGER& component*/ )
+	{
+		archive(name);
+
+		archive(position.x, position.y, position.z);
+
+		archive(rotation.x, rotation.y, rotation.z);
+
+		archive(scaling.x, scaling.y, scaling.z);
+
+
+#ifdef _DEBUG
+		archive(edit_position.x, edit_position.y, edit_position.z);
+		archive(edit_rotation.x, edit_rotation.y, edit_rotation.z);
+		archive(edit_scaling.x, edit_scaling.y, edit_scaling.z);
+
+		//XMFLOAT4 Q_num;					//! クオータニオン用の入れ物
+		//XMFLOAT4 Edit_Q_num;				//! デバッグ用のクオータニオン用の入れ物
+#endif // _DEBUG
+
+		//archive(Object_Name_Map);
+		//archive(component);
+	}
 };
 
 #endif // !GAME_OBJECT_H

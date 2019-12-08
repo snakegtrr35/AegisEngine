@@ -7,8 +7,6 @@
 #include <EffekseerRendererDX11.h>
 #include <EffekseerSoundXAudio2.h>
 
-//E:\Users\Desktop\Desktop\AegisEngine\AegisEngine\Library\Effekseer\lib\VS2017WIN64
-
 #if _DEBUG
 #pragma comment(lib, "Library/Effekseer/lib/VS2017WIN64/Debug/Effekseer.lib" )
 #pragma comment(lib, "Library/Effekseer/lib/VS2017WIN64/Debug/EffekseerRendererDX11.lib" )
@@ -17,7 +15,8 @@
 #pragma comment(lib, "Library/Effekseer/lib/VS2017WIN64/Release/Effekseer.lib" )
 #pragma comment(lib, "Library/Effekseer/lib/VS2017WIN64/Release/EffekseerRendererDX11.lib" )
 #pragma comment(lib, "Library/Effekseer/lib/VS2017WIN64/Release/EffekseerSoundXAudio2.lib" )
-#endif
+#endif // !DEBUG
+
 
 class EFFEKSEER_MANAGER {
 private:

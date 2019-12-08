@@ -1,4 +1,5 @@
 ﻿#include	"ShadowMap.h"
+#include	"Game_Object.h"
 
 float SHADOW_MAP::WIDTH = 2048.0f;
 float SHADOW_MAP::HEIGHT = 2048.0f;
@@ -18,7 +19,7 @@ SHADOW_MAP::SHADOW_MAP()
 		// プロジェクションマトリックス
 		//PlojectionMatrix = XMMatrixPerspectiveFovLH(XMConvertToRadians(80.0f), WIDTH / HEIGHT, 1.0f, 100.0f);
 
-		PlojectionMatrix = XMMatrixOrthographicLH(40.0f, 40.0f, 1.0f, 100.0f);
+		PlojectionMatrix = XMMatrixOrthographicLH(30.0f, 30.0f, 1.0f, 100.0f);
 	}
 
 	{
@@ -36,6 +37,8 @@ SHADOW_MAP::SHADOW_MAP()
 		DxViewport.TopLeftX = (float)Viewport.left;
 		DxViewport.TopLeftY = (float)Viewport.top;
 	}
+
+	Target = nullptr;
 }
 
 bool SHADOW_MAP::Init()
@@ -264,6 +267,22 @@ void SHADOW_MAP::End()
 
 void SHADOW_MAP::Update()
 {
+	if (Target)
+	{
+		XMFLOAT3* at = Target->Get_Position();
+
+		XMFLOAT3 pos;
+		pos.x = at->x + LightPos.x;
+		pos.y = at->y + LightPos.y;
+		pos.z = at->z + LightPos.z;
+
+		ViewMatrix = XMMatrixLookAtLH(XMLoadFloat3(&pos), XMVectorSet(at->x, at->y, at->z, 0.f), XMVectorSet(0.f, 1.0f, 0.f, 0.f));
+
+		Shadow.ViewMatrix = XMMatrixTranspose(ViewMatrix);
+
+		// シャドウ生成パスの定数バッファを更新
+		CRenderer::GetDeviceContext()->UpdateSubresource(ShadowBuffer.get(), 0, nullptr, &Shadow, 0, 0);
+	}
 }
 
 void SHADOW_MAP::Uninit()
@@ -286,4 +305,9 @@ void SHADOW_MAP::Set_SamplerState()
 void SHADOW_MAP::Set_LightPos(const XMFLOAT3& pos)
 {
 	LightPos = pos;
+}
+
+void SHADOW_MAP::Set_Target(GAME_OBJECT* object)
+{
+	Target = object;
 }

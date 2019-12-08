@@ -11,23 +11,21 @@ private:
 
 protected:
 
-	GAME_OBJECT* Owner;
+	unique_ptr<GAME_OBJECT> Owner;
 
 	bool Enable;
 	bool DestroyFlag;
 
 public:
 
-	COMPONENT() {
-		Owner = nullptr;
-		Enable = true;
-		DestroyFlag = false;
+	COMPONENT() : Enable(true), DestroyFlag(false) {
+		Owner.reset(nullptr);
 	}
 
 	virtual ~COMPONENT() {};
 
 	void Init(GAME_OBJECT* owner) {
-		Owner = owner;
+		Owner.reset(owner);
 	}
 
 	virtual void Update(float delta_time) = 0;
@@ -54,6 +52,12 @@ public:
 		}
 		return false;
 	}
+
+	template<class Archive>
+	void serialize(Archive& archive, unique_ptr<GAME_OBJECT>& ptr)
+	{
+		archive(ptr);	
+	}
 };
 
 
@@ -64,8 +68,6 @@ class COMPONENT_MANEGER {
 private:
 
 	list< unique_ptr<COMPONENT> > Conponent_List;
-
-protected:
 
 public:
 
