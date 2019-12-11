@@ -12,14 +12,14 @@ class TEXTURE;
 //==============================
 class MESH_FIELD :public GAME_OBJECT {
 private:
-	XMFLOAT3		GridSize;
-	XMINT2			GridNum;
-	unsigned int	IndexNum;
-	VERTEX_3D*		VertexArray;
+	XMFLOAT3				GridSize;
+	XMINT2					GridNum;
+	unsigned int			IndexNum;
+	VERTEX_3D*				VertexArray;
 
-	ID3D11Buffer*	VertexBuffer;		// 頂点バッファ
-	ID3D11Buffer*	IndexBuffer;		// インデックスバッファ
-	TEXTURE*		Texture;			// テクスチャ
+	ID3D11Buffer*			VertexBuffer;		// 頂点バッファ
+	ID3D11Buffer*			IndexBuffer;		// インデックスバッファ
+	unique_ptr<TEXTURE>		Texture;			// テクスチャ
 
 public:
 	MESH_FIELD();
@@ -33,8 +33,17 @@ public:
 	const float Get_Height(const XMFLOAT3& position);
 
 	void SetTexture(const string& const file_name);				// テクスチャの設定
+
+	template<typename Archive>
+	void serialize(Archive& ar)
+	{
+		ar(cereal::base_class<GAME_OBJECT>(this));
+		ar(Texture);
+	}
 };
 
+CEREAL_REGISTER_TYPE(MESH_FIELD)
+CEREAL_REGISTER_POLYMORPHIC_RELATION(GAME_OBJECT, MESH_FIELD)
 
 //==============================
 //  フィールドクラス

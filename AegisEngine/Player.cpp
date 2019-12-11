@@ -68,6 +68,38 @@ PLAYER::~PLAYER()
 
 void PLAYER::Init(void)
 {
+	{
+		AnimType = true;
+		Blend = 1.0f;
+
+		string name = "asset/model/human01_Stop.fbx";
+
+		Model = new CMODEL();
+
+		Model->Load(name);
+
+		Model->Set_Position(Position);
+		Model->Set_Rotation(Rotation);
+		Model->Set_Scaling(Scaling);
+	}
+
+	Collision = new COLLISIION_SPHERE();
+
+	dynamic_cast<COLLISIION_SPHERE*>(Collision)->Set_Position(Position);
+
+	dynamic_cast<COLLISIION_SPHERE*>(Collision)->Set_Radius(3.0f);
+
+	{
+		COLOR color(1.0f, 0.f, 0.f, 1.0f);
+
+		Shpere = new BOUNDING_SHPERE();
+		//Shpere = new BOUNDING_AABB();
+
+		Shpere->Set_Position(Position);
+		Shpere->Set_Radius(radius);
+		Shpere->Set_Color(color);
+		//Shpere->Init();
+	}
 }
 
 void PLAYER::Draw(void)

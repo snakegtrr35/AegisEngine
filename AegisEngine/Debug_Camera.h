@@ -110,6 +110,32 @@ public:
 		RotateEnable = flag;
 	}
 
+	template<typename Archive>
+	void serialize(Archive& ar)
+	{
+		ar(cereal::base_class<GAME_OBJECT>(this));
+		ar(A);
+		ar(A);
+
+		ar(F);
+		ar(U);
+		ar(R);
+
+		ar(Viewing_Angle);
+
+		ar(Viewport);
+
+		Pos = XMLoadFloat3(&Position);
+		At = XMLoadFloat3(&A);
+
+		Front = XMLoadFloat3(&F);
+		Up = XMLoadFloat3(&U);
+		Right = XMLoadFloat3(&R);
+	}
+
 };
+
+CEREAL_REGISTER_TYPE(DEBUG_CAMERA)
+CEREAL_REGISTER_POLYMORPHIC_RELATION(GAME_OBJECT, DEBUG_CAMERA)
 
 #endif // !DEBUG_CAMERA_H

@@ -7,7 +7,7 @@
 
 class GAME_OBJECT {
 private:
-	static unordered_map<size_t, string> Object_Name_Map;
+	static unordered_set<string> Object_Name_Map;
 
 protected:
 	string Object_Name;					//! オブジェクトの名前
@@ -64,13 +64,9 @@ public:
 
 	void Set_Object_Name(const string& name) {
 
-		hash<string> hasher;
-
-		size_t hash = hasher(name);
-
-		if (Object_Name_Map.find(hash) == Object_Name_Map.end())
+		if (Object_Name_Map.find(name) == Object_Name_Map.end())
 		{
-			Object_Name_Map[hash] = name;
+			Object_Name_Map.emplace(name);
 			Object_Name = name;
 		}
 #ifdef _DEBUG
@@ -124,41 +120,28 @@ public:
 		return &Component;
 	}
 
-	static const unordered_map<size_t, string>& Get_Object_Name_Map() {
+	//static const unordered_map<size_t, string>& Get_Object_Name_Map() {
+	static const unordered_set<string>& Get_Object_Name_Map() {
 		return Object_Name_Map;
 	}
 
 	template<class Archive>
-	void serialize( Archive& archive,
-					string& name,
-					XMFLOAT3& position,
-					XMFLOAT3& rotation,
-					XMFLOAT3& scaling,
-					//XMFLOAT4 q_num,
-
-#ifdef _DEBUG
-					XMFLOAT3& edit_position,
-					XMFLOAT3& edit_rotation,
-					XMFLOAT3& edit_scaling
-					//XMFLOAT4 edit_q_num,
-#endif // _DEBUG
-
-					/*unordered_map<size_t, string>& object_name_map,
-					COMPONENT_MANEGER& component*/ )
+	void serialize( Archive& archive)
 	{
-		archive(name);
+		archive(Object_Name);
 
-		archive(position.x, position.y, position.z);
+		archive(Position);
 
-		archive(rotation.x, rotation.y, rotation.z);
+		archive(Rotation);
 
-		archive(scaling.x, scaling.y, scaling.z);
+		archive(Scaling);
 
+		archive(Object_Name_Map);
 
 #ifdef _DEBUG
-		archive(edit_position.x, edit_position.y, edit_position.z);
-		archive(edit_rotation.x, edit_rotation.y, edit_rotation.z);
-		archive(edit_scaling.x, edit_scaling.y, edit_scaling.z);
+		//archive(edit_position.x, edit_position.y, edit_position.z);
+		//archive(edit_rotation.x, edit_rotation.y, edit_rotation.z);
+		//archive(edit_scaling.x, edit_scaling.y, edit_scaling.z);
 
 		//XMFLOAT4 Q_num;					//! クオータニオン用の入れ物
 		//XMFLOAT4 Edit_Q_num;				//! デバッグ用のクオータニオン用の入れ物

@@ -60,8 +60,7 @@ bool CManager::Init()
 	TIMER::Init();
 	CLOCK_TIMER::Init();
 
-	if (nullptr == pSceneManager)
-		pSceneManager = new SCENE_MANAGER();
+	pSceneManager = new SCENE_MANAGER();
 
 	pSceneManager->Init();
 	//pSceneManager->Set_Scene<TITLE>();

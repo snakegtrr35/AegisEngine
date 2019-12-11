@@ -151,6 +151,12 @@ void DEBUG_CAMERA::Update(float delta_time)
 	}
 
 	XMStoreFloat3(&Position, Pos);
+	XMStoreFloat3(&A, At);
+
+	XMStoreFloat3(&F, Front);
+	XMStoreFloat3(&U, Up);
+	XMStoreFloat3(&R, Right);
+	
 }
 
 void DEBUG_CAMERA::Draw()

@@ -10,7 +10,7 @@ MESH_FIELD::MESH_FIELD()
 {
 	VertexArray = nullptr;
 	IndexBuffer = VertexBuffer = nullptr;
-	Texture = nullptr;
+	Texture.reset(nullptr);
 
 	GridSize = XMFLOAT3(1.0f, 0.0f, 1.0f);
 	GridNum = XMINT2(10, 10);
@@ -133,12 +133,8 @@ void MESH_FIELD::Init()
 	// メモリ解放
 	SAFE_DELETE_ARRAY(indexArray);
 
-	Position = XMFLOAT3(0.0f, 0.0f, 0.0f);
-	Rotation = XMFLOAT3(0.0f, 0.0f, 0.0f);
-	Scaling = XMFLOAT3(1.0f, 1.0f, 1.0f);
-
 	// テクスチャの設定
-	Texture = new TEXTURE();
+	Texture.reset(new TEXTURE());
 	Texture->Set_Texture_Name("field004.png");
 }
 
@@ -147,7 +143,8 @@ void MESH_FIELD::Uninit()
 	SAFE_DELETE(VertexArray);
 	SAFE_RELEASE(VertexBuffer);
 	SAFE_RELEASE(IndexBuffer);
-	SAFE_DELETE(Texture);
+
+	Texture.reset(nullptr);
 }
 
 void MESH_FIELD::Update(float delta_time)

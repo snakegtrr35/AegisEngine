@@ -21,7 +21,14 @@ public:
 	const string& Get_Texture_Name();							// テクスチャ名の取得
 
 	XMINT2* const Get_WH();
+
+	template<typename Archive>
+	void serialize(Archive& ar)
+	{
+		ar(FileName);
+	}
 };
+
 
 class FONT {
 private:
@@ -42,6 +49,8 @@ public:
 	static ID3D11ShaderResourceView* Get_Font_Resource(const wstring& one_character);
 
 	static ID3D11SamplerState* Get_SamplerState();
+
+
 };
 
 #endif // !TEXYUTE_H

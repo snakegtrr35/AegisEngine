@@ -3,7 +3,10 @@
 //  スカイドーム [skydome.h]
 //
 //***********************************************************************************************
-#pragma once	// インクルードガード
+#pragma once
+
+#ifndef MESH_DOOM_H
+#define	MESH_DOOM_H
 
 #include	"Game_Object.h"
 
@@ -32,4 +35,15 @@ public:
 	void Update(float delta_time) override;
 	void Draw() override;
 
+	template<typename Archive>
+	void serialize(Archive& ar)
+	{
+		ar(cereal::base_class<GAME_OBJECT>(this));
+		ar(Texture);
+	}
 };
+
+CEREAL_REGISTER_TYPE(MESH_DOOM)
+CEREAL_REGISTER_POLYMORPHIC_RELATION(GAME_OBJECT, MESH_DOOM)
+
+#endif // !MESH_DOOM_H

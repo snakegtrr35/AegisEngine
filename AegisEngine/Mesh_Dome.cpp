@@ -118,9 +118,9 @@ void MESH_DOOM::Init()
 //***********************************************************************************************
 void MESH_DOOM::Uninit()
 {
-	VertexBuffer.reset();
-	IndexBuffer.reset();
-	Texture.reset();
+	VertexBuffer.reset(nullptr);
+	IndexBuffer.reset(nullptr);
+	Texture.reset(nullptr);
 }
 
 //***********************************************************************************************

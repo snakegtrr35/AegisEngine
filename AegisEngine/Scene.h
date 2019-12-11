@@ -71,7 +71,7 @@ public:
 	{
 		T* object = new T();
 
-		object->Init();
+		//object->Init();
 
 		GameObjects[(int)layer].emplace_back(object);
 
@@ -84,7 +84,7 @@ public:
 	{
 		T* object = new T();
 
-		object->Init();
+		//object->Init();
 			
 		object->Set_Object_Name(name);
 
@@ -220,6 +220,13 @@ public:
 	* @details 詳細な説明
 	*/
 	virtual void Init(void) {
+		for (int i = 0; i < (int)LAYER_NAME::MAX_LAYER; i++)
+		{
+			for (auto object = GameObjects[i].begin(); object != GameObjects[i].end(); object++)
+			{
+				object->get()->Init();
+			}
+		}
 	};
 
 	/**
@@ -232,7 +239,6 @@ public:
 	virtual void Draw(void) {
 		for (int i = 0; i < (int)LAYER_NAME::MAX_LAYER; i++)
 		{
-			//for (GAME_OBJECT* object : GameObjects[i])
 			for (auto object = GameObjects[i].begin(); object != GameObjects[i].end(); object++)
 			{
 				object->get()->Draw();
@@ -250,7 +256,6 @@ public:
 	virtual void Update(float delta_time) {
 		if (true == PauseEnable)	// ポーズ中
 		{
-			//for (GAME_OBJECT* object : GameObjects[(int)LAYER_NAME::UI])
 			for (auto object = GameObjects[(int)LAYER_NAME::UI].begin(); object != GameObjects[(int)LAYER_NAME::UI].end(); object++)
 			{
 					object->get()->Update(delta_time);
@@ -286,10 +291,8 @@ public:
 	virtual void Uninit(void) {
 		for (int i = 0; i < (int)LAYER_NAME::MAX_LAYER; i++)
 		{
-			//for (GAME_OBJECT* object : GameObjects[i])
 			for (auto object = GameObjects[i].begin(); object != GameObjects[i].end(); object++)
 			{
-				//SAFE_DELETE(object);
 				object->reset(nullptr);
 			}
 			GameObjects[i].clear();
@@ -341,7 +344,15 @@ public:
 	static const UINT Get_Game_Object_Count(const LAYER_NAME layer) {
 		return GameObjects[(int)layer].size();
 	}
+
+	template<class Archive>
+	void serialize(Archive& archive)
+	{
+		archive(GameObjects);
+	}
 };
+
+//CEREAL_REGISTER_TYPE(SCENE)
 
 /**
 * @brief タイトルシーンクラス
@@ -362,7 +373,16 @@ public:
 	void Draw() override;
 	void Update(float delta_time) override;
 	void Uninit() override;
+
+	template<typename Archive>
+	void serialize(Archive& ar)
+	{
+		ar(cereal::base_class<SCENE>(this));
+	}
 };
+
+CEREAL_REGISTER_TYPE(TITLE)
+CEREAL_REGISTER_POLYMORPHIC_RELATION(SCENE, TITLE)
 
 /**
 * @brief ゲームシーンクラス
@@ -383,7 +403,16 @@ public:
 	void Draw() override;
 	void Update(float delta_time) override;
 	void Uninit() override;
+
+	template<typename Archive>
+	void serialize(Archive& ar)
+	{
+		ar(cereal::base_class<SCENE>(this));
+	}
 };
+
+CEREAL_REGISTER_TYPE(GAME)
+CEREAL_REGISTER_POLYMORPHIC_RELATION(SCENE, GAME)
 
 /**
 * @brief リザルトシーンクラス
@@ -406,7 +435,16 @@ public:
 	void Uninit() override;
 
 	static bool Clear_Flag;
+
+	template<typename Archive>
+	void serialize(Archive& ar)
+	{
+		ar(cereal::base_class<SCENE>(this));
+	}
 };
+
+CEREAL_REGISTER_TYPE(RESULT)
+CEREAL_REGISTER_POLYMORPHIC_RELATION(SCENE, RESULT)
 
 /**
 * @brief メインメニューシーンクラス
@@ -430,9 +468,16 @@ public:
 	void Uninit() override;
 
 	static string Model_Name;
+
+	template<typename Archive>
+	void serialize(Archive& ar)
+	{
+		ar(cereal::base_class<SCENE>(this));
+	}
 };
 
-
+CEREAL_REGISTER_TYPE(MAIN_MENU)
+CEREAL_REGISTER_POLYMORPHIC_RELATION(SCENE, MAIN_MENU)
 
 /**
 * @brief シーン管理クラス
@@ -446,8 +491,8 @@ protected:
 
 public:
 	SCENE_MANAGER() {
-		if (nullptr == pScene)
-			pScene = new SCENE();
+		//if (nullptr == pScene)
+		//	pScene = new SCENE();
 	};
 
 	~SCENE_MANAGER() {
@@ -455,7 +500,7 @@ public:
 	};
 
 	void Init() {
-		pScene->Init();
+		if(nullptr != pScene) pScene->Init();
 	};
 
 	void Draw() {

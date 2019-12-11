@@ -43,6 +43,15 @@ public:
 	float* Get() {
 		return &Blend;
 	}
+
+	template<typename Archive>
+	void serialize(Archive& ar)
+	{
+		ar(cereal::base_class<GAME_OBJECT>(this));
+	}
 };
+
+CEREAL_REGISTER_TYPE(PLAYER)
+CEREAL_REGISTER_POLYMORPHIC_RELATION(GAME_OBJECT, PLAYER)
 
 #endif // !PLAYER_H

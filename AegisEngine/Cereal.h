@@ -32,4 +32,10 @@ namespace DirectX
 	}
 }
 
+template<class Archive>
+void serialize(Archive& archive, RECT& rect)
+{
+	archive(rect.left, rect.top, rect.right, rect.bottom);
+}
+
 #endif // ! CEREAL_H
