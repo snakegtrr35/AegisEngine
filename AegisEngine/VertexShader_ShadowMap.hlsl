@@ -12,7 +12,6 @@ cbuffer ConstantBuffer : register(b0)
     matrix Projection;
 }
 
-
 //=============================================================================
 // 頂点シェーダ
 //=============================================================================
@@ -22,7 +21,7 @@ void main( in float4 inPosition     : POSITION0,
 		   in float2 inTexCoord     : TEXCOORD0,
            
            out float4 outPosition   : SV_POSITION,
-           out float4 outColor      : COLOR1)
+           out float4 outColor      : COLOR0)
 {
     matrix wvp;
 

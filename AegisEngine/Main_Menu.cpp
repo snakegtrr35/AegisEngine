@@ -13,7 +13,32 @@
 string MAIN_MENU::Model_Name = "asset/model/herorifle.fbx";
 
 static bool flag = false;
-static short cnt = 0;
+static short cnt = 0; 
+
+
+string Replace_String(string& replacedStr, const string& from, const string& to)
+{
+	if (replacedStr.empty() || from.empty() || to.empty())
+	{
+		return replacedStr;
+	}
+
+	if (from.size() != to.size())
+	{
+		return replacedStr;
+	}
+
+	const UINT pos = replacedStr.find(from);
+	const UINT len = from.length();
+
+	if (replacedStr.size() < pos)
+	{
+		return replacedStr;
+	}
+
+	return replacedStr.replace(pos, len, to);
+}
+
 
 void MAIN_MENU::Init()
 {
@@ -23,10 +48,14 @@ void MAIN_MENU::Init()
 		const type_info& id = typeid(this);
 
 		string name(id.name());
+		
+		// ’uŠ·
+		Replace_String(name, "class ", "      ");
+		Replace_String(name, "__ptr64", "       ");
+		Replace_String(name, "*", " ");
+		name.erase(remove_if(name.begin(), name.end(), isspace), name.end());
 
-		string name2(id.raw_name());
-
-		std::ifstream file("aaa.dat", std::ios::binary);
+		std::ifstream file(name + ".dat", std::ios::binary);
 
 		flag = file.is_open();
 
@@ -223,7 +252,13 @@ void MAIN_MENU::Uninit()
 
 		string name(id.name());
 
-		std::ofstream file("aaa.dat", std::ios::binary);
+		// ’uŠ·
+		Replace_String(name, "class ", "      ");
+		Replace_String(name, "__ptr64", "       ");
+		Replace_String(name, "*", " ");
+		name.erase(remove_if(name.begin(), name.end(), isspace), name.end());
+
+		std::ofstream file(name + ".dat", std::ios::binary);
 
 		bool f = file.is_open();
 

@@ -223,9 +223,6 @@ void My_imgui::Draw(void)
 				ImGui::Begin("Setting");
 
 				{
-					//static char str[128] = "";
-
-					//ImGui::InputText((char*)u8"あいうえお", str, 128);
 
 					static string str;
 
@@ -254,8 +251,6 @@ void My_imgui::Draw(void)
 				static float vec4_Diffuse[] = { light->Diffuse.r, light->Diffuse.g, light->Diffuse.b, light->Diffuse.a };
 				static float vec4_Ambient[] = { light->Ambient.r, light->Ambient.g, light->Ambient.b, light->Ambient.a };
 				static float vec4_Specular[] = { light->Specular.r, light->Specular.g, light->Specular.b, light->Specular.a };
-
-				//ImGui::SetNextWindowSize(ImVec2(300, 150), ImGuiCond_Always);
 
 				ImGui::Begin("Directional Light", nullptr/*, window_flag*/);
 
@@ -320,7 +315,7 @@ void My_imgui::Draw(void)
 					for (auto object : map)
 					{
 						// マウスボタン : 0 = left, 1 = right, 2 = middle + extras
-						string str = object/*.second*/.c_str();
+						string str = object.c_str();
 
 						node_flags |= /*ImGuiTreeNodeFlags_Leaf |*/ ImGuiTreeNodeFlags_NoTreePushOnOpen; // ImGuiTreeNodeFlags_Bullet
 						ImGui::TreeNodeEx((void*)(intptr_t)i, node_flags, str.c_str());
@@ -340,7 +335,6 @@ void My_imgui::Draw(void)
 								s = str.c_str();
 							}
 						}
-
 
 						i++;
 					}

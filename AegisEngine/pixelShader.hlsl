@@ -74,18 +74,22 @@ void main( in float4 inPosition     : POSITION0,
 		   out float4 outDiffuse	: SV_Target )
 {
     float4 TexColor = g_Texture.Sample(g_SamplerState, inTexCoord);
-    //float4 TexColor = float4(1.0f, 1.0, 1.0, 1.0f);
     
     if (TexColor.a <= 0.0)
         discard;
     
     inNormal = normalize(inNormal);
     float light = 0.5 - 0.5 * dot(Light.Direction.xyz, inNormal.xyz);
- 
+    
+    
+    float vec = dot(inNormal.xyz, Light.Direction.xyz);
+    //vec = normalize(vec);
+   
+    
     // ŠÂ‹«”½ŽËŒõ
-    float4 ambient = inDiffuse * float4(Material.Ambient.rgb * Light.Ambient.rgb, 1.0f);
+    float4 ambient = inDiffuse * float4(Material.Ambient.rgb * Light.Ambient.rgb, 1.0);
     // ŠgŽU”½ŽËŒõ
-    float4 diffuse = inDiffuse * float4(Material.Diffuse.rgb * (light * Light.Diffuse.rgb), 1.0f);
+    float4 diffuse = inDiffuse * float4(Material.Diffuse.rgb * (light * Light.Diffuse.rgb), 1.0);
 
     float4 color = (float4)0.0;
 
@@ -105,8 +109,8 @@ void main( in float4 inPosition     : POSITION0,
     float shadow;
     
     float2 ShadowTexCoord;
-    ShadowTexCoord.x = inShadowMapPos.x / inShadowMapPos.w / 2.0f + 0.5f;
-    ShadowTexCoord.y = -inShadowMapPos.y / inShadowMapPos.w / 2.0f + 0.5f;
+    ShadowTexCoord.x = inShadowMapPos.x / inShadowMapPos.w / 2.0 + 0.5;
+    ShadowTexCoord.y = -inShadowMapPos.y / inShadowMapPos.w / 2.0 + 0.5;
     
     //if ((saturate(ShadowTexCoord.x) == ShadowTexCoord.x) && (saturate(ShadowTexCoord.y) == ShadowTexCoord.y))
     {
@@ -114,15 +118,15 @@ void main( in float4 inPosition     : POSITION0,
 
         float lightDepthValue = inShadowMapPos.z / inShadowMapPos.w;
 
-        lightDepthValue = lightDepthValue - 0.001f;
+        lightDepthValue = lightDepthValue - 0.001;
 
-        if (lightDepthValue <= depthValue)
+        if (lightDepthValue <= depthValue || vec >= 0.01)
         {
-            shadow = 1.0f;
+            shadow = 1.0;
         }
         else
         {
-            shadow = 0.5f;
+            shadow = 0.5;
         }
     }
     
@@ -132,5 +136,6 @@ void main( in float4 inPosition     : POSITION0,
     
     color.rgb += (ambient * TexColor);
     
+
     outDiffuse = color;
 }

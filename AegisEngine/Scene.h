@@ -29,7 +29,7 @@
 #include	"manager.h"
 #include	"ShadowMap.h"
 
-class GAME_OBJECT;
+//class GAME_OBJECT;
 
 enum class LAYER_NAME {
 

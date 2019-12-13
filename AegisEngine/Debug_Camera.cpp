@@ -13,7 +13,7 @@ void DEBUG_CAMERA::Init()
 {
 	XMFLOAT4 at = XMFLOAT4(0.0f, 0.0f, 0.0f, 0.0f);
 
-	Viewing_Angle = 110.0f;
+	Viewing_Angle = 80.0f;
 
 	Front = XMVectorSet(0.0f, -0.4f, 1.0f, 0.0f);
 	Front = XMVector3Normalize(Front);

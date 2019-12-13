@@ -4,6 +4,9 @@
 float SHADOW_MAP::WIDTH = 2048.0f;
 float SHADOW_MAP::HEIGHT = 2048.0f;
 
+static ID3D11DepthStencilState* m_DepthStateEnable;
+
+
 SHADOW_MAP::SHADOW_MAP()
 {
 	LightPos = XMFLOAT3(10.0f, 10.0f, -10.0f);
@@ -180,7 +183,7 @@ bool SHADOW_MAP::Init()
 		desc.BorderColor[1] = 1.0f;
 		desc.BorderColor[2] = 1.0f;
 		desc.BorderColor[3] = 1.0f;
-		desc.ComparisonFunc = D3D11_COMPARISON_NEVER;
+		desc.ComparisonFunc = D3D11_COMPARISON_GREATER_EQUAL;
 		desc.Filter = D3D11_FILTER_COMPARISON_MIN_MAG_MIP_POINT;
 		desc.MaxAnisotropy = 1;
 		desc.MipLODBias = 0;
@@ -212,16 +215,33 @@ bool SHADOW_MAP::Init()
 		hBufferDesc.MiscFlags = 0;
 		hBufferDesc.StructureByteStride = sizeof(float);
 
-		hr = CRenderer::GetDevice()->CreateBuffer(&hBufferDesc, NULL, &buffer);
-		if (FAILED(hr))
 		{
-			FAILDE_ASSERT;
-			return false;
+			hr = CRenderer::GetDevice()->CreateBuffer(&hBufferDesc, NULL, &buffer);
+			if (FAILED(hr))
+			{
+				FAILDE_ASSERT;
+				return false;
+			}
+
+			CRenderer::GetDeviceContext()->VSSetConstantBuffers(1, 1, &buffer);
+
+			ShadowBuffer.reset(buffer);
 		}
 
-		CRenderer::GetDeviceContext()->VSSetConstantBuffers(1, 1, &buffer);
+		{
+			hBufferDesc.ByteWidth = sizeof(CONSTANT_LIGHT);
 
-		ShadowBuffer.reset(buffer);
+			hr = CRenderer::GetDevice()->CreateBuffer(&hBufferDesc, NULL, &buffer);
+			if (FAILED(hr))
+			{
+				FAILDE_ASSERT;
+				return false;
+			}
+
+			CRenderer::GetDeviceContext()->PSSetConstantBuffers(0, 1, &buffer);
+
+			LightBuffer.reset(buffer);
+		}
 	}
 
 	Shadow.ViewMatrix = XMMatrixTranspose(ViewMatrix);
@@ -229,6 +249,19 @@ bool SHADOW_MAP::Init()
 
 	// シャドウ生成パスの定数バッファを更新
 	CRenderer::GetDeviceContext()->UpdateSubresource(ShadowBuffer.get(), 0, nullptr, &Shadow, 0, 0);
+
+
+	{
+		// 深度ステンシルステート設定
+		D3D11_DEPTH_STENCIL_DESC depthStencilDesc;
+		ZeroMemory(&depthStencilDesc, sizeof(depthStencilDesc));
+		depthStencilDesc.DepthEnable = TRUE;
+		depthStencilDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
+		depthStencilDesc.DepthFunc = D3D11_COMPARISON_LESS_EQUAL;
+		depthStencilDesc.StencilEnable = FALSE;
+
+		CRenderer::GetDevice()->CreateDepthStencilState(&depthStencilDesc, &m_DepthStateEnable);//深度有効ステート
+	}
 
     return true;
 }
@@ -250,6 +283,10 @@ void SHADOW_MAP::Begin()
 	Enable = true;
 
 	CRenderer::GetDeviceContext()->RSSetState(RasterizerState.get());
+
+	//CRenderer::GetDeviceContext()->OMSetDepthStencilState(m_DepthStateEnable, NULL);
+
+	Set_Light(LightPos);
 }
 
 void SHADOW_MAP::End()
@@ -310,4 +347,14 @@ void SHADOW_MAP::Set_LightPos(const XMFLOAT3& pos)
 void SHADOW_MAP::Set_Target(GAME_OBJECT* object)
 {
 	Target = object;
+}
+
+void SHADOW_MAP::Set_Light(const XMFLOAT3& pos)
+{
+	Light.Direction.x = -pos.x;
+	Light.Direction.y = -pos.y;
+	Light.Direction.z = -pos.z;
+	Light.Direction.w = 0.f;
+
+	CRenderer::GetDeviceContext()->UpdateSubresource(LightBuffer.get(), 0, nullptr, &Light, 0, 0);
 }

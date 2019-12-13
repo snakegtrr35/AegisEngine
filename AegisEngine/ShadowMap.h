@@ -15,6 +15,10 @@ private:
 		XMMATRIX ProjectionMatrix;
 	};
 
+	struct CONSTANT_LIGHT {
+		XMFLOAT4 Direction;
+	};
+
 	//! デプスステンシルビュー
 	unique_ptr<ID3D11DepthStencilView, Release>			DepthStencilView;
 	//! シェーダーリソースビュー
@@ -26,8 +30,12 @@ private:
 	//! コンスタントバッファ
 	unique_ptr < ID3D11Buffer, Release>					ShadowBuffer;
 	CONSTANT_SHADOW_MAP									Shadow;
+
+	unique_ptr < ID3D11Buffer, Release>					LightBuffer;
 	//! 
 	XMFLOAT3											LightPos;
+	//!
+	CONSTANT_LIGHT										Light;
 
 	XMMATRIX											ViewMatrix;
 	XMMATRIX											PlojectionMatrix;
@@ -44,6 +52,8 @@ private:
 	static float WIDTH;
 	static float HEIGHT;
 
+	void Set_LightPos(const XMFLOAT3& pos);
+
 public:
 
     SHADOW_MAP();
@@ -57,7 +67,7 @@ public:
 
 	void Set_SamplerState();
 
-	void Set_LightPos(const XMFLOAT3& pos);
+	void Set_Light(const XMFLOAT3& pos);
 
 	XMMATRIX& Get_View() {
 		return ViewMatrix;
@@ -69,6 +79,10 @@ public:
 
 	bool Get_Enable() {
 		return Enable;
+	}
+
+	XMFLOAT3 Get_LightPos() {
+		return LightPos;
 	}
 
 	ID3D11ShaderResourceView* Get() {
