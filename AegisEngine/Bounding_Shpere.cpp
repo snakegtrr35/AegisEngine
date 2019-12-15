@@ -101,7 +101,7 @@ void BOUNDING_SHPERE::Create_Buffer()
 
 		VERTEX_3D* vertex = new VERTEX_3D[cnt];
 
-		float angle = XM_2PI / cnt;
+		const float angle = XM_2PI / cnt;
 
 		for (int i = 0; i < cnt; i++)
 		{

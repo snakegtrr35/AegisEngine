@@ -189,7 +189,11 @@ void MAIN_MENU::Init()
 		//}
 
 		{
-			Add_Game_Object<BOUNDING_AABB>(LAYER_NAME::GAMEOBJECT, "box");
+			Add_Game_Object<BOUNDING_AABB>(LAYER_NAME::GAMEOBJECT, "aabb");
+		}
+
+		{
+			Add_Game_Object<BOUNDING_OBB>(LAYER_NAME::GAMEOBJECT, "obb");
 		}
 	}
 

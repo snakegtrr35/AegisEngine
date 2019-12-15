@@ -1,18 +1,18 @@
-#include	"Bounding_Aabb.h"
+#include	"Bounding_Obb.h"
 #include	"manager.h"
 #include	"Scene.h"
 #include	"ShadowMap.h"
 
-BOUNDING_AABB::BOUNDING_AABB()
+BOUNDING_OBB::BOUNDING_OBB()
 {
 }
 
-BOUNDING_AABB::~BOUNDING_AABB()
+BOUNDING_OBB::~BOUNDING_OBB()
 {
 	Uninit();
 }
 
-void BOUNDING_AABB::Init()
+void BOUNDING_OBB::Init()
 {
 	// 頂点バッファの設定
 	if (nullptr == pVertexBuffer_BOX.get())
@@ -113,7 +113,7 @@ void BOUNDING_AABB::Init()
 	}
 }
 
-void BOUNDING_AABB::Draw()
+void BOUNDING_OBB::Draw()
 {
 	if (false == CManager::Get_ShadowMap()->Get_Enable())
 	{
@@ -125,6 +125,7 @@ void BOUNDING_AABB::Draw()
 		// 3Dマトリックス設定
 		{
 			XMMATRIX world = XMMatrixScaling(Scaling.x, Scaling.y, Scaling.z);
+			world *= XMMatrixRotationRollPitchYaw(XMConvertToRadians(Rotation.x), XMConvertToRadians(Rotation.y), XMConvertToRadians(Rotation.z));
 			world *= XMMatrixTranslation(Position.x, Position.y, Position.z);
 
 			CCamera* camera01 = CManager::Get_Scene()->Get_Game_Object<CCamera>();
@@ -155,10 +156,10 @@ void BOUNDING_AABB::Draw()
 	}
 }
 
-void BOUNDING_AABB::Update(float delta_time)
+void BOUNDING_OBB::Update(float delta_time)
 {
 }
 
-void BOUNDING_AABB::Uninit()
+void BOUNDING_OBB::Uninit()
 {
 }

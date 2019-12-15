@@ -69,6 +69,7 @@
     <ClCompile Include="Scene.cpp" />
     <ClCompile Include="Score.cpp" />
     <ClCompile Include="ShadowMap.cpp" />
+    <ClCompile Include="Bounding_Obb.cpp" />
     <ClCompile Include="Sprite.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
@@ -91,6 +92,7 @@
     <ClInclude Include="Billboard.h" />
     <ClInclude Include="Bounding.h" />
     <ClInclude Include="Bounding_Aabb.h" />
+    <ClInclude Include="Bounding_Obb.h" />
     <ClInclude Include="Bounding_Shpere.h" />
     <ClInclude Include="Bullet.h" />
     <ClInclude Include="camera.h" />

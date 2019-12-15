@@ -24,6 +24,7 @@
 #include	"Bounding.h"
 #include	"Bounding_Shpere.h"
 #include	"Bounding_Aabb.h"
+#include	"Bounding_Obb.h"
 
 #include	"Mesh_Field.h"
 #include	"Mesh_Cylinder.h"
