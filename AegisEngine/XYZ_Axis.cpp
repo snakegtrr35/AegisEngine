@@ -2,6 +2,7 @@
 
 #include	"manager.h"
 #include	"Scene.h"
+#include	"ShadowMap.h"
 
 #define COUNT (6)
 
