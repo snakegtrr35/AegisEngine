@@ -24,10 +24,7 @@ struct VERTEX_ANIME_3D
 	WORD BoneIndex[4];
 	float BoneWeight[4];
 
-	VERTEX_ANIME_3D() {
-		Normal = Position = XMFLOAT3(0.f, 0.f, 0.f);
-		Diffuse = XMFLOAT4(0.f, 0.f, 0.f, 0.f);
-		TexCoord = XMFLOAT2(0.f, 0.f);
+	VERTEX_ANIME_3D() : Normal(XMFLOAT3(0.f, 0.f, 0.f)), Position(XMFLOAT3(0.f, 0.f, 0.f)), Diffuse(XMFLOAT4(0.f, 0.f, 0.f, 0.f)), TexCoord(XMFLOAT2(0.f, 0.f)) {
 		for (int i = 0; i < 4; i++)
 		{
 			BoneIndex[i] = 0;
@@ -113,6 +110,12 @@ struct COLOR
 		return *this;
 	}
 };
+
+template<typename Archive>
+void serialize(Archive& ar, COLOR& color)
+{
+	ar(color.r, color.g, color.b, color.a);
+}
 
 //! マテリアル構造体
 struct MATERIAL

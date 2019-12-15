@@ -187,6 +187,10 @@ void MAIN_MENU::Init()
 
 		//	text->Edit("0.000");
 		//}
+
+		{
+			Add_Game_Object<BOUNDING_AABB>(LAYER_NAME::GAMEOBJECT, "box");
+		}
 	}
 
 	SCENE::Init();
@@ -246,27 +250,27 @@ void MAIN_MENU::Uninit()
 {
 	static bool flag = true;
 
-	if(flag)
-	{
-		const type_info& id = typeid(this);
+	//if(flag)
+	//{
+	//	const type_info& id = typeid(this);
 
-		string name(id.name());
+	//	string name(id.name());
 
-		// íuä∑
-		Replace_String(name, "class ", "      ");
-		Replace_String(name, "__ptr64", "       ");
-		Replace_String(name, "*", " ");
-		name.erase(remove_if(name.begin(), name.end(), isspace), name.end());
+	//	// íuä∑
+	//	Replace_String(name, "class ", "      ");
+	//	Replace_String(name, "__ptr64", "       ");
+	//	Replace_String(name, "*", " ");
+	//	name.erase(remove_if(name.begin(), name.end(), isspace), name.end());
 
-		std::ofstream file(name + ".dat", std::ios::binary);
+	//	std::ofstream file(name + ".dat", std::ios::binary);
 
-		bool f = file.is_open();
+	//	bool f = file.is_open();
 
-		cereal::BinaryOutputArchive archive(file);
-		archive(*this);
+	//	cereal::BinaryOutputArchive archive(file);
+	//	archive(*this);
 
-		flag = false;
-	}
+	//	flag = false;
+	//}
 
 	SCENE::Uninit();
 

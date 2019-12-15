@@ -165,6 +165,9 @@ bool SHADOW_MAP::Init()
 		rd.CullMode = D3D11_CULL_FRONT;
 		rd.DepthClipEnable = TRUE;
 		rd.MultisampleEnable = FALSE;
+		rd.DepthBias = 0.001f;
+		rd.DepthBiasClamp = 0.01f;
+		rd.SlopeScaledDepthBias = 0.001f;
 
 		CRenderer::GetDevice()->CreateRasterizerState(&rd, &rs);
 
