@@ -61,28 +61,28 @@ private:
 
 protected:
 	//static list<GAME_OBJECT*> GameObjects[(int)LAYER_NAME::MAX_LAYER];
-	static list<unique_ptr<GAME_OBJECT>> GameObjects[(int)LAYER_NAME::MAX_LAYER];
+	static list<shared_ptr<GAME_OBJECT>> GameObjects[(int)LAYER_NAME::MAX_LAYER];
 
 	static bool PauseEnable;
 
 public:
 
 	// リストへの追加
-	template <typename T>
-	static T* Add_Game_Object(LAYER_NAME layer)
-	{
-		T* object = new T();
+	//template <typename T>
+	//static T* Add_Game_Object(LAYER_NAME layer)
+	//{
+	//	T* object = new T();
 
-		//object->Init();
+	//	//object->Init();
 
-		GameObjects[(int)layer].emplace_back(object);
+	//	GameObjects[(int)layer].emplace_back(object);
 
-		return object;
-	}
+	//	return object;
+	//}
 
 	// リストへの追加
 	template <typename T>
-	static T* Add_Game_Object(LAYER_NAME layer, const string& name)
+	static T* Add_Game_Object(LAYER_NAME layer, const string& name = "none")
 	{
 		T* object = new T();
 
@@ -96,26 +96,26 @@ public:
 	}
 
 	// リストから特定のオブジェクトの取得
-	template <typename T>
-	static T* Get_Game_Object()
-	{
-		for (int i = 0; i < (int)LAYER_NAME::MAX_LAYER; i++)
-		{
-			//for (GAME_OBJECT* object : GameObjects[i])
-			for (auto object = GameObjects[i].begin(); object != GameObjects[i].end(); object++)
-			{
-				if (typeid(T) == typeid(*object->get()))
-				{
-					return (T*)object->get();
-				}
-			}
-		}
-		return nullptr;
-	}
+	//template <typename T>
+	//static T* Get_Game_Object()
+	//{
+	//	for (int i = 0; i < (int)LAYER_NAME::MAX_LAYER; i++)
+	//	{
+	//		//for (GAME_OBJECT* object : GameObjects[i])
+	//		for (auto object = GameObjects[i].begin(); object != GameObjects[i].end(); object++)
+	//		{
+	//			if (typeid(T) == typeid(*object->get()))
+	//			{
+	//				return (T*)object->get();
+	//			}
+	//		}
+	//	}
+	//	return nullptr;
+	//}
 
 	// リストから特定の名前のオブジェクトの取得
 	template <typename T>
-	static T* Get_Game_Object(const string& name)
+	static T* Get_Game_Object(const string& name = "none")
 	{
 		for (int i = 0; i < (int)LAYER_NAME::MAX_LAYER; i++)
 		{
@@ -209,10 +209,10 @@ public:
 		return objects;
 	}
 
-	SCENE() {};
+	SCENE() {}
 	virtual ~SCENE() {
 		Uninit();
-	};
+	}
 
 	/**
 	* @brief 簡単な説明（～する関数）
@@ -295,7 +295,7 @@ public:
 		{
 			for (auto object = GameObjects[i].begin(); object != GameObjects[i].end(); object++)
 			{
-				object->reset(nullptr);
+				object->reset();
 			}
 			GameObjects[i].clear();
 		}
@@ -347,11 +347,23 @@ public:
 		return GameObjects[(int)layer].size();
 	}
 
-	template<class Archive>
-	void serialize(Archive& archive)
+	template<typename Archive>
+	void serialize(Archive& ar)
 	{
-		archive(GameObjects);
+		ar(GameObjects);
 	}
+
+	/*template<class Archive>
+	void save(Archive& ar) const
+	{
+		ar(GameObjects);
+	}
+
+	template<class Archive>
+	void load(Archive& ar)
+	{
+		ar(GameObjects);
+	}*/
 };
 
 //CEREAL_REGISTER_TYPE(SCENE)
@@ -366,10 +378,10 @@ private:
 protected:
 
 public:
-	TITLE() {};
+	TITLE() {}
 	~TITLE() {
 		Uninit();
-	};
+	}
 
 	void Init() override;
 	void Draw() override;
@@ -381,6 +393,18 @@ public:
 	{
 		ar(cereal::base_class<SCENE>(this));
 	}
+
+	/*template<class Archive>
+	void save(Archive& ar) const
+	{
+		ar(cereal::base_class<SCENE>(this));
+	}
+
+	template<class Archive>
+	void load(Archive& ar)
+	{
+		ar(cereal::base_class<SCENE>(this));
+	}*/
 };
 
 CEREAL_REGISTER_TYPE(TITLE)
@@ -396,10 +420,10 @@ private:
 protected:
 
 public:
-	GAME() {};
+	GAME() {}
 	~GAME() {
 		Uninit();
-	};
+	}
 
 	void Init() override;
 	void Draw() override;
@@ -411,6 +435,18 @@ public:
 	{
 		ar(cereal::base_class<SCENE>(this));
 	}
+
+	/*template<class Archive>
+	void save(Archive& ar) const
+	{
+		ar(cereal::base_class<SCENE>(this));
+	}
+
+	template<class Archive>
+	void load(Archive& ar)
+	{
+		ar(cereal::base_class<SCENE>(this));
+	}*/
 };
 
 CEREAL_REGISTER_TYPE(GAME)
@@ -426,10 +462,10 @@ private:
 protected:
 
 public:
-	RESULT() {};
+	RESULT() {}
 	~RESULT() {
 		Uninit();
-	};
+	}
 
 	void Init() override;
 	void Draw() override;
@@ -443,6 +479,18 @@ public:
 	{
 		ar(cereal::base_class<SCENE>(this));
 	}
+
+	/*template<class Archive>
+	void save(Archive& ar) const
+	{
+		ar(cereal::base_class<SCENE>(this));
+	}
+
+	template<class Archive>
+	void load(Archive& ar)
+	{
+		ar(cereal::base_class<SCENE>(this));
+	}*/
 };
 
 CEREAL_REGISTER_TYPE(RESULT)
@@ -459,10 +507,10 @@ private:
 protected:
 
 public:
-	MAIN_MENU() {};
+	MAIN_MENU() {}
 	~MAIN_MENU() {
 		Uninit();
-	};
+	}
 
 	void Init() override;
 	void Draw() override;
@@ -476,6 +524,18 @@ public:
 	{
 		ar(cereal::base_class<SCENE>(this));
 	}
+
+	/*template<class Archive>
+	void save(Archive& ar) const
+	{
+		ar(cereal::base_class<SCENE>(this));
+	}
+
+	template<class Archive>
+	void load(Archive& ar)
+	{
+		ar(cereal::base_class<SCENE>(this));
+	}*/
 };
 
 CEREAL_REGISTER_TYPE(MAIN_MENU)

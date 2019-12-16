@@ -208,8 +208,8 @@ void FIELD::Draw()
 		world *= XMMatrixRotationRollPitchYaw(XMConvertToRadians(Rotation.x), XMConvertToRadians(Rotation.y), XMConvertToRadians(Rotation.z));
 		world *= XMMatrixTranslation(Position.x, Position.y, Position.z);
 
-		auto camera01 = CManager::Get_Scene()->Get_Game_Object<CCamera>();
-		auto camera02 = CManager::Get_Scene()->Get_Game_Object<DEBUG_CAMERA>();
+		auto camera01 = CManager::Get_Scene()->Get_Game_Object<CCamera>("camera");
+		auto camera02 = CManager::Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
 
 		if (nullptr != camera01)
 		{

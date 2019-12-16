@@ -27,8 +27,8 @@ private:
 	unique_ptr<TEXTURE> Texture;						// テクスチャ
 
 public:
-	MESH_DOOM() :Radius(500.0f) {};
-	~MESH_DOOM() {};
+	MESH_DOOM() : Radius(500.0f) {}
+	~MESH_DOOM() {}
 
 	void Init() override;
 	void Uninit() override;
@@ -41,6 +41,20 @@ public:
 		ar(cereal::base_class<GAME_OBJECT>(this));
 		ar(Texture);
 	}
+
+	//template<class Archive>
+	//void save(Archive& ar) const
+	//{
+	//	ar(cereal::base_class<GAME_OBJECT>(this));
+	//	ar(Texture);
+	//}
+
+	//template<class Archive>
+	//void load(Archive& ar)
+	//{
+	//	ar(cereal::base_class<GAME_OBJECT>(this));
+	//	ar(Texture);
+	//}
 };
 
 CEREAL_REGISTER_TYPE(MESH_DOOM)

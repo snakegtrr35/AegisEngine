@@ -38,7 +38,9 @@ protected:
 
 public:
 	GAME_OBJECT() : Object_Name("none"), DestroyFlag(false), Rotation(XMFLOAT3(0.0f, 0.0f, 0.0f)), Position(XMFLOAT3(0.0f, 0.0f, 0.0f)), Scaling(XMFLOAT3(1.0f, 1.0f, 1.0f))/*, Quaternion(XMQuaternionIdentity())*/ {}
-	virtual ~GAME_OBJECT() {};
+	virtual ~GAME_OBJECT() {
+		Object_Name_Map.erase(Object_Name);
+	};
 
 	virtual void Init() = 0;
 	virtual void Draw() = 0;
@@ -77,6 +79,10 @@ public:
 #endif // _DEBUG
 	};
 
+
+	void Set_Object_Map(const string& name) {
+			Object_Name_Map.emplace(name);
+	};
 
 	XMFLOAT3* const Get_Position() {
 		return &Position;
@@ -126,30 +132,56 @@ public:
 	}
 
 	template<class Archive>
-	void serialize( Archive& archive)
+	void serialize( Archive& ar)
 	{
-		archive(Object_Name);
+		ar(Object_Name);
 
-		archive(Position);
+		ar(Position);
 
-		archive(Rotation);
+		ar(Rotation);
 
-		archive(Scaling);
+		ar(Scaling);
 
-		archive(Object_Name_Map);
+		Set_Object_Map(Object_Name);
 
 #ifdef _DEBUG
-		//archive(edit_position.x, edit_position.y, edit_position.z);
-		//archive(edit_rotation.x, edit_rotation.y, edit_rotation.z);
-		//archive(edit_scaling.x, edit_scaling.y, edit_scaling.z);
+		//ar(edit_position.x, edit_position.y, edit_position.z);
+		//ar(edit_rotation.x, edit_rotation.y, edit_rotation.z);
+		//ar(edit_scaling.x, edit_scaling.y, edit_scaling.z);
 
 		//XMFLOAT4 Q_num;					//! クオータニオン用の入れ物
 		//XMFLOAT4 Edit_Q_num;				//! デバッグ用のクオータニオン用の入れ物
 #endif // _DEBUG
 
-		//archive(Object_Name_Map);
-		//archive(component);
+		//ar(Object_Name_Map);
+		//ar(component);
 	}
+
+	//template<class Archive>
+	//void save(Archive& ar) const
+	//{
+	//	ar(Object_Name);
+
+	//	ar(Position);
+
+	//	ar(Rotation);
+
+	//	ar(Scaling);
+	//}
+
+	//template<class Archive>
+	//void load(Archive& ar)
+	//{
+	//	ar(Object_Name);
+
+	//	ar(Position);
+
+	//	ar(Rotation);
+
+	//	ar(Scaling);
+
+	//	Set_Object_Name(Object_Name);
+	//}
 };
 
 #endif // !GAME_OBJECT_H

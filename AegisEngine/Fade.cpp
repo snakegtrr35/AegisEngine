@@ -16,8 +16,6 @@ FADE::FADE()
 	AdditionalAlpha = 0.f;
 
 	FadeEnable = false;
-
-	Object_Name = "Fade";
 }
 
 FADE::~FADE()
@@ -139,7 +137,7 @@ void FADE::Start_FadeIn(const float time)
 {
 	FADE* pFade = nullptr;
 
-	pFade = CManager::Get_Scene()->Add_Game_Object<FADE>(LAYER_NAME::UI);
+	pFade = CManager::Get_Scene()->Add_Game_Object<FADE>(LAYER_NAME::UI, "fade");
 
 	pFade->Set_Time(time);
 	pFade->Set_Color(XMFLOAT4(0.f, 0.f, 0.f, 1.0f));

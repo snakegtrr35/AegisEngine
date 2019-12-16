@@ -139,8 +139,8 @@ private:
 			{
 				matrix = XMMatrixMultiply(Matrix, parent_matrix);
 
-				auto camera01 = CManager::Get_Scene()->Get_Game_Object<CCamera>();
-				auto camera02 = CManager::Get_Scene()->Get_Game_Object<DEBUG_CAMERA>();
+				auto camera01 = CManager::Get_Scene()->Get_Game_Object<CCamera>("camera");
+				auto camera02 = CManager::Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
 				
 				// 普通のカメラかデバッグカメラか?
 				if (nullptr != camera01)
@@ -227,8 +227,8 @@ private:
 
 						world = XMMatrixMultiply(world, parent_matrix);
 
-						auto camera01 = CManager::Get_Scene()->Get_Game_Object<CCamera>();
-						auto camera02 = CManager::Get_Scene()->Get_Game_Object<DEBUG_CAMERA>();
+						auto camera01 = CManager::Get_Scene()->Get_Game_Object<CCamera>("camera");
+						auto camera02 = CManager::Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
 
 						// 普通のカメラかデバッグカメラか?
 						if (nullptr != camera01)
@@ -321,8 +321,8 @@ private:
 
 				world = XMMatrixMultiply(world, parent_matrix);
 
-				auto camera01 = CManager::Get_Scene()->Get_Game_Object<CCamera>();
-				auto camera02 = CManager::Get_Scene()->Get_Game_Object<DEBUG_CAMERA>();
+				auto camera01 = CManager::Get_Scene()->Get_Game_Object<CCamera>("camera");
+				auto camera02 = CManager::Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
 
 				// 普通のカメラかデバッグカメラか?
 				if (nullptr != camera01)

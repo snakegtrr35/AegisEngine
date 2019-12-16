@@ -31,6 +31,18 @@ public:
 	{
 		ar(cereal::base_class<BOUNDING>(this));
 	}
+
+	//template<class Archive>
+	//void save(Archive& ar) const
+	//{
+	//	ar(cereal::base_class<GAME_OBJECT>(this));
+	//}
+
+	//template<class Archive>
+	//void load(Archive& ar)
+	//{
+	//	ar(cereal::base_class<GAME_OBJECT>(this));
+	//}
 };
 
 CEREAL_REGISTER_TYPE(BOUNDING_OBB)

@@ -219,8 +219,8 @@ void AXIS::Draw(void)
 				//world *= XMMatrixTranslation(pos.x, pos.y, pos.z);																								// ˆÚ“®
 				world *= XMMatrixTranslation(Position.x, Position.y + 0.5f, Position.z);
 
-				auto camera01 = CManager::Get_Scene()->Get_Game_Object<CCamera>();
-				auto camera02 = CManager::Get_Scene()->Get_Game_Object<DEBUG_CAMERA>();
+				auto camera01 = CManager::Get_Scene()->Get_Game_Object<CCamera>("camera");
+				auto camera02 = CManager::Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
 
 				if (nullptr != camera01)
 				{

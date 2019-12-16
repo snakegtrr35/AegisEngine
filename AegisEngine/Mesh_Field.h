@@ -23,7 +23,7 @@ private:
 
 public:
 	MESH_FIELD();
-	~MESH_FIELD() { Uninit(); };
+	~MESH_FIELD() { Uninit(); }
 
 	void Init() override;
 	void Draw() override;
@@ -40,6 +40,20 @@ public:
 		ar(cereal::base_class<GAME_OBJECT>(this));
 		ar(Texture);
 	}
+
+	//template<class Archive>
+	//void save(Archive& ar) const
+	//{
+	//	ar(cereal::base_class<GAME_OBJECT>(this));
+	//	ar(Texture);
+	//}
+
+	//template<class Archive>
+	//void load(Archive& ar)
+	//{
+	//	ar(cereal::base_class<GAME_OBJECT>(this));
+	//	ar(Texture);
+	//}
 };
 
 CEREAL_REGISTER_TYPE(MESH_FIELD)

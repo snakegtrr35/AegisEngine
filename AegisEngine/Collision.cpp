@@ -52,19 +52,12 @@ bool Collision_HitAABB(COLLISION* const pA, COLLISION* const pB)
 	if (typeid(COLLISIION_AABB*) == typeid(pA)) return false;
 	if (typeid(COLLISIION_AABB*) == typeid(pB)) return false;
 
-	AABB* aA = static_cast<COLLISIION_AABB*>(pA)->Get_AABB();
-	AABB* aB = static_cast<COLLISIION_AABB*>(pB)->Get_AABB();
+	AABB* a = static_cast<COLLISIION_AABB*>(pA)->Get_AABB();
+	AABB* b = static_cast<COLLISIION_AABB*>(pB)->Get_AABB();
 
-	if ( (aA->Position.x - aA->Radius.x) <= (aB->Position.x + aB->Radius.x) && (aB->Position.x - aB->Radius.x) <= (aA->Position.x + aA->Radius.x))
-	{
-		if ((aA->Position.y - aA->Radius.y) <= (aB->Position.y + aB->Radius.y) && (aB->Position.y - aB->Radius.y) <= (aA->Position.y + aA->Radius.y))
-		{
-			if ((aA->Position.z - aA->Radius.z) <= (aB->Position.z + aB->Radius.z) && (aB->Position.z - aB->Radius.z) <= (aA->Position.z + aA->Radius.z))
-			{
-				return true;
-			}
-		}
-	}
+	if (abs(a->Position.x - b->Position.x) > a->Radius.x + b->Radius.x) return false;
+	if (abs(a->Position.z - b->Position.z) > a->Radius.z + b->Radius.z) return false;
+	if (abs(a->Position.y - b->Position.y) > a->Radius.y + b->Radius.y) return false;
 
-	return false;
+	return true;
 }

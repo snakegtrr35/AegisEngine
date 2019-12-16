@@ -242,8 +242,8 @@ void BILL_BOARD::Draw()
 
 		//CRenderer::SetWorldMatrix(&world);
 
-		auto camera01 = CManager::Get_Scene()->Get_Game_Object<CCamera>();
-		auto camera02 = CManager::Get_Scene()->Get_Game_Object<DEBUG_CAMERA>();
+		auto camera01 = CManager::Get_Scene()->Get_Game_Object<CCamera>("camera");
+		auto camera02 = CManager::Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
 
 		if (nullptr != camera01)
 
@@ -437,8 +437,8 @@ void BILL_BOARD_ANIMATION::Draw(float tx, float ty)
 
 		//CRenderer::Set_MatrixBufferSetWorldMatrix(&world);
 
-		auto camera01 = CManager::Get_Scene()->Get_Game_Object<CCamera>();
-		auto camera02 = CManager::Get_Scene()->Get_Game_Object<DEBUG_CAMERA>();
+		auto camera01 = CManager::Get_Scene()->Get_Game_Object<CCamera>("camera");
+		auto camera02 = CManager::Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
 
 		if (nullptr != camera01)
 		{

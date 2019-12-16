@@ -127,8 +127,8 @@ void BOUNDING_AABB::Draw()
 			XMMATRIX world = XMMatrixScaling(Scaling.x, Scaling.y, Scaling.z);
 			world *= XMMatrixTranslation(Position.x, Position.y, Position.z);
 
-			CCamera* camera01 = CManager::Get_Scene()->Get_Game_Object<CCamera>();
-			DEBUG_CAMERA* camera02 = CManager::Get_Scene()->Get_Game_Object<DEBUG_CAMERA>();
+			CCamera* camera01 = CManager::Get_Scene()->Get_Game_Object<CCamera>("camera");
+			DEBUG_CAMERA* camera02 = CManager::Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
 
 			if (nullptr != camera01)
 			{

@@ -31,44 +31,37 @@ typedef struct {
 typedef struct {
 	XMFLOAT3 Position;		// 中心座標
 	XMFLOAT3 Radius;		// 半径
+	XMFLOAT3 Rotation;		// 回転量
 
 }OBB;
 
 // コリジョンクラス
 class COLLISION  {
-private:
-
 protected:
-	  string Name;
-	  string ParentName;
-	  unordered_map<string, COLLISION*> Childlen;
+	
+	string Name;
+	string ParentName;
+	unordered_map<string, COLLISION*> Childlen;
 
 public:
-	COLLISION() {
-		Name = "Collision";
-		ParentName = "None";
-	};
-	virtual ~COLLISION() {};
-
-
+	COLLISION() : Name("Collision"), ParentName("None") {}
+	virtual ~COLLISION() {}
 
 	void Set_Name(const string& name) {
 		Name = name;
-	};
+	}
 
 	string& const Get_Name() {
 		return Name;
-	};
-
-
+	}
 
 	void Set_Parent_Name(const string& parent_name) {
 		ParentName = parent_name;
-	};
+	}
 
 	string& const Get_Parent_Name() {
 		return ParentName;
-	};
+	}
 
 
 
@@ -89,24 +82,24 @@ private:
 protected:
 
 public:
-	COLLISIION_SPHERE() {};
-	~COLLISIION_SPHERE() {};
+	COLLISIION_SPHERE() {}
+	~COLLISIION_SPHERE() {}
 
 	void Set_Sphper(const SPHERE& sphere) {
 		Sphere = sphere;
-	};
+	}
 
 	SPHERE* const Get_Sphper() {
 		return &Sphere;
-	};
+	}
 
 	void Set_Position(const XMFLOAT3& position) {
 		Sphere.Position = position;
-	};
+	}
 
 	void Set_Radius(const float radius) {
 		Sphere.Radius = radius;
-	};
+	}
 };
 
 bool Collision_HitCircle(CIRCLE* const pA, CIRCLE* const pB);
@@ -119,8 +112,6 @@ bool Collision_HitSphere(COLLISION* const pA, COLLISION* const pB);
 class COLLISIION_AABB : public COLLISION {
 private:
 	AABB Aabb;
-
-protected:
 
 public:
 	COLLISIION_AABB() {};

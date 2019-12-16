@@ -143,7 +143,7 @@ void BULLET::Update(float delta_time)
 
 	// ƒvƒŒƒCƒ„[‚Æ’e‚Ì“–‚½‚è”»’è
 	{
-		PLAYER* player = CManager::Get_Scene()->Get_Game_Object<PLAYER>();
+		PLAYER* player = CManager::Get_Scene()->Get_Game_Object<PLAYER>("player");
 
 		if (Collision_HitAABB(this->Get_Collison(), player->Get_Collision()))
 		{

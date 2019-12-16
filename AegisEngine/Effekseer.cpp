@@ -159,10 +159,10 @@ void EFFEKSEER_MANAGER::Update(float delta_time)
 void EFFEKSEER_MANAGER::Set()
 {
 	DEBUG_CAMERA* D_camera = nullptr;
-	CCamera* camera = CManager::Get_Scene()->Get_Game_Object<CCamera>();
+	CCamera* camera = CManager::Get_Scene()->Get_Game_Object<CCamera>("camera");
 	if (nullptr == camera)
 	{
-		D_camera = CManager::Get_Scene()->Get_Game_Object<DEBUG_CAMERA>();
+		D_camera = CManager::Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
 	}
 
 	{

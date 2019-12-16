@@ -43,6 +43,9 @@ private:
 	bool RotateEnable;
 
 public:
+	DEBUG_CAMERA() {}
+	~DEBUG_CAMERA() {}
+
 	void Init() override;
 	void Uninit() override;
 	void Update(float delta_time) override;
@@ -115,7 +118,6 @@ public:
 	{
 		ar(cereal::base_class<GAME_OBJECT>(this));
 		ar(A);
-		ar(A);
 
 		ar(F);
 		ar(U);
@@ -132,6 +134,44 @@ public:
 		Up = XMLoadFloat3(&U);
 		Right = XMLoadFloat3(&R);
 	}
+
+	/*template<class Archive>
+	void save(Archive& ar) const
+	{
+		ar(cereal::base_class<GAME_OBJECT>(this));
+		ar(A);
+
+		ar(F);
+		ar(U);
+		ar(R);
+
+		ar(Viewing_Angle);
+
+		ar(Viewport);
+	}
+
+	template<class Archive>
+	void load(Archive& ar)
+	{
+		ar(cereal::base_class<GAME_OBJECT>(this));
+		ar(A);
+		ar(A);
+
+		ar(F);
+		ar(U);
+		ar(R);
+
+		ar(Viewing_Angle);
+
+		ar(Viewport);
+
+		Pos = XMLoadFloat3(&Position);
+		At = XMLoadFloat3(&A);
+
+		Front = XMLoadFloat3(&F);
+		Up = XMLoadFloat3(&U);
+		Right = XMLoadFloat3(&R);
+	}*/
 
 };
 

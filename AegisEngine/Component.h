@@ -7,11 +7,9 @@ class GAME_OBJECT;
 
 // コンポーネントクラス
 class COMPONENT {
-private:
-
 protected:
 
-	unique_ptr<GAME_OBJECT> Owner;
+	weak_ptr<GAME_OBJECT> Owner;
 
 	bool Enable;
 	bool DestroyFlag;
@@ -19,13 +17,14 @@ protected:
 public:
 
 	COMPONENT() : Enable(true), DestroyFlag(false) {
-		Owner.reset(nullptr);
+		Owner.reset();
 	}
 
 	virtual ~COMPONENT() {};
 
-	void Init(GAME_OBJECT* owner) {
-		Owner.reset(owner);
+	void Init(shared_ptr<GAME_OBJECT> owner) {
+		Owner = owner;
+
 	}
 
 	virtual void Update(float delta_time) = 0;
@@ -54,10 +53,22 @@ public:
 	}
 
 	template<class Archive>
-	void serialize(Archive& archive, unique_ptr<GAME_OBJECT>& ptr)
+	void serialize(Archive& ar)
 	{
-		archive(ptr);	
+		//ar(ptr);
 	}
+
+	/*template<class Archive>
+	void save(Archive& ar) const
+	{
+		ar(Owner);
+	}
+
+	template<class Archive>
+	void load(Archive& ar)
+	{
+		ar(Owner);
+	}*/
 };
 
 
@@ -103,7 +114,7 @@ public:
 		return nullptr;
 	}
 
-	COMPONENT_MANEGER() {};
+	COMPONENT_MANEGER() {}
 
 	~COMPONENT_MANEGER() {
 		Uninit();

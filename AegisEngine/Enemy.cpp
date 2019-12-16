@@ -67,7 +67,7 @@ void ENEMY::Update(float delta_time)
 		XMFLOAT3 pos = Position;
 		XMVECTOR vec;
 
-		PLAYER* player = CManager::Get_Scene()->Get_Game_Object<PLAYER>();
+		PLAYER* player = CManager::Get_Scene()->Get_Game_Object<PLAYER>("player");
 
 		pos.x = player->Get_Position()->x - pos.x;
 		pos.z = player->Get_Position()->z - pos.z;
@@ -109,7 +109,7 @@ void ENEMY::Update(float delta_time)
 			XMFLOAT3 pos;
 			XMStoreFloat3(&pos, vec);
 
-			PLAYER* player = CManager::Get_Scene()->Get_Game_Object<PLAYER>();
+			PLAYER* player = CManager::Get_Scene()->Get_Game_Object<PLAYER>("player");
 
 			float r = (Position.x - player->Get_Position()->x) * (Position.x - player->Get_Position()->x) + (Position.z - player->Get_Position()->z) * (Position.z - player->Get_Position()->z);
 			float abr = Date.Lenght * Date.Lenght;
