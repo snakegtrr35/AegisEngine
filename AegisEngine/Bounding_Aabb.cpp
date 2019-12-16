@@ -53,9 +53,9 @@ void BOUNDING_AABB::Init()
 			ZeroMemory(&bd, sizeof(bd));
 
 			bd.ByteWidth = sizeof(VERTEX_3D) * VertexNum;
-			bd.Usage = D3D11_USAGE_DEFAULT;
+			bd.Usage = D3D11_USAGE_DYNAMIC;
 			bd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-			bd.CPUAccessFlags = 0;
+			bd.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 			bd.MiscFlags = 0;
 			bd.StructureByteStride = 0;
 
@@ -157,8 +157,61 @@ void BOUNDING_AABB::Draw()
 
 void BOUNDING_AABB::Update(float delta_time)
 {
+	OverWrite();
 }
+
 
 void BOUNDING_AABB::Uninit()
 {
+}
+
+void BOUNDING_AABB::OverWrite()
+{
+	if (Color != Default_Color && nullptr != pVertexBuffer_BOX.get())
+	{
+		Color = Default_Color;
+
+		const char VertexNum = 8;
+
+		VERTEX_3D Vertex[VertexNum];
+
+		Vertex[0].Position = XMFLOAT3(-0.5f, 0.5f, -0.5f);
+		Vertex[0].Diffuse = XMFLOAT4(Color.r, Color.g, Color.b, Color.a);
+
+		Vertex[1].Position = XMFLOAT3(0.5f, 0.5f, -0.5f);
+		Vertex[1].Diffuse = XMFLOAT4(Color.r, Color.g, Color.b, Color.a);
+
+		Vertex[2].Position = XMFLOAT3(-0.5f, -0.5f, -0.5f);
+		Vertex[2].Diffuse = XMFLOAT4(Color.r, Color.g, Color.b, Color.a);
+
+		Vertex[3].Position = XMFLOAT3(0.5f, -0.5f, -0.5f);
+		Vertex[3].Diffuse = XMFLOAT4(Color.r, Color.g, Color.b, Color.a);
+
+
+		Vertex[4].Position = XMFLOAT3(-0.5f, 0.5f, 0.5f);
+		Vertex[4].Diffuse = XMFLOAT4(Color.r, Color.g, Color.b, Color.a);
+
+		Vertex[5].Position = XMFLOAT3(0.5f, 0.5f, 0.5f);
+		Vertex[5].Diffuse = XMFLOAT4(Color.r, Color.g, Color.b, Color.a);
+
+		Vertex[6].Position = XMFLOAT3(-0.5f, -0.5f, 0.5f);
+		Vertex[6].Diffuse = XMFLOAT4(Color.r, Color.g, Color.b, Color.a);
+
+		Vertex[7].Position = XMFLOAT3(0.5f, -0.5f, 0.5f);
+		Vertex[7].Diffuse = XMFLOAT4(Color.r, Color.g, Color.b, Color.a);
+
+		for (char i = 0; i < VertexNum; i++)
+		{
+			Vertex[i].Normal = XMFLOAT3(1.0f, 0.0f, 0.0f);
+			Vertex[i].TexCoord = XMFLOAT2(0.0f, 0.0f);
+		}
+
+		// 頂点バッファの書き換え
+		{
+			D3D11_MAPPED_SUBRESOURCE msr;
+			CRenderer::GetDeviceContext()->Map(pVertexBuffer_BOX.get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &msr);
+			memcpy(msr.pData, Vertex, sizeof(VERTEX_3D) * VertexNum);
+			CRenderer::GetDeviceContext()->Unmap(pVertexBuffer_BOX.get(), 0);
+		}
+	}
 }

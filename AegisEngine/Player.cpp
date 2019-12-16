@@ -205,6 +205,7 @@ void PLAYER::Update(float delta_time)
 	Shpere->Set_Position(Position);
 	Shpere->Set_Scaling(Scaling);
 	Shpere->Set_Radius(radius);
+	Shpere->Update(delta_time);
 
 	// ‰e‚ÌXV
 	{

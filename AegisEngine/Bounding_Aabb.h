@@ -23,6 +23,8 @@ public:
 
 	void Uninit() override;
 
+	void OverWrite() override;
+
 	//void Set_Radius(const XMFLOAT3& radius);
 
 	//XMFLOAT3& const Get_Radius();

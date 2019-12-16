@@ -35,6 +35,7 @@ void BOUNDING_SHPERE::Draw()
 
 void BOUNDING_SHPERE::Update(float delta_time)
 {
+	OverWrite();
 }
 
 void BOUNDING_SHPERE::Uninit()
@@ -119,9 +120,9 @@ void BOUNDING_SHPERE::Create_Buffer()
 			ZeroMemory(&bd, sizeof(bd));
 
 			bd.ByteWidth = sizeof(VERTEX_3D) * cnt;
-			bd.Usage = D3D11_USAGE_DEFAULT;
+			bd.Usage = D3D11_USAGE_DYNAMIC;
 			bd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-			bd.CPUAccessFlags = 0;
+			bd.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 			bd.MiscFlags = 0;
 			bd.StructureByteStride = 0;
 
@@ -135,7 +136,7 @@ void BOUNDING_SHPERE::Create_Buffer()
 			pVertexBuffer.reset(buffer);
 		}
 
-		SAFE_DELETE(vertex);
+		SAFE_DELETE_ARRAY(vertex);
 	}
 
 	// インデックスバッファの設定
@@ -176,5 +177,37 @@ void BOUNDING_SHPERE::Create_Buffer()
 		}
 
 		SAFE_DELETE(index_array);
+	}
+}
+
+void BOUNDING_SHPERE::OverWrite()
+{
+	if (Color != Default_Color && nullptr != pVertexBuffer.get())
+	{
+		Color = Default_Color;
+
+		const UINT cnt = 10 * (UINT)Radius;
+
+		VERTEX_3D* vertex = new VERTEX_3D[cnt];
+
+		const float angle = XM_2PI / cnt;
+
+		for (int i = 0; i < cnt; i++)
+		{
+			vertex[i].Position = XMFLOAT3(cosf(angle * i) * Radius, sinf(angle * i) * Radius, 0.0f);
+			vertex[i].Normal = XMFLOAT3(0.0f, 0.0f, 0.0f);
+			vertex[i].Diffuse = XMFLOAT4(Color.r, Color.g, Color.b, Color.a);
+			vertex[i].TexCoord = XMFLOAT2(0.0f, 0.0f);
+		}
+
+		// 頂点バッファの書き換え
+		{
+			D3D11_MAPPED_SUBRESOURCE msr;
+			CRenderer::GetDeviceContext()->Map(pVertexBuffer.get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &msr);
+			memcpy(msr.pData, vertex, sizeof(VERTEX_3D) * cnt);
+			CRenderer::GetDeviceContext()->Unmap(pVertexBuffer.get(), 0);
+		}
+
+		SAFE_DELETE_ARRAY(vertex);
 	}
 }

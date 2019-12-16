@@ -27,6 +27,8 @@ public:
 	void Update(float delta_time) override;
 	void Uninit() override;
 
+	void OverWrite() override;
+
 	void Set_Radius(const float radius);
 
 	const float Get_Radius();

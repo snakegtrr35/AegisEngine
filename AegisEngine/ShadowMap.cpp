@@ -1,5 +1,6 @@
 ﻿#include	"ShadowMap.h"
 #include	"Game_Object.h"
+#include	"Renderer.h"
 
 float SHADOW_MAP::WIDTH = 2048.0f;
 float SHADOW_MAP::HEIGHT = 2048.0f;
@@ -307,9 +308,16 @@ void SHADOW_MAP::End()
 
 void SHADOW_MAP::Update()
 {
-	if (Target)
+	LIGHT* light = CRenderer::Get_Light();
+
+	LightPos.x = light->Position.x;
+	LightPos.y = light->Position.y;
+	LightPos.z = light->Position.z;
+
+	//if (Target)
 	{
 		XMFLOAT3* at = Target->Get_Position();
+
 
 		XMFLOAT3 pos;
 		pos.x = at->x + LightPos.x;

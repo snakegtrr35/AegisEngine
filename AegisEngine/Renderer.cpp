@@ -295,7 +295,7 @@ bool CRenderer::Init()
 	MATERIAL material;
 	ZeroMemory(&material, sizeof(material));
 	material.Diffuse = COLOR(1.0f, 1.0f, 1.0f, 1.0f);
-	material.Ambient = COLOR(0.6f, 0.6f, 0.6f, 1.0f);
+	material.Ambient = COLOR(0.5f, 0.5f, 0.5f, 1.0f);
 	material.Specular = COLOR(1.0f, 1.0f, 1.0f, 1.0f);
 	SetMaterial(material);
 

@@ -20,6 +20,8 @@ public:
 	void Update(float delta_time) override;
 	void Uninit() override;
 
+	void OverWrite() override;
+
 	//void Set_Radius(const XMFLOAT3& radius);
 
 	//XMFLOAT3& const Get_Radius();

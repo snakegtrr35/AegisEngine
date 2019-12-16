@@ -109,6 +109,24 @@ struct COLOR
 		r /= color.r; g /= color.g;	b /= color.b; a /= color.a;
 		return *this;
 	}
+
+	bool operator !=(const COLOR& color)
+	{
+		if (r != color.r) return true;
+		if (g != color.g) return true;
+		if (b != color.b) return true;
+		if (a != color.a) return true;
+		return false;
+	}
+
+	bool operator ==(const COLOR& color)
+	{
+		if (r != color.r) return false;
+		if (g != color.g) return false;
+		if (b != color.b) return false;
+		if (a != color.a) return false;
+		return true;
+	}
 };
 
 template<typename Archive>

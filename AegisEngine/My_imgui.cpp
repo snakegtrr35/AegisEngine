@@ -198,6 +198,9 @@ void My_imgui::Draw(void)
 				{
 					ImGui::MenuItem("Style Editor", NULL, &show_app_style_editor);
 					ImGui::Checkbox("Default Window", &show_default_window);      // Edit bools storing our window open/close state
+
+					ImGui::MenuItem("Setting", NULL, &Setting_Enable);
+
 					ImGui::EndMenu();
 				}
 
@@ -217,27 +220,6 @@ void My_imgui::Draw(void)
 		old_name = s;
 
 		{
-			{
-				float* r = &radius;
-
-				ImGui::Begin("Setting");
-
-				{
-
-					static string str;
-
-					ImGui::InputText((char*)u8"あいうえお", &str);
-
-					ImGui::Text(str.c_str());
-				}
-
-				ImGui::DragFloat("Radius", r, 0.1f, 0.1f, 100.0f);
-
-				ImGui::Text("%s", s.c_str());
-
-				ImGui::End();
-				}
-
 			// ライトの設定
 			{
 				static bool f = false;
@@ -355,6 +337,8 @@ void My_imgui::Draw(void)
 
 		// テクスチャの削除
 		Texture_Delete();
+
+		Setting();
 
 		// Rendering
 		ImGui::Render();
@@ -766,6 +750,32 @@ void My_imgui::Texture_Delete()
 		}
 
 		flag2 = false;
+	}
+}
+
+void My_imgui::Setting()
+{
+	if (Setting_Enable)
+	{
+		float color[] = { BOUNDING::Get_Default_Color().r, BOUNDING::Get_Default_Color().g, BOUNDING::Get_Default_Color().b };
+
+		ImGui::Begin("Setting", &Setting_Enable);
+
+		{
+			ImGuiColorEditFlags flag = ImGuiColorEditFlags_DisplayRGB | ImGuiColorEditFlags_InputRGB | ImGuiColorEditFlags_PickerHueWheel;
+
+			ImGui::ColorPicker3((char*)u8"カラー", color, flag);
+		}
+
+		ImGui::End();
+
+		COLOR c;
+		c.r = color[0];
+		c.g = color[1];
+		c.b = color[2];
+		c.a = 1.0f;
+
+		BOUNDING::Set_Default_Color(c);
 	}
 }
 

@@ -70,6 +70,8 @@ bool CManager::Init()
 
 	//CRenderer::Change_Window_Mode();
 
+	pShadowMap->Set_Target(pSceneManager->Get_Scene()->Get_Game_Object<PLAYER>("player"));
+
 	return true;
 }
 
