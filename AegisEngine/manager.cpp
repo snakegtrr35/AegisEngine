@@ -150,7 +150,7 @@ void CManager::Draw()
 		rect = D2D1::RectF(100, 100, 200, 200);
 
 		CRenderer::Get2DDeviceContext()->BeginDraw();
-		CRenderer::Get2DDeviceContext()->FillRectangle(&rect, brush);
+		//CRenderer::Get2DDeviceContext()->FillRectangle(&rect, brush);
 
 		// DirectWrite
 
