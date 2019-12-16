@@ -23,6 +23,8 @@
     <ClCompile Include="Ball.cpp" />
     <ClCompile Include="Billboard.cpp" />
     <ClCompile Include="Bounding.cpp" />
+    <ClCompile Include="Bounding_Aabb.cpp" />
+    <ClCompile Include="Bounding_Shpere.cpp" />
     <ClCompile Include="Bullet.cpp" />
     <ClCompile Include="camera.cpp" />
     <ClCompile Include="Circle_Shadow.cpp" />
@@ -67,6 +69,7 @@
     <ClCompile Include="Scene.cpp" />
     <ClCompile Include="Score.cpp" />
     <ClCompile Include="ShadowMap.cpp" />
+    <ClCompile Include="Bounding_Obb.cpp" />
     <ClCompile Include="Sprite.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
@@ -88,6 +91,9 @@
     <ClInclude Include="Ball.h" />
     <ClInclude Include="Billboard.h" />
     <ClInclude Include="Bounding.h" />
+    <ClInclude Include="Bounding_Aabb.h" />
+    <ClInclude Include="Bounding_Obb.h" />
+    <ClInclude Include="Bounding_Shpere.h" />
     <ClInclude Include="Bullet.h" />
     <ClInclude Include="camera.h" />
     <ClInclude Include="Cereal.h" />
@@ -259,7 +265,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>D:\user\ksyou\Document\HAL\3\AegisEngine\AegisEngine\Library\Effekseer\include;C:\Program Files\cereal;C:\Program Files\assimp_vs2017_x64\include;$(IncludePath)</IncludePath>
+    <IncludePath>E:\Users\Desktop\Desktop\AegisEngine\AegisEngine\Library\Effekseer\include;C:\Program Files\cereal;C:\Program Files\assimp_vs2017_x64\include;$(IncludePath)</IncludePath>
     <LibraryPath>C:\Program Files\assimp_vs2017_x64\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -267,7 +273,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>D:\user\ksyou\Document\HAL\3\AegisEngine\AegisEngine\Library\Effekseer\include;C:\Program Files\cereal;C:\Program Files\assimp_vs2017_x64\include;$(IncludePath)</IncludePath>
+    <IncludePath>E:\Users\Desktop\Desktop\AegisEngine\AegisEngine\Library\Effekseer\include;C:\Program Files\cereal;C:\Program Files\assimp_vs2017_x64\include;$(IncludePath)</IncludePath>
     <LibraryPath>C:\Program Files\assimp_vs2017_x64\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">

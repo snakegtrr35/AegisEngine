@@ -285,12 +285,6 @@ bool CRenderer::Init()
 	ZeroMemory(&m_Light, sizeof(m_Light));
 	m_Light.Direction = XMFLOAT4(-10.0f, -10.0f, 10.0f, 0.0f);
 
-	XMVECTOR vec = XMLoadFloat4(&m_Light.Direction);
-
-	vec = XMVector4Normalize(vec);
-
-	XMStoreFloat4(&m_Light.Direction, vec);
-
 	m_Light.Position = XMFLOAT4(10.0f, 10.0f, -10.0f, 0.0f);
 	m_Light.Diffuse = COLOR(1.0f, 1.0f, 1.0f, 1.0f);
 	m_Light.Ambient = COLOR(1.0f, 1.0f, 1.0f, 1.0f);
@@ -933,6 +927,12 @@ void CRenderer::SetMaterial( MATERIAL Material )
 
 void CRenderer::SetLight(LIGHT* Light)
 {
+	XMVECTOR vec = XMLoadFloat4(&Light->Direction);
+
+	vec = XMVector4Normalize(vec);
+
+	XMStoreFloat4(&Light->Direction, vec);
+
 	m_ImmediateContext->UpdateSubresource(m_LightBuffer, 0, NULL, Light, 0, 0);
 }
 

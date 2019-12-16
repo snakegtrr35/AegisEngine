@@ -3,7 +3,7 @@
 #include	"Enemy.h"
 #include	"Scene.h"
 #include	"manager.h"
-#include	"Bounding.h"
+#include	"Bounding_Aabb.h"
 #include	"Bullet.h"
 #include	"Axis.h"
 #include	"audio_clip.h"

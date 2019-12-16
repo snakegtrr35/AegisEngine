@@ -187,6 +187,14 @@ void MAIN_MENU::Init()
 
 		//	text->Edit("0.000");
 		//}
+
+		{
+			Add_Game_Object<BOUNDING_AABB>(LAYER_NAME::GAMEOBJECT, "aabb");
+		}
+
+		{
+			Add_Game_Object<BOUNDING_OBB>(LAYER_NAME::GAMEOBJECT, "obb");
+		}
 	}
 
 	SCENE::Init();

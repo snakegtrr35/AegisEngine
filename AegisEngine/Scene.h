@@ -20,16 +20,18 @@
 
 #include	"Grid.h"
 #include	"XYZ_Axis.h"
+
 #include	"Bounding.h"
+#include	"Bounding_Shpere.h"
+#include	"Bounding_Aabb.h"
+#include	"Bounding_Obb.h"
 
 #include	"Mesh_Field.h"
 #include	"Mesh_Cylinder.h"
 #include	"Mesh_Dome.h"
 
-#include	"manager.h"
-#include	"ShadowMap.h"
+//#include	"manager.h"
 
-//class GAME_OBJECT;
 
 enum class LAYER_NAME {
 
