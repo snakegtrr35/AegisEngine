@@ -25,6 +25,7 @@ FADE::~FADE()
 
 void FADE::Init()
 {
+	SPRITE::Init();
 }
 
 void FADE::Draw()
@@ -93,6 +94,7 @@ void FADE::Update(float delta_time)
 	{
 		CManager::Get_Scene()->Destroy_Game_Object(this);
 		FadeEnable = true;
+		Enable = false;
 	}
 }
 
@@ -125,7 +127,9 @@ void FADE::Start_FadeOut(const float time)
 {
 	FADE* pFade = nullptr;
 
-	pFade = CManager::Get_Scene()->Add_Game_Object<FADE>(LAYER_NAME::UI);
+	pFade = CManager::Get_Scene()->Add_Game_Object<FADE>(LAYER_NAME::UI, "fade");
+
+	pFade->Init();
 
 	pFade->Set_Time(time);
 	pFade->Set_Color(XMFLOAT4(0.f, 0.f, 0.f, 0.f));
@@ -138,6 +142,8 @@ void FADE::Start_FadeIn(const float time)
 	FADE* pFade = nullptr;
 
 	pFade = CManager::Get_Scene()->Add_Game_Object<FADE>(LAYER_NAME::UI, "fade");
+
+	pFade->Init();
 
 	pFade->Set_Time(time);
 	pFade->Set_Color(XMFLOAT4(0.f, 0.f, 0.f, 1.0f));

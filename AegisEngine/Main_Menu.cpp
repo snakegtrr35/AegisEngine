@@ -125,21 +125,21 @@ void MAIN_MENU::Init()
 			//Add_Game_Object<POLYGON_3D>(LAYER_NAME::GAMEOBJECT, "cube");
 		}
 
-		//// テキスト画像
-		//{
-		//	XMFLOAT2 pos(50.0f, 50.0f);
-		//	auto text = Add_Game_Object<TEXTS>(LAYER_NAME::UI);
+		// テキスト画像
+		{
+			XMFLOAT2 pos(50.0f, 50.0f);
+			auto text = Add_Game_Object<TEXTS>(LAYER_NAME::UI);
 
-		//	text->SetPosition(pos);
+			text->SetPosition(pos);
 
-		//	text->SetSize(XMFLOAT4(20, 20, 20, 20));
+			text->SetSize(XMFLOAT4(20, 20, 20, 20));
 
-		//	text->Set_Object_Name(string("text1"));
+			text->Set_Object_Name(string("text1"));
 
-		//	//string time = to_string(Time);
+			//string time = to_string(Time);
 
-		//	text->Edit("Hello HELL World!!!地球の未来にご奉仕するにゃん！");
-		//}
+			text->Edit("Hello HELL World!!!地球の未来にご奉仕するにゃん！");
+		}
 
 
 

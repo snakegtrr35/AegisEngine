@@ -39,10 +39,11 @@ private:
 
 protected:
 	unique_ptr<ID3D11Buffer, Release> pVertexBuffer;		//!< 頂点バッファ
+	static unique_ptr<ID3D11Buffer, Release> pIndexBuffer;		//!< インデックスバッファ
 
 	VERTEX_3D Vertex[4];		//!< 頂点データ
 
-	TEXTURE* Texture;		//!< テクスチャ
+	unique_ptr<TEXTURE> Texture;		//!< テクスチャ
 
 	XMFLOAT2 Position;		//!< ポジション
 
@@ -62,8 +63,6 @@ protected:
 	list<MENU_COMPONENT*> MenuEvents;		//!< メニューイベント(リスト)
 
 	bool Enable = true;		//!< スプライトの有効無効フラグ(デフォルトは有効)
-
-	static unique_ptr<ID3D11Buffer, Release> pIndexBuffer;		//!< インデックスバッファ
 
 	ID3D11ShaderResourceView* ShaderResourceView = nullptr;
 
@@ -370,7 +369,40 @@ public:
 	void Set(ID3D11ShaderResourceView* shader_resource_view) {
 		ShaderResourceView = shader_resource_view;
 	};
+
+	template<typename Archive>
+	void serialize(Archive& ar)
+	{
+		ar(cereal::base_class<GAME_OBJECT>(this));
+		//ar(Texture);
+		ar(SPRITE::Position);
+		ar(Size);
+		ar(Color);
+	}
+
+	//template<class Archive>
+	//void save(Archive& ar) const
+	//{
+	//	ar(cereal::base_class<GAME_OBJECT>(this));
+	//	ar(Texture);
+	//	ar(SPRITE::Position);
+	//	ar(Size);
+	//	ar(Color);
+	//}
+
+	//template<class Archive>
+	//void load(Archive& ar)
+	//{
+	//	ar(cereal::base_class<GAME_OBJECT>(this));
+	//	ar(Texture);
+	//	ar(SPRITE::Position);
+	//	ar(Size);
+	//	ar(Color);
+	//}
 };
+
+CEREAL_REGISTER_TYPE(SPRITE)
+CEREAL_REGISTER_POLYMORPHIC_RELATION(GAME_OBJECT, SPRITE)
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -400,9 +432,6 @@ private:
 	* @details 実際に描画する関数
 	*/
 	void Draw2(float tx = -1.0f, float ty = -1.0f);
-
-protected:
-
 
 public:
 
@@ -474,8 +503,50 @@ public:
 	*/
 	const XMFLOAT2 Get_Twh() {
 		return XMFLOAT2(Tw, Th);
-	};
+	}
+
+	template<typename Archive>
+	void serialize(Archive& ar)
+	{
+		ar(cereal::base_class<SPRITE>(this));
+		ar(WaitFrame);
+		ar(Pattern_Max_X);
+		ar(Pattern_Max_Y);
+		ar(Tx);
+		ar(Ty);
+		ar(Tw);
+		ar(Th);
+	}
+
+	//template<class Archive>
+	//void save(Archive& ar) const
+	//{
+	//	ar(cereal::base_class<SPRITE>(this));
+	//	ar(WaitFrame);
+	//	ar(Pattern_Max_X);
+	//	ar(Pattern_Max_Y);
+	//	ar(Tx);
+	//	ar(Ty);
+	//	ar(Tw);
+	//	ar(Th);
+	//}
+
+	//template<class Archive>
+	//void load(Archive& ar)
+	//{
+	//	ar(cereal::base_class<SPRITE>(this));
+	//	ar(WaitFrame);
+	//	ar(Pattern_Max_X);
+	//	ar(Pattern_Max_Y);
+	//	ar(Tx);
+	//	ar(Ty);
+	//	ar(Tw);
+	//	ar(Th);
+	//}
 };
+
+CEREAL_REGISTER_TYPE(SPRITE_ANIMATION)
+CEREAL_REGISTER_POLYMORPHIC_RELATION(SPRITE, SPRITE_ANIMATION)
 
 /**
 * @brief テキストクラス
@@ -535,6 +606,30 @@ public:
 	* @details 表示する文字列を設定する関数
 	*/
 	void Edit(const string& text);
+
+	template<typename Archive>
+	void serialize(Archive& ar)
+	{
+		ar(cereal::base_class<SPRITE>(this));
+		ar(Text);
+	}
+
+	//template<class Archive>
+	//void save(Archive& ar) const
+	//{
+	//	ar(cereal::base_class<SPRITE>(this));
+	//	ar(Text);
+	//}
+
+	//template<class Archive>
+	//void load(Archive& ar)
+	//{
+	//	ar(cereal::base_class<SPRITE>(this));
+	//	ar(Text);
+	//}
 };
+
+CEREAL_REGISTER_TYPE(TEXTS)
+CEREAL_REGISTER_POLYMORPHIC_RELATION(SPRITE, TEXTS)
 
 #endif // ! SPRITE_H

@@ -19,75 +19,7 @@ SPRITE::SPRITE()
 	Color = COLOR(1.0f, 1.0f, 1.0f, 1.0f);
 
 	// テクスチャの設定
-	Texture = new TEXTURE(string("number.png"));
-
-	// 頂点バッファの設定
-	if (nullptr == pVertexBuffer.get())
-	{
-		HRESULT hr;
-		ID3D11Buffer* pVB = nullptr;
-
-		D3D11_BUFFER_DESC bd;
-		ZeroMemory(&bd, sizeof(D3D11_BUFFER_DESC));
-
-		bd.ByteWidth = sizeof(VERTEX_3D) * 4;
-		bd.Usage = D3D11_USAGE_DYNAMIC;
-		bd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-		bd.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
-		bd.MiscFlags = 0;
-		bd.StructureByteStride = 0;
-
-		// サブリソースの設定
-		D3D11_SUBRESOURCE_DATA srd;
-		ZeroMemory(&srd, sizeof(D3D11_SUBRESOURCE_DATA));
-
-		srd.pSysMem = Vertex;
-		srd.SysMemPitch = 0;
-		srd.SysMemSlicePitch = 0;
-
-		// 頂点バッファの生成
-		hr = CRenderer::GetDevice()->CreateBuffer(&bd, &srd, &pVB);
-
-		if (FAILED(hr))
-		{
-			return;
-		}
-
-		pVertexBuffer.reset(pVB);
-	}
-
-	// インデックスバッファの設定
-	if (nullptr == pIndexBuffer.get())
-	{
-		HRESULT hr;
-		ID3D11Buffer* pIB = nullptr;
-
-		const WORD index[] = {
-			0, 1, 2,
-			1, 3, 2,
-		};
-
-		D3D11_BUFFER_DESC ibDesc;
-		ibDesc.ByteWidth = sizeof(WORD) * 6;
-		ibDesc.Usage = D3D11_USAGE_DEFAULT;
-		ibDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
-		ibDesc.CPUAccessFlags = 0;
-		ibDesc.MiscFlags = 0;
-		ibDesc.StructureByteStride = 0;
-
-		D3D11_SUBRESOURCE_DATA irData;
-		irData.pSysMem = index;
-		irData.SysMemPitch = 0;
-		irData.SysMemSlicePitch = 0;
-
-		hr = CRenderer::GetDevice()->CreateBuffer(&ibDesc, &irData, &pIB);
-		if (FAILED(hr))
-		{
-			FAILDE_ASSERT
-		}
-
-		pIndexBuffer.reset(pIB);
-	}
+	Texture.reset(new TEXTURE(string("number.png")));
 }
 
 SPRITE::SPRITE(XMFLOAT2 position, XMFLOAT4 size)
@@ -103,8 +35,16 @@ SPRITE::SPRITE(XMFLOAT2 position, XMFLOAT4 size)
 	Color = COLOR(1.0f, 1.0f, 1.0f, 1.0f);
 
 	// テクスチャの設定
-	Texture = new TEXTURE(string("number.png"));
+	Texture.reset(new TEXTURE(string("number.png")));
+}
 
+SPRITE::~SPRITE()
+{
+	Uninit();
+}
+
+void SPRITE::Init(void)
+{
 	// 頂点バッファの設定
 	if (nullptr == pVertexBuffer.get())
 	{
@@ -172,15 +112,6 @@ SPRITE::SPRITE(XMFLOAT2 position, XMFLOAT4 size)
 
 		pIndexBuffer.reset(pIB);
 	}
-}
-
-SPRITE::~SPRITE()
-{
-	Uninit();
-}
-
-void SPRITE::Init(void)
-{
 }
 
 void SPRITE::Draw(void)
@@ -254,7 +185,7 @@ void SPRITE::Update(float delta_time)
 
 void SPRITE::Uninit(void)
 {	
-	SAFE_DELETE(Texture);
+	Texture.reset(nullptr);
 
 	pVertexBuffer.reset(nullptr);
 
@@ -316,7 +247,7 @@ void SPRITE::SetTexture(const string& const file_name)
 
 TEXTURE* const SPRITE::GetTexture()
 {
-	return Texture;
+	return Texture.get();
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -335,6 +266,8 @@ SPRITE_ANIMATION::SPRITE_ANIMATION()
 
 	Pattern_Max_X = 0;
 	Pattern_Max_Y = 0;
+
+	Ty_Param = Tx_Param = -1.0f;
 
 	SetTexture(string("Explosion.png"));
 }
@@ -356,6 +289,8 @@ SPRITE_ANIMATION::SPRITE_ANIMATION(XMFLOAT2 position, XMFLOAT4 size)
 
 	Size = size;
 
+	Ty_Param = Tx_Param = -1.0f;
+
 	SetTexture(string("Explosion.png"));
 }
 
@@ -366,6 +301,7 @@ SPRITE_ANIMATION::~SPRITE_ANIMATION()
 
 void SPRITE_ANIMATION::Init(void)
 {
+	SPRITE::Init();
 }
 
 void SPRITE_ANIMATION::Draw(void)
@@ -409,25 +345,21 @@ void SPRITE_ANIMATION::Draw2(float tx, float ty)
 	Vertex[0].Position = XMFLOAT3(Position.x - Size.y, Position.y + Size.x, 0.0f);
 	Vertex[0].Normal = XMFLOAT3(0.0f, 0.0f, -1.0f);
 	Vertex[0].Diffuse = XMFLOAT4(Color.r, Color.g, Color.b, Color.a);
-	//Vertex[0].TexCoord = XMFLOAT2(u[0], v[0]);
 	Vertex[0].TexCoord = XMFLOAT2(u[0], v[1]);
 
 	Vertex[1].Position = XMFLOAT3(Position.x + Size.w, Position.y + Size.x, 0.0f);
 	Vertex[1].Normal = XMFLOAT3(0.0f, 0.0f, -1.0f);
 	Vertex[1].Diffuse = XMFLOAT4(Color.r, Color.g, Color.b, Color.a);
-	//Vertex[1].TexCoord = XMFLOAT2(u[1], v[0]);
 	Vertex[1].TexCoord = XMFLOAT2(u[1], v[1]);
 
 	Vertex[2].Position = XMFLOAT3(Position.x - Size.y, Position.y - Size.z, 0.0f);
 	Vertex[2].Normal = XMFLOAT3(0.0f, 0.0f, -1.0f);
 	Vertex[2].Diffuse = XMFLOAT4(Color.r, Color.g, Color.b, Color.a);
-	//Vertex[2].TexCoord = XMFLOAT2(u[0], v[1]);
 	Vertex[2].TexCoord = XMFLOAT2(u[0], v[0]);
 
 	Vertex[3].Position = XMFLOAT3(Position.x + Size.w, Position.y - Size.z, 0.0f);
 	Vertex[3].Normal = XMFLOAT3(0.0f, 0.0f, -1.0f);
 	Vertex[3].Diffuse = XMFLOAT4(Color.r, Color.g, Color.b, Color.a);
-	//Vertex[3].TexCoord = XMFLOAT2(u[1], v[1]);
 	Vertex[3].TexCoord = XMFLOAT2(u[1], v[0]);
 
 	// 頂点バッファの書き換え
@@ -515,6 +447,7 @@ TEXTS::~TEXTS()
 
 void TEXTS::Init(void)
 {
+	SPRITE::Init();
 }
 
 void TEXTS::Draw(void)
@@ -548,6 +481,8 @@ void TEXTS::Text_Draw(const string& text)
 		ID3D11ShaderResourceView* shader_resource_view = nullptr;
 		wstring font;
 		short i = 0;
+
+		sprite.Init();
 
 		sprite.SetSize(Size);
 
