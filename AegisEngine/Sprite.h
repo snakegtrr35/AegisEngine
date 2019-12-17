@@ -9,11 +9,10 @@
 #define SPRITE_H
 
 #include	"Game_Object.h"
+#include	"texture.h"
 #include	"Menu_Component.h"
 #include	"Renderer.h"
-#include	"main.h"
 
-class TEXTURE;
 
 /**
  * 子スプライト情報
@@ -374,7 +373,7 @@ public:
 	void serialize(Archive& ar)
 	{
 		ar(cereal::base_class<GAME_OBJECT>(this));
-		//ar(Texture);
+		ar(Texture);
 		ar(SPRITE::Position);
 		ar(Size);
 		ar(Color);

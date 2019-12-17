@@ -102,6 +102,10 @@ public:
 	static double Get_DeltaTime() {
 		return time;
 	}
+
+	static double Get_FPS() {
+		return 1 / time;
+	}
 };
 
 

@@ -1,5 +1,4 @@
 #include	"Sprite.h"
-#include	"texture.h"
 #include	"manager.h"
 #include	"ShadowMap.h"
 #include	"Scene.h"

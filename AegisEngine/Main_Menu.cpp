@@ -128,13 +128,11 @@ void MAIN_MENU::Init()
 		// テキスト画像
 		{
 			XMFLOAT2 pos(50.0f, 50.0f);
-			auto text = Add_Game_Object<TEXTS>(LAYER_NAME::UI);
+			auto text = Add_Game_Object<TEXTS>(LAYER_NAME::UI, "text1");
 
 			text->SetPosition(pos);
 
 			text->SetSize(XMFLOAT4(20, 20, 20, 20));
-
-			text->Set_Object_Name(string("text1"));
 
 			//string time = to_string(Time);
 
@@ -174,19 +172,17 @@ void MAIN_MENU::Init()
 		//	text->Edit("0.000");
 		//}
 
-		//{
-		//	auto text = Add_Game_Object<TEXTS>(LAYER_NAME::UI);
+		{
+			auto text = Add_Game_Object<TEXTS>(LAYER_NAME::UI, "fps");
 
-		//	XMFLOAT2 pos(100.0f, 340.0f);
+			XMFLOAT2 pos(100.0f, 340.0f);
 
-		//	text->SetPosition(pos);
+			text->SetPosition(pos);
 
-		//	text->SetSize(XMFLOAT4(20, 20, 20, 20));
+			text->SetSize(XMFLOAT4(20, 20, 20, 20));
 
-		//	text->Set_Object_Name(string("fps"));
-
-		//	text->Edit("0.000");
-		//}
+			text->Edit("0.000");
+		}
 
 		{
 			Add_Game_Object<BOUNDING_AABB>(LAYER_NAME::GAMEOBJECT, "aabb");
@@ -214,18 +210,18 @@ void MAIN_MENU::Update(float delta_time)
 {
 	SCENE::Update(delta_time);
 
-	/*{
+	{
 		static char cnt = 0;
 
 		if (cnt == 3)
 		{
-			{
-				auto text = Get_Game_Object<TEXTS>("delta_time");
+			//{
+			//	auto text = Get_Game_Object<TEXTS>("delta_time");
 
-				auto time = TIMER::Get_DeltaTime();
+			//	auto time = TIMER::Get_DeltaTime();
 
-				text->Edit(to_string(time));
-			}
+			//	text->Edit(to_string(time));
+			//}
 
 			{
 				auto text = Get_Game_Object<TEXTS>("fps");
@@ -239,7 +235,7 @@ void MAIN_MENU::Update(float delta_time)
 		}
 
 		cnt++;
-	}*/
+	}
 
 	if (FADE::End_Fade())
 	{
