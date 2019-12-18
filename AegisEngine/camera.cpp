@@ -61,7 +61,7 @@ void CCamera::Uninit()
 
 void CCamera::Update(float delta_time)
 {
-	XMFLOAT2 point = MOUSE::Get_Position();
+	XMFLOAT2 point = MOUSE::Get_Mouse()->Get_Position();
 
 	bool flag = KEYBOARD::Press_Keyboard(VK_RBUTTON);
 
@@ -95,7 +95,7 @@ void CCamera::Update(float delta_time)
 
 	// ‰ñ“]
 	{
-		if (flag && MOUSE::Get_Move_Y_Flag())
+		if (flag && MOUSE::Get_Mouse()->Get_Move_Y_Flag())
 		{
 			float angle;
 
@@ -123,7 +123,7 @@ void CCamera::Update(float delta_time)
 			Up = XMVector3Normalize(Up);
 		}
 
-		if (flag && MOUSE::Get_Move_X_Flag())
+		if (flag && MOUSE::Get_Mouse()->Get_Move_X_Flag())
 		{
 			float angle;
 
@@ -188,12 +188,12 @@ void CCamera::Update(float delta_time)
 			Pos -= r * 0.5f;
 		}
 
-		if ((MOUSE::Get_Wheel_Move_Flag() == WHEEL_MOVE_ENUM::UP))
+		if ((MOUSE::Get_Mouse()->Get_Wheel_Move_Flag() == WHEEL_MOVE_ENUM::UP))
 		{
 			Pos += f * 2.0f;
 		}
 
-		if ((MOUSE::Get_Wheel_Move_Flag() == WHEEL_MOVE_ENUM::DOWN))
+		if ((MOUSE::Get_Mouse()->Get_Wheel_Move_Flag() == WHEEL_MOVE_ENUM::DOWN))
 		{
 			Pos -= f * 2.0f;
 		}

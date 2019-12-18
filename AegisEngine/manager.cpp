@@ -99,7 +99,7 @@ void CManager::Update()
 		EFFEKSEER_MANAGER::Update(TIMER::Get_DeltaTime());
 	}
 
-	MOUSE::Reset_Wheel_Moveset();
+	MOUSE::Get_Mouse()->Reset_Wheel_Moveset();
 
 	/*if (KEYBOARD::Trigger_Keyboard(VK_F1))
 	{

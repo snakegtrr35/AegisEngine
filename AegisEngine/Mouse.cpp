@@ -1,38 +1,34 @@
 #include	"Mouse.h"
 #include	<algorithm>
 
-float MOUSE::Mouse_Sensitivity;
-bool MOUSE::MoveFlag = false;
-bool MOUSE::Move_X_Flag = false;
-bool MOUSE::Move_Y_Flag = false;
-
-int MOUSE::DiffW = 0;
-int MOUSE::OldDiffW = 0;
-
-POINT MOUSE::ScreenPoint;
-XMFLOAT2 MOUSE::ScreenPosition;
-
-POINT MOUSE::Pos;
-POINT MOUSE::OldPos;
+unique_ptr<MOUSE> MOUSE::pMouse = nullptr;
 
 void MOUSE::Init(void)
 {
-	OldPos.y = OldPos.x = Pos.y = Pos.x = 0;
+	if (nullptr == pMouse.get()) pMouse.reset(new MOUSE());
 
-	Mouse_Sensitivity = 1.0f;
+	pMouse->OldPos.y = pMouse->OldPos.x = 0;
+	pMouse->Pos.y = pMouse->Pos.x = 0;
 
-	ZeroMemory(&ScreenPoint, sizeof(ScreenPoint));
+	pMouse->Mouse_Sensitivity = 1.0f;
+
+	pMouse->ScreenPoint.x = 0;
+	pMouse->ScreenPoint.y = 0;
 }
 
 void MOUSE::Update(void)
 {
-	GetCursorPos(&ScreenPoint);
+	if (nullptr != pMouse.get())
+	{
+		GetCursorPos(&pMouse->ScreenPoint);
 
-	ScreenPosition = XMFLOAT2(ScreenPoint.x, ScreenPoint.y);
+		pMouse->ScreenPosition = XMFLOAT2(pMouse->ScreenPoint.x, pMouse->ScreenPoint.y);
+	}
 }
 
 void MOUSE::Uninit(void)
 {
+	pMouse.reset(nullptr);
 }
 
 XMFLOAT2& const MOUSE::Get_Screen_Position()

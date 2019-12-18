@@ -30,7 +30,7 @@ private:
 
 public:
 	My_imgui() : show_demo_window(false), show_another_window(false), show_default_window(false),
-				 Texture_Import_Enable(true), Texture_Delete_Enable(false), Setting_Enable(false),
+				 Texture_Import_Enable(false), Texture_Delete_Enable(false), Setting_Enable(false),
 				 clear_color(ImVec4(0.45f, 0.55f, 0.60f, 1.00f)),
 				 f(0.0f), counter(0) {}
 

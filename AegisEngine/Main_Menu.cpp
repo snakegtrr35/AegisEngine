@@ -111,19 +111,17 @@ void MAIN_MENU::Init()
 			auto pmd = Add_Game_Object<MESH_DOOM>(LAYER_NAME::BACKGROUND, "sky_doom");
 		}
 
-		{
-			//Add_Game_Object<GRID>(LAYER_NAME::BACKGROUND, "grid");
-		}
+		//{
+		//	//Add_Game_Object<GRID>(LAYER_NAME::BACKGROUND, "grid");
+		//}
 
 		{
-			//Add_Game_Object<FIELD>(LAYER_NAME::GAMEOBJECT, "field");
-
 			Add_Game_Object<MESH_FIELD>(LAYER_NAME::GAMEOBJECT, "field");
 		}
 
-		{
-			//Add_Game_Object<POLYGON_3D>(LAYER_NAME::GAMEOBJECT, "cube");
-		}
+		//{
+		//	Add_Game_Object<POLYGON_3D>(LAYER_NAME::GAMEOBJECT, "cube");
+		//}
 
 		// テキスト画像
 		{
@@ -133,8 +131,6 @@ void MAIN_MENU::Init()
 			text->SetPosition(pos);
 
 			text->SetSize(XMFLOAT4(20, 20, 20, 20));
-
-			//string time = to_string(Time);
 
 			text->Edit("Hello HELL World!!!地球の未来にご奉仕するにゃん！");
 		}
@@ -172,17 +168,17 @@ void MAIN_MENU::Init()
 		//	text->Edit("0.000");
 		//}
 
-		{
-			auto text = Add_Game_Object<TEXTS>(LAYER_NAME::UI, "fps");
+		//{
+		//	auto text = Add_Game_Object<TEXTS>(LAYER_NAME::UI, "fps");
 
-			XMFLOAT2 pos(100.0f, 340.0f);
+		//	XMFLOAT2 pos(100.0f, 340.0f);
 
-			text->SetPosition(pos);
+		//	text->SetPosition(pos);
 
-			text->SetSize(XMFLOAT4(20, 20, 20, 20));
+		//	text->SetSize(XMFLOAT4(20, 20, 20, 20));
 
-			text->Edit("0.000");
-		}
+		//	text->Edit("0.000");
+		//}
 
 		{
 			Add_Game_Object<BOUNDING_AABB>(LAYER_NAME::GAMEOBJECT, "aabb");
@@ -223,13 +219,13 @@ void MAIN_MENU::Update(float delta_time)
 			//	text->Edit(to_string(time));
 			//}
 
-			{
+			/*{
 				auto text = Get_Game_Object<TEXTS>("fps");
 
 				auto time = TIMER::Get_DeltaTime();
 
 				text->Edit(to_string(1 / time));
-			}
+			}*/
 
 			cnt = 0;
 		}

@@ -48,7 +48,7 @@ void CINPUT::onRawInput(WPARAM wParam, LPARAM lParam)
 			pos.x = raw->data.mouse.lLastX;
 			pos.y = raw->data.mouse.lLastY;
 
-			MOUSE::Set_Position(pos);
+			MOUSE::Get_Mouse()->Set_Position(pos);
 		}
 
 		{
@@ -60,11 +60,11 @@ void CINPUT::onRawInput(WPARAM wParam, LPARAM lParam)
 				short w = (short)raw->data.mouse.usButtonData;
 				if (w > 0)
 				{
-					MOUSE::Set_Wheel_Move(1);
+					MOUSE::Get_Mouse()->Set_Wheel_Move(1);
 				}
 				else
 				{
-					MOUSE::Set_Wheel_Move(-1);
+					MOUSE::Get_Mouse()->Set_Wheel_Move(-1);
 				}
 			}
 		}

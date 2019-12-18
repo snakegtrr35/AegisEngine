@@ -13,52 +13,8 @@
 
 #include	"Timer.h"
 
-float radius = 3.0f;
-
 PLAYER::PLAYER(void)
 {
-	Position = XMFLOAT3(0.0f, 0.0f, 0.0f);
-
-	Rotation = XMFLOAT3(0.0f, 0.0f, 0.0f);
-
-	Scaling = XMFLOAT3(1.0f, 1.0f, 1.0f);
-
-	{
-		AnimType = true;
-		Blend = 1.0f;
-
-		string name = "asset/model/human01_Stop.fbx";
-
-		Model = new CMODEL();
-
-		Model->Load(name);
-
-		Model->Set_Position(Position);
-		Model->Set_Rotation(Rotation);
-		Model->Set_Scaling(Scaling);
-	}
-
-	Collision = new COLLISIION_SPHERE();
-
-	dynamic_cast<COLLISIION_SPHERE*>(Collision)->Set_Position(Position);
-
-	dynamic_cast<COLLISIION_SPHERE*>(Collision)->Set_Radius(3.0f);
-
-	{
-		COLOR color(1.0f, 0.f, 0.f, 1.0f);
-
-		Shpere = new BOUNDING_SHPERE();
-		//Shpere = new BOUNDING_AABB();
-
-		Shpere->Set_Position(Position);
-		Shpere->Set_Radius(radius);
-		Shpere->Set_Color(color);
-		//Shpere->Init();
-	}
-
-	//shadow = new CIRCLE_SHADOW();
-	//shadow->Set_Position(&Position);
-	//shadow->SetWH(XMFLOAT2(0.8f, 0.8f));
 }
 
 PLAYER::~PLAYER()
@@ -83,21 +39,21 @@ void PLAYER::Init(void)
 		Model->Set_Scaling(Scaling);
 	}
 
-	Collision = new COLLISIION_SPHERE();
+	//Collision = new COLLISIION_SPHERE();
 
-	dynamic_cast<COLLISIION_SPHERE*>(Collision)->Set_Position(Position);
+	//dynamic_cast<COLLISIION_SPHERE*>(Collision)->Set_Position(Position);
 
-	dynamic_cast<COLLISIION_SPHERE*>(Collision)->Set_Radius(3.0f);
+	//dynamic_cast<COLLISIION_SPHERE*>(Collision)->Set_Radius(3.0f);
 
 	{
-		COLOR color(1.0f, 0.f, 0.f, 1.0f);
+		//COLOR color(1.0f, 0.f, 0.f, 1.0f);
 
-		Shpere = new BOUNDING_SHPERE();
+		//Shpere = new BOUNDING_SHPERE();
 		//Shpere = new BOUNDING_AABB();
 
-		Shpere->Set_Position(Position);
-		Shpere->Set_Radius(radius);
-		Shpere->Set_Color(color);
+		//Shpere->Set_Position(Position);
+		//Shpere->Set_Radius(radius);
+		//Shpere->Set_Color(color);
 		//Shpere->Init();
 	}
 }
@@ -105,9 +61,8 @@ void PLAYER::Init(void)
 void PLAYER::Draw(void)
 {
 	Model->Draw();
-	//shadow->Draw();
 
-	Shpere->Draw();
+	//Shpere->Draw();
 }
 
 void PLAYER::Update(float delta_time)
@@ -201,20 +156,11 @@ void PLAYER::Update(float delta_time)
 		Blend = Model->Get().Get_Ratio();
 	}
 
-	dynamic_cast<COLLISIION_SPHERE*>(Collision)->Set_Position(Position);
-	Shpere->Set_Position(Position);
-	Shpere->Set_Scaling(Scaling);
-	Shpere->Set_Radius(radius);
-	Shpere->Update(delta_time);
-
-	// 影の更新
-	{
-		//XMFLOAT3 pos = Position;
-
-		//pos.y += 0.01f;
-		
-		//shadow->Set_Position(&pos);
-	}
+	//dynamic_cast<COLLISIION_SPHERE*>(Collision)->Set_Position(Position);
+	//Shpere->Set_Position(Position);
+	//Shpere->Set_Scaling(Scaling);
+	//Shpere->Set_Radius(radius);
+	//Shpere->Update(delta_time);
 
 	if (KEYBOARD::Trigger_Keyboard(VK_1))
 	{
@@ -256,10 +202,9 @@ void PLAYER::Update(float delta_time)
 void PLAYER::Uninit(void)
 {
 	SAFE_DELETE(Model);
-	//SAFE_DELETE(shadow);
 
-	SAFE_DELETE(Collision);
-	SAFE_DELETE(Shpere);
+	//SAFE_DELETE(Collision);
+	//SAFE_DELETE(Shpere);
 }
 
 // ポジションの設定

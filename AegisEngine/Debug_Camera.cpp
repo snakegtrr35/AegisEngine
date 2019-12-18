@@ -51,7 +51,7 @@ void DEBUG_CAMERA::Uninit()
 
 void DEBUG_CAMERA::Update(float delta_time)
 {
-	XMFLOAT2 point = MOUSE::Get_Position();
+	XMFLOAT2 point = MOUSE::Get_Mouse()->Get_Position();
 
 	bool flag = KEYBOARD::Press_Keyboard(VK_SHIFT);
 
@@ -77,7 +77,7 @@ void DEBUG_CAMERA::Update(float delta_time)
 	r = DirectX::XMVector3Normalize(r);
 
 	// ‰ñ“]
-	if (flag2 && MOUSE::Get_Move_Flag())
+	if (flag2 && MOUSE::Get_Mouse()->Get_Move_Flag())
 	{
 		XMMATRIX mtxRotation;
 
@@ -90,7 +90,7 @@ void DEBUG_CAMERA::Update(float delta_time)
 		Up = XMVector3Normalize(Up);
 	}
 
-	if (flag2 && MOUSE::Get_Move_Flag())
+	if (flag2 && MOUSE::Get_Mouse()->Get_Move_Flag())
 	{
 		XMMATRIX mtxRotation;
 
@@ -133,12 +133,12 @@ void DEBUG_CAMERA::Update(float delta_time)
 			Pos -= r * delta_time * 15.0f;
 		}
 
-		if ((MOUSE::Get_Wheel_Move_Flag() == WHEEL_MOVE_ENUM::UP))
+		if ((MOUSE::Get_Mouse()->Get_Wheel_Move_Flag() == WHEEL_MOVE_ENUM::UP))
 		{
 			Pos += f * delta_time * 150.0f;
 		}
 
-		if ((MOUSE::Get_Wheel_Move_Flag() == WHEEL_MOVE_ENUM::DOWN))
+		if ((MOUSE::Get_Mouse()->Get_Wheel_Move_Flag() == WHEEL_MOVE_ENUM::DOWN))
 		{
 			Pos -= f * delta_time * 150.0f;
 		}

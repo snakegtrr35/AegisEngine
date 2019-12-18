@@ -9,15 +9,12 @@ class CMODEL;
 class BULLET;
 class COLLISION;
 class BOUNDING_SHPERE;
-//class BOUNDING_AABB;
-//class CIRCLE_SHADOW;
 
 class PLAYER : public GAME_OBJECT {
 private:
-	CMODEL* Model;
-	//CIRCLE_SHADOW* shadow;
-	COLLISION* Collision;
-	BOUNDING_SHPERE* Shpere;
+	CMODEL* Model = nullptr;
+	//COLLISION* Collision;
+	//BOUNDING_SHPERE* Shpere;
 	//BOUNDING_AABB* Shpere;
 
 	// true = Stop false = Walk
@@ -36,9 +33,9 @@ public:
 	void SetPosition(const XMFLOAT3 position);					// ポジションの設定
 	void SetScaling(const XMFLOAT3 scaling);					// 拡大縮小の値の設定
 
-	COLLISION* const Get_Collision() {
-		return Collision;
-	}
+	//COLLISION* const Get_Collision() {
+	//	return Collision;
+	//}
 
 	float* Get() {
 		return &Blend;

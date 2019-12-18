@@ -314,7 +314,7 @@ void SHADOW_MAP::Update()
 	LightPos.y = light->Position.y;
 	LightPos.z = light->Position.z;
 
-	//if (Target)
+	if (nullptr != Target)
 	{
 		XMFLOAT3* at = Target->Get_Position();
 
