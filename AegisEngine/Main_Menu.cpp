@@ -195,6 +195,21 @@ void MAIN_MENU::Init()
 
 	FADE::Start_FadeIn(60);
 	flag = false;
+
+	{
+
+		XMVECTOR vec = XMVectorSet(0.f, 0.f, 1.0, 0.f);
+
+		XMMATRIX mtr = XMMatrixRotationRollPitchYaw(0.f, XMConvertToRadians(90.0f), 0.f);
+
+		vec = XMVector3Transform(vec, mtr);
+
+		XMFLOAT3 v;
+
+		XMStoreFloat3(&v, vec);
+
+		int a = 0;
+	}
 }
 
 void MAIN_MENU::Draw()

@@ -66,7 +66,6 @@ public:
 	//	ar(Default_Color);
 	//	ar(Color);
 	//}
-
 };
 
 CEREAL_REGISTER_TYPE(BOUNDING)
