@@ -22,6 +22,7 @@
 #include	"common.h"
 
 #include	<DirectXMath.h>
+#include	<directxcollision.h>
 using namespace DirectX;
 
 #include	"Math.h"

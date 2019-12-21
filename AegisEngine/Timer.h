@@ -119,7 +119,7 @@ public:
 							FPSs.pop_back();
 						}
 
-						if (3 <= cnt)
+						if (5 <= cnt)
 						{
 							double d = accumulate(FPSs.begin(), FPSs.end(), 0);
 
