@@ -69,6 +69,7 @@ using namespace Math;
 #include	<unordered_map>
 #include	<set>
 #include	<unordered_set>
+#include	<deque>
 #include	<memory>
 #include	<string>
 #include	<functional>
@@ -79,6 +80,7 @@ using namespace Math;
 #include	<typeinfo>
 #include	<chrono>
 #include	<filesystem>
+#include	<numeric>
 
 #include	<time.h>
 

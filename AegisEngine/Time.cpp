@@ -8,3 +8,6 @@ LARGE_INTEGER TIMER::delta_start;
 LARGE_INTEGER TIMER::delta_end;
 
 double TIMER::time = 0;
+
+deque<double> TIMER::FPSs;
+double TIMER::FPS = 0.0;

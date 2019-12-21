@@ -23,7 +23,7 @@ SHADOW_MAP::SHADOW_MAP()
 		// プロジェクションマトリックス
 		//PlojectionMatrix = XMMatrixPerspectiveFovLH(XMConvertToRadians(80.0f), WIDTH / HEIGHT, 1.0f, 100.0f);
 
-		PlojectionMatrix = XMMatrixOrthographicLH(30.0f, 30.0f, 1.0f, 100.0f);
+		PlojectionMatrix = XMMatrixOrthographicLH(30.0f, 30.0f, 0.1f, 100.0f);
 	}
 
 	{

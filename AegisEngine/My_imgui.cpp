@@ -22,6 +22,8 @@ static string old_name;
 
 void EditTransform(const float* cameraView, float* cameraProjection, float* matrix, bool enable, GAME_OBJECT* object);
 
+//float fps = 0.0f;
+
 void My_imgui::Init(HWND hWnd)
 {
 	// Setup Dear ImGui context
@@ -62,6 +64,8 @@ void My_imgui::Init(HWND hWnd)
 
 void My_imgui::Draw(void)
 {
+	//fps = ImGui::GetIO().Framerate;
+
 	//Start the Dear ImGui frame
 	{
 		// 1. Show the big demo window (Most of the sample code is in ImGui::ShowDemoWindow()! You can browse its code to learn more about Dear ImGui!).
