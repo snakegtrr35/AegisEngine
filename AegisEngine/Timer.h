@@ -82,7 +82,7 @@ public:
 
 	static void Update() {
 		static bool flag = true;
-		//static DWORD cnt = 0;
+		static char cnt = 0;
 
 		if (flag)
 		{
@@ -108,7 +108,7 @@ public:
 
 					size_t i = s.find_first_of(".");
 
-					if (i <= s.size() )
+					if (i <= s.size())
 					{
 						s.erase(i + 2, 5);
 
@@ -119,16 +119,21 @@ public:
 							FPSs.pop_back();
 						}
 
-						double d = accumulate(FPSs.begin(), FPSs.end(), 0);
+						if (3 <= cnt)
+						{
+							double d = accumulate(FPSs.begin(), FPSs.end(), 0);
 
-						FPS = std::floor( (d / FPSs.size() ) * 10.0) / 10.0;
+							FPS = std::floor((d / FPSs.size()) * 10.0) / 10.0;
+
+							cnt = 0;
+						}
+
+						cnt++;
 					}
 				}
 			}
 		}
 		delta_start = delta_end;
-
-		//cnt++;
 	}
 
 	static double Get_DeltaTime() {

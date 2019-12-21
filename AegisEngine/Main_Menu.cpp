@@ -216,169 +216,169 @@ void MAIN_MENU::Init()
 	flag = false;
 
 	{
-		//float Radius = 3.0f;
-		//VertexNum = 10 * (UINT)Radius * 0.5;
+		float Radius = 3.0f;
+		VertexNum = 10 * (UINT)Radius * 0.5;
 
-		//// 頂点バッファの設定
-		//if (nullptr == pVertexBuffer.get())
-		//{
-		//	VERTEX_3D* vertex = new VERTEX_3D[VertexNum];
+		// 頂点バッファの設定
+		if (nullptr == pVertexBuffer.get())
+		{
+			VERTEX_3D* vertex = new VERTEX_3D[VertexNum];
 
-		//	const float angle = XM_PI / (VertexNum - 1);
+			const float angle = XM_PI / (VertexNum - 1);
 
-		//	for (int i = 0; i < VertexNum; i++)
-		//	{
-		//		vertex[i].Position = XMFLOAT3(cosf(angle * i) * Radius, sinf(angle * i) * Radius, 0.0f);
-		//		vertex[i].Normal = XMFLOAT3(0.0f, 0.0f, 0.0f);
-		//		vertex[i].Diffuse = XMFLOAT4(1.0f, 0.f, 0.f, 1.0f);
-		//		vertex[i].TexCoord = XMFLOAT2(0.0f, 0.0f);
-		//	}
+			for (int i = 0; i < VertexNum; i++)
+			{
+				vertex[i].Position = XMFLOAT3(cosf(angle * i) * Radius, sinf(angle * i) * Radius, 0.0f);
+				vertex[i].Normal = XMFLOAT3(0.0f, 0.0f, 0.0f);
+				vertex[i].Diffuse = XMFLOAT4(1.0f, 0.f, 0.f, 1.0f);
+				vertex[i].TexCoord = XMFLOAT2(0.0f, 0.0f);
+			}
 
-		//	// 頂点バッファの設定
-		//	{
-		//		ID3D11Buffer* buffer;
+			// 頂点バッファの設定
+			{
+				ID3D11Buffer* buffer;
 
-		//		D3D11_BUFFER_DESC bd;
-		//		ZeroMemory(&bd, sizeof(bd));
+				D3D11_BUFFER_DESC bd;
+				ZeroMemory(&bd, sizeof(bd));
 
-		//		bd.ByteWidth = sizeof(VERTEX_3D) * VertexNum;
-		//		bd.Usage = D3D11_USAGE_DYNAMIC;
-		//		bd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-		//		bd.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
-		//		bd.MiscFlags = 0;
-		//		bd.StructureByteStride = 0;
+				bd.ByteWidth = sizeof(VERTEX_3D) * VertexNum;
+				bd.Usage = D3D11_USAGE_DYNAMIC;
+				bd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+				bd.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+				bd.MiscFlags = 0;
+				bd.StructureByteStride = 0;
 
-		//		D3D11_SUBRESOURCE_DATA sd;
-		//		sd.pSysMem = vertex;
-		//		sd.SysMemPitch = 0;
-		//		sd.SysMemSlicePitch = 0;
+				D3D11_SUBRESOURCE_DATA sd;
+				sd.pSysMem = vertex;
+				sd.SysMemPitch = 0;
+				sd.SysMemSlicePitch = 0;
 
-		//		CRenderer::GetDevice()->CreateBuffer(&bd, &sd, &buffer);
+				CRenderer::GetDevice()->CreateBuffer(&bd, &sd, &buffer);
 
-		//		pVertexBuffer.reset(buffer);
-		//	}
+				pVertexBuffer.reset(buffer);
+			}
 
-		//	SAFE_DELETE_ARRAY(vertex);
-		//}
+			SAFE_DELETE_ARRAY(vertex);
+		}
 
-		//// インデックスバッファの設定
-		//if (nullptr == pIndexBuffer.get())
-		//{
-		//	IndexNum = VertexNum * 2;
-		//	WORD* index_array = new WORD[IndexNum];
+		// インデックスバッファの設定
+		if (nullptr == pIndexBuffer.get())
+		{
+			IndexNum = VertexNum * 2;
+			WORD* index_array = new WORD[IndexNum];
 
-		//	for (int i = 0; i < VertexNum; i++)
-		//	{
-		//		index_array[i * 2] = i;
-		//		index_array[i * 2 + 1] = (i + 1) % VertexNum;
-		//	}
+			for (int i = 0; i < VertexNum; i++)
+			{
+				index_array[i * 2] = i;
+				index_array[i * 2 + 1] = (i + 1) % VertexNum;
+			}
 
-		//	// インデックスバッファの設定
-		//	{
-		//		ID3D11Buffer* buffer;
+			// インデックスバッファの設定
+			{
+				ID3D11Buffer* buffer;
 
-		//		D3D11_BUFFER_DESC bd;
-		//		ZeroMemory(&bd, sizeof(bd));
+				D3D11_BUFFER_DESC bd;
+				ZeroMemory(&bd, sizeof(bd));
 
-		//		bd.ByteWidth = sizeof(WORD) * IndexNum;
-		//		bd.Usage = D3D11_USAGE_DEFAULT;
-		//		bd.BindFlags = D3D11_BIND_INDEX_BUFFER;
-		//		bd.CPUAccessFlags = 0;
-		//		bd.MiscFlags = 0;
-		//		bd.StructureByteStride = 0;
+				bd.ByteWidth = sizeof(WORD) * IndexNum;
+				bd.Usage = D3D11_USAGE_DEFAULT;
+				bd.BindFlags = D3D11_BIND_INDEX_BUFFER;
+				bd.CPUAccessFlags = 0;
+				bd.MiscFlags = 0;
+				bd.StructureByteStride = 0;
 
-		//		D3D11_SUBRESOURCE_DATA sd;
-		//		ZeroMemory(&sd, sizeof(sd));
-		//		sd.pSysMem = index_array;
+				D3D11_SUBRESOURCE_DATA sd;
+				ZeroMemory(&sd, sizeof(sd));
+				sd.pSysMem = index_array;
 
-		//		CRenderer::GetDevice()->CreateBuffer(&bd, &sd, &buffer);
+				CRenderer::GetDevice()->CreateBuffer(&bd, &sd, &buffer);
 
-		//		pIndexBuffer.reset(buffer);
-		//	}
+				pIndexBuffer.reset(buffer);
+			}
 
-		//	SAFE_DELETE(index_array);
-		//}
-		//
-		//// 頂点バッファの設定
-		//if (nullptr == pVB.get())
-		//{
-		//	VERTEX_3D vertex[6];
+			SAFE_DELETE(index_array);
+		}
+		
+		// LINEの頂点バッファの設定
+		if (nullptr == pVB.get())
+		{
+			VERTEX_3D vertex[6];
 
-		//	vertex[0].Position = XMFLOAT3(3.f, -2.5, 0.f);
-		//	vertex[1].Position = XMFLOAT3(3.f, 2.5, 0.f);
+			vertex[0].Position = XMFLOAT3(3.f, -2.5, 0.f);
+			vertex[1].Position = XMFLOAT3(3.f, 2.5, 0.f);
 
-		//	vertex[2].Position = XMFLOAT3(3.f, 2.5, 0.f);
-		//	vertex[3].Position = XMFLOAT3(-3.f, -2.5, 0.f);
+			vertex[2].Position = XMFLOAT3(3.f, 2.5, 0.f);
+			vertex[3].Position = XMFLOAT3(-3.f, -2.5, 0.f);
 
-		//	vertex[4].Position = XMFLOAT3(-3.f, -2.5, 0.f);
-		//	vertex[5].Position = XMFLOAT3(-3.f, 2.5, 0.f);
+			vertex[4].Position = XMFLOAT3(-3.f, -2.5, 0.f);
+			vertex[5].Position = XMFLOAT3(-3.f, 2.5, 0.f);
 
-		//	for (int i = 0; i < 6; i++)
-		//	{
-		//		vertex[i].Normal = XMFLOAT3(0.0f, 0.0f, 0.0f);
-		//		vertex[i].Diffuse = XMFLOAT4(1.0f, 0.f, 0.f, 1.0f);
-		//		vertex[i].TexCoord = XMFLOAT2(0.0f, 0.0f);
-		//	}
+			for (int i = 0; i < 6; i++)
+			{
+				vertex[i].Normal = XMFLOAT3(0.0f, 0.0f, 0.0f);
+				vertex[i].Diffuse = XMFLOAT4(1.0f, 0.f, 0.f, 1.0f);
+				vertex[i].TexCoord = XMFLOAT2(0.0f, 0.0f);
+			}
 
-		//	// 頂点バッファの設定
-		//	{
-		//		ID3D11Buffer* buffer;
+			// 頂点バッファの設定
+			{
+				ID3D11Buffer* buffer;
 
-		//		D3D11_BUFFER_DESC bd;
-		//		ZeroMemory(&bd, sizeof(bd));
+				D3D11_BUFFER_DESC bd;
+				ZeroMemory(&bd, sizeof(bd));
 
-		//		bd.ByteWidth = sizeof(VERTEX_3D) * 6;
-		//		bd.Usage = D3D11_USAGE_DYNAMIC;
-		//		bd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-		//		bd.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
-		//		bd.MiscFlags = 0;
-		//		bd.StructureByteStride = 0;
+				bd.ByteWidth = sizeof(VERTEX_3D) * 6;
+				bd.Usage = D3D11_USAGE_DYNAMIC;
+				bd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+				bd.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+				bd.MiscFlags = 0;
+				bd.StructureByteStride = 0;
 
-		//		D3D11_SUBRESOURCE_DATA sd;
-		//		sd.pSysMem = vertex;
-		//		sd.SysMemPitch = 0;
-		//		sd.SysMemSlicePitch = 0;
+				D3D11_SUBRESOURCE_DATA sd;
+				sd.pSysMem = vertex;
+				sd.SysMemPitch = 0;
+				sd.SysMemSlicePitch = 0;
 
-		//		CRenderer::GetDevice()->CreateBuffer(&bd, &sd, &buffer);
+				CRenderer::GetDevice()->CreateBuffer(&bd, &sd, &buffer);
 
-		//		pVB.reset(buffer);
-		//	}
-		//}
+				pVB.reset(buffer);
+			}
+		}
 
-		//// インデックスバッファの設定
-		//if (nullptr == pIB.get())
-		//{
-		//	WORD index_array[] = {
-		//		0, 1,
-		//		1, 2,
-		//		3, 4,
-		//		4, 5
-		//	};
-		//		
+		// LINEのインデックスバッファの設定
+		if (nullptr == pIB.get())
+		{
+			WORD index_array[] = {
+				0, 1,
+				1, 2,
+				3, 4,
+				4, 5
+			};
+				
 
-		//	// インデックスバッファの設定
-		//	{
-		//		ID3D11Buffer* buffer;
+			// インデックスバッファの設定
+			{
+				ID3D11Buffer* buffer;
 
-		//		D3D11_BUFFER_DESC bd;
-		//		ZeroMemory(&bd, sizeof(bd));
+				D3D11_BUFFER_DESC bd;
+				ZeroMemory(&bd, sizeof(bd));
 
-		//		bd.ByteWidth = sizeof(WORD) * 8;
-		//		bd.Usage = D3D11_USAGE_DEFAULT;
-		//		bd.BindFlags = D3D11_BIND_INDEX_BUFFER;
-		//		bd.CPUAccessFlags = 0;
-		//		bd.MiscFlags = 0;
-		//		bd.StructureByteStride = 0;
+				bd.ByteWidth = sizeof(WORD) * 8;
+				bd.Usage = D3D11_USAGE_DEFAULT;
+				bd.BindFlags = D3D11_BIND_INDEX_BUFFER;
+				bd.CPUAccessFlags = 0;
+				bd.MiscFlags = 0;
+				bd.StructureByteStride = 0;
 
-		//		D3D11_SUBRESOURCE_DATA sd;
-		//		ZeroMemory(&sd, sizeof(sd));
-		//		sd.pSysMem = index_array;
+				D3D11_SUBRESOURCE_DATA sd;
+				ZeroMemory(&sd, sizeof(sd));
+				sd.pSysMem = index_array;
 
-		//		CRenderer::GetDevice()->CreateBuffer(&bd, &sd, &buffer);
+				CRenderer::GetDevice()->CreateBuffer(&bd, &sd, &buffer);
 
-		//		pIB.reset(buffer);
-		//	}
-		//}
+				pIB.reset(buffer);
+			}
+		}
 	}
 }
 
@@ -386,32 +386,32 @@ void MAIN_MENU::Draw()
 {
 	if (false == CManager::Get_ShadowMap()->Get_Enable())
 	{
-		//// 入力アセンブラに頂点バッファを設定
-		//CRenderer::SetVertexBuffers(pVertexBuffer.get());
+		// 入力アセンブラに頂点バッファを設定
+		CRenderer::SetVertexBuffers(pVertexBuffer.get());
 
-		//// 入力アセンブラにインデックスバッファを設定
-		//CRenderer::SetIndexBuffer(pIndexBuffer.get());
+		// 入力アセンブラにインデックスバッファを設定
+		CRenderer::SetIndexBuffer(pIndexBuffer.get());
 
-		//// トポロジの設定
-		//CRenderer::GetDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_LINESTRIP);
+		// トポロジの設定
+		CRenderer::GetDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_LINESTRIP);
 
-		//CRenderer::Set_Shader(SHADER_INDEX_V::DEFAULT, SHADER_INDEX_P::NO_TEXTURE);
+		CRenderer::Set_Shader(SHADER_INDEX_V::DEFAULT, SHADER_INDEX_P::NO_TEXTURE);
 
-		//XMFLOAT3 p = XMFLOAT3(0, 2.5, 0);
-		//XMFLOAT3 r = XMFLOAT3(0, 0, 0);
+		XMFLOAT3 p = XMFLOAT3(0, 2.5, 0);
+		XMFLOAT3 r = XMFLOAT3(0, 0, 0);
 
 		//D(p, r);
 
-		//p = XMFLOAT3(0, -2.5, 0);
-		//r = XMFLOAT3(0, 0, 180);
+		p = XMFLOAT3(0, -2.5, 0);
+		r = XMFLOAT3(0, 0, 180);
 		//D(p, r);
 
 		//Line(XMFLOAT3(0, 0, 0), XMFLOAT3(0, 0, 0));
 
-		//CRenderer::Set_Shader();
+		CRenderer::Set_Shader();
 	}
 
-	//Capsule->Draw();
+	Capsule->Draw();
 
 	SCENE::Draw();
 }
@@ -421,30 +421,21 @@ void MAIN_MENU::Update(float delta_time)
 	SCENE::Update(delta_time);
 
 	{
-		static char cnt = 0;
+		//{
+		//	auto text = Get_Game_Object<TEXTS>("delta_time");
 
-		if (cnt == 3)
+		//	auto time = TIMER::Get_DeltaTime();
+
+		//	text->Edit(to_string(time));
+		//}
+
 		{
-			//{
-			//	auto text = Get_Game_Object<TEXTS>("delta_time");
+			auto text = Get_Game_Object<TEXTS>("fps");
 
-			//	auto time = TIMER::Get_DeltaTime();
+			auto time = TIMER::Get_FPS();
 
-			//	text->Edit(to_string(time));
-			//}
-
-			{
-				auto text = Get_Game_Object<TEXTS>("fps");
-
-				auto time = TIMER::Get_FPS();
-
-				text->Edit(to_string(time));
-			}
-
-			cnt = 0;
+			text->Edit(to_string(time));
 		}
-
-		cnt++;
 	}
 
 	if (FADE::End_Fade())

@@ -5,23 +5,33 @@
 
 void BOUNDING_CAPSULE::Init()
 {
+	Radius = 1.0f;
+	Height = 2.0f;
+
+	Color = Default_Color;
+
 	Init_Body();
 	Init_Line();
 	Init_Ring();
+
 }
 
 void BOUNDING_CAPSULE::Draw()
 {
 	if (false == CManager::Get_ShadowMap()->Get_Enable())
 	{
-		XMFLOAT3 pos(0.f, 2.5f, 0.f);
-		XMFLOAT3 rotation(0.f, 0.f, 0.f);
+		XMFLOAT3 pos(5.0f, 0.0f, 0.0f);
+		XMFLOAT3 rotation(0.0f, 0.f, 0.f);
 
 		CRenderer::Set_Shader(SHADER_INDEX_V::DEFAULT, SHADER_INDEX_P::NO_TEXTURE);
 
-		Draw_Body(pos, rotation);
+		XMFLOAT3 p(pos.x, pos.y, pos.z);
 
-		//Draw_Body();
+		Draw_Body(p, rotation);
+
+		rotation.y += 90.0f;
+
+		Draw_Body(p, rotation);
 
 		CRenderer::Set_Shader();
 	}
@@ -55,23 +65,49 @@ const float BOUNDING_CAPSULE::Get_Radius()
 
 void BOUNDING_CAPSULE::Init_Body()
 {
-	float Radius = 3.0f;
-	VertexNum = 10 * (UINT)Radius * 0.5;
+	VertexNum = max(int(10 * (UINT)Radius * 0.5), 8);
 
 	// 頂点バッファの設定
 	if (nullptr == pVertexBuffer.get())
 	{
-		VERTEX_3D* vertex = new VERTEX_3D[VertexNum];
+		vector<VERTEX_3D> Vertex;
+		VERTEX_3D vertex;
+		Vertex.reserve(VertexNum * 2 + 1);
 
 		const float angle = XM_PI / (VertexNum - 1);
 
+		// 上の半円
 		for (int i = 0; i < VertexNum; i++)
 		{
-			vertex[i].Position = XMFLOAT3(cosf(angle * i) * Radius, sinf(angle * i) * Radius, 0.0f);
-			vertex[i].Normal = XMFLOAT3(0.0f, 0.0f, 0.0f);
-			vertex[i].Diffuse = XMFLOAT4(1.0f, 0.f, 0.f, 1.0f);
-			vertex[i].TexCoord = XMFLOAT2(0.0f, 0.0f);
+			vertex.Position = XMFLOAT3(cosf(angle * i) * Radius, sinf(angle * i) * Radius + Height - Radius, 0.0f);
+			vertex.Normal = XMFLOAT3(0.0f, 0.0f, 0.0f);
+			vertex.Diffuse = XMFLOAT4(Color.r, Color.g, Color.b, Color.a);
+			vertex.TexCoord = XMFLOAT2(0.0f, 0.0f);
+
+			Vertex.emplace_back(vertex);
 		}
+
+		// 下の半円
+		for (int i = 0; i < VertexNum; i++)
+		{
+			vertex.Position = XMFLOAT3(cosf(angle * (i + VertexNum - 1)) * Radius, sinf(angle * (i + VertexNum - 1)) * Radius - Height + Radius, 0.0f);
+			vertex.Normal = XMFLOAT3(0.0f, 0.0f, 0.0f);
+			vertex.Diffuse = XMFLOAT4(Color.r, Color.g, Color.b, Color.a);
+			vertex.TexCoord = XMFLOAT2(0.0f, 0.0f);
+
+			Vertex.emplace_back(vertex);
+		}
+
+		// 最後の点
+		vertex.Position = XMFLOAT3(cosf(0) * Radius, sinf(0) * Radius + Height - Radius, 0.0f);
+		vertex.Normal = XMFLOAT3(0.0f, 0.0f, 0.0f);
+		vertex.Diffuse = XMFLOAT4(Color.r, Color.g, Color.b, Color.a);
+		vertex.TexCoord = XMFLOAT2(0.0f, 0.0f);
+
+		Vertex.emplace_back(vertex);
+
+		VertexNum *= 2;
+		VertexNum += 1;
 
 		// 頂点バッファの設定
 		{
@@ -88,7 +124,7 @@ void BOUNDING_CAPSULE::Init_Body()
 			bd.StructureByteStride = 0;
 
 			D3D11_SUBRESOURCE_DATA sd;
-			sd.pSysMem = vertex;
+			sd.pSysMem = Vertex.data();
 			sd.SysMemPitch = 0;
 			sd.SysMemSlicePitch = 0;
 
@@ -96,20 +132,19 @@ void BOUNDING_CAPSULE::Init_Body()
 
 			pVertexBuffer.reset(buffer);
 		}
-
-		SAFE_DELETE_ARRAY(vertex);
 	}
 
 	// インデックスバッファの設定
 	if (nullptr == pIndexBuffer.get())
 	{
 		IndexNum = VertexNum * 2;
-		WORD* index_array = new WORD[IndexNum];
+		vector<WORD> Index;
+		Index.reserve(IndexNum);
 
 		for (int i = 0; i < VertexNum; i++)
 		{
-			index_array[i * 2] = i;
-			index_array[i * 2 + 1] = (i + 1) % VertexNum;
+			Index.emplace_back(i);
+			Index.emplace_back((i + 1) % VertexNum);
 		}
 
 		// インデックスバッファの設定
@@ -128,14 +163,12 @@ void BOUNDING_CAPSULE::Init_Body()
 
 			D3D11_SUBRESOURCE_DATA sd;
 			ZeroMemory(&sd, sizeof(sd));
-			sd.pSysMem = index_array;
+			sd.pSysMem = Index.data();
 
 			CRenderer::GetDevice()->CreateBuffer(&bd, &sd, &buffer);
 
 			pIndexBuffer.reset(buffer);
 		}
-
-		SAFE_DELETE(index_array);
 	}
 }
 
@@ -146,19 +179,19 @@ void BOUNDING_CAPSULE::Init_Line()
 	{
 		VERTEX_3D vertex[6];
 
-		vertex[0].Position = XMFLOAT3(3.f, -2.5, 0.f);
-		vertex[1].Position = XMFLOAT3(3.f, 2.5, 0.f);
+		vertex[0].Position = XMFLOAT3(Radius, -Height * 0.5f, 0.f);
+		vertex[1].Position = XMFLOAT3(Radius, Height * 0.5f, 0.f);
 
-		vertex[2].Position = XMFLOAT3(3.f, 2.5, 0.f);
-		vertex[3].Position = XMFLOAT3(-3.f, -2.5, 0.f);
+		vertex[2].Position = XMFLOAT3(Radius, Height * 0.5f, 0.f);
+		vertex[3].Position = XMFLOAT3(-Radius, -Height * 0.5f, 0.f);
 
-		vertex[4].Position = XMFLOAT3(-3.f, -2.5, 0.f);
-		vertex[5].Position = XMFLOAT3(-3.f, 2.5, 0.f);
+		vertex[4].Position = XMFLOAT3(-Radius, -Height * 0.5f, 0.f);
+		vertex[5].Position = XMFLOAT3(-Radius, Height * 0.5f, 0.f);
 
 		for (int i = 0; i < 6; i++)
 		{
 			vertex[i].Normal = XMFLOAT3(0.0f, 0.0f, 0.0f);
-			vertex[i].Diffuse = XMFLOAT4(1.0f, 0.f, 0.f, 1.0f);
+			vertex[i].Diffuse = XMFLOAT4(Color.r, Color.g, Color.b, Color.a);
 			vertex[i].TexCoord = XMFLOAT2(0.0f, 0.0f);
 		}
 
@@ -228,13 +261,16 @@ void BOUNDING_CAPSULE::Init_Ring()
 
 }
 
-void BOUNDING_CAPSULE::Draw_Body(const XMFLOAT3& position, const XMFLOAT3& rotation)
+void BOUNDING_CAPSULE::Draw_Semicircle(const XMFLOAT3& position, const XMFLOAT3& rotation)
 {
 	// 入力アセンブラに頂点バッファを設定
 	CRenderer::SetVertexBuffers(pVertexBuffer.get());
 
 	// 入力アセンブラにインデックスバッファを設定
 	CRenderer::SetIndexBuffer(pIndexBuffer.get());
+
+	// トポロジの設定
+	CRenderer::GetDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_LINESTRIP);
 
 	auto camera01 = CManager::Get_Scene()->Get_Game_Object<CCamera>("camera");
 	auto camera02 = CManager::Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
@@ -255,12 +291,28 @@ void BOUNDING_CAPSULE::Draw_Body(const XMFLOAT3& position, const XMFLOAT3& rotat
 		CRenderer::Set_MatrixBuffer01(*camera02->Get_Pos());
 	}
 
-	CRenderer::GetDeviceContext()->Draw(VertexNum, 0);
-
-	Draw_Line(rotation);
+	CRenderer::GetDeviceContext()->DrawIndexed(IndexNum, 0, 0);
 }
 
-void BOUNDING_CAPSULE::Draw_Line(const XMFLOAT3& rotation)
+void BOUNDING_CAPSULE::Draw_Body(const XMFLOAT3& position, const XMFLOAT3& rotation)
+{
+	XMFLOAT3 r = rotation;
+	r.z += 180.0f;
+
+	Draw_Semicircle(position, rotation);
+
+	/*XMFLOAT3 p = position;
+	p.y -= Height;
+
+	Draw_Semicircle(p, r);
+
+	p = position;
+	p.y -= Height * 0.5f;
+
+	Draw_Line(p, rotation);*/
+}
+
+void BOUNDING_CAPSULE::Draw_Line(const XMFLOAT3& position, const XMFLOAT3& rotation)
 {
 	// 入力アセンブラに頂点バッファを設定
 	CRenderer::SetVertexBuffers(pVertexBuffer_Line.get());
@@ -275,7 +327,7 @@ void BOUNDING_CAPSULE::Draw_Line(const XMFLOAT3& rotation)
 	auto camera02 = CManager::Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
 
 	XMMATRIX world = XMMatrixRotationRollPitchYaw(XMConvertToRadians(rotation.x), XMConvertToRadians(rotation.y), XMConvertToRadians(rotation.z));
-	//world *= XMMatrixTranslation(position.x, position.y, position.z);
+	world *= XMMatrixTranslation(position.x, position.y, position.z);
 
 	if (nullptr != camera01)
 	{
@@ -293,7 +345,6 @@ void BOUNDING_CAPSULE::Draw_Line(const XMFLOAT3& rotation)
 	CRenderer::GetDeviceContext()->DrawIndexed(8, 0, 0);
 }
 
-void BOUNDING_CAPSULE::Draw_Ring(const XMFLOAT3& rotation)
+void BOUNDING_CAPSULE::Draw_Ring(const XMFLOAT3& position, const XMFLOAT3& rotation)
 {
-
 }

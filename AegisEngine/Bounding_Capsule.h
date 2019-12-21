@@ -21,10 +21,12 @@ private:
 	UINT IndexNum;
 
 	float Radius;
+	float Height;
 
 	void Draw_Body(const XMFLOAT3& position, const XMFLOAT3& rotation);
-	void Draw_Line(const XMFLOAT3& rotation);
-	void Draw_Ring(const XMFLOAT3& rotation);
+	void Draw_Semicircle(const XMFLOAT3& position, const XMFLOAT3& rotation);
+	void Draw_Line(const XMFLOAT3& position, const XMFLOAT3& rotation);
+	void Draw_Ring(const XMFLOAT3& position, const XMFLOAT3& rotation);
 
 	void Init_Body();
 	void Init_Line();
