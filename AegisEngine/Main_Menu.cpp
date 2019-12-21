@@ -10,12 +10,27 @@
 
 #include	"Timer.h"
 
+#include	"Bounding_Capsule.h"
+
 string MAIN_MENU::Model_Name = "asset/model/herorifle.fbx";
 
 static bool flag = false;
-static short cnt = 0; 
+//static short cnt = 0; 
 
-//extern float fps;
+unique_ptr<BOUNDING> Capsule;
+
+static unique_ptr<ID3D11Buffer, Release> pVertexBuffer;		// 頂点バッファ
+static unique_ptr<ID3D11Buffer, Release> pIndexBuffer;		// インデックスバッファ
+
+static unique_ptr<ID3D11Buffer, Release> pVB;		// 頂点バッファ
+static unique_ptr<ID3D11Buffer, Release> pIB;		// インデックスバッファ
+
+static UINT IndexNum = 0;
+static UINT VertexNum = 0;
+
+void D(const XMFLOAT3& position, const XMFLOAT3& rotate);
+
+void Line(const XMFLOAT3& position, const XMFLOAT3& rotate);
 
 string Replace_String(string& replacedStr, const string& from, const string& to)
 {
@@ -124,17 +139,17 @@ void MAIN_MENU::Init()
 		//	Add_Game_Object<POLYGON_3D>(LAYER_NAME::GAMEOBJECT, "cube");
 		//}
 
-		//// テキスト画像
-		//{
-		//	XMFLOAT2 pos(50.0f, 50.0f);
-		//	auto text = Add_Game_Object<TEXTS>(LAYER_NAME::UI, "text1");
+		// テキスト画像
+		{
+			XMFLOAT2 pos(50.0f, 50.0f);
+			auto text = Add_Game_Object<TEXTS>(LAYER_NAME::UI, "text1");
 
-		//	text->SetPosition(pos);
+			text->SetPosition(pos);
 
-		//	text->SetSize(XMFLOAT4(20, 20, 20, 20));
+			text->SetSize(XMFLOAT4(20, 20, 20, 20));
 
-		//	text->Edit("Hello HELL World!!!地球の未来にご奉仕するにゃん！");
-		//}
+			text->Edit("Hello HELL World!!!地球の未来にご奉仕するにゃん！");
+		}
 
 
 
@@ -189,32 +204,215 @@ void MAIN_MENU::Init()
 			Add_Game_Object<BOUNDING_OBB>(LAYER_NAME::GAMEOBJECT, "obb");
 		}
 	}
+	
+	Capsule.reset(new BOUNDING_CAPSULE());
+	Capsule->Init();
 
 	SCENE::Init();
 
-	cnt = 0;
+	//cnt = 0;
 
 	FADE::Start_FadeIn(60);
 	flag = false;
 
 	{
+		//float Radius = 3.0f;
+		//VertexNum = 10 * (UINT)Radius * 0.5;
 
-		XMVECTOR vec = XMVectorSet(0.f, 0.f, 1.0, 0.f);
+		//// 頂点バッファの設定
+		//if (nullptr == pVertexBuffer.get())
+		//{
+		//	VERTEX_3D* vertex = new VERTEX_3D[VertexNum];
 
-		XMMATRIX mtr = XMMatrixRotationRollPitchYaw(0.f, XMConvertToRadians(90.0f), 0.f);
+		//	const float angle = XM_PI / (VertexNum - 1);
 
-		vec = XMVector3Transform(vec, mtr);
+		//	for (int i = 0; i < VertexNum; i++)
+		//	{
+		//		vertex[i].Position = XMFLOAT3(cosf(angle * i) * Radius, sinf(angle * i) * Radius, 0.0f);
+		//		vertex[i].Normal = XMFLOAT3(0.0f, 0.0f, 0.0f);
+		//		vertex[i].Diffuse = XMFLOAT4(1.0f, 0.f, 0.f, 1.0f);
+		//		vertex[i].TexCoord = XMFLOAT2(0.0f, 0.0f);
+		//	}
 
-		XMFLOAT3 v;
+		//	// 頂点バッファの設定
+		//	{
+		//		ID3D11Buffer* buffer;
 
-		XMStoreFloat3(&v, vec);
+		//		D3D11_BUFFER_DESC bd;
+		//		ZeroMemory(&bd, sizeof(bd));
 
-		int a = 0;
+		//		bd.ByteWidth = sizeof(VERTEX_3D) * VertexNum;
+		//		bd.Usage = D3D11_USAGE_DYNAMIC;
+		//		bd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+		//		bd.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+		//		bd.MiscFlags = 0;
+		//		bd.StructureByteStride = 0;
+
+		//		D3D11_SUBRESOURCE_DATA sd;
+		//		sd.pSysMem = vertex;
+		//		sd.SysMemPitch = 0;
+		//		sd.SysMemSlicePitch = 0;
+
+		//		CRenderer::GetDevice()->CreateBuffer(&bd, &sd, &buffer);
+
+		//		pVertexBuffer.reset(buffer);
+		//	}
+
+		//	SAFE_DELETE_ARRAY(vertex);
+		//}
+
+		//// インデックスバッファの設定
+		//if (nullptr == pIndexBuffer.get())
+		//{
+		//	IndexNum = VertexNum * 2;
+		//	WORD* index_array = new WORD[IndexNum];
+
+		//	for (int i = 0; i < VertexNum; i++)
+		//	{
+		//		index_array[i * 2] = i;
+		//		index_array[i * 2 + 1] = (i + 1) % VertexNum;
+		//	}
+
+		//	// インデックスバッファの設定
+		//	{
+		//		ID3D11Buffer* buffer;
+
+		//		D3D11_BUFFER_DESC bd;
+		//		ZeroMemory(&bd, sizeof(bd));
+
+		//		bd.ByteWidth = sizeof(WORD) * IndexNum;
+		//		bd.Usage = D3D11_USAGE_DEFAULT;
+		//		bd.BindFlags = D3D11_BIND_INDEX_BUFFER;
+		//		bd.CPUAccessFlags = 0;
+		//		bd.MiscFlags = 0;
+		//		bd.StructureByteStride = 0;
+
+		//		D3D11_SUBRESOURCE_DATA sd;
+		//		ZeroMemory(&sd, sizeof(sd));
+		//		sd.pSysMem = index_array;
+
+		//		CRenderer::GetDevice()->CreateBuffer(&bd, &sd, &buffer);
+
+		//		pIndexBuffer.reset(buffer);
+		//	}
+
+		//	SAFE_DELETE(index_array);
+		//}
+		//
+		//// 頂点バッファの設定
+		//if (nullptr == pVB.get())
+		//{
+		//	VERTEX_3D vertex[6];
+
+		//	vertex[0].Position = XMFLOAT3(3.f, -2.5, 0.f);
+		//	vertex[1].Position = XMFLOAT3(3.f, 2.5, 0.f);
+
+		//	vertex[2].Position = XMFLOAT3(3.f, 2.5, 0.f);
+		//	vertex[3].Position = XMFLOAT3(-3.f, -2.5, 0.f);
+
+		//	vertex[4].Position = XMFLOAT3(-3.f, -2.5, 0.f);
+		//	vertex[5].Position = XMFLOAT3(-3.f, 2.5, 0.f);
+
+		//	for (int i = 0; i < 6; i++)
+		//	{
+		//		vertex[i].Normal = XMFLOAT3(0.0f, 0.0f, 0.0f);
+		//		vertex[i].Diffuse = XMFLOAT4(1.0f, 0.f, 0.f, 1.0f);
+		//		vertex[i].TexCoord = XMFLOAT2(0.0f, 0.0f);
+		//	}
+
+		//	// 頂点バッファの設定
+		//	{
+		//		ID3D11Buffer* buffer;
+
+		//		D3D11_BUFFER_DESC bd;
+		//		ZeroMemory(&bd, sizeof(bd));
+
+		//		bd.ByteWidth = sizeof(VERTEX_3D) * 6;
+		//		bd.Usage = D3D11_USAGE_DYNAMIC;
+		//		bd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+		//		bd.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+		//		bd.MiscFlags = 0;
+		//		bd.StructureByteStride = 0;
+
+		//		D3D11_SUBRESOURCE_DATA sd;
+		//		sd.pSysMem = vertex;
+		//		sd.SysMemPitch = 0;
+		//		sd.SysMemSlicePitch = 0;
+
+		//		CRenderer::GetDevice()->CreateBuffer(&bd, &sd, &buffer);
+
+		//		pVB.reset(buffer);
+		//	}
+		//}
+
+		//// インデックスバッファの設定
+		//if (nullptr == pIB.get())
+		//{
+		//	WORD index_array[] = {
+		//		0, 1,
+		//		1, 2,
+		//		3, 4,
+		//		4, 5
+		//	};
+		//		
+
+		//	// インデックスバッファの設定
+		//	{
+		//		ID3D11Buffer* buffer;
+
+		//		D3D11_BUFFER_DESC bd;
+		//		ZeroMemory(&bd, sizeof(bd));
+
+		//		bd.ByteWidth = sizeof(WORD) * 8;
+		//		bd.Usage = D3D11_USAGE_DEFAULT;
+		//		bd.BindFlags = D3D11_BIND_INDEX_BUFFER;
+		//		bd.CPUAccessFlags = 0;
+		//		bd.MiscFlags = 0;
+		//		bd.StructureByteStride = 0;
+
+		//		D3D11_SUBRESOURCE_DATA sd;
+		//		ZeroMemory(&sd, sizeof(sd));
+		//		sd.pSysMem = index_array;
+
+		//		CRenderer::GetDevice()->CreateBuffer(&bd, &sd, &buffer);
+
+		//		pIB.reset(buffer);
+		//	}
+		//}
 	}
 }
 
 void MAIN_MENU::Draw()
 {
+	if (false == CManager::Get_ShadowMap()->Get_Enable())
+	{
+		//// 入力アセンブラに頂点バッファを設定
+		//CRenderer::SetVertexBuffers(pVertexBuffer.get());
+
+		//// 入力アセンブラにインデックスバッファを設定
+		//CRenderer::SetIndexBuffer(pIndexBuffer.get());
+
+		//// トポロジの設定
+		//CRenderer::GetDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_LINESTRIP);
+
+		//CRenderer::Set_Shader(SHADER_INDEX_V::DEFAULT, SHADER_INDEX_P::NO_TEXTURE);
+
+		//XMFLOAT3 p = XMFLOAT3(0, 2.5, 0);
+		//XMFLOAT3 r = XMFLOAT3(0, 0, 0);
+
+		//D(p, r);
+
+		//p = XMFLOAT3(0, -2.5, 0);
+		//r = XMFLOAT3(0, 0, 180);
+		//D(p, r);
+
+		//Line(XMFLOAT3(0, 0, 0), XMFLOAT3(0, 0, 0));
+
+		//CRenderer::Set_Shader();
+	}
+
+	//Capsule->Draw();
+
 	SCENE::Draw();
 }
 
@@ -225,7 +423,7 @@ void MAIN_MENU::Update(float delta_time)
 	{
 		static char cnt = 0;
 
-		if (cnt >= 3)
+		if (cnt == 3)
 		{
 			//{
 			//	auto text = Get_Game_Object<TEXTS>("delta_time");
@@ -237,8 +435,6 @@ void MAIN_MENU::Update(float delta_time)
 
 			{
 				auto text = Get_Game_Object<TEXTS>("fps");
-
-				//auto time = ImGui::GetIO().Framerate;
 
 				auto time = TIMER::Get_FPS();
 
@@ -289,4 +485,69 @@ void MAIN_MENU::Uninit()
 	SCENE::Uninit();
 
 	AUDIO_MANAGER::Stop_Sound_Object();
+}
+
+void D(const XMFLOAT3& position, const XMFLOAT3& rotate)
+{
+	auto camera01 = CManager::Get_Scene()->Get_Game_Object<CCamera>("camera");
+	auto camera02 = CManager::Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
+
+	XMMATRIX world = XMMatrixRotationRollPitchYaw(XMConvertToRadians(rotate.x), XMConvertToRadians(rotate.y), XMConvertToRadians(rotate.z));
+	world *= XMMatrixTranslation(position.x, position.y, position.z);
+
+	if (nullptr != camera01)
+
+	{
+		CRenderer::Set_MatrixBuffer(world, camera01->Get_Camera_View(), camera01->Get_Camera_Projection());
+
+		CRenderer::Set_MatrixBuffer01(*camera01->Get_Pos());
+	}
+	else
+	{
+		CRenderer::Set_MatrixBuffer(world, camera02->Get_Camera_View(), camera02->Get_Camera_Projection());
+
+		CRenderer::Set_MatrixBuffer01(*camera02->Get_Pos());
+	}
+
+	//CRenderer::GetDeviceContext()->DrawIndexed(IndexNum, 0, 0);
+	CRenderer::GetDeviceContext()->Draw(VertexNum, 0);
+}
+
+void Line(const XMFLOAT3& position, const XMFLOAT3& rotate)
+{
+	// 入力アセンブラに頂点バッファを設定
+	CRenderer::SetVertexBuffers(pVB.get());
+
+	// 入力アセンブラにインデックスバッファを設定
+	CRenderer::SetIndexBuffer(pIB.get());
+
+	// トポロジの設定
+	CRenderer::GetDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_LINELIST);
+
+	CRenderer::Set_Shader(SHADER_INDEX_V::DEFAULT, SHADER_INDEX_P::NO_TEXTURE);
+
+	auto camera01 = CManager::Get_Scene()->Get_Game_Object<CCamera>("camera");
+	auto camera02 = CManager::Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
+
+	XMMATRIX world = XMMatrixRotationRollPitchYaw(XMConvertToRadians(rotate.x), XMConvertToRadians(rotate.y), XMConvertToRadians(rotate.z));
+	world *= XMMatrixTranslation(position.x, position.y, position.z);
+
+	if (nullptr != camera01)
+
+	{
+		CRenderer::Set_MatrixBuffer(world, camera01->Get_Camera_View(), camera01->Get_Camera_Projection());
+
+		CRenderer::Set_MatrixBuffer01(*camera01->Get_Pos());
+	}
+	else
+	{
+		CRenderer::Set_MatrixBuffer(world, camera02->Get_Camera_View(), camera02->Get_Camera_Projection());
+
+		CRenderer::Set_MatrixBuffer01(*camera02->Get_Pos());
+	}
+
+	CRenderer::GetDeviceContext()->DrawIndexed(8, 0, 0);
+	//CRenderer::GetDeviceContext()->Draw(6, 0);
+
+	CRenderer::Set_Shader();
 }

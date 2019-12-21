@@ -66,7 +66,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 		CW_USEDEFAULT,
 		CW_USEDEFAULT,
 		//(SCREEN_WIDTH + GetSystemMetrics(SM_CXDLGFRAME) * 2),
-		SCREEN_WIDTH,
+		SCREEN_WIDTH + 2,
 		//(SCREEN_HEIGHT + GetSystemMetrics(SM_CXDLGFRAME) * 2 + GetSystemMetrics(SM_CYCAPTION)),
 		SCREEN_HEIGHT,
 		NULL,
