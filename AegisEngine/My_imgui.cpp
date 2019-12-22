@@ -274,14 +274,14 @@ void My_imgui::Draw(void)
 
 				ImGuiWindowFlags window_flags = ImGuiWindowFlags_NoResize;
 
-				ImGui::SetNextWindowSize(ImVec2(1024 + 17, 1024 + 40), ImGuiCond_Once);
+				ImGui::SetNextWindowSize(ImVec2(512 + 17, 512 + 40), ImGuiCond_Once);
 
 				ImGui::Begin("Debug", nullptr, window_flags);
 
 				ImTextureID image = CManager::Get_ShadowMap()->Get();
 				//ImTextureID image = CRenderer::Get_SRV();
 
-				ImGui::Image(image, ImVec2(1024, 1024));
+				ImGui::Image(image, ImVec2(512, 512));
 
 				ImGui::End();
 			}
