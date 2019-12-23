@@ -64,7 +64,7 @@ bool SHADOW_MAP::Init()
 		td.SampleDesc.Count = 1;
 		td.SampleDesc.Quality = 0;
 		td.Usage = D3D11_USAGE_DEFAULT;
-		td.BindFlags = D3D11_BIND_DEPTH_STENCIL;
+		td.BindFlags = D3D11_BIND_DEPTH_STENCIL | D3D11_BIND_SHADER_RESOURCE;
 		td.CPUAccessFlags = 0;
 		td.MiscFlags = 0;
 
@@ -75,20 +75,39 @@ bool SHADOW_MAP::Init()
 			return false;
 		}
 
-		D3D11_DEPTH_STENCIL_VIEW_DESC desc;
-		desc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
-		desc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
-		desc.Flags = 0;
-		desc.Texture2D.MipSlice = 0;
-
-		hr = CRenderer::GetDevice()->CreateDepthStencilView(pTex, &desc, &dsv);
-		if (FAILED(hr))
 		{
-			FAILDE_ASSERT;
-			return false;
+			D3D11_DEPTH_STENCIL_VIEW_DESC desc;
+			desc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
+			desc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
+			desc.Flags = 0;
+			desc.Texture2D.MipSlice = 0;
+
+			hr = CRenderer::GetDevice()->CreateDepthStencilView(pTex, &desc, &dsv);
+			if (FAILED(hr))
+			{
+				FAILDE_ASSERT;
+				return false;
+			}
+
+			DepthStencilView.reset(dsv);
 		}
 
-		DepthStencilView.reset(dsv);
+		{
+			D3D11_DEPTH_STENCIL_VIEW_DESC desc;
+			desc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
+			desc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
+			desc.Flags = D3D11_DSV_READ_ONLY_DEPTH | D3D11_DSV_READ_ONLY_STENCIL;
+			desc.Texture2D.MipSlice = 0;
+
+			hr = CRenderer::GetDevice()->CreateDepthStencilView(pTex, &desc, &dsv);
+			if (FAILED(hr))
+			{
+				FAILDE_ASSERT;
+				return false;
+			}
+
+			DepthStencilView2.reset(dsv);
+		}
     }
 
 	// デプスバッファの作成
@@ -161,8 +180,8 @@ bool SHADOW_MAP::Init()
 
 		// テクスチャの作成
 		D3D11_TEXTURE2D_DESC td;
-		td.Width = SCREEN_WIDTH;
-		td.Height = SCREEN_HEIGHT;
+		td.Width = WIDTH;
+		td.Height = HEIGHT;
 		td.MipLevels = 1;
 		td.ArraySize = 1;
 		td.Format = DXGI_FORMAT_R16G16B16A16_FLOAT;
@@ -213,8 +232,8 @@ bool SHADOW_MAP::Init()
 
 		// テクスチャの作成
 		D3D11_TEXTURE2D_DESC td;
-		td.Width = SCREEN_WIDTH;
-		td.Height = SCREEN_HEIGHT;
+		td.Width = WIDTH;
+		td.Height = HEIGHT;
 		td.MipLevels = 1;
 		td.ArraySize = 1;
 		td.Format = DXGI_FORMAT_R11G11B10_FLOAT;
@@ -266,7 +285,7 @@ bool SHADOW_MAP::Init()
 		blendDesc.AlphaToCoverageEnable = FALSE;
 		blendDesc.IndependentBlendEnable = FALSE;
 
-		for (char i = 0; i < 3; i++)
+		for (char i = 0; i < 2; i++)
 		{
 			blendDesc.RenderTarget[i].BlendEnable = TRUE;
 			blendDesc.RenderTarget[i].SrcBlend = D3D11_BLEND_SRC_ALPHA;
@@ -293,7 +312,7 @@ bool SHADOW_MAP::Init()
 		D3D11_RASTERIZER_DESC rd;
 		ZeroMemory(&rd, sizeof(rd));
 		rd.FillMode = D3D11_FILL_SOLID;
-		rd.CullMode = D3D11_CULL_FRONT;
+		rd.CullMode = D3D11_CULL_BACK;
 		rd.DepthClipEnable = TRUE;
 		rd.MultisampleEnable = FALSE;
 		rd.DepthBias = 0.001f;
@@ -303,6 +322,32 @@ bool SHADOW_MAP::Init()
 		CRenderer::GetDevice()->CreateRasterizerState(&rd, &rs);
 
 		RasterizerState.reset(rs);
+	}
+
+	// テクスチャ用のサンプラーステートの生成
+	{
+		ID3D11SamplerState* sampler = nullptr;
+
+		D3D11_SAMPLER_DESC desc;
+		desc.Filter = D3D11_FILTER_ANISOTROPIC;
+		desc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
+		desc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
+		desc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
+		desc.MipLODBias = 0;
+		desc.MaxAnisotropy = 16;
+		desc.ComparisonFunc = D3D11_COMPARISON_ALWAYS;
+		desc.MinLOD = 0;
+		desc.MaxLOD = D3D11_FLOAT32_MAX;
+
+		// サンプラーステートを生成
+		HRESULT hr = CRenderer::GetDevice()->CreateSamplerState(&desc, &sampler);
+		if (FAILED(hr))
+		{
+			FAILDE_ASSERT;
+			return false;
+		}
+
+		Texture_Sampler.reset(sampler);
 	}
 
 	// サンプラーステートの生成
@@ -403,14 +448,16 @@ bool SHADOW_MAP::Init()
 void SHADOW_MAP::Begin()
 {
 	ID3D11DepthStencilView* pDSV = DepthStencilView.get();
-	//ID3D11RenderTargetView* pRTV = RenderTargetView[0].get();
 
-	ID3D11RenderTargetView* pRTV[] = { RenderTargetView[0].get(), RenderTargetView[1].get(), RenderTargetView[2].get() };
+	//ID3D11RenderTargetView* pRTV = RenderTargetView[0].get();
+	ID3D11RenderTargetView* pRTV[3] = { RenderTargetView[0].get(), RenderTargetView[1].get(), RenderTargetView[2].get() };
 
     //CRenderer::GetDeviceContext()->OMSetRenderTargets( 1, &pRTV, pDSV );
 	CRenderer::GetDeviceContext()->OMSetRenderTargets(3, pRTV, pDSV);
 
-	CRenderer::GetDeviceContext()->RSSetViewports(1, &DxViewport);
+	D3D11_VIEWPORT V[3] = { DxViewport, DxViewport, DxViewport };
+
+	CRenderer::GetDeviceContext()->RSSetViewports(3, V);
 
 	// バックバッファクリア
 	float ClearColor[4] = { 0.5f, 0.5f, 0.5f, 1.0f };
@@ -427,6 +474,9 @@ void SHADOW_MAP::Begin()
 	float blendFactor[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
 	CRenderer::GetDeviceContext()->OMSetBlendState(BlendState.get(), blendFactor, 0xffffffff);
 
+	ID3D11SamplerState* s = Texture_Sampler.get();
+
+	CRenderer::GetDeviceContext()->PSSetSamplers(0, 1, &s);
 
 	Set_Light(LightPos);
 }
@@ -486,8 +536,12 @@ void SHADOW_MAP::Uninit()
 	ShaderResourceView[2].reset(nullptr);
 
 	DepthStencilView.reset(nullptr);
+
 	RasterizerState.reset(nullptr);
+
 	Sampler.reset(nullptr);
+	Texture_Sampler.reset(nullptr);
+
 	ShadowBuffer.reset(nullptr);
 }
 

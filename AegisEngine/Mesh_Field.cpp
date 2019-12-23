@@ -159,14 +159,8 @@ void MESH_FIELD::Draw()
 		{
 			XMMATRIX world;
 
-			float angle = 0.0f;
-			if (CManager::Get_ShadowMap()->Get_Enable())
-			{
-				angle = 180.0f;
-			}
-
 			world = XMMatrixScaling(Scaling.x, Scaling.y, Scaling.z);																						// Šg‘åk¬
-			world *= XMMatrixRotationRollPitchYaw(XMConvertToRadians(Rotation.x), XMConvertToRadians(Rotation.y), XMConvertToRadians(Rotation.z + angle));			// ‰ñ“]
+			world *= XMMatrixRotationRollPitchYaw(XMConvertToRadians(Rotation.x), XMConvertToRadians(Rotation.y), XMConvertToRadians(Rotation.z));			// ‰ñ“]
 			world *= XMMatrixTranslation(Position.x, Position.y, Position.z);																				// ˆÚ“®
 
 			auto camera01 = CManager::Get_Scene()->Get_Game_Object<CCamera>("camera");

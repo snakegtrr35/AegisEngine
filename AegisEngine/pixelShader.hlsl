@@ -54,8 +54,11 @@ cbuffer CameraBuffer : register(b5)
 //*****************************************************************************
 // グローバル変数
 //*****************************************************************************
-Texture2D       g_Texture : register( t0 );
-Texture2D       g_ShadowMap : register(t1);     // シャドウマップ
+Texture2D       g_Texture   : register( t0 );
+Texture2D       g_ShadowMap : register( t1 );     // シャドウマップ
+Texture2D       g_Depth     : register( t2 );     // デプス
+Texture2D       g_Albedo    : register( t3 );     // アルベド
+Texture2D       g_Normal    : register( t4 );     // 法線
 
 SamplerState	g_SamplerState : register( s0 );
 SamplerState    g_ShadowSamplerState : register(s1);        // シャドウマップ用のサンプラー
@@ -112,13 +115,16 @@ void main( in float4 inPosition     : POSITION0,
     ShadowTexCoord.x = inShadowMapPos.x / inShadowMapPos.w / 2.0 + 0.5;
     ShadowTexCoord.y = -inShadowMapPos.y / inShadowMapPos.w / 2.0 + 0.5;
     
-    //if ((saturate(ShadowTexCoord.x) == ShadowTexCoord.x) && (saturate(ShadowTexCoord.y) == ShadowTexCoord.y))
+    //float w = 1.0f / inShadowMapPos.w;
+    //ShadowTexCoord.x = (1.0 + inShadowMapPos.x * w) * 0.5;
+    //ShadowTexCoord.y = (1.0 - inShadowMapPos.y * w) * 0.5;
+    
     {
         float depthValue = g_ShadowMap.Sample(g_ShadowSamplerState, ShadowTexCoord).r;
 
         float lightDepthValue = inShadowMapPos.z / inShadowMapPos.w;
 
-        lightDepthValue = lightDepthValue - 0.0003;
+        lightDepthValue = lightDepthValue - 0.003;
 
         if (lightDepthValue <= depthValue || vec >= 0.0)
         {

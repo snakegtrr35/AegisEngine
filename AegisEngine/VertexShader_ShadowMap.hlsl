@@ -12,6 +12,13 @@ cbuffer ConstantBuffer : register(b0)
     matrix Projection;
 }
 
+// マトリクスバッファ
+cbuffer ShadowMapBuffer : register(b1)
+{
+    matrix ShadowMapView;
+    matrix ShadowMapProjection;
+}
+
 //=============================================================================
 // 頂点シェーダ
 //=============================================================================
@@ -22,7 +29,8 @@ void main( in float4 inPosition     : POSITION0,
            
            out float4 outPosition   : SV_POSITION,
            out float4 outNormal     : NORMAL0,
-           out float4 outColor      : COLOR0)
+           out float4 outColor      : COLOR0,
+		   out float2 outTexCoord   : TEXCOORD0)
 {
     matrix wvp;
 
