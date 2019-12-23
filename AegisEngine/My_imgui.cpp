@@ -22,6 +22,8 @@ static string old_name;
 
 void EditTransform(const float* cameraView, float* cameraProjection, float* matrix, bool enable, GAME_OBJECT* object);
 
+extern unique_ptr<BOUNDING> Capsule;
+
 void My_imgui::Init(HWND hWnd)
 {
 	// Setup Dear ImGui context
@@ -62,6 +64,8 @@ void My_imgui::Init(HWND hWnd)
 
 void My_imgui::Draw(void)
 {
+	//fps = ImGui::GetIO().Framerate;
+
 	//Start the Dear ImGui frame
 	{
 		// 1. Show the big demo window (Most of the sample code is in ImGui::ShowDemoWindow()! You can browse its code to learn more about Dear ImGui!).
@@ -270,14 +274,14 @@ void My_imgui::Draw(void)
 
 				ImGuiWindowFlags window_flags = ImGuiWindowFlags_NoResize;
 
-				ImGui::SetNextWindowSize(ImVec2(1024 + 17, 1024 + 40), ImGuiCond_Once);
+				ImGui::SetNextWindowSize(ImVec2(512 + 17, 512 + 40), ImGuiCond_Once);
 
 				ImGui::Begin("Debug", nullptr, window_flags);
 
 				ImTextureID image = CManager::Get_ShadowMap()->Get();
 				//ImTextureID image = CRenderer::Get_SRV();
 
-				ImGui::Image(image, ImVec2(1024, 1024));
+				ImGui::Image(image, ImVec2(512, 512));
 
 				ImGui::End();
 			}
@@ -339,6 +343,31 @@ void My_imgui::Draw(void)
 		Texture_Delete();
 
 		Setting();
+
+		{
+			static float vec3_Position[] = { Capsule->Get_Position()->x, Capsule->Get_Position()->y, Capsule->Get_Position()->z };
+			static float vec3_Rotation[] = { Capsule->Get_Rotation()->x, Capsule->Get_Rotation()->y, Capsule->Get_Rotation()->z };
+			static float vec3_Scaling[] =  { Capsule->Get_Scaling()->x, Capsule->Get_Scaling()->y, Capsule->Get_Scaling()->z };
+
+			ImGui::Begin("Capsule");
+
+			ImGui::DragFloat3("Position", vec3_Position, 0.01f);
+
+			ImGui::DragFloat3("Rotation", vec3_Rotation, 0.01f);
+
+			ImGui::DragFloat3("Scaling", vec3_Scaling, 0.01f);
+
+
+			ImGui::End();
+
+			XMFLOAT3 p(vec3_Position[0], vec3_Position[1], vec3_Position[2]);
+			XMFLOAT3 r(vec3_Rotation[0], vec3_Rotation[1], vec3_Rotation[2]);
+			XMFLOAT3 s(vec3_Scaling[0], vec3_Scaling[1], vec3_Scaling[2]);
+
+			Capsule->Set_Position( p );
+			Capsule->Set_Rotation(r);
+			//Capsule->Set_Position(s);
+		}
 
 		// Rendering
 		ImGui::Render();

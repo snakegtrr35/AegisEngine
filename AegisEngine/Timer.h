@@ -23,11 +23,14 @@ private:
 
 	static double time;
 
+	//static deque<double> FPSs;
+
 	TIMER() {}
 
-protected:
-
 public:
+
+	static deque<double> FPSs;
+	static double FPS;
 
 	/**
 	* @brief 初期化の関数
@@ -79,7 +82,7 @@ public:
 
 	static void Update() {
 		static bool flag = true;
-		//static DWORD cnt = 0;
+		static char cnt = 0;
 
 		if (flag)
 		{
@@ -93,10 +96,44 @@ public:
 		{
 			time = ((delta_end.QuadPart - delta_start.QuadPart) * 1000.0 / frep.QuadPart) * 0.001;
 			//time = 1 / (((delta_end.QuadPart - delta_start.QuadPart) * 1000.0 / frep.QuadPart) * 0.001); //1フレームレート(ms)
+
+			{
+				double fps = 1.0 / time;
+
+				fps = std::floor(fps * 10.0) / 10.0;
+
+				if (0.0 < fps)
+				{
+					string s = to_string(fps);
+
+					size_t i = s.find_first_of(".");
+
+					if (i <= s.size())
+					{
+						s.erase(i + 2, 5);
+
+						FPSs.emplace_front(stod(s));
+
+						if (10 <= FPSs.size())
+						{
+							FPSs.pop_back();
+						}
+
+						if (5 <= cnt)
+						{
+							double d = accumulate(FPSs.begin(), FPSs.end(), 0);
+
+							FPS = std::floor((d / FPSs.size()) * 10.0) / 10.0;
+
+							cnt = 0;
+						}
+
+						cnt++;
+					}
+				}
+			}
 		}
 		delta_start = delta_end;
-
-		//cnt++;
 	}
 
 	static double Get_DeltaTime() {
@@ -104,7 +141,7 @@ public:
 	}
 
 	static double Get_FPS() {
-		return 1 / time;
+		return FPS;
 	}
 };
 

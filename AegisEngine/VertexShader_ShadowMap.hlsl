@@ -21,6 +21,7 @@ void main( in float4 inPosition     : POSITION0,
 		   in float2 inTexCoord     : TEXCOORD0,
            
            out float4 outPosition   : SV_POSITION,
+           out float4 outNormal     : NORMAL0,
            out float4 outColor      : COLOR0)
 {
     matrix wvp;
@@ -30,6 +31,9 @@ void main( in float4 inPosition     : POSITION0,
     wvp = mul(World, View);
     wvp = mul(wvp, Projection);
     outPosition = mul(inPosition, wvp);
+    
+    inNormal.w = 0.0;
+    outNormal = mul(inNormal, World);
     
     outColor = outPosition;
 }

@@ -793,4 +793,8 @@ namespace Math
 
 using namespace Math;
 
+XMFLOAT3 operator+(const XMFLOAT3& left, const XMFLOAT3 right) {
+	return XMFLOAT3(left.x + right.x, left.y + right.y, left.z + right.z);
+}
+
 #endif // !MATH_H

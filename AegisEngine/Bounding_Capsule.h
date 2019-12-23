@@ -9,25 +9,22 @@
 class BOUNDING_CAPSULE : public BOUNDING {
 private:
 	unique_ptr<ID3D11Buffer, Release> pVertexBuffer;		// 頂点バッファ
+	unique_ptr<ID3D11Buffer, Release> pVertexBuffer2;		// 二つ目の頂点バッファ
 	unique_ptr<ID3D11Buffer, Release> pIndexBuffer;			// インデックスバッファ
-	UINT VertexNum;
-
-	unique_ptr<ID3D11Buffer, Release> pVertexBuffer_Line;		// 線分の頂点バッファ
-	unique_ptr<ID3D11Buffer, Release> pIndexBuffer_Line;		// 線分のインデックスバッファ
-	UINT Line_VertexNum;
+	UINT IndexNum;
 
 	unique_ptr<ID3D11Buffer, Release> pVertexBuffer_Ring;		// リングの頂点バッファ
 	unique_ptr<ID3D11Buffer, Release> pIndexBuffer_Ring;		// リングのインデックスバッファ
-	UINT IndexNum;
+	UINT IndexNum_Ring;
 
 	float Radius;
+	float Height;
 
 	void Draw_Body(const XMFLOAT3& position, const XMFLOAT3& rotation);
-	void Draw_Line(const XMFLOAT3& rotation);
-	void Draw_Ring(const XMFLOAT3& rotation);
+	void Draw_Semicircle(const XMFLOAT3& position, const XMFLOAT3& rotation);
+	void Draw_Ring(const XMFLOAT3& position, const XMFLOAT3& rotation);
 
 	void Init_Body();
-	void Init_Line();
 	void Init_Ring();
 
 public:
