@@ -23,7 +23,7 @@ SHADOW_MAP::SHADOW_MAP()
 		// プロジェクションマトリックス
 		//PlojectionMatrix = XMMatrixPerspectiveFovLH(XMConvertToRadians(80.0f), WIDTH / HEIGHT, 1.0f, 100.0f);
 
-		PlojectionMatrix = XMMatrixOrthographicLH(40.0f, 40.0f, 0.1f, 100.0f);
+		PlojectionMatrix = XMMatrixOrthographicLH(30.0f, 30.0f, 0.1f, 100.0f);
 	}
 
 	{
@@ -165,7 +165,7 @@ bool SHADOW_MAP::Init()
 		td.Height = SCREEN_HEIGHT;
 		td.MipLevels = 1;
 		td.ArraySize = 1;
-		td.Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
+		td.Format = DXGI_FORMAT_R16G16B16A16_FLOAT;
 		td.SampleDesc.Count = 1;
 		td.SampleDesc.Quality = 0;
 		td.Usage = D3D11_USAGE_DEFAULT;
@@ -184,12 +184,7 @@ bool SHADOW_MAP::Init()
 		{
 			ID3D11RenderTargetView* pRtv;
 
-			D3D11_RENDER_TARGET_VIEW_DESC desc;
-			desc.Format = td.Format;
-			desc.ViewDimension = D3D11_RTV_DIMENSION_TEXTURE2D;
-			desc.Texture2D.MipSlice = 0;
-
-			hr = CRenderer::GetDevice()->CreateRenderTargetView(pTex, &desc, &pRtv);
+			hr = CRenderer::GetDevice()->CreateRenderTargetView(pTex, nullptr, &pRtv);
 			if (FAILED(hr))
 			{
 				return false;
@@ -198,18 +193,11 @@ bool SHADOW_MAP::Init()
 			RenderTargetView[1].reset(pRtv);
 		}
 
-
 		// シェーダーリソースビュー設定
 		{
 			ID3D11ShaderResourceView* srv = nullptr;
 
-			D3D11_SHADER_RESOURCE_VIEW_DESC desc;
-			desc.Format = td.Format;
-			desc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
-			desc.Texture2D.MostDetailedMip = 0;
-			desc.Texture2D.MipLevels = 1;
-
-			hr = CRenderer::GetDevice()->CreateShaderResourceView(pTex, &desc, &srv);
+			hr = CRenderer::GetDevice()->CreateShaderResourceView(pTex, nullptr, &srv);
 			if (FAILED(hr))
 			{
 				FAILDE_ASSERT;
@@ -229,7 +217,7 @@ bool SHADOW_MAP::Init()
 		td.Height = SCREEN_HEIGHT;
 		td.MipLevels = 1;
 		td.ArraySize = 1;
-		td.Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
+		td.Format = DXGI_FORMAT_R11G11B10_FLOAT;
 		td.SampleDesc.Count = 1;
 		td.SampleDesc.Quality = 0;
 		td.Usage = D3D11_USAGE_DEFAULT;
@@ -248,12 +236,7 @@ bool SHADOW_MAP::Init()
 		{
 			ID3D11RenderTargetView* pRtv;
 
-			D3D11_RENDER_TARGET_VIEW_DESC desc;
-			desc.Format = td.Format;
-			desc.ViewDimension = D3D11_RTV_DIMENSION_TEXTURE2D;
-			desc.Texture2D.MipSlice = 0;
-
-			hr = CRenderer::GetDevice()->CreateRenderTargetView(pTex, &desc, &pRtv);
+			hr = CRenderer::GetDevice()->CreateRenderTargetView(pTex, nullptr, &pRtv);
 			if (FAILED(hr))
 			{
 				return false;
@@ -266,13 +249,7 @@ bool SHADOW_MAP::Init()
 		{
 			ID3D11ShaderResourceView* srv = nullptr;
 
-			D3D11_SHADER_RESOURCE_VIEW_DESC desc;
-			desc.Format = td.Format;
-			desc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
-			desc.Texture2D.MostDetailedMip = 0;
-			desc.Texture2D.MipLevels = 1;
-
-			hr = CRenderer::GetDevice()->CreateShaderResourceView(pTex, &desc, &srv);
+			hr = CRenderer::GetDevice()->CreateShaderResourceView(pTex, nullptr, &srv);
 			if (FAILED(hr))
 			{
 				FAILDE_ASSERT;
@@ -428,7 +405,7 @@ void SHADOW_MAP::Begin()
 	ID3D11DepthStencilView* pDSV = DepthStencilView.get();
 	//ID3D11RenderTargetView* pRTV = RenderTargetView[0].get();
 
-	ID3D11RenderTargetView* pRTV[3] = { RenderTargetView[0].get(), RenderTargetView[1].get(), RenderTargetView[2].get() };
+	ID3D11RenderTargetView* pRTV[] = { RenderTargetView[0].get(), RenderTargetView[1].get(), RenderTargetView[2].get() };
 
     //CRenderer::GetDeviceContext()->OMSetRenderTargets( 1, &pRTV, pDSV );
 	CRenderer::GetDeviceContext()->OMSetRenderTargets(3, pRTV, pDSV);

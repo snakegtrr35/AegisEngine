@@ -13,12 +13,12 @@ void main(in float4 inPosition      : POSITION0,
 		  out float4 outalbedo      : SV_Target1,
 		  out float4 outNormal      : SV_Target2)
 { 
-    float depthValue = inPosition.z / inPosition.w;
+    float depthValue = inColor.z / inColor.w;
     
     outDepth = float4(depthValue, depthValue, depthValue, 1.0f);
     
     outalbedo = inColor;
     
-    float4 normal = 0.5 - 0.5 * normalize(inNormal);
-    outNormal = float4(normal.xyz, 1.0);
+    outNormal = 0.5 * (normalize(inColor) + 1.0);
+
 }

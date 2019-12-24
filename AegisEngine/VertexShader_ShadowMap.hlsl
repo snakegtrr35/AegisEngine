@@ -35,5 +35,5 @@ void main( in float4 inPosition     : POSITION0,
     inNormal.w = 0.0;
     outNormal = mul(inNormal, World);
     
-    outColor = inDiffuse;
+    outColor = outPosition;
 }
