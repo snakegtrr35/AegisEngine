@@ -21,8 +21,12 @@ private:
 
 	//! デプスステンシルビュー
 	unique_ptr<ID3D11DepthStencilView, Release>			DepthStencilView;
+
 	//! シェーダーリソースビュー
-	unique_ptr<ID3D11ShaderResourceView, Release>		ShaderResourceView;
+	unique_ptr<ID3D11ShaderResourceView, Release>		ShaderResourceView[3];
+
+	unique_ptr < ID3D11BlendState, Release>				BlendState;
+
 	//! ラスタライザステート
 	unique_ptr < ID3D11RasterizerState, Release>		RasterizerState;
 	//! サンプラー
@@ -45,7 +49,7 @@ private:
 
 	bool Enable;
 
-	unique_ptr<ID3D11RenderTargetView, Release> RenderTargetView;
+	unique_ptr<ID3D11RenderTargetView, Release> RenderTargetView[3];
 
 	GAME_OBJECT* Target;
 
@@ -86,7 +90,15 @@ public:
 	}
 
 	ID3D11ShaderResourceView* Get() {
-		return ShaderResourceView.get();
+		return ShaderResourceView[0].get();
+	}
+
+	ID3D11ShaderResourceView* Get1() {
+		return ShaderResourceView[1].get();
+	}
+
+	ID3D11ShaderResourceView* Get2() {
+		return ShaderResourceView[2].get();
 	}
 
 	void Set_Target(GAME_OBJECT* object);
