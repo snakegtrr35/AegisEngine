@@ -23,8 +23,8 @@ IDWriteTextLayout*			CRenderer::m_TextLayout = nullptr;
 
 IDWriteFactory*				CRenderer::m_DwriteFactory = nullptr;
 
-ID3D11VertexShader*			CRenderer::m_VertexShader[2] = { nullptr };
-ID3D11PixelShader*			CRenderer::m_PixelShader[4] = { nullptr };
+ID3D11VertexShader*			CRenderer::m_VertexShader[3] = { nullptr };
+ID3D11PixelShader*			CRenderer::m_PixelShader[5] = { nullptr };
 ID3D11InputLayout*			CRenderer::m_VertexLayout = nullptr;
 ID3D11Buffer*				CRenderer::m_MaterialBuffer = nullptr;
 ID3D11Buffer*				CRenderer::m_LightBuffer = nullptr;
@@ -41,11 +41,13 @@ bool CRenderer::Stand_By_Enable = false;
 ID3D11Buffer*	CRenderer::m_ConstantBuffer;//
 ID3D11Buffer* CRenderer::m_ConstantBuffer_02;
 
+unique_ptr<ID3D11RenderTargetView, Release>			CRenderer::RenderTargetView[3];
+unique_ptr<ID3D11ShaderResourceView, Release>		CRenderer::ShaderResourceView[3];
 
 // ライト
 LIGHT CRenderer::m_Light;//
 
-
+RENDERING_PASS CRenderer::Pass;
 
 bool CRenderer::Init()
 {
@@ -57,6 +59,11 @@ bool CRenderer::Init()
 	}
 
 	if (false == Init2D())
+	{
+		return false;
+	}
+
+	if (false == Create())
 	{
 		return false;
 	}
@@ -119,6 +126,41 @@ bool CRenderer::Init()
 			fclose(file);
 
 			m_D3DDevice->CreateVertexShader(buffer, fsize, NULL, &m_VertexShader[1]);
+
+			m_D3DDevice->CreateInputLayout(layout,
+				numElements,
+				buffer,
+				fsize,
+				&m_VertexLayout);
+
+			delete[] buffer;
+		}
+	}
+
+	// 頂点シェーダ生成 GBuffer生成
+	{
+		// 入力レイアウト生成
+		D3D11_INPUT_ELEMENT_DESC layout[] =
+		{
+			{ "POSITION",	0, DXGI_FORMAT_R32G32B32_FLOAT,		0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+			{ "NORMAL",		0, DXGI_FORMAT_R32G32B32_FLOAT,		0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+			{ "COLOR",		0, DXGI_FORMAT_R32G32B32A32_FLOAT,	0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+			{ "TEXCOORD",	0, DXGI_FORMAT_R32G32_FLOAT,		0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 }
+		};
+
+		UINT numElements = ARRAYSIZE(layout);
+
+		{
+			FILE* file;
+			long int fsize;
+
+			file = fopen("VertexShader_Geometry.cso", "rb");
+			fsize = _filelength(_fileno(file));
+			unsigned char* buffer = new unsigned char[fsize];
+			fread(buffer, fsize, 1, file);
+			fclose(file);
+
+			m_D3DDevice->CreateVertexShader(buffer, fsize, NULL, &m_VertexShader[2]);
 
 			m_D3DDevice->CreateInputLayout(layout,
 				numElements,
@@ -232,6 +274,22 @@ bool CRenderer::Init()
 
 			delete[] buffer;
 		}
+
+		// GBuffer生成
+		{
+			FILE* file;
+			long int fsize;
+
+			file = fopen("PixelShader_Geometry.cso", "rb");
+			fsize = _filelength(_fileno(file));
+			unsigned char* buffer = new unsigned char[fsize];
+			fread(buffer, fsize, 1, file);
+			fclose(file);
+
+			m_D3DDevice->CreatePixelShader(buffer, fsize, NULL, &m_PixelShader[4]);
+
+			delete[] buffer;
+		}
 	}
 
 	// 定数バッファ生成
@@ -326,10 +384,12 @@ void CRenderer::Uninit()
 
 	SAFE_RELEASE(m_VertexShader[0]);
 	SAFE_RELEASE(m_VertexShader[1]);
+	SAFE_RELEASE(m_VertexShader[2]);
 
 	SAFE_RELEASE(m_PixelShader[0]);
 	SAFE_RELEASE(m_PixelShader[1]);
 	SAFE_RELEASE(m_PixelShader[2]);
+	SAFE_RELEASE(m_PixelShader[3]);
 
 	SAFE_RELEASE(m_RenderTargetView)
 	SAFE_RELEASE(m_SwapChain)
@@ -533,14 +593,18 @@ bool CRenderer::Init3D()
 	ZeroMemory(&blendDesc, sizeof(blendDesc));
 	blendDesc.AlphaToCoverageEnable = FALSE;
 	blendDesc.IndependentBlendEnable = FALSE;
-	blendDesc.RenderTarget[0].BlendEnable = TRUE;
-	blendDesc.RenderTarget[0].SrcBlend = D3D11_BLEND_SRC_ALPHA;
-	blendDesc.RenderTarget[0].DestBlend = D3D11_BLEND_INV_SRC_ALPHA;
-	blendDesc.RenderTarget[0].BlendOp = D3D11_BLEND_OP_ADD;
-	blendDesc.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_ONE;
-	blendDesc.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ZERO;
-	blendDesc.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
-	blendDesc.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
+
+	for (char i = 0; i < 3; i++)
+	{
+		blendDesc.RenderTarget[i].BlendEnable = TRUE;
+		blendDesc.RenderTarget[i].SrcBlend = D3D11_BLEND_SRC_ALPHA;
+		blendDesc.RenderTarget[i].DestBlend = D3D11_BLEND_INV_SRC_ALPHA;
+		blendDesc.RenderTarget[i].BlendOp = D3D11_BLEND_OP_ADD;
+		blendDesc.RenderTarget[i].SrcBlendAlpha = D3D11_BLEND_ONE;
+		blendDesc.RenderTarget[i].DestBlendAlpha = D3D11_BLEND_ZERO;
+		blendDesc.RenderTarget[i].BlendOpAlpha = D3D11_BLEND_OP_ADD;
+		blendDesc.RenderTarget[i].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
+	}
 
 	float blendFactor[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
 	ID3D11BlendState* blendState = NULL;
@@ -740,14 +804,17 @@ void CRenderer::SetBlendState(D3D11_BLEND_DESC* blend_state, bool flag)
 		ZeroMemory(&blendDesc, sizeof(blendDesc));
 		blendDesc.AlphaToCoverageEnable = FALSE;
 		blendDesc.IndependentBlendEnable = FALSE;
-		blendDesc.RenderTarget[0].BlendEnable = TRUE;
-		blendDesc.RenderTarget[0].SrcBlend = D3D11_BLEND_SRC_ALPHA;
-		blendDesc.RenderTarget[0].DestBlend = D3D11_BLEND_INV_SRC_ALPHA;
-		blendDesc.RenderTarget[0].BlendOp = D3D11_BLEND_OP_ADD;
-		blendDesc.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_ONE;
-		blendDesc.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ZERO;
-		blendDesc.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
-		blendDesc.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
+		for (char i = 0; i < 3; i++)
+		{
+			blendDesc.RenderTarget[i].BlendEnable = TRUE;
+			blendDesc.RenderTarget[i].SrcBlend = D3D11_BLEND_SRC_ALPHA;
+			blendDesc.RenderTarget[i].DestBlend = D3D11_BLEND_INV_SRC_ALPHA;
+			blendDesc.RenderTarget[i].BlendOp = D3D11_BLEND_OP_ADD;
+			blendDesc.RenderTarget[i].SrcBlendAlpha = D3D11_BLEND_ONE;
+			blendDesc.RenderTarget[i].DestBlendAlpha = D3D11_BLEND_ZERO;
+			blendDesc.RenderTarget[i].BlendOpAlpha = D3D11_BLEND_OP_ADD;
+			blendDesc.RenderTarget[i].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
+		}
 
 		float blendFactor[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
 		ID3D11BlendState* blendState = nullptr;
@@ -761,14 +828,17 @@ void CRenderer::GetAddBlendState(D3D11_BLEND_DESC& blend_state)
 {
 	blend_state.AlphaToCoverageEnable = FALSE;
 	blend_state.IndependentBlendEnable = FALSE;
-	blend_state.RenderTarget[0].BlendEnable = TRUE;
-	blend_state.RenderTarget[0].SrcBlend = D3D11_BLEND_INV_SRC_ALPHA;
-	blend_state.RenderTarget[0].DestBlend = D3D11_BLEND_ONE;
-	blend_state.RenderTarget[0].BlendOp = D3D11_BLEND_OP_ADD;
-	blend_state.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_ONE;
-	blend_state.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ZERO;
-	blend_state.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
-	blend_state.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
+	for (char i = 0; i < 3; i++)
+	{
+		blend_state.RenderTarget[i].BlendEnable = TRUE;
+		blend_state.RenderTarget[i].SrcBlend = D3D11_BLEND_INV_SRC_ALPHA;
+		blend_state.RenderTarget[i].DestBlend = D3D11_BLEND_ONE;
+		blend_state.RenderTarget[i].BlendOp = D3D11_BLEND_OP_ADD;
+		blend_state.RenderTarget[i].SrcBlendAlpha = D3D11_BLEND_ONE;
+		blend_state.RenderTarget[i].DestBlendAlpha = D3D11_BLEND_ZERO;
+		blend_state.RenderTarget[i].BlendOpAlpha = D3D11_BLEND_OP_ADD;
+		blend_state.RenderTarget[i].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
+	}
 }
 
 // 減算合成用ブレンド ステートのためのを設定を取得する
@@ -776,14 +846,17 @@ void CRenderer::GetSubtractBlendState(D3D11_BLEND_DESC& blend_state)
 {
 	blend_state.AlphaToCoverageEnable = FALSE;
 	blend_state.IndependentBlendEnable = FALSE;
-	blend_state.RenderTarget[0].BlendEnable = TRUE;
-	blend_state.RenderTarget[0].SrcBlend = D3D11_BLEND_SRC_ALPHA;
-	blend_state.RenderTarget[0].DestBlend = D3D11_BLEND_ONE;
-	blend_state.RenderTarget[0].BlendOp = D3D11_BLEND_OP_REV_SUBTRACT;
-	blend_state.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_ZERO;
-	blend_state.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ONE;
-	blend_state.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
-	blend_state.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
+	for (char i = 0; i < 3; i++)
+	{
+		blend_state.RenderTarget[i].BlendEnable = TRUE;
+		blend_state.RenderTarget[i].SrcBlend = D3D11_BLEND_SRC_ALPHA;
+		blend_state.RenderTarget[i].DestBlend = D3D11_BLEND_ONE;
+		blend_state.RenderTarget[i].BlendOp = D3D11_BLEND_OP_REV_SUBTRACT;
+		blend_state.RenderTarget[i].SrcBlendAlpha = D3D11_BLEND_ZERO;
+		blend_state.RenderTarget[i].DestBlendAlpha = D3D11_BLEND_ONE;
+		blend_state.RenderTarget[i].BlendOpAlpha = D3D11_BLEND_OP_ADD;
+		blend_state.RenderTarget[i].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
+	}
 }
 
 // 2D用のブレンド ステートのためのを設定を取得する
@@ -791,14 +864,17 @@ void CRenderer::Get2DBlendState(D3D11_BLEND_DESC& blend_state)
 {
 	blend_state.AlphaToCoverageEnable = FALSE;
 	blend_state.IndependentBlendEnable = FALSE;
-	blend_state.RenderTarget[0].BlendEnable = TRUE;
-	blend_state.RenderTarget[0].SrcBlend = D3D11_BLEND_INV_SRC_ALPHA;
-	blend_state.RenderTarget[0].DestBlend = D3D11_BLEND_ONE;
-	blend_state.RenderTarget[0].BlendOp = D3D11_BLEND_OP_ADD;
-	blend_state.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_ONE;
-	blend_state.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ZERO;
-	blend_state.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
-	blend_state.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
+	for (char i = 0; i < 3; i++)
+	{
+		blend_state.RenderTarget[i].BlendEnable = TRUE;
+		blend_state.RenderTarget[i].SrcBlend = D3D11_BLEND_INV_SRC_ALPHA;
+		blend_state.RenderTarget[i].DestBlend = D3D11_BLEND_ONE;
+		blend_state.RenderTarget[i].BlendOp = D3D11_BLEND_OP_ADD;
+		blend_state.RenderTarget[i].SrcBlendAlpha = D3D11_BLEND_ONE;
+		blend_state.RenderTarget[i].DestBlendAlpha = D3D11_BLEND_ZERO;
+		blend_state.RenderTarget[i].BlendOpAlpha = D3D11_BLEND_OP_ADD;
+		blend_state.RenderTarget[i].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
+	}
 }
 
 void CRenderer::Change_Window_Mode()
@@ -822,6 +898,8 @@ void CRenderer::Begin()
 	float ClearColor[4] = { 0.5f, 0.5f, 0.5f, 1.0f };
 	m_ImmediateContext->ClearRenderTargetView( m_RenderTargetView, ClearColor );
 	m_ImmediateContext->ClearDepthStencilView( m_DepthStencilView, D3D11_CLEAR_DEPTH, 1.0f, 0);
+
+	Pass = RENDERING_PASS::GEOMETRY;
 }
 
 void CRenderer::End()
@@ -1025,6 +1103,10 @@ void CRenderer::Set_Shader(const SHADER_INDEX_V v_index, const SHADER_INDEX_P p_
 			m_ImmediateContext->VSSetShader(m_VertexShader[(int)SHADER_INDEX_V::ANIMATION], NULL, 0);
 			break;*/
 
+		case (int)SHADER_INDEX_V::GEOMETRY:
+			m_ImmediateContext->VSSetShader(m_VertexShader[(int)SHADER_INDEX_V::GEOMETRY], NULL, 0);
+			break;
+
 		default:
 			break;
 	}
@@ -1047,55 +1129,18 @@ void CRenderer::Set_Shader(const SHADER_INDEX_V v_index, const SHADER_INDEX_P p_
 			m_ImmediateContext->PSSetShader(m_PixelShader[(int)SHADER_INDEX_P::SHADOW_MAP], NULL, 0);
 			break;
 
+		case (int)SHADER_INDEX_P::GEOMETRY:
+			m_ImmediateContext->PSSetShader(m_PixelShader[(int)SHADER_INDEX_P::GEOMETRY], NULL, 0);
+			break;
+
 		default:
 			break;
 	}
 }
 
-void CRenderer::CreateRenderTexture()
-{
-	//HRESULT hr;
+void CRenderer::CreateRenderTexture() {}
 
-	//// 2次元テクスチャの設定
-	//D3D11_TEXTURE2D_DESC texDesc;
-	//memset(&texDesc, 0, sizeof(texDesc));
-	//texDesc.Usage = D3D11_USAGE_DEFAULT;
-	//texDesc.Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
-	//texDesc.BindFlags = D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE;
-	//texDesc.Width = SCREEN_WIDTH;
-	//texDesc.Height = SCREEN_HEIGHT;
-	//texDesc.CPUAccessFlags = 0;
-	//texDesc.MipLevels = 1;
-	//texDesc.ArraySize = 1;
-	//texDesc.SampleDesc.Count = 1;
-	//texDesc.SampleDesc.Quality = 0;
-	//
-	//ID3D11Texture2D* pTex;
-
-	//// 2次元テクスチャの生成
-	//hr = m_D3DDevice->CreateTexture2D(&texDesc, nullptr, &pTex);
-
-	//if (FAILED(hr))
-	//{
-	//	FAILDE_ASSERT;
-	//}
-
-	//// シェーダリソースビューの設定
-	//D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc;
-	//memset(&srvDesc, 0, sizeof(srvDesc));
-	//srvDesc.Format = texDesc.Format;
-	//srvDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
-	//srvDesc.Texture2D.MipLevels = 1;
-	//
-	//// シェーダリソースビューの生成
-	//hr = m_D3DDevice->CreateShaderResourceView(pTex, &srvDesc, &ShaderResourceView);
-	//if(FAILED(hr))
-	//{
-	//	FAILDE_ASSERT;
-	//}
-}
-
-void CRenderer::SetRenderTargetView()
+void CRenderer::SetPass_Rendring()
 {
 	float clearColor[4] = { 0.5f, 0.5f, 0.5f, 1.0f };
 
@@ -1103,7 +1148,7 @@ void CRenderer::SetRenderTargetView()
 		// デフォルトのレンダーターゲットビューに切り替え
 		m_ImmediateContext->OMSetRenderTargets(1, &m_RenderTargetView, m_DepthStencilView);
 		m_ImmediateContext->ClearRenderTargetView(m_RenderTargetView, clearColor);
-		m_ImmediateContext->ClearDepthStencilView(m_DepthStencilView, D3D11_CLEAR_DEPTH, 1.0f, 0);
+		m_ImmediateContext->ClearDepthStencilView(m_DepthStencilView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 
 		{
 			// ビューポート設定
@@ -1120,5 +1165,221 @@ void CRenderer::SetRenderTargetView()
 
 		Set_Shader();
 		Set_RasterizerState();
+
+		Pass = RENDERING_PASS::REDRING;
 	}
+}
+
+void CRenderer::SetPass_Geometry()
+{
+	float clearColor[4] = { 0.5f, 0.5f, 0.5f, 1.0f };
+
+	{
+		ID3D11RenderTargetView* rtv[3] = { RenderTargetView[0].get(), RenderTargetView[1].get(), RenderTargetView[2].get() };
+
+		// デフォルトのレンダーターゲットビューに切り替え
+		m_ImmediateContext->OMSetRenderTargets(3, rtv, m_DepthStencilView);
+		m_ImmediateContext->ClearRenderTargetView(rtv[0], clearColor);
+		m_ImmediateContext->ClearRenderTargetView(rtv[1], clearColor);
+		m_ImmediateContext->ClearRenderTargetView(rtv[2], clearColor);
+		m_ImmediateContext->ClearDepthStencilView(m_DepthStencilView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
+
+		{
+			// ビューポート設定
+			D3D11_VIEWPORT dxViewport;
+			dxViewport.Width = (float)SCREEN_WIDTH;
+			dxViewport.Height = (float)SCREEN_HEIGHT;
+			dxViewport.MinDepth = 0.0f;
+			dxViewport.MaxDepth = 1.0f;
+			dxViewport.TopLeftX = 0.0f;
+			dxViewport.TopLeftY = 0.0f;
+
+			D3D11_VIEWPORT viewport[3] = { dxViewport, dxViewport, dxViewport };
+
+			m_ImmediateContext->RSSetViewports(3, viewport);
+		}
+
+		Set_Shader(SHADER_INDEX_V::GEOMETRY, SHADER_INDEX_P::GEOMETRY);
+		Set_RasterizerState();
+
+		Pass = RENDERING_PASS::GEOMETRY;
+	}
+}
+
+bool CRenderer::Create()
+{
+	HRESULT hr;
+
+	// デプスバッファの作成
+	{
+		ID3D11Texture2D* pTex = nullptr;
+
+		// テクスチャの作成
+		D3D11_TEXTURE2D_DESC td;
+		td.Width = SCREEN_WIDTH;
+		td.Height = SCREEN_HEIGHT;
+		td.MipLevels = 1;
+		td.ArraySize = 1;
+		td.Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
+		td.SampleDesc.Count = 1;
+		td.SampleDesc.Quality = 0;
+		td.Usage = D3D11_USAGE_DEFAULT;
+		td.BindFlags = D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE;
+		td.CPUAccessFlags = 0;
+		td.MiscFlags = 0;
+
+		hr = m_D3DDevice->CreateTexture2D(&td, nullptr, &pTex);
+		if (FAILED(hr))
+		{
+			FAILDE_ASSERT;
+			return false;
+		}
+
+		// レンダーターゲットビュー設定
+		{
+			ID3D11RenderTargetView* pRtv;
+
+			D3D11_RENDER_TARGET_VIEW_DESC desc;
+			desc.Format = td.Format;
+			desc.ViewDimension = D3D11_RTV_DIMENSION_TEXTURE2D;
+			desc.Texture2D.MipSlice = 0;
+
+			hr = m_D3DDevice->CreateRenderTargetView(pTex, &desc, &pRtv);
+			if (FAILED(hr))
+			{
+				return false;
+			}
+
+			RenderTargetView[0].reset(pRtv);
+		}
+
+		// シェーダーリソースビュー設定
+		{
+			ID3D11ShaderResourceView* srv = nullptr;
+
+			// シェーダーリソースビューの設定
+			D3D11_SHADER_RESOURCE_VIEW_DESC desc;
+			desc.Format = td.Format;
+			desc.ViewDimension = D3D_SRV_DIMENSION_TEXTURE2D;
+			desc.Texture2D.MostDetailedMip = 0;
+			desc.Texture2D.MipLevels = 1;
+
+			hr = m_D3DDevice->CreateShaderResourceView(pTex, &desc, &srv);
+			if (FAILED(hr))
+			{
+				FAILDE_ASSERT;
+				return false;
+			}
+			ShaderResourceView[0].reset(srv);
+		}
+	}
+
+	// アルベドバッファの作成
+	{
+		ID3D11Texture2D* pTex = nullptr;
+
+		// テクスチャの作成
+		D3D11_TEXTURE2D_DESC td;
+		td.Width = SCREEN_WIDTH;
+		td.Height = SCREEN_HEIGHT;
+		td.MipLevels = 1;
+		td.ArraySize = 1;
+		td.Format = DXGI_FORMAT_R16G16B16A16_FLOAT;
+		td.SampleDesc.Count = 1;
+		td.SampleDesc.Quality = 0;
+		td.Usage = D3D11_USAGE_DEFAULT;
+		td.BindFlags = D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE;
+		td.CPUAccessFlags = 0;
+		td.MiscFlags = 0;
+
+		hr = m_D3DDevice->CreateTexture2D(&td, nullptr, &pTex);
+		if (FAILED(hr))
+		{
+			FAILDE_ASSERT;
+			return false;
+		}
+
+		// レンダーターゲットビュー設定
+		{
+			ID3D11RenderTargetView* pRtv;
+
+			hr = m_D3DDevice->CreateRenderTargetView(pTex, nullptr, &pRtv);
+			if (FAILED(hr))
+			{
+				return false;
+			}
+
+			RenderTargetView[1].reset(pRtv);
+		}
+
+		// シェーダーリソースビュー設定
+		{
+			ID3D11ShaderResourceView* srv = nullptr;
+
+			hr = m_D3DDevice->CreateShaderResourceView(pTex, nullptr, &srv);
+			if (FAILED(hr))
+			{
+				FAILDE_ASSERT;
+				return false;
+			}
+			ShaderResourceView[1].reset(srv);
+		}
+	}
+
+	// 法線バッファの作成
+	{
+		ID3D11Texture2D* pTex = nullptr;
+
+		// テクスチャの作成
+		D3D11_TEXTURE2D_DESC td;
+		td.Width = SCREEN_WIDTH;
+		td.Height = SCREEN_HEIGHT;
+		td.MipLevels = 1;
+		td.ArraySize = 1;
+		td.Format = DXGI_FORMAT_R11G11B10_FLOAT;
+		td.SampleDesc.Count = 1;
+		td.SampleDesc.Quality = 0;
+		td.Usage = D3D11_USAGE_DEFAULT;
+		td.BindFlags = D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE;
+		td.CPUAccessFlags = 0;
+		td.MiscFlags = 0;
+
+		hr = m_D3DDevice->CreateTexture2D(&td, nullptr, &pTex);
+		if (FAILED(hr))
+		{
+			FAILDE_ASSERT;
+			return false;
+		}
+
+		// レンダーターゲットビュー設定
+		{
+			ID3D11RenderTargetView* pRtv;
+
+			hr = m_D3DDevice->CreateRenderTargetView(pTex, nullptr, &pRtv);
+			if (FAILED(hr))
+			{
+				return false;
+			}
+
+			RenderTargetView[2].reset(pRtv);
+		}
+
+		// シェーダーリソースビュー設定
+		{
+			ID3D11ShaderResourceView* srv = nullptr;
+
+			hr = m_D3DDevice->CreateShaderResourceView(pTex, nullptr, &srv);
+			if (FAILED(hr))
+			{
+				FAILDE_ASSERT;
+				return false;
+			}
+			ShaderResourceView[2].reset(srv);
+		}
+	}
+}
+
+RENDERING_PASS CRenderer::Get_Rendering_Pass()
+{
+	return Pass;
 }

@@ -64,7 +64,7 @@ bool SHADOW_MAP::Init()
 		td.SampleDesc.Count = 1;
 		td.SampleDesc.Quality = 0;
 		td.Usage = D3D11_USAGE_DEFAULT;
-		td.BindFlags = D3D11_BIND_DEPTH_STENCIL;
+		td.BindFlags = D3D11_BIND_DEPTH_STENCIL | D3D11_BIND_SHADER_RESOURCE;
 		td.CPUAccessFlags = 0;
 		td.MiscFlags = 0;
 
@@ -75,20 +75,42 @@ bool SHADOW_MAP::Init()
 			return false;
 		}
 
-		D3D11_DEPTH_STENCIL_VIEW_DESC desc;
-		desc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
-		desc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
-		desc.Flags = 0;
-		desc.Texture2D.MipSlice = 0;
-
-		hr = CRenderer::GetDevice()->CreateDepthStencilView(pTex, &desc, &dsv);
-		if (FAILED(hr))
 		{
-			FAILDE_ASSERT;
-			return false;
+			D3D11_DEPTH_STENCIL_VIEW_DESC desc;
+			desc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
+			desc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
+			desc.Flags = 0;
+			desc.Texture2D.MipSlice = 0;
+
+			hr = CRenderer::GetDevice()->CreateDepthStencilView(pTex, &desc, &dsv);
+			if (FAILED(hr))
+			{
+				FAILDE_ASSERT;
+				return false;
+			}
+
+			DepthStencilView.reset(dsv);
 		}
 
-		DepthStencilView.reset(dsv);
+		//// シェーダーリソースビュー設定
+		//{
+		//	ID3D11ShaderResourceView* srv = nullptr;
+
+		//	D3D11_SHADER_RESOURCE_VIEW_DESC desc;
+		//	ZeroMemory(&desc, sizeof(desc));
+		//	desc.Format = DXGI_FORMAT_R24_UNORM_X8_TYPELESS;
+		//	desc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
+		//	desc.Texture2D.MipLevels = 1;
+		//	desc.Texture2D.MostDetailedMip = 0;
+
+		//	hr = CRenderer::GetDevice()->CreateShaderResourceView(pTex, &desc, &srv);
+		//	if (FAILED(hr))
+		//	{
+		//		FAILDE_ASSERT;
+		//		return false;
+		//	}
+		//	SRV.reset(srv);
+		//}
     }
 
 	// デプスバッファの作成
@@ -131,7 +153,7 @@ bool SHADOW_MAP::Init()
 				return false;
 			}
 
-			RenderTargetView[0].reset(pRtv);
+			RenderTargetView.reset(pRtv);
 		}
 
 		// シェーダーリソースビュー設定
@@ -151,111 +173,7 @@ bool SHADOW_MAP::Init()
 				FAILDE_ASSERT;
 				return false;
 			}
-			ShaderResourceView[0].reset(srv);
-		}
-	}
-
-	// アルベドバッファの作成
-	{
-		ID3D11Texture2D* pTex = nullptr;
-
-		// テクスチャの作成
-		D3D11_TEXTURE2D_DESC td;
-		td.Width = SCREEN_WIDTH;
-		td.Height = SCREEN_HEIGHT;
-		td.MipLevels = 1;
-		td.ArraySize = 1;
-		td.Format = DXGI_FORMAT_R16G16B16A16_FLOAT;
-		td.SampleDesc.Count = 1;
-		td.SampleDesc.Quality = 0;
-		td.Usage = D3D11_USAGE_DEFAULT;
-		td.BindFlags = D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE;
-		td.CPUAccessFlags = 0;
-		td.MiscFlags = 0;
-
-		hr = CRenderer::GetDevice()->CreateTexture2D(&td, nullptr, &pTex);
-		if (FAILED(hr))
-		{
-			FAILDE_ASSERT;
-			return false;
-		}
-
-		// レンダーターゲットビュー設定
-		{
-			ID3D11RenderTargetView* pRtv;
-
-			hr = CRenderer::GetDevice()->CreateRenderTargetView(pTex, nullptr, &pRtv);
-			if (FAILED(hr))
-			{
-				return false;
-			}
-
-			RenderTargetView[1].reset(pRtv);
-		}
-
-		// シェーダーリソースビュー設定
-		{
-			ID3D11ShaderResourceView* srv = nullptr;
-
-			hr = CRenderer::GetDevice()->CreateShaderResourceView(pTex, nullptr, &srv);
-			if (FAILED(hr))
-			{
-				FAILDE_ASSERT;
-				return false;
-			}
-			ShaderResourceView[1].reset(srv);
-		}
-	}
-
-	// 法線バッファの作成
-	{
-		ID3D11Texture2D* pTex = nullptr;
-
-		// テクスチャの作成
-		D3D11_TEXTURE2D_DESC td;
-		td.Width = SCREEN_WIDTH;
-		td.Height = SCREEN_HEIGHT;
-		td.MipLevels = 1;
-		td.ArraySize = 1;
-		td.Format = DXGI_FORMAT_R11G11B10_FLOAT;
-		td.SampleDesc.Count = 1;
-		td.SampleDesc.Quality = 0;
-		td.Usage = D3D11_USAGE_DEFAULT;
-		td.BindFlags = D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE;
-		td.CPUAccessFlags = 0;
-		td.MiscFlags = 0;
-
-		hr = CRenderer::GetDevice()->CreateTexture2D(&td, nullptr, &pTex);
-		if (FAILED(hr))
-		{
-			FAILDE_ASSERT;
-			return false;
-		}
-
-		// レンダーターゲットビュー設定
-		{
-			ID3D11RenderTargetView* pRtv;
-
-			hr = CRenderer::GetDevice()->CreateRenderTargetView(pTex, nullptr, &pRtv);
-			if (FAILED(hr))
-			{
-				return false;
-			}
-
-			RenderTargetView[2].reset(pRtv);
-		}
-
-		// シェーダーリソースビュー設定
-		{
-			ID3D11ShaderResourceView* srv = nullptr;
-
-			hr = CRenderer::GetDevice()->CreateShaderResourceView(pTex, nullptr, &srv);
-			if (FAILED(hr))
-			{
-				FAILDE_ASSERT;
-				return false;
-			}
-			ShaderResourceView[2].reset(srv);
+			ShaderResourceView.reset(srv);
 		}
 	}
 
@@ -265,18 +183,14 @@ bool SHADOW_MAP::Init()
 		ZeroMemory(&blendDesc, sizeof(blendDesc));
 		blendDesc.AlphaToCoverageEnable = FALSE;
 		blendDesc.IndependentBlendEnable = FALSE;
-
-		for (char i = 0; i < 3; i++)
-		{
-			blendDesc.RenderTarget[i].BlendEnable = TRUE;
-			blendDesc.RenderTarget[i].SrcBlend = D3D11_BLEND_SRC_ALPHA;
-			blendDesc.RenderTarget[i].DestBlend = D3D11_BLEND_INV_SRC_ALPHA;
-			blendDesc.RenderTarget[i].BlendOp = D3D11_BLEND_OP_ADD;
-			blendDesc.RenderTarget[i].SrcBlendAlpha = D3D11_BLEND_ONE;
-			blendDesc.RenderTarget[i].DestBlendAlpha = D3D11_BLEND_ZERO;
-			blendDesc.RenderTarget[i].BlendOpAlpha = D3D11_BLEND_OP_ADD;
-			blendDesc.RenderTarget[i].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
-		}
+		blendDesc.RenderTarget[0].BlendEnable = TRUE;
+		blendDesc.RenderTarget[0].SrcBlend = D3D11_BLEND_SRC_ALPHA;
+		blendDesc.RenderTarget[0].DestBlend = D3D11_BLEND_INV_SRC_ALPHA;
+		blendDesc.RenderTarget[0].BlendOp = D3D11_BLEND_OP_ADD;
+		blendDesc.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_ONE;
+		blendDesc.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ZERO;
+		blendDesc.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
+		blendDesc.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
 
 		float blendFactor[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
 		ID3D11BlendState* bs = NULL;
@@ -293,7 +207,7 @@ bool SHADOW_MAP::Init()
 		D3D11_RASTERIZER_DESC rd;
 		ZeroMemory(&rd, sizeof(rd));
 		rd.FillMode = D3D11_FILL_SOLID;
-		rd.CullMode = D3D11_CULL_FRONT;
+		rd.CullMode = D3D11_CULL_BACK;
 		rd.DepthClipEnable = TRUE;
 		rd.MultisampleEnable = FALSE;
 		rd.DepthBias = 0.001f;
@@ -403,21 +317,16 @@ bool SHADOW_MAP::Init()
 void SHADOW_MAP::Begin()
 {
 	ID3D11DepthStencilView* pDSV = DepthStencilView.get();
-	//ID3D11RenderTargetView* pRTV = RenderTargetView[0].get();
 
-	ID3D11RenderTargetView* pRTV[] = { RenderTargetView[0].get(), RenderTargetView[1].get(), RenderTargetView[2].get() };
+	ID3D11RenderTargetView* pRTV = RenderTargetView.get();
 
-    //CRenderer::GetDeviceContext()->OMSetRenderTargets( 1, &pRTV, pDSV );
-	CRenderer::GetDeviceContext()->OMSetRenderTargets(3, pRTV, pDSV);
+    CRenderer::GetDeviceContext()->OMSetRenderTargets( 1, &pRTV, pDSV );
 
 	CRenderer::GetDeviceContext()->RSSetViewports(1, &DxViewport);
 
 	// バックバッファクリア
 	float ClearColor[4] = { 0.5f, 0.5f, 0.5f, 1.0f };
-	//CRenderer::GetDeviceContext()->ClearRenderTargetView(pRTV, ClearColor);
-	CRenderer::GetDeviceContext()->ClearRenderTargetView( pRTV[0], ClearColor );
-	CRenderer::GetDeviceContext()->ClearRenderTargetView( pRTV[1], ClearColor);
-	CRenderer::GetDeviceContext()->ClearRenderTargetView( pRTV[2], ClearColor);
+	CRenderer::GetDeviceContext()->ClearRenderTargetView(pRTV, ClearColor);
     CRenderer::GetDeviceContext()->ClearDepthStencilView( pDSV, D3D11_CLEAR_DEPTH, 1.0f, 0 );
 
 	Enable = true;
@@ -434,16 +343,6 @@ void SHADOW_MAP::Begin()
 void SHADOW_MAP::End()
 {
 	Enable = false;
-
-	ID3D11ShaderResourceView* srv = ShaderResourceView[0].get();
-
-	CRenderer::GetDeviceContext()->PSSetShaderResources(1, 1, &srv);
-
-	ID3D11SamplerState* s = Sampler.get();
-
-	CRenderer::GetDeviceContext()->PSSetSamplers(1, 1, &s);
-
-	CRenderer::SetBlendState();
 }
 
 void SHADOW_MAP::Update()
@@ -475,15 +374,11 @@ void SHADOW_MAP::Update()
 
 void SHADOW_MAP::Uninit()
 {
-	RenderTargetView[0].reset(nullptr);
-	RenderTargetView[1].reset(nullptr);
-	RenderTargetView[2].reset(nullptr);
+	RenderTargetView.reset(nullptr);
 
 	BlendState.reset(nullptr);
 
-	ShaderResourceView[0].reset(nullptr);
-	ShaderResourceView[1].reset(nullptr);
-	ShaderResourceView[2].reset(nullptr);
+	ShaderResourceView.reset(nullptr);
 
 	DepthStencilView.reset(nullptr);
 	RasterizerState.reset(nullptr);
@@ -516,4 +411,15 @@ void SHADOW_MAP::Set_Light(const XMFLOAT3& pos)
 	Light.Direction.w = 0.f;
 
 	CRenderer::GetDeviceContext()->UpdateSubresource(LightBuffer.get(), 0, nullptr, &Light, 0, 0);
+}
+
+void SHADOW_MAP::Set()
+{
+	ID3D11ShaderResourceView* srv = ShaderResourceView.get();
+
+	CRenderer::GetDeviceContext()->PSSetShaderResources(1, 1, &srv);
+
+	ID3D11SamplerState* s = Sampler.get();
+
+	CRenderer::GetDeviceContext()->PSSetSamplers(1, 1, &s);
 }

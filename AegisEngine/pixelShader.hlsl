@@ -135,7 +135,6 @@ void main( in float4 inPosition     : POSITION0,
     color.rgb *= shadow;
     
     color.rgb += (ambient * TexColor);
-    
 
     outDiffuse = color;
 }

@@ -10,7 +10,7 @@ void BOUNDING_SHPERE::Init()
 
 void BOUNDING_SHPERE::Draw()
 {
-	if (false == CManager::Get_ShadowMap()->Get_Enable())
+	if (false == CManager::Get_ShadowMap()->Get_Enable() && RENDERING_PASS::REDRING == CRenderer::Get_Rendering_Pass())
 	{
 		// 入力アセンブラに頂点バッファを設定
 		CRenderer::SetVertexBuffers(pVertexBuffer.get());

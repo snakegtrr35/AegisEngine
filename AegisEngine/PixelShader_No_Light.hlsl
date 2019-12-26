@@ -55,7 +55,8 @@ void main( in float4 inPosition      : POSITION0,
 		   in float4 outWPos         : TEXCOORD1,
            in float4 inShadowMapPos  : POSITION_SHADOWMAP,
 
-		   out float4 outDiffuse     : SV_Target)
+           out float4 outalbedo      : SV_Target0,
+		   out float4 outDiffuse     : SV_Target1)
 {
     outDiffuse = g_Texture.Sample(g_SamplerState, inTexCoord);
 
@@ -98,4 +99,7 @@ void main( in float4 inPosition      : POSITION0,
     outDiffuse.b *= 0.43f;*/
 
     outDiffuse *= inDiffuse;
+    
+    outalbedo = outDiffuse;
+
 }

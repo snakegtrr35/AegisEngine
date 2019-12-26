@@ -162,7 +162,7 @@ void MESH_FIELD::Draw()
 			float angle = 0.0f;
 			if (CManager::Get_ShadowMap()->Get_Enable())
 			{
-				angle = 180.0f;
+				//angle = 180.0f;
 			}
 
 			world = XMMatrixScaling(Scaling.x, Scaling.y, Scaling.z);																						// Šg‘åk¬
@@ -190,7 +190,14 @@ void MESH_FIELD::Draw()
 
 					CRenderer::Set_MatrixBuffer01(*camera01->Get_Pos());
 
-					CRenderer::Set_Shader();
+					if (RENDERING_PASS::GEOMETRY == CRenderer::Get_Rendering_Pass())
+					{
+						CRenderer::Set_Shader(SHADER_INDEX_V::GEOMETRY, SHADER_INDEX_P::GEOMETRY);
+					}
+					else
+					{
+						CRenderer::Set_Shader();
+					}
 				}
 			}
 			else
@@ -211,7 +218,14 @@ void MESH_FIELD::Draw()
 
 					CRenderer::Set_MatrixBuffer01(*camera02->Get_Pos());
 
-					CRenderer::Set_Shader();
+					if (RENDERING_PASS::GEOMETRY == CRenderer::Get_Rendering_Pass())
+					{
+						CRenderer::Set_Shader(SHADER_INDEX_V::GEOMETRY, SHADER_INDEX_P::GEOMETRY);
+					}
+					else
+					{
+						CRenderer::Set_Shader();
+					}
 				}
 			}
 		}
@@ -485,7 +499,10 @@ void MESH_WALL::Draw()
 
 					CRenderer::Set_MatrixBuffer01(*camera02->Get_Pos());
 
-					CRenderer::Set_Shader();
+					if (RENDERING_PASS::GEOMETRY != CRenderer::Get_Rendering_Pass())
+					{
+						CRenderer::Set_Shader();
+					}
 				}
 			}
 			else
@@ -506,7 +523,10 @@ void MESH_WALL::Draw()
 
 					CRenderer::Set_MatrixBuffer01(*camera02->Get_Pos());
 
-					CRenderer::Set_Shader();
+					if (RENDERING_PASS::GEOMETRY != CRenderer::Get_Rendering_Pass())
+					{
+						CRenderer::Set_Shader();
+					}
 				}
 			}
 		}

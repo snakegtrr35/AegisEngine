@@ -234,7 +234,14 @@ void CMODEL::Draw()
 		}
 		else
 		{
-			CRenderer::Set_Shader();
+			if (RENDERING_PASS::GEOMETRY == CRenderer::Get_Rendering_Pass())
+			{
+				CRenderer::Set_Shader(SHADER_INDEX_V::GEOMETRY, SHADER_INDEX_P::GEOMETRY);
+			}
+			else
+			{
+				CRenderer::Set_Shader();
+			}
 		}
 	}
 

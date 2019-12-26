@@ -2,23 +2,16 @@
 // 定数バッファ
 //*****************************************************************************
 
+
 //=============================================================================
 // ピクセルシェーダ
 //=============================================================================
 void main(in float4 inPosition      : POSITION0,
-		  in float4 inNormal        : NORMAL0,
-          in float4 inColor         : COLOR0,
+		  in float4 inPos           : POSITION1,
 
-		  out float4 outDepth       : SV_Target0,
-		  out float4 outalbedo      : SV_Target1,
-		  out float4 outNormal      : SV_Target2)
+		  out float4 outDepth       : SV_Target)
 { 
-    float depthValue = inColor.z / inColor.w;
+    float depthValue = inPos.z / inPos.w;
     
     outDepth = float4(depthValue, depthValue, depthValue, 1.0f);
-    
-    outalbedo = inColor;
-    
-    outNormal = 0.5 * (normalize(inColor) + 1.0);
-
 }
