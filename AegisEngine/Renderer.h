@@ -232,7 +232,9 @@ private:
 	//! スワップチェイン
 	static IDXGISwapChain1*			m_SwapChain;
 	//! レンダーターゲットビュー
-	static ID3D11RenderTargetView*	m_RenderTargetView;
+	static unique_ptr<ID3D11RenderTargetView, Release>	m_RenderTargetView[4];
+	//! シェーダーリソースビュー
+	static unique_ptr<ID3D11ShaderResourceView, Release>		m_ShaderResourceView[3];
 	//! デプスステンシル
 	static ID3D11DepthStencilView*	m_DepthStencilView;
 	//! Direct2Dのデバイス
@@ -451,12 +453,24 @@ public:
 	static void SetRenderTargetView();
 
 	static ID3D11RenderTargetView* Get() {
-		return m_RenderTargetView;
+		return m_RenderTargetView[0].get();
 	}
 
-	static ID3D11DepthStencilView* Get2() {
-		return m_DepthStencilView;
+	static ID3D11ShaderResourceView* Get1() {
+		return m_ShaderResourceView[0].get();
 	}
+
+	static ID3D11ShaderResourceView* Get2() {
+		return m_ShaderResourceView[1].get();
+	}
+
+	static ID3D11ShaderResourceView* Get3() {
+		return m_ShaderResourceView[2].get();
+	}
+
+	/*static ID3D11DepthStencilView* Get2() {
+		return m_DepthStencilView;
+	}*/
 
 	static LIGHT* Get_Light()
 	{

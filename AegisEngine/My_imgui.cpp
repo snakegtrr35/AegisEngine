@@ -277,10 +277,21 @@ void My_imgui::Draw(void)
 				{
 					ImGui::SetNextWindowSize(ImVec2(512 + 17, 512 + 40), ImGuiCond_Once);
 
-					ImGui::Begin("Depth", nullptr, window_flags);
+					ImGui::Begin("Shadow", nullptr, window_flags);
 
 					ImTextureID image = CManager::Get_ShadowMap()->Get();
-					//ImTextureID image = CRenderer::Get_SRV();
+
+					ImGui::Image(image, ImVec2(512, 512));
+
+					ImGui::End();
+				}
+
+				{
+					ImGui::SetNextWindowSize(ImVec2(512 + 17, 512 + 40), ImGuiCond_Once);
+
+					ImGui::Begin("Depth", nullptr, window_flags);
+
+					ImTextureID image = CRenderer::Get1();
 
 					ImGui::Image(image, ImVec2(512, 512));
 
@@ -292,7 +303,7 @@ void My_imgui::Draw(void)
 
 					ImGui::Begin("Albedo", nullptr, window_flags);
 
-					ImTextureID image = CManager::Get_ShadowMap()->Get1();
+					ImTextureID image = CRenderer::Get1();
 
 					ImGui::Image(image, ImVec2(512, 512));
 
@@ -304,7 +315,7 @@ void My_imgui::Draw(void)
 
 					ImGui::Begin("Normal", nullptr, window_flags);
 
-					ImTextureID image = CManager::Get_ShadowMap()->Get2();
+					ImTextureID image = CRenderer::Get2();
 
 					ImGui::Image(image, ImVec2(512, 512));
 

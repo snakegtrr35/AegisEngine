@@ -92,6 +92,4 @@ void main( in float4 inPosition		    : POSITION0,
     wvp = mul(World, ShadowView);
     wvp = mul(wvp, ShadowProjection);
     outShadowMapPos = mul(inPosition, wvp);
-
 }
-

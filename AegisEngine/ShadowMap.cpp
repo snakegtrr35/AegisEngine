@@ -449,22 +449,23 @@ void SHADOW_MAP::Begin()
 {
 	ID3D11DepthStencilView* pDSV = DepthStencilView.get();
 
-	//ID3D11RenderTargetView* pRTV = RenderTargetView[0].get();
-	ID3D11RenderTargetView* pRTV[3] = { RenderTargetView[0].get(), RenderTargetView[1].get(), RenderTargetView[2].get() };
+	ID3D11RenderTargetView* pRTV = RenderTargetView[0].get();
+	//ID3D11RenderTargetView* pRTV[3] = { RenderTargetView[0].get(), RenderTargetView[1].get(), RenderTargetView[2].get() };
 
-    //CRenderer::GetDeviceContext()->OMSetRenderTargets( 1, &pRTV, pDSV );
-	CRenderer::GetDeviceContext()->OMSetRenderTargets(3, pRTV, pDSV);
+    CRenderer::GetDeviceContext()->OMSetRenderTargets( 1, &pRTV, pDSV );
+	//CRenderer::GetDeviceContext()->OMSetRenderTargets(3, pRTV, pDSV);
 
-	D3D11_VIEWPORT V[3] = { DxViewport, DxViewport, DxViewport };
+	//D3D11_VIEWPORT V[3] = { DxViewport, DxViewport, DxViewport };
 
-	CRenderer::GetDeviceContext()->RSSetViewports(3, V);
+	CRenderer::GetDeviceContext()->RSSetViewports(1, &DxViewport);
+	//CRenderer::GetDeviceContext()->RSSetViewports(3, V);
 
 	// バックバッファクリア
 	float ClearColor[4] = { 0.5f, 0.5f, 0.5f, 1.0f };
-	//CRenderer::GetDeviceContext()->ClearRenderTargetView(pRTV, ClearColor);
-	CRenderer::GetDeviceContext()->ClearRenderTargetView( pRTV[0], ClearColor );
-	CRenderer::GetDeviceContext()->ClearRenderTargetView( pRTV[1], ClearColor);
-	CRenderer::GetDeviceContext()->ClearRenderTargetView( pRTV[2], ClearColor);
+	CRenderer::GetDeviceContext()->ClearRenderTargetView(pRTV, ClearColor);
+	//CRenderer::GetDeviceContext()->ClearRenderTargetView( pRTV[0], ClearColor );
+	//CRenderer::GetDeviceContext()->ClearRenderTargetView( pRTV[1], ClearColor);
+	//CRenderer::GetDeviceContext()->ClearRenderTargetView( pRTV[2], ClearColor);
     CRenderer::GetDeviceContext()->ClearDepthStencilView( pDSV, D3D11_CLEAR_DEPTH, 1.0f, 0 );
 
 	Enable = true;

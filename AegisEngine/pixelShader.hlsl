@@ -74,7 +74,10 @@ void main( in float4 inPosition     : POSITION0,
 		   in float4 inWPos         : POSITION1,
            in float4 inShadowMapPos : POSITION_SHADOWMAP,
            
-		   out float4 outDiffuse	: SV_Target )
+		   out float4 outDiffuse	: SV_Target0,
+		   out float4 outDepth      : SV_Target1,
+		   out float4 outAlbedo     : SV_Target2,
+		   out float4 outNormal     : SV_Target3)
 {
     float4 TexColor = g_Texture.Sample(g_SamplerState, inTexCoord);
     
@@ -142,6 +145,25 @@ void main( in float4 inPosition     : POSITION0,
     
     color.rgb += (ambient * TexColor);
     
-
+    // 最終結果
     outDiffuse = color;
+    
+    // 深度値
+    {
+        float depthValue = inPosition.z / inPosition.w;
+    
+        outDepth = float4(depthValue, depthValue, depthValue, 1.0f);
+    }
+    
+    // アルベド
+    {
+        outAlbedo = g_Texture.Sample(g_SamplerState, inTexCoord);
+    }
+    
+    // 法線
+    {
+        float4 normal = 0.5 * (normalize(inNormal) + 1.0);
+    
+        outNormal = float4(normal.xyz, 1.0);
+    }
 }
