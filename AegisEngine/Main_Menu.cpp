@@ -252,15 +252,15 @@ void MAIN_MENU::Update(float delta_time)
 					s->Set(CRenderer::Get());
 				}
 			}
-		}
+		}*/
 
-		/*{
+		{
 			auto text = Get_Game_Object<TEXTS>("fps");
 
 			auto time = TIMER::Get_FPS();
 
 			text->Edit(to_string(time));
-		}*/
+		}
 	}
 
 	if (FADE::End_Fade())
