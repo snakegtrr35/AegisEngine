@@ -50,7 +50,7 @@ void CCamera::Init()
 	dxViewport.TopLeftX = 0.0f;
 	dxViewport.TopLeftY = 0.0f;
 
-	CRenderer::GetDeviceContext()->RSSetViewports(1, &dxViewport);
+	//CRenderer::GetDeviceContext()->RSSetViewports(1, &dxViewport);
 
 	RotateEnable = MoveEnable = true;
 }
@@ -219,7 +219,7 @@ void CCamera::Draw()
 	dxViewport.TopLeftX = (float)rect.left;
 	dxViewport.TopLeftY = (float)rect.top;
 
-	CRenderer::GetDeviceContext()->RSSetViewports(1, &dxViewport);
+	//CRenderer::GetDeviceContext()->RSSetViewports(1, &dxViewport);
 
 	// ビューマトリクス設定
 	m_ViewMatrix = XMMatrixLookAtLH(Pos, At, Up);
