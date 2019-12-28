@@ -54,11 +54,8 @@ cbuffer CameraBuffer : register(b5)
 //*****************************************************************************
 // グローバル変数
 //*****************************************************************************
-Texture2D       g_Texture   : register( t0 );
-Texture2D       g_ShadowMap : register( t1 );     // シャドウマップ
-Texture2D       g_Depth     : register( t2 );     // デプス
-Texture2D       g_Albedo    : register( t3 );     // アルベド
-Texture2D       g_Normal    : register( t4 );     // 法線
+Texture2D       g_Texture : register( t0 );
+Texture2D       g_ShadowMap : register(t1);     // シャドウマップ
 
 SamplerState	g_SamplerState : register( s0 );
 SamplerState    g_ShadowSamplerState : register(s1);        // シャドウマップ用のサンプラー
@@ -74,10 +71,7 @@ void main( in float4 inPosition     : POSITION0,
 		   in float4 inWPos         : POSITION1,
            in float4 inShadowMapPos : POSITION_SHADOWMAP,
            
-		   out float4 outDiffuse	: SV_Target0,
-		   out float4 outDepth      : SV_Target1,
-		   out float4 outAlbedo     : SV_Target2,
-		   out float4 outNormal     : SV_Target3)
+		   out float4 outDiffuse	: SV_Target )
 {
     float4 TexColor = g_Texture.Sample(g_SamplerState, inTexCoord);
     
@@ -118,16 +112,13 @@ void main( in float4 inPosition     : POSITION0,
     ShadowTexCoord.x = inShadowMapPos.x / inShadowMapPos.w / 2.0 + 0.5;
     ShadowTexCoord.y = -inShadowMapPos.y / inShadowMapPos.w / 2.0 + 0.5;
     
-    //float w = 1.0f / inShadowMapPos.w;
-    //ShadowTexCoord.x = (1.0 + inShadowMapPos.x * w) * 0.5;
-    //ShadowTexCoord.y = (1.0 - inShadowMapPos.y * w) * 0.5;
-    
+    //if ((saturate(ShadowTexCoord.x) == ShadowTexCoord.x) && (saturate(ShadowTexCoord.y) == ShadowTexCoord.y))
     {
         float depthValue = g_ShadowMap.Sample(g_ShadowSamplerState, ShadowTexCoord).r;
 
         float lightDepthValue = inShadowMapPos.z / inShadowMapPos.w;
 
-        lightDepthValue = lightDepthValue - 0.003;
+        lightDepthValue = lightDepthValue - 0.0003;
 
         if (lightDepthValue <= depthValue || vec >= 0.0)
         {
@@ -144,28 +135,6 @@ void main( in float4 inPosition     : POSITION0,
     color.rgb *= shadow;
     
     color.rgb += (ambient * TexColor);
-    
-    // 最終結果
-    outDiffuse = color;
-    
-    // 深度値
-    {
-        float depthValue = inPosition.z / inPosition.w;
-    
-        outDepth = float4(depthValue, depthValue, depthValue, 1.0f);
-    }
-    
-    // アルベド
-    {
-        outAlbedo = g_Texture.Sample(g_SamplerState, inTexCoord);
-    }
-    
-    // 法線
-    {
-        float4 normal = 0.5 * (normalize(inNormal) + 1.0);
-    
-        outNormal = float4(normal.xyz, 1.0);
-        outNormal.a = 1.0;
 
-    }
+    outDiffuse = color;
 }

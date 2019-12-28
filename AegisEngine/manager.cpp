@@ -125,12 +125,25 @@ void CManager::Draw()
 
 	CRenderer::Begin();
 
-	pShadowMap->Begin();//
-	pSceneManager->Draw();//
+	// シャドウマップの描画
+	{
+		pShadowMap->Begin();
+		pSceneManager->Draw();
+		pShadowMap->End();//
+	}
 
-	CRenderer::SetRenderTargetView();
-	pShadowMap->End();//
-	pSceneManager->Draw();
+	// 1パス目
+	{
+		CRenderer::SetPass_Geometry();
+		pSceneManager->Draw();
+	}
+
+	// 最終レンダリング
+	{
+		CRenderer::SetPass_Rendring();
+		pShadowMap->Set();
+		pSceneManager->Draw();
+	}
 
 	// Effekseer
 	{

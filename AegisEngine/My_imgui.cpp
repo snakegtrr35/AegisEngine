@@ -291,7 +291,7 @@ void My_imgui::Draw(void)
 
 					ImGui::Begin("Depth", nullptr, window_flags);
 
-					ImTextureID image = CRenderer::Get1();
+					ImTextureID image = CRenderer::Get();
 
 					ImGui::Image(image, ImVec2(512, 512));
 
@@ -301,9 +301,9 @@ void My_imgui::Draw(void)
 				{
 					ImGui::SetNextWindowSize(ImVec2(512 + 17, 512 + 40), ImGuiCond_Once);
 
-					ImGui::Begin("Albedo", nullptr, window_flags);
+					ImGui::Begin("Diffeuse", nullptr, window_flags);
 
-					ImTextureID image = CRenderer::Get1();
+					ImTextureID image = CRenderer::Get2();
 
 					ImGui::Image(image, ImVec2(512, 512));
 
@@ -315,7 +315,7 @@ void My_imgui::Draw(void)
 
 					ImGui::Begin("Normal", nullptr, window_flags);
 
-					ImTextureID image = CRenderer::Get2();
+					ImTextureID image = CRenderer::Get3();
 
 					ImGui::Image(image, ImVec2(512, 512));
 

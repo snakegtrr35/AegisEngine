@@ -193,12 +193,14 @@ enum class SHADER_INDEX_P {
 	NO_TEXTURE,
 	NO_LIGHT,
 	SHADOW_MAP,
+	GEOMETRY,
 };
 
 enum class SHADER_INDEX_V {
 	DEFAULT,
 	SHADOW_MAP,
 	ANIMATION,
+	GEOMETRY,
 };
 
 class CVertexBuffer;
@@ -214,6 +216,14 @@ struct CONSTANT
 struct CONSTANT_02
 {
 	XMFLOAT4 Camera_Pos;	// カメラの座標
+};
+
+enum RENDERING_PASS
+{
+	GEOMETRY = 0,
+	LIGHTING,
+	REDRING,
+	MAX_PASS
 };
 
 /**
@@ -232,9 +242,11 @@ private:
 	//! スワップチェイン
 	static IDXGISwapChain1*			m_SwapChain;
 	//! レンダーターゲットビュー
-	static unique_ptr<ID3D11RenderTargetView, Release>	m_RenderTargetView[4];
-	//! シェーダーリソースビュー
-	static unique_ptr<ID3D11ShaderResourceView, Release>		m_ShaderResourceView[3];
+	static ID3D11RenderTargetView*	m_RenderTargetView;
+
+	static unique_ptr<ID3D11RenderTargetView, Release>			RenderTargetView[3];
+	static unique_ptr<ID3D11ShaderResourceView, Release>		ShaderResourceView[3];
+
 	//! デプスステンシル
 	static ID3D11DepthStencilView*	m_DepthStencilView;
 	//! Direct2Dのデバイス
@@ -253,8 +265,8 @@ private:
 	//! Direct2Dのライトファクトリー
 	static IDWriteFactory*			m_DwriteFactory;
 
-	static ID3D11VertexShader*		m_VertexShader[2];
-	static ID3D11PixelShader*		m_PixelShader[4];
+	static ID3D11VertexShader*		m_VertexShader[3];
+	static ID3D11PixelShader*		m_PixelShader[5];
 
 	static ID3D11DepthStencilState* m_DepthStateEnable;
 	static ID3D11DepthStencilState* m_DepthStateDisable;
@@ -279,6 +291,7 @@ private:
 	// ライト
 	static LIGHT m_Light;//
 
+	static RENDERING_PASS Pass;
 
 	/**
 	* @brief Direct3Dの初期化
@@ -450,27 +463,25 @@ public:
 
 	// 自前
 	static void CreateRenderTexture();
-	static void SetRenderTargetView();
+	static void SetPass_Rendring();
 
-	static ID3D11RenderTargetView* Get() {
-		return m_RenderTargetView[0].get();
-	}
+	static void SetPass_Geometry();
 
-	static ID3D11ShaderResourceView* Get1() {
-		return m_ShaderResourceView[0].get();
+	static bool Create();
+
+	static RENDERING_PASS Get_Rendering_Pass();
+
+	static ID3D11ShaderResourceView* Get() {
+		return ShaderResourceView[0].get();
 	}
 
 	static ID3D11ShaderResourceView* Get2() {
-		return m_ShaderResourceView[1].get();
+		return ShaderResourceView[1].get();
 	}
 
 	static ID3D11ShaderResourceView* Get3() {
-		return m_ShaderResourceView[2].get();
+		return ShaderResourceView[2].get();
 	}
-
-	/*static ID3D11DepthStencilView* Get2() {
-		return m_DepthStencilView;
-	}*/
 
 	static LIGHT* Get_Light()
 	{

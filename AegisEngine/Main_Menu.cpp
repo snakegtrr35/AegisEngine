@@ -151,17 +151,35 @@ void MAIN_MENU::Init()
 
 		//// ‰æ‘œ
 		//{
-		//	XMFLOAT2 pos(SCREEN_WIDTH * 0.2f, SCREEN_HEIGHT * 0.2f);
+		//	XMFLOAT2 pos(300, 300);
 
-		//	SPRITE* title = Add_Game_Object<SPRITE>(LAYER_NAME::UI);
+		//	SPRITE* s = Add_Game_Object<SPRITE>(LAYER_NAME::UI, "depth");
 
-		//	title->SetPosition(pos);
+		//	s->SetPosition(pos);
 
-		//	title->SetSize(XMFLOAT4(200, 200, 200, 200));
+		//	s->SetSize(XMFLOAT4(128, 128, 128, 128));
 
-		//	title->SetTexture(string("UVCheckerMap01-512.png"));
+		//	s->Set_Object_Name("depth");
+		//}
 
-		//	title->Set_Object_Name("sprite");
+		//{
+		//	XMFLOAT2 pos(300, 600);
+
+		//	SPRITE* s = Add_Game_Object<SPRITE>(LAYER_NAME::UI, "albed");
+
+		//	s->SetPosition(pos);
+
+		//	s->SetSize(XMFLOAT4(128, 128, 128, 128));
+		//}
+
+		//{
+		//	XMFLOAT2 pos(300, 900);
+
+		//	SPRITE* s = Add_Game_Object<SPRITE>(LAYER_NAME::UI, "normal");
+
+		//	s->SetPosition(pos);
+
+		//	s->SetSize(XMFLOAT4(128, 128, 128, 128));
 		//}
 
 		//{
@@ -208,7 +226,7 @@ void MAIN_MENU::Init()
 
 	//cnt = 0;
 
-	FADE::Start_FadeIn(60);
+	//FADE::Start_FadeIn(60);
 	flag = false;
 }
 
@@ -224,21 +242,25 @@ void MAIN_MENU::Update(float delta_time)
 	SCENE::Update(delta_time);
 
 	{
-		//{
-		//	auto text = Get_Game_Object<TEXTS>("delta_time");
-
-		//	auto time = TIMER::Get_DeltaTime();
-
-		//	text->Edit(to_string(time));
-		//}
-
 		/*{
+			vector<SPRITE*> sprites = Get_Game_Objects<SPRITE>();
+
+			for (auto s : sprites)
+			{
+				if ("depth" == s->Get_Object_Name())
+				{
+					s->Set(CRenderer::Get());
+				}
+			}
+		}*/
+
+		{
 			auto text = Get_Game_Object<TEXTS>("fps");
 
 			auto time = TIMER::Get_FPS();
 
 			text->Edit(to_string(time));
-		}*/
+		}
 	}
 
 	if (FADE::End_Fade())

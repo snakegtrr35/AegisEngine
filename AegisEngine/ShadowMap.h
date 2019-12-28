@@ -22,14 +22,12 @@ private:
 	//! デプスステンシルビュー
 	unique_ptr<ID3D11DepthStencilView, Release>			DepthStencilView;
 
-	unique_ptr<ID3D11DepthStencilView, Release>			DepthStencilView2;
-
 	//! シェーダーリソースビュー
-	unique_ptr<ID3D11ShaderResourceView, Release>		ShaderResourceView[3];
-	//! ブレンドステート
+	unique_ptr<ID3D11ShaderResourceView, Release>		ShaderResourceView;
+	unique_ptr<ID3D11ShaderResourceView, Release>		SRV;
+
 	unique_ptr < ID3D11BlendState, Release>				BlendState;
-	//! サンプラー
-	unique_ptr < ID3D11SamplerState, Release>			Texture_Sampler;
+
 	//! ラスタライザステート
 	unique_ptr < ID3D11RasterizerState, Release>		RasterizerState;
 	//! サンプラー
@@ -52,7 +50,7 @@ private:
 
 	bool Enable;
 
-	unique_ptr<ID3D11RenderTargetView, Release> RenderTargetView[3];
+	unique_ptr<ID3D11RenderTargetView, Release> RenderTargetView;
 
 	GAME_OBJECT* Target;
 
@@ -93,18 +91,12 @@ public:
 	}
 
 	ID3D11ShaderResourceView* Get() {
-		return ShaderResourceView[0].get();
-	}
-
-	ID3D11ShaderResourceView* Get1() {
-		return ShaderResourceView[1].get();
-	}
-
-	ID3D11ShaderResourceView* Get2() {
-		return ShaderResourceView[2].get();
+		return ShaderResourceView.get();
 	}
 
 	void Set_Target(GAME_OBJECT* object);
+
+	void Set();
 };
 
 #endif // !SHADOW_MAP_H

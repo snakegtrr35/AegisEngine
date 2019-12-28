@@ -2,14 +2,12 @@
 // 定数バッファ
 //*****************************************************************************
 
-Texture2D g_Texture : register(t0);
-SamplerState g_SamplerState : register(s0);
 
 //=============================================================================
 // ピクセルシェーダ
 //=============================================================================
 void main(in float4 inPosition      : POSITION0,
-          in float4 inPos           : COLOR0,
+		  in float4 inPos           : POSITION1,
 
 		  out float4 outDepth       : SV_Target)
 { 
