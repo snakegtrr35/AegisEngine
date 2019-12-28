@@ -165,5 +165,7 @@ void main( in float4 inPosition     : POSITION0,
         float4 normal = 0.5 * (normalize(inNormal) + 1.0);
     
         outNormal = float4(normal.xyz, 1.0);
+        outNormal.a = 1.0;
+
     }
 }

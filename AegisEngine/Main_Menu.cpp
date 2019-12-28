@@ -120,7 +120,7 @@ void MAIN_MENU::Init()
 		}
 
 		{
-			//auto pmd = Add_Game_Object<MESH_DOOM>(LAYER_NAME::BACKGROUND, "sky_doom");
+			auto pmd = Add_Game_Object<MESH_DOOM>(LAYER_NAME::BACKGROUND, "sky_doom");
 		}
 
 		//{
