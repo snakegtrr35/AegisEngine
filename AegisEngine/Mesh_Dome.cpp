@@ -135,7 +135,7 @@ void MESH_DOOM::Update(float delta_time)
 //***********************************************************************************************
 void MESH_DOOM::Draw()
 {
-	if (false == CManager::Get_ShadowMap()->Get_Enable())
+	if (false == CManager::Get_ShadowMap()->Get_Enable() && RENDERING_PASS::REDRING == CRenderer::Get_Rendering_Pass())
 	{
 		{
 			XMMATRIX world;

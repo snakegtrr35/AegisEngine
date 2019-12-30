@@ -134,8 +134,8 @@ void CManager::Draw()
 
 	// 1パス目
 	{
-		CRenderer::SetPass_Geometry();
-		pSceneManager->Draw();
+		//CRenderer::SetPass_Geometry();
+		//pSceneManager->Draw();
 	}
 
 	// 最終レンダリング

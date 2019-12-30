@@ -118,7 +118,7 @@ void main( in float4 inPosition     : POSITION0,
 
         float lightDepthValue = inShadowMapPos.z / inShadowMapPos.w;
 
-        lightDepthValue = lightDepthValue - 0.0003;
+        lightDepthValue = lightDepthValue - 0.005;
 
         if (lightDepthValue <= depthValue || vec >= 0.0)
         {

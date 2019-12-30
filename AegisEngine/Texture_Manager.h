@@ -56,7 +56,10 @@ public:
 
 	static ID3D11ShaderResourceView* const GetShaderResourceView(const string& const file_name);
 
-	static const unordered_map<string, TEXTURE_FILE>& Get_TextureFile();
+	static unordered_map<string, TEXTURE_FILE>& Get_TextureFile();
+
+	static unordered_map<string, TEXTURE_DATA>::iterator Get_TextureData_Start();
+	static unordered_map<string, TEXTURE_DATA>::iterator Get_TextureData_End();
 
 	template<class T>
 	void serialize(T& archive) {

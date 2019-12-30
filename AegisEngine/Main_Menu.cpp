@@ -198,7 +198,7 @@ void MAIN_MENU::Init()
 		//	text->Edit("0.000");
 		//}
 
-		{
+		/*{
 			auto text = Add_Game_Object<TEXTS>(LAYER_NAME::UI, "fps");
 
 			XMFLOAT2 pos(100.0f, 340.0f);
@@ -208,7 +208,7 @@ void MAIN_MENU::Init()
 			text->SetSize(XMFLOAT4(20, 20, 20, 20));
 
 			text->Edit("0.000");
-		}
+		}*/
 
 		{
 			//Add_Game_Object<BOUNDING_AABB>(LAYER_NAME::GAMEOBJECT, "aabb");
@@ -254,13 +254,13 @@ void MAIN_MENU::Update(float delta_time)
 			}
 		}*/
 
-		{
+		/*{
 			auto text = Get_Game_Object<TEXTS>("fps");
 
 			auto time = TIMER::Get_FPS();
 
 			text->Edit(to_string(time));
-		}
+		}*/
 	}
 
 	/*if (FADE::End_Fade())
