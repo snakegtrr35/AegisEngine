@@ -106,13 +106,12 @@ void main( in float4 inPosition     : POSITION0,
     //
     
     // シャドウマップ
-    float shadow;
+    float shadow = 0.5;
     
     float2 ShadowTexCoord;
     ShadowTexCoord.x = inShadowMapPos.x / inShadowMapPos.w / 2.0 + 0.5;
     ShadowTexCoord.y = -inShadowMapPos.y / inShadowMapPos.w / 2.0 + 0.5;
     
-    //if ((saturate(ShadowTexCoord.x) == ShadowTexCoord.x) && (saturate(ShadowTexCoord.y) == ShadowTexCoord.y))
     {
         float depthValue = g_ShadowMap.Sample(g_ShadowSamplerState, ShadowTexCoord).r;
 
@@ -123,10 +122,6 @@ void main( in float4 inPosition     : POSITION0,
         if (lightDepthValue <= depthValue || vec >= 0.0)
         {
             shadow = 1.0;
-        }
-        else
-        {
-            shadow = 0.5;
         }
     }
     
