@@ -60,11 +60,11 @@ bool SHADOW_MAP::Init()
 		td.Height = HEIGHT;
 		td.MipLevels = 1;
 		td.ArraySize = 1;
-		td.Format = DXGI_FORMAT_R24G8_TYPELESS;
+		td.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
 		td.SampleDesc.Count = 1;
 		td.SampleDesc.Quality = 0;
 		td.Usage = D3D11_USAGE_DEFAULT;
-		td.BindFlags = D3D11_BIND_DEPTH_STENCIL | D3D11_BIND_SHADER_RESOURCE;
+		td.BindFlags = D3D11_BIND_DEPTH_STENCIL /*| D3D11_BIND_SHADER_RESOURCE*/;
 		td.CPUAccessFlags = 0;
 		td.MiscFlags = 0;
 
@@ -210,9 +210,9 @@ bool SHADOW_MAP::Init()
 		rd.CullMode = D3D11_CULL_BACK;
 		rd.DepthClipEnable = TRUE;
 		rd.MultisampleEnable = FALSE;
-		rd.DepthBias = 0.001f;
+		rd.DepthBias = 0.005f;
 		rd.DepthBiasClamp = 0.01f;
-		rd.SlopeScaledDepthBias = 0.001f;
+		rd.SlopeScaledDepthBias = 0.003f;
 
 		CRenderer::GetDevice()->CreateRasterizerState(&rd, &rs);
 
@@ -305,10 +305,10 @@ bool SHADOW_MAP::Init()
 		ZeroMemory(&depthStencilDesc, sizeof(depthStencilDesc));
 		depthStencilDesc.DepthEnable = TRUE;
 		depthStencilDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
-		depthStencilDesc.DepthFunc = D3D11_COMPARISON_LESS_EQUAL;
+		depthStencilDesc.DepthFunc = D3D11_COMPARISON_LESS;
 		depthStencilDesc.StencilEnable = FALSE;
 
-		CRenderer::GetDevice()->CreateDepthStencilState(&depthStencilDesc, &m_DepthStateEnable);//深度有効ステート
+		CRenderer::GetDevice()->CreateDepthStencilState(&depthStencilDesc, &m_DepthStateEnable);
 	}
 
     return true;
@@ -317,27 +317,29 @@ bool SHADOW_MAP::Init()
 void SHADOW_MAP::Begin()
 {
 	ID3D11DepthStencilView* pDSV = DepthStencilView.get();
-
 	ID3D11RenderTargetView* pRTV = RenderTargetView.get();
 
     CRenderer::GetDeviceContext()->OMSetRenderTargets( 1, &pRTV, pDSV );
 
-	CRenderer::GetDeviceContext()->RSSetViewports(1, &DxViewport);
-
 	// バックバッファクリア
 	float ClearColor[4] = { 0.5f, 0.5f, 0.5f, 1.0f };
 	CRenderer::GetDeviceContext()->ClearRenderTargetView(pRTV, ClearColor);
-    CRenderer::GetDeviceContext()->ClearDepthStencilView( pDSV, D3D11_CLEAR_DEPTH, 1.0f, 0 );
+    CRenderer::GetDeviceContext()->ClearDepthStencilView( pDSV, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0 );
 
-	Enable = true;
+
+	CRenderer::GetDeviceContext()->RSSetViewports(1, &DxViewport);
 
 	CRenderer::GetDeviceContext()->RSSetState(RasterizerState.get());
 
 	float blendFactor[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
-	CRenderer::GetDeviceContext()->OMSetBlendState(BlendState.get(), blendFactor, 0xffffffff);
+	//CRenderer::GetDeviceContext()->OMSetBlendState(BlendState.get(), blendFactor, 0xffffffff);
+
+	CRenderer::GetDeviceContext()->OMSetDepthStencilState(m_DepthStateEnable, NULL);
 
 
 	Set_Light(LightPos);
+
+	Enable = true;
 }
 
 void SHADOW_MAP::End()

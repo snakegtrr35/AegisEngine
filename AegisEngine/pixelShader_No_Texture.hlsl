@@ -36,7 +36,7 @@ void main( in float4 inPosition     : POSITION0,
 		   in float4 outWPos        : TEXCOORD1,
            in float4 inShadowMapPos : POSITION_SHADOWMAP,
 
-		   out float4 outDiffuse	: SV_Target )
+		   out float4 outDiffuse	: SV_Target1 )
 {
 	outDiffuse = inDiffuse;
 }

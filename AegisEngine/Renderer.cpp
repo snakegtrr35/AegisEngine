@@ -426,7 +426,8 @@ bool CRenderer::Init3D()
 	// 半透明モード
 	sc.AlphaMode = DXGI_ALPHA_MODE_UNSPECIFIED;
 	// 使用方法
-	sc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;	sc.BufferCount = 1;
+	sc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
+	sc.BufferCount = 1;
 	// 描画後のバッファの扱い
 	sc.SwapEffect = DXGI_SWAP_EFFECT_SEQUENTIAL;
 	// MSAA

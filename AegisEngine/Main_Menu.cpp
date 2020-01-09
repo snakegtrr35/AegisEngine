@@ -263,13 +263,13 @@ void MAIN_MENU::Update(float delta_time)
 		}*/
 	}
 
-	if (FADE::End_Fade())
+	/*if (FADE::End_Fade())
 	{
 		if(flag)
 			SCENE_MANAGER::Set_Scene<GAME>();
 
 		flag = true;
-	}
+	}*/
 }
 
 void MAIN_MENU::Uninit()

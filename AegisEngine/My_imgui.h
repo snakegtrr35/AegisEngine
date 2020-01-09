@@ -28,6 +28,8 @@ private:
 
 	void Setting();
 
+	void File();
+
 public:
 	My_imgui() : show_demo_window(false), show_another_window(false), show_default_window(false),
 				 Texture_Import_Enable(false), Texture_Delete_Enable(false), Setting_Enable(false),

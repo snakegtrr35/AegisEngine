@@ -323,7 +323,7 @@ void My_imgui::Draw(void)
 				}
 			}
 
-			// オブジェクト一覧9
+			// オブジェクト一覧
 			{
 				ImGuiWindowFlags window_flag = ImGuiWindowFlags_NoTitleBar;
 				ImGuiTreeNodeFlags node_flags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_OpenOnDoubleClick;
@@ -405,6 +405,8 @@ void My_imgui::Draw(void)
 			Capsule->Set_Rotation(r);
 			//Capsule->Set_Position(s);
 		}
+
+		File();
 
 		// Rendering
 		ImGui::Render();
@@ -842,6 +844,52 @@ void My_imgui::Setting()
 		c.a = 1.0f;
 
 		BOUNDING::Set_Default_Color(c);
+	}
+}
+
+void My_imgui::File()
+{
+	// タイトルバーありの場合、imageyよりWindowSizeがImVec2(17, 40)分大きければ丁度いい
+	// タイトルバーなしの場合、imageyよりWindowSizeがImVec2(13, 16)分大きければ丁度いい
+
+	//ImGuiWindowFlags window_flags = ImGuiWindowFlags_NoResize;
+
+	char i = 0;
+
+	{
+		//ImGui::SetNextWindowSize(ImVec2(256 + 17, 256 + 40), ImGuiCond_Once);
+
+		ImGui::Begin("Texture");
+
+		auto texture = TEXTURE_MANEGER::Get_TextureData_Start();
+		auto end = TEXTURE_MANEGER::Get_TextureData_End();
+
+		for(; texture != end; texture++)
+		{
+			ImTextureID image = texture->second.Resource.get();
+
+			if (i < 3)
+			{
+				ImGui::SameLine();
+
+				i++;
+			}
+			else
+			{
+				i = 0;
+
+				ImGui::NewLine();
+			}
+
+
+			ImGui::Image(image, ImVec2(96, 96));
+
+			ImGui::SameLine();
+
+			ImGui::Dummy(ImVec2(10, 96));
+		}
+
+		ImGui::End();
 	}
 }
 
