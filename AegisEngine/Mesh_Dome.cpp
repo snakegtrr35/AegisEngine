@@ -135,7 +135,7 @@ void MESH_DOOM::Update(float delta_time)
 //***********************************************************************************************
 void MESH_DOOM::Draw()
 {
-	if (false == CManager::Get_ShadowMap()->Get_Enable())
+	if (false == CManager::Get_ShadowMap()->Get_Enable() /*&& RENDERING_PASS::REDRING == CRenderer::Get_Rendering_Pass()*/)
 	{
 		{
 			XMMATRIX world;
@@ -166,6 +166,7 @@ void MESH_DOOM::Draw()
 		Texture.get()->Set_Texture();
 
 		CRenderer::Set_Shader(SHADER_INDEX_V::DEFAULT, SHADER_INDEX_P::NO_LIGHT);
+
 
 		// ƒ|ƒŠƒSƒ“•`‰æ
 		CRenderer::GetDeviceContext()->DrawIndexed(IndexNum, 0, 0);

@@ -120,7 +120,7 @@ void MAIN_MENU::Init()
 		}
 
 		{
-			//auto pmd = Add_Game_Object<MESH_DOOM>(LAYER_NAME::BACKGROUND, "sky_doom");
+			auto pmd = Add_Game_Object<MESH_DOOM>(LAYER_NAME::BACKGROUND, "sky_doom");
 		}
 
 		//{
@@ -254,13 +254,13 @@ void MAIN_MENU::Update(float delta_time)
 			}
 		}*/
 
-		{
+		/*{
 			auto text = Get_Game_Object<TEXTS>("fps");
 
 			auto time = TIMER::Get_FPS();
 
 			text->Edit(to_string(time));
-		}
+		}*/
 	}
 
 	if (FADE::End_Fade())
