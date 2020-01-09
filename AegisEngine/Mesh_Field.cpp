@@ -225,6 +225,7 @@ void MESH_FIELD::Draw()
 					else
 					{
 						CRenderer::Set_Shader();
+						CRenderer::Set_Shader(SHADER_INDEX_V::DEFAULT, SHADER_INDEX_P::LIGHT);
 					}
 				}
 			}

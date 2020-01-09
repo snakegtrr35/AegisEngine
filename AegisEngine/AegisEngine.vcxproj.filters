@@ -54,6 +54,9 @@
     <Filter Include="ソース ファイル\GameObject\Bounding">
       <UniqueIdentifier>{c372bb5f-5bd9-442e-a007-4035c4fde420}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\System\Clustered">
+      <UniqueIdentifier>{b0bb7ab5-4d54-4096-896d-c4d09202ba2f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="imgui\imgui.cpp">
@@ -235,6 +238,9 @@
     </ClCompile>
     <ClCompile Include="Bounding_Capsule.cpp">
       <Filter>ソース ファイル\GameObject\Bounding</Filter>
+    </ClCompile>
+    <ClCompile Include="Clustered.cpp">
+      <Filter>ソース ファイル\System\Clustered</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -430,6 +436,9 @@
     <ClInclude Include="Bounding_Capsule.h">
       <Filter>ソース ファイル\GameObject\Bounding</Filter>
     </ClInclude>
+    <ClInclude Include="Clustered.h">
+      <Filter>ソース ファイル\System\Clustered</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="pixelShader.hlsl">
@@ -470,6 +479,9 @@
     </FxCompile>
     <FxCompile Include="ComputeShader_LightCulling.hlsl">
       <Filter>リソース ファイル</Filter>
+    </FxCompile>
+    <FxCompile Include="PixelShader_Created.hlsl">
+      <Filter>リソース ファイル\PixelShader</Filter>
     </FxCompile>
   </ItemGroup>
   <ItemGroup>

@@ -194,6 +194,7 @@ enum class SHADER_INDEX_P {
 	NO_LIGHT,
 	SHADOW_MAP,
 	GEOMETRY,
+	LIGHT,
 };
 
 enum class SHADER_INDEX_V {
@@ -266,7 +267,7 @@ private:
 	static IDWriteFactory*			m_DwriteFactory;
 
 	static ID3D11VertexShader*		m_VertexShader[3];
-	static ID3D11PixelShader*		m_PixelShader[5];
+	static ID3D11PixelShader*		m_PixelShader[6];
 
 	static ID3D11DepthStencilState* m_DepthStateEnable;
 	static ID3D11DepthStencilState* m_DepthStateDisable;

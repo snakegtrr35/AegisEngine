@@ -8,7 +8,7 @@ StructuredBuffer<Frustum> in_Frustums : register(t9);
 
 // Debug texture for debugging purposes.
 Texture2D LightCountHeatMap : register(t10);
-RWTexture2D<float4> DebugTexture : register(u0);
+//RWTexture2D<float4> DebugTexture : register(u0);
 
 sampler LinearClampSampler : register(s1);
 
@@ -191,23 +191,23 @@ void main(ComputeShaderInput IN)
         t_LightIndexList[t_LightIndexStartOffset + i] = t_LightList[i];
     }
 
-    // Update the debug texture output.
-    if (IN.groupThreadID.x == 0 || IN.groupThreadID.y == 0)
-    {
-        DebugTexture[texCoord] = float4(0, 0, 0, 0.9f);
-    }
-    else if (IN.groupThreadID.x == 1 || IN.groupThreadID.y == 1)
-    {
-        DebugTexture[texCoord] = float4(1, 1, 1, 0.5f);
-    }
-    else if (o_LightCount > 0)
-    {
-        float normalizedLightCount = o_LightCount / 50.0f;
-        float4 lightCountHeatMapColor = LightCountHeatMap.SampleLevel(LinearClampSampler, float2(normalizedLightCount, 0), 0);
-        DebugTexture[texCoord] = lightCountHeatMapColor;
-    }
-    else
-    {
-        DebugTexture[texCoord] = float4(0, 0, 0, 1);
-    }
+    //// Update the debug texture output.
+    //if (IN.groupThreadID.x == 0 || IN.groupThreadID.y == 0)
+    //{
+    //    DebugTexture[texCoord] = float4(0, 0, 0, 0.9f);
+    //}
+    //else if (IN.groupThreadID.x == 1 || IN.groupThreadID.y == 1)
+    //{
+    //    DebugTexture[texCoord] = float4(1, 1, 1, 0.5f);
+    //}
+    //else if (o_LightCount > 0)
+    //{
+    //    float normalizedLightCount = o_LightCount / 50.0f;
+    //    float4 lightCountHeatMapColor = LightCountHeatMap.SampleLevel(LinearClampSampler, float2(normalizedLightCount, 0), 0);
+    //    DebugTexture[texCoord] = lightCountHeatMapColor;
+    //}
+    //else
+    //{
+    //    DebugTexture[texCoord] = float4(0, 0, 0, 1);
+    //}
 }

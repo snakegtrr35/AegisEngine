@@ -24,7 +24,7 @@ IDWriteTextLayout*			CRenderer::m_TextLayout = nullptr;
 IDWriteFactory*				CRenderer::m_DwriteFactory = nullptr;
 
 ID3D11VertexShader*			CRenderer::m_VertexShader[3] = { nullptr };
-ID3D11PixelShader*			CRenderer::m_PixelShader[5] = { nullptr };
+ID3D11PixelShader*			CRenderer::m_PixelShader[6] = { nullptr };
 ID3D11InputLayout*			CRenderer::m_VertexLayout = nullptr;
 ID3D11Buffer*				CRenderer::m_MaterialBuffer = nullptr;
 ID3D11Buffer*				CRenderer::m_LightBuffer = nullptr;
@@ -290,6 +290,22 @@ bool CRenderer::Init()
 
 			delete[] buffer;
 		}
+
+		// クラスター
+		{
+			FILE* file;
+			long int fsize;
+
+			file = fopen("PixelShader_Created.cso", "rb");
+			fsize = _filelength(_fileno(file));
+			unsigned char* buffer = new unsigned char[fsize];
+			fread(buffer, fsize, 1, file);
+			fclose(file);
+
+			m_D3DDevice->CreatePixelShader(buffer, fsize, NULL, &m_PixelShader[5]);
+
+			delete[] buffer;
+		}
 	}
 
 	// 定数バッファ生成
@@ -390,6 +406,8 @@ void CRenderer::Uninit()
 	SAFE_RELEASE(m_PixelShader[1]);
 	SAFE_RELEASE(m_PixelShader[2]);
 	SAFE_RELEASE(m_PixelShader[3]);
+	SAFE_RELEASE(m_PixelShader[4]);
+	SAFE_RELEASE(m_PixelShader[5]);
 
 	SAFE_RELEASE(m_RenderTargetView)
 	SAFE_RELEASE(m_SwapChain)
@@ -1132,6 +1150,10 @@ void CRenderer::Set_Shader(const SHADER_INDEX_V v_index, const SHADER_INDEX_P p_
 
 		case (int)SHADER_INDEX_P::GEOMETRY:
 			m_ImmediateContext->PSSetShader(m_PixelShader[(int)SHADER_INDEX_P::GEOMETRY], NULL, 0);
+			break;
+
+		case (int)SHADER_INDEX_P::LIGHT:
+			m_ImmediateContext->PSSetShader(m_PixelShader[(int)SHADER_INDEX_P::LIGHT], NULL, 0);
 			break;
 
 		default:
