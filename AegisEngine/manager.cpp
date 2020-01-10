@@ -9,8 +9,8 @@
 #include	"ShadowMap.h"
 #include	"Effekseer.h"
 
-#include	"Clustered.h"
-unique_ptr<CLUSTERED> Clustered;
+//#include	"Clustered.h"
+//unique_ptr<CLUSTERED> Clustered;
 
 #ifdef _DEBUG
 #include	"My_imgui.h"
@@ -73,8 +73,8 @@ bool CManager::Init()
 	pShadowMap->Init();
 	pShadowMap->Set_Target(pSceneManager->Get_Scene()->Get_Game_Object<PLAYER>("player"));
 
-	Clustered.reset(new CLUSTERED());///
-	Clustered->Init();///
+	//Clustered.reset(new CLUSTERED());///
+	//Clustered->Init();///
 
 	return true;
 }
@@ -129,9 +129,9 @@ void CManager::Draw()
 
 	CRenderer::Begin();
 
-	{
-		if (nullptr != Clustered.get()) Clustered->Draw();///
-	}
+	//{
+	//	if (nullptr != Clustered.get()) Clustered->Draw();///
+	//}
 
 	// シャドウマップの描画
 	{
@@ -216,7 +216,7 @@ void CManager::Draw()
 
 void CManager::Uninit()
 {
-	Clustered.reset(nullptr);///
+	//Clustered.reset(nullptr);///
 
 	SAFE_DELETE(pSceneManager);
 

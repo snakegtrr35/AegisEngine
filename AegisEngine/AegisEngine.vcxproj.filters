@@ -242,6 +242,12 @@
     <ClCompile Include="Clustered.cpp">
       <Filter>ソース ファイル\System\Clustered</Filter>
     </ClCompile>
+    <ClCompile Include="ForwardPlus.cpp">
+      <Filter>ソース ファイル\System\Clustered</Filter>
+    </ClCompile>
+    <ClCompile Include="Mesh.cpp">
+      <Filter>ソース ファイル\GameObject</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="imgui\imconfig.h">
@@ -437,6 +443,9 @@
       <Filter>ソース ファイル\GameObject\Bounding</Filter>
     </ClInclude>
     <ClInclude Include="Clustered.h">
+      <Filter>ソース ファイル\System\Clustered</Filter>
+    </ClInclude>
+    <ClInclude Include="ForwardPlus.h">
       <Filter>ソース ファイル\System\Clustered</Filter>
     </ClInclude>
   </ItemGroup>

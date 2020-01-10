@@ -37,21 +37,16 @@ cbuffer MaterialBuffer : register( b3 )
 // ライトバッファ
 struct LIGHT
 {
-	float4		Direction;
-    float4      Position;
-	float4		Diffuse;
-	float4		Ambient;
-    float4      Specular;
+	float4  Direction;
+    float4 Position;
+    float4 Diffuse;
+    float4 Ambient;
+    float4 Specular;
 };
 
 cbuffer LightBuffer : register( b4 )
 {
-	LIGHT		Light;
-}
-
-cbuffer CameraBuffer : register(b5)
-{
-    float4 CameraPos;
+	LIGHT	Light;
 }
 
 

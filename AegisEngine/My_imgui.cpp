@@ -22,8 +22,6 @@ static string old_name;
 
 void EditTransform(const float* cameraView, float* cameraProjection, float* matrix, bool enable, GAME_OBJECT* object);
 
-extern unique_ptr<BOUNDING> Capsule;
-
 void My_imgui::Init(HWND hWnd)
 {
 	// Setup Dear ImGui context
@@ -380,31 +378,6 @@ void My_imgui::Draw(void)
 		Texture_Delete();
 
 		Setting();
-
-		{
-			static float vec3_Position[] = { Capsule->Get_Position()->x, Capsule->Get_Position()->y, Capsule->Get_Position()->z };
-			static float vec3_Rotation[] = { Capsule->Get_Rotation()->x, Capsule->Get_Rotation()->y, Capsule->Get_Rotation()->z };
-			static float vec3_Scaling[] =  { Capsule->Get_Scaling()->x, Capsule->Get_Scaling()->y, Capsule->Get_Scaling()->z };
-
-			ImGui::Begin("Capsule");
-
-			ImGui::DragFloat3("Position", vec3_Position, 0.01f);
-
-			ImGui::DragFloat3("Rotation", vec3_Rotation, 0.01f);
-
-			ImGui::DragFloat3("Scaling", vec3_Scaling, 0.01f);
-
-
-			ImGui::End();
-
-			XMFLOAT3 p(vec3_Position[0], vec3_Position[1], vec3_Position[2]);
-			XMFLOAT3 r(vec3_Rotation[0], vec3_Rotation[1], vec3_Rotation[2]);
-			XMFLOAT3 s(vec3_Scaling[0], vec3_Scaling[1], vec3_Scaling[2]);
-
-			Capsule->Set_Position( p );
-			Capsule->Set_Rotation(r);
-			//Capsule->Set_Position(s);
-		}
 
 		File();
 

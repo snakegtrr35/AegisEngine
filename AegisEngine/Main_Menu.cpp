@@ -15,18 +15,7 @@
 string MAIN_MENU::Model_Name = "asset/model/herorifle.fbx";
 
 static bool flag = false;
-//static short cnt = 0; 
 
-unique_ptr<BOUNDING> Capsule;
-
-static unique_ptr<ID3D11Buffer, Release> pVertexBuffer;		// 頂点バッファ
-static unique_ptr<ID3D11Buffer, Release> pIndexBuffer;		// インデックスバッファ
-
-static unique_ptr<ID3D11Buffer, Release> pVB;		// 頂点バッファ
-static unique_ptr<ID3D11Buffer, Release> pIB;		// インデックスバッファ
-
-static UINT IndexNum = 0;
-static UINT VertexNum = 0;
 
 string Replace_String(string& replacedStr, const string& from, const string& to)
 {
@@ -116,7 +105,7 @@ void MAIN_MENU::Init()
 		//}
 
 		{
-			auto player = Add_Game_Object<PLAYER>(LAYER_NAME::GAMEOBJECT, "player");
+			//auto player = Add_Game_Object<PLAYER>(LAYER_NAME::GAMEOBJECT, "player");
 		}
 
 		{
@@ -128,7 +117,7 @@ void MAIN_MENU::Init()
 		//}
 
 		{
-			Add_Game_Object<MESH_FIELD>(LAYER_NAME::GAMEOBJECT, "field");
+			//Add_Game_Object<MESH_FIELD>(LAYER_NAME::GAMEOBJECT, "field");
 		}
 
 		//{
@@ -218,9 +207,6 @@ void MAIN_MENU::Init()
 			//Add_Game_Object<BOUNDING_OBB>(LAYER_NAME::GAMEOBJECT, "obb");
 		}
 	}
-	
-	Capsule.reset(new BOUNDING_CAPSULE());
-	Capsule->Init();
 
 	SCENE::Init();
 
@@ -232,8 +218,6 @@ void MAIN_MENU::Init()
 
 void MAIN_MENU::Draw()
 {
-	//Capsule->Draw();
-
 	SCENE::Draw();
 }
 

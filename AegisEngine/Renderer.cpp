@@ -23,7 +23,7 @@ IDWriteTextLayout*			CRenderer::m_TextLayout = nullptr;
 
 IDWriteFactory*				CRenderer::m_DwriteFactory = nullptr;
 
-ID3D11VertexShader*			CRenderer::m_VertexShader[3] = { nullptr };
+ID3D11VertexShader*			CRenderer::m_VertexShader[4] = { nullptr };
 ID3D11PixelShader*			CRenderer::m_PixelShader[6] = { nullptr };
 ID3D11InputLayout*			CRenderer::m_VertexLayout = nullptr;
 ID3D11Buffer*				CRenderer::m_MaterialBuffer = nullptr;
@@ -137,6 +137,43 @@ bool CRenderer::Init()
 		}
 	}
 
+	// 頂点シェーダ生成 アニメーション
+	{
+		// 入力レイアウト生成
+		D3D11_INPUT_ELEMENT_DESC animation_layout[] =
+		{
+			{ "POSITION",	 0, DXGI_FORMAT_R32G32B32_FLOAT,	0, D3D11_APPEND_ALIGNED_ELEMENT,	D3D11_INPUT_PER_VERTEX_DATA, 0 },
+			{ "NORMAL",		 0, DXGI_FORMAT_R32G32B32_FLOAT,	0, D3D11_APPEND_ALIGNED_ELEMENT,	D3D11_INPUT_PER_VERTEX_DATA, 0 },
+			{ "COLOR",		 0, DXGI_FORMAT_R32G32B32A32_FLOAT,	0, D3D11_APPEND_ALIGNED_ELEMENT,	D3D11_INPUT_PER_VERTEX_DATA, 0 },
+			{ "TEXCOORD",	 0, DXGI_FORMAT_R32G32_FLOAT,		0, D3D11_APPEND_ALIGNED_ELEMENT,	D3D11_INPUT_PER_VERTEX_DATA, 0 },
+			{ "BLENDINDICE", 0, DXGI_FORMAT_R16G16B16A16_UINT,	0, D3D11_APPEND_ALIGNED_ELEMENT,	D3D11_INPUT_PER_VERTEX_DATA, 0 },
+			{ "BLENDWEIGHT", 0, DXGI_FORMAT_R32G32B32A32_FLOAT,	0, D3D11_APPEND_ALIGNED_ELEMENT,	D3D11_INPUT_PER_VERTEX_DATA, 0 }
+		};
+
+		UINT numElements = ARRAYSIZE(animation_layout);
+
+		{
+			FILE* file;
+			long int fsize;
+
+			file = fopen("VertexShader_Animation.cso", "rb");
+			fsize = _filelength(_fileno(file));
+			unsigned char* buffer = new unsigned char[fsize];
+			fread(buffer, fsize, 1, file);
+			fclose(file);
+
+			m_D3DDevice->CreateVertexShader(buffer, fsize, NULL, &m_VertexShader[2]);
+
+			m_D3DDevice->CreateInputLayout(animation_layout,
+				numElements,
+				buffer,
+				fsize,
+				&m_VertexLayout);
+
+			delete[] buffer;
+		}
+	}
+
 	// 頂点シェーダ生成 GBuffer生成
 	{
 		// 入力レイアウト生成
@@ -160,7 +197,7 @@ bool CRenderer::Init()
 			fread(buffer, fsize, 1, file);
 			fclose(file);
 
-			m_D3DDevice->CreateVertexShader(buffer, fsize, NULL, &m_VertexShader[2]);
+			m_D3DDevice->CreateVertexShader(buffer, fsize, NULL, &m_VertexShader[3]);
 
 			m_D3DDevice->CreateInputLayout(layout,
 				numElements,
@@ -171,43 +208,6 @@ bool CRenderer::Init()
 			delete[] buffer;
 		}
 	}
-
-	/*// 頂点シェーダ生成 アニメーション
-	{
-		// 入力レイアウト生成
-		D3D11_INPUT_ELEMENT_DESC layout[] =
-		{
-			{ "POSITION",	 0, DXGI_FORMAT_R32G32B32_FLOAT,	0, 0,		D3D11_INPUT_PER_VERTEX_DATA, 0 },
-			{ "NORMAL",		 0, DXGI_FORMAT_R32G32B32_FLOAT,	0, 4 * 3,	D3D11_INPUT_PER_VERTEX_DATA, 0 },
-			{ "COLOR",		 0, DXGI_FORMAT_R32G32B32A32_FLOAT,	0, 4 * 6,	D3D11_INPUT_PER_VERTEX_DATA, 0 },
-			{ "TEXCOORD",	 0, DXGI_FORMAT_R32G32_FLOAT,		0, 4 * 10,	D3D11_INPUT_PER_VERTEX_DATA, 0 },
-			{ "BLENDINDICE", 0, DXGI_FORMAT_R32_UINT,			0, 4 * 12,	D3D11_INPUT_PER_VERTEX_DATA, 0 },
-			{ "BLENDWEIGHT", 0, DXGI_FORMAT_R32_FLOAT,			0, 4 * 13,	D3D11_INPUT_PER_VERTEX_DATA, 0 }
-		};
-
-		UINT numElements = ARRAYSIZE(layout);
-
-		{
-			FILE* file;
-			long int fsize;
-
-			file = fopen("AnimationShader.cso", "rb");
-			fsize = _filelength(_fileno(file));
-			unsigned char* buffer = new unsigned char[fsize];
-			fread(buffer, fsize, 1, file);
-			fclose(file);
-
-			m_D3DDevice->CreateVertexShader(buffer, fsize, NULL, &m_VertexShader[2]);
-
-			m_D3DDevice->CreateInputLayout(animation_layout,
-				numElements,
-				buffer,
-				fsize,
-				&m_VertexLayout);
-
-			delete[] buffer;
-		}
-	}*/
 
 	// ピクセルシェーダ生成
 	{
@@ -401,6 +401,7 @@ void CRenderer::Uninit()
 	SAFE_RELEASE(m_VertexShader[0]);
 	SAFE_RELEASE(m_VertexShader[1]);
 	SAFE_RELEASE(m_VertexShader[2]);
+	SAFE_RELEASE(m_VertexShader[3]);
 
 	SAFE_RELEASE(m_PixelShader[0]);
 	SAFE_RELEASE(m_PixelShader[1]);
@@ -1118,9 +1119,9 @@ void CRenderer::Set_Shader(const SHADER_INDEX_V v_index, const SHADER_INDEX_P p_
 			m_ImmediateContext->VSSetShader(m_VertexShader[(int)SHADER_INDEX_V::SHADOW_MAP], NULL, 0);
 			break;
 
-		/*case (int)SHADER_INDEX_V::ANIMATION:
+		case (int)SHADER_INDEX_V::ANIMATION:
 			m_ImmediateContext->VSSetShader(m_VertexShader[(int)SHADER_INDEX_V::ANIMATION], NULL, 0);
-			break;*/
+			break;
 
 		case (int)SHADER_INDEX_V::GEOMETRY:
 			m_ImmediateContext->VSSetShader(m_VertexShader[(int)SHADER_INDEX_V::GEOMETRY], NULL, 0);

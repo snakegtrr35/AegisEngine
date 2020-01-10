@@ -5,6 +5,12 @@
 
 #include	"main.h"
 
+#include	<assimp/Importer.hpp>
+#include	<assimp/cimport.h>
+#include	<assimp/scene.h>
+#include	<assimp/postprocess.h>
+#include	<assimp/matrix4x4.h>
+
 //! 頂点構造体
 struct VERTEX_3D
 {
@@ -15,22 +21,28 @@ struct VERTEX_3D
 };
 
 //! 頂点構造体
-struct VERTEX_ANIME_3D
+struct VERTEX_3D_NORMAL
 {
 	XMFLOAT3 Position;
 	XMFLOAT3 Normal;
+	XMFLOAT3 Binormal;
+	XMFLOAT3 Tangent;
 	XMFLOAT4 Diffuse;
 	XMFLOAT2 TexCoord;
-	WORD BoneIndex[4];
+};
+
+struct DEFORM_VERTEX
+{
+	aiVector3D Position;
+	aiVector3D DefromPosition;
+	aiVector3D Normal;
+	aiVector3D DefromNormal;
+
+	string BoneName[4];
 	float BoneWeight[4];
 
-	VERTEX_ANIME_3D() : Normal(XMFLOAT3(0.f, 0.f, 0.f)), Position(XMFLOAT3(0.f, 0.f, 0.f)), Diffuse(XMFLOAT4(0.f, 0.f, 0.f, 0.f)), TexCoord(XMFLOAT2(0.f, 0.f)) {
-		for (int i = 0; i < 4; i++)
-		{
-			BoneIndex[i] = 0;
-			BoneWeight[i] = 0.f;
-		}
-	}
+	BYTE BoneNum = 0;
+
 };
 
 
@@ -266,7 +278,7 @@ private:
 	//! Direct2Dのライトファクトリー
 	static IDWriteFactory*			m_DwriteFactory;
 
-	static ID3D11VertexShader*		m_VertexShader[3];
+	static ID3D11VertexShader*		m_VertexShader[4];
 	static ID3D11PixelShader*		m_PixelShader[6];
 
 	static ID3D11DepthStencilState* m_DepthStateEnable;

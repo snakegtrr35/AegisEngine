@@ -117,17 +117,17 @@ bool CLUSTERED::Init()
 		//light[17] = { XMFLOAT3(-960 * A, 32 * A, -640), 450.0f * A };
 		//light[18] = { XMFLOAT3(640  * A, 32 * A,  960), 450.0f * A };
 
-		light[0] = { XMFLOAT3(-2.5, 1, 2.5),  2.0f };
-		light[1] = { XMFLOAT3(0,    1, 0),    2.0f };
-		light[2] = { XMFLOAT3(2.5,  1, 2.5),  2.0f };
-
-		light[3] = { XMFLOAT3(-2.5, 1, 0),    2.0f };
-		light[4] = { XMFLOAT3(0,    1, 0),    2.0f };
-		light[5] = { XMFLOAT3(2.5,  1, 0),    2.0f };
-
-		light[6] = { XMFLOAT3(-2.5, 1, -2.5), 2.0f };
-		light[7] = { XMFLOAT3(0,    1, -2.5), 2.0f };
-		light[8] = { XMFLOAT3(2.5,  1, -2.5), 2.0f };
+		light[0] = { XMFLOAT3(-2.5, 1, 2.5),  10.0f };
+		light[1] = { XMFLOAT3(0,    1, 0),    10.0f };
+		light[2] = { XMFLOAT3(2.5,  1, 2.5),  10.0f };
+								
+		light[3] = { XMFLOAT3(-2.5, 1, 0),    10.0f };
+		light[4] = { XMFLOAT3(0,    1, 0),    10.0f };
+		light[5] = { XMFLOAT3(2.5,  1, 0),    10.0f };
+									
+		light[6] = { XMFLOAT3(-2.5, 1, -2.5), 10.0f };
+		light[7] = { XMFLOAT3(0,    1, -2.5), 10.0f };
+		light[8] = { XMFLOAT3(2.5,  1, -2.5), 10.0f };
 
 		m_Lights.reserve(LIGHT_COUNT);
 
@@ -334,4 +334,28 @@ void CLUSTERED::clusteredLightAssignment()
 		}
 	}
 	CRenderer::GetDeviceContext()->Unmap(tex, 0);
+
+	{
+		// シェーダーリソースビュー設定
+		{
+			ID3D11ShaderResourceView* srv = nullptr;
+
+			// シェーダーリソースビューの設定
+			D3D11_SHADER_RESOURCE_VIEW_DESC d;
+			ZeroMemory(&d, sizeof(D3D11_SHADER_RESOURCE_VIEW_DESC));
+			d.Format = DXGI_FORMAT_R32_UINT;
+			d.ViewDimension = D3D_SRV_DIMENSION_TEXTURE3D;
+			d.Texture3D.MostDetailedMip = 0;
+			d.Texture3D.MipLevels = 1;
+
+			HRESULT hr = CRenderer::GetDevice()->CreateShaderResourceView(tex, &d, &srv);
+
+			if (FAILED(hr))
+			{
+				return;
+			}
+
+			ShaderResourceView.reset(srv);
+		}
+	}
 }

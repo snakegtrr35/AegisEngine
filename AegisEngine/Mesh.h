@@ -3,6 +3,12 @@
 #ifndef MESH_H
 #define MESH_H
 
+#include	<assimp/Importer.hpp>
+#include	<assimp/cimport.h>
+#include	<assimp/scene.h>
+#include	<assimp/postprocess.h>
+#include	<assimp/matrix4x4.h>
+
 #include	"Renderer.h"
 
 #include	"manager.h"
@@ -22,6 +28,15 @@ struct TEXTURE_S {
 struct Weight {
 	UINT vertex_id;
 	float value;
+};
+
+////////////
+struct BONE {
+	XMMATRIX Matrix;
+	XMMATRIX AnimationMatrix;
+	XMMATRIX OffsetMatrix;
+
+	BONE() : Matrix(XMMatrixIdentity()), AnimationMatrix(XMMatrixIdentity()), OffsetMatrix(XMMatrixIdentity()) {}
 };
 
 struct Bone {
@@ -94,15 +109,15 @@ struct QuatKey {
 };
 
 struct NodeAnim {
-	std::string node_name;
+	string node_name;
 
-	std::vector<VectorKey> translate;
-	std::vector<VectorKey> scaling;
-	std::vector<QuatKey>   rotation;
+	vector<VectorKey> translate;
+	vector<VectorKey> scaling;
+	vector<QuatKey>   rotation;
 };
 
 struct Anim {
-	std::vector<NodeAnim> body;
+	vector<NodeAnim> body;
 };
 
 class MESH {
@@ -402,7 +417,7 @@ private:
 
 					mat = XMMatrixMultiply(mat, trans);
 
-					bone.animation = mat;
+					//bone.animation = mat;
 				}
 
 				break;
@@ -427,11 +442,11 @@ private:
 			{
 				for (auto j : i->second)
 				{
-					world *= j.animation;
+					//world *= j.animation;
 
-					j.matrix = world;
+					//j.matrix = world;
 
-					j.matrix *= j.offset;
+					//j.matrix *= j.offset;
 				}
 			}
 		}
@@ -582,305 +597,65 @@ public:
 	}
 };
 
-//class MESH {
-//private:
-//	vector<TEXTURE_S> Textures;
-//
-//	vector<Anim> Animation;
-//
-//	ID3D11Buffer* VertexBuffer;
-//	ID3D11Buffer* IndexBuffer;
-//
-//	string Name;
-//
-//	XMMATRIX Matrix;
-//
-//	//
-//	UINT NumBones;
-//	vector<BONEINFO> BoneInfo;
-//	map<string, UINT> BoneMapping; // maps a bone name to its index
-//	MESH_SUBSET Subset;
-//
-//	map<string, MESH> ChildMeshes;
-//
-//
-//	void Draw_Mesh(XMMATRIX& parent_matrix) {
-//		XMMATRIX matrix;
-//
-//		CRenderer::SetVertexBuffers(VertexBuffer);
-//
-//		CRenderer::GetDeviceContext()->IASetIndexBuffer(IndexBuffer, DXGI_FORMAT_R32_UINT, 0);
-//
-//		CRenderer::GetDeviceContext()->PSSetShaderResources(0, 1, &Textures[0].Texture);
-//
-//		// 3Dマトリックス設定
-//		{
-//			matrix = XMMatrixMultiply(Matrix, parent_matrix);
-//
-//			CRenderer::SetWorldMatrix(&matrix);
-//		}
-//
-//		CRenderer::GetDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-//
-//		CRenderer::GetDeviceContext()->DrawIndexed(Subset.IndexNum, Subset.StartIndex, 0);
-//
-//		for (auto child : ChildMeshes)
-//		{
-//			child.second.Draw_Mesh(matrix);
-//		}
-//	}
-//
-//	void Draw_Mesh_Animation(XMMATRIX& parent_matrix, vector<Anim> anime, DWORD frame) {
-//		XMMATRIX world;
-//
-//		CRenderer::SetVertexBuffers(VertexBuffer);
-//
-//		CRenderer::GetDeviceContext()->IASetIndexBuffer(IndexBuffer, DXGI_FORMAT_R32_UINT, 0);
-//
-//		CRenderer::GetDeviceContext()->PSSetShaderResources(0, 1, &Textures[0].Texture);
-//
-//		// 3Dマトリックス設定
-//		{
-//			for (auto i : anime.begin()->body)
-//			{
-//				if (i.node_name == Name)
-//				{
-//					unsigned int f = frame % i.translate.begin()->time;
-//
-//					XMFLOAT3 pos = i.translate[f].value;
-//					XMMATRIX trans = XMMatrixTranslation(pos.x, pos.y, pos.z);
-//
-//					f = frame % i.rotation.begin()->time;
-//
-//					XMFLOAT4 rotation = i.rotation[f].value;
-//					XMVECTOR quat = XMLoadFloat4(&rotation);
-//
-//					world = XMMatrixRotationQuaternion(quat);
-//
-//					world = XMMatrixMultiply(world, trans);
-//
-//					world = XMMatrixMultiply(world, parent_matrix);
-//
-//					CRenderer::SetWorldMatrix(&world);
-//
-//					break;
-//				}
-//			}
-//		}
-//
-//		CRenderer::GetDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-//
-//		CRenderer::GetDeviceContext()->DrawIndexed(Subset.IndexNum, Subset.StartIndex, 0);
-//
-//		for (auto child : ChildMeshes)
-//		{
-//			child.second.Draw_Mesh_Animation(world, anime, frame);
-//		}
-//	}
-//
-//	//
-//	void Update_MAtrix(XMMATRIX& matrix, vector<Anim>& anime, DWORD frame) {
-//
-//		XMMATRIX world;
-//
-//		for (auto i : anime.begin()->body)
-//		{
-//			if (i.node_name == Name)
-//			{
-//				unsigned int f = frame % i.translate.begin()->time;
-//
-//				XMFLOAT3 pos = i.translate[f].value;
-//				XMMATRIX trans = XMMatrixTranslation(pos.x, pos.y, pos.z);
-//
-//				f = frame % i.rotation.begin()->time;
-//
-//				XMFLOAT4 rotation = i.rotation[f].value;
-//				XMVECTOR quat = XMLoadFloat4(&rotation);
-//
-//				XMMATRIX qiat_mat = XMMatrixRotationQuaternion(quat);
-//
-//
-//				if (BoneMapping.find(Name) != BoneMapping.end())
-//				{
-//					UINT BoneIndex = BoneMapping[Name];
-//
-//					XMMATRIX mat = XMMatrixIdentity();
-//
-//					mat = XMMatrixMultiply(mat, qiat_mat);
-//
-//					mat = XMMatrixMultiply(mat, trans);
-//
-//					BoneInfo[BoneIndex].Animation = mat;
-//				}
-//
-//				break;
-//			}
-//		}
-//
-//		for (auto child : ChildMeshes)
-//		{
-//			child.second.Update_MAtrix(world, anime, frame);
-//		}
-//	}
-//
-//	//
-//	void Update_Bone_Matrix(XMMATRIX matrix = XMMatrixIdentity()) {
-//		XMMATRIX world = matrix;
-//
-//		{
-//			if (BoneMapping.find(Name) != BoneMapping.end())
-//			{
-//				UINT BoneIndex = BoneMapping[Name];
-//
-//				world = XMMatrixMultiply(world, BoneInfo[BoneIndex].Animation);
-//
-//				BoneInfo[BoneIndex].Matrix = world;
-//
-//				BoneInfo[BoneIndex].Matrix = XMMatrixMultiply(BoneInfo[BoneIndex].Matrix, BoneInfo[BoneIndex].Offset);
-//			}
-//		}
-//
-//		for (auto child : ChildMeshes)
-//		{
-//			Update_Bone_Matrix(world);
-//		}
-//	}
-//
-//	bool SetupMesh(const vector<VERTEX_ANIME_3D>& vertices) {
-//		HRESULT hr;
-//
-//		{
-//			D3D11_BUFFER_DESC vbd;
-//			vbd.Usage = D3D11_USAGE_DEFAULT;
-//			vbd.ByteWidth = sizeof(VERTEX_ANIME_3D) * vertices.size();
-//			vbd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-//			vbd.CPUAccessFlags = 0;
-//			vbd.MiscFlags = 0;
-//
-//			// サブリソースの設定
-//			D3D11_SUBRESOURCE_DATA initData;
-//			ZeroMemory(&initData, sizeof(D3D11_SUBRESOURCE_DATA));
-//
-//			initData.pSysMem = &vertices[0];
-//			initData.SysMemPitch = 0;
-//			initData.SysMemSlicePitch = 0;
-//
-//			hr = CRenderer::GetDevice()->CreateBuffer(&vbd, &initData, &VertexBuffer);
-//			if (FAILED(hr))
-//				return false;
-//		}
-//
-//		{
-//			D3D11_BUFFER_DESC ibd;
-//			ibd.Usage = D3D11_USAGE_DEFAULT;
-//			ibd.ByteWidth = sizeof(UINT) * Subset.IndexNum;
-//			ibd.BindFlags = D3D11_BIND_INDEX_BUFFER;
-//			ibd.CPUAccessFlags = 0;
-//			ibd.MiscFlags = 0;
-//
-//			// サブリソースの設定
-//			D3D11_SUBRESOURCE_DATA initData;
-//			ZeroMemory(&initData, sizeof(D3D11_SUBRESOURCE_DATA));
-//
-//			initData.pSysMem = &Subset.Indeces[0];
-//			initData.SysMemPitch = 0;
-//			initData.SysMemSlicePitch = 0;
-//
-//			hr = CRenderer::GetDevice()->CreateBuffer(&ibd, &initData, &IndexBuffer);
-//			if (FAILED(hr))
-//				return false;
-//		}
-//	}
-//
-//public:
-//
-//	MESH() {
-//		VertexBuffer = nullptr;
-//		IndexBuffer = nullptr;
-//	};
-//
-//	MESH(const vector<VERTEX_ANIME_3D>& vertices, const MESH_SUBSET& subset, const vector<TEXTURE_S>& textures, const XMMATRIX& matrix,
-//		const map<string, UINT>& bone_mapping, const vector<BONEINFO>& bone_info, const UINT num_bones, const string name)
-//	{
-//		VertexBuffer = nullptr;
-//		IndexBuffer = nullptr;
-//
-//		Subset = subset;//
-//		BoneMapping = bone_mapping;//
-//		BoneInfo = bone_info;
-//		NumBones = num_bones;
-//
-//		Textures = textures;
-//		Matrix = matrix;
-//
-//		Name = name;
-//
-//		SetupMesh(vertices);
-//	}
-//
-//	~MESH() {};
-//
-//	void Draw(XMMATRIX& matrix) {
-//		Draw_Mesh(matrix);
-//	}
-//
-//	void Draw_Animation(XMMATRIX& matrix, vector<Anim> anime, DWORD frame) {
-//		Draw_Mesh_Animation(matrix, anime, frame);
-//	}
-//
-//	void Update(vector<Anim> anime, DWORD frame) {
-//		XMMATRIX matrix = XMMatrixIdentity();
-//
-//		Update_SkynMesh(matrix, anime, frame);
-//	}
-//
-//	void Update_SkynMesh(XMMATRIX& matrix, vector<Anim> anime, DWORD frame) {
-//		Update_MAtrix(matrix, anime, frame);
-//
-//		Update_Bone_Matrix();
-//	}
-//
-//	void Uninit() {
-//		SAFE_RELEASE(VertexBuffer);
-//		SAFE_RELEASE(IndexBuffer);
-//
-//		for (auto tex : Textures)
-//		{
-//			SAFE_RELEASE(tex.Texture);
-//		}
-//		Textures.clear();
-//
-//		for (auto child : ChildMeshes)
-//		{
-//			child.second.Uninit();
-//		}
-//		ChildMeshes.clear();
-//	}
-//
-//	void SetAnimation(const vector<Anim>& animations) {
-//		Animation = animations;
-//	}
-//
-//	void Add(const string name, const MESH& mesh) {
-//		ChildMeshes[name] = mesh;
-//	}
-//
-//	map<string, MESH>& Get() {
-//		return ChildMeshes;
-//	}
-//
-//	vector<Anim>& Get_Anime() {
-//		return Animation;
-//	}
-//
-//	bool GetAnime() {
-//		if (0 == Animation.size())
-//		{
-//			return false;
-//		}
-//
-//		return true;
-//	}
-//};
+
+
+
+const constexpr WORD BONE_MAX = 256;
+
+class MESH_ANIM {
+private:
+
+	struct MESH
+	{
+		ID3D11Buffer* VertexBuffer;
+		ID3D11Buffer* IndexBuffer;
+		int VertexNum;
+		int IndexNum;
+
+		vector<DEFORM_VERTEX*> deform_Vertex;
+	};
+
+	/*struct MATRIX_BUFFER {
+		XMFLOAT4X4 BoneMatrix[2];
+		XMFLOAT4X4 BoneMatrixDmmy[253];
+		XMFLOAT4X4 EndBoneMatrix ;
+	};*/
+
+	vector<MESH> m_Meshes;
+	UINT m_MeshNum;
+
+	unique_ptr<ID3D11Buffer, Release> MatrixBuffer;
+
+	UINT frame = 0;
+
+	int m_BoneNum = 0;
+
+	const aiScene* m_Scene;
+
+
+	unordered_map<string, aiQuaternion> m_NodeRotation;
+	unordered_map<string, aiVector3D> m_NodePosition;
+	unordered_map<string, unsigned int> m_BoneIndex;
+
+	unordered_map<string, unsigned int> m_TextureIdMap;
+
+	unordered_map<UINT, BONE> m_Bone;
+	vector<DEFORM_VERTEX*> m_DeformVertex;
+
+public:
+	void Draw(XMMATRIX& Matrix);
+	void Load(const char *FileName);
+	void Uninit();
+	void Update(float delta_time);
+	void DrawMesh(aiNode* Node, XMMATRIX &Matrix);
+	void CreateBone(aiNode* Node);
+	void UpdateBoneMatrix(aiNode* Node, XMMATRIX Matrix);
+	void SetBoneMatrix(const XMFLOAT4X4* matrix);
+
+
+	MESH_ANIM() {};
+	~MESH_ANIM() {};
+
+};
 
 #endif
