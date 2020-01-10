@@ -10,27 +10,12 @@ cbuffer ConstantBuffer : register( b0 )
     matrix Projection;
 }
 
+
 // シャドウマップ用のマトリックス
 cbuffer ShadowBuffer : register( b1 )
 {
     matrix ShadowView;
     matrix ShadowProjection;
-}
-
-// マテリアルバッファ
-struct MATERIAL
-{
-    float4  Ambient;
-    float4  Diffuse;
-    float4  Specular;
-    float4  Emission;
-    float   Shininess;
-    float3  Dummy; //16bit境界用
-};
-
-cbuffer MaterialBuffer : register( b3 )
-{
-    MATERIAL Material;
 }
 
 
@@ -59,7 +44,7 @@ void main(  in float4 inPosition         : POSITION0,
             in uint4  inIneces           : BLENDINDICE,
             in float4 inWeight           : BLENDWEIGHT,
 
-            out float4 outPosition       : POSITION0,
+            out float4 outPosition       : SV_POSITION,
 		    out float4 outNormal         : NORMAL0,
 		    out float2 outTexCoord       : TEXCOORD0,
 		    out float4 outDiffuse        : COLOR0,
@@ -93,4 +78,9 @@ void main(  in float4 inPosition         : POSITION0,
     
     outWPos = mul(inPosition, BoneTransform);
     outWPos = mul(outPosition, World);
+    
+    wvp = mul(World, ShadowView);
+    wvp = mul(wvp, ShadowProjection);
+    outShadowMapPos = mul(inPosition, BoneTransform);
+    outShadowMapPos = mul(inPosition, wvp);
 }

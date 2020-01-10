@@ -36,6 +36,7 @@
     <ClCompile Include="Effekseer.cpp" />
     <ClCompile Include="Enemy.cpp" />
     <ClCompile Include="Fade.cpp" />
+    <ClCompile Include="FBXmodel.cpp" />
     <ClCompile Include="Field.cpp" />
     <ClCompile Include="ForwardPlus.cpp" />
     <ClCompile Include="Game.cpp" />
@@ -58,7 +59,6 @@
     <ClCompile Include="manager.cpp" />
     <ClCompile Include="Math.cpp" />
     <ClCompile Include="Menu_Component.cpp" />
-    <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="Mesh_Cylinder.cpp" />
     <ClCompile Include="Mesh_Dome.cpp" />
     <ClCompile Include="Mesh_Field.cpp" />
@@ -111,6 +111,7 @@
     <ClInclude Include="Effekseer.h" />
     <ClInclude Include="Enemy.h" />
     <ClInclude Include="Fade.h" />
+    <ClInclude Include="FBXmodel.h" />
     <ClInclude Include="Field.h" />
     <ClInclude Include="ForwardPlus.h" />
     <ClInclude Include="Game_Object.h" />
@@ -321,7 +322,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>D:\user\ksyou\Document\HAL\3\AegisEngine\AegisEngine\Library\Effekseer\include;C:\Program Files\cereal;C:\Program Files\assimp_vs2017_x64\include;$(IncludePath)</IncludePath>
+    <IncludePath>E:\Users\Desktop\Desktop\AegisEngine\AegisEngine\Library\Effekseer\include;C:\Program Files\cereal;C:\Program Files\assimp_vs2017_x64\include;$(IncludePath)</IncludePath>
     <LibraryPath>C:\Program Files\assimp_vs2017_x64\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -329,7 +330,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>D:\user\ksyou\Document\HAL\3\AegisEngine\AegisEngine\Library\Effekseer\include;C:\Program Files\cereal;C:\Program Files\assimp_vs2017_x64\include;$(IncludePath)</IncludePath>
+    <IncludePath>E:\Users\Desktop\Desktop\AegisEngine\AegisEngine\Library\Effekseer\include;C:\Program Files\cereal;C:\Program Files\assimp_vs2017_x64\include;$(IncludePath)</IncludePath>
     <LibraryPath>C:\Program Files\assimp_vs2017_x64\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">

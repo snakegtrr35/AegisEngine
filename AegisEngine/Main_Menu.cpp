@@ -10,12 +10,13 @@
 
 #include	"Timer.h"
 
-#include	"Bounding_Capsule.h"
+#include	"FBXmodel.h"
 
 string MAIN_MENU::Model_Name = "asset/model/herorifle.fbx";
 
 static bool flag = false;
 
+static FBXmodel* model;
 
 string Replace_String(string& replacedStr, const string& from, const string& to)
 {
@@ -117,7 +118,7 @@ void MAIN_MENU::Init()
 		//}
 
 		{
-			//Add_Game_Object<MESH_FIELD>(LAYER_NAME::GAMEOBJECT, "field");
+			Add_Game_Object<MESH_FIELD>(LAYER_NAME::GAMEOBJECT, "field");
 		}
 
 		//{
@@ -208,6 +209,9 @@ void MAIN_MENU::Init()
 		}
 	}
 
+	model = new FBXmodel();
+	model->Load("asset/model/SambaDancing2.fbx");
+
 	SCENE::Init();
 
 	//cnt = 0;
@@ -219,6 +223,12 @@ void MAIN_MENU::Init()
 void MAIN_MENU::Draw()
 {
 	SCENE::Draw();
+
+	auto m = XMMatrixIdentity();
+
+	m = XMMatrixScaling(1, 1, 1);
+
+	model->Draw(m);
 }
 
 void MAIN_MENU::Update(float delta_time)
@@ -283,6 +293,8 @@ void MAIN_MENU::Uninit()
 	}
 
 	SCENE::Uninit();
+
+	SAFE_DELETE(model);
 
 	AUDIO_MANAGER::Stop_Sound_Object();
 }

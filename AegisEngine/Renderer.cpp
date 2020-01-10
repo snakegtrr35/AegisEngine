@@ -25,7 +25,7 @@ IDWriteFactory*				CRenderer::m_DwriteFactory = nullptr;
 
 ID3D11VertexShader*			CRenderer::m_VertexShader[4] = { nullptr };
 ID3D11PixelShader*			CRenderer::m_PixelShader[6] = { nullptr };
-ID3D11InputLayout*			CRenderer::m_VertexLayout = nullptr;
+ID3D11InputLayout*			CRenderer::m_VertexLayout[2] = { nullptr };
 ID3D11Buffer*				CRenderer::m_MaterialBuffer = nullptr;
 ID3D11Buffer*				CRenderer::m_LightBuffer = nullptr;
 
@@ -96,7 +96,7 @@ bool CRenderer::Init()
 				numElements,
 				buffer,
 				fsize,
-				&m_VertexLayout);
+				&m_VertexLayout[0]);
 
 			delete[] buffer;
 		}
@@ -127,12 +127,6 @@ bool CRenderer::Init()
 
 			m_D3DDevice->CreateVertexShader(buffer, fsize, NULL, &m_VertexShader[1]);
 
-			m_D3DDevice->CreateInputLayout(layout,
-				numElements,
-				buffer,
-				fsize,
-				&m_VertexLayout);
-
 			delete[] buffer;
 		}
 	}
@@ -146,7 +140,7 @@ bool CRenderer::Init()
 			{ "NORMAL",		 0, DXGI_FORMAT_R32G32B32_FLOAT,	0, D3D11_APPEND_ALIGNED_ELEMENT,	D3D11_INPUT_PER_VERTEX_DATA, 0 },
 			{ "COLOR",		 0, DXGI_FORMAT_R32G32B32A32_FLOAT,	0, D3D11_APPEND_ALIGNED_ELEMENT,	D3D11_INPUT_PER_VERTEX_DATA, 0 },
 			{ "TEXCOORD",	 0, DXGI_FORMAT_R32G32_FLOAT,		0, D3D11_APPEND_ALIGNED_ELEMENT,	D3D11_INPUT_PER_VERTEX_DATA, 0 },
-			{ "BLENDINDICE", 0, DXGI_FORMAT_R16G16B16A16_UINT,	0, D3D11_APPEND_ALIGNED_ELEMENT,	D3D11_INPUT_PER_VERTEX_DATA, 0 },
+			{ "BLENDINDICE", 0, DXGI_FORMAT_R32G32B32A32_UINT,	0, D3D11_APPEND_ALIGNED_ELEMENT,	D3D11_INPUT_PER_VERTEX_DATA, 0 },
 			{ "BLENDWEIGHT", 0, DXGI_FORMAT_R32G32B32A32_FLOAT,	0, D3D11_APPEND_ALIGNED_ELEMENT,	D3D11_INPUT_PER_VERTEX_DATA, 0 }
 		};
 
@@ -168,7 +162,7 @@ bool CRenderer::Init()
 				numElements,
 				buffer,
 				fsize,
-				&m_VertexLayout);
+				&m_VertexLayout[1]);
 
 			delete[] buffer;
 		}
@@ -198,12 +192,6 @@ bool CRenderer::Init()
 			fclose(file);
 
 			m_D3DDevice->CreateVertexShader(buffer, fsize, NULL, &m_VertexShader[3]);
-
-			m_D3DDevice->CreateInputLayout(layout,
-				numElements,
-				buffer,
-				fsize,
-				&m_VertexLayout);
 
 			delete[] buffer;
 		}
@@ -349,7 +337,7 @@ bool CRenderer::Init()
 	}*/
 
 	// 入力レイアウト設定
-	m_ImmediateContext->IASetInputLayout(m_VertexLayout);
+	m_ImmediateContext->IASetInputLayout(m_VertexLayout[0]);
 
 	// シェーダ設定
 	m_ImmediateContext->VSSetShader(m_VertexShader[0], NULL, 0);
@@ -394,9 +382,11 @@ void CRenderer::Uninit()
 	}
 
 	// オブジェクト解放
-	SAFE_RELEASE(m_MaterialBuffer)
-	SAFE_RELEASE(m_LightBuffer)
-	SAFE_RELEASE(m_VertexLayout)
+	SAFE_RELEASE(m_MaterialBuffer);
+	SAFE_RELEASE(m_LightBuffer);
+
+	SAFE_RELEASE(m_VertexLayout[0]);
+	SAFE_RELEASE(m_VertexLayout[1]);
 
 	SAFE_RELEASE(m_VertexShader[0]);
 	SAFE_RELEASE(m_VertexShader[1]);
@@ -1159,6 +1149,24 @@ void CRenderer::Set_Shader(const SHADER_INDEX_V v_index, const SHADER_INDEX_P p_
 
 		default:
 			break;
+	}
+}
+
+void CRenderer::Set_InputLayout(const INPUTLAYOUT InputLayout)
+{
+	// 入力レイアウト設定
+	switch ((int)InputLayout)
+	{
+		case (int)INPUTLAYOUT::DEFAULT:
+			m_ImmediateContext->IASetInputLayout(m_VertexLayout[(int)INPUTLAYOUT::DEFAULT]);
+			break;
+
+		case (int)INPUTLAYOUT::ANIMATION:
+			m_ImmediateContext->IASetInputLayout(m_VertexLayout[(int)INPUTLAYOUT::ANIMATION]);
+			break;
+
+	default:
+		break;
 	}
 }
 

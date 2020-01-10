@@ -30,15 +30,6 @@ struct Weight {
 	float value;
 };
 
-////////////
-struct BONE {
-	XMMATRIX Matrix;
-	XMMATRIX AnimationMatrix;
-	XMMATRIX OffsetMatrix;
-
-	BONE() : Matrix(XMMatrixIdentity()), AnimationMatrix(XMMatrixIdentity()), OffsetMatrix(XMMatrixIdentity()) {}
-};
-
 struct Bone {
 	string name;
 	XMMATRIX matrix;
@@ -595,67 +586,6 @@ public:
 	vector<Bone>& Get_Bone() {
 		return Bones;
 	}
-};
-
-
-
-
-const constexpr WORD BONE_MAX = 256;
-
-class MESH_ANIM {
-private:
-
-	struct MESH
-	{
-		ID3D11Buffer* VertexBuffer;
-		ID3D11Buffer* IndexBuffer;
-		int VertexNum;
-		int IndexNum;
-
-		vector<DEFORM_VERTEX*> deform_Vertex;
-	};
-
-	/*struct MATRIX_BUFFER {
-		XMFLOAT4X4 BoneMatrix[2];
-		XMFLOAT4X4 BoneMatrixDmmy[253];
-		XMFLOAT4X4 EndBoneMatrix ;
-	};*/
-
-	vector<MESH> m_Meshes;
-	UINT m_MeshNum;
-
-	unique_ptr<ID3D11Buffer, Release> MatrixBuffer;
-
-	UINT frame = 0;
-
-	int m_BoneNum = 0;
-
-	const aiScene* m_Scene;
-
-
-	unordered_map<string, aiQuaternion> m_NodeRotation;
-	unordered_map<string, aiVector3D> m_NodePosition;
-	unordered_map<string, unsigned int> m_BoneIndex;
-
-	unordered_map<string, unsigned int> m_TextureIdMap;
-
-	unordered_map<UINT, BONE> m_Bone;
-	vector<DEFORM_VERTEX*> m_DeformVertex;
-
-public:
-	void Draw(XMMATRIX& Matrix);
-	void Load(const char *FileName);
-	void Uninit();
-	void Update(float delta_time);
-	void DrawMesh(aiNode* Node, XMMATRIX &Matrix);
-	void CreateBone(aiNode* Node);
-	void UpdateBoneMatrix(aiNode* Node, XMMATRIX Matrix);
-	void SetBoneMatrix(const XMFLOAT4X4* matrix);
-
-
-	MESH_ANIM() {};
-	~MESH_ANIM() {};
-
 };
 
 #endif

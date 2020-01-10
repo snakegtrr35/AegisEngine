@@ -135,9 +135,9 @@ void CManager::Draw()
 
 	// シャドウマップの描画
 	{
-		pShadowMap->Begin();
-		pSceneManager->Draw();
-		pShadowMap->End();//
+		//pShadowMap->Begin();
+		//pSceneManager->Draw();
+		//pShadowMap->End();//
 	}
 
 	// 1パス目

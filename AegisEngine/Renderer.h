@@ -31,20 +31,6 @@ struct VERTEX_3D_NORMAL
 	XMFLOAT2 TexCoord;
 };
 
-struct DEFORM_VERTEX
-{
-	aiVector3D Position;
-	aiVector3D DefromPosition;
-	aiVector3D Normal;
-	aiVector3D DefromNormal;
-
-	string BoneName[4];
-	float BoneWeight[4];
-
-	BYTE BoneNum = 0;
-
-};
-
 
 //! 色構造体
 struct COLOR
@@ -219,15 +205,13 @@ enum class SHADER_INDEX_V {
 class CVertexBuffer;
 class CIndexBuffer;
 
-struct CONSTANT
-{
+struct CONSTANT {
 	XMMATRIX WorldMatrix;
 	XMMATRIX ViewMatrix;
 	XMMATRIX ProjectionMatrix;
 };
 
-struct CONSTANT_02
-{
+struct CONSTANT_02 {
 	XMFLOAT4 Camera_Pos;	// カメラの座標
 };
 
@@ -237,6 +221,11 @@ enum RENDERING_PASS
 	LIGHTING,
 	REDRING,
 	MAX_PASS
+};
+
+enum INPUTLAYOUT {
+	DEFAULT = 0,
+	ANIMATION,
 };
 
 /**
@@ -286,7 +275,7 @@ private:
 	static ID3D11RasterizerState*	m_RasterizerState;
 
 	//! 頂点レイアウト
-	static ID3D11InputLayout*		m_VertexLayout;
+	static ID3D11InputLayout*		m_VertexLayout[2];
 	//! マテリアルバッファ
 	static ID3D11Buffer*			m_MaterialBuffer;
 	//! ライトバッファ
@@ -473,6 +462,8 @@ public:
 	static IDWriteFactory* GetFactory() { return m_DwriteFactory; }
 
 	static void Set_Shader(const SHADER_INDEX_V v_index = SHADER_INDEX_V::DEFAULT, const SHADER_INDEX_P p_index = SHADER_INDEX_P::DEFAULT);
+
+	static void Set_InputLayout(const INPUTLAYOUT v_index = INPUTLAYOUT::DEFAULT);
 
 	// 自前
 	static void CreateRenderTexture();

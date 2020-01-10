@@ -245,7 +245,7 @@
     <ClCompile Include="ForwardPlus.cpp">
       <Filter>ソース ファイル\System\Clustered</Filter>
     </ClCompile>
-    <ClCompile Include="Mesh.cpp">
+    <ClCompile Include="FBXmodel.cpp">
       <Filter>ソース ファイル\GameObject</Filter>
     </ClCompile>
   </ItemGroup>
@@ -447,6 +447,9 @@
     </ClInclude>
     <ClInclude Include="ForwardPlus.h">
       <Filter>ソース ファイル\System\Clustered</Filter>
+    </ClInclude>
+    <ClInclude Include="FBXmodel.h">
+      <Filter>ソース ファイル\GameObject</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
