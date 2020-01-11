@@ -15,7 +15,7 @@
 #include	<assimp/postprocess.h>
 #include	<assimp/matrix4x4.h>
 
-/*** ç\ë¢ëÃ ***/
+#include	"Mesh.h"
 
 const constexpr BYTE BONE_NUM = 4;
 
@@ -67,9 +67,11 @@ private:
 	UINT m_MeshNum;
 	UINT frame = 0;
 
-	int m_BoneNum = 0;
+	UINT m_BoneNum = 0;
 
 	const aiScene* m_Scene;
+
+	vector<TEXTURE_S> Textures;
 
 
 	//unordered_map<string, aiQuaternion> m_NodeRotation;
@@ -82,10 +84,15 @@ private:
 
 	unique_ptr<ID3D11Buffer, Release> MatrixBuffer;
 
-	void DrawMesh(aiNode* Node, XMMATRIX& Matrix);
-	void CreateBone(aiNode* Node);
-	void UpdateBoneMatrix(aiNode* Node, XMMATRIX Matrix);
+	void DrawMesh(const aiNode* Node, const XMMATRIX& Matrix);
+	void CreateBone(const aiNode* Node);
+	void UpdateBoneMatrix(const aiNode* Node, const XMMATRIX& Matrix);
 	void SetBoneMatrix(const vector<XMMATRIX>& matrix);
+
+	vector<TEXTURE_S> loadMaterialTextures(aiMaterial* mat, aiTextureType type, string typeName, const aiScene* scene);
+	string determineTextureType(const aiScene* scene, aiMaterial* mat);
+	int getTextureIndex(aiString* str);
+	ID3D11ShaderResourceView* getTextureFromModel(const aiScene* scene, int textureindex);
 
 public:
 	FBXmodel() {}

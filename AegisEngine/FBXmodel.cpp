@@ -5,7 +5,10 @@
 #include	"ShadowMap.h"
 #include	"camera.h"
 
+#include	"Library/DirectXTex/WICTextureLoader.h"
 
+static string textype;
+static string directory;
 
 XMMATRIX aiMatrixToMatrix(aiMatrix4x4 matrix)
 {
@@ -58,10 +61,24 @@ bool FBXmodel::Load(const string& FileName)
 		return false;
 	}
 
+	if (false == m_Scene->HasAnimations())
+	{
+		FAILDE_ASSERT;
+		return false;
+	}
+
+	directory = FileName.substr(0, FileName.find_last_of('/'));
+
 	CreateBone(m_Scene->mRootNode);
-	
-	for (int m = 0; m < m_Scene->mNumMeshes; m++)
+
+	for (UINT m = 0; m < m_Scene->mNumMeshes; m++)
 	{		
+		if (false == m_Scene->mMeshes[m]->HasBones())
+		{
+			FAILDE_ASSERT;
+			return false;
+		}
+
 		aiMesh* mesh = m_Scene->mMeshes[m];
 		UINT vertex_Num = mesh->mNumVertices;
 
@@ -73,28 +90,22 @@ bool FBXmodel::Load(const string& FileName)
 
 		for (UINT i = 0; i < mesh->mNumVertices; i++)
 		{
-			Bone_num.emplace_back(0);
-			vertex.emplace_back(ANIME_VERTEX());
-		}
+			ANIME_VERTEX anime_vertex;
 
-		for (UINT i = 0; i < mesh->mNumVertices; i++)
-		{
-			vertex[i].Position = XMFLOAT3(mesh->mVertices[i].x, mesh->mVertices[i].y, mesh->mVertices[i].z);
+			anime_vertex.Position = XMFLOAT3(mesh->mVertices[i].x, mesh->mVertices[i].y, mesh->mVertices[i].z);
 
-			vertex[i].Normal = XMFLOAT3(mesh->mNormals[i].x, mesh->mNormals[i].y, mesh->mNormals[i].z);
+			anime_vertex.Normal = XMFLOAT3(mesh->mNormals[i].x, mesh->mNormals[i].y, mesh->mNormals[i].z);
 
-			vertex[i].Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+			anime_vertex.Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
 
 			if (mesh->mTextureCoords[0])
 			{
-				vertex[i].TexCoord.x = (float)mesh->mTextureCoords[0][i].x;
-				vertex[i].TexCoord.y = (float)mesh->mTextureCoords[0][i].y;
+				anime_vertex.TexCoord.x = (float)mesh->mTextureCoords[0][i].x;
+				anime_vertex.TexCoord.y = (float)mesh->mTextureCoords[0][i].y;
 			}
 
-			vertex[i].Position;
-			vertex[i].Normal;
-			vertex[i].Diffuse;
-			vertex[i].TexCoord;
+			vertex.emplace_back(anime_vertex);
+			Bone_num.emplace_back(0);
 		}
 
 		
@@ -143,7 +154,7 @@ bool FBXmodel::Load(const string& FileName)
 		
 
 		// インデックスバッファ生成
-		int index_Num;
+		UINT index_Num;
 		ID3D11Buffer* index_Beffer;
 		{
 			vector<WORD> index;
@@ -188,22 +199,16 @@ bool FBXmodel::Load(const string& FileName)
 
 		m_Meshes.emplace_back(temp_mesh);
 
-		//テクスチャ設定
-		for (int m = 0; m < m_Scene->mNumMaterials; m++)
-		{
-			aiMaterial* material = m_Scene->mMaterials[m];
-			aiString texture_file;
-			material->Get(AI_MATKEY_TEXTURE(aiTextureType_DIFFUSE, 0), texture_file);
+		//// テクスチャの設定
+		//if (mesh->mMaterialIndex >= 0)
+		//{
+		//	aiMaterial* material = m_Scene->mMaterials[mesh->mMaterialIndex];
 
-			//テクスチャタイプの判定
-			if (m_Scene->HasTextures()) {
-				//埋め込みテクスチャ
-				
-			}
-			else {
-				//外部パステクスチャ
-			}
-		}
+		//	if (textype.empty()) textype = determineTextureType(m_Scene, material);
+
+		//	vector<TEXTURE_S> diffuseMaps = this->loadMaterialTextures(material, aiTextureType_DIFFUSE, "texture_diffuse", m_Scene);
+		//	Textures.insert(Textures.end(), diffuseMaps.begin(), diffuseMaps.end());
+		//}
 
 		Bone_num.clear();
 		vertex.clear();
@@ -239,7 +244,7 @@ bool FBXmodel::Load(const string& FileName)
 
 void FBXmodel::UnLoad()
 {
-	for (int m = 0; m < m_MeshNum; m++)
+	for (UINT m = 0; m < m_MeshNum; m++)
 	{
 		m_Meshes[m].VertexBuffer->Release();
 		m_Meshes[m].IndexBuffer->Release();
@@ -251,17 +256,17 @@ void FBXmodel::UnLoad()
 
 void FBXmodel::Update(float delta_time)
 {
-	static float f = 0.0f;
+	static float fr = 0.0f;
 
-	f += delta_time;
+	fr += delta_time;
 
-	if (ANIMETION_FRAME <= f)
+	if (ANIMETION_FRAME <= fr)
 	{
 		frame++;
 
-		f = 0.0f;
+		fr = 0.0f;
 	}
-	if (0 < m_Scene->mNumAnimations)
+
 	{
 		aiAnimation* animation = m_Scene->mAnimations[0];
 		for (unsigned int c = 0; c < animation->mNumChannels; c++)
@@ -290,13 +295,15 @@ void FBXmodel::Draw(XMMATRIX &Matrix)
 		vector<XMMATRIX> bone;
 		bone.reserve(m_BoneNum);
 
-		for (int b = 0; b < m_BoneNum; b++)
+		for (UINT b = 0; b < m_BoneNum; b++)
 		{
 			bone.emplace_back(m_Bone[b].Matrix);
 		}
 
 		SetBoneMatrix(bone);
 	}
+
+
 
 	CRenderer::Set_Shader(SHADER_INDEX_V::ANIMATION, SHADER_INDEX_P::DEFAULT);
 	CRenderer::Set_InputLayout(INPUTLAYOUT::ANIMATION);
@@ -316,33 +323,30 @@ void FBXmodel::SetBoneMatrix(const vector<XMMATRIX>& matrix)
 	CRenderer::GetDeviceContext()->VSSetConstantBuffers(5, 1, &buffer);
 }
 
-void FBXmodel::DrawMesh(aiNode * Node, XMMATRIX &Matrix)
+void FBXmodel::DrawMesh(const aiNode* Node, const XMMATRIX& Matrix)
 {
 	XMMATRIX world;
 	world = XMMatrixTranspose(aiMatrixToMatrix(Node->mTransformation));
 	world *= Matrix;
 
-	XMFLOAT4X4 worldf;
-	XMStoreFloat4x4(&worldf, world);
+	auto camera01 = CManager::Get_Scene()->Get_Game_Object<CCamera>("camera");
+	auto camera02 = CManager::Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
 
-	for (int n = 0; n < Node->mNumMeshes; n++)
+	XMMATRIX view = CManager::Get_ShadowMap()->Get_View();
+	XMMATRIX proj = CManager::Get_ShadowMap()->Get_Plojection();
+
+	for (UINT n = 0; n < Node->mNumMeshes; n++)
 	{
-		unsigned int m = Node->mMeshes[n];
+		UINT m = Node->mMeshes[n];
 
 		// 3Dマトリックス設定
 		{
-			auto camera01 = CManager::Get_Scene()->Get_Game_Object<CCamera>("camera");
-			auto camera02 = CManager::Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
-
 			// 普通のカメラかデバッグカメラか?
 			if (nullptr != camera01)
 			{
 				// シャドウマップ用の描画か?
 				if (CManager::Get_ShadowMap()->Get_Enable())
 				{
-					XMMATRIX view = CManager::Get_ShadowMap()->Get_View();
-					XMMATRIX proj = CManager::Get_ShadowMap()->Get_Plojection();
-
 					CRenderer::Set_MatrixBuffer(world, view, proj);
 				}
 				else
@@ -357,9 +361,6 @@ void FBXmodel::DrawMesh(aiNode * Node, XMMATRIX &Matrix)
 				// シャドウマップ用の描画か?
 				if (CManager::Get_ShadowMap()->Get_Enable())
 				{
-					XMMATRIX view = CManager::Get_ShadowMap()->Get_View();
-					XMMATRIX proj = CManager::Get_ShadowMap()->Get_Plojection();
-
 					CRenderer::Set_MatrixBuffer(world, view, proj);
 				}
 				else
@@ -396,7 +397,7 @@ void FBXmodel::DrawMesh(aiNode * Node, XMMATRIX &Matrix)
 }
 
 
-void FBXmodel::CreateBone(aiNode * Node)
+void FBXmodel::CreateBone(const aiNode* Node)
 {
 	m_BoneIndex[Node->mName.C_Str()] = m_BoneNum;
 
@@ -411,7 +412,7 @@ void FBXmodel::CreateBone(aiNode * Node)
 }
 
 
-void FBXmodel::UpdateBoneMatrix(aiNode * Node, XMMATRIX Matrix)
+void FBXmodel::UpdateBoneMatrix(const aiNode* Node, const XMMATRIX& Matrix)
 {
 	BONE* bone = &m_Bone[m_BoneIndex[Node->mName.C_Str()]];
 	XMMATRIX world;
@@ -428,4 +429,101 @@ void FBXmodel::UpdateBoneMatrix(aiNode * Node, XMMATRIX Matrix)
 	{
 		UpdateBoneMatrix(Node->mChildren[i], world);
 	}
+}
+
+
+
+
+vector<TEXTURE_S> FBXmodel::loadMaterialTextures(aiMaterial* mat, aiTextureType type, string typeName, const aiScene* scene)
+{
+	vector<TEXTURE_S> textures;
+	for (UINT i = 0; i < mat->GetTextureCount(type); i++)
+	{
+		aiString str;
+		mat->GetTexture(type, i, &str);
+
+		// Check if texture was loaded before and if so, continue to next iteration: skip loading a new texture
+		bool skip = false;
+		for (UINT j = 0; j < Textures.size(); j++)
+		{
+			if (Textures[j].path.c_str() == str.C_Str())
+			{
+				textures.push_back(Textures[j]);
+				skip = true; // A texture with the same filepath has already been loaded, continue to next one. (optimization)
+				break;
+			}
+		}
+		if (!skip)
+		{   // If texture hasn't been loaded already, load it
+			HRESULT hr;
+			TEXTURE_S texture;
+			if (textype == "embedded compressed texture")
+			{
+				int textureindex = getTextureIndex(&str);
+				texture.Texture = getTextureFromModel(scene, textureindex);
+			}
+			else
+			{
+				string filename = string(str.C_Str());
+				filename = directory + "/" + filename;
+				wstring filenamews = wstring(filename.begin(), filename.end());
+
+				{
+					hr = CreateWICTextureFromFile(CRenderer::GetDevice(), CRenderer::GetDeviceContext(), filenamews.c_str(), nullptr, &texture.Texture, nullptr, nullptr);
+				}
+
+				if (FAILED(hr))
+					FAILDE_ASSERT;
+			}
+
+			texture.path = str.C_Str();
+			textures.push_back(texture);
+			this->Textures.push_back(texture);  // Store it as texture loaded for entire model, to ensure we won't unnecesery load duplicate textures.
+		}
+	}
+	return textures;
+}
+
+string FBXmodel::determineTextureType(const aiScene* scene, aiMaterial* mat)
+{
+	aiString textypeStr;
+	mat->GetTexture(aiTextureType_DIFFUSE, 0, &textypeStr);
+	string textypeteststr = textypeStr.C_Str();
+	if (textypeteststr == "" || textypeteststr == "*0" || textypeteststr == "*1" || textypeteststr == "*2" || textypeteststr == "*3" || textypeteststr == "*4" || textypeteststr == "*5")
+	{
+		if (scene->mTextures[0]->mHeight == 0)
+		{
+			return "embedded compressed texture";
+		}
+		else
+		{
+			return "embedded non-compressed texture";
+		}
+	}
+	if (textypeteststr.find('.') != string::npos)
+	{
+		return "textures are on disk";
+	}
+}
+
+int FBXmodel::getTextureIndex(aiString* str)
+{
+	string tistr;
+	tistr = str->C_Str();
+	tistr = tistr.substr(1);
+	return stoi(tistr);
+}
+
+ID3D11ShaderResourceView* FBXmodel::getTextureFromModel(const aiScene* scene, int textureindex)
+{
+	HRESULT hr;
+	ID3D11ShaderResourceView* texture;
+
+	int* size = reinterpret_cast<int*>(&scene->mTextures[textureindex]->mWidth);
+
+	hr = CreateWICTextureFromMemory(CRenderer::GetDevice(), CRenderer::GetDeviceContext(), reinterpret_cast<unsigned char*>(scene->mTextures[textureindex]->pcData), *size, nullptr, &texture);
+	if (FAILED(hr))
+		FAILDE_ASSERT
+
+		return texture;
 }

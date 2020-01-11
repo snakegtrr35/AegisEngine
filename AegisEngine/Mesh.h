@@ -20,7 +20,6 @@
 #define ARRAY_SIZE_IN_ELEMENTS(a) (sizeof(a)/sizeof(a[0]))
 
 struct TEXTURE_S {
-	string type;
 	string path;
 	ID3D11ShaderResourceView* Texture = nullptr;
 };
@@ -44,34 +43,6 @@ struct BONEINFO {
 	XMMATRIX Offset;
 	XMMATRIX Animation;
 	XMMATRIX Matrix;
-};
-
-//
-struct VERTEX_BONE_DATA
-{
-	UINT ID[NUM_BONES];
-	float Weights[NUM_BONES];
-
-	VERTEX_BONE_DATA() {
-		for (int i = 0; i < NUM_BONES; i++)
-		{
-			ID[i] = 0;
-			Weights[i] = 0.f;
-		}
-	}
-
-	void AddBoneData(UINT BoneID, float Weight)
-	{
-		for (UINT i = 0; i < ARRAY_SIZE_IN_ELEMENTS(ID); i++) {
-			if (Weights[i] == 0.0) {
-				ID[i] = BoneID;
-				Weights[i] = Weight;
-				return;
-			}
-		}
-
-		assert(0);
-	}
 };
 
 // 描画サブセット構造体
@@ -378,76 +349,6 @@ private:
 		}
 	}
 
-	//
-	void Update_MAtrix(XMMATRIX& matrix, vector<Anim> anime, map<string, vector<Bone>>& bones, DWORD frame) {
-
-		XMMATRIX world;
-
-		for (auto i : anime.begin()->body)
-		{
-			if (i.node_name == Name)
-			{
-				unsigned int f = frame % i.translate.begin()->time;
-
-				XMFLOAT3 pos = i.translate[f].value;
-				XMMATRIX trans = XMMatrixTranslation(pos.x, pos.y, pos.z);
-
-				f = frame % i.rotation.begin()->time;
-
-				XMFLOAT4 rotation = i.rotation[f].value;
-				XMVECTOR quat = XMLoadFloat4(&rotation);
-
-				XMMATRIX qiat_mat = XMMatrixRotationQuaternion(quat);
-
-				
-				for (auto bone : bones[Name])
-				{
-					XMMATRIX mat = XMMatrixIdentity();
-
-					mat = XMMatrixMultiply(mat, qiat_mat);
-
-					mat = XMMatrixMultiply(mat, trans);
-
-					//bone.animation = mat;
-				}
-
-				break;
-			}
-		}
-
-		for (auto child : ChildMeshes)
-		{
-			child.second.Update_MAtrix(world, anime, bones, frame);
-		}
-	}
-
-	//
-	void Update_Bone_Matrix(map<string, MESH> Childlen, map<string, vector<Bone>>& bones, XMMATRIX matrix = XMMatrixIdentity()) {
-		XMMATRIX world = matrix;
-
-		for (auto mesh : Childlen)
-		{
-			auto i = bones.find(Name);
-
-			if (bones.end() != i)
-			{
-				for (auto j : i->second)
-				{
-					//world *= j.animation;
-
-					//j.matrix = world;
-
-					//j.matrix *= j.offset;
-				}
-			}
-		}
-
-		for (auto child : ChildMeshes)
-		{
-			Update_Bone_Matrix(child.second.Get(), bones, world);
-		}
-	}
-
 	bool SetupMesh(vector<VERTEX_3D>& vertices) {
 		HRESULT hr;
 
@@ -529,17 +430,9 @@ public:
 		
 	}
 
-	void Update_SkynMesh(map<string, MESH>& chiidren, XMMATRIX& matrix, vector<Anim> anime, map<string, vector<Bone>>& bones, DWORD frame) {
-		Update_MAtrix(matrix, anime, bones, frame);
-
-		Update_Bone_Matrix(chiidren, bones);
-	}
-
 	void Uninit() {
 		SAFE_RELEASE(VertexBuffer);
 		SAFE_RELEASE(IndexBuffer);
-
-		//Vertices.clear();
 
 		Indices.clear();
 
@@ -583,9 +476,9 @@ public:
 		return true;
 	}
 
-	vector<Bone>& Get_Bone() {
+	/*vector<Bone>& Get_Bone() {
 		return Bones;
-	}
+	}*/
 };
 
 #endif

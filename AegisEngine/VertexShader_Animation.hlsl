@@ -49,10 +49,10 @@ void main(  in float4 inPosition         : POSITION0,
 		    out float4 outWPos           : POSITION1,
             out float4 outShadowMapPos   : POSITION_SHADOWMAP )
 {
-    float4x4 BoneTransform = BoneMatrix[inIneces[0]] * inWeight[0]
-                           + BoneMatrix[inIneces[1]] * inWeight[1]
-                           + BoneMatrix[inIneces[2]] * inWeight[2]
-                           + BoneMatrix[inIneces[3]] * inWeight[3];
+    matrix BoneTransform = BoneMatrix[inIneces[0]] * inWeight[0]
+                         + BoneMatrix[inIneces[1]] * inWeight[1]
+                         + BoneMatrix[inIneces[2]] * inWeight[2]
+                         + BoneMatrix[inIneces[3]] * inWeight[3];
 
     matrix wvp;
     wvp = mul(World, View);
