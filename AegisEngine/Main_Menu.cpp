@@ -226,7 +226,7 @@ void MAIN_MENU::Draw()
 
 	auto m = XMMatrixIdentity();
 
-	m = XMMatrixScaling(1, 1, 1);
+	m = XMMatrixScaling(2, 2, 2);
 
 	model->Draw(m);
 }
@@ -234,6 +234,8 @@ void MAIN_MENU::Draw()
 void MAIN_MENU::Update(float delta_time)
 {
 	SCENE::Update(delta_time);
+
+	model->Update(delta_time);
 
 	{
 		/*{

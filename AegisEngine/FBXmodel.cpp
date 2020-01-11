@@ -7,11 +7,7 @@
 
 
 
-FBXmodel::FBXmodel()
-{
-}
-
-XMMATRIX FBXmodel::aiMatrixToMatrix(aiMatrix4x4 matrix)
+XMMATRIX aiMatrixToMatrix(aiMatrix4x4 matrix)
 {
 	XMMATRIX m;
 	m.r[0] = XMLoadFloat4(&XMFLOAT4(matrix.a1, matrix.a2, matrix.a3, matrix.a4));
@@ -22,7 +18,7 @@ XMMATRIX FBXmodel::aiMatrixToMatrix(aiMatrix4x4 matrix)
 	return m;
 }
 
-aiMatrix4x4 FBXmodel::MatrixToaiMatrix(XMMATRIX matrix)
+aiMatrix4x4 MatrixToaiMatrix(XMMATRIX matrix)
 {
 	aiMatrix4x4 m;
 	m.a1 = XMVectorGetX(matrix.r[0]);
@@ -50,70 +46,59 @@ aiMatrix4x4 FBXmodel::MatrixToaiMatrix(XMMATRIX matrix)
 
 
 
-void FBXmodel::Load(const string& FileName)
+bool FBXmodel::Load(const string& FileName)
 {
+	HRESULT hr;
+
 	//モデルの読み込み
 	m_Scene = aiImportFile(FileName.c_str(), aiProcessPreset_TargetRealtime_MaxQuality);
 	
+	if (nullptr == m_Scene)
+	{
+		return false;
+	}
+
 	CreateBone(m_Scene->mRootNode);
 	
 	for (int m = 0; m < m_Scene->mNumMeshes; m++)
 	{		
 		aiMesh* mesh = m_Scene->mMeshes[m];
-		unsigned int vertex_Num = mesh->mNumVertices;
-		ANIME_VERTEX* temp_Vertex = new ANIME_VERTEX[mesh->mNumVertices];
-		//DEFORM_VERTEX* temp_DeformVertex = new DEFORM_VERTEX[mesh->mNumVertices];
+		UINT vertex_Num = mesh->mNumVertices;
 
-		std::vector<DEFORM_VERTEX*> temp_DeformVertex;
-		for (int i = 0; i < mesh->mNumVertices; i++)
+		vector<UINT> Bone_num;
+		Bone_num.reserve(mesh->mNumVertices);
+
+		vector<ANIME_VERTEX> vertex;
+		vertex.reserve(mesh->mNumVertices);
+
+		for (UINT i = 0; i < mesh->mNumVertices; i++)
 		{
-			temp_DeformVertex.emplace_back(new DEFORM_VERTEX());
+			Bone_num.emplace_back(0);
+			vertex.emplace_back(ANIME_VERTEX());
 		}
 
-		ID3D11Buffer* vertex_Buffer;
-
-		
-
-		// 頂点バッファ生成
-		ANIME_VERTEX* vertex = new ANIME_VERTEX[mesh->mNumVertices];
-
-		for (int i = 0; i < mesh->mNumVertices; i++)
+		for (UINT i = 0; i < mesh->mNumVertices; i++)
 		{
-			vertex[i].Position = XMFLOAT3(mesh->mVertices[i].x,
-				mesh->mVertices[i].y,
-				mesh->mVertices[i].z);
+			vertex[i].Position = XMFLOAT3(mesh->mVertices[i].x, mesh->mVertices[i].y, mesh->mVertices[i].z);
 
-			vertex[i].Normal = XMFLOAT3(mesh->mNormals[i].x, 
-				mesh->mNormals[i].y, 
-				mesh->mNormals[i].z);
+			vertex[i].Normal = XMFLOAT3(mesh->mNormals[i].x, mesh->mNormals[i].y, mesh->mNormals[i].z);
+
 			vertex[i].Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
-			vertex[i].TexCoord = XMFLOAT2(0.0f, 1.0f);
 
-			
-			temp_DeformVertex[i]->Position = mesh->mVertices[i];
-			temp_DeformVertex[i]->Normal = mesh->mVertices[i];
-			temp_DeformVertex[i]->DefromPosition = mesh->mVertices[i];
-			temp_DeformVertex[i]->DefromNormal = mesh->mVertices[i];
-			temp_DeformVertex[i]->BoneNum = 0;
-
-			temp_Vertex[i].Position = vertex[i].Position;
-			temp_Vertex[i].Normal = vertex[i].Normal;
-			temp_Vertex[i].Diffuse = vertex[i].Diffuse;
-			temp_Vertex[i].TexCoord = vertex[i].TexCoord;
-
-			for (int b = 0; b < 4; b++)
+			if (mesh->mTextureCoords[0])
 			{
-				temp_Vertex[i].weight[b] = 0.0f;
-				temp_Vertex[i].bone_Index[b] = 511;
+				vertex[i].TexCoord.x = (float)mesh->mTextureCoords[0][i].x;
+				vertex[i].TexCoord.y = (float)mesh->mTextureCoords[0][i].y;
+			}
 
-				temp_DeformVertex[i]->BoneName[b] = "";
-				temp_DeformVertex[i]->BoneWeight[b] = 0.0f;
-			}	
+			vertex[i].Position;
+			vertex[i].Normal;
+			vertex[i].Diffuse;
+			vertex[i].TexCoord;
 		}
 
 		
-
-		for (unsigned int b = 0; b < mesh->mNumBones; b++)
+		for (UINT b = 0; b < mesh->mNumBones; b++)
 		{
 
 			aiBone* bone = mesh->mBones[b];
@@ -122,41 +107,38 @@ void FBXmodel::Load(const string& FileName)
   			for (unsigned int w = 0; w < bone->mNumWeights; w++)
 			{
 				aiVertexWeight weight = bone->mWeights[w];
-				temp_Vertex[weight.mVertexId].bone_Index[temp_DeformVertex[weight.mVertexId]->BoneNum] = m_BoneIndex[bone->mName.C_Str()];
-				temp_DeformVertex[weight.mVertexId]->BoneName[temp_DeformVertex[weight.mVertexId]->BoneNum] = bone->mName.C_Str();
-				temp_DeformVertex[weight.mVertexId]->BoneWeight[temp_DeformVertex[weight.mVertexId]->BoneNum] = weight.mWeight;
-				temp_Vertex[weight.mVertexId].weight[temp_DeformVertex[weight.mVertexId]->BoneNum] = weight.mWeight;
- 				temp_DeformVertex[weight.mVertexId]->BoneNum++;
+				vertex[weight.mVertexId].bone_Index[Bone_num[weight.mVertexId]] = m_BoneIndex[bone->mName.C_Str()];
+				vertex[weight.mVertexId].weight[Bone_num[weight.mVertexId]] = weight.mWeight;
+				Bone_num[weight.mVertexId]++;
 			}
 		}
 
 
-		m_DeformVertex = temp_DeformVertex;
-
+		//頂点バッファ生成
+		ID3D11Buffer* vertex_Buffer;
 		{
-			//頂点バッファ生成
 			D3D11_BUFFER_DESC bd;
 			ZeroMemory(&bd, sizeof(bd));
-			bd.Usage = D3D11_USAGE_DYNAMIC;
-			bd.ByteWidth = sizeof(ANIME_VERTEX) * mesh->mNumVertices;
+			bd.Usage = D3D11_USAGE_DEFAULT;
+			bd.ByteWidth = sizeof(ANIME_VERTEX) * vertex.size();
 			bd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-			bd.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+			bd.CPUAccessFlags = 0;
 			bd.MiscFlags = 0;
 
 			D3D11_SUBRESOURCE_DATA initData;
 			ZeroMemory(&initData, sizeof(D3D11_SUBRESOURCE_DATA));
 
-			initData.pSysMem = temp_Vertex;
+			initData.pSysMem = vertex.data();
 			initData.SysMemPitch = 0;
 			initData.SysMemSlicePitch = 0;
 
-			//CRenderer::GetDevice()->CreateBuffer(&bd, nullptr, &vertex_Buffer);
-			CRenderer::GetDevice()->CreateBuffer(&bd, &initData, &vertex_Buffer);
+			hr = CRenderer::GetDevice()->CreateBuffer(&bd, &initData, &vertex_Buffer);
 
-			/*D3D11_MAPPED_SUBRESOURCE ms;
-			CRenderer::GetDeviceContext()->Map(vertex_Buffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &ms);
-			memcpy(ms.pData, temp_Vertex, sizeof(ANIME_VERTEX)* mesh->mNumVertices);
-			CRenderer::GetDeviceContext()->Unmap(vertex_Buffer, 0);*/
+			if (FAILED(hr))
+			{
+				FAILDE_ASSERT;
+				return false;
+			}
 		}
 		
 
@@ -164,52 +146,47 @@ void FBXmodel::Load(const string& FileName)
 		int index_Num;
 		ID3D11Buffer* index_Beffer;
 		{
-			std::vector<int> index;
-			for (int f = 0; f < mesh->mNumFaces; f++)
+			vector<WORD> index;
+			for (UINT f = 0; f < mesh->mNumFaces; f++)
 			{
 				aiFace* face = &mesh->mFaces[f];
-				for (unsigned int i = 0; i < face->mNumIndices; i++)
+				for (UINT i = 0; i < face->mNumIndices; i++)
 				{
-					index.push_back(face->mIndices[i]);
+					index.emplace_back(face->mIndices[i]);
 				}
 			}
 
 			index_Num = index.size();
-			unsigned short* temp_index = new unsigned short[index_Num];
-			for (int i = 0; i < index_Num; i++)
-			{
-				temp_index[i] = (unsigned short)index[i];
-			}
-
-			
+	
 			D3D11_BUFFER_DESC bd;
 			ZeroMemory(&bd, sizeof(bd));
 			bd.Usage = D3D11_USAGE_DEFAULT;
-			bd.ByteWidth = sizeof(unsigned short) * index_Num;
+			bd.ByteWidth = sizeof(WORD) * index.size();
 			bd.BindFlags = D3D11_BIND_INDEX_BUFFER;
 			bd.CPUAccessFlags = 0;
 
-			D3D11_SUBRESOURCE_DATA sd;
-			ZeroMemory(&sd, sizeof(sd));
-			sd.pSysMem = temp_index;
+			D3D11_SUBRESOURCE_DATA initData;
+			ZeroMemory(&initData, sizeof(initData));
+			initData.pSysMem = index.data();
+			initData.SysMemPitch = 0;
+			initData.SysMemSlicePitch = 0;
 
-			CRenderer::GetDevice()->CreateBuffer(&bd, &sd, &index_Beffer);
+			hr = CRenderer::GetDevice()->CreateBuffer(&bd, &initData, &index_Beffer);
 			
-			delete[] temp_index;
+			if (FAILED(hr))
+			{
+				FAILDE_ASSERT;
+				return false;
+			}
 		}
 
 		MESH temp_mesh;
-		temp_mesh.VertexBuffer = vertex_Buffer;
+		temp_mesh.VertexBuffer= vertex_Buffer;
 		temp_mesh.IndexBuffer = index_Beffer;
 		temp_mesh.VertexNum = vertex_Num;
 		temp_mesh.IndexNum = index_Num;
-		temp_mesh.deform_Vertex = temp_DeformVertex;
 
 		m_Meshes.emplace_back(temp_mesh);
-
-		
-
-		
 
 		//テクスチャ設定
 		for (int m = 0; m < m_Scene->mNumMaterials; m++)
@@ -227,10 +204,9 @@ void FBXmodel::Load(const string& FileName)
 				//外部パステクスチャ
 			}
 		}
-		
-		delete[] temp_Vertex;
 
-		delete vertex;
+		Bone_num.clear();
+		vertex.clear();
 	}
 
 	// 定数バッファ作成
@@ -238,7 +214,7 @@ void FBXmodel::Load(const string& FileName)
 		ID3D11Buffer* buffer = nullptr;
 
 		D3D11_BUFFER_DESC hBufferDesc;
-		hBufferDesc.ByteWidth = sizeof(MATRIX_BUFFER);
+		hBufferDesc.ByteWidth = sizeof(XMMATRIX) * m_BoneNum;
 		hBufferDesc.Usage = D3D11_USAGE_DEFAULT;
 		hBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
 		hBufferDesc.CPUAccessFlags = 0;
@@ -246,28 +222,23 @@ void FBXmodel::Load(const string& FileName)
 		hBufferDesc.StructureByteStride = sizeof(float);
 
 		{
-			HRESULT hr = CRenderer::GetDevice()->CreateBuffer(&hBufferDesc, NULL, &buffer);
+			hr = CRenderer::GetDevice()->CreateBuffer(&hBufferDesc, NULL, &buffer);
 			if (FAILED(hr))
 			{
 				FAILDE_ASSERT;
-				return;
+				return false;
 			}
 
 			MatrixBuffer.reset(buffer);
 		}
 	}
+
+	return true;
 }
 
 
 void FBXmodel::UnLoad()
 {
-	for (auto vertex : m_DeformVertex)
-	{
-		delete vertex;
-	}
-	m_DeformVertex.clear();
-
-
 	for (int m = 0; m < m_MeshNum; m++)
 	{
 		m_Meshes[m].VertexBuffer->Release();
@@ -278,14 +249,18 @@ void FBXmodel::UnLoad()
 	aiReleaseImport(m_Scene);
 }
 
-//void FBXmodel::Update()
-//{
-//	
-//}
-
-void FBXmodel::Draw(XMMATRIX &Matrix)
+void FBXmodel::Update(float delta_time)
 {
-	frame++;
+	static float f = 0.0f;
+
+	f += delta_time;
+
+	if (ANIMETION_FRAME <= f)
+	{
+		frame++;
+
+		f = 0.0f;
+	}
 	if (0 < m_Scene->mNumAnimations)
 	{
 		aiAnimation* animation = m_Scene->mAnimations[0];
@@ -302,30 +277,26 @@ void FBXmodel::Draw(XMMATRIX &Matrix)
 
 			bone->AnimationMatrix = aiMatrixToMatrix(aiMatrix4x4(aiVector3D(1.0f, 1.0f, 1.0f), rot, pos));
 		}
-	} 
+	}
 
 	XMMATRIX Identity = XMMatrixIdentity();
 
 	UpdateBoneMatrix(m_Scene->mRootNode, Identity);
+}
 
-	
-	XMFLOAT4X4 bonef[256];
-
-	for (int bf = 0; bf < 256; bf++)
+void FBXmodel::Draw(XMMATRIX &Matrix)
+{
 	{
-		bonef[bf] = XMFLOAT4X4(
-			1.0f, 0.0f, 0.0f, 0.0f,
-			0.0f, 1.0f, 0.0f, 0.0f,
-			0.0f, 0.0f, 1.0f, 0.0f,
-			0.0f, 0.0f, 0.0f, 1.0f);
-	}
+		vector<XMMATRIX> bone;
+		bone.reserve(m_BoneNum);
 
-	for (int b = 0; b < m_BoneNum; b++)
-	{
-		XMStoreFloat4x4(&bonef[b], m_Bone[b].Matrix);
-	}
+		for (int b = 0; b < m_BoneNum; b++)
+		{
+			bone.emplace_back(m_Bone[b].Matrix);
+		}
 
-	SetBoneMatrix(bonef);
+		SetBoneMatrix(bone);
+	}
 
 	CRenderer::Set_Shader(SHADER_INDEX_V::ANIMATION, SHADER_INDEX_P::DEFAULT);
 	CRenderer::Set_InputLayout(INPUTLAYOUT::ANIMATION);
@@ -336,16 +307,9 @@ void FBXmodel::Draw(XMMATRIX &Matrix)
 	CRenderer::Set_Shader();
 }
 
-void FBXmodel::SetBoneMatrix(const XMFLOAT4X4* matrix)
+void FBXmodel::SetBoneMatrix(const vector<XMMATRIX>& matrix)
 {
-	MATRIX_BUFFER bone_matrix;
-
-	for (int b = 0; b < 256; b++)
-	{
-		bone_matrix.Bone_Matrix[b] = matrix[b];
-	}
-
-	CRenderer::GetDeviceContext()->UpdateSubresource(MatrixBuffer.get(), 0, NULL, &bone_matrix, 0, 0);
+	CRenderer::GetDeviceContext()->UpdateSubresource(MatrixBuffer.get(), 0, NULL, matrix.data(), 0, 0);
 
 	auto buffer = MatrixBuffer.get();
 
@@ -434,14 +398,9 @@ void FBXmodel::DrawMesh(aiNode * Node, XMMATRIX &Matrix)
 
 void FBXmodel::CreateBone(aiNode * Node)
 {
-	BONE bone;
-	bone.Matrix = XMMatrixIdentity();
-	bone.AnimationMatrix = XMMatrixIdentity();
-	bone.OffsetMatrix = XMMatrixIdentity();
-
 	m_BoneIndex[Node->mName.C_Str()] = m_BoneNum;
 
-	m_Bone[m_BoneNum] = bone;
+	m_Bone[m_BoneNum] = BONE();
 
 	m_BoneNum++;
 

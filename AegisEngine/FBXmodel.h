@@ -17,36 +17,38 @@
 
 /*** ç\ë¢ëÃ ***/
 
+const constexpr BYTE BONE_NUM = 4;
+
 struct ANIME_VERTEX
 {
 	XMFLOAT3 Position;
 	XMFLOAT3 Normal;
 	XMFLOAT4 Diffuse;
 	XMFLOAT2 TexCoord;
-	UINT bone_Index[4];
-	float weight[4];
-};
+	UINT bone_Index[BONE_NUM];
+	float weight[BONE_NUM];
 
-struct DEFORM_VERTEX
-{
-	aiVector3D Position;
-	aiVector3D DefromPosition;
-	aiVector3D Normal;
-	aiVector3D DefromNormal;
-
-	std::string BoneName[4];
-	float BoneWeight[4];
-
-	int BoneNum = 0;
-
+	ANIME_VERTEX() {
+		for (char i = 0; i < BONE_NUM; i++)
+		{
+			bone_Index[i] = 0;
+			weight[i] = 0.f;
+		}
+	}
 };
 
 struct BONE
 {
-	XMMATRIX Matrix = XMMatrixIdentity();
-	XMMATRIX AnimationMatrix = XMMatrixIdentity();
-	XMMATRIX OffsetMatrix = XMMatrixIdentity();
+	XMMATRIX Matrix;
+	XMMATRIX AnimationMatrix;
+	XMMATRIX OffsetMatrix;
+
+	BONE() : Matrix(XMMatrixIdentity()), AnimationMatrix(XMMatrixIdentity()), OffsetMatrix(XMMatrixIdentity()) {}
 };
+
+const constexpr UINT BONE_MAX = 256;
+
+const constexpr float ANIMETION_FRAME = 1.f / 60.0f;		// 60FPS
 
 /*** FBXmodelÉNÉâÉX ***/
 class FBXmodel 
@@ -59,12 +61,6 @@ private:
 		ID3D11Buffer* IndexBuffer;
 		int VertexNum;
 		int IndexNum;
-
-		vector<DEFORM_VERTEX*> deform_Vertex;
-	};
-
-	struct MATRIX_BUFFER {
-		XMFLOAT4X4 Bone_Matrix[256];
 	};
 
 	vector<MESH> m_Meshes;
@@ -76,32 +72,29 @@ private:
 	const aiScene* m_Scene;
 
 
-	unordered_map<string, aiQuaternion> m_NodeRotation;
-	unordered_map<string, aiVector3D> m_NodePosition;
+	//unordered_map<string, aiQuaternion> m_NodeRotation;
+	//unordered_map<string, aiVector3D> m_NodePosition;
 	unordered_map<string, UINT> m_BoneIndex;
 
 	unordered_map<string, UINT> m_TextureIdMap;
 
 	unordered_map<UINT, BONE> m_Bone;
-	vector<DEFORM_VERTEX*> m_DeformVertex;
 
 	unique_ptr<ID3D11Buffer, Release> MatrixBuffer;
 
-	XMMATRIX aiMatrixToMatrix(aiMatrix4x4 matrix);
-	aiMatrix4x4 MatrixToaiMatrix(XMMATRIX matrix);
+	void DrawMesh(aiNode* Node, XMMATRIX& Matrix);
+	void CreateBone(aiNode* Node);
+	void UpdateBoneMatrix(aiNode* Node, XMMATRIX Matrix);
+	void SetBoneMatrix(const vector<XMMATRIX>& matrix);
 
 public:
+	FBXmodel() {}
+	~FBXmodel() {}
+
 	void Draw(XMMATRIX &Matrix);
-	void Load(const string& FileName);
+	bool Load(const string& FileName);
 	void UnLoad();
-	//void Update();
-	void DrawMesh(aiNode * Node, XMMATRIX &Matrix);
-	void CreateBone(aiNode * Node);
-	void UpdateBoneMatrix(aiNode* Node, XMMATRIX Matrix);
-
-	void SetBoneMatrix(const XMFLOAT4X4* matrix);
-
-	FBXmodel();
+	void Update(float delta_time);
 	
 };
 

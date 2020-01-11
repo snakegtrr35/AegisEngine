@@ -21,15 +21,13 @@ cbuffer ShadowBuffer : register( b1 )
 
 cbuffer BoneBuffer : register( b5 )
 {
-    //matrix      BoneMatrix[2]           : packoffset(c0);
-    //matrix      BoneMatrixDmmy[253]     : packoffset(c8);
-    //matrix      EndBoneMatrix           : packoffset(c1020);
+    matrix BoneMatrix[2]          : packoffset(c0);
+    matrix BoneMatrixDmmy[253]    : packoffset(c8);
+    matrix EndBoneMatrix          : packoffset(c1020);
     
     // c0 → c1 4バイト
     // c0 → c4 16バイト
     // 4 * 256(ボーンの最大数)
-    
-    float4x4 BoneMatrix[256];
 }
 
 
