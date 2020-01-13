@@ -49,7 +49,7 @@ void SCORE::Draw(void)
 	}
 }
 
-void SCORE::Update(void)
+void SCORE::Update(float delta_time)
 {
 	//if(0 == ( cnt % WaitFrame))
 	if (Flag)

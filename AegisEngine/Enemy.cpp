@@ -3,7 +3,7 @@
 #include	"Enemy.h"
 #include	"Scene.h"
 #include	"manager.h"
-#include	"Bounding.h"
+#include	"Bounding_Aabb.h"
 #include	"Bullet.h"
 #include	"Axis.h"
 #include	"audio_clip.h"
@@ -11,7 +11,7 @@
 
 static void Create_Bullet(XMFLOAT3& position, XMFLOAT3& front);
 
-ENEMY::ENEMY(void)
+ENEMY::ENEMY()
 {
 	Position = XMFLOAT3(3.0f, 1.0f, 3.0f);
 
@@ -43,7 +43,7 @@ ENEMY::ENEMY(void)
 	Aabb = CManager::Get_Scene()->Add_Game_Object<BOUNDING_AABB>(LAYER_NAME::GAMEOBJECT);
 
 	Aabb->Set_Position(Position);
-	Aabb->Set_Radius(XMFLOAT3(0.5f, 0.5f, 0.5f));
+	//Aabb->Set_Radius(XMFLOAT3(0.5f, 0.5f, 0.5f));
 }
 
 ENEMY::~ENEMY()
@@ -51,23 +51,23 @@ ENEMY::~ENEMY()
 	Uninit();
 }
 
-void ENEMY::Init(void)
+void ENEMY::Init()
 {
 }
 
-void ENEMY::Draw(void)
+void ENEMY::Draw()
 {
 	Model->Draw();
 }
 
-void ENEMY::Update(void)
+void ENEMY::Update(float delta_time)
 {
 	// Axis‚ÌXV
 	{
 		XMFLOAT3 pos = Position;
 		XMVECTOR vec;
 
-		PLAYER* player = CManager::Get_Scene()->Get_Game_Object<PLAYER>();
+		PLAYER* player = CManager::Get_Scene()->Get_Game_Object<PLAYER>("player");
 
 		pos.x = player->Get_Position()->x - pos.x;
 		pos.z = player->Get_Position()->z - pos.z;
@@ -109,7 +109,7 @@ void ENEMY::Update(void)
 			XMFLOAT3 pos;
 			XMStoreFloat3(&pos, vec);
 
-			PLAYER* player = CManager::Get_Scene()->Get_Game_Object<PLAYER>();
+			PLAYER* player = CManager::Get_Scene()->Get_Game_Object<PLAYER>("player");
 
 			float r = (Position.x - player->Get_Position()->x) * (Position.x - player->Get_Position()->x) + (Position.z - player->Get_Position()->z) * (Position.z - player->Get_Position()->z);
 			float abr = Date.Lenght * Date.Lenght;

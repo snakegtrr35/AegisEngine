@@ -1,4 +1,5 @@
 #pragma once
+
 #ifndef CAMERA_H
 #define CAMERA_H
 
@@ -20,9 +21,8 @@ private:
 
 	XMVECTOR At;
 
-	static float Lenght;
-
-	float Rotate;
+	static float Lenght_Z;
+	static float Lenght_Y;
 
 	XMFLOAT3 Velocity;
 
@@ -31,6 +31,7 @@ private:
 	float Viewing_Angle;
 
 	static XMMATRIX m_ViewMatrix;
+	static XMMATRIX m_ProjectionMatrix;
 
 	bool MoveEnable;
 	bool RotateEnable;
@@ -38,15 +39,28 @@ private:
 public:
 	void Init() override;
 	void Uninit() override;
-	void Update() override;
+	void Update(float delta_time) override;
 	void Draw() override;
 
-	static CCamera* const Get_Camera();
-	static const XMMATRIX Get_Camera_View();
+	static CCamera* const Get_Camera() {
+		return pCamera;
+	}
+
+	static const XMMATRIX& Get_Camera_View() {
+		return m_ViewMatrix;
+	}
+
+	static const XMMATRIX& Get_Camera_Projection() {
+		return m_ProjectionMatrix;
+	}
 
 	XMVECTOR* const  Get_Front() {
 		return &Front;
 	};
+
+	XMVECTOR* Get_Pos() {
+		return &Pos;
+	}
 
 	XMVECTOR* const  Get_Up() {
 		return &Up;
@@ -60,20 +74,6 @@ public:
 		return &At;
 	};
 
-	const float Get() {
-		return Rotate;
-	};
-
-	void  Set_Lenght(const float lenght) {
-		Lenght = lenght;
-
-		Pos = At - Front * Lenght;
-	};
-
-	const float Get_Lenght() {
-		return Lenght;
-	};
-
 	void  Set_Viewing_Angle(const float viewing_angle) {
 		Viewing_Angle = viewing_angle;
 	};
@@ -81,6 +81,8 @@ public:
 	const float Get_Viewing_Angle() {
 		return Viewing_Angle;
 	};
+
+	bool Get_Visibility(const XMFLOAT3& position);
 
 	void Set_Move_Enable(const bool flag) {
 		MoveEnable = flag;

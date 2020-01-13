@@ -2,14 +2,18 @@
 #include "texture.h"
 #include "Mesh_Field.h"
 
+#include	"manager.h"
+#include	"Scene.h"
+#include	"ShadowMap.h"
+
 MESH_FIELD::MESH_FIELD()
 {
 	VertexArray = nullptr;
 	IndexBuffer = VertexBuffer = nullptr;
-	Texture = nullptr;
+	Texture.reset(nullptr);
 
-	GridSize = XMFLOAT3(2.0f, 0.0f, 2.0f);
-	GridNum = XMINT2(100, 100);
+	GridSize = XMFLOAT3(1.0f, 0.0f, 1.0f);
+	GridNum = XMINT2(10, 10);
 };
 
 void MESH_FIELD::Init()
@@ -129,12 +133,9 @@ void MESH_FIELD::Init()
 	// メモリ解放
 	SAFE_DELETE_ARRAY(indexArray);
 
-	Position = XMFLOAT3(0.0f, 0.0f, 0.0f);
-	Rotation = XMFLOAT3(0.0f, 0.0f, 0.0f);
-	Scaling = XMFLOAT3(1.0f, 1.0f, 1.0f);
-
 	// テクスチャの設定
-	Texture = new TEXTURE();
+	Texture.reset(new TEXTURE());
+	Texture->Set_Texture_Name("field004.png");
 }
 
 void MESH_FIELD::Uninit()
@@ -142,38 +143,108 @@ void MESH_FIELD::Uninit()
 	SAFE_DELETE(VertexArray);
 	SAFE_RELEASE(VertexBuffer);
 	SAFE_RELEASE(IndexBuffer);
-	SAFE_DELETE(Texture);
+
+	Texture.reset(nullptr);
 }
 
-void MESH_FIELD::Update()
+void MESH_FIELD::Update(float delta_time)
 {
 }
 
 void MESH_FIELD::Draw()
 {
-	// 3Dマトリックス設定
+	//if (false == CManager::Get_ShadowMap()->Get_Enable())
 	{
-		XMMATRIX world;
+		// 3Dマトリックス設定
+		{
+			XMMATRIX world;
 
-		world = XMMatrixScaling(Scaling.x, Scaling.y, Scaling.z);																						// 拡大縮小
-		world *= XMMatrixRotationRollPitchYaw(XMConvertToRadians(Rotation.x), XMConvertToRadians(Rotation.y), XMConvertToRadians(Rotation.z));			// 回転
-		world *= XMMatrixTranslation(Position.x, Position.y, Position.z);																				// 移動
-		CRenderer::SetWorldMatrix(&world);
+			float angle = 0.0f;
+			if (CManager::Get_ShadowMap()->Get_Enable())
+			{
+				//angle = 180.0f;
+			}
+
+			world = XMMatrixScaling(Scaling.x, Scaling.y, Scaling.z);																						// 拡大縮小
+			world *= XMMatrixRotationRollPitchYaw(XMConvertToRadians(Rotation.x), XMConvertToRadians(Rotation.y), XMConvertToRadians(Rotation.z + angle));			// 回転
+			world *= XMMatrixTranslation(Position.x, Position.y, Position.z);																				// 移動
+
+			auto camera01 = CManager::Get_Scene()->Get_Game_Object<CCamera>("camera");
+			auto camera02 = CManager::Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
+
+			if (nullptr != camera01)
+			{
+				// シャドウマップ用の描画か?
+				if (CManager::Get_ShadowMap()->Get_Enable())
+				{
+					XMMATRIX view = CManager::Get_ShadowMap()->Get_View();
+					XMMATRIX proj = CManager::Get_ShadowMap()->Get_Plojection();
+
+					CRenderer::Set_MatrixBuffer(world, view, proj);
+
+					CRenderer::Set_Shader(SHADER_INDEX_V::SHADOW_MAP, SHADER_INDEX_P::SHADOW_MAP);
+				}
+				else
+				{
+					CRenderer::Set_MatrixBuffer(world, camera01->Get_Camera_View(), camera01->Get_Camera_Projection());
+
+					CRenderer::Set_MatrixBuffer01(*camera01->Get_Pos());
+
+					if (RENDERING_PASS::GEOMETRY == CRenderer::Get_Rendering_Pass())
+					{
+						CRenderer::Set_Shader(SHADER_INDEX_V::GEOMETRY, SHADER_INDEX_P::GEOMETRY);
+					}
+					else
+					{
+						CRenderer::Set_Shader();
+					}
+				}
+			}
+			else
+			{
+				// シャドウマップ用の描画か?
+				if (CManager::Get_ShadowMap()->Get_Enable())
+				{
+					XMMATRIX view = CManager::Get_ShadowMap()->Get_View();
+					XMMATRIX proj = CManager::Get_ShadowMap()->Get_Plojection();
+
+					CRenderer::Set_MatrixBuffer(world, view, proj);
+
+					CRenderer::Set_Shader(SHADER_INDEX_V::SHADOW_MAP, SHADER_INDEX_P::SHADOW_MAP);
+				}
+				else
+				{
+					CRenderer::Set_MatrixBuffer(world, camera02->Get_Camera_View(), camera02->Get_Camera_Projection());
+
+					CRenderer::Set_MatrixBuffer01(*camera02->Get_Pos());
+
+					if (RENDERING_PASS::GEOMETRY == CRenderer::Get_Rendering_Pass())
+					{
+						CRenderer::Set_Shader(SHADER_INDEX_V::GEOMETRY, SHADER_INDEX_P::GEOMETRY);
+					}
+					else
+					{
+						CRenderer::Set_Shader();
+						CRenderer::Set_Shader(SHADER_INDEX_V::DEFAULT, SHADER_INDEX_P::LIGHT);
+					}
+				}
+			}
+		}
+
+		// 頂点バッファ設定
+		CRenderer::SetVertexBuffers(VertexBuffer);
+
+		// インデックスバッファ設定
+		CRenderer::SetIndexBuffer(IndexBuffer);
+
+		// テクスチャの設定
+		Texture->Set_Texture();
+
+		// トポロジ設定
+		CRenderer::GetDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
+
+		CRenderer::GetDeviceContext()->DrawIndexed(IndexNum, 0, 0);
 	}
-
-	// 頂点バッファ設定
-	CRenderer::SetVertexBuffers(VertexBuffer);
-
-	// インデックスバッファ設定
-	CRenderer::SetIndexBuffer(IndexBuffer);
-
-	// テクスチャの設定
-	Texture->Set_Texture();
-
-	// トポロジ設定
-	CRenderer::GetDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);	
-
-	CRenderer::GetDeviceContext()->DrawIndexed(IndexNum, 0, 0);
 }
 
 const float MESH_FIELD::Get_Height(const XMFLOAT3& position)
@@ -393,35 +464,93 @@ void MESH_WALL::Uninit()
 	SAFE_DELETE(Texture);
 }
 
-void MESH_WALL::Update()
+void MESH_WALL::Update(float delta_time)
 {
 }
 
 void MESH_WALL::Draw()
 {
-	// 3Dマトリックス設定
 	{
-		XMMATRIX world;
+		// 3Dマトリックス設定
+		{
+			XMMATRIX world;
 
-		world = XMMatrixScaling(Scaling.x, Scaling.y, Scaling.z);																						// 拡大縮小
-		world *= XMMatrixRotationRollPitchYaw(XMConvertToRadians(Rotation.x), XMConvertToRadians(Rotation.y), XMConvertToRadians(Rotation.z));			// 回転
-		world *= XMMatrixTranslation(Position.x, Position.y, Position.z);																				// 移動
-		CRenderer::SetWorldMatrix(&world);
+			world = XMMatrixScaling(Scaling.x, Scaling.y, Scaling.z);																						// 拡大縮小
+			world *= XMMatrixRotationRollPitchYaw(XMConvertToRadians(Rotation.x), XMConvertToRadians(Rotation.y), XMConvertToRadians(Rotation.z));			// 回転
+			world *= XMMatrixTranslation(Position.x, Position.y, Position.z);																				// 移動
+
+			auto camera01 = CManager::Get_Scene()->Get_Game_Object<CCamera>("camera");
+			auto camera02 = CManager::Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
+
+			if (nullptr != camera01)
+			{
+				// シャドウマップ用の描画か?
+				if (CManager::Get_ShadowMap()->Get_Enable())
+				{
+					XMMATRIX view = CManager::Get_ShadowMap()->Get_View();
+					XMMATRIX proj = CManager::Get_ShadowMap()->Get_Plojection();
+
+					CRenderer::Set_MatrixBuffer(world, view, proj);
+
+					CRenderer::Set_Shader(SHADER_INDEX_V::SHADOW_MAP, SHADER_INDEX_P::SHADOW_MAP);
+				}
+				else
+				{
+					CRenderer::Set_MatrixBuffer(world, camera01->Get_Camera_View(), camera01->Get_Camera_Projection());
+
+					CRenderer::Set_MatrixBuffer01(*camera02->Get_Pos());
+
+					if (RENDERING_PASS::GEOMETRY != CRenderer::Get_Rendering_Pass())
+					{
+						CRenderer::Set_Shader();
+					}
+				}
+			}
+			else
+			{
+				// シャドウマップ用の描画か?
+				if (CManager::Get_ShadowMap()->Get_Enable())
+				{
+					XMMATRIX view = CManager::Get_ShadowMap()->Get_View();
+					XMMATRIX proj = CManager::Get_ShadowMap()->Get_Plojection();
+
+					CRenderer::Set_MatrixBuffer(world, view, proj);
+
+					CRenderer::Set_Shader(SHADER_INDEX_V::SHADOW_MAP, SHADER_INDEX_P::SHADOW_MAP);
+				}
+				else
+				{
+					CRenderer::Set_MatrixBuffer(world, camera02->Get_Camera_View(), camera02->Get_Camera_Projection());
+
+					CRenderer::Set_MatrixBuffer01(*camera02->Get_Pos());
+
+					if (RENDERING_PASS::GEOMETRY != CRenderer::Get_Rendering_Pass())
+					{
+						CRenderer::Set_Shader();
+					}
+				}
+			}
+		}
+
+		// 頂点バッファ設定
+		CRenderer::SetVertexBuffers(VertexBuffer);
+
+		// インデックスバッファ設定
+		CRenderer::SetIndexBuffer(IndexBuffer);
+
+		// テクスチャの設定
+		Texture->Set_Texture();
+
+		// トポロジ設定
+		CRenderer::GetDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
+
+		CRenderer::GetDeviceContext()->DrawIndexed(IndexNum, 0, 0);
+
+		if (CManager::Get_ShadowMap()->Get_Enable())
+		{
+			CRenderer::Set_Shader();
+		}
 	}
-
-	// 頂点バッファ設定
-	CRenderer::SetVertexBuffers(VertexBuffer);
-
-	// インデックスバッファ設定
-	CRenderer::SetIndexBuffer(IndexBuffer);
-
-	// テクスチャの設定
-	Texture->Set_Texture();
-
-	// トポロジ設定
-	CRenderer::GetDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
-
-	CRenderer::GetDeviceContext()->DrawIndexed(IndexNum, 0, 0);
 }
 
 const float MESH_WALL::Get_Height(const XMFLOAT3& position)

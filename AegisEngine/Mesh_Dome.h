@@ -3,7 +3,10 @@
 //  スカイドーム [skydome.h]
 //
 //***********************************************************************************************
-#pragma once	// インクルードガード
+#pragma once
+
+#ifndef MESH_DOOM_H
+#define	MESH_DOOM_H
 
 #include	"Game_Object.h"
 
@@ -24,12 +27,37 @@ private:
 	unique_ptr<TEXTURE> Texture;						// テクスチャ
 
 public:
-	MESH_DOOM() :Radius(500.0f) {};
-	~MESH_DOOM() {};
+	MESH_DOOM() : Radius(500.0f) {}
+	~MESH_DOOM() {}
 
-	void Init();
-	void Uninit();
-	void Update();
-	void Draw();
+	void Init() override;
+	void Uninit() override;
+	void Update(float delta_time) override;
+	void Draw() override;
 
+	template<typename Archive>
+	void serialize(Archive& ar)
+	{
+		ar(cereal::base_class<GAME_OBJECT>(this));
+		ar(Texture);
+	}
+
+	//template<class Archive>
+	//void save(Archive& ar) const
+	//{
+	//	ar(cereal::base_class<GAME_OBJECT>(this));
+	//	ar(Texture);
+	//}
+
+	//template<class Archive>
+	//void load(Archive& ar)
+	//{
+	//	ar(cereal::base_class<GAME_OBJECT>(this));
+	//	ar(Texture);
+	//}
 };
+
+CEREAL_REGISTER_TYPE(MESH_DOOM)
+CEREAL_REGISTER_POLYMORPHIC_RELATION(GAME_OBJECT, MESH_DOOM)
+
+#endif // !MESH_DOOM_H

@@ -4,226 +4,79 @@
 #include "texture.h"
 #include <io.h>
 
+#include	"manager.h"
 
-D3D_FEATURE_LEVEL       CRenderer::m_FeatureLevel = D3D_FEATURE_LEVEL_11_0;
+D3D_FEATURE_LEVEL			CRenderer::m_FeatureLevel = D3D_FEATURE_LEVEL_11_0;
 
-ID3D11Device*           CRenderer::m_D3DDevice = nullptr;
-ID3D11DeviceContext*    CRenderer::m_ImmediateContext = nullptr;
-IDXGISwapChain*         CRenderer::m_SwapChain = nullptr;
-ID3D11RenderTargetView* CRenderer::m_RenderTargetView = nullptr;
-ID3D11DepthStencilView* CRenderer::m_DepthStencilView = nullptr;
+ID3D11Device*				CRenderer::m_D3DDevice = nullptr;
+ID3D11DeviceContext*		CRenderer::m_ImmediateContext = nullptr;
+IDXGIDevice1*				CRenderer::m_dxgiDev = nullptr;
+IDXGISwapChain1*			CRenderer::m_SwapChain = nullptr;//
+ID3D11RenderTargetView*		CRenderer::m_RenderTargetView = nullptr;
+ID3D11DepthStencilView*		CRenderer::m_DepthStencilView = nullptr;
+ID2D1Device*				CRenderer::m_D2DDevice = nullptr;
+ID2D1DeviceContext*			CRenderer::m_D2DDeviceContext = nullptr;
+ID2D1Bitmap1*				CRenderer::m_D2DTargetBitmap = nullptr;
+
+IDWriteTextFormat*			CRenderer::m_DwriteTextFormat = nullptr;
+IDWriteTextLayout*			CRenderer::m_TextLayout = nullptr;
+
+IDWriteFactory*				CRenderer::m_DwriteFactory = nullptr;
+
+ID3D11VertexShader*			CRenderer::m_VertexShader[4] = { nullptr };
+ID3D11PixelShader*			CRenderer::m_PixelShader[6] = { nullptr };
+ID3D11InputLayout*			CRenderer::m_VertexLayout[2] = { nullptr };
+ID3D11Buffer*				CRenderer::m_MaterialBuffer = nullptr;
+ID3D11Buffer*				CRenderer::m_LightBuffer = nullptr;
+
+ID3D11Buffer*				CRenderer::m_Bone_Matrix_Buffer = nullptr;
+
+ID3D11DepthStencilState*	CRenderer::m_DepthStateEnable = nullptr;
+ID3D11DepthStencilState*	CRenderer::m_DepthStateDisable = nullptr;
+ID3D11RasterizerState*		CRenderer::m_RasterizerState = nullptr;
+
+bool CRenderer::Stand_By_Enable = false;
 
 
+ID3D11Buffer*	CRenderer::m_ConstantBuffer;//
+ID3D11Buffer* CRenderer::m_ConstantBuffer_02;
 
-ID3D11VertexShader*		CRenderer::m_VertexShader[3] = { nullptr };
-ID3D11PixelShader*      CRenderer::m_PixelShader[2] = { nullptr };
-ID3D11InputLayout*      CRenderer::m_VertexLayout = nullptr;
-ID3D11Buffer*			CRenderer::m_WorldBuffer = nullptr;
-ID3D11Buffer*			CRenderer::m_ViewBuffer = nullptr;
-ID3D11Buffer*			CRenderer::m_ProjectionBuffer = nullptr;
-ID3D11Buffer*			CRenderer::m_MaterialBuffer = nullptr;
-ID3D11Buffer*			CRenderer::m_LightBuffer = nullptr;
+unique_ptr<ID3D11RenderTargetView, Release>			CRenderer::RenderTargetView[3];
+unique_ptr<ID3D11ShaderResourceView, Release>		CRenderer::ShaderResourceView[3];
 
-ID3D11Buffer* CRenderer::m_Bone_Matrix_Buffer = nullptr;
+// ライト
+LIGHT CRenderer::m_Light;//
 
-
-ID3D11DepthStencilState* CRenderer::m_DepthStateEnable;
-ID3D11DepthStencilState* CRenderer::m_DepthStateDisable;
-
-
-// 自前
-ID3D11RenderTargetView*			CRenderer::My_RenderTargetView = nullptr;
-ID3D11ShaderResourceView*		CRenderer::My_ShaderResourceView = nullptr;
-
-D3D11_INPUT_ELEMENT_DESC CRenderer::animation_layout[6];
+RENDERING_PASS CRenderer::Pass;
 
 bool CRenderer::Init()
 {
 	HRESULT hr = S_OK;
 
-	// デバイス、スワップチェーン、コンテキスト生成
-	DXGI_SWAP_CHAIN_DESC sd;
-	ZeroMemory( &sd, sizeof( sd ) );
-	sd.BufferCount = 1;
-	sd.BufferDesc.Width = SCREEN_WIDTH;
-	sd.BufferDesc.Height = SCREEN_HEIGHT;
-	sd.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
-	sd.BufferDesc.RefreshRate.Numerator = 60;
-	sd.BufferDesc.RefreshRate.Denominator = 1;
-	sd.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
-	sd.OutputWindow = GetWindow();
-	sd.SampleDesc.Count = 1;
-	sd.SampleDesc.Quality = 0;
-	sd.Windowed = TRUE;
-
-	hr = D3D11CreateDeviceAndSwapChain( NULL,
-										D3D_DRIVER_TYPE_HARDWARE,
-										NULL,
-										0,
-										NULL,
-										0,
-										D3D11_SDK_VERSION,
-										&sd,
-										&m_SwapChain,
-										&m_D3DDevice,
-										&m_FeatureLevel,
-										&m_ImmediateContext );
-
-	if (FAILED(hr))
+	if (false == Init3D())
 	{
-		FAILDE_ASSERT;
 		return false;
 	}
 
-	// レンダーターゲットビュー生成、設定
-	ID3D11Texture2D* pBackBuffer = NULL;
-	m_SwapChain->GetBuffer( 0, __uuidof( ID3D11Texture2D ), ( LPVOID* )&pBackBuffer );
-	hr = m_D3DDevice->CreateRenderTargetView( pBackBuffer, NULL, &m_RenderTargetView );
-	if (FAILED(hr))
+	if (false == Init2D())
 	{
-		FAILDE_ASSERT;
-		return false;
-	}
-	pBackBuffer->Release();
-
-
-
-	//ステンシル用テクスチャー作成
-	ID3D11Texture2D* depthTexture = NULL;
-	D3D11_TEXTURE2D_DESC td;
-	ZeroMemory( &td, sizeof(td) );
-	td.Width			= sd.BufferDesc.Width;
-	td.Height			= sd.BufferDesc.Height;
-	td.MipLevels		= 1;
-	td.ArraySize		= 1;
-	td.Format			= DXGI_FORMAT_D24_UNORM_S8_UINT;
-	td.SampleDesc		= sd.SampleDesc;
-	td.Usage			= D3D11_USAGE_DEFAULT;
-	td.BindFlags		= D3D11_BIND_DEPTH_STENCIL;
-	td.CPUAccessFlags	= 0;
-	td.MiscFlags		= 0;
-	hr = m_D3DDevice->CreateTexture2D( &td, NULL, &depthTexture );
-	if (FAILED(hr))
-	{
-		FAILDE_ASSERT;
 		return false;
 	}
 
-	//ステンシルターゲット作成
-	D3D11_DEPTH_STENCIL_VIEW_DESC dsvd;
-	ZeroMemory( &dsvd, sizeof(dsvd) );
-	dsvd.Format			= td.Format;
-	dsvd.ViewDimension	= D3D11_DSV_DIMENSION_TEXTURE2D;
-	dsvd.Flags			= 0;
-	hr = m_D3DDevice->CreateDepthStencilView( depthTexture, &dsvd, &m_DepthStencilView );
-	if (FAILED(hr))
+	if (false == Create())
 	{
-		FAILDE_ASSERT;
 		return false;
 	}
-
-	m_ImmediateContext->OMSetRenderTargets( 1, &m_RenderTargetView, m_DepthStencilView );
-
-	// ビューポート設定
-	D3D11_VIEWPORT vp;
-	vp.Width = (FLOAT)SCREEN_WIDTH;
-	vp.Height = (FLOAT)SCREEN_HEIGHT;
-	vp.MinDepth = 0.0f;
-	vp.MaxDepth = 1.0f;
-	vp.TopLeftX = 0;
-	vp.TopLeftY = 0;
-	m_ImmediateContext->RSSetViewports( 1, &vp );
-
-
-
-	// ラスタライザステート設定
-	D3D11_RASTERIZER_DESC rd; 
-	ZeroMemory( &rd, sizeof( rd ) );
-	rd.FillMode = D3D11_FILL_SOLID;
-	//rd.CullMode = D3D11_CULL_NONE;
-	rd.CullMode = D3D11_CULL_BACK;
-	rd.DepthClipEnable = TRUE; 
-	rd.MultisampleEnable = FALSE; 
-
-	ID3D11RasterizerState *rs;
-	m_D3DDevice->CreateRasterizerState( &rd, &rs );
-
-	m_ImmediateContext->RSSetState( rs );
-
-
-
-
-	// ブレンドステート設定
-	D3D11_BLEND_DESC blendDesc;
-	ZeroMemory( &blendDesc, sizeof( blendDesc ) );
-	blendDesc.AlphaToCoverageEnable = FALSE;
-	blendDesc.IndependentBlendEnable = FALSE;
-	blendDesc.RenderTarget[0].BlendEnable = TRUE;
-	blendDesc.RenderTarget[0].SrcBlend = D3D11_BLEND_SRC_ALPHA;
-	blendDesc.RenderTarget[0].DestBlend = D3D11_BLEND_INV_SRC_ALPHA;
-	blendDesc.RenderTarget[0].BlendOp = D3D11_BLEND_OP_ADD;
-	blendDesc.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_ONE;
-	blendDesc.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ZERO;
-	blendDesc.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
-	blendDesc.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
-
-	float blendFactor[4] = {0.0f, 0.0f, 0.0f, 0.0f};
-	ID3D11BlendState* blendState = NULL;
-	m_D3DDevice->CreateBlendState( &blendDesc, &blendState );
-	m_ImmediateContext->OMSetBlendState( blendState, blendFactor, 0xffffffff );
-
-
-
-	// 深度ステンシルステート設定
-	D3D11_DEPTH_STENCIL_DESC depthStencilDesc;
-	ZeroMemory( &depthStencilDesc, sizeof( depthStencilDesc ) );
-	depthStencilDesc.DepthEnable = TRUE;
-	depthStencilDesc.DepthWriteMask	= D3D11_DEPTH_WRITE_MASK_ALL;
-	depthStencilDesc.DepthFunc = D3D11_COMPARISON_LESS_EQUAL;
-	depthStencilDesc.StencilEnable = FALSE;
-
-	hr = m_D3DDevice->CreateDepthStencilState( &depthStencilDesc, &m_DepthStateEnable );//深度有効ステート
-	if (FAILED(hr))
-	{
-		FAILDE_ASSERT;
-		return false;
-	}
-
-	//depthStencilDesc.DepthEnable = FALSE;
-	//depthStencilDesc.DepthWriteMask	= D3D11_DEPTH_WRITE_MASK_ZERO;
-	//m_D3DDevice->CreateDepthStencilState( &depthStencilDesc, &m_DepthStateDisable );//深度無効ステート
-
-	m_ImmediateContext->OMSetDepthStencilState( m_DepthStateEnable, NULL );
-
-
-
-	// サンプラーステート設定
-	D3D11_SAMPLER_DESC samplerDesc;
-	ZeroMemory( &samplerDesc, sizeof( samplerDesc ) );
-	samplerDesc.Filter = D3D11_FILTER_ANISOTROPIC;
-	samplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
-	samplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
-	samplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
-	samplerDesc.MipLODBias = 0;
-	samplerDesc.MaxAnisotropy = 16;
-	samplerDesc.ComparisonFunc = D3D11_COMPARISON_ALWAYS;
-	samplerDesc.MinLOD = 0;
-	samplerDesc.MaxLOD = D3D11_FLOAT32_MAX;
-
-	ID3D11SamplerState* samplerState = NULL;
-	m_D3DDevice->CreateSamplerState( &samplerDesc, &samplerState );
-
-	m_ImmediateContext->PSSetSamplers( 0, 1, &samplerState );
 
 	// 頂点シェーダ生成
 	{
 		// 入力レイアウト生成
 		D3D11_INPUT_ELEMENT_DESC layout[] =
 		{
-			{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-			{ "NORMAL",   0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 4 * 3, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-			{ "COLOR",    0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 4 * 6, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-			{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 4 * 10, D3D11_INPUT_PER_VERTEX_DATA, 0 }
+			{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT,    0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+			{ "NORMAL",   0, DXGI_FORMAT_R32G32B32_FLOAT,    0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+			{ "COLOR",    0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+			{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT,       0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 }
 		};
 		UINT numElements = ARRAYSIZE(layout);
 
@@ -243,16 +96,30 @@ bool CRenderer::Init()
 				numElements,
 				buffer,
 				fsize,
-				&m_VertexLayout);
+				&m_VertexLayout[0]);
 
 			delete[] buffer;
 		}
+	}
+
+	// 頂点シェーダ生成 シャドウマップ
+	{
+		// 入力レイアウト生成
+		D3D11_INPUT_ELEMENT_DESC layout[] =
+		{
+			{ "POSITION",	0, DXGI_FORMAT_R32G32B32_FLOAT,		0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+			{ "NORMAL",		0, DXGI_FORMAT_R32G32B32_FLOAT,		0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+			{ "COLOR",		0, DXGI_FORMAT_R32G32B32A32_FLOAT,	0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+			{ "TEXCOORD",	0, DXGI_FORMAT_R32G32_FLOAT,		0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 }
+		};
+
+		UINT numElements = ARRAYSIZE(layout);
 
 		{
 			FILE* file;
 			long int fsize;
 
-			file = fopen("vertexShader_No_Light.cso", "rb");
+			file = fopen("VertexShader_ShadowMap.cso", "rb");
 			fsize = _filelength(_fileno(file));
 			unsigned char* buffer = new unsigned char[fsize];
 			fread(buffer, fsize, 1, file);
@@ -260,55 +127,79 @@ bool CRenderer::Init()
 
 			m_D3DDevice->CreateVertexShader(buffer, fsize, NULL, &m_VertexShader[1]);
 
-			m_D3DDevice->CreateInputLayout(layout,
+			delete[] buffer;
+		}
+	}
+
+	// 頂点シェーダ生成 アニメーション
+	{
+		// 入力レイアウト生成
+		D3D11_INPUT_ELEMENT_DESC animation_layout[] =
+		{
+			{ "POSITION",	 0, DXGI_FORMAT_R32G32B32_FLOAT,	0, D3D11_APPEND_ALIGNED_ELEMENT,	D3D11_INPUT_PER_VERTEX_DATA, 0 },
+			{ "NORMAL",		 0, DXGI_FORMAT_R32G32B32_FLOAT,	0, D3D11_APPEND_ALIGNED_ELEMENT,	D3D11_INPUT_PER_VERTEX_DATA, 0 },
+			{ "COLOR",		 0, DXGI_FORMAT_R32G32B32A32_FLOAT,	0, D3D11_APPEND_ALIGNED_ELEMENT,	D3D11_INPUT_PER_VERTEX_DATA, 0 },
+			{ "TEXCOORD",	 0, DXGI_FORMAT_R32G32_FLOAT,		0, D3D11_APPEND_ALIGNED_ELEMENT,	D3D11_INPUT_PER_VERTEX_DATA, 0 },
+			{ "BLENDINDICE", 0, DXGI_FORMAT_R32G32B32A32_UINT,	0, D3D11_APPEND_ALIGNED_ELEMENT,	D3D11_INPUT_PER_VERTEX_DATA, 0 },
+			{ "BLENDWEIGHT", 0, DXGI_FORMAT_R32G32B32A32_FLOAT,	0, D3D11_APPEND_ALIGNED_ELEMENT,	D3D11_INPUT_PER_VERTEX_DATA, 0 }
+		};
+
+		UINT numElements = ARRAYSIZE(animation_layout);
+
+		{
+			FILE* file;
+			long int fsize;
+
+			file = fopen("VertexShader_Animation.cso", "rb");
+			fsize = _filelength(_fileno(file));
+			unsigned char* buffer = new unsigned char[fsize];
+			fread(buffer, fsize, 1, file);
+			fclose(file);
+
+			m_D3DDevice->CreateVertexShader(buffer, fsize, NULL, &m_VertexShader[2]);
+
+			m_D3DDevice->CreateInputLayout(animation_layout,
 				numElements,
 				buffer,
 				fsize,
-				&m_VertexLayout);
+				&m_VertexLayout[1]);
 
 			delete[] buffer;
 		}
 	}
 
-	//// 頂点シェーダ生成 アニメーション
-	//{
-	//	// 入力レイアウト生成
-	//	D3D11_INPUT_ELEMENT_DESC animation_layout[] =
-	//	{
-	//		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-	//		{ "NORMAL",   0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 4 * 3, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-	//		{ "COLOR",    0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 4 * 6, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-	//		{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 4 * 10, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-	//		{ "BLENDINDICE", 0, DXGI_FORMAT_R32G32B32A32_UINT, 0, 4 * 12, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-	//		{ "BLENDWEIGHT", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 4 * 16, D3D11_INPUT_PER_VERTEX_DATA, 0 }
-	//	};
+	// 頂点シェーダ生成 GBuffer生成
+	{
+		// 入力レイアウト生成
+		D3D11_INPUT_ELEMENT_DESC layout[] =
+		{
+			{ "POSITION",	0, DXGI_FORMAT_R32G32B32_FLOAT,		0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+			{ "NORMAL",		0, DXGI_FORMAT_R32G32B32_FLOAT,		0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+			{ "COLOR",		0, DXGI_FORMAT_R32G32B32A32_FLOAT,	0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+			{ "TEXCOORD",	0, DXGI_FORMAT_R32G32_FLOAT,		0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 }
+		};
 
-	//	UINT numElements = ARRAYSIZE(animation_layout);
+		UINT numElements = ARRAYSIZE(layout);
 
-	//	{
-	//		FILE* file;
-	//		long int fsize;
+		{
+			FILE* file;
+			long int fsize;
 
-	//		file = fopen("AnimationShader.cso", "rb");
-	//		fsize = _filelength(_fileno(file));
-	//		unsigned char* buffer = new unsigned char[fsize];
-	//		fread(buffer, fsize, 1, file);
-	//		fclose(file);
+			file = fopen("VertexShader_Geometry.cso", "rb");
+			fsize = _filelength(_fileno(file));
+			unsigned char* buffer = new unsigned char[fsize];
+			fread(buffer, fsize, 1, file);
+			fclose(file);
 
-	//		m_D3DDevice->CreateVertexShader(buffer, fsize, NULL, &m_VertexShader[2]);
+			m_D3DDevice->CreateVertexShader(buffer, fsize, NULL, &m_VertexShader[3]);
 
-	//		m_D3DDevice->CreateInputLayout(animation_layout,
-	//			numElements,
-	//			buffer,
-	//			fsize,
-	//			&m_VertexLayout);
-
-	//		delete[] buffer;
-	//	}
-	//}
+			delete[] buffer;
+		}
+	}
 
 	// ピクセルシェーダ生成
 	{
+		// 標準
 		{
 			FILE* file;
 			long int fsize;
@@ -324,6 +215,7 @@ bool CRenderer::Init()
 			delete[] buffer;
 		}
 
+		// テクスチャなし
 		{
 			FILE* file;
 			long int fsize;
@@ -338,96 +230,571 @@ bool CRenderer::Init()
 
 			delete[] buffer;
 		}
+
+		// ライティングなし
+		{
+			FILE* file;
+			long int fsize;
+
+			file = fopen("pixelShader_No_Light.cso", "rb");
+			fsize = _filelength(_fileno(file));
+			unsigned char* buffer = new unsigned char[fsize];
+			fread(buffer, fsize, 1, file);
+			fclose(file);
+
+			m_D3DDevice->CreatePixelShader(buffer, fsize, NULL, &m_PixelShader[2]);
+
+			delete[] buffer;
+		}
+
+		// シャドウマップ
+		{
+			FILE* file;
+			long int fsize;
+
+			file = fopen("PixelShader_ShadowMap.cso", "rb");
+			fsize = _filelength(_fileno(file));
+			unsigned char* buffer = new unsigned char[fsize];
+			fread(buffer, fsize, 1, file);
+			fclose(file);
+
+			m_D3DDevice->CreatePixelShader(buffer, fsize, NULL, &m_PixelShader[3]);
+
+			delete[] buffer;
+		}
+
+		// GBuffer生成
+		{
+			FILE* file;
+			long int fsize;
+
+			file = fopen("PixelShader_Geometry.cso", "rb");
+			fsize = _filelength(_fileno(file));
+			unsigned char* buffer = new unsigned char[fsize];
+			fread(buffer, fsize, 1, file);
+			fclose(file);
+
+			m_D3DDevice->CreatePixelShader(buffer, fsize, NULL, &m_PixelShader[4]);
+
+			delete[] buffer;
+		}
+
+		// クラスター
+		{
+			FILE* file;
+			long int fsize;
+
+			file = fopen("PixelShader_Created.cso", "rb");
+			fsize = _filelength(_fileno(file));
+			unsigned char* buffer = new unsigned char[fsize];
+			fread(buffer, fsize, 1, file);
+			fclose(file);
+
+			m_D3DDevice->CreatePixelShader(buffer, fsize, NULL, &m_PixelShader[5]);
+
+			delete[] buffer;
+		}
 	}
 
 	// 定数バッファ生成
 	D3D11_BUFFER_DESC hBufferDesc;
-	hBufferDesc.ByteWidth = sizeof(XMMATRIX);
 	hBufferDesc.Usage = D3D11_USAGE_DEFAULT;
 	hBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
 	hBufferDesc.CPUAccessFlags = 0;
 	hBufferDesc.MiscFlags = 0;
 	hBufferDesc.StructureByteStride = sizeof(float);
 
-	m_D3DDevice->CreateBuffer( &hBufferDesc, NULL, &m_WorldBuffer );
-	m_ImmediateContext->VSSetConstantBuffers( 0, 1, &m_WorldBuffer);
-
-	m_D3DDevice->CreateBuffer( &hBufferDesc, NULL, &m_ViewBuffer );
-	m_ImmediateContext->VSSetConstantBuffers( 1, 1, &m_ViewBuffer );
-
-	m_D3DDevice->CreateBuffer( &hBufferDesc, NULL, &m_ProjectionBuffer );
-	m_ImmediateContext->VSSetConstantBuffers( 2, 1, &m_ProjectionBuffer );
-
 	hBufferDesc.ByteWidth = sizeof(MATERIAL);
 
-	m_D3DDevice->CreateBuffer( &hBufferDesc, NULL, &m_MaterialBuffer );
-	m_ImmediateContext->VSSetConstantBuffers( 3, 1, &m_MaterialBuffer );
+	m_D3DDevice->CreateBuffer(&hBufferDesc, NULL, &m_MaterialBuffer);
+	m_ImmediateContext->VSSetConstantBuffers(3, 1, &m_MaterialBuffer);
+	m_ImmediateContext->PSSetConstantBuffers(3, 1, &m_MaterialBuffer);
 
 	hBufferDesc.ByteWidth = sizeof(LIGHT);
 
 	m_D3DDevice->CreateBuffer(&hBufferDesc, NULL, &m_LightBuffer);
-	m_ImmediateContext->VSSetConstantBuffers( 4, 1, &m_LightBuffer );
+	m_ImmediateContext->VSSetConstantBuffers(4, 1, &m_LightBuffer);
+	m_ImmediateContext->PSSetConstantBuffers(4, 1, &m_LightBuffer);
 
-	//{
-	//	// 定数バッファ生成
-	//	D3D11_BUFFER_DESC hBufferDesc;
-	//	hBufferDesc.ByteWidth = sizeof(XMMATRIX) * 256;
-	//	hBufferDesc.Usage = D3D11_USAGE_DEFAULT;
-	//	hBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-	//	hBufferDesc.CPUAccessFlags = 0;
-	//	hBufferDesc.MiscFlags = 0;
-	//	hBufferDesc.StructureByteStride = sizeof(float);
+	hBufferDesc.ByteWidth = sizeof(CONSTANT);
+	m_D3DDevice->CreateBuffer(&hBufferDesc, NULL, &m_ConstantBuffer);
+	m_ImmediateContext->VSSetConstantBuffers(0, 1, &m_ConstantBuffer);
+	m_ImmediateContext->PSSetConstantBuffers(0, 1, &m_ConstantBuffer);
 
-	//	m_D3DDevice->CreateBuffer(&hBufferDesc, NULL, &m_Bone_Matrix_Buffer);
-	//	m_ImmediateContext->VSSetConstantBuffers(0, 1, &m_Bone_Matrix_Buffer);
+	hBufferDesc.ByteWidth = sizeof(CONSTANT_02);
+	m_D3DDevice->CreateBuffer(&hBufferDesc, NULL, &m_ConstantBuffer_02);
+	m_ImmediateContext->VSSetConstantBuffers(5, 1, &m_ConstantBuffer_02);
+	m_ImmediateContext->PSSetConstantBuffers(5, 1, &m_ConstantBuffer_02);
 
-	//}
+	/*{
+		// 定数バッファ生成
+		D3D11_BUFFER_DESC hBufferDesc;
+		hBufferDesc.ByteWidth = sizeof(XMMATRIX) * 128;
+		hBufferDesc.StructureByteStride = sizeof(float);
+
+		m_D3DDevice->CreateBuffer(&hBufferDesc, NULL, &m_Bone_Matrix_Buffer);
+		m_ImmediateContext->VSSetConstantBuffers(0, 1, &m_Bone_Matrix_Buffer);
+	}*/
 
 	// 入力レイアウト設定
-	m_ImmediateContext->IASetInputLayout( m_VertexLayout );
+	m_ImmediateContext->IASetInputLayout(m_VertexLayout[0]);
 
 	// シェーダ設定
-	m_ImmediateContext->VSSetShader( m_VertexShader[0], NULL, 0 );
-	m_ImmediateContext->PSSetShader( m_PixelShader[0], NULL, 0 );
+	m_ImmediateContext->VSSetShader(m_VertexShader[0], NULL, 0);
+	m_ImmediateContext->PSSetShader(m_PixelShader[0], NULL, 0);
 
 	// ライト初期化
-	LIGHT light;
-	light.Direction = XMFLOAT4(0.0f, 0.0f, 1.0f, 0.0f);
-	light.Diffuse = COLOR(1.2f, 1.2f, 1.2f, 1.0f);
-	light.Ambient = COLOR(0.2f, 0.2f, 0.2f, 1.0f);
-	SetLight(&light);
+	ZeroMemory(&m_Light, sizeof(m_Light));
+	m_Light.Direction = XMFLOAT4(-10.0f, -10.0f, 10.0f, 0.0f);
+
+	m_Light.Position = XMFLOAT4(10.0f, 10.0f, -10.0f, 0.0f);
+	m_Light.Diffuse = COLOR(1.0f, 1.0f, 1.0f, 1.0f);
+	m_Light.Ambient = COLOR(1.0f, 1.0f, 1.0f, 1.0f);
+	m_Light.Specular = COLOR(1.0f, 1.0f, 1.0f, 1.0f);
+	SetLight(&m_Light);
 
 	// マテリアル初期化
 	MATERIAL material;
-	ZeroMemory( &material, sizeof(material) );
-	material.Diffuse = COLOR( 1.0f, 1.0f, 1.0f, 1.0f );
-	material.Ambient = COLOR( 1.0f, 1.0f, 1.0f, 1.0f );
-	SetMaterial( material );
+	ZeroMemory(&material, sizeof(material));
+	material.Diffuse = COLOR(1.0f, 1.0f, 1.0f, 1.0f);
+	material.Ambient = COLOR(0.5f, 0.5f, 0.5f, 1.0f);
+	material.Specular = COLOR(1.0f, 1.0f, 1.0f, 1.0f);
+	SetMaterial(material);
+
 
 	return true;
 }
 
 void CRenderer::Uninit()
 {
-	// オブジェクト解放
-	SAFE_RELEASE(m_WorldBuffer);
-	SAFE_RELEASE(m_ViewBuffer);
-	SAFE_RELEASE(m_ProjectionBuffer);
+	{
+		BOOL FullScreen = FALSE;
+		if (nullptr != m_SwapChain)
+		{
+			m_SwapChain->GetFullscreenState(&FullScreen, NULL);
 
+			// フルスクリーンのとき
+			if (FullScreen == TRUE)
+			{
+				m_SwapChain->SetFullscreenState(FALSE, NULL);
+			}
+		}
+	}
+
+	// オブジェクト解放
 	SAFE_RELEASE(m_MaterialBuffer);
-	SAFE_RELEASE(m_VertexLayout);
+	SAFE_RELEASE(m_LightBuffer);
+
+	SAFE_RELEASE(m_VertexLayout[0]);
+	SAFE_RELEASE(m_VertexLayout[1]);
 
 	SAFE_RELEASE(m_VertexShader[0]);
-	SAFE_RELEASE(m_PixelShader[0]);
-
 	SAFE_RELEASE(m_VertexShader[1]);
-	SAFE_RELEASE(m_PixelShader[1]);
+	SAFE_RELEASE(m_VertexShader[2]);
+	SAFE_RELEASE(m_VertexShader[3]);
 
-	SAFE_RELEASE(m_ImmediateContext);
-	SAFE_RELEASE(m_RenderTargetView);
-	SAFE_RELEASE(m_SwapChain);
-	SAFE_RELEASE(m_ImmediateContext);
-	SAFE_RELEASE(m_D3DDevice);
+	SAFE_RELEASE(m_PixelShader[0]);
+	SAFE_RELEASE(m_PixelShader[1]);
+	SAFE_RELEASE(m_PixelShader[2]);
+	SAFE_RELEASE(m_PixelShader[3]);
+	SAFE_RELEASE(m_PixelShader[4]);
+	SAFE_RELEASE(m_PixelShader[5]);
+
+	SAFE_RELEASE(m_RenderTargetView)
+	SAFE_RELEASE(m_SwapChain)
+	SAFE_RELEASE(m_ImmediateContext)
+	SAFE_RELEASE(m_D3DDevice)
+
+	SAFE_RELEASE(m_DwriteFactory)
+	SAFE_RELEASE(m_TextLayout)
+	SAFE_RELEASE(m_DwriteTextFormat)
+	SAFE_RELEASE(m_D2DDevice)
+	SAFE_RELEASE(m_D2DDeviceContext)
+	SAFE_RELEASE(m_dxgiDev)
+
+	SAFE_RELEASE(m_ConstantBuffer);
+
+	SAFE_RELEASE(m_ConstantBuffer_02);
+}
+
+bool CRenderer::Init3D()
+{
+	HRESULT hr = S_OK;
+
+	// デバイス、スワップチェーン、コンテキスト生成
+	DXGI_SWAP_CHAIN_DESC1 sc;
+	ZeroMemory(&sc, sizeof(sc));
+
+	sc.Width = SCREEN_WIDTH;
+	sc.Height = SCREEN_HEIGHT;
+	sc.Format = DXGI_FORMAT_B8G8R8A8_UNORM;
+	// スケール方法
+	sc.Scaling = DXGI_SCALING_STRETCH;
+	// 立体視
+	sc.Stereo = 0;
+	// 半透明モード
+	sc.AlphaMode = DXGI_ALPHA_MODE_UNSPECIFIED;
+	// 使用方法
+	sc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
+	sc.BufferCount = 1;
+	// 描画後のバッファの扱い
+	sc.SwapEffect = DXGI_SWAP_EFFECT_SEQUENTIAL;
+	// MSAA
+	sc.SampleDesc.Count = 1;	// MSAA用 2 4 8 が使用可能(多分これだけ)
+	sc.SampleDesc.Quality = 0;
+	// フラグ
+	sc.Flags = DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH; // 解像度変更が有効
+
+	// フラグ
+	UINT d3dFlags = D3D11_CREATE_DEVICE_BGRA_SUPPORT; // BGRA テクスチャ有効(Direct2Dには必ず必要)
+
+	// Direct3Dの作成
+	hr = D3D11CreateDevice(
+		nullptr, D3D_DRIVER_TYPE_HARDWARE, 0, d3dFlags,
+		&m_FeatureLevel, 1, D3D11_SDK_VERSION,
+		&m_D3DDevice, nullptr, &m_ImmediateContext);
+	if (FAILED(hr))
+	{
+		FAILDE_ASSERT;
+		return false;
+	}
+
+	//// MSAA用
+	//for (int i = 1; i <= D3D11_MAX_MULTISAMPLE_SAMPLE_COUNT; i <<= 1)
+	//{
+	//	UINT Quality;
+	//	if (SUCCEEDED(m_D3DDevice->CheckMultisampleQualityLevels(DXGI_FORMAT_D24_UNORM_S8_UINT, i, &Quality)))
+	//	{
+	//		if (0 < Quality)
+	//		{
+	//			sc.SampleDesc.Count = i;
+	//			sc.SampleDesc.Quality = Quality - 1;
+	//		}
+	//	}
+	//}
+
+	// DXGIデバイスの作成
+	hr = m_D3DDevice->QueryInterface<IDXGIDevice1>(&m_dxgiDev);
+	if (FAILED(hr))
+	{
+		FAILDE_ASSERT;
+		return false;
+	}
+
+	// キューに格納されていく描画コマンドをスワップ時に全てフラッシュする
+	m_dxgiDev->SetMaximumFrameLatency(1);
+
+	// DXGIアダプタ（GPU）の取得
+	IDXGIAdapter* adapter = nullptr;
+	hr = m_dxgiDev->GetAdapter(&adapter);
+	if (FAILED(hr))
+	{
+		FAILDE_ASSERT;
+		return false;
+	}
+
+	// DXGIのファクトリの作成
+	IDXGIFactory2* factory = nullptr;
+	hr = adapter->GetParent(IID_PPV_ARGS(&factory));
+	adapter->Release();
+	if (FAILED(hr))
+	{
+		FAILDE_ASSERT;
+		return false;
+	}
+
+	// スワップチェインをHWNDから作成
+	hr = factory->CreateSwapChainForHwnd(m_D3DDevice, GetWindow(),
+		&sc, nullptr, nullptr, &m_SwapChain);
+	factory->Release();
+	if (FAILED(hr))
+	{
+		FAILDE_ASSERT;
+		return false;
+	}
+
+	// レンダーターゲットの取得（D3D11）
+	ID3D11Texture2D* pBackBuffer = nullptr;
+	hr = m_SwapChain->GetBuffer(0, IID_PPV_ARGS(&pBackBuffer));
+	if (FAILED(hr))
+	{
+		FAILDE_ASSERT;
+		return false;
+	}
+
+	// レンダーターゲットビューの作成
+	hr = m_D3DDevice->CreateRenderTargetView(pBackBuffer, nullptr, &m_RenderTargetView);
+	if (FAILED(hr))
+	{
+		FAILDE_ASSERT;
+		return false;
+	}
+
+
+	//ステンシル用テクスチャー作成
+	ID3D11Texture2D* depthTexture = nullptr;
+	D3D11_TEXTURE2D_DESC td;
+	ZeroMemory(&td, sizeof(td));
+	td.Width = sc.Width;
+	td.Height = sc.Height;
+	td.MipLevels = 1;
+	td.ArraySize = 1;
+	td.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
+	td.SampleDesc = sc.SampleDesc;
+	td.Usage = D3D11_USAGE_DEFAULT;
+	td.BindFlags = D3D11_BIND_DEPTH_STENCIL;
+	td.CPUAccessFlags = 0;
+	td.MiscFlags = 0;
+	hr = m_D3DDevice->CreateTexture2D(&td, NULL, &depthTexture);
+	if (FAILED(hr))
+	{
+		FAILDE_ASSERT;
+		return false;
+	}
+
+	//ステンシルターゲット作成
+	D3D11_DEPTH_STENCIL_VIEW_DESC dsvd;
+	ZeroMemory(&dsvd, sizeof(dsvd));
+	dsvd.Format = td.Format;
+	dsvd.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
+	//dsvd.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2DMS;		// MSAA用
+	dsvd.Flags = 0;
+	hr = m_D3DDevice->CreateDepthStencilView(depthTexture, &dsvd, &m_DepthStencilView);
+	if (FAILED(hr))
+	{
+		FAILDE_ASSERT;
+		return false;
+	}
+
+	m_ImmediateContext->OMSetRenderTargets(1, &m_RenderTargetView, m_DepthStencilView);
+
+
+
+	// ビューポート設定
+	D3D11_VIEWPORT vp;
+	vp.Width = (FLOAT)SCREEN_WIDTH;
+	vp.Height = (FLOAT)SCREEN_HEIGHT;
+	vp.MinDepth = 0.0f;
+	vp.MaxDepth = 1.0f;
+	vp.TopLeftX = 0;
+	vp.TopLeftY = 0;
+	m_ImmediateContext->RSSetViewports(1, &vp);
+
+
+
+	// ラスタライザステート設定
+	D3D11_RASTERIZER_DESC rd;
+	ZeroMemory(&rd, sizeof(rd));
+	rd.FillMode = D3D11_FILL_SOLID;
+	//rd.FillMode = D3D11_FILL_WIREFRAME;
+	//rd.CullMode = D3D11_CULL_NONE;
+	rd.CullMode = D3D11_CULL_BACK;
+	rd.DepthClipEnable = TRUE;
+	rd.MultisampleEnable = FALSE;
+
+	m_D3DDevice->CreateRasterizerState(&rd, &m_RasterizerState);
+
+	m_ImmediateContext->RSSetState(m_RasterizerState);
+
+
+
+	// ブレンドステート設定
+	D3D11_BLEND_DESC blendDesc;
+	ZeroMemory(&blendDesc, sizeof(blendDesc));
+	blendDesc.AlphaToCoverageEnable = FALSE;
+	blendDesc.IndependentBlendEnable = FALSE;
+
+	for (char i = 0; i < 3; i++)
+	{
+		blendDesc.RenderTarget[i].BlendEnable = TRUE;
+		blendDesc.RenderTarget[i].SrcBlend = D3D11_BLEND_SRC_ALPHA;
+		blendDesc.RenderTarget[i].DestBlend = D3D11_BLEND_INV_SRC_ALPHA;
+		blendDesc.RenderTarget[i].BlendOp = D3D11_BLEND_OP_ADD;
+		blendDesc.RenderTarget[i].SrcBlendAlpha = D3D11_BLEND_ONE;
+		blendDesc.RenderTarget[i].DestBlendAlpha = D3D11_BLEND_ZERO;
+		blendDesc.RenderTarget[i].BlendOpAlpha = D3D11_BLEND_OP_ADD;
+		blendDesc.RenderTarget[i].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
+	}
+
+	float blendFactor[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
+	ID3D11BlendState* blendState = NULL;
+	m_D3DDevice->CreateBlendState(&blendDesc, &blendState);
+	m_ImmediateContext->OMSetBlendState(blendState, blendFactor, 0xffffffff);
+
+
+
+	// 深度ステンシルステート設定
+	D3D11_DEPTH_STENCIL_DESC depthStencilDesc;
+	ZeroMemory(&depthStencilDesc, sizeof(depthStencilDesc));
+	depthStencilDesc.DepthEnable = TRUE;
+	depthStencilDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
+	depthStencilDesc.DepthFunc = D3D11_COMPARISON_LESS_EQUAL;
+	depthStencilDesc.StencilEnable = FALSE;
+
+	hr = m_D3DDevice->CreateDepthStencilState(&depthStencilDesc, &m_DepthStateEnable);//深度有効ステート
+	if (FAILED(hr))
+	{
+		FAILDE_ASSERT;
+		return false;
+	}
+
+	depthStencilDesc.DepthEnable = FALSE;
+	depthStencilDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ZERO;
+	m_D3DDevice->CreateDepthStencilState(&depthStencilDesc, &m_DepthStateDisable);//深度無効ステート
+
+	m_ImmediateContext->OMSetDepthStencilState(m_DepthStateEnable, NULL);
+
+
+
+	// サンプラーステート設定
+	D3D11_SAMPLER_DESC samplerDesc;
+	ZeroMemory(&samplerDesc, sizeof(samplerDesc));
+	samplerDesc.Filter = D3D11_FILTER_ANISOTROPIC;
+	samplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
+	samplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
+	samplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
+	samplerDesc.MipLODBias = 0;
+	samplerDesc.MaxAnisotropy = 16;
+	samplerDesc.ComparisonFunc = D3D11_COMPARISON_ALWAYS;
+	samplerDesc.MinLOD = 0;
+	samplerDesc.MaxLOD = D3D11_FLOAT32_MAX;
+
+	ID3D11SamplerState* samplerState = nullptr;
+	m_D3DDevice->CreateSamplerState(&samplerDesc, &samplerState);
+
+	m_ImmediateContext->PSSetSamplers(0, 1, &samplerState);
+
+	return true;
+}
+
+bool CRenderer::Init2D()
+{
+	HRESULT hr = S_OK;
+
+	// Direct2Dのファクトリーの作成
+	ID2D1Factory1* d2dFactory = nullptr;
+	hr = D2D1CreateFactory(
+		D2D1_FACTORY_TYPE_SINGLE_THREADED,
+		__uuidof(ID2D1Factory1),
+		nullptr,
+		reinterpret_cast<void**>(&d2dFactory));
+	if (FAILED(hr))
+	{
+		FAILDE_ASSERT;
+		return false;
+	}
+
+
+	// Direct2Dデバイスの作成
+	hr = d2dFactory->CreateDevice(m_dxgiDev, &m_D2DDevice);
+	d2dFactory->Release();
+	if (FAILED(hr))
+	{
+		FAILDE_ASSERT;
+		return false;
+	}
+
+	// Direct2Dデバイスコンテクストの作成
+	hr = m_D2DDevice->CreateDeviceContext(
+		D2D1_DEVICE_CONTEXT_OPTIONS_ENABLE_MULTITHREADED_OPTIMIZATIONS,
+		&m_D2DDeviceContext);
+	if (FAILED(hr))
+	{
+		FAILDE_ASSERT;
+		return false;
+	}
+
+	// DPIの取得
+	float dx, dy;
+	m_D2DDeviceContext->GetDpi(&dx, &dy);
+
+	// レンダーターゲットの取得（DXGI）
+	IDXGISurface* surf = nullptr;
+	hr = m_SwapChain->GetBuffer(0, IID_PPV_ARGS(&surf));
+	if (FAILED(hr))
+	{
+		FAILDE_ASSERT;
+		return false;
+	}
+
+	// Direct2Dの描画先となるビットマップを作成
+	D2D1_BITMAP_PROPERTIES1 d2dProp =
+		D2D1::BitmapProperties1(
+			D2D1_BITMAP_OPTIONS_TARGET | D2D1_BITMAP_OPTIONS_CANNOT_DRAW,
+			D2D1::PixelFormat(DXGI_FORMAT_B8G8R8A8_UNORM, D2D1_ALPHA_MODE_PREMULTIPLIED),
+			dx,
+			dy);
+
+	hr = m_D2DDeviceContext->CreateBitmapFromDxgiSurface(
+		surf, &d2dProp, &m_D2DTargetBitmap);
+	surf->Release();
+	if (FAILED(hr))
+	{
+		FAILDE_ASSERT;
+		return false;
+	}
+
+	// 描画するDirect2Dビットマップの設定
+	m_D2DDeviceContext->SetTarget(m_D2DTargetBitmap);
+
+	// DirectWriteのファクトリの作成
+	hr = DWriteCreateFactory(
+		DWRITE_FACTORY_TYPE_SHARED,
+		__uuidof(m_DwriteFactory),
+		reinterpret_cast<IUnknown**>(&m_DwriteFactory));
+	if (FAILED(hr))
+	{
+		FAILDE_ASSERT;
+		return false;
+	}
+
+	// テキストフォーマットの作成
+	{
+		TEXT_FOMAT fomat;
+		fomat.FontName = "メイリオ";
+
+		hr = Create_TextFormat(fomat);
+
+		if (FAILED(hr))
+		{
+			FAILDE_ASSERT;
+			return false;
+		}
+	}
+
+	// テキストレイアウトを作成
+	{
+		TEXT_LAYOUT layout;
+		layout.Text = "Hello HELL World!!!\n地球の未来にご奉仕するにゃん！";
+		layout.Width = 400;
+		layout.Height = 50;
+
+		hr = Create_TextLayout(layout);
+
+		if (FAILED(hr))
+		{
+			FAILDE_ASSERT;
+			return false;
+		}
+	}
+
+	// 文字の位置の設定
+	hr = m_DwriteTextFormat->SetTextAlignment(DWRITE_TEXT_ALIGNMENT_CENTER);
+	if (FAILED(hr))
+	{
+		FAILDE_ASSERT;
+		return false;
+	}
+
+	// パラグラフの指定
+	hr = m_DwriteTextFormat->SetParagraphAlignment(DWRITE_PARAGRAPH_ALIGNMENT_NEAR);
+	if (FAILED(hr))
+	{
+		FAILDE_ASSERT;
+		return false;
+	}
+
+	return true;
 }
 
 void CRenderer::SetBlendState(D3D11_BLEND_DESC* blend_state, bool flag)
@@ -436,7 +803,7 @@ void CRenderer::SetBlendState(D3D11_BLEND_DESC* blend_state, bool flag)
 	{
 		// ブレンドステート設定
 		float blendFactor[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
-		ID3D11BlendState* blendState = NULL;
+		ID3D11BlendState* blendState = nullptr;
 		m_D3DDevice->CreateBlendState(blend_state, &blendState);
 		m_ImmediateContext->OMSetBlendState(blendState, blendFactor, 0xffffffff);
 	}
@@ -447,17 +814,20 @@ void CRenderer::SetBlendState(D3D11_BLEND_DESC* blend_state, bool flag)
 		ZeroMemory(&blendDesc, sizeof(blendDesc));
 		blendDesc.AlphaToCoverageEnable = FALSE;
 		blendDesc.IndependentBlendEnable = FALSE;
-		blendDesc.RenderTarget[0].BlendEnable = TRUE;
-		blendDesc.RenderTarget[0].SrcBlend = D3D11_BLEND_SRC_ALPHA;
-		blendDesc.RenderTarget[0].DestBlend = D3D11_BLEND_INV_SRC_ALPHA;
-		blendDesc.RenderTarget[0].BlendOp = D3D11_BLEND_OP_ADD;
-		blendDesc.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_ONE;
-		blendDesc.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ZERO;
-		blendDesc.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
-		blendDesc.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
+		for (char i = 0; i < 3; i++)
+		{
+			blendDesc.RenderTarget[i].BlendEnable = TRUE;
+			blendDesc.RenderTarget[i].SrcBlend = D3D11_BLEND_SRC_ALPHA;
+			blendDesc.RenderTarget[i].DestBlend = D3D11_BLEND_INV_SRC_ALPHA;
+			blendDesc.RenderTarget[i].BlendOp = D3D11_BLEND_OP_ADD;
+			blendDesc.RenderTarget[i].SrcBlendAlpha = D3D11_BLEND_ONE;
+			blendDesc.RenderTarget[i].DestBlendAlpha = D3D11_BLEND_ZERO;
+			blendDesc.RenderTarget[i].BlendOpAlpha = D3D11_BLEND_OP_ADD;
+			blendDesc.RenderTarget[i].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
+		}
 
 		float blendFactor[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
-		ID3D11BlendState* blendState = NULL;
+		ID3D11BlendState* blendState = nullptr;
 		m_D3DDevice->CreateBlendState(&blendDesc, &blendState);
 		m_ImmediateContext->OMSetBlendState(blendState, blendFactor, 0xffffffff);
 	}
@@ -468,14 +838,17 @@ void CRenderer::GetAddBlendState(D3D11_BLEND_DESC& blend_state)
 {
 	blend_state.AlphaToCoverageEnable = FALSE;
 	blend_state.IndependentBlendEnable = FALSE;
-	blend_state.RenderTarget[0].BlendEnable = TRUE;
-	blend_state.RenderTarget[0].SrcBlend = D3D11_BLEND_INV_SRC_ALPHA;
-	blend_state.RenderTarget[0].DestBlend = D3D11_BLEND_ONE;
-	blend_state.RenderTarget[0].BlendOp = D3D11_BLEND_OP_ADD;
-	blend_state.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_ONE;
-	blend_state.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ZERO;
-	blend_state.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
-	blend_state.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
+	for (char i = 0; i < 3; i++)
+	{
+		blend_state.RenderTarget[i].BlendEnable = TRUE;
+		blend_state.RenderTarget[i].SrcBlend = D3D11_BLEND_INV_SRC_ALPHA;
+		blend_state.RenderTarget[i].DestBlend = D3D11_BLEND_ONE;
+		blend_state.RenderTarget[i].BlendOp = D3D11_BLEND_OP_ADD;
+		blend_state.RenderTarget[i].SrcBlendAlpha = D3D11_BLEND_ONE;
+		blend_state.RenderTarget[i].DestBlendAlpha = D3D11_BLEND_ZERO;
+		blend_state.RenderTarget[i].BlendOpAlpha = D3D11_BLEND_OP_ADD;
+		blend_state.RenderTarget[i].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
+	}
 }
 
 // 減算合成用ブレンド ステートのためのを設定を取得する
@@ -483,14 +856,17 @@ void CRenderer::GetSubtractBlendState(D3D11_BLEND_DESC& blend_state)
 {
 	blend_state.AlphaToCoverageEnable = FALSE;
 	blend_state.IndependentBlendEnable = FALSE;
-	blend_state.RenderTarget[0].BlendEnable = TRUE;
-	blend_state.RenderTarget[0].SrcBlend = D3D11_BLEND_SRC_ALPHA;
-	blend_state.RenderTarget[0].DestBlend = D3D11_BLEND_ONE;
-	blend_state.RenderTarget[0].BlendOp = D3D11_BLEND_OP_REV_SUBTRACT;
-	blend_state.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_ZERO;
-	blend_state.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ONE;
-	blend_state.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
-	blend_state.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
+	for (char i = 0; i < 3; i++)
+	{
+		blend_state.RenderTarget[i].BlendEnable = TRUE;
+		blend_state.RenderTarget[i].SrcBlend = D3D11_BLEND_SRC_ALPHA;
+		blend_state.RenderTarget[i].DestBlend = D3D11_BLEND_ONE;
+		blend_state.RenderTarget[i].BlendOp = D3D11_BLEND_OP_REV_SUBTRACT;
+		blend_state.RenderTarget[i].SrcBlendAlpha = D3D11_BLEND_ZERO;
+		blend_state.RenderTarget[i].DestBlendAlpha = D3D11_BLEND_ONE;
+		blend_state.RenderTarget[i].BlendOpAlpha = D3D11_BLEND_OP_ADD;
+		blend_state.RenderTarget[i].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
+	}
 }
 
 // 2D用のブレンド ステートのためのを設定を取得する
@@ -498,17 +874,33 @@ void CRenderer::Get2DBlendState(D3D11_BLEND_DESC& blend_state)
 {
 	blend_state.AlphaToCoverageEnable = FALSE;
 	blend_state.IndependentBlendEnable = FALSE;
-	blend_state.RenderTarget[0].BlendEnable = TRUE;
-	blend_state.RenderTarget[0].SrcBlend = D3D11_BLEND_INV_SRC_ALPHA;
-	blend_state.RenderTarget[0].DestBlend = D3D11_BLEND_ONE;
-	blend_state.RenderTarget[0].BlendOp = D3D11_BLEND_OP_ADD;
-	blend_state.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_ONE;
-	blend_state.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ZERO;
-	blend_state.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
-	blend_state.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
+	for (char i = 0; i < 3; i++)
+	{
+		blend_state.RenderTarget[i].BlendEnable = TRUE;
+		blend_state.RenderTarget[i].SrcBlend = D3D11_BLEND_INV_SRC_ALPHA;
+		blend_state.RenderTarget[i].DestBlend = D3D11_BLEND_ONE;
+		blend_state.RenderTarget[i].BlendOp = D3D11_BLEND_OP_ADD;
+		blend_state.RenderTarget[i].SrcBlendAlpha = D3D11_BLEND_ONE;
+		blend_state.RenderTarget[i].DestBlendAlpha = D3D11_BLEND_ZERO;
+		blend_state.RenderTarget[i].BlendOpAlpha = D3D11_BLEND_OP_ADD;
+		blend_state.RenderTarget[i].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
+	}
 }
 
+void CRenderer::Change_Window_Mode()
+{
+	BOOL FullScreen;
 
+	// GetFullscreenState
+	m_SwapChain->GetFullscreenState(&FullScreen, NULL);
+
+	// SetFullscreenState
+	m_SwapChain->SetFullscreenState(!FullScreen, NULL);
+
+	// 初期起動をフルスクリーンモードにした場合、ウィンドウモードに変更すると
+	// ウィンドウがアクティブにならないので表示させる。
+	ShowWindow(GetWindow(), SW_SHOW);
+}
 
 void CRenderer::Begin()
 {
@@ -516,11 +908,58 @@ void CRenderer::Begin()
 	float ClearColor[4] = { 0.5f, 0.5f, 0.5f, 1.0f };
 	m_ImmediateContext->ClearRenderTargetView( m_RenderTargetView, ClearColor );
 	m_ImmediateContext->ClearDepthStencilView( m_DepthStencilView, D3D11_CLEAR_DEPTH, 1.0f, 0);
+
+	Pass = RENDERING_PASS::GEOMETRY;
 }
 
 void CRenderer::End()
 {
-	m_SwapChain->Present( 0, 0 );
+	if (false == Stand_By_Enable)
+	{
+		// 描画する
+	 	HRESULT hr = m_SwapChain->Present(0, 0);
+
+		if (DXGI_STATUS_OCCLUDED == hr)
+		{
+			Stand_By_Enable = true;		// スタンバイモードに入る
+			return;
+		}
+
+		// デバイスの消失
+		{
+			hr = m_D3DDevice->GetDeviceRemovedReason();
+
+			switch (hr)
+			{
+				case S_OK:
+					break;
+
+				// リセット
+				case DXGI_ERROR_DEVICE_HUNG:
+				case DXGI_ERROR_DEVICE_RESET:
+					CManager::GameEnd();
+					break;
+
+				// エラー 終了
+				case DXGI_ERROR_DEVICE_REMOVED:
+				case DXGI_ERROR_DRIVER_INTERNAL_ERROR:
+				case DXGI_ERROR_INVALID_CALL:
+				default:
+					CManager::GameEnd();
+					break;
+			}
+		}
+	}
+	else
+	{
+		// 描画しない
+		HRESULT hr = m_SwapChain->Present(0, DXGI_PRESENT_TEST);
+
+		if (DXGI_STATUS_OCCLUDED != hr)
+		{
+			Stand_By_Enable = false;		// スタンバイモードを解除する
+		}
+	}
 }
 
 void CRenderer::SetDepthEnable( bool Enable )
@@ -534,43 +973,39 @@ void CRenderer::SetDepthEnable( bool Enable )
 //==============================
 // Scaling : 拡大縮小の値
 //==============================
-void CRenderer::SetWorldViewProjection2D(const XMFLOAT3& scaling)
+void CRenderer::SetWorldViewProjection2D(const XMFLOAT3& scaling, const XMFLOAT3& rotation)
 {
-	XMMATRIX world;
-	world = XMMatrixIdentity();
+	XMMATRIX world = XMMatrixIdentity();
 
 	world = XMMatrixScaling(scaling.x, scaling.y, 1.0f);
+	world *= XMMatrixRotationRollPitchYaw(XMConvertToRadians(rotation.x), XMConvertToRadians(rotation.y), XMConvertToRadians(rotation.z));
 
-	m_ImmediateContext->UpdateSubresource(m_WorldBuffer, 0, NULL, &XMMatrixTranspose(world), 0, 0);
+	//m_ImmediateContext->UpdateSubresource(m_WorldBuffer, 0, NULL, &XMMatrixTranspose(world), 0, 0);
 
 	XMMATRIX view;
 	view = XMMatrixIdentity();
-	m_ImmediateContext->UpdateSubresource(m_ViewBuffer, 0, NULL, &XMMatrixTranspose(view), 0, 0);
+	//m_ImmediateContext->UpdateSubresource(m_ViewBuffer, 0, NULL, &XMMatrixTranspose(view), 0, 0);
 
 	XMMATRIX projection;
 	projection = XMMatrixOrthographicOffCenterLH(0.0f, SCREEN_WIDTH, SCREEN_HEIGHT, 0.0f, 0.0f, 1.0f);
-	m_ImmediateContext->UpdateSubresource(m_ProjectionBuffer, 0, NULL, &XMMatrixTranspose(projection), 0, 0);
+	//m_ImmediateContext->UpdateSubresource(m_ProjectionBuffer, 0, NULL, &XMMatrixTranspose(projection), 0, 0);
+
+	CONSTANT constant;
+	constant.WorldMatrix = XMMatrixTranspose(world);
+	constant.ViewMatrix = XMMatrixTranspose(view);
+	constant.ProjectionMatrix = XMMatrixTranspose(projection);
+
+	CRenderer::GetDeviceContext()->UpdateSubresource(m_ConstantBuffer, 0, NULL, &constant, 0, 0);
 }
 
-void CRenderer::SetWorldMatrix( XMMATRIX *WorldMatrix )
+void CRenderer::Set_MatrixBuffer(const XMMATRIX world, const XMMATRIX view, const XMMATRIX projection)
 {
-	XMMATRIX world;
-	world = *WorldMatrix;
-	m_ImmediateContext->UpdateSubresource(m_WorldBuffer, 0, NULL, &XMMatrixTranspose(world), 0, 0);
-}
+	CONSTANT constant;
+	constant.WorldMatrix = XMMatrixTranspose(world);
+	constant.ViewMatrix = XMMatrixTranspose(view);
+	constant.ProjectionMatrix = XMMatrixTranspose(projection);
 
-void CRenderer::SetViewMatrix( XMMATRIX *ViewMatrix )
-{
-	XMMATRIX view;
-	view = *ViewMatrix;
-	m_ImmediateContext->UpdateSubresource(m_ViewBuffer, 0, NULL, &XMMatrixTranspose(view), 0, 0);
-}
-
-void CRenderer::SetProjectionMatrix( XMMATRIX *ProjectionMatrix )
-{
-	XMMATRIX projection;
-	projection = *ProjectionMatrix;
-	m_ImmediateContext->UpdateSubresource(m_ProjectionBuffer, 0, NULL, &XMMatrixTranspose(projection), 0, 0);
+	CRenderer::GetDeviceContext()->UpdateSubresource(m_ConstantBuffer, 0, NULL, &constant, 0, 0);
 }
 
 void CRenderer::SetMaterial( MATERIAL Material )
@@ -580,6 +1015,12 @@ void CRenderer::SetMaterial( MATERIAL Material )
 
 void CRenderer::SetLight(LIGHT* Light)
 {
+	XMVECTOR vec = XMLoadFloat4(&Light->Direction);
+
+	vec = XMVector4Normalize(vec);
+
+	XMStoreFloat4(&Light->Direction, vec);
+
 	m_ImmediateContext->UpdateSubresource(m_LightBuffer, 0, NULL, Light, 0, 0);
 }
 
@@ -588,10 +1029,52 @@ void CRenderer::Light_Identity()
 	// ライト初期化
 	LIGHT light;
 	light.Direction = XMFLOAT4(0.0f, 0.0f, 1.0f, 0.0f);
-	light.Diffuse = COLOR(1.2f, 1.2f, 1.2f, 1.0f);
-	light.Ambient = COLOR(0.2f, 0.2f, 0.2f, 1.0f);
+	light.Diffuse = COLOR(1.0f, 1.0f, 1.0f, 1.0f);
+	light.Ambient = COLOR(0.5f, 0.5f, 0.5f, 1.0f);
+	light.Specular = COLOR(1.0f, 1.0f, 1.0f, 1.0f);
 
 	m_ImmediateContext->UpdateSubresource(m_LightBuffer, 0, NULL, &light, 0, 0);
+}
+
+void CRenderer::Set_RasterizerState()
+{
+	m_ImmediateContext->RSSetState(m_RasterizerState);
+}
+
+HRESULT CRenderer::Create_TextFormat(const TEXT_FOMAT& fomat)
+{
+	SAFE_RELEASE(m_DwriteTextFormat)
+
+	wstring font_name = stringTowstring(fomat.FontName);
+
+	// テキストフォーマットの作成
+	HRESULT hr = m_DwriteFactory->CreateTextFormat(
+		font_name.c_str(), nullptr,
+		fomat.Weight, fomat.Style, fomat.Stretch,
+		fomat.FontSize, L"", &m_DwriteTextFormat);
+
+	return hr;
+}
+
+HRESULT CRenderer::Create_TextLayout(const TEXT_LAYOUT& layout)
+{
+	SAFE_RELEASE(m_TextLayout)
+
+	// テキストレイアウトを作成
+	wstring drawText;
+
+	drawText = stringTowstring(layout.Text);
+
+	HRESULT hr = m_DwriteFactory->CreateTextLayout(
+		drawText.c_str(),
+		drawText.size(),
+		m_DwriteTextFormat,
+		layout.Width,
+		layout.Height,
+		&m_TextLayout
+	);
+
+	return hr;
 }
 
 void CRenderer::SetVertexBuffers( ID3D11Buffer* VertexBuffer )
@@ -607,12 +1090,6 @@ void CRenderer::SetIndexBuffer( ID3D11Buffer* IndexBuffer )
 	m_ImmediateContext->IASetIndexBuffer( IndexBuffer, DXGI_FORMAT_R16_UINT, 0 );
 }
 
-//void CRenderer::SetTexture( CTexture* Texture )
-//{
-//	ID3D11ShaderResourceView* srv[1] = { Texture->GetShaderResourceView() };
-//	m_ImmediateContext->PSSetShaderResources( 0, 1, srv );
-//}
-
 void CRenderer::DrawIndexed( unsigned int IndexCount, unsigned int StartIndexLocation, int BaseVertexLocation )
 {
 	m_ImmediateContext->IASetPrimitiveTopology( D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST );
@@ -625,11 +1102,19 @@ void CRenderer::Set_Shader(const SHADER_INDEX_V v_index, const SHADER_INDEX_P p_
 	switch ((int)v_index)
 	{
 		case (int)SHADER_INDEX_V::DEFAULT:
-			m_ImmediateContext->VSSetShader(m_VertexShader[0], NULL, 0);
+			m_ImmediateContext->VSSetShader(m_VertexShader[(int)SHADER_INDEX_V::DEFAULT], NULL, 0);
 			break;
 
-		case (int)SHADER_INDEX_V::NO_LIGHT:
-			m_ImmediateContext->VSSetShader(m_VertexShader[1], NULL, 0);
+		case (int)SHADER_INDEX_V::SHADOW_MAP:
+			m_ImmediateContext->VSSetShader(m_VertexShader[(int)SHADER_INDEX_V::SHADOW_MAP], NULL, 0);
+			break;
+
+		case (int)SHADER_INDEX_V::ANIMATION:
+			m_ImmediateContext->VSSetShader(m_VertexShader[(int)SHADER_INDEX_V::ANIMATION], NULL, 0);
+			break;
+
+		case (int)SHADER_INDEX_V::GEOMETRY:
+			m_ImmediateContext->VSSetShader(m_VertexShader[(int)SHADER_INDEX_V::GEOMETRY], NULL, 0);
 			break;
 
 		default:
@@ -639,11 +1124,27 @@ void CRenderer::Set_Shader(const SHADER_INDEX_V v_index, const SHADER_INDEX_P p_
 	switch ((int)p_index)
 	{
 		case (int)SHADER_INDEX_P::DEFAULT:
-			m_ImmediateContext->PSSetShader(m_PixelShader[0], NULL, 0);
+			m_ImmediateContext->PSSetShader(m_PixelShader[(int)SHADER_INDEX_P::DEFAULT], NULL, 0);
 			break;
 
 		case (int)SHADER_INDEX_P::NO_TEXTURE:
-			m_ImmediateContext->PSSetShader(m_PixelShader[1], NULL, 0);
+			m_ImmediateContext->PSSetShader(m_PixelShader[(int)SHADER_INDEX_P::NO_TEXTURE], NULL, 0);
+			break;
+
+		case (int)SHADER_INDEX_P::NO_LIGHT:
+			m_ImmediateContext->PSSetShader(m_PixelShader[(int)SHADER_INDEX_P::NO_LIGHT], NULL, 0);
+			break;
+
+		case (int)SHADER_INDEX_P::SHADOW_MAP:
+			m_ImmediateContext->PSSetShader(m_PixelShader[(int)SHADER_INDEX_P::SHADOW_MAP], NULL, 0);
+			break;
+
+		case (int)SHADER_INDEX_P::GEOMETRY:
+			m_ImmediateContext->PSSetShader(m_PixelShader[(int)SHADER_INDEX_P::GEOMETRY], NULL, 0);
+			break;
+
+		case (int)SHADER_INDEX_P::LIGHT:
+			m_ImmediateContext->PSSetShader(m_PixelShader[(int)SHADER_INDEX_P::LIGHT], NULL, 0);
 			break;
 
 		default:
@@ -651,121 +1152,266 @@ void CRenderer::Set_Shader(const SHADER_INDEX_V v_index, const SHADER_INDEX_P p_
 	}
 }
 
-void CRenderer::CreateRenderTexture(void)
+void CRenderer::Set_InputLayout(const INPUTLAYOUT InputLayout)
 {
-	HRESULT hr;
-
-	// 2次元テクスチャの設定
-	D3D11_TEXTURE2D_DESC texDesc;
-	memset(&texDesc, 0, sizeof(texDesc));
-	texDesc.Usage = D3D11_USAGE_DEFAULT;
-	texDesc.Format = DXGI_FORMAT_R8G8B8A8_TYPELESS;
-	texDesc.BindFlags = D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE;
-	texDesc.Width = SCREEN_WIDTH;
-	texDesc.Height = SCREEN_HEIGHT;
-	texDesc.CPUAccessFlags = 0;
-	texDesc.MipLevels = 1;
-	texDesc.ArraySize = 1;
-	texDesc.SampleDesc.Count = 1;
-	texDesc.SampleDesc.Quality = 0;
-	
-	ID3D11Texture2D* pTex;
-
-	// 2次元テクスチャの生成
-	hr = m_D3DDevice->CreateTexture2D(&texDesc, NULL, &pTex);
-
-	if (FAILED(hr))
+	// 入力レイアウト設定
+	switch ((int)InputLayout)
 	{
-		FAILDE_ASSERT;
-	}
+		case (int)INPUTLAYOUT::DEFAULT:
+			m_ImmediateContext->IASetInputLayout(m_VertexLayout[(int)INPUTLAYOUT::DEFAULT]);
+			break;
 
-	// レンダーターゲットビューの設定
-	D3D11_RENDER_TARGET_VIEW_DESC rtvDesc;
-	memset(&rtvDesc, 0, sizeof(rtvDesc));
-	rtvDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
-	rtvDesc.ViewDimension = D3D11_RTV_DIMENSION_TEXTURE2D;
-	
-	// レンダーターゲットビューの生成
-	hr = m_D3DDevice->CreateRenderTargetView(pTex, &rtvDesc, &My_RenderTargetView);
-	if (FAILED(hr))
-	{
-		FAILDE_ASSERT;
-	}
+		case (int)INPUTLAYOUT::ANIMATION:
+			m_ImmediateContext->IASetInputLayout(m_VertexLayout[(int)INPUTLAYOUT::ANIMATION]);
+			break;
 
-	 // シェーダリソースビューの設定
-	D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc;
-	memset(&srvDesc, 0, sizeof(srvDesc));
-	srvDesc.Format = rtvDesc.Format;
-	srvDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
-	srvDesc.Texture2D.MipLevels = 1;
-	
-	// シェーダリソースビューの生成
-	hr = m_D3DDevice->CreateShaderResourceView(pTex, &srvDesc, &My_ShaderResourceView);
-	if(FAILED(hr))
-	{
-		FAILDE_ASSERT;
+	default:
+		break;
 	}
 }
 
-void CRenderer::SetRenderTargetView(bool flag)
+void CRenderer::CreateRenderTexture() {}
+
+void CRenderer::SetPass_Rendring()
 {
 	float clearColor[4] = { 0.5f, 0.5f, 0.5f, 1.0f };
 
-	if (flag)
-	{
-		//XMFLOAT3 Position = XMFLOAT3(0.0f, 5.0f, 10.0f);
-		//XMFLOAT3 Rotation = XMFLOAT3(0.5f, 0.0f, 0.0f);
-
-		//RECT Viewport;
-		//Viewport.left = 0;
-		//Viewport.top = 0;
-		//Viewport.right = SCREEN_WIDTH;
-		//Viewport.bottom = SCREEN_HEIGHT;
-
-		//XMMATRIX m_ViewMatrix;
-		//XMMATRIX m_InvViewMatrix;
-		//XMMATRIX m_ProjectionMatrix;
-
-		//// ビューポート設定
-		//D3D11_VIEWPORT dxViewport;
-		//dxViewport.Width = (float)(Viewport.right - Viewport.left);
-		//dxViewport.Height = (float)(Viewport.bottom - Viewport.top);
-		//dxViewport.MinDepth = 0.0f;
-		//dxViewport.MaxDepth = 1.0f;
-		//dxViewport.TopLeftX = (float)Viewport.left;
-		//dxViewport.TopLeftY = (float)Viewport.top;
-
-		//CRenderer::GetDeviceContext()->RSSetViewports(1, &dxViewport);
-
-		//// ビューマトリクス設定
-		//m_InvViewMatrix = XMMatrixRotationRollPitchYaw(Rotation.x, Rotation.y, Rotation.z);
-		//m_InvViewMatrix *= XMMatrixTranslation(Position.x, Position.y, Position.z);
-
-		//XMVECTOR det;
-		//m_ViewMatrix = XMMatrixInverse(&det, m_InvViewMatrix);
-
-		//CRenderer::SetViewMatrix(&m_ViewMatrix);
-
-		//// プロジェクションマトリクス設定
-		//m_ProjectionMatrix = XMMatrixPerspectiveFovLH(1.0f, dxViewport.Width / dxViewport.Height, 1.0f, 1000.0f);
-
-		//CRenderer::SetProjectionMatrix(&m_ProjectionMatrix);
-
-		// 自前のレンダーターゲットビューに切り替え
-		m_ImmediateContext->OMSetRenderTargets(1, &My_RenderTargetView, m_DepthStencilView);
-		m_ImmediateContext->ClearRenderTargetView(My_RenderTargetView, clearColor);
-		m_ImmediateContext->ClearDepthStencilView(m_DepthStencilView, D3D11_CLEAR_DEPTH, 1.0f, 0);
-	}
-	else
 	{
 		// デフォルトのレンダーターゲットビューに切り替え
 		m_ImmediateContext->OMSetRenderTargets(1, &m_RenderTargetView, m_DepthStencilView);
 		m_ImmediateContext->ClearRenderTargetView(m_RenderTargetView, clearColor);
-		m_ImmediateContext->ClearDepthStencilView(m_DepthStencilView, D3D11_CLEAR_DEPTH, 1.0f, 0);
+		m_ImmediateContext->ClearDepthStencilView(m_DepthStencilView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
+
+		{
+			// ビューポート設定
+			D3D11_VIEWPORT dxViewport;
+			dxViewport.Width = (float)SCREEN_WIDTH;
+			dxViewport.Height = (float)SCREEN_HEIGHT;
+			dxViewport.MinDepth = 0.0f;
+			dxViewport.MaxDepth = 1.0f;
+			dxViewport.TopLeftX = 0.0f;
+			dxViewport.TopLeftY = 0.0f;
+
+			m_ImmediateContext->RSSetViewports(1, &dxViewport);
+		}
+
+		Set_Shader();
+		Set_RasterizerState();
+
+		Pass = RENDERING_PASS::REDRING;
 	}
 }
 
-ID3D11ShaderResourceView* CRenderer::Get_SRV(void)
+void CRenderer::SetPass_Geometry()
 {
-	return My_ShaderResourceView;
+	float clearColor[4] = { 0.5f, 0.5f, 0.5f, 1.0f };
+
+	{
+		ID3D11RenderTargetView* rtv[3] = { RenderTargetView[0].get(), RenderTargetView[1].get(), RenderTargetView[2].get() };
+
+		// デフォルトのレンダーターゲットビューに切り替え
+		m_ImmediateContext->OMSetRenderTargets(3, rtv, m_DepthStencilView);
+		m_ImmediateContext->ClearRenderTargetView(rtv[0], clearColor);
+		m_ImmediateContext->ClearRenderTargetView(rtv[1], clearColor);
+		m_ImmediateContext->ClearRenderTargetView(rtv[2], clearColor);
+		m_ImmediateContext->ClearDepthStencilView(m_DepthStencilView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
+
+		{
+			// ビューポート設定
+			D3D11_VIEWPORT dxViewport;
+			dxViewport.Width = (float)SCREEN_WIDTH;
+			dxViewport.Height = (float)SCREEN_HEIGHT;
+			dxViewport.MinDepth = 0.0f;
+			dxViewport.MaxDepth = 1.0f;
+			dxViewport.TopLeftX = 0.0f;
+			dxViewport.TopLeftY = 0.0f;
+
+			D3D11_VIEWPORT viewport[3] = { dxViewport, dxViewport, dxViewport };
+
+			m_ImmediateContext->RSSetViewports(3, viewport);
+		}
+
+		Set_Shader(SHADER_INDEX_V::GEOMETRY, SHADER_INDEX_P::GEOMETRY);
+		Set_RasterizerState();
+
+		Pass = RENDERING_PASS::GEOMETRY;
+	}
+}
+
+bool CRenderer::Create()
+{
+	HRESULT hr;
+
+	// デプスバッファの作成
+	{
+		ID3D11Texture2D* pTex = nullptr;
+
+		// テクスチャの作成
+		D3D11_TEXTURE2D_DESC td;
+		td.Width = SCREEN_WIDTH;
+		td.Height = SCREEN_HEIGHT;
+		td.MipLevels = 1;
+		td.ArraySize = 1;
+		td.Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
+		td.SampleDesc.Count = 1;
+		td.SampleDesc.Quality = 0;
+		td.Usage = D3D11_USAGE_DEFAULT;
+		td.BindFlags = D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE;
+		td.CPUAccessFlags = 0;
+		td.MiscFlags = 0;
+
+		hr = m_D3DDevice->CreateTexture2D(&td, nullptr, &pTex);
+		if (FAILED(hr))
+		{
+			FAILDE_ASSERT;
+			return false;
+		}
+
+		// レンダーターゲットビュー設定
+		{
+			ID3D11RenderTargetView* pRtv;
+
+			D3D11_RENDER_TARGET_VIEW_DESC desc;
+			desc.Format = td.Format;
+			desc.ViewDimension = D3D11_RTV_DIMENSION_TEXTURE2D;
+			desc.Texture2D.MipSlice = 0;
+
+			hr = m_D3DDevice->CreateRenderTargetView(pTex, &desc, &pRtv);
+			if (FAILED(hr))
+			{
+				return false;
+			}
+
+			RenderTargetView[0].reset(pRtv);
+		}
+
+		// シェーダーリソースビュー設定
+		{
+			ID3D11ShaderResourceView* srv = nullptr;
+
+			// シェーダーリソースビューの設定
+			D3D11_SHADER_RESOURCE_VIEW_DESC desc;
+			desc.Format = td.Format;
+			desc.ViewDimension = D3D_SRV_DIMENSION_TEXTURE2D;
+			desc.Texture2D.MostDetailedMip = 0;
+			desc.Texture2D.MipLevels = 1;
+
+			hr = m_D3DDevice->CreateShaderResourceView(pTex, &desc, &srv);
+			if (FAILED(hr))
+			{
+				FAILDE_ASSERT;
+				return false;
+			}
+			ShaderResourceView[0].reset(srv);
+		}
+	}
+
+	// アルベドバッファの作成
+	{
+		ID3D11Texture2D* pTex = nullptr;
+
+		// テクスチャの作成
+		D3D11_TEXTURE2D_DESC td;
+		td.Width = SCREEN_WIDTH;
+		td.Height = SCREEN_HEIGHT;
+		td.MipLevels = 1;
+		td.ArraySize = 1;
+		td.Format = DXGI_FORMAT_R16G16B16A16_FLOAT;
+		td.SampleDesc.Count = 1;
+		td.SampleDesc.Quality = 0;
+		td.Usage = D3D11_USAGE_DEFAULT;
+		td.BindFlags = D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE;
+		td.CPUAccessFlags = 0;
+		td.MiscFlags = 0;
+
+		hr = m_D3DDevice->CreateTexture2D(&td, nullptr, &pTex);
+		if (FAILED(hr))
+		{
+			FAILDE_ASSERT;
+			return false;
+		}
+
+		// レンダーターゲットビュー設定
+		{
+			ID3D11RenderTargetView* pRtv;
+
+			hr = m_D3DDevice->CreateRenderTargetView(pTex, nullptr, &pRtv);
+			if (FAILED(hr))
+			{
+				return false;
+			}
+
+			RenderTargetView[1].reset(pRtv);
+		}
+
+		// シェーダーリソースビュー設定
+		{
+			ID3D11ShaderResourceView* srv = nullptr;
+
+			hr = m_D3DDevice->CreateShaderResourceView(pTex, nullptr, &srv);
+			if (FAILED(hr))
+			{
+				FAILDE_ASSERT;
+				return false;
+			}
+			ShaderResourceView[1].reset(srv);
+		}
+	}
+
+	// 法線バッファの作成
+	{
+		ID3D11Texture2D* pTex = nullptr;
+
+		// テクスチャの作成
+		D3D11_TEXTURE2D_DESC td;
+		td.Width = SCREEN_WIDTH;
+		td.Height = SCREEN_HEIGHT;
+		td.MipLevels = 1;
+		td.ArraySize = 1;
+		td.Format = DXGI_FORMAT_R11G11B10_FLOAT;
+		td.SampleDesc.Count = 1;
+		td.SampleDesc.Quality = 0;
+		td.Usage = D3D11_USAGE_DEFAULT;
+		td.BindFlags = D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE;
+		td.CPUAccessFlags = 0;
+		td.MiscFlags = 0;
+
+		hr = m_D3DDevice->CreateTexture2D(&td, nullptr, &pTex);
+		if (FAILED(hr))
+		{
+			FAILDE_ASSERT;
+			return false;
+		}
+
+		// レンダーターゲットビュー設定
+		{
+			ID3D11RenderTargetView* pRtv;
+
+			hr = m_D3DDevice->CreateRenderTargetView(pTex, nullptr, &pRtv);
+			if (FAILED(hr))
+			{
+				return false;
+			}
+
+			RenderTargetView[2].reset(pRtv);
+		}
+
+		// シェーダーリソースビュー設定
+		{
+			ID3D11ShaderResourceView* srv = nullptr;
+
+			hr = m_D3DDevice->CreateShaderResourceView(pTex, nullptr, &srv);
+			if (FAILED(hr))
+			{
+				FAILDE_ASSERT;
+				return false;
+			}
+			ShaderResourceView[2].reset(srv);
+		}
+	}
+}
+
+RENDERING_PASS CRenderer::Get_Rendering_Pass()
+{
+	return Pass;
 }

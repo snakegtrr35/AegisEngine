@@ -32,13 +32,20 @@ enum class SOUND_TAG {
 	MAX_SOUND
 };
 
+#ifdef UNICODE
 typedef struct {
 	wstring Name;
 	SOUND_TAG Tag;
 }SOUND_FILE;
+#else
+typedef struct {
+	string Name;
+	SOUND_TAG Tag;
+}SOUND_FILE;
+#endif // !UNICODE
 
 static const SOUND_FILE g_SoundFiles[] = {
-
+#ifdef UNICODE
 	{ L"asset/sound/BGM_title.wav", SOUND_TAG::BGM },
 	{ L"asset/sound/BGM_menu.wav", SOUND_TAG::BGM },
 	{ L"asset/sound/BGM_battle.wav", SOUND_TAG::BGM },
@@ -49,7 +56,18 @@ static const SOUND_FILE g_SoundFiles[] = {
 	{ L"asset/sound/SE_explosion000.wav", SOUND_TAG::SE },
 	{ L"asset/sound/SE_kettei.wav", SOUND_TAG::SE },
 	{ L"asset/sound/SE_senntaku.wav", SOUND_TAG::SE },
+#else
+	{ "asset/sound/BGM_title.wav", SOUND_TAG::BGM },
+	{ "asset/sound/BGM_menu.wav", SOUND_TAG::BGM },
+	{ "asset/sound/BGM_battle.wav", SOUND_TAG::BGM },
+	{ "asset/sound/BGM_game_clear .wav", SOUND_TAG::BGM },
+	{ "asset/sound/BGM_game_over.wav", SOUND_TAG::BGM },
 
+	{ "asset/sound/SE_shot.wav", SOUND_TAG::SE },
+	{ "asset/sound/SE_explosion000.wav", SOUND_TAG::SE },
+	{ "asset/sound/SE_kettei.wav", SOUND_TAG::SE },
+	{ "asset/sound/SE_senntaku.wav", SOUND_TAG::SE },
+#endif // !UNICODE
 };
 
 // ì«Ç›çûÇ›ÉTÉEÉìÉhêî
@@ -70,17 +88,33 @@ private:
 	int	Length;
 	int	PlayLength;
 
+#ifdef UNICODE
 	wstring Name;
+#else
+	string Name;
+#endif // !UNICODE
+
 	SOUND_TAG Tag;
 
 public:
-	void Load(const wchar_t *FileName);
+
+#ifdef UNICODE
+	Load(const wchar_t* FileName);
+
+	void Set_Name(const wstring& name);
+
+	wstring* const Get_Name()
+#else
+	void Load(const char* FileName);
+
+	void Set_Name(const string& name);
+
+	string* const Get_Name();
+#endif // !UNICODE
+
 	void Unload();
 	void Play(bool Loop=false);
 	void Stop();
-
-	void Set_Name(const wstring& name);
-	wstring* const Get_Name();
 
 	void Set_Tag(const SOUND_TAG tag);
 	const SOUND_TAG Get_Tag();
@@ -93,7 +127,12 @@ public:
 */
 class AUDIO_MANAGER {
 private:
+
+#ifdef UNICODE
 	static map<wstring, CAudioClip*> Sound_Dates;
+#else
+	static map<string, CAudioClip*> Sound_Dates;
+#endif // !UNICODE
 
 	static IXAudio2* Xaudio;
 	static IXAudio2MasteringVoice* MasteringVoice;

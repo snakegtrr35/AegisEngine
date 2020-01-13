@@ -22,8 +22,6 @@ void GAME::Init()
 	// プレイヤー
 	{
 		PLAYER* player = Add_Game_Object<PLAYER>(LAYER_NAME::GAMEOBJECT);
-
-		hp = player->Get_HP();
 	}
 
 	// レティクル画像
@@ -149,7 +147,7 @@ void GAME::Init()
 		hp->SetSize(XMFLOAT4(170, 25, 485, 25));	// HP MAX 655pixel
 		//hp->SetSize(XMFLOAT4(-485, 25, 485, 25));	// HP 0
 
-		hp->SetSize(XMFLOAT4(Lerp(-485.0f, 170.0f, 100.0f, 0.0f, 100.0f), 25, 485, 25));
+		hp->SetSize(XMFLOAT4(LerpEx(-485.0f, 170.0f, 100.0f, 0.0f, 100.0f), 25, 485, 25));
 	}
 
 	// 弾のUI
@@ -230,18 +228,12 @@ void GAME::Init()
 
 void GAME::Draw()
 {
-	for (int i = 0; i < (int)LAYER_NAME::MAX_LAYER; i++)
-	{
-		for (GAME_OBJECT* object : GameObjects[i])
-		{
-			object->Draw();
-		}
-	}
+	SCENE::Draw();
 }
 
-void GAME::Update()
+void GAME::Update(float delta_time)
 {
-	SCENE::Update();
+	SCENE::Update(delta_time);
 
 	// ポーズ画面の切り替え
 	if (KEYBOARD::Trigger_Keyboard(VK_Q))
@@ -363,7 +355,7 @@ void GAME::Update()
 				{
 					if (string("hp") == child.Name)
 					{
-						child.Child->SetSize(XMFLOAT4(Lerp(-485.0f, 170.0f, hp, 0.0f, 100.0f), 25, 485, 25));
+						child.Child->SetSize(XMFLOAT4(LerpEx(-485.0f, 170.0f, hp, 0.0f, 100.0f), 25, 485, 25));
 
 						if (hp <= 50.0f)
 						{
@@ -378,11 +370,6 @@ void GAME::Update()
 				}
 			}
 		}
-
-		PLAYER* player = Get_Game_Object<PLAYER>();
-
-		if(nullptr != player)
-			hp = std::clamp(player->Get_HP(), 0.0f, 100.0f);
 	}
 
 	// 敵

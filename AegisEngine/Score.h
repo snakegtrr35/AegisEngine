@@ -31,7 +31,7 @@ public:
 
 	void Init(void) override;
 	void Draw(void) override;
-	void Update(void) override;
+	void Update(float delta_time) override;
 	void Uninit(void) override;
 
 	void Set_Additional(const unsigned int additional);

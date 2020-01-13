@@ -2,23 +2,25 @@
 #include	"manager.h"
 #include	"resource.h"
 
+#include	"Timer.h"
+
 #ifdef _DEBUG
 // メモリリークのためのインクルード
 #include	<crtdbg.h>
 
-//#define _CRTDBG_MAP_ALLOC
-//#if defined(_DEBUG) && !defined(NEW)
-//#define NEW  ::new(_NORMAL_BLOCK, __FILE__, __LINE__)
-//#else
-//#define NEW  new
-//#endif
+#define _CRTDBG_MAP_ALLOC
+#define new new(_NORMAL_BLOCK, __FILE__, __LINE__)
 
 #endif // _DEBUG
 
 
-
+#ifdef UNICODE
 static const wchar_t* CLASS_NAME = L"DX11AppClass";
 static const wchar_t* WINDOW_NAME = L"AegisEngine";
+#else
+static const char* CLASS_NAME = "DX11AppClass";
+static const char* WINDOW_NAME = "AegisEngine";
+#endif // !UNICODE
 
 LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 
@@ -35,8 +37,6 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 	// メモリリーク検出
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 #endif // _DEBUG
-
-	//_CrtSetBreakAlloc(75842);
 
 	WNDCLASSEX wcex =
 	{
@@ -61,12 +61,14 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 	g_Window = CreateWindowEx(0,
 		CLASS_NAME,
 		WINDOW_NAME,
-		WS_OVERLAPPEDWINDOW | WS_MAXIMIZE,
-		//WS_POPUPWINDOW,
+		//WS_OVERLAPPEDWINDOW | WS_MAXIMIZE,
+		WS_POPUPWINDOW,
 		CW_USEDEFAULT,
 		CW_USEDEFAULT,
-		(SCREEN_WIDTH + GetSystemMetrics(SM_CXDLGFRAME) * 2),
-		(SCREEN_HEIGHT + GetSystemMetrics(SM_CXDLGFRAME) * 2 + GetSystemMetrics(SM_CYCAPTION)),
+		//(SCREEN_WIDTH + GetSystemMetrics(SM_CXDLGFRAME) * 2),
+		SCREEN_WIDTH + 2,
+		//(SCREEN_HEIGHT + GetSystemMetrics(SM_CXDLGFRAME) * 2 + GetSystemMetrics(SM_CYCAPTION)),
+		SCREEN_HEIGHT,
 		NULL,
 		NULL,
 		hInstance,
@@ -88,6 +90,8 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 
 	// メッセージループ
 	MSG msg;
+	ZeroMemory(&msg, sizeof msg);
+
 	while(CManager::Get_GameEnd())
 	{
         if(PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
@@ -107,7 +111,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 		{
 			dwCurrentTime = timeGetTime();
 
-			if((dwCurrentTime - dwExecLastTime) >= (1000 / 60))
+			if ((dwCurrentTime - dwExecLastTime) >= (1000 / 240))
 			{
 				dwExecLastTime = dwCurrentTime;
 
@@ -151,7 +155,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			switch(wParam)
 			{
 				case VK_ESCAPE:
-					DestroyWindow(hWnd);
+					//DestroyWindow(hWnd);
 					break;
 			}
 			break;

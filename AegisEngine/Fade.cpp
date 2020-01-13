@@ -23,11 +23,12 @@ FADE::~FADE()
 	Uninit();
 }
 
-void FADE::Init(void)
+void FADE::Init()
 {
+	SPRITE::Init();
 }
 
-void FADE::Draw(void)
+void FADE::Draw()
 {
 	Vertex[0].Position = XMFLOAT3(Position.x - WH.x, Position.y - WH.y, 0.0f);
 	Vertex[0].Normal = XMFLOAT3(0.0f, 1.0f, 0.0f);
@@ -76,18 +77,16 @@ void FADE::Draw(void)
 	// 2Dマトリックス設定
 	CRenderer::SetWorldViewProjection2D(Scaling);
 
-	CRenderer::Set_Shader(SHADER_INDEX_V::NO_LIGHT, SHADER_INDEX_P::NO_TEXTURE);
+	CRenderer::Set_Shader(SHADER_INDEX_V::DEFAULT, SHADER_INDEX_P::NO_TEXTURE);
 
 	CRenderer::DrawIndexed(6, 0, 0);
 
 	CRenderer::Set_Shader();
 }
 
-void FADE::Update(void)
+void FADE::Update(float delta_time)
 {
 	Cnt++;
-
-	//Color.w = min( max((Color.w + AdditionalAlpha), 0.0f), 1.0f);
 
 	Color.w = clamp((Color.w + AdditionalAlpha), 0.0f, 1.0f);
 
@@ -95,10 +94,11 @@ void FADE::Update(void)
 	{
 		CManager::Get_Scene()->Destroy_Game_Object(this);
 		FadeEnable = true;
+		Enable = false;
 	}
 }
 
-void FADE::Uninit(void)
+void FADE::Uninit()
 {
 	//FadeEnable = false;
 }
@@ -127,7 +127,9 @@ void FADE::Start_FadeOut(const float time)
 {
 	FADE* pFade = nullptr;
 
-	pFade = CManager::Get_Scene()->Add_Game_Object<FADE>(LAYER_NAME::UI);
+	pFade = CManager::Get_Scene()->Add_Game_Object<FADE>(LAYER_NAME::UI, "fade");
+
+	pFade->Init();
 
 	pFade->Set_Time(time);
 	pFade->Set_Color(XMFLOAT4(0.f, 0.f, 0.f, 0.f));
@@ -139,7 +141,9 @@ void FADE::Start_FadeIn(const float time)
 {
 	FADE* pFade = nullptr;
 
-	pFade = CManager::Get_Scene()->Add_Game_Object<FADE>(LAYER_NAME::UI);
+	pFade = CManager::Get_Scene()->Add_Game_Object<FADE>(LAYER_NAME::UI, "fade");
+
+	pFade->Init();
 
 	pFade->Set_Time(time);
 	pFade->Set_Color(XMFLOAT4(0.f, 0.f, 0.f, 1.0f));

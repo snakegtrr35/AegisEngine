@@ -1,7 +1,8 @@
 #include	"Renderer.h"
 #include	"texture.h"
-#include	"camera.h"
 #include	"Billboard.h"
+
+#include	"manager.h"
 #include	"Scene.h"
 
 ID3D11Buffer* BILL_BOARD::pIndexBuffer = nullptr;		// インデックスバッファ
@@ -170,11 +171,11 @@ BILL_BOARD::~BILL_BOARD()
 	SAFE_DELETE(Texture);
 }
 
-void BILL_BOARD::Init(void)
+void BILL_BOARD::Init()
 {
 }
 
-void BILL_BOARD::Draw(void)
+void BILL_BOARD::Draw()
 {
 	Vertex[0].Position = XMFLOAT3(-WH.x, WH.y, 0.0f);
 	Vertex[0].Normal = XMFLOAT3(0.0f, 0.0f, 1.0f);
@@ -239,21 +240,38 @@ void BILL_BOARD::Draw(void)
 		world *= XMMatrixRotationRollPitchYaw(Rotation.x, Rotation.y, Rotation.z);			// 回転
 		world *= XMMatrixTranslation(Position.x, Position.y, Position.z);					// 移動
 
-		CRenderer::SetWorldMatrix(&world);
+		//CRenderer::SetWorldMatrix(&world);
+
+		auto camera01 = CManager::Get_Scene()->Get_Game_Object<CCamera>("camera");
+		auto camera02 = CManager::Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
+
+		if (nullptr != camera01)
+
+		{
+			CRenderer::Set_MatrixBuffer(world, camera01->Get_Camera_View(), camera01->Get_Camera_Projection());
+
+			CRenderer::Set_MatrixBuffer01(*camera01->Get_Pos());
+		}
+		else
+		{
+			CRenderer::Set_MatrixBuffer(world, camera02->Get_Camera_View(), camera02->Get_Camera_Projection());
+
+			CRenderer::Set_MatrixBuffer01(*camera02->Get_Pos());
+		}
 	}
 
-	CRenderer::Set_Shader(SHADER_INDEX_V::NO_LIGHT, SHADER_INDEX_P::DEFAULT);
+	CRenderer::Set_Shader(SHADER_INDEX_V::DEFAULT, SHADER_INDEX_P::NO_LIGHT);
 
 	CRenderer::DrawIndexed(6, 0, 0);
 
 	CRenderer::Set_Shader();
 }
 
-void BILL_BOARD::Update(void)
+void BILL_BOARD::Update(float delta_time)
 {
 }
 
-void BILL_BOARD::Uninit(void)
+void BILL_BOARD::Uninit()
 {
 	SAFE_RELEASE(pVertexBuffer);
 	SAFE_RELEASE(pIndexBuffer);
@@ -314,11 +332,11 @@ BILL_BOARD_ANIMATION::~BILL_BOARD_ANIMATION()
 	Uninit();
 }
 
-void BILL_BOARD_ANIMATION::Init(void)
+void BILL_BOARD_ANIMATION::Init()
 {
 }
 
-void BILL_BOARD_ANIMATION::Draw(void)
+void BILL_BOARD_ANIMATION::Draw()
 {
 	Draw(Tx_Param, Ty_Param);
 }
@@ -417,17 +435,63 @@ void BILL_BOARD_ANIMATION::Draw(float tx, float ty)
 		world *= XMMatrixTranslation(Position.x, Position.y, Position.z);				// 移動
 		//world *= XMMatrixRotationRollPitchYaw(Rotation.x, Rotation.y, Rotation.z);		// 回転
 
-		CRenderer::SetWorldMatrix(&world);
+		//CRenderer::Set_MatrixBufferSetWorldMatrix(&world);
+
+		auto camera01 = CManager::Get_Scene()->Get_Game_Object<CCamera>("camera");
+		auto camera02 = CManager::Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
+
+		if (nullptr != camera01)
+		{
+			//// シャドウマップ用の描画か?
+			//if (CManager::Get_ShadowMap()->Get_Enable())
+			//{
+			//	XMMATRIX view = CManager::Get_ShadowMap()->Get_View();
+			//	XMMATRIX proj = CManager::Get_ShadowMap()->Get_Plojection();
+
+			//	CRenderer::Set_MatrixBuffer(world, view, proj);
+
+			//	CRenderer::Set_Shader(SHADER_INDEX_V::SHADOW_MAP, SHADER_INDEX_P::SHADOW_MAP);
+			//}
+			//else
+			{
+				CRenderer::Set_MatrixBuffer(world, camera01->Get_Camera_View(), camera01->Get_Camera_Projection());
+
+				CRenderer::Set_MatrixBuffer01(*camera01->Get_Pos());
+
+				CRenderer::Set_Shader();
+			}
+		}
+		else
+		{
+			//// シャドウマップ用の描画か?
+			//if (CManager::Get_ShadowMap()->Get_Enable())
+			//{
+			//	XMMATRIX view = CManager::Get_ShadowMap()->Get_View();
+			//	XMMATRIX proj = CManager::Get_ShadowMap()->Get_Plojection();
+
+			//	CRenderer::Set_MatrixBuffer(world, view, proj);
+
+			//	CRenderer::Set_Shader(SHADER_INDEX_V::SHADOW_MAP, SHADER_INDEX_P::SHADOW_MAP);
+			//}
+			//else
+			{
+				CRenderer::Set_MatrixBuffer(world, camera02->Get_Camera_View(), camera02->Get_Camera_Projection());
+
+				CRenderer::Set_MatrixBuffer01(*camera02->Get_Pos());
+
+				CRenderer::Set_Shader();
+			}
+		}
 	}
 
-	CRenderer::Set_Shader(SHADER_INDEX_V::NO_LIGHT, SHADER_INDEX_P::DEFAULT);
+	CRenderer::Set_Shader(SHADER_INDEX_V::DEFAULT, SHADER_INDEX_P::NO_LIGHT);
 
 	CRenderer::DrawIndexed(6, 0, 0);
 
 	CRenderer::Set_Shader();
 }
 
-void BILL_BOARD_ANIMATION::Update(void)
+void BILL_BOARD_ANIMATION::Update(float delta_time)
 {
 	Age++;
 
@@ -439,7 +503,7 @@ void BILL_BOARD_ANIMATION::Update(void)
 	}
 }
 
-void BILL_BOARD_ANIMATION::Uninit(void)
+void BILL_BOARD_ANIMATION::Uninit()
 {
 }
 

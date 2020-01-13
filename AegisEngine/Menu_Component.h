@@ -52,7 +52,7 @@ public:
 		Uninit();
 	};
 
-	void Update() override {};
+	void Update(float delta_time) override {};
 	void Uninit() override {
 		for (auto object : MenuObjects)
 		{
@@ -72,7 +72,7 @@ public:
 	MOUSE_EVENT_COMPONENT();
 	~MOUSE_EVENT_COMPONENT();
 
-	void Update() override;
+	void Update(float delta_time) override;
 	void Uninit() override;
 
 	bool Mouse_Click_Left(const string& const name, SPRITE* me);
@@ -89,7 +89,7 @@ public:
 	KEYBOARD_EVENT_COMPONENT();
 	~KEYBOARD_EVENT_COMPONENT();
 
-	void Update() override;
+	void Update(float delta_time) override;
 	void Uninit() override;
 };
 

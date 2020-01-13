@@ -1,33 +1,34 @@
 #include	"Mouse.h"
 #include	<algorithm>
 
-float MOUSE::Mouse_Sensitivity;
-bool MOUSE::MoveFlag = false;
-
-POINT MOUSE::ScreenPoint;
-XMFLOAT2 MOUSE::ScreenPosition;
-
-POINT MOUSE::Pos;
-POINT MOUSE::OldPos;
+unique_ptr<MOUSE> MOUSE::pMouse = nullptr;
 
 void MOUSE::Init(void)
 {
-	OldPos.y = OldPos.x = Pos.y = Pos.x = 0;
+	if (nullptr == pMouse.get()) pMouse.reset(new MOUSE());
 
-	Mouse_Sensitivity = 1.5f;
+	pMouse->OldPos.y = pMouse->OldPos.x = 0;
+	pMouse->Pos.y = pMouse->Pos.x = 0;
 
-	ZeroMemory(&ScreenPoint, sizeof(ScreenPoint));
+	pMouse->Mouse_Sensitivity = 1.0f;
+
+	pMouse->ScreenPoint.x = 0;
+	pMouse->ScreenPoint.y = 0;
 }
 
 void MOUSE::Update(void)
 {
-	GetCursorPos(&ScreenPoint);
+	if (nullptr != pMouse.get())
+	{
+		GetCursorPos(&pMouse->ScreenPoint);
 
-	ScreenPosition = XMFLOAT2(ScreenPoint.x, ScreenPoint.y);
+		pMouse->ScreenPosition = XMFLOAT2(pMouse->ScreenPoint.x, pMouse->ScreenPoint.y);
+	}
 }
 
 void MOUSE::Uninit(void)
 {
+	pMouse.reset(nullptr);
 }
 
 XMFLOAT2& const MOUSE::Get_Screen_Position()
@@ -46,11 +47,24 @@ void  MOUSE::Set_Position(POINT& pos)
 		MoveFlag = false;
 	}
 
+	if (3 <= abs(OldPos.x - Pos.x))
+	{
+		Move_X_Flag = true;
+	}
+
+	if (3 <= abs(OldPos.y - Pos.y))
+	{
+		Move_Y_Flag = true;
+	}
+
 	OldPos.x = Pos.x;
 	OldPos.y = Pos.y;
 
-	Pos.x += std::clamp((int)pos.x, -20, 20);
-	Pos.y += std::clamp((int)pos.y, -20, 20);
+	//Pos.x += std::clamp((int)pos.x, -20, 20);
+	//Pos.y += std::clamp((int)pos.y, -20, 20);
+
+	Pos.x += pos.x;
+	Pos.y += pos.y;
 }
 
 const XMFLOAT2 MOUSE::Get_Position()
@@ -79,4 +93,44 @@ float& const MOUSE::Get_Sensitivity()
 const bool MOUSE::Get_Move_Flag()
 {
 	return MoveFlag;
+}
+
+const bool MOUSE::Get_Move_X_Flag()
+{
+	return Move_X_Flag;
+}
+
+const bool MOUSE::Get_Move_Y_Flag()
+{
+	return Move_Y_Flag;
+}
+
+void MOUSE::Set_Wheel_Move(int w)
+{
+	OldDiffW = DiffW;
+
+	DiffW += w;
+}
+
+const WHEEL_MOVE_ENUM MOUSE::Get_Wheel_Move_Flag()
+{
+	if (DiffW > OldDiffW)
+	{
+		return WHEEL_MOVE_ENUM::UP;
+	}
+
+	if (DiffW < OldDiffW)
+	{
+		return WHEEL_MOVE_ENUM::DOWN;
+	}
+
+	return WHEEL_MOVE_ENUM::NONE;
+}
+
+void MOUSE::Reset_Wheel_Moveset()
+{
+	OldDiffW = DiffW;
+	MoveFlag = false;
+	Move_X_Flag = false;
+	Move_Y_Flag = false;
 }

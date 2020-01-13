@@ -22,10 +22,10 @@ public:
 	FADE();
 	~FADE();
 
-	void Init(void) override;
-	void Draw(void) override;
-	void Update(void) override;
-	void Uninit(void) override;
+	void Init() override;
+	void Draw() override;
+	void Update(float delta_time) override;
+	void Uninit() override;
 
 	void Set_Time(const unsigned short time);
 	bool Get_FadeEnable();

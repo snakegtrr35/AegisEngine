@@ -1,44 +1,50 @@
 #ifdef _DEBUG
 
+#include	"imgui/imgui.h"
+#include	"imgui/imgui_impl_dx11.h"
+#include	"imgui/imgui_impl_win32.h"
+
+#include	"imgui/imgui_stdlib.h"
+
 #include	"My_imgui.h"
-#include	"Renderer.h"
+#include	"imgui/ImGuizmo.h"
+
 #include	"Scene.h"
-#include	"main.h"
+#include	"manager.h"
+#include	"ShadowMap.h"
+#include	"Texture_Manager.h"
 
-#include	"ModelLoader.h"
+#include	"common.h"
 
-POLYGON_3D* g_pPOLYGON = nullptr;
+extern float radius;
 
-My_imgui::My_imgui()
-{
-	show_demo_window = false;
-	show_another_window = false;
-	clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
-	f = 0.0f;
-	counter = 0;
-}
+static string old_name;
 
-My_imgui::~My_imgui()
-{
-}
+void EditTransform(const float* cameraView, float* cameraProjection, float* matrix, bool enable, GAME_OBJECT* object);
 
 void My_imgui::Init(HWND hWnd)
 {
 	// Setup Dear ImGui context
 	IMGUI_CHECKVERSION();
 	ImGui::CreateContext();
-	ImGuiIO& io = ImGui::GetIO(); (void)io;
-	io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;  // Enable Keyboard Controls
+	ImGuiIO& io = ImGui::GetIO();
+	io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard | ImGuiConfigFlags_DockingEnable;  // Enable Keyboard Controls
 
 	// u8を使えば日本語の表示はできる
 	ImFontConfig config;
 
-	config.OversampleH = 2;
+	config.OversampleH = 3;
 	config.OversampleV = 1;
-	config.GlyphExtraSpacing.x = 1.0f;
+	config.GlyphExtraSpacing.x = 0.0f;
+	config.GlyphExtraSpacing.y = 0.0f;
 
 	io.Fonts->AddFontFromFileTTF("c:\\Windows\\Fonts\\meiryo.ttc", 16.0f, &config, io.Fonts->GetGlyphRangesJapanese());
-	//io.Fonts->AddFontFromFileTTF("asset/font/NotoSansCJKjp-Regular.otf", 18.0f, &config, io.Fonts->GetGlyphRangesJapanese());
+	io.Fonts->AddFontFromFileTTF("c:\\Windows\\Fonts\\meiryo.ttc", 15.0f, &config, io.Fonts->GetGlyphRangesJapanese());
+	io.Fonts->AddFontFromFileTTF("c:\\Windows\\Fonts\\meiryo.ttc", 14.0f, &config, io.Fonts->GetGlyphRangesJapanese());
+
+	io.Fonts->AddFontFromFileTTF("c:\\Windows\\Fonts\\msgothic.ttc", 16.0f, &config, io.Fonts->GetGlyphRangesJapanese());
+	io.Fonts->AddFontFromFileTTF("c:\\Windows\\Fonts\\msgothic.ttc", 15.0f, &config, io.Fonts->GetGlyphRangesJapanese());
+	io.Fonts->AddFontFromFileTTF("c:\\Windows\\Fonts\\msgothic.ttc", 14.0f, &config, io.Fonts->GetGlyphRangesJapanese());
 
 	// Setup Platform/Renderer bindings
 	ImGui_ImplWin32_Init(hWnd);
@@ -46,10 +52,18 @@ void My_imgui::Init(HWND hWnd)
 
 	// Setup Style
 	ImGui::StyleColorsDark();
+
+	ImVec4 color = ImVec4(0.06f, 0.06f, 0.06f, 1.0f);
+
+	ImGuiStyle& style = ImGui::GetStyle();
+
+	style.Colors[ImGuiCol_WindowBg] = color;
 }
 
 void My_imgui::Draw(void)
 {
+	//fps = ImGui::GetIO().Framerate;
+
 	//Start the Dear ImGui frame
 	{
 		// 1. Show the big demo window (Most of the sample code is in ImGui::ShowDemoWindow()! You can browse its code to learn more about Dear ImGui!).
@@ -57,6 +71,7 @@ void My_imgui::Draw(void)
 			ImGui::ShowDemoWindow(&show_demo_window);
 
 		// 2. Show a simple window that we create ourselves. We use a Begin/End pair to created a named window.
+		if(show_default_window)
 		{
 			// Create a window called "Hello, world!" and append into it.
 			ImGui::Begin("Hello, world!");
@@ -75,7 +90,7 @@ void My_imgui::Draw(void)
 			ImGui::SameLine();
 			ImGui::Text("counter = %d", counter);
 
-			ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+			ImGui::Text("Application average %.6f ms/frame (%.1f FPS)", (1000.0f / ImGui::GetIO().Framerate) /** 0.001f*/, ImGui::GetIO().Framerate);
 
 			ImGui::Text("x = %f", ImGui::GetMousePos().x);
 			ImGui::Text("y = %f", ImGui::GetMousePos().y);
@@ -105,7 +120,9 @@ void My_imgui::Draw(void)
 				if (ImGui::BeginMenu("File"))
 				{
 					if (ImGui::MenuItem("New")) {}
+
 					if (ImGui::MenuItem("Open", "Ctrl+O")) {}
+
 					if (ImGui::BeginMenu("Open Recent"))
 					{
 						ImGui::MenuItem("fish_hat.c");
@@ -124,6 +141,47 @@ void My_imgui::Draw(void)
 						}
 						ImGui::EndMenu();
 					}
+
+					if (ImGui::BeginMenu("Import"))
+					{
+						//if (ImGui::BeginMenu("Object"))
+						{
+							if (ImGui::MenuItem("Texture"))
+							{
+								Texture_Import_Enable = true;
+							}
+							if (ImGui::MenuItem("model"))
+							{
+								int a = 0;
+							}
+
+							//ImGui::EndMenu();
+						}
+
+						ImGui::EndMenu();
+					}
+
+					if (ImGui::BeginMenu("Delete"))
+					{
+						{
+							if (ImGui::MenuItem("Texture"))
+							{
+								Texture_Delete_Enable = true;
+							}
+							if (ImGui::MenuItem("model"))
+							{
+								int a = 0;
+							}
+						}
+
+						ImGui::EndMenu();
+					}
+
+					if (ImGui::MenuItem("Close"))
+					{
+						CManager::GameEnd();
+					}
+
 					ImGui::EndMenu();
 				}
 
@@ -141,6 +199,10 @@ void My_imgui::Draw(void)
 				if (ImGui::BeginMenu("Setting"))
 				{
 					ImGui::MenuItem("Style Editor", NULL, &show_app_style_editor);
+					ImGui::Checkbox("Default Window", &show_default_window);      // Edit bools storing our window open/close state
+
+					ImGui::MenuItem("Setting", NULL, &Setting_Enable);
+
 					ImGui::EndMenu();
 				}
 
@@ -148,114 +210,177 @@ void My_imgui::Draw(void)
 			}
 		}
 
-		if (show_app_style_editor) { ImGui::Begin("Style Editor", &show_app_style_editor, ImGuiWindowFlags_NoResize); ImGui::ShowStyleEditor(); ImGui::End(); }
+		if (show_app_style_editor)
+		{
+			ImGui::Begin("Style Editor", &show_app_style_editor, ImGuiWindowFlags_NoResize);
+			ImGui::ShowStyleEditor();
+			ImGui::End();
+		}
+
+		static string s = GAME_OBJECT::Get_Object_Name_Map().begin()->/*second.*/c_str();
+
+		old_name = s;
 
 		{
-			string name("player");
-
-			auto player = SCENE::Get_Game_Object<CMODEL>(name);
-
-			if (nullptr != player)
-			{
-
-				static float vec4_Position[] = { player->Get_Position()->x, player->Get_Position()->y, player->Get_Position()->z };
-				static float vec4_Rotation[] = { player->Get_Rotation()->x, player->Get_Rotation()->y, player->Get_Rotation()->z };
-				static float vec4_Scaling[] = { player->Get_Scaling()->x, player->Get_Scaling()->y, player->Get_Scaling()->z };
-
-				ImGui::Begin("Setting");
-
-				static bool enable = false;
-				ImGui::Checkbox("Enable", &enable);
-
-				ImGui::DragFloat3("Position", vec4_Position, 0.02f);
-
-				ImGui::DragFloat3("Rotation", vec4_Rotation, 0.2f, -360.0f, 360.0f);
-
-				ImGui::DragFloat3("Scaling", vec4_Scaling, 0.02f);
-
-				static int clicked = 0;
-				if (ImGui::Button("Add Component"))
-					clicked++;
-				if (clicked & 1)
-				{
-					ImGui::SameLine();
-					ImGui::Text("Thanks for clicking me!");
-				}
-
-				/*static char buf1[64] = ""; 
-				
-				if (ImGui::InputText("default", buf1, 64))
-				{
-					string a;
-					a = buf1;
-				}*/
-
-				static char buf1[128] = "";
-
-				ImGui::InputText((char*)u8"あいうえお", (char*)buf1, 128);
-
-				ImGui::Text(buf1);
-
-				ImGui::End();
-
-				if (enable)
-				{
-					XMFLOAT3 vec1(vec4_Position[0], vec4_Position[1], vec4_Position[2]);
-					XMFLOAT3 vec2(vec4_Rotation[0], vec4_Rotation[1], vec4_Rotation[2]);
-					XMFLOAT3 vec3(vec4_Scaling[0], vec4_Scaling[1], vec4_Scaling[2]);
-
-					player->Set_Position(&vec1);
-					player->Set_Rotation(&vec2);
-					player->Set_Scaling(&vec3);
-				}
-			}
-
 			// ライトの設定
 			{
+				static bool f = false;
+
 				ImGuiWindowFlags window_flag = ImGuiWindowFlags_NoResize;
 
-				static float vec4_Direction[] = { 0.0f, 0.0f, 1.0f, 0.0f };
-				static float vec4_Diffuse[] = { 1.2f, 1.2f, 1.2f, 1.0f };
-				static float vec4_Ambient[] = { 0.2f, 0.2f, 0.2f, 1.0f };
+				LIGHT* light = CRenderer::Get_Light();
 
-				ImGui::SetNextWindowSize(ImVec2(300, 150), ImGuiCond_Always);
+				static float vec4_Direction[] = { light->Direction.x, light->Direction.y, light->Direction.z, light->Direction.w };
+				static float vec4_Position[] = { light->Position.x, light->Position.y, light->Position.z, light->Position.w };
+				static float vec4_Diffuse[] = { light->Diffuse.r, light->Diffuse.g, light->Diffuse.b, light->Diffuse.a };
+				static float vec4_Ambient[] = { light->Ambient.r, light->Ambient.g, light->Ambient.b, light->Ambient.a };
+				static float vec4_Specular[] = { light->Specular.r, light->Specular.g, light->Specular.b, light->Specular.a };
 
-				ImGui::Begin("Directional Light", nullptr, window_flag);
+				ImGui::Begin("Directional Light", nullptr/*, window_flag*/);
 
-				ImGui::DragFloat3("Direction", vec4_Direction, 0.01f);
-				ImGui::SameLine(); HelpMarker((char*)u8"\"平行光源\" 向き\n");
+				ImGui::DragFloat4("Direction", vec4_Direction, 0.01f);
+				ImGui::SameLine(); HelpMarker((char*)u8"\"平行光\" 向き\n");
 
-				ImGui::DragFloat3("Diffuse", vec4_Diffuse, 0.01f);
-				ImGui::SameLine(); HelpMarker((char*)u8"\"平行光源\" 直接光\n");
+				ImGui::DragFloat4("Position", vec4_Position, 0.01f);
+				ImGui::SameLine(); HelpMarker((char*)u8"\"平行光源の位置\"");
 
-				ImGui::DragFloat3("Ambient", vec4_Ambient, 0.01f);
-				ImGui::SameLine(); HelpMarker((char*)u8"\"平行光源\" 環境光\n");
+				ImGui::DragFloat4("Diffuse", vec4_Diffuse, 0.01f);
+				ImGui::SameLine(); HelpMarker((char*)u8"\"平行光\" 拡散(直接)光\n");
+
+				ImGui::DragFloat4("Ambient", vec4_Ambient, 0.01f);
+				ImGui::SameLine(); HelpMarker((char*)u8"\"平行光\" 環境光\n");
+
+				ImGui::DragFloat4("Specular", vec4_Specular, 0.01f);
+				ImGui::SameLine(); HelpMarker((char*)u8"\"平行光\" 鏡面光\n");
 
 				ImGui::End();
 
-				// ライトの設定
-				LIGHT light;
-				light.Direction = XMFLOAT4(vec4_Direction[0], vec4_Direction[1], vec4_Direction[2], vec4_Direction[3]);
-				light.Diffuse = COLOR(vec4_Diffuse[0], vec4_Diffuse[1], vec4_Diffuse[2], vec4_Diffuse[3]);
-				light.Ambient = COLOR(vec4_Ambient[0], vec4_Ambient[1], vec4_Ambient[2], vec4_Ambient[3]);
-				CRenderer::SetLight(&light);
+				//// ライトの設定
+				//LIGHT light;
+				light->Direction = XMFLOAT4(vec4_Direction[0], vec4_Direction[1], vec4_Direction[2], vec4_Direction[3]);
+				light->Position = XMFLOAT4(vec4_Position[0], vec4_Position[1], vec4_Position[2], vec4_Position[3]);
+				light->Diffuse = COLOR(vec4_Diffuse[0], vec4_Diffuse[1], vec4_Diffuse[2], vec4_Diffuse[3]);
+				light->Ambient = COLOR(vec4_Ambient[0], vec4_Ambient[1], vec4_Ambient[2], vec4_Ambient[3]);
+				light->Specular = COLOR(vec4_Specular[0], vec4_Specular[1], vec4_Specular[2], vec4_Specular[3]);
+				CRenderer::SetLight(light);
 			}
 
 			// レンダリングテクスチャ
 			{
+				// タイトルバーありの場合、imageyよりWindowSizeがImVec2(17, 40)分大きければ丁度いい
+				// タイトルバーなしの場合、imageyよりWindowSizeがImVec2(13, 16)分大きければ丁度いい
+
 				ImGuiWindowFlags window_flags = ImGuiWindowFlags_NoResize;
 
-				ImGui::SetNextWindowSize(ImVec2(737, 445), ImGuiCond_Always);
+				{
+					ImGui::SetNextWindowSize(ImVec2(512 + 17, 512 + 40), ImGuiCond_Once);
 
-				ImGui::Begin("RenderTexture", nullptr, window_flags);
+					ImGui::Begin("Shadow", nullptr, window_flags);
 
-				ImTextureID image = CRenderer::Get_SRV();
+					ImTextureID image = CManager::Get_ShadowMap()->Get();
 
-				ImGui::Image(image, ImVec2(480 * 1.5f, 270 * 1.5f));
+					ImGui::Image(image, ImVec2(512, 512));
+
+					ImGui::End();
+				}
+
+				{
+					ImGui::SetNextWindowSize(ImVec2(512 + 17, 512 + 40), ImGuiCond_Once);
+
+					ImGui::Begin("Depth", nullptr, window_flags);
+
+					ImTextureID image = CRenderer::Get();
+
+					ImGui::Image(image, ImVec2(512, 512));
+
+					ImGui::End();
+				}
+
+				{
+					ImGui::SetNextWindowSize(ImVec2(512 + 17, 512 + 40), ImGuiCond_Once);
+
+					ImGui::Begin("Diffeuse", nullptr, window_flags);
+
+					ImTextureID image = CRenderer::Get2();
+
+					ImGui::Image(image, ImVec2(512, 512));
+
+					ImGui::End();
+				}
+
+				{
+					ImGui::SetNextWindowSize(ImVec2(512 + 17, 512 + 40), ImGuiCond_Once);
+
+					ImGui::Begin("Normal", nullptr, window_flags);
+
+					ImTextureID image = CRenderer::Get3();
+
+					ImGui::Image(image, ImVec2(512, 512));
+
+					ImGui::End();
+				}
+			}
+
+			// オブジェクト一覧
+			{
+				ImGuiWindowFlags window_flag = ImGuiWindowFlags_NoTitleBar;
+				ImGuiTreeNodeFlags node_flags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_OpenOnDoubleClick;
+				auto map = GAME_OBJECT::Get_Object_Name_Map();
+
+				ImGui::Begin("World", nullptr, window_flag);
+
+				ImGui::Unindent(ImGui::GetTreeNodeToLabelSpacing());
+
+				{
+					int i = 0;
+					for (auto object : map)
+					{
+						// マウスボタン : 0 = left, 1 = right, 2 = middle + extras
+						string str = object.c_str();
+
+						node_flags |= /*ImGuiTreeNodeFlags_Leaf |*/ ImGuiTreeNodeFlags_NoTreePushOnOpen; // ImGuiTreeNodeFlags_Bullet
+						ImGui::TreeNodeEx((void*)(intptr_t)i, node_flags, str.c_str());
+
+						if (ImGui::IsMouseClicked(0))
+						{
+							if (ImGui::IsItemClicked(0))
+							{
+								s = str.c_str();
+							}
+						}
+
+						if (ImGui::IsMouseClicked(1))
+						{
+							if (ImGui::IsItemClicked(1))
+							{
+								s = str.c_str();
+							}
+						}
+
+						i++;
+					}
+				}
 
 				ImGui::End();
+
 			}
 		}
+
+		// インスペクター
+		{
+			Draw_Inspector(s);
+		}
+
+		// テクスチャにインポート
+		Texture_Import();
+
+		// テクスチャの削除
+		Texture_Delete();
+
+		Setting();
+
+		File();
+
 		// Rendering
 		ImGui::Render();
 	}
@@ -277,6 +402,8 @@ void My_imgui::Begin()
 	ImGui_ImplDX11_NewFrame();
 	ImGui_ImplWin32_NewFrame();
 	ImGui::NewFrame();
+
+	ImGuizmo::BeginFrame();
 }
 
 void My_imgui::End()
@@ -289,36 +416,454 @@ void My_imgui::Render(void)
 	ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
 }
 
-void Draw_imgui(XMFLOAT3* position, XMFLOAT3* rotation, XMFLOAT3* scaling)
+void Draw_Inspector(const string& name)
 {
-	//float vec4_Position[3] = { position->x, position->y, position->z };
-	//float vec4_Rotation[3] = { rotation->x, rotation->y, rotation->z };
-	//float vec4_Scaling[3] = { scaling->x, scaling->y, scaling->z };
+	bool flag = false;
+	if (old_name != name) flag = true;
 
-	////ImGui::
+	auto object = SCENE::Get_Game_Object(name);
 
-	//ImGui::BeginChildFrame(ImGui::GetID());
-	//{
-	//	ImGui::Begin("Setting");
+	if (nullptr != object)
+	{
+		ImGui::Begin("Inspector");
 
-	//	ImGui::InputFloat3("Position", vec4_Position);
-	//	ImGui::InputFloat3("Rotation", vec4_Rotation);
-	//	ImGui::InputFloat3("Scaling", vec4_Scaling);
+		ImGui::Text(object->Get_Object_Name().c_str());
 
-	//	ImGui::End();
+		static bool enable = true;
+		ImGui::Checkbox("Enable", &enable);
 
-	//	position->x = vec4_Position[0];
-	//	position->y = vec4_Position[1];
-	//	position->z = vec4_Position[2];
+		// 3Dギズモ
+		{
+			XMMATRIX mtr;
 
-	//	rotation->x = vec4_Position[0];
-	//	rotation->y = vec4_Position[1];
-	//	rotation->z = vec4_Position[2];
+			CCamera* camera1;
+			DEBUG_CAMERA* camera2;
 
-	//	scaling->x = vec4_Position[0];
-	//	scaling->y = vec4_Position[1];
-	//	scaling->z = vec4_Position[2];
-	//}
+			{
+				camera1 = SCENE::Get_Game_Object<CCamera>("camera");
+				if (nullptr == camera1)
+				{
+					camera2 = SCENE::Get_Game_Object<DEBUG_CAMERA>("camera");
+					mtr = camera2->Get_Camera_View();
+				}
+				else
+				{
+					mtr = camera1->Get_Camera_View();
+				}
+			}
+
+			XMFLOAT4X4 mat44;
+			XMStoreFloat4x4(&mat44, mtr);
+
+			float view[16] = { mat44._11, mat44._12, mat44._13,mat44._14,
+								mat44._21, mat44._22, mat44._23,mat44._24,
+								mat44._31, mat44._32, mat44._33,mat44._34,
+								mat44._41, mat44._42, mat44._43,mat44._44
+			};
+
+			{
+				if (nullptr == camera1)
+				{
+					mtr = camera2->Get_Camera_Projection();
+				}
+				else
+				{
+					mtr = camera1->Get_Camera_Projection();
+				}
+			}
+
+			XMStoreFloat4x4(&mat44, mtr);
+
+			float pro[16] = { mat44._11, mat44._12, mat44._13,mat44._14,
+								mat44._21, mat44._22, mat44._23,mat44._24,
+								mat44._31, mat44._32, mat44._33,mat44._34,
+								mat44._41, mat44._42, mat44._43,mat44._44
+			};
+
+			mtr = XMMatrixTranslation(object->Get_Position()->x, object->Get_Position()->y, object->Get_Position()->z);
+			XMStoreFloat4x4(&mat44, mtr);
+
+			static float pos[16] = { mat44._11, mat44._12, mat44._13,mat44._14,
+									mat44._21, mat44._22, mat44._23,mat44._24,
+									mat44._31, mat44._32, mat44._33,mat44._34,
+									mat44._41, mat44._42, mat44._43,mat44._44
+			};
+
+			if (flag)
+			{
+				mtr = XMMatrixTranslation(object->Get_Position()->x, object->Get_Position()->y, object->Get_Position()->z);
+				XMStoreFloat4x4(&mat44, mtr);
+
+				pos[0] = mat44._11, pos[1] = mat44._12, pos[2] = mat44._13, pos[3] = mat44._14;
+				pos[4] = mat44._21, pos[5] = mat44._22, pos[6] = mat44._23, pos[7] = mat44._24;
+				pos[8] = mat44._31, pos[9] = mat44._32, pos[10] = mat44._33, pos[11] = mat44._34;
+				pos[12] = mat44._41, pos[13] = mat44._42, pos[14] = mat44._43, pos[15] = mat44._44;
+				
+			}
+
+			EditTransform(view, pro, pos, enable, object);
+		}
+
+		static int clicked = 0;
+		if (ImGui::Button("Add Component"))
+			clicked++;
+		if (clicked & 1)
+		{
+			ImGui::SameLine();
+			ImGui::Text("Thanks for clicking me!");
+		}
+
+		ImGui::End();
+	}
+}
+
+void EditTransform(const float* cameraView, float* cameraProjection, float* matrix, bool enable, GAME_OBJECT* object)
+{
+	static ImGuizmo::OPERATION mCurrentGizmoOperation(ImGuizmo::TRANSLATE);
+	static float snap[3] = { 0.001f, 0.001f, 0.001f };
+
+	if (ImGui::RadioButton("Translate", mCurrentGizmoOperation == ImGuizmo::TRANSLATE))
+		mCurrentGizmoOperation = ImGuizmo::TRANSLATE;
+	ImGui::SameLine();
+	if (ImGui::RadioButton("Rotate", mCurrentGizmoOperation == ImGuizmo::ROTATE))
+		mCurrentGizmoOperation = ImGuizmo::ROTATE;
+	ImGui::SameLine();
+	if (ImGui::RadioButton("Scale", mCurrentGizmoOperation == ImGuizmo::SCALE))
+		mCurrentGizmoOperation = ImGuizmo::SCALE;
+
+	{
+		float	Translation[3] = { object->Get_Position()->x, object->Get_Position()->y, object->Get_Position()->z };
+		float	Rotation[3] = { object->Get_Rotation()->x, object->Get_Rotation()->y, object->Get_Rotation()->z };
+		float	R[3] = { object->Get_Rotation()->x, object->Get_Rotation()->y, object->Get_Rotation()->z };
+		float	Scale[3] = { object->Get_Scaling()->x, object->Get_Scaling()->y, object->Get_Scaling()->z };
+
+		ImGuizmo::DecomposeMatrixToComponents(matrix, Translation, Rotation, Scale);
+
+		ImGui::DragFloat3("Translation", Translation, 0.01f);
+		ImGui::DragFloat3("Rotate", Rotation, 0.1f);
+		ImGui::DragFloat3("Scale", Scale, 0.01f);
+
+		ImGuizmo::RecomposeMatrixFromComponents(Translation, Rotation, Scale, matrix);
+
+		if (enable)
+		{
+			XMFLOAT3 vec1(Translation[0], Translation[1], Translation[2]);
+			XMFLOAT3 vec2/*(Rotation[0], Rotation[1], Rotation[2])*/;
+			XMFLOAT3 vec3(Scale[0], Scale[1], Scale[2]);
+
+			object->Set_Position(vec1);
+			//object->Set_Rotation(vec2);
+			object->Set_Scaling(vec3);
+
+			ImGui::DragFloat3("Rotation", R, 0.2f, -180.f, 180.f);
+			vec2 = XMFLOAT3(R[0], R[1], R[2]);
+			object->Set_Rotation(vec2);
+		}
+	}
+
+	ImGuiIO& io = ImGui::GetIO();
+	ImGuizmo::SetRect(0, 0, io.DisplaySize.x, io.DisplaySize.y);
+	ImGuizmo::Manipulate(cameraView, cameraProjection, mCurrentGizmoOperation, ImGuizmo::LOCAL, matrix, NULL, &snap[0], NULL, NULL);
+}
+
+void My_imgui::Texture_Import()
+{
+	static bool flag = true;
+	static bool flag2 = false;
+
+	static string file_name;
+
+	ImGuiWindowFlags window_flags = ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoDocking;
+
+	if(Texture_Import_Enable)
+	{
+		static char check;
+
+		ImGui::SetNextWindowSize(ImVec2(360, 167), ImGuiCond_Appearing);
+
+		ImGui::Begin((char*)u8"テクスチャ インポート", &Texture_Import_Enable, window_flags);
+		{
+			ImGui::Indent(15.0f);
+
+			ImGui::InputText((char*)u8"テクスチャ名", &file_name);
+			ImGui::SameLine(); HelpMarker((char*)u8"対応フォーマットは 'png' 'jpg''dds'");
+
+			ImGui::Spacing();
+			ImGui::Spacing();
+			ImGui::Spacing();
+			ImGui::Spacing();
+
+			ImGui::Indent(100);
+
+			ImVec2 size(100, 40);
+
+			if (ImGui::Button((char*)u8"インポート", size))
+			{
+				Erroer_Message("テスト");
+
+				check = File_Check(file_name);
+
+				if (1 == check)
+				{
+					TEXTURE_MANEGER::Add(file_name);
+
+					ImGui::Text((char*)u8"テクスチャが読み込まれました");
+				}
+				else
+				{
+					flag2 = true;
+				}
+			}
+		}
+		ImGui::End();
+
+		{
+			if (flag2)
+			{
+				ImGui::SetNextWindowPos(ImVec2(SCREEN_WIDTH * 0.5f - 120.0f, SCREEN_HEIGHT * 0.5f - 55.0f), ImGuiCond_Appearing);
+
+				ImGui::Begin((char*)u8"エラー", &flag2, window_flags);
+
+				ImGui::Indent(20.0f);
+
+				ImGui::Spacing();
+				ImGui::Spacing();
+				ImGui::Spacing();
+				ImGui::Spacing();
+
+				switch (check)
+				{
+					case -1:
+						ImGui::Text((char*)u8"テクスチャ名が入力されてないです");
+						break;
+
+					case -2:
+						ImGui::Text((char*)u8"既に読み込んでいるテクスチャです");
+						break;
+
+					case -3:
+						ImGui::Text((char*)u8"テクスチャが存在しないです");
+						break;
+
+					default:
+						break;
+				}
+
+				ImGui::End();
+			}
+		}
+
+		flag = true;
+	}
+	else
+	{
+		if (flag)
+		{
+			file_name = "";
+
+			flag = false;
+		}
+
+		flag2 = false;
+	}
+}
+
+const char My_imgui::File_Check(const string& file_name)
+{
+	if (file_name.empty())
+	{
+		// テクスチャ名が入力されていない
+		return -1;
+	}
+
+	if (TEXTURE_MANEGER::Get_TextureFile().find(file_name) != TEXTURE_MANEGER::Get_TextureFile().end())
+	{
+		// 既に読み込んでいるテクスチャ
+		return -2;
+	}
+
+	// ファイルがあるかの判定
+	{
+		string path = "./asset/texture/";
+
+		path += file_name;
+
+		bool flag = std::filesystem::exists(path);
+		if (false == flag)
+		{
+			// ファイルが存在しない
+			return -3;
+		}
+	}
+
+	return 1;
+}
+
+void My_imgui::Texture_Delete()
+{
+	static bool flag = true;
+	static bool flag2 = false;
+
+	static string file_name;
+
+	ImGuiWindowFlags window_flags = ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoDocking;
+
+	if (Texture_Import_Enable)
+	{
+		static char check;
+
+		ImGui::SetNextWindowSize(ImVec2(360, 167), ImGuiCond_Appearing);
+
+		ImGui::Begin((char*)u8"テクスチャ 削除", &Texture_Import_Enable, window_flags);
+		{
+			ImGui::Indent(15.0f);
+
+			ImGui::InputText((char*)u8"テクスチャ名", &file_name);
+
+			ImGui::Spacing();
+			ImGui::Spacing();
+			ImGui::Spacing();
+			ImGui::Spacing();
+
+			ImGui::Indent(100);
+
+			ImVec2 size(100, 40);
+
+			if (ImGui::Button((char*)u8"削除", size))
+			{
+				check = File_Check(file_name);
+
+				if (-1 != check)
+				{
+					TEXTURE_MANEGER::Unload(file_name);
+
+					ImGui::Text((char*)u8"テクスチャが削除されました");
+				}
+				else
+				{
+					flag2 = true;
+				}
+			}
+		}
+		ImGui::End();
+
+		{
+			if (flag2)
+			{
+				ImGui::SetNextWindowPos(ImVec2(SCREEN_WIDTH * 0.5f - 120.0f, SCREEN_HEIGHT * 0.5f - 55.0f), ImGuiCond_Appearing);
+
+				ImGui::Begin((char*)u8"エラー", &flag2, window_flags);
+
+				ImGui::Indent(20.0f);
+
+				ImGui::Spacing();
+				ImGui::Spacing();
+				ImGui::Spacing();
+				ImGui::Spacing();
+
+				switch (check)
+				{
+				case -1:
+					ImGui::Text((char*)u8"テクスチャ名が入力されてないです");
+					break;
+
+				case -3:
+					ImGui::Text((char*)u8"テクスチャが存在しないです");
+					break;
+
+				default:
+					break;
+				}
+
+				ImGui::End();
+			}
+		}
+
+		flag = true;
+	}
+	else
+	{
+		if (flag)
+		{
+			file_name = "";
+
+			flag = false;
+		}
+
+		flag2 = false;
+	}
+}
+
+void My_imgui::Setting()
+{
+	if (Setting_Enable)
+	{
+		float color[] = { BOUNDING::Get_Default_Color().r, BOUNDING::Get_Default_Color().g, BOUNDING::Get_Default_Color().b };
+
+		ImGui::Begin("Setting", &Setting_Enable);
+
+		{
+			ImGuiColorEditFlags flag = ImGuiColorEditFlags_DisplayRGB | ImGuiColorEditFlags_InputRGB | ImGuiColorEditFlags_PickerHueWheel;
+
+			ImGui::ColorPicker3((char*)u8"カラー", color, flag);
+		}
+
+		ImGui::End();
+
+		COLOR c;
+		c.r = color[0];
+		c.g = color[1];
+		c.b = color[2];
+		c.a = 1.0f;
+
+		BOUNDING::Set_Default_Color(c);
+	}
+}
+
+void My_imgui::File()
+{
+	// タイトルバーありの場合、imageyよりWindowSizeがImVec2(17, 40)分大きければ丁度いい
+	// タイトルバーなしの場合、imageyよりWindowSizeがImVec2(13, 16)分大きければ丁度いい
+
+	//ImGuiWindowFlags window_flags = ImGuiWindowFlags_NoResize;
+
+	char i = 0;
+
+	{
+		//ImGui::SetNextWindowSize(ImVec2(256 + 17, 256 + 40), ImGuiCond_Once);
+
+		ImGui::Begin("Texture");
+
+		auto texture = TEXTURE_MANEGER::Get_TextureData_Start();
+		auto end = TEXTURE_MANEGER::Get_TextureData_End();
+
+		for(; texture != end; texture++)
+		{
+			ImTextureID image = texture->second.Resource.get();
+
+			if (i < 3)
+			{
+				ImGui::SameLine();
+
+				i++;
+			}
+			else
+			{
+				i = 0;
+
+				ImGui::NewLine();
+			}
+
+
+			ImGui::Image(image, ImVec2(96, 96));
+
+			ImGui::SameLine();
+
+			ImGui::Dummy(ImVec2(10, 96));
+		}
+
+		ImGui::End();
+	}
 }
 
 #endif // _DEBUG

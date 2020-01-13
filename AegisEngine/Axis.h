@@ -52,7 +52,7 @@ public:
 		Up = XMVector3Normalize(Up);
 	};
 
-	void Update() override {};
+	void Update(float delta_time) override {};
 	void Uninit() override {};
 
 	/**

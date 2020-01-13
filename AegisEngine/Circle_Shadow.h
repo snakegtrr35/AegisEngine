@@ -28,10 +28,10 @@ public:
 	CIRCLE_SHADOW(XMFLOAT3 position, XMFLOAT2 wh);
 	~CIRCLE_SHADOW();
 
-	void Init(void) override;
-	void Draw(void) override;
-	void Update(void) override;
-	void Uninit(void) override;
+	void Init() override;
+	void Draw() override;
+	void Update(float delta_time) override;
+	void Uninit() override;
 
 	void SetWH(const XMFLOAT2 wh);								// 幅と高さの設定
 	void SetTexture(const string& const file_name);			// テクスチャの設定

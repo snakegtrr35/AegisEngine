@@ -2,7 +2,7 @@
 
 static random_device rnd;							// 非決定的な乱数生成器
 
-const int Math::Get_Random(int min, int max)
+inline const int Math::Get_Random(int min, int max)
 {
 	mt19937_64 mt(rnd());								//  メルセンヌ・ツイスタの64ビット版、引数は初期シード値
 	uniform_int_distribution<> rand(min, max);			// [min, max] 範囲の一様乱数
@@ -10,7 +10,7 @@ const int Math::Get_Random(int min, int max)
 	return rand(mt);
 }
 
-const float Math::Get_Random(float min, float max)
+inline const float Math::Get_Random(float min, float max)
 {
 	mt19937_64 mt(rnd());								//  メルセンヌ・ツイスタの64ビット版、引数は初期シード値
 	uniform_real_distribution<> rand(min, max);			// [min, max] 範囲の一様乱数
@@ -18,7 +18,7 @@ const float Math::Get_Random(float min, float max)
 	return rand(mt);
 }
 
-const double Math::Get_Random(double min, double max)
+inline const double Math::Get_Random(double min, double max)
 {
 	mt19937_64 mt(rnd());								//  メルセンヌ・ツイスタの64ビット版、引数は初期シード値
 	uniform_real_distribution<> rand(min, max);			// [min, max] 範囲の一様乱数
@@ -27,7 +27,8 @@ const double Math::Get_Random(double min, double max)
 }
 
 
-const bool Math::Random_Bool(const float probability) {
+const bool Math::Random_Bool(const float probability)
+{
 	mt19937_64 mt(rnd());							//  メルセンヌ・ツイスタの64ビット版、引数は初期シード値
 	bernoulli_distribution uid(probability);
 
@@ -35,7 +36,7 @@ const bool Math::Random_Bool(const float probability) {
 }
 
 
-float Math::Lerp(const float y1, const float y2, const float tx, const float x1, const float x2)
+float Math::LerpEx(const float y1, const float y2, const float tx, const float x1, const float x2)
 {
 	float dx, dy;
 
@@ -54,4 +55,15 @@ short Math::Loop_Plus(short tx, short max)
 short Math::Loop_Minus(short tx, short max)
 {
 	return ((tx + max) % max);
+}
+
+// クォータニオンによるVector3の変換
+VECTOR3 Math::VECTOR3::Transform(const VECTOR3& v, const class Quaternion& q)
+{
+	// v + 2.0 * Cross(q.xyz, Cross(q.xyz,v) + q.w * v);
+	VECTOR3 qv(q.x, q.y, q.z);
+	VECTOR3 retVal = v;
+	retVal += 2.0f * VECTOR3::Cross(qv, VECTOR3::Cross(qv, v) + q.w * v);
+
+	return retVal;
 }

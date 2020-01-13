@@ -5,7 +5,8 @@ RAWINPUTDEVICE CINPUT::device[2];
 
 LRESULT CALLBACK CINPUT::subclassProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam, UINT_PTR uIdSubclass, DWORD_PTR dwRefData)
 {
-	if (uMsg == WM_INPUT) {
+	if (uMsg == WM_INPUT)
+	{
 		CINPUT* pInput = (CINPUT*)dwRefData;
 		pInput->onRawInput(wParam, lParam);
 	}
@@ -25,9 +26,7 @@ void CINPUT::onRawInput(WPARAM wParam, LPARAM lParam)
 		return;
 	}
 
-	if (GetRawInputData((HRAWINPUT)lParam, RID_INPUT, lpb, &dwSize,
-		sizeof(RAWINPUTHEADER)) != dwSize)
-		OutputDebugString(TEXT("GetRawInputData does not return correct size !\n"));
+	GetRawInputData((HRAWINPUT)lParam, RID_INPUT, lpb, &dwSize, sizeof(RAWINPUTHEADER));
 
 	RAWINPUT* raw = (RAWINPUT*)lpb;
 
@@ -42,12 +41,33 @@ void CINPUT::onRawInput(WPARAM wParam, LPARAM lParam)
 	}
 	else if (raw->header.dwType == RIM_TYPEMOUSE)
 	{
-		POINT pos;
+		// ƒ}ƒEƒXˆÚ“®—Ê‚ÌŽæ“¾
+		{
+			POINT pos;
 
-		pos.x = raw->data.mouse.lLastX;
-		pos.y = raw->data.mouse.lLastY;
+			pos.x = raw->data.mouse.lLastX;
+			pos.y = raw->data.mouse.lLastY;
 
-		MOUSE::Set_Position(pos);
+			MOUSE::Get_Mouse()->Set_Position(pos);
+		}
+
+		{
+			USHORT bf = raw->data.mouse.usButtonFlags;
+
+			// Wheel +-
+			if (bf & 0x400)
+			{
+				short w = (short)raw->data.mouse.usButtonData;
+				if (w > 0)
+				{
+					MOUSE::Get_Mouse()->Set_Wheel_Move(1);
+				}
+				else
+				{
+					MOUSE::Get_Mouse()->Set_Wheel_Move(-1);
+				}
+			}
+		}
 
 		if (FAILED(hResult))
 		{

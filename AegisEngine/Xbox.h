@@ -3,13 +3,29 @@
 #ifndef XBOX_H
 #define XBOX_H
 
-#include	"main.h"
 #include	<xinput.h>
 
 #pragma comment (lib, "xinput.lib")
 
 #define MAX_CONTROLLERS 4
-#define INPUT_DEADZONE  ( 0.24f * FLOAT(0x7FFF) )  // Default to 24% of the +/- 32767 range.   This is a reasonable default value but can be altered if needed.
+
+// ÉQÅ[ÉÄÉpÉbÉhÉ{É^ÉìèÓïÒ
+/*
+XINPUT_GAMEPAD_DPAD_UP
+XINPUT_GAMEPAD_DPAD_DOWN
+XINPUT_GAMEPAD_DPAD_LEFT
+XINPUT_GAMEPAD_DPAD_RIGHT
+XINPUT_GAMEPAD_START
+XINPUT_GAMEPAD_BACK
+XINPUT_GAMEPAD_LEFT_THUMB
+XINPUT_GAMEPAD_RIGHT_THUMB
+XINPUT_GAMEPAD_LEFT_SHOULDER
+XINPUT_GAMEPAD_RIGHT_SHOULDER
+XINPUT_GAMEPAD_A
+XINPUT_GAMEPAD_B
+XINPUT_GAMEPAD_X
+XINPUT_GAMEPAD_Y
+*/
 
 typedef struct {
 	XINPUT_STATE state;
@@ -27,21 +43,20 @@ public:
 	//========================================
 	// number : 0Å`4 ÇÃä‘
 	//========================================
-	static bool Trigger(const int any_button, const unsigned char number);
+	static bool Trigger(const int any_button, const unsigned char number = 0);
 
 	//========================================
 	// number : 0Å`4 ÇÃä‘
 	//========================================
-	static bool Press(const int any_button, const unsigned char number);
+	static bool Press(const int any_button, const unsigned char number = 0);
 
 	//========================================
 	// number : 0Å`4 ÇÃä‘
 	//========================================
-	static bool Release(const int any_button, const unsigned char number);
+	static bool Release(const int any_button, const unsigned char number = 0);
 
-	// Zero value if thumbsticks are within the dead zone Å© Ç†ÇÒÇ‹ÇËà”ñ°Ç™ï™Ç©ÇÁÇ»Ç¢
-	static bool LeftStick(const int any_button, const unsigned char number);
-	static bool RightStick(const int any_button, const unsigned char number);
+	static XMINT2 const LeftStick(const unsigned char number = 0);
+	static XMINT2 const RightStick(const unsigned char number = 0);
 };
 
 #endif // !XBOX_H

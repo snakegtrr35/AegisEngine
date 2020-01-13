@@ -22,9 +22,11 @@
 #include	"common.h"
 
 #include	<DirectXMath.h>
+#include	<directxcollision.h>
 using namespace DirectX;
 
 #include	"Math.h"
+using namespace Math;
 
 #ifndef IMGUI
 #define IMGUI
@@ -34,15 +36,30 @@ using namespace DirectX;
 #include	"imgui/imgui_impl_win32.h"
 #include	"imgui/imstb_rectpack.h"
 #include	"imgui/imstb_truetype.h"
+#include	"imgui/ImGuizmo.h"
 
 #endif // !IMGUI
 
-#ifndef PICO_JSON
-#define PICO_JSON
+#ifndef CEREAL
+#define CEREAL
 
-#include	"picojson.h"
+#include	<cereal/cereal.hpp>
+#include	<cereal/archives/binary.hpp>
+#include	<cereal/types/base_class.hpp>
+#include	<cereal/types/polymorphic.hpp>
 
-#endif // !PICO_JSON
+#include	<cereal/types/memory.hpp>
+#include	<cereal/types/list.hpp>
+#include	<cereal/types/vector.hpp>
+#include	<cereal/types/map.hpp>
+#include	<cereal/types/unordered_map.hpp>
+#include	<cereal/types/set.hpp>
+#include	<cereal/types/unordered_set.hpp>
+#include	<cereal/types/string.hpp>
+
+#include	"Cereal.h"
+
+#endif // !CEREAL
 
 #ifndef INCLUDE
 #define INCLUDE
@@ -50,11 +67,23 @@ using namespace DirectX;
 #include	<list>
 #include	<vector>
 #include	<map>
+#include	<unordered_map>
+#include	<set>
+#include	<unordered_set>
+#include	<deque>
 #include	<memory>
 #include	<string>
+#include	<functional>
 #include	<random>
+#include	<fstream>
 #include	<algorithm>
+#include	<functional>
 #include	<typeinfo>
+#include	<chrono>
+#include	<filesystem>
+#include	<numeric>
+
+#include	<time.h>
 
 #endif // !INCLUDE
 

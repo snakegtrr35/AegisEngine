@@ -7,6 +7,7 @@
 #include	"Renderer.h"
 
 #include	"camera.h"
+#include	"Debug_Camera.h"
 #include	"Field.h"
 #include	"Player.h"
 #include	"Enemy.h"
@@ -19,22 +20,26 @@
 
 #include	"Grid.h"
 #include	"XYZ_Axis.h"
+
 #include	"Bounding.h"
+#include	"Bounding_Shpere.h"
+#include	"Bounding_Aabb.h"
+#include	"Bounding_Obb.h"
 
 #include	"Mesh_Field.h"
 #include	"Mesh_Cylinder.h"
 #include	"Mesh_Dome.h"
 
-using namespace std;
+//#include	"manager.h"
 
-class GAME_OBJECT;
 
 enum class LAYER_NAME {
 
-	BACKGROUND = 0,
-	GAMEOBJECT,
-	EFFECT,
-	UI,
+	BACKGROUND = 0,		//! 背景のためのレイヤー
+	GAMEOBJECT,			//! ゲームオブジェクトのためのレイヤー
+	EFFECT,				//! エフェクトのためのレイヤー
+	//DEBUG,			//! デバッグ標準のためのレイヤー
+	UI,					//! UIのためのレイヤー
 	MAX_LAYER
 };
 
@@ -52,55 +57,76 @@ enum class SCENE_INDEX {
 class SCENE {
 private:
 
+	friend class GAME_OBJECT;
+
 protected:
-	static list<GAME_OBJECT*> GameObjects[(int)LAYER_NAME::MAX_LAYER];
+	//static list<GAME_OBJECT*> GameObjects[(int)LAYER_NAME::MAX_LAYER];
+	static list<shared_ptr<GAME_OBJECT>> GameObjects[(int)LAYER_NAME::MAX_LAYER];
 
 	static bool PauseEnable;
 
 public:
+
+	// リストへの追加
+	//template <typename T>
+	//static T* Add_Game_Object(LAYER_NAME layer)
+	//{
+	//	T* object = new T();
+
+	//	//object->Init();
+
+	//	GameObjects[(int)layer].emplace_back(object);
+
+	//	return object;
+	//}
+
 	// リストへの追加
 	template <typename T>
-	static T* Add_Game_Object(LAYER_NAME layer)
+	static T* Add_Game_Object(LAYER_NAME layer, const string& name = "none")
 	{
 		T* object = new T();
 
-		object->Init();
+		//object->Init();
+			
+		object->Set_Object_Name(name);
 
-		GameObjects[(int)layer].push_back(object);
+		GameObjects[(int)layer].emplace_back(object);
 
 		return object;
 	}
 
 	// リストから特定のオブジェクトの取得
-	template <typename T>
-	static T* Get_Game_Object()
-	{
-		for (int i = 0; i < (int)LAYER_NAME::MAX_LAYER; i++)
-		{
-			for (GAME_OBJECT* object : GameObjects[i])
-			{
-				if (typeid(T) == typeid(*object))
-				{
-					return (T*)object;
-				}
-			}
-		}
-		return nullptr;
-	}
+	//template <typename T>
+	//static T* Get_Game_Object()
+	//{
+	//	for (int i = 0; i < (int)LAYER_NAME::MAX_LAYER; i++)
+	//	{
+	//		//for (GAME_OBJECT* object : GameObjects[i])
+	//		for (auto object = GameObjects[i].begin(); object != GameObjects[i].end(); object++)
+	//		{
+	//			if (typeid(T) == typeid(*object->get()))
+	//			{
+	//				return (T*)object->get();
+	//			}
+	//		}
+	//	}
+	//	return nullptr;
+	//}
 
 	// リストから特定の名前のオブジェクトの取得
 	template <typename T>
-	static T* Get_Game_Object(const string& name)
+	static T* Get_Game_Object(const string& name = "none")
 	{
 		for (int i = 0; i < (int)LAYER_NAME::MAX_LAYER; i++)
 		{
-			for (GAME_OBJECT* object : GameObjects[i])
+			//for (GAME_OBJECT* object : GameObjects[i])
+			for (auto object = GameObjects[i].begin(); object != GameObjects[i].end(); object++)
 			{
-				if (typeid(T) == typeid(*object))
+				if (typeid(T) == typeid(*object->get()))
 				{
-					if (name == object->Get_Object_Name())
+					if (name == object->get()->Get_Object_Name())
 					{
-						return (T*)object;
+						return (T*)object->get();
 					}
 				}
 			}
@@ -115,11 +141,12 @@ public:
 		vector<T*> objects;
 		for (int i = 0; i < (int)LAYER_NAME::MAX_LAYER; i++)
 		{
-			for (GAME_OBJECT* object : GameObjects[i])
+			//for (GAME_OBJECT* object : GameObjects[i])
+			for (auto object = GameObjects[i].begin(); object != GameObjects[i].end(); object++)
 			{
-				if (typeid(T) == typeid(*object))
+				if (typeid(T) == typeid( *object->get()) )
 				{
-					objects.push_back((T*)object);
+					objects.push_back( (T*)object->get() );
 				}
 			}
 		}
@@ -134,13 +161,14 @@ public:
 		vector<T*> objects;
 		for (int i = 0; i < (int)LAYER_NAME::MAX_LAYER; i++)
 		{
-			for (GAME_OBJECT* object : GameObjects[i])
+			//for (GAME_OBJECT* object : GameObjects[i])
+			for (auto object = GameObjects[i].begin(); object != GameObjects[i].end(); object++)
 			{
-				if (typeid(T) == typeid(*object))
+				if (typeid(T) == typeid(*object->get()))
 				{
-					if (name == object->Get_Object_Name())
+					if (name == object->get()->Get_Object_Name())
 					{
-						objects.push_back((T*)object);
+						objects.push_back((T*)object->get());
 					}
 				}
 			}
@@ -148,28 +176,43 @@ public:
 		return objects;
 	}
 
-	// リストから特定のオブジェクト（複数）の取得
+	// リストから特定のオブジェクの取得
 	// 引数 name オブジェクト名
-	static vector<GAME_OBJECT*> Get_Game_Objects(const string& name)
+	static GAME_OBJECT* Get_Game_Object(const string& name)
+	{
+		for (int i = 0; i < (int)LAYER_NAME::MAX_LAYER; i++)
+		{
+			//for (GAME_OBJECT* object : GameObjects[i])
+			for (auto object = GameObjects[i].begin(); object != GameObjects[i].end(); object++)
+			{
+				if (name == object->get()->Get_Object_Name())
+				{
+					return object->get();
+				}
+			}
+		}
+		return nullptr;
+	}
+
+	// 全オブジェクトの取得
+	static vector<GAME_OBJECT*> Get_All_Game_Object()
 	{
 		vector<GAME_OBJECT*> objects;
 		for (int i = 0; i < (int)LAYER_NAME::MAX_LAYER; i++)
 		{
-			for (GAME_OBJECT* object : GameObjects[i])
+			//for (GAME_OBJECT* object : GameObjects[i])
+			for (auto object = GameObjects[i].begin(); object != GameObjects[i].end(); object++)
 			{
-				if (name == object->Get_Object_Name())
-				{
-					objects.push_back(object);
-				}
+				objects.push_back(object->get());
 			}
 		}
 		return objects;
 	}
 
-	SCENE() {};
+	SCENE() {}
 	virtual ~SCENE() {
 		Uninit();
-	};
+	}
 
 	/**
 	* @brief 簡単な説明（～する関数）
@@ -179,6 +222,13 @@ public:
 	* @details 詳細な説明
 	*/
 	virtual void Init(void) {
+		for (int i = 0; i < (int)LAYER_NAME::MAX_LAYER; i++)
+		{
+			for (auto object = GameObjects[i].begin(); object != GameObjects[i].end(); object++)
+			{
+				object->get()->Init();
+			}
+		}
 	};
 
 	/**
@@ -189,6 +239,13 @@ public:
 	* @details 詳細な説明
 	*/
 	virtual void Draw(void) {
+		for (int i = 0; i < (int)LAYER_NAME::MAX_LAYER; i++)
+		{
+			for (auto object = GameObjects[i].begin(); object != GameObjects[i].end(); object++)
+			{
+				object->get()->Draw();
+			}
+		}
 	};
 
 	/**
@@ -198,29 +255,30 @@ public:
 	* @return bool 戻り値の説明
 	* @details 詳細な説明
 	*/
-	virtual void Update(void) {
+	virtual void Update(float delta_time) {
 		if (true == PauseEnable)	// ポーズ中
 		{
-			for (GAME_OBJECT* object : GameObjects[(int)LAYER_NAME::UI])
+			for (auto object = GameObjects[(int)LAYER_NAME::UI].begin(); object != GameObjects[(int)LAYER_NAME::UI].end(); object++)
 			{
-					object->Update();
+					object->get()->Update(delta_time);
 			}
 
 			for (int i = 0; i < (int)LAYER_NAME::MAX_LAYER; i++)
 			{
-				GameObjects[i].remove_if([](GAME_OBJECT* object) { return object->Destroy(); }); // リストから削除
+				GameObjects[i].remove_if([](auto& object) { return object->Destroy(); }); // リストから削除
 			}
 		}
 		else	// ポーズ中ではない
 		{
 			for (int i = 0; i < (int)LAYER_NAME::MAX_LAYER; i++)
 			{
-				for (GAME_OBJECT* object : GameObjects[i])
+				//for (GAME_OBJECT* object : GameObjects[i])
+				for (auto object = GameObjects[i].begin(); object != GameObjects[i].end(); object++)
 				{
-					object->Update();
+					object->get()->Update(delta_time);
 				}
 
-				GameObjects[i].remove_if([](GAME_OBJECT* object) { return object->Destroy(); }); // リストから削除
+				GameObjects[i].remove_if([](auto& object) { return object->Destroy(); }); // リストから削除
 			}
 		}
 	};
@@ -235,10 +293,9 @@ public:
 	virtual void Uninit(void) {
 		for (int i = 0; i < (int)LAYER_NAME::MAX_LAYER; i++)
 		{
-			for (GAME_OBJECT* object : GameObjects[i])
+			for (auto object = GameObjects[i].begin(); object != GameObjects[i].end(); object++)
 			{
-				object->Uninit();
-				SAFE_DELETE(object);
+				object->reset();
 			}
 			GameObjects[i].clear();
 		}
@@ -280,7 +337,36 @@ public:
 	static const bool Get_PauseEnable() {
 		return PauseEnable;
 	};
+
+	/**
+	* @brief オブジェクトの個数を取得する関数
+	* @details 特定レイヤーのオブジェクトの個数を返す
+	* @return UINT オブジェクトの個数
+	*/
+	static const UINT Get_Game_Object_Count(const LAYER_NAME layer) {
+		return GameObjects[(int)layer].size();
+	}
+
+	template<typename Archive>
+	void serialize(Archive& ar)
+	{
+		ar(GameObjects);
+	}
+
+	/*template<class Archive>
+	void save(Archive& ar) const
+	{
+		ar(GameObjects);
+	}
+
+	template<class Archive>
+	void load(Archive& ar)
+	{
+		ar(GameObjects);
+	}*/
 };
+
+//CEREAL_REGISTER_TYPE(SCENE)
 
 /**
 * @brief タイトルシーンクラス
@@ -292,16 +378,37 @@ private:
 protected:
 
 public:
-	TITLE() {};
+	TITLE() {}
 	~TITLE() {
 		Uninit();
-	};
+	}
 
 	void Init() override;
 	void Draw() override;
-	void Update() override;
+	void Update(float delta_time) override;
 	void Uninit() override;
+
+	template<typename Archive>
+	void serialize(Archive& ar)
+	{
+		ar(cereal::base_class<SCENE>(this));
+	}
+
+	/*template<class Archive>
+	void save(Archive& ar) const
+	{
+		ar(cereal::base_class<SCENE>(this));
+	}
+
+	template<class Archive>
+	void load(Archive& ar)
+	{
+		ar(cereal::base_class<SCENE>(this));
+	}*/
 };
+
+CEREAL_REGISTER_TYPE(TITLE)
+CEREAL_REGISTER_POLYMORPHIC_RELATION(SCENE, TITLE)
 
 /**
 * @brief ゲームシーンクラス
@@ -313,16 +420,37 @@ private:
 protected:
 
 public:
-	GAME() {};
+	GAME() {}
 	~GAME() {
 		Uninit();
-	};
+	}
 
 	void Init() override;
 	void Draw() override;
-	void Update() override;
+	void Update(float delta_time) override;
 	void Uninit() override;
+
+	template<typename Archive>
+	void serialize(Archive& ar)
+	{
+		ar(cereal::base_class<SCENE>(this));
+	}
+
+	/*template<class Archive>
+	void save(Archive& ar) const
+	{
+		ar(cereal::base_class<SCENE>(this));
+	}
+
+	template<class Archive>
+	void load(Archive& ar)
+	{
+		ar(cereal::base_class<SCENE>(this));
+	}*/
 };
+
+CEREAL_REGISTER_TYPE(GAME)
+CEREAL_REGISTER_POLYMORPHIC_RELATION(SCENE, GAME)
 
 /**
 * @brief リザルトシーンクラス
@@ -334,18 +462,39 @@ private:
 protected:
 
 public:
-	RESULT() {};
+	RESULT() {}
 	~RESULT() {
 		Uninit();
-	};
+	}
 
 	void Init() override;
 	void Draw() override;
-	void Update() override;
+	void Update(float delta_time) override;
 	void Uninit() override;
 
 	static bool Clear_Flag;
+
+	template<typename Archive>
+	void serialize(Archive& ar)
+	{
+		ar(cereal::base_class<SCENE>(this));
+	}
+
+	/*template<class Archive>
+	void save(Archive& ar) const
+	{
+		ar(cereal::base_class<SCENE>(this));
+	}
+
+	template<class Archive>
+	void load(Archive& ar)
+	{
+		ar(cereal::base_class<SCENE>(this));
+	}*/
 };
+
+CEREAL_REGISTER_TYPE(RESULT)
+CEREAL_REGISTER_POLYMORPHIC_RELATION(SCENE, RESULT)
 
 /**
 * @brief メインメニューシーンクラス
@@ -358,20 +507,39 @@ private:
 protected:
 
 public:
-	MAIN_MENU() {};
+	MAIN_MENU() {}
 	~MAIN_MENU() {
 		Uninit();
-	};
+	}
 
 	void Init() override;
 	void Draw() override;
-	void Update() override;
+	void Update(float delta_time) override;
 	void Uninit() override;
 
 	static string Model_Name;
+
+	template<typename Archive>
+	void serialize(Archive& ar)
+	{
+		ar(cereal::base_class<SCENE>(this));
+	}
+
+	/*template<class Archive>
+	void save(Archive& ar) const
+	{
+		ar(cereal::base_class<SCENE>(this));
+	}
+
+	template<class Archive>
+	void load(Archive& ar)
+	{
+		ar(cereal::base_class<SCENE>(this));
+	}*/
 };
 
-
+CEREAL_REGISTER_TYPE(MAIN_MENU)
+CEREAL_REGISTER_POLYMORPHIC_RELATION(SCENE, MAIN_MENU)
 
 /**
 * @brief シーン管理クラス
@@ -385,8 +553,8 @@ protected:
 
 public:
 	SCENE_MANAGER() {
-		if (nullptr == pScene)
-			pScene = new SCENE();
+		//if (nullptr == pScene)
+		//	pScene = new SCENE();
 	};
 
 	~SCENE_MANAGER() {
@@ -394,19 +562,19 @@ public:
 	};
 
 	void Init() {
-		pScene->Init();
+		if(nullptr != pScene) pScene->Init();
 	};
 
 	void Draw() {
 		pScene->Draw();
 	};
 
-	void Update() {
-		pScene->Update();
+	void Update(float delta_time) {
+		pScene->Update(delta_time);
 	};
 
 	void Uninit() {
-		pScene->Uninit();
+		//pScene->Uninit();
 		SAFE_DELETE(pScene);
 	};
 

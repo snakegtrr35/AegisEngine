@@ -2,4 +2,12 @@
 
 LARGE_INTEGER TIMER::start, TIMER::end, TIMER::frep;
 
-DWORD CROCK_TIMER::Time = 0;
+DWORD CLOCK_TIMER::Time = 0;
+
+LARGE_INTEGER TIMER::delta_start;
+LARGE_INTEGER TIMER::delta_end;
+
+double TIMER::time = 0;
+
+deque<double> TIMER::FPSs;
+double TIMER::FPS = 0.0;

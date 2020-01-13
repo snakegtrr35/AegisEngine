@@ -1,7 +1,8 @@
 #include	"XYZ_Axis.h"
+
 #include	"manager.h"
 #include	"Scene.h"
-#include	"camera.h"
+#include	"ShadowMap.h"
 
 #define COUNT (6)
 
@@ -191,44 +192,57 @@ void AXIS::Init(void)
 
 void AXIS::Draw(void)
 {
-	XMMATRIX world;
-
-	// 入力アセンブラにインデックスバッファを設定
-	CRenderer::SetIndexBuffer(pIndexBuffer);
-
-	// トポロジの設定
-	CRenderer::GetDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_LINESTRIP);
-
-	// 
-	CRenderer::Set_Shader(SHADER_INDEX_V::NO_LIGHT, SHADER_INDEX_P::NO_TEXTURE);
-
-	for (int i = 0; i < 3; i++)
+	if (false == CManager::Get_ShadowMap()->Get_Enable())
 	{
-		// 入力アセンブラに頂点バッファを設定
-		CRenderer::SetVertexBuffers(pVertexBuffer[i]);
+		XMMATRIX world;
 
-		// 3Dマトリックス設定
+		// 入力アセンブラにインデックスバッファを設定
+		CRenderer::SetIndexBuffer(pIndexBuffer);
+
+		// トポロジの設定
+		CRenderer::GetDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_LINESTRIP);
+
+		// 
+		CRenderer::Set_Shader(SHADER_INDEX_V::DEFAULT, SHADER_INDEX_P::NO_TEXTURE);
+
+		for (int i = 0; i < 3; i++)
 		{
-			world = XMMatrixIdentity();
+			// 入力アセンブラに頂点バッファを設定
+			CRenderer::SetVertexBuffers(pVertexBuffer[i]);
 
-			world = XMMatrixScaling(Scaling.x, Scaling.y, Scaling.z);																						// 拡大縮小
-			world *= XMMatrixRotationRollPitchYaw(XMConvertToRadians(Rotation.x), XMConvertToRadians(Rotation.y), XMConvertToRadians(Rotation.z));			// 回転(ロールピッチヨウ)
-			//world *= XMMatrixTranslation(pos.x, pos.y, pos.z);																								// 移動
-			world *= XMMatrixTranslation(Position.x, Position.y + 0.5f, Position.z);
+			// 3Dマトリックス設定
+			{
+				world = XMMatrixIdentity();
 
-			CRenderer::SetWorldMatrix(&world);
+				world = XMMatrixScaling(Scaling.x, Scaling.y, Scaling.z);																						// 拡大縮小
+				world *= XMMatrixRotationRollPitchYaw(XMConvertToRadians(Rotation.x), XMConvertToRadians(Rotation.y), XMConvertToRadians(Rotation.z));			// 回転(ロールピッチヨウ)
+				//world *= XMMatrixTranslation(pos.x, pos.y, pos.z);																								// 移動
+				world *= XMMatrixTranslation(Position.x, Position.y + 0.5f, Position.z);
+
+				auto camera01 = CManager::Get_Scene()->Get_Game_Object<CCamera>("camera");
+				auto camera02 = CManager::Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
+
+				if (nullptr != camera01)
+				{
+					CRenderer::Set_MatrixBuffer(world, camera01->Get_Camera_View(), camera01->Get_Camera_Projection());
+				}
+				else
+				{
+					CRenderer::Set_MatrixBuffer(world, camera02->Get_Camera_View(), camera02->Get_Camera_Projection());
+				}
+			}
+
+			CRenderer::GetDeviceContext()->DrawIndexed(COUNT, 0, 0);
 		}
 
-		CRenderer::GetDeviceContext()->DrawIndexed(COUNT, 0, 0);
+		// トポロジの設定
+		CRenderer::GetDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
+
+		CRenderer::Set_Shader();
 	}
-
-	// トポロジの設定
-	CRenderer::GetDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
-
-	CRenderer::Set_Shader();
 }
 
-void AXIS::Update(void)
+void AXIS::Update(float delta_time)
 {
 }
 

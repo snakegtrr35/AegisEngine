@@ -3,6 +3,7 @@
 #ifndef COMMON_H
 #define COMMON_H
 
+#include	"main.h"
 #include	<xstring>
 
 // メモリ開放
@@ -18,12 +19,22 @@
 #define TEXT(x) TEXT_PASTE(x)
 #define TEXT_U8(x) TEXT_UTF_8(x)
 
-//! スマートポインタ用のカスタムデリーター
+//! スマートポインタ用のカスタムデリータ
 /*! Release() がある */
 struct Release {
 	template<class T>
 	void operator()(T* p) const {
 		p->Release();
+		p = nullptr;
+	}
+};
+
+//! スマートポインタ用のカスタムデリーター
+/*! Destroy() がある */
+struct Destroy {
+	template<class T>
+	void operator()(T* p) const {
+		p->Destroy();
 		p = nullptr;
 	}
 };
@@ -38,6 +49,13 @@ struct Delete {
 	}
 };
 
-std::wstring stringTowstring(std::string& font);
+std::wstring stringTowstring(const std::string& font);
+
+#ifdef UNICODE
+void Erroer_Message(const std::wstring& str1, const std::wstring& str2 = std::wstring(L"エラーメッセージ"));
+void Erroer_Message(const std::string& str1, const std::string& str2 = std::string("エラーメッセージ"));
+#else
+void Erroer_Message(const std::string& str1, const std::string& str2 = std::string("エラーメッセージ"));
+#endif // !UNICODE
 
 #endif // !COMMON_H

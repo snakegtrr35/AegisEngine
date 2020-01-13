@@ -1,6 +1,9 @@
 #include	"Circle_Shadow.h"
 #include	"texture.h"
 
+#include	"manager.h"
+#include	"Scene.h"
+
 CIRCLE_SHADOW::CIRCLE_SHADOW()
 {
 	pVertexBuffer = nullptr;
@@ -164,11 +167,11 @@ CIRCLE_SHADOW::~CIRCLE_SHADOW()
 	SAFE_DELETE(Texture);
 }
 
-void CIRCLE_SHADOW::Init(void)
+void CIRCLE_SHADOW::Init()
 {
 }
 
-void CIRCLE_SHADOW::Draw(void)
+void CIRCLE_SHADOW::Draw()
 {
 	Vertex[0].Position = XMFLOAT3(-WH.x, 0.f, WH.y);
 	Vertex[0].Normal = XMFLOAT3(0.0f, 1.0f, 0.0f);
@@ -225,7 +228,24 @@ void CIRCLE_SHADOW::Draw(void)
 		world = XMMatrixScaling(Scaling.x, Scaling.y, Scaling.z);				// Šg‘åk¬
 		world *= XMMatrixRotationRollPitchYaw(0.0f, 0.0f, 0.0f);				// ‰ñ“](ƒ[ƒ‹ƒsƒbƒ`ƒˆƒE)
 		world *= XMMatrixTranslation(Position.x, Position.y, Position.z);		// ˆÚ“®
-		CRenderer::SetWorldMatrix(&world);
+
+		auto camera01 = CManager::Get_Scene()->Get_Game_Object<CCamera>("camera");
+		auto camera02 = CManager::Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
+
+		if (nullptr != camera01)
+
+		{
+			CRenderer::Set_MatrixBuffer(world, camera01->Get_Camera_View(), camera01->Get_Camera_Projection());
+
+			CRenderer::Set_MatrixBuffer01(*camera01->Get_Pos());
+		}
+		else
+		{
+			CRenderer::Set_MatrixBuffer(world, camera02->Get_Camera_View(), camera02->Get_Camera_Projection());
+
+			CRenderer::Set_MatrixBuffer01(*camera02->Get_Pos());
+
+		}
 	}
 
 	CRenderer::DrawIndexed(6, 0, 0);
@@ -238,11 +258,11 @@ void CIRCLE_SHADOW::Draw(void)
 	CRenderer::SetMaterial(material);
 }
 
-void CIRCLE_SHADOW::Update(void)
+void CIRCLE_SHADOW::Update(float delta_time)
 {
 }
 
-void CIRCLE_SHADOW::Uninit(void)
+void CIRCLE_SHADOW::Uninit()
 {
 	SAFE_RELEASE(pVertexBuffer);
 	SAFE_DELETE(Texture);

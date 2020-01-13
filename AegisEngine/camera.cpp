@@ -6,8 +6,10 @@
 
 CCamera* CCamera::pCamera = nullptr;
 XMMATRIX CCamera::m_ViewMatrix;
+XMMATRIX CCamera::m_ProjectionMatrix;
 
-float CCamera::Lenght = 10.0f;
+float CCamera::Lenght_Z = 15.0f;
+float CCamera::Lenght_Y = 4.0f;
 
 void CCamera::Init()
 {
@@ -15,13 +17,8 @@ void CCamera::Init()
 
 	Viewing_Angle = 55.0f;
 
-	Lenght = 5.0f;
-
-	Front = XMVectorSet(0.0f, -0.4f, 1.0f, 0.0f);
-	Front = XMVector3Normalize(Front);
-
+	Front = XMVectorSet(0.0f, 0.0f, 1.0f, 0.0f);
 	Up = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
-
 	Right = XMVectorSet(1.0f, 0.0f, 0.0f, 0.0f);
 
 
@@ -33,16 +30,27 @@ void CCamera::Init()
 	Up = XMVector3Normalize(Up);
 
 	At = XMLoadFloat4(&at);
+	{
+		//Pos = At - Front * Lenght;
 
-	Pos = At - Front * Lenght;
+		XMVECTOR vec = At;
 
-	// ビューポートの設定設定
-	Viewport.left = 0;
-	Viewport.top = 0;
-	Viewport.right = SCREEN_WIDTH;
-	Viewport.bottom = SCREEN_HEIGHT;
+		vec -= Front * Lenght_Z;
+		vec += Up * Lenght_Y;
 
-	Rotate = 90.0f;
+		Pos = vec;
+	}
+
+	// ビューポート設定
+	D3D11_VIEWPORT dxViewport;
+	dxViewport.Width = (float)SCREEN_WIDTH;
+	dxViewport.Height = (float)SCREEN_HEIGHT;
+	dxViewport.MinDepth = 0.0f;
+	dxViewport.MaxDepth = 1.0f;
+	dxViewport.TopLeftX = 0.0f;
+	dxViewport.TopLeftY = 0.0f;
+
+	//CRenderer::GetDeviceContext()->RSSetViewports(1, &dxViewport);
 
 	RotateEnable = MoveEnable = true;
 }
@@ -51,16 +59,23 @@ void CCamera::Uninit()
 {
 }
 
-void CCamera::Update()
+void CCamera::Update(float delta_time)
 {
-	XMFLOAT2 point = MOUSE::Get_Position();
+	XMFLOAT2 point = MOUSE::Get_Mouse()->Get_Position();
 
-	bool flag = KEYBOARD::Press_Keyboard(VK_SHIFT);
+	bool flag = KEYBOARD::Press_Keyboard(VK_RBUTTON);
 
-	bool flag2 = KEYBOARD::Press_Keyboard(VK_RBUTTON);
+	{
+		auto player = CManager::Get_Scene()->Get_Game_Object("player");
+		if (nullptr == player)
+		{
+			//At = XMLoadFloat3(player->Get_Position());
 
-	if (flag)
-		At = Front * Lenght + Pos;
+			//At = Front * Lenght + Pos;
+
+			Pos = XMLoadFloat3(player->Get_Position());
+		}
+	}
 
 	XMVECTOR f(Front);
 	XMFLOAT4 front_vec;
@@ -79,158 +94,161 @@ void CCamera::Update()
 	r = DirectX::XMVector3Normalize(r);
 
 	// 回転
-	//if (KEYBOARD::Press_Keyboard(VK_K))
-	if (flag2 && MOUSE::Get_Move_Flag())
 	{
-		XMMATRIX mtxRotation;
+		if (flag && MOUSE::Get_Mouse()->Get_Move_Y_Flag())
+		{
+			float angle;
 
-		//mtxRotation = XMMatrixRotationAxis(Right, XMConvertToRadians(-1.0f));
-		mtxRotation = XMMatrixRotationAxis(Right, XMConvertToRadians(point.y));
+			if (0 < point.y)
+			{
+				angle = 2.0f;
+			}
+			else
+			{
+				angle = -2.0f;
+			}
 
-		Front = XMVector3TransformNormal(Front, mtxRotation);
-		Front = XMVector3Normalize(Front);
+			Math::Quaternion q(XMVECTORToVECTOR3(Right), angle);
 
-		Up = XMVector3TransformNormal(Up, mtxRotation);
-		Up = XMVector3Normalize(Up);
+			VECTOR3 f = Math::VECTOR3::Transform(XMVECTORToVECTOR3(Front), q);
+
+			At = Pos + Front * Lenght_Z;//
+
+			Front = VECTOR3ToXMVECTOR(f);
+			Front = XMVector3Normalize(Front);
+
+			f = Math::VECTOR3::Transform(XMVECTORToVECTOR3(Up), q);
+
+			Up = VECTOR3ToXMVECTOR(f);
+			Up = XMVector3Normalize(Up);
+		}
+
+		if (flag && MOUSE::Get_Mouse()->Get_Move_X_Flag())
+		{
+			float angle;
+
+			if (0 < point.x)
+			{
+				angle = 2.0f;
+			}
+			else
+			{
+				angle = -2.0f;
+			}
+
+			Math::Quaternion q(XMVECTORToVECTOR3(Up), angle);
+
+			VECTOR3 f = Math::VECTOR3::Transform(XMVECTORToVECTOR3(Front), q);
+
+			At = Pos + Front * Lenght_Z;//
+
+			Front = VECTOR3ToXMVECTOR(f);
+			Front = XMVector3Normalize(Front);
+
+			f = Math::VECTOR3::Transform(XMVECTORToVECTOR3(Right), q);
+
+			Right = VECTOR3ToXMVECTOR(f);
+			Right = XMVector3Normalize(Right);
+		}
+
+		{
+			/*XMVECTOR vec = At;
+
+			vec -= Front * Lenght_Z;
+			vec += Up * Lenght_Y;
+
+			Pos = vec;*/
+
+			//At = Pos - Front * Lenght_Z;
+			//At = Pos - Up * Lenght_Y;
+		}
 	}
 
-	////if (KEYBOARD::Press_Keyboard(VK_I))
-	//if (flag2 && MOUSE::Get_Move_Flag() && point.y > 0)
-	//{
-	//	XMMATRIX mtxRotation;
-
-	//	//mtxRotation = XMMatrixRotationAxis(Right, XMConvertToRadians(1.0f));
-	//	mtxRotation = XMMatrixRotationAxis(Right, XMConvertToRadians(point.y));
-
-	//	Front = XMVector3TransformNormal(Front, mtxRotation);
-	//	Front = XMVector3Normalize(Front);
-
-	//	Up = XMVector3TransformNormal(Up, mtxRotation);
-	//	Up = XMVector3Normalize(Up);
-	//}
-
-	//if (KEYBOARD::Press_Keyboard(VK_L))
-	if (flag2 && MOUSE::Get_Move_Flag())
-	{
-		XMMATRIX mtxRotation;
-
-		mtxRotation = XMMatrixRotationY(XMConvertToRadians(point.x));
-		//mtxRotation = XMMatrixRotationAxis(Right, XMConvertToRadians(point.x));
-		//mtxRotation = XMMatrixRotationAxis(Up, XMConvertToRadians(point.x));//
-
-
-		Front = XMVector3TransformNormal(Front, mtxRotation);
-		Front = XMVector3Normalize(Front);
-
-		Up = XMVector3TransformNormal(Up, mtxRotation);
-		Up = XMVector3Normalize(Up);
-
-		Right = XMVector3TransformNormal(Right, mtxRotation);
-		Right = XMVector3Normalize(Right);
-	}
-
-	////if (KEYBOARD::Press_Keyboard(VK_J))
-	//if (flag2 && MOUSE::Get_Move_Flag() && point.x < 0)
-	//{
-	//	XMMATRIX mtxRotation;
-
-	//	mtxRotation = XMMatrixRotationY(XMConvertToRadians(point.x));
-	//	//mtxRotation = XMMatrixRotationAxis(Right, XMConvertToRadians(point.x));
-	//	//mtxRotation = XMMatrixRotationAxis(Up, XMConvertToRadians(point.x));//
-
-	//	Front = XMVector3TransformNormal(Front, mtxRotation);
-	//	Front = XMVector3Normalize(Front);
-
-	//	Up = XMVector3TransformNormal(Up, mtxRotation);
-	//	Up = XMVector3Normalize(Up);
-
-	//	Right = XMVector3TransformNormal(Right, mtxRotation);
-	//	Right = XMVector3Normalize(Right);
-	//}
-	
-	{
-		XMFLOAT3 position;
-
-		XMStoreFloat3(&position, At);
-
-		//position.x = std::clamp(position.x, -50.0f, 50.0f);
-		//position.z = std::clamp(position.z, -50.0f, 50.0f);
-
-		At = XMLoadFloat3(&position);
-	}
-
-	if (flag)
-		Pos = At - Front * Lenght;
 
 	// 移動
 	if (MoveEnable)
 	{
-		if (KEYBOARD::Press_Keyboard(VK_W))
+		if (KEYBOARD::Press_Keyboard(VK_UP))
 		{
-			Pos += f * 0.2f;
+			Pos += f * 0.5f;
 		}
 
-		if (KEYBOARD::Press_Keyboard(VK_S))
+		if (KEYBOARD::Press_Keyboard(VK_DOWN))
 		{
-			Pos -= f * 0.2f;
+			Pos -= f * 0.5f;
 		}
 
-		if (KEYBOARD::Press_Keyboard(VK_D))
+		if (KEYBOARD::Press_Keyboard(VK_RIGHT))
 		{
-			Pos += r * 0.2f;
+			Pos += r * 0.5f;
 		}
 
-		if (KEYBOARD::Press_Keyboard(VK_A))
+		if (KEYBOARD::Press_Keyboard(VK_LEFT))
 		{
-			Pos -= r * 0.2f;
+			Pos -= r * 0.5f;
+		}
+
+		if ((MOUSE::Get_Mouse()->Get_Wheel_Move_Flag() == WHEEL_MOVE_ENUM::UP))
+		{
+			Pos += f * 2.0f;
+		}
+
+		if ((MOUSE::Get_Mouse()->Get_Wheel_Move_Flag() == WHEEL_MOVE_ENUM::DOWN))
+		{
+			Pos -= f * 2.0f;
 		}
 	}
 
-	if (false == flag)
-	{
-		At = Front * Lenght + Pos;
-		Pos = At - Front * Lenght;
-	}
+	XMFLOAT4 pos;
+	XMStoreFloat4(&pos, Pos);
+
+	XMStoreFloat3(&Position, Pos);
 }
 
 void CCamera::Draw()
 {
-	//XMMATRIX m_InvViewMatrix;
-	XMMATRIX m_ProjectionMatrix;
+	RECT rect;
+	GetWindowRect(GetWindow(), &rect);
 
 	// ビューポート設定
 	D3D11_VIEWPORT dxViewport;
-	dxViewport.Width = (float)(Viewport.right - Viewport.left);
-	dxViewport.Height = (float)(Viewport.bottom - Viewport.top);
+	dxViewport.Width = (float)(rect.right - rect.left);
+	dxViewport.Height = (float)(rect.bottom - rect.top);
 	dxViewport.MinDepth = 0.0f;
 	dxViewport.MaxDepth = 1.0f;
-	dxViewport.TopLeftX = (float)Viewport.left;
-	dxViewport.TopLeftY = (float)Viewport.top;
+	dxViewport.TopLeftX = (float)rect.left;
+	dxViewport.TopLeftY = (float)rect.top;
 
-	CRenderer::GetDeviceContext()->RSSetViewports(1, &dxViewport);
+	//CRenderer::GetDeviceContext()->RSSetViewports(1, &dxViewport);
 
 	// ビューマトリクス設定
 	m_ViewMatrix = XMMatrixLookAtLH(Pos, At, Up);
-	CRenderer::SetViewMatrix(&m_ViewMatrix);
-
-	//// ビューマトリクス設定
-	//m_InvViewMatrix = XMMatrixRotationRollPitchYaw(Rotation.x, Rotation.y, Rotation.z);
-	//m_InvViewMatrix *= XMMatrixTranslation(Position.x, Position.y, Position.z);
-
-	/*XMVECTOR det;
-	m_ViewMatrix = XMMatrixInverse(&det, m_InvViewMatrix);*/
+	//CRenderer::SetViewMatrix(&m_ViewMatrix);
 
 	// プロジェクションマトリクス設定
 	m_ProjectionMatrix = XMMatrixPerspectiveFovLH(XMConvertToRadians(Viewing_Angle), dxViewport.Width / dxViewport.Height, 1.0f, 1000.0f);
-	CRenderer::SetProjectionMatrix(&m_ProjectionMatrix);
+	//CRenderer::SetProjectionMatrix(&m_ProjectionMatrix);
 }
 
-CCamera* const CCamera::Get_Camera(void)
+bool CCamera::Get_Visibility(const XMFLOAT3& position)
 {
-	return pCamera;
-}
+	XMVECTOR world_pos, view_pos, projection_pos;
+	XMFLOAT3 projection_pos_F;
 
-const XMMATRIX CCamera::Get_Camera_View(void)
-{
-	return m_ViewMatrix;
+	world_pos = XMLoadFloat3(&position);
+
+	view_pos = XMVector3TransformCoord(world_pos, m_ViewMatrix);
+
+	projection_pos = XMVector3TransformCoord(view_pos, m_ProjectionMatrix);
+
+	XMStoreFloat3(&projection_pos_F, projection_pos);
+
+	if (-1.0f <= projection_pos_F.x && projection_pos_F.x <= 1.0f &&
+		-1.0f <= projection_pos_F.y && projection_pos_F.y <= 1.0f &&
+		0.0f < projection_pos_F.z && projection_pos_F.z < 1.0f)
+	{
+		return true;
+	}
+
+	return false;
 }

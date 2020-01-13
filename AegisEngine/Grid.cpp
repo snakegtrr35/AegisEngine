@@ -1,5 +1,9 @@
 #include	"Grid.h"
 
+#include	"manager.h"
+#include	"Scene.h"
+#include	"ShadowMap.h"
+
 #define COUNT (11 * 2 * 2)
 
 GRID::GRID()
@@ -114,41 +118,63 @@ GRID::~GRID()
 	Uninit();
 }
 
-void GRID::Init(void)
+void GRID::Init()
 {
 }
 
-void GRID::Draw(void)
+void GRID::Draw()
 {
-	// 入力アセンブラに頂点バッファを設定.
-	CRenderer::SetVertexBuffers(pVertexBuffer);
-
-	// 3Dマトリックス設定
+	if (false == CManager::Get_ShadowMap()->Get_Enable())
 	{
-		XMMATRIX world = XMMatrixIdentity();
+		// 入力アセンブラに頂点バッファを設定.
+		CRenderer::SetVertexBuffers(pVertexBuffer);
 
-		world = XMMatrixScaling(Scaling.x, Scaling.y, Scaling.z);																						// 拡大縮小
-		world *= XMMatrixRotationRollPitchYaw(XMConvertToRadians(Rotation.x), XMConvertToRadians(Rotation.y), XMConvertToRadians(Rotation.z));			// 回転(ロールピッチヨウ)
-		world *= XMMatrixTranslation(Position.x, Position.y, Position.z);																				// 移動
-		CRenderer::SetWorldMatrix(&world);
+		// 3Dマトリックス設定
+		{
+			XMMATRIX world = XMMatrixIdentity();
+
+			world = XMMatrixScaling(Scaling.x, Scaling.y, Scaling.z);																						// 拡大縮小
+			world *= XMMatrixRotationRollPitchYaw(XMConvertToRadians(Rotation.x), XMConvertToRadians(Rotation.y), XMConvertToRadians(Rotation.z));			// 回転(ロールピッチヨウ)
+			world *= XMMatrixTranslation(Position.x, Position.y, Position.z);																				// 移動
+
+			auto camera01 = CManager::Get_Scene()->Get_Game_Object<CCamera>("camera");
+			auto camera02 = CManager::Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
+
+			if (nullptr != camera01)
+			{
+				CRenderer::Set_MatrixBuffer(world, camera01->Get_Camera_View(), camera01->Get_Camera_Projection());
+
+				CRenderer::Set_MatrixBuffer01(*camera01->Get_Pos());
+			}
+			else
+			{
+				CRenderer::Set_MatrixBuffer(world, camera02->Get_Camera_View(), camera02->Get_Camera_Projection());
+
+				CRenderer::Set_MatrixBuffer01(*camera02->Get_Pos());
+			}
+		}
+
+		// トポロジの設定
+		CRenderer::GetDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_LINELIST);
+
+		CRenderer::Set_Shader(SHADER_INDEX_V::DEFAULT, SHADER_INDEX_P::NO_TEXTURE);
+
+		CRenderer::GetDeviceContext()->Draw(COUNT, 0);
+
+		// インスタンシング
+		//CRenderer::GetDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+		//CRenderer::GetDeviceContext()->DrawInstanced(COUNT, 200000, 0, 0);
+
+		CRenderer::Set_Shader();
 	}
-
-	// トポロジの設定
-	CRenderer::GetDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_LINELIST);
-
-	CRenderer::Set_Shader(SHADER_INDEX_V::NO_LIGHT, SHADER_INDEX_P::NO_TEXTURE);
-
-	CRenderer::GetDeviceContext()->Draw(COUNT, 0);
-
-	CRenderer::Set_Shader();
 }
 
-void GRID::Update(void)
+void GRID::Update(float delta_time)
 {
 
 }
 
-void GRID::Uninit(void)
+void GRID::Uninit()
 {
 	SAFE_RELEASE(pVertexBuffer);
 }

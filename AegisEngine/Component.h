@@ -7,38 +7,35 @@ class GAME_OBJECT;
 
 // コンポーネントクラス
 class COMPONENT {
-private:
-
 protected:
 
-	GAME_OBJECT* Owner;
+	weak_ptr<GAME_OBJECT> Owner;
 
 	bool Enable;
 	bool DestroyFlag;
 
 public:
 
-	COMPONENT() {
-		Owner = nullptr;
-		Enable = true;
-		DestroyFlag = false;
+	COMPONENT() : Enable(true), DestroyFlag(false) {
+		Owner.reset();
 	}
 
 	virtual ~COMPONENT() {};
 
-	void Init(GAME_OBJECT* owner) {
+	void Init(shared_ptr<GAME_OBJECT> owner) {
 		Owner = owner;
+
 	}
 
-	virtual void Update() = 0;
+	virtual void Update(float delta_time) = 0;
 
 	virtual void Uninit() = 0;
 
-	void SetEnable(const bool const flag) {
+	void SetEnable(const bool flag) {
 		Enable = flag;
 	}
 
-	const bool const GetEnable() {
+	const bool GetEnable() {
 		return Enable;
 	}
 
@@ -50,11 +47,28 @@ public:
 	bool Destroy() {
 		if (DestroyFlag)
 		{
-			delete this;
 			return true;
 		}
 		return false;
 	}
+
+	template<class Archive>
+	void serialize(Archive& ar)
+	{
+		//ar(ptr);
+	}
+
+	/*template<class Archive>
+	void save(Archive& ar) const
+	{
+		ar(Owner);
+	}
+
+	template<class Archive>
+	void load(Archive& ar)
+	{
+		ar(Owner);
+	}*/
 };
 
 
@@ -64,9 +78,7 @@ public:
 class COMPONENT_MANEGER {
 private:
 
-	list<COMPONENT*> Conponent_List;
-
-protected:
+	list< unique_ptr<COMPONENT> > Conponent_List;
 
 public:
 
@@ -74,54 +86,53 @@ public:
 	template <typename T>
 	T* Add_Component()
 	{
-		for (auto object : Conponent_List)
+		for (auto object = Conponent_List.begin(); object != Conponent_List.end(); object++)
 		{
-			if (typeid(T) == typeid(*object))
+			if (typeid(T) == typeid(*object->get()))
 			{
-				return (T*)object;
+				return (T*)object->get();
 			}
 		}
 
 		T* object = new T();
 
-		Conponent_List.push_back(object);
+		Conponent_List.emplace_back(object);
 
 		return object;
 	}
 
 	// リストから特定のメニューオブジェクトの取得
 	template <typename T>
-	T* Get_Component()
-	{
-		for (auto object : Conponent_List)
+	T* Get_Component() {
+		for (auto object = Conponent_List.begin(); object != Conponent_List.end(); object++)
 		{
-			if (typeid(T) == typeid(*object))
+			if (typeid(T) == typeid(*object->get()))
 			{
-				return (T*)object;
+				return (T*)object->get();
 			}
 		}
 		return nullptr;
 	}
 
-	COMPONENT_MANEGER() {};
+	COMPONENT_MANEGER() {}
 
 	~COMPONENT_MANEGER() {
 		Uninit();
 	}
 
-	void Update() {
-		for (auto object : Conponent_List)
+	void Update(float delta_time) {
+		for (auto object = Conponent_List.begin(); object != Conponent_List.end(); object++)
 		{
-			object->Update();
+			object->get()->Update(delta_time);
 		}
 
-		Conponent_List.remove_if([](COMPONENT* object) { return object->Destroy(); }); // リストから削除
+		Conponent_List.remove_if([](auto& object) { return object->Destroy(); }); // リストから削除
 	}
 
 	void Uninit() {
-		for (auto object : Conponent_List)
+		for (auto object = Conponent_List.begin(); object != Conponent_List.end(); object++)
 		{
-			SAFE_DELETE(object);
+			object->reset(nullptr);
 		}
 		Conponent_List.clear();
 	}

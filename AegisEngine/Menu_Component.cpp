@@ -13,7 +13,7 @@ MOUSE_EVENT_COMPONENT::~MOUSE_EVENT_COMPONENT()
 	Uninit();
 }
 
-void MOUSE_EVENT_COMPONENT::Update()
+void MOUSE_EVENT_COMPONENT::Update(float delta_time)
 {
 }
 
@@ -23,7 +23,7 @@ void MOUSE_EVENT_COMPONENT::Uninit()
 
 bool MOUSE_EVENT_COMPONENT::Mouse_Click_Left(const string& const name, SPRITE* me)
 {
-	XMFLOAT2 mouse_pos = MOUSE::Get_Screen_Position();
+	XMFLOAT2 mouse_pos = MOUSE::Get_Mouse()->Get_Screen_Position();
 	XMFLOAT2* pos;
 	XMFLOAT4* size;
 	XMFLOAT2 position;
@@ -76,7 +76,7 @@ bool MOUSE_EVENT_COMPONENT::Mouse_Click_Left(const string& const name, SPRITE* m
 
 bool MOUSE_EVENT_COMPONENT::Mouse_Click_Right(const string& const name, SPRITE* me)
 {
-	XMFLOAT2 mouse_pos = MOUSE::Get_Screen_Position();
+	XMFLOAT2 mouse_pos = MOUSE::Get_Mouse()->Get_Screen_Position();
 	XMFLOAT2* pos;
 	XMFLOAT4* size;
 	XMFLOAT2 position;
@@ -129,7 +129,7 @@ bool MOUSE_EVENT_COMPONENT::Mouse_Click_Right(const string& const name, SPRITE* 
 
 bool MOUSE_EVENT_COMPONENT::Mouse_Over(const string& const name, SPRITE* me)
 {
-	XMFLOAT2 mouse_pos = MOUSE::Get_Screen_Position();
+	XMFLOAT2 mouse_pos = MOUSE::Get_Mouse()->Get_Screen_Position();
 	XMFLOAT2* pos;
 	XMFLOAT4* size;
 	XMFLOAT2 position;
@@ -193,7 +193,7 @@ KEYBOARD_EVENT_COMPONENT::~KEYBOARD_EVENT_COMPONENT()
 	Uninit();
 }
 
-void KEYBOARD_EVENT_COMPONENT::Update()
+void KEYBOARD_EVENT_COMPONENT::Update(float delta_time)
 {
 }
 

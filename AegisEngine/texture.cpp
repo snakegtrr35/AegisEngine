@@ -1,56 +1,42 @@
-#include	"Renderer.h"
 #include	"texture.h"
-
-#include	"Library/DirectXTex/WICTextureLoader.h"
-#include	"Library/DirectXTex/DDSTextureLoader.h"
-
-typedef struct {
-	string Name;
-	XMINT2 WH;
-}TEXTURE_FILE;
-
-static TEXTURE_FILE g_TextureFiles[] = {
-	{"number.png", XMINT2(512, 512) },
-	{"number02.png", XMINT2(320, 32) },
-
-	{"title.png", XMINT2(1920, 1080) },
-	{"game_clear.png", XMINT2(1920, 1080) },
-	{"game_over.png", XMINT2(1920, 1080) },
-
-	{"field004.png", XMINT2(128, 128) },
-	{"shadow000.jpg", XMINT2(80, 80) },
-	{"Explosion.png", XMINT2(360, 360) },
-	{"arrow.png", XMINT2(665, 95) },
-	{"Reticule.png", XMINT2(512, 512) },
-
-	{"hp_rod.png", XMINT2(64, 256) },
-	{"hp.png", XMINT2(2, 2) },
-	{"bullet_icon.png", XMINT2(64, 128) },
-
-	{"pause.png", XMINT2(512, 512) },
-	{"select.png", XMINT2(60, 60) },
-
-	{"UVCheckerMap01-512.png", XMINT2(512, 512) },
-	{"UVCheckerMap01-1024.png", XMINT2(1024, 1024) },
-
-	{"asphalt01-pattern.jpg", XMINT2(1000, 1000) },
-
-	{"asult_rifl.png", XMINT2(512, 512) },
-	{"Bazooka.png", XMINT2(512, 512) },
-
-	{"go.png", XMINT2(256, 128) },
-
-	{"sky.png", XMINT2(8192, 4096) },
-
-	{"UVCheckerMap01-512.DDS", XMINT2(8192, 4096) },
-};
+#include	"Texture_Manager.h"
+#include	"Renderer.h"
 
 
-map<string, unique_ptr<ID3D11ShaderResourceView, Release> > TEXTURE_MANEGER::TextureResource;
 
-// 読み込みテクスチャ数
-static const int TEXTURE_FILE_COUNT = sizeof(g_TextureFiles) / sizeof(g_TextureFiles[0]);
-
+//static TEXTURE_FILE g_TextureFiles[] = {
+//	{"number.png", XMINT2(512, 512) },
+//	{"number02.png", XMINT2(320, 32) },
+//
+//	{"title.png", XMINT2(1920, 1080) },
+//	{"game_clear.png", XMINT2(1920, 1080) },
+//	{"game_over.png", XMINT2(1920, 1080) },
+//
+//	{"field004.png", XMINT2(128, 128) },
+//	{"shadow000.jpg", XMINT2(80, 80) },
+//	{"Explosion.png", XMINT2(360, 360) },
+//	{"arrow.png", XMINT2(665, 95) },
+//	{"Reticule.png", XMINT2(512, 512) },
+//
+//	{"hp_rod.png", XMINT2(64, 256) },
+//	{"hp.png", XMINT2(2, 2) },
+//	{"bullet_icon.png", XMINT2(64, 128) },
+//
+//	{"pause.png", XMINT2(512, 512) },
+//	{"select.png", XMINT2(60, 60) },
+//
+//	{"UVCheckerMap01-512.png", XMINT2(512, 512) },
+//	{"UVCheckerMap01-1024.png", XMINT2(1024, 1024) },
+//
+//	{"asphalt01-pattern.jpg", XMINT2(1000, 1000) },
+//
+//	{"asult_rifl.png", XMINT2(512, 512) },
+//	{"Bazooka.png", XMINT2(512, 512) },
+//
+//	{"go.png", XMINT2(256, 128) },
+//
+//	{"sky.png", XMINT2(8192, 4096) },
+//};
 
 
 TEXTURE::TEXTURE()
@@ -58,9 +44,10 @@ TEXTURE::TEXTURE()
 	FileName = "none";
 }
 
-TEXTURE::TEXTURE(const string& const file_name)
+TEXTURE::TEXTURE(const string& file_name)
 {
 	FileName = file_name;
+	TEXTURE_MANEGER::Add_ReferenceCnt(FileName);
 }
 
 //========================================
@@ -76,9 +63,14 @@ void TEXTURE::Set_Texture(void)
 //========================================
 // テクスチャ名の設定
 //========================================
-void TEXTURE::Set_Texture_Name(const string& const file_name)
+void TEXTURE::Set_Texture_Name(const string& file_name)
 {
-	FileName = file_name;
+	if (file_name != FileName)
+	{
+		TEXTURE_MANEGER::Sub_ReferenceCnt(FileName);
+		FileName = file_name;
+		TEXTURE_MANEGER::Add_ReferenceCnt(FileName);
+	}
 }
 
 //========================================
@@ -93,141 +85,6 @@ XMINT2* const TEXTURE::Get_WH()
 {
 	return TEXTURE_MANEGER::Get_WH(FileName);
 }
-
-//================================================================================================================================================================
-
-void TEXTURE_MANEGER::Init()
-{
-	Load();
-}
-
-void TEXTURE_MANEGER::Uninit()
-{
-	/*for (auto tex : TextureResource)
-	{
-		tex.second->Release();
-	}
-	TextureResource.clear();*/
-
-	for (auto tex = TextureResource.begin(); tex != TextureResource.end(); tex++)
-	{
-		tex->second.reset(nullptr);
-	}
-	TextureResource.clear();
-}
-
-void TEXTURE_MANEGER::Load(void)
-{
-	ID3D11ShaderResourceView* ShaderResourceView;
-
-	wstring path = L"asset/texture/";
-	wstring file_name;
-
-	size_t pos;
-
-	wstring type;
-
-	for (int i = 0; i < TEXTURE_FILE_COUNT; i++)
-	{
-		HRESULT hr;
-
-		// char から wchar_t への変換
-		file_name = stringTowstring(g_TextureFiles[i].Name);
-
-		pos = file_name.find_last_of(L".");
-
-		type = file_name.substr(pos + 1, 3);
-
-		path = L"asset/texture/";
-
-		path = path + file_name;
-
-		if (L"DDS" == type)	// dds
-		{
-			hr = CreateDDSTextureFromFile(CRenderer::GetDevice(), CRenderer::GetDeviceContext(), path.c_str(), nullptr, &ShaderResourceView);
-			if (FAILED(hr))
-			{
-				FAILDE_ASSERT;
-				return;
-			}
-		}
-		else	// jpg か png
-		{
-			hr = CreateWICTextureFromFile(CRenderer::GetDevice(), CRenderer::GetDeviceContext(), path.c_str(), nullptr, &ShaderResourceView);
-			if (FAILED(hr))
-			{
-				FAILDE_ASSERT;
-				return;
-			}
-		}
-
-		TextureResource[g_TextureFiles[i].Name].reset(ShaderResourceView);
-	}
-}
-
-void TEXTURE_MANEGER::Add(const string& const file_name)
-{
-	ID3D11ShaderResourceView* ShaderResourceView;
-
-	wstring path = L"asset/texture/";
-
-	string name = file_name;//
-
-	// char から wchar_t への変換
-	wstring file = stringTowstring(name);
-
-	path = path + file;
-
-	HRESULT hr;
-
-	hr = CreateWICTextureFromFile(CRenderer::GetDevice(), CRenderer::GetDeviceContext(), path.c_str(), nullptr, &ShaderResourceView);
-	if (FAILED(hr))
-	{
-		return;
-	}
-
-	TextureResource[file_name].reset(ShaderResourceView);
-}
-
-// テクスチャの解放
-void TEXTURE_MANEGER::Unload(const string& const file_name)
-{
-}
-
-XMINT2* const TEXTURE_MANEGER::Get_WH(const string& file_name)
-{
-	for (int i = 0; i < TEXTURE_FILE_COUNT; i++)
-	{
-		if (file_name == g_TextureFiles[i].Name)
-		{
-			return &g_TextureFiles[i].WH;
-		}
-	}
-
-	return nullptr;
-}
-
-ID3D11ShaderResourceView* const TEXTURE_MANEGER::GetShaderResourceView(const string& const file_name)
-{
-	/*for (auto tex : TextureResource)
-	{
-		if (file_name == tex.first)
-		{
-			return tex.second;
-		}
-	}*/
-
-	for (auto tex = TextureResource.begin(); tex != TextureResource.end(); tex++)
-	{
-		if (file_name == tex->first)
-		{
-			return tex->second.get();
-		}
-	}
-
-	return nullptr;
-}
-
 
 
 map<wstring,unique_ptr<ID3D11ShaderResourceView, Release>> FONT::FontResource;
@@ -254,7 +111,7 @@ void FONT::Load_Font()
 	// フォントデータ
 	wstring Font;
 	{
-		string Font01("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789 +-*=/^.,;!?()[]{}");
+		string Font01("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789 \+-*=/^.,;'\"!?()[]{}");
 
 		string Font02("あいおうえおかきくけこさしすせそたちつてとなにぬねのはひふへほまみむめもやゆよらりるれろわをんがぎぐげござじずぜぞだぢづでどばびぶべぼぱぴぷぺぽゃゅょっ");
 
@@ -268,16 +125,17 @@ void FONT::Load_Font()
 	}
 
 	// フォントハンドルの生成
-	int fontSize = 256;
+	int fontSize = 128;
 	int fontWeight = 1000;
 	LOGFONTW lf =
 	{
 		fontSize, 0, 0, 0, fontWeight, 0, 0, 0,
 		SHIFTJIS_CHARSET, OUT_TT_ONLY_PRECIS, CLIP_DEFAULT_PRECIS,
 		PROOF_QUALITY, DEFAULT_PITCH | FF_MODERN,
-		(WCHAR)"ＭＳ Ｐ明朝"
+		//(WCHAR)"ＭＳ Ｐ明朝"
 		//(WCHAR)"ＭＳ 明朝"
 		//(WCHAR)"ＭＳ ゴシック"
+		(WCHAR)"メイリオ"
 	};
 	HFONT hFont = CreateFontIndirectW(&lf);
 
@@ -286,7 +144,7 @@ void FONT::Load_Font()
 	HDC hdc = GetDC(NULL);
 	HFONT oldFont = (HFONT)SelectObject(hdc, hFont);
 
-	const int gradFlag = GGO_GRAY8_BITMAP;
+	const int gradFlag = GGO_GRAY4_BITMAP;
 	// 階調の最大値
 	int grad = 0;
 	switch (gradFlag)
@@ -417,19 +275,19 @@ void FONT::Load_Font()
 		// シェーダーリソースの作成
 		CRenderer::GetDevice()->CreateShaderResourceView(font_texture, &srvDesc, &ShaderResourceView);
 
-		wstring a;
-		a.push_back(font);
+		wstring f;
+		f.push_back(font);
 
-		FontResource[a].reset(ShaderResourceView);
+		FontResource[f].reset(ShaderResourceView);
 
-		a.clear();
+		f.clear();
 	}
 }
 
 void FONT::Load_Font(const wstring& one_character)
 {
 	// フォントハンドルの生成
-	int fontSize = 256;
+	int fontSize = 128;
 	int fontWeight = 1000;
 	LOGFONTW lf =
 	{
@@ -446,15 +304,14 @@ void FONT::Load_Font(const wstring& one_character)
 	// 現在のウィンドウに適用
 	// デバイスにフォントを持たせないとGetGlyphOutline関数はエラーとなる
 	HDC hdc = GetDC(NULL);
-	HFONT oldFont = (HFONT)SelectObject(hdc, hFont);
+	//HFONT oldFont = (HFONT)SelectObject(hdc, hFont);
 
 	// フォントビットマップ取得
-
 	wchar_t font = (wchar_t)one_character.c_str();
 
 	UINT code = (UINT)font;
 
-	const int gradFlag = GGO_GRAY8_BITMAP;
+	const int gradFlag = GGO_GRAY4_BITMAP;
 	// 階調の最大値
 	int grad = 0;
 	switch (gradFlag)

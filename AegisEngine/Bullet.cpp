@@ -72,17 +72,17 @@ BULLET::~BULLET()
 	Uninit();
 }
 
-void BULLET::Init(void)
+void BULLET::Init()
 {
 }
 
-void BULLET::Draw(void)
+void BULLET::Draw()
 {
 	Model->Draw();
 	Shadow->Draw();
 }
 
-void BULLET::Update(void)
+void BULLET::Update(float delta_time)
 {
 	Position.x += MoveVector.x * 0.2f;
 	Position.y += MoveVector.y * 0.2f;
@@ -143,27 +143,26 @@ void BULLET::Update(void)
 
 	// プレイヤーと弾の当たり判定
 	{
-		PLAYER* player = CManager::Get_Scene()->Get_Game_Object<PLAYER>();
+		PLAYER* player = CManager::Get_Scene()->Get_Game_Object<PLAYER>("player");
 
-		if (Collision_HitAABB(this->Get_Collison(), player->Get_Collision()))
-		{
-			// ビルボード
-			{
-				BILL_BOARD_ANIMATION* bba = CManager::Get_Scene()->Add_Game_Object<BILL_BOARD_ANIMATION>(LAYER_NAME::EFFECT);
-				bba->Set_Position(&Position);
-				bba->SetWH(XMFLOAT2(1.0f, 1.0f));
-				bba->SetParam(3.0f, 4, 4);
-			}
+		//if (Collision_HitAABB(this->Get_Collison(), player->Get_Collision()))
+		//{
+		//	// ビルボード
+		//	{
+		//		BILL_BOARD_ANIMATION* bba = CManager::Get_Scene()->Add_Game_Object<BILL_BOARD_ANIMATION>(LAYER_NAME::EFFECT);
+		//		bba->Set_Position(&Position);
+		//		bba->SetWH(XMFLOAT2(1.0f, 1.0f));
+		//		bba->SetParam(3.0f, 4, 4);
+		//	}
 
-			CManager::Get_Scene()->Destroy_Game_Object(this);
-			player->Damage();
+		//	CManager::Get_Scene()->Destroy_Game_Object(this);
 
-			AUDIO_MANAGER::Play_Sound_Object(SOUND_INDEX::SOUND_INDEX_EXPLOSION);
-		}
+		//	AUDIO_MANAGER::Play_Sound_Object(SOUND_INDEX::SOUND_INDEX_EXPLOSION);
+		//}
 	}
 }
 
-void BULLET::Uninit(void)
+void BULLET::Uninit()
 {
 	SAFE_DELETE(Model);
 	SAFE_DELETE(Shadow);

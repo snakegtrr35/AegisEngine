@@ -9,11 +9,10 @@
 #define SPRITE_H
 
 #include	"Game_Object.h"
+#include	"texture.h"
 #include	"Menu_Component.h"
 #include	"Renderer.h"
-#include	"main.h"
 
-class TEXTURE;
 
 /**
  * 子スプライト情報
@@ -39,10 +38,11 @@ private:
 
 protected:
 	unique_ptr<ID3D11Buffer, Release> pVertexBuffer;		//!< 頂点バッファ
+	static unique_ptr<ID3D11Buffer, Release> pIndexBuffer;		//!< インデックスバッファ
 
 	VERTEX_3D Vertex[4];		//!< 頂点データ
 
-	TEXTURE* Texture;		//!< テクスチャ
+	unique_ptr<TEXTURE> Texture;		//!< テクスチャ
 
 	XMFLOAT2 Position;		//!< ポジション
 
@@ -62,8 +62,6 @@ protected:
 	list<MENU_COMPONENT*> MenuEvents;		//!< メニューイベント(リスト)
 
 	bool Enable = true;		//!< スプライトの有効無効フラグ(デフォルトは有効)
-
-	static unique_ptr<ID3D11Buffer, Release> pIndexBuffer;		//!< インデックスバッファ
 
 	ID3D11ShaderResourceView* ShaderResourceView = nullptr;
 
@@ -121,7 +119,7 @@ public:
 	* @brief 更新関数
 	* @details 更新する関数
 	*/
-	void Update() override;
+	void Update(float delta_time) override;
 
 	/**
 	* @brief 終了処理関数
@@ -287,7 +285,7 @@ public:
 	* @details 特定のメニューイベントを有効無効化する関数
 	*/
 	template <typename T>
-	void Menu_Event_Enable(const bool const flag)
+	void Menu_Event_Enable(const bool flag)
 	{
 		for (auto component : MenuEvents)
 		{
@@ -370,7 +368,40 @@ public:
 	void Set(ID3D11ShaderResourceView* shader_resource_view) {
 		ShaderResourceView = shader_resource_view;
 	};
+
+	template<typename Archive>
+	void serialize(Archive& ar)
+	{
+		ar(cereal::base_class<GAME_OBJECT>(this));
+		ar(Texture);
+		ar(SPRITE::Position);
+		ar(Size);
+		ar(Color);
+	}
+
+	//template<class Archive>
+	//void save(Archive& ar) const
+	//{
+	//	ar(cereal::base_class<GAME_OBJECT>(this));
+	//	ar(Texture);
+	//	ar(SPRITE::Position);
+	//	ar(Size);
+	//	ar(Color);
+	//}
+
+	//template<class Archive>
+	//void load(Archive& ar)
+	//{
+	//	ar(cereal::base_class<GAME_OBJECT>(this));
+	//	ar(Texture);
+	//	ar(SPRITE::Position);
+	//	ar(Size);
+	//	ar(Color);
+	//}
 };
+
+CEREAL_REGISTER_TYPE(SPRITE)
+CEREAL_REGISTER_POLYMORPHIC_RELATION(GAME_OBJECT, SPRITE)
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -400,9 +431,6 @@ private:
 	* @details 実際に描画する関数
 	*/
 	void Draw2(float tx = -1.0f, float ty = -1.0f);
-
-protected:
-
 
 public:
 
@@ -442,7 +470,7 @@ public:
 	* @brief 更新関数
 	* @details 更新する関数
 	*/
-	void Update() override;
+	void Update(float delta_time) override;
 
 	/**
 	* @brief 終了処理関数
@@ -472,10 +500,52 @@ public:
 	* @return XMFLOAT2 テクスチャの切り取り幅と高さ
 	* @details テクスチャの切り取り幅と高さを取得する関数
 	*/
-	const XMFLOAT2& Get_Twh() {
+	const XMFLOAT2 Get_Twh() {
 		return XMFLOAT2(Tw, Th);
-	};
+	}
+
+	template<typename Archive>
+	void serialize(Archive& ar)
+	{
+		ar(cereal::base_class<SPRITE>(this));
+		ar(WaitFrame);
+		ar(Pattern_Max_X);
+		ar(Pattern_Max_Y);
+		ar(Tx);
+		ar(Ty);
+		ar(Tw);
+		ar(Th);
+	}
+
+	//template<class Archive>
+	//void save(Archive& ar) const
+	//{
+	//	ar(cereal::base_class<SPRITE>(this));
+	//	ar(WaitFrame);
+	//	ar(Pattern_Max_X);
+	//	ar(Pattern_Max_Y);
+	//	ar(Tx);
+	//	ar(Ty);
+	//	ar(Tw);
+	//	ar(Th);
+	//}
+
+	//template<class Archive>
+	//void load(Archive& ar)
+	//{
+	//	ar(cereal::base_class<SPRITE>(this));
+	//	ar(WaitFrame);
+	//	ar(Pattern_Max_X);
+	//	ar(Pattern_Max_Y);
+	//	ar(Tx);
+	//	ar(Ty);
+	//	ar(Tw);
+	//	ar(Th);
+	//}
 };
+
+CEREAL_REGISTER_TYPE(SPRITE_ANIMATION)
+CEREAL_REGISTER_POLYMORPHIC_RELATION(SPRITE, SPRITE_ANIMATION)
 
 /**
 * @brief テキストクラス
@@ -521,7 +591,7 @@ public:
 	* @brief 更新関数
 	* @details 更新する関数
 	*/
-	void Update() override;
+	void Update(float delta_time) override;
 
 	/**
 	* @brief 終了処理関数
@@ -535,6 +605,30 @@ public:
 	* @details 表示する文字列を設定する関数
 	*/
 	void Edit(const string& text);
+
+	template<typename Archive>
+	void serialize(Archive& ar)
+	{
+		ar(cereal::base_class<SPRITE>(this));
+		ar(Text);
+	}
+
+	//template<class Archive>
+	//void save(Archive& ar) const
+	//{
+	//	ar(cereal::base_class<SPRITE>(this));
+	//	ar(Text);
+	//}
+
+	//template<class Archive>
+	//void load(Archive& ar)
+	//{
+	//	ar(cereal::base_class<SPRITE>(this));
+	//	ar(Text);
+	//}
 };
+
+CEREAL_REGISTER_TYPE(TEXTS)
+CEREAL_REGISTER_POLYMORPHIC_RELATION(SPRITE, TEXTS)
 
 #endif // ! SPRITE_H

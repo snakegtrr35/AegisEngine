@@ -12,9 +12,9 @@
 
 #pragma comment (lib, "assimp-vc141-mt.lib")
 
-#include	"main.h"
 #include	"Renderer.h"
 #include	"Mesh.h"
+#include	"Animetion_State_Machine.h"
 #include	"Game_Object.h"
 
 class CMODEL : public GAME_OBJECT {
@@ -36,6 +36,8 @@ private:
 
 	DWORD Frame;
 
+	ANIMETION_STATE Anime_State_Machine;
+
 public:
 	CMODEL();
 
@@ -46,11 +48,16 @@ public:
 
 	void Init() override {};
 	void Draw() override;
-	void Update() override;
+	void Update(float delta_time) override;
 	void Uninit() override;
 
 	void Set_Enable(const bool flag);
 	const bool Get_Enable();
+
+	ANIMETION_STATE& Get() {
+		return Anime_State_Machine;
+	}
+
 };
 
 #endif // !MODEL_LOADER_H

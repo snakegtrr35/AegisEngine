@@ -4,7 +4,6 @@
 #include	"Input.h"
 #include	"Circle_Shadow.h"
 #include	"Collision.h"
-#include	"Bullet.h"
 #include	"Player.h"
 
 #include	"Score.h"
@@ -12,21 +11,24 @@
 
 #include	"audio_clip.h"
 
-static void Create_Bullet(XMFLOAT3& position, XMFLOAT3& front);
-
-static unsigned char cnt = 1;
-static unsigned char rate;
+#include	"Timer.h"
 
 PLAYER::PLAYER(void)
 {
-	Position = XMFLOAT3(0.0f, 0.0f, 0.0f);
+}
 
-	Rotation = XMFLOAT3(0.0f, 0.0f, 0.0f);
+PLAYER::~PLAYER()
+{
+	Uninit();
+}
 
-	Scaling = XMFLOAT3(0.5f, 0.5f, 0.5f);
-
+void PLAYER::Init(void)
+{
 	{
-		string name = MAIN_MENU::Model_Name;
+		AnimType = true;
+		Blend = 1.0f;
+
+		string name = "asset/model/human01_Stop.fbx";
 
 		Model = new CMODEL();
 
@@ -37,59 +39,47 @@ PLAYER::PLAYER(void)
 		Model->Set_Scaling(Scaling);
 	}
 
-	Collision = new COLLISIION_AABB();
+	//Collision = new COLLISIION_SPHERE();
 
-	dynamic_cast<COLLISIION_AABB*>(Collision)->Set_Position(Position);
+	//dynamic_cast<COLLISIION_SPHERE*>(Collision)->Set_Position(Position);
 
-	dynamic_cast<COLLISIION_AABB*>(Collision)->Set_Radius(XMFLOAT3(1.0f, 1.0f, 1.0f));
+	//dynamic_cast<COLLISIION_SPHERE*>(Collision)->Set_Radius(3.0f);
 
-	shadow = new CIRCLE_SHADOW();
-	shadow->Set_Position(&Position);
-
-	shadow->SetWH(XMFLOAT2(0.8f, 0.8f));
-
-	if ("asset/model/herorifle.fbx" == MAIN_MENU::Model_Name)
 	{
-		rate = 10;
+		//COLOR color(1.0f, 0.f, 0.f, 1.0f);
+
+		//Shpere = new BOUNDING_SHPERE();
+		//Shpere = new BOUNDING_AABB();
+
+		//Shpere->Set_Position(Position);
+		//Shpere->Set_Radius(radius);
+		//Shpere->Set_Color(color);
+		//Shpere->Init();
 	}
-	else
-	{
-		rate = 60;
-	}
-
-	cnt = 0;
-
-	HP = 100.0f;
-}
-
-PLAYER::~PLAYER()
-{
-	Uninit();
-}
-
-void PLAYER::Init(void)
-{
 }
 
 void PLAYER::Draw(void)
 {
 	Model->Draw();
-	shadow->Draw();
+
+	//Shpere->Draw();
 }
 
-void PLAYER::Update(void)
+void PLAYER::Update(float delta_time)
 {
-	CCamera* camera = CManager::Get_Scene()->Get_Game_Object<CCamera>();
+	//CCamera* camera = CManager::Get_Scene()->Get_Game_Object<CCamera>("camera");
+	DEBUG_CAMERA* camera = CManager::Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
 
 	XMVECTOR* vec = camera->Get_At();
 	XMVECTOR* front = camera->Get_Front();
+	*front = XMVector4Normalize(*front);
 	XMVECTOR* right = camera->Get_Right();
+	*right = XMVector4Normalize(*right);
 	XMFLOAT3 pos;
-	float rotate = camera->Get();
 
 	XMStoreFloat3(&pos, *vec);
 
-	Position = pos;
+	//Position = pos;
 
 	XMVECTOR f(*front);
 	XMFLOAT3 front_vec;
@@ -103,120 +93,118 @@ void PLAYER::Update(void)
 	right_vec.y = 0.0f;
 	r = XMLoadFloat3(&right_vec);
 
+	AnimType = true;
+
 	if (KEYBOARD::Press_Keyboard(VK_W))
 	{
-		Position.x += front_vec.x * 0.1f;
-		Position.z += front_vec.z * 0.1f;
+		Position.x += front_vec.x * delta_time * 10.0f;
+		Position.z += front_vec.z * delta_time * 10.0f;
+
+		AnimType = false;
 	}
 
 	if (KEYBOARD::Press_Keyboard(VK_S))
 	{
-		Position.x -= front_vec.x * 0.1f;
-		Position.z -= front_vec.z * 0.1f;
+		Position.x -= front_vec.x * delta_time * 10.0f;
+		Position.z -= front_vec.z * delta_time * 10.0f;
+
+		AnimType = false;
 	}
 
 	if (KEYBOARD::Press_Keyboard(VK_A))
 	{
-		Position.x -= right_vec.x * 0.1f;
-		Position.z -= right_vec.z * 0.1f;
+		Position.x -= right_vec.x * delta_time * 10.0f;
+		Position.z -= right_vec.z * delta_time * 10.0f;
+
+		AnimType = false;
 	}
 
 	if (KEYBOARD::Press_Keyboard(VK_D))
 	{
-		Position.x += right_vec.x * 0.1f;
-		Position.z += right_vec.z * 0.1f;
+		Position.x += right_vec.x * delta_time * 10.0f;
+		Position.z += right_vec.z * delta_time * 10.0f;
+
+		AnimType = false;
 	}
 
 	// メッシュフィールドとの当たり判定
-	MESH_FIELD* pfield = CManager::Get_Scene()->Get_Game_Object<MESH_FIELD>();
-	if (nullptr != pfield)
-		Position.y = pfield->Get_Height(Position);
+	//MESH_FIELD* pfield = CManager::Get_Scene()->Get_Game_Object<MESH_FIELD>();
+	//if (nullptr != pfield)
+	//	Position.y = pfield->Get_Height(Position);
 
 	// カメラに合わせた回転
-	Rotation.y = rotate + 90.0f;
+	//Rotation.y = rotate + 90.0f;
 
+	// モデルの更新
 	{
+		// 待機
+		if (AnimType)
+		{
+			Blend = min(1.0f, Blend + (1.0f / 60.0f));
+		}
+		else  // 歩く
+		{
+			Blend = max(0.0f, Blend - (1.0f / 60.0f));
+		}
+
 		Model->Set_Position(Position);
 		Model->Set_Rotation(Rotation);
 		Model->Set_Scaling(Scaling);
+
+		Model->Update(delta_time);
+
+		Blend = Model->Get().Get_Ratio();
 	}
 
-	dynamic_cast<COLLISIION_AABB*>(Collision)->Set_Position(Position);
-
-	// 影の更新
-	{
-		XMFLOAT3 pos = Position;
-
-		pos.y += 0.01f;
-		
-		shadow->Set_Position(&pos);
-	}
+	//dynamic_cast<COLLISIION_SPHERE*>(Collision)->Set_Position(Position);
+	//Shpere->Set_Position(Position);
+	//Shpere->Set_Scaling(Scaling);
+	//Shpere->Set_Radius(radius);
+	//Shpere->Update(delta_time);
 
 	if (KEYBOARD::Trigger_Keyboard(VK_1))
 	{
-		AUDIO_MANAGER::Play_Sound_Object(SOUND_INDEX::SOUND_INDEX_EXPLOSION);
+		//AUDIO_MANAGER::Play_Sound_Object(SOUND_INDEX::SOUND_INDEX_EXPLOSION);
 	}
 
 	if (KEYBOARD::Trigger_Keyboard(VK_LBUTTON))
 	{
-		SCORE* score = CManager::Get_Scene()->Get_Game_Object<SCORE>();
+		//SCORE* score = CManager::Get_Scene()->Get_Game_Object<SCORE>();
 
-		if (nullptr != score)
-			score->Add(10);
+		//if (nullptr != score)
+		//	score->Add(10);
 	}
 
 	if (KEYBOARD::Trigger_Keyboard(VK_RBUTTON))
 	{
-		SCORE* score = CManager::Get_Scene()->Get_Game_Object<SCORE>();
+		//SCORE* score = CManager::Get_Scene()->Get_Game_Object<SCORE>();
 
-		if(nullptr != score)
-			score->Add(-10);
+		//if(nullptr != score)
+		//	score->Add(-10);
 	}
 
-	// 弾の生成
-	if (KEYBOARD::Press_Keyboard(VK_SPACE))
+	if (KEYBOARD::Trigger_Keyboard(VK_F1))
 	{
-		if (0 == (cnt % rate))
-		{
-
-			XMFLOAT3 front;
-			XMStoreFloat3(&front, f);
-
-			XMFLOAT3 right;
-			XMVECTOR vec = XMVectorScale(r, -0.3f);
-			XMStoreFloat3(&right, vec);
-
-			XMFLOAT3 pos = Position;
-
-
-			pos.x += front.x * 2;
-			pos.z += front.z * 2;
-
-			pos.x += right.x;
-			pos.z += right.z;
-
-			Create_Bullet(pos, front);
-
-			cnt = 1;
-
-			AUDIO_MANAGER::Play_Sound_Object(SOUND_INDEX::SOUND_INDEX_SHOT, false);
-		}
-
-		cnt++;
+		Model->Get().Change_Anime("Stop", 60);
 	}
 
-	// 死亡
-	if(HP <= 0)
+	if (KEYBOARD::Trigger_Keyboard(VK_F2))
 	{
-		RESULT::Clear_Flag = false;
-		FADE::Start_FadeOut(60);
+		Model->Get().Change_Anime("Walk", 60);
+	}
+
+	if (KEYBOARD::Trigger_Keyboard(VK_F3))
+	{
+		Model->Get().Change_Anime("Jump", 60);
 	}
 }
 
 void PLAYER::Uninit(void)
 {
 	SAFE_DELETE(Model);
-	SAFE_DELETE(shadow);
+
+	//SAFE_DELETE(Collision);
+	//SAFE_DELETE(Shpere);
 }
 
 // ポジションの設定
@@ -229,19 +217,4 @@ void PLAYER::SetPosition(const XMFLOAT3 position)
 void PLAYER::SetScaling(const XMFLOAT3 scaling)
 {
 	Scaling = scaling;
-}
-
-void Create_Bullet(XMFLOAT3& position, XMFLOAT3& front)
-{
-	SCENE* scene = CManager::Get_Scene();
-
-	BULLET* bullet = scene->Add_Game_Object<BULLET>(LAYER_NAME::GAMEOBJECT);
-
-	position.y += 1.0f;
-
-	XMFLOAT3 scaling = XMFLOAT3(0.1f, 0.1f, 0.1f);
-
-	bullet->Set_Position(&position);
-	bullet->Set_Move_Vector(front);
-	bullet->Set_Scaling(scaling);
 }

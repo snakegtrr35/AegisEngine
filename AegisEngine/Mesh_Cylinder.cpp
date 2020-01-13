@@ -1,6 +1,9 @@
-#include "main.h"
 #include "renderer.h"
 #include "Mesh_Cylinder.h"
+
+#include	"manager.h"
+#include	"Scene.h"
+#include	"ShadowMap.h"
 
 void MESH_CYlLINDER::Init()
 {
@@ -117,24 +120,45 @@ void MESH_CYlLINDER::Uninit()
 
 void MESH_CYlLINDER::Draw()
 {
-	XMMATRIX world;
+	if (false == CManager::Get_ShadowMap()->Get_Enable())
+	{
+		{
+			XMMATRIX world;
 
-	world = XMMatrixScaling(Scaling.x, Scaling.y, Scaling.z);							// 拡大・縮小
-	world *= XMMatrixRotationRollPitchYaw(Rotation.x, Rotation.y, Rotation.z);			// 回転
-	world *= XMMatrixTranslation(Position.x, Position.y, Position.z);					// 移動
-	CRenderer::SetWorldMatrix(&world);													// 更新
+			world = XMMatrixScaling(Scaling.x, Scaling.y, Scaling.z);
+			world *= XMMatrixRotationRollPitchYaw(Rotation.x, Rotation.y, Rotation.z);
+			world *= XMMatrixTranslation(Position.x, Position.y, Position.z);
 
-	CRenderer::SetVertexBuffers(VertexBuffer.get());	// 頂点バッファ設定
-	CRenderer::SetIndexBuffer(IndexBuffer.get());		// インデックスバッファ設定
+			auto camera01 = CManager::Get_Scene()->Get_Game_Object<CCamera>("camera");
+			auto camera02 = CManager::Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
 
-	Texture.get()->Set_Texture();
+			if (nullptr != camera01)
 
-	CRenderer::GetDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);	// トポロジ設定
+			{
+				CRenderer::Set_MatrixBuffer(world, camera01->Get_Camera_View(), camera01->Get_Camera_Projection());
 
-	// ポリゴン描画
-	CRenderer::GetDeviceContext()->DrawIndexed(IndexNum, 0, 0);
+				CRenderer::Set_MatrixBuffer01(*camera01->Get_Pos());
+			}
+			else
+			{
+				CRenderer::Set_MatrixBuffer(world, camera02->Get_Camera_View(), camera02->Get_Camera_Projection());
+
+				CRenderer::Set_MatrixBuffer01(*camera02->Get_Pos());
+			}
+		}
+
+		CRenderer::SetVertexBuffers(VertexBuffer.get());	// 頂点バッファ設定
+		CRenderer::SetIndexBuffer(IndexBuffer.get());		// インデックスバッファ設定
+
+		Texture.get()->Set_Texture();
+
+		CRenderer::GetDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);	// トポロジ設定
+
+		// ポリゴン描画
+		CRenderer::GetDeviceContext()->DrawIndexed(IndexNum, 0, 0);
+	}
 }
 
-void MESH_CYlLINDER::Update()
+void MESH_CYlLINDER::Update(float delta_time)
 {
 }

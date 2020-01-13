@@ -21,10 +21,10 @@ public:
 	MESH_CYlLINDER() : Radius(45.0f), CylinderLength(7){};
 	~MESH_CYlLINDER() {};
 
-	void Init();
-	void Uninit();
-	void Update();
-	void Draw();
+	void Init() override;
+	void Uninit() override;
+	void Update(float delta_time) override;
+	void Draw() override;
 
 };
 

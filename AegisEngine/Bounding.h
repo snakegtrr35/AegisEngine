@@ -10,81 +10,65 @@
 
 class BOUNDING : public GAME_OBJECT {
 private:
-
 protected:
-	VERTEX_3D* Vertex;					// 頂点データ
-	ID3D11Buffer* pVertexBuffer;		// 頂点バッファ
-	ID3D11Buffer* pIndexBuffer;			// インデックスバッファ
+
+	static unique_ptr<ID3D11Buffer, Release> pVertexBuffer_BOX;		//! BOXの頂点バッファ
+	static unique_ptr<ID3D11Buffer, Release> pIndexBuffer_BOX;		//! BOXのインデックスバッファ
+	static const char IndexNum_Box;									//! BOXのインデックス数
+	
+	static COLOR Default_Color;
+
+	COLOR Color;
 
 public:
-	BOUNDING() {
-		Position = XMFLOAT3(0.f, 0.f, 0.f);
+	BOUNDING() : Color(COLOR(0.f, 0.f, 0.f, 1.0f)) {}
+	virtual ~BOUNDING() {}
 
-		Vertex = nullptr;
+	void Init() override {}
+	void Draw() override {}
+	void Update(float delta_time) override {}
+	void Uninit() override {}
 
-		pIndexBuffer = pVertexBuffer = nullptr;
-	};
-	virtual ~BOUNDING() {
-		SAFE_RELEASE(pVertexBuffer);
-		SAFE_RELEASE(pIndexBuffer);
-		SAFE_DELETE(Vertex);
-	};
+	virtual void OverWrite() = 0;
 
-	void Init(void) override {};
-	void Draw(void) override {};
-	void Update(void) override {};
-	void Uninit(void) override {};
+	static void Set_Default_Color(const COLOR& color) {
+		Default_Color = color;
+	}
 
-	void Set_Position(const XMFLOAT3& position) {
-		Position = position;
-	};
+	static COLOR Get_Default_Color() {
+		return Default_Color;
+	}
 
-	XMFLOAT3& const Get_Position() {
-		return Position;
-	};
+	void Set_Color(const COLOR& color) {
+		Color = color;
+	}
+
+	template<typename Archive>
+	void serialize(Archive& ar)
+	{
+		ar(cereal::base_class<GAME_OBJECT>(this));
+		ar(Default_Color);
+		ar(Color);
+	}
+
+	//template<class Archive>
+	//void save(Archive& ar) const
+	//{
+	//	ar(cereal::base_class<GAME_OBJECT>(this));
+	//	ar(Default_Color);
+	//	ar(Color);
+	//}
+
+	//template<class Archive>
+	//void load(Archive& ar)
+	//{
+	//	ar(cereal::base_class<GAME_OBJECT>(this));
+	//	ar(Default_Color);
+	//	ar(Color);
+	//}
 };
 
-// 球
-class BOUNDING_SHPERE : public BOUNDING {
-private:
-	float Radius;
-	unsigned char Cnt;
-
-	ID3D11Buffer* pVertexBuffer[2];		// 頂点バッファ
-
-public:
-	BOUNDING_SHPERE ();
-	~BOUNDING_SHPERE ();
-
-	void Init(void) override;
-	void Draw(void) override;
-	void Update(void) override;
-	void Uninit(void) override;
-
-	void Set_Radius(const float radius);
-
-	const float Get_Radius();
-
-	void Set_Cnt(const unsigned char& cnt);
-};
-
-// AABB
-class BOUNDING_AABB : public BOUNDING {
-private:
-	XMFLOAT3 Radius;
-
-public:
-	BOUNDING_AABB();
-	~BOUNDING_AABB();
-
-	void Init(void) override;
-	void Draw(void) override;
-	void Update(void) override;
-	void Uninit(void) override;
-
-	void Set_Radius(const XMFLOAT3& radius);
-
-	XMFLOAT3& const Get_Radius();
-};
+CEREAL_REGISTER_TYPE(BOUNDING)
+CEREAL_REGISTER_POLYMORPHIC_RELATION(GAME_OBJECT, BOUNDING)
 
 #endif // !BOUNDING_H
