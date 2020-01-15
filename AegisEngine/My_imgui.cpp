@@ -491,7 +491,8 @@ void Draw_Inspector(const string& name)
 
 			if (flag)
 			{
-				mtr = XMMatrixTranslation(object->Get_Position()->x, object->Get_Position()->y, object->Get_Position()->z);
+				mtr = XMMatrixScaling(object->Get_Scaling()->x, object->Get_Scaling()->y, object->Get_Scaling()->z);
+				mtr *= XMMatrixTranslation(object->Get_Position()->x, object->Get_Position()->y, object->Get_Position()->z);
 				XMStoreFloat4x4(&mat44, mtr);
 
 				pos[0] = mat44._11, pos[1] = mat44._12, pos[2] = mat44._13, pos[3] = mat44._14;

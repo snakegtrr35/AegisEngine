@@ -280,6 +280,9 @@ void FBXmodel::Update(float delta_time)
 			f = frame % nodeAnim->mNumPositionKeys;
 			aiVector3D pos = nodeAnim->mPositionKeys[f].mValue;
 
+			//f = frame % nodeAnim->mNumScalingKeys;
+			//aiVector3D scale = nodeAnim->mScalingKeys[f].mValue;
+
 			bone->AnimationMatrix = aiMatrixToMatrix(aiMatrix4x4(aiVector3D(1.0f, 1.0f, 1.0f), rot, pos));
 		}
 	}
@@ -295,23 +298,37 @@ void FBXmodel::Draw(XMMATRIX &Matrix)
 		vector<XMMATRIX> bone;
 		bone.reserve(m_BoneNum);
 
-		for (UINT b = 0; b < m_BoneNum; b++)
+		/*for (UINT b = 0; b < m_BoneNum; b++)
 		{
 			bone.emplace_back(m_Bone[b].Matrix);
-		}
+		}*/
+
+		set_bone(m_Scene->mRootNode, bone);
+
+
 
 		SetBoneMatrix(bone);
 	}
 
-
-
-	CRenderer::Set_Shader(SHADER_INDEX_V::ANIMATION, SHADER_INDEX_P::DEFAULT);
+	//CRenderer::Set_Shader(SHADER_INDEX_V::ANIMATION, SHADER_INDEX_P::DEFAULT);
 	CRenderer::Set_InputLayout(INPUTLAYOUT::ANIMATION);
+
+	CRenderer::GetDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 	DrawMesh(m_Scene->mRootNode, Matrix);
 
 	CRenderer::Set_InputLayout();
 	CRenderer::Set_Shader();
+}
+
+void FBXmodel::set_bone(const aiNode* Node, vector<XMMATRIX>& v)
+{
+	v.emplace_back( m_Bone[m_BoneIndex[Node->mName.C_Str()] ].Matrix );
+
+	for (unsigned int i = 0; i < Node->mNumChildren; i++)
+	{
+		set_bone(Node->mChildren[i], v);
+	}
 }
 
 void FBXmodel::SetBoneMatrix(const vector<XMMATRIX>& matrix)
@@ -320,7 +337,7 @@ void FBXmodel::SetBoneMatrix(const vector<XMMATRIX>& matrix)
 
 	auto buffer = MatrixBuffer.get();
 
-	CRenderer::GetDeviceContext()->VSSetConstantBuffers(5, 1, &buffer);
+	CRenderer::GetDeviceContext()->VSSetConstantBuffers(6, 1, &buffer);
 }
 
 void FBXmodel::DrawMesh(const aiNode* Node, const XMMATRIX& Matrix)
@@ -348,12 +365,16 @@ void FBXmodel::DrawMesh(const aiNode* Node, const XMMATRIX& Matrix)
 				if (CManager::Get_ShadowMap()->Get_Enable())
 				{
 					CRenderer::Set_MatrixBuffer(world, view, proj);
+
+					CRenderer::Set_Shader(SHADER_INDEX_V::SHADOW_MAP_ANIMATION, SHADER_INDEX_P::SHADOW_MAP);
 				}
 				else
 				{
 					CRenderer::Set_MatrixBuffer(world, camera01->Get_Camera_View(), camera01->Get_Camera_Projection());
 
 					CRenderer::Set_MatrixBuffer01(*camera01->Get_Pos());
+
+					CRenderer::Set_Shader(SHADER_INDEX_V::ANIMATION, SHADER_INDEX_P::DEFAULT);
 				}
 			}
 			else
@@ -362,12 +383,16 @@ void FBXmodel::DrawMesh(const aiNode* Node, const XMMATRIX& Matrix)
 				if (CManager::Get_ShadowMap()->Get_Enable())
 				{
 					CRenderer::Set_MatrixBuffer(world, view, proj);
+
+					CRenderer::Set_Shader(SHADER_INDEX_V::SHADOW_MAP_ANIMATION, SHADER_INDEX_P::SHADOW_MAP);
 				}
 				else
 				{
 					CRenderer::Set_MatrixBuffer(world, camera02->Get_Camera_View(), camera02->Get_Camera_Projection());
 
 					CRenderer::Set_MatrixBuffer01(*camera02->Get_Pos());
+
+					CRenderer::Set_Shader(SHADER_INDEX_V::ANIMATION, SHADER_INDEX_P::DEFAULT);
 				}
 			}
 		}
@@ -384,8 +409,6 @@ void FBXmodel::DrawMesh(const aiNode* Node, const XMMATRIX& Matrix)
 		{
 			CRenderer::SetIndexBuffer(m_Meshes[m].IndexBuffer);
 		}
-
-		CRenderer::GetDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 		CRenderer::DrawIndexed(m_Meshes[m].IndexNum, 0, 0);
 	}

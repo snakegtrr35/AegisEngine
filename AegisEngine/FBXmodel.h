@@ -76,6 +76,7 @@ private:
 
 	//unordered_map<string, aiQuaternion> m_NodeRotation;
 	//unordered_map<string, aiVector3D> m_NodePosition;
+
 	unordered_map<string, UINT> m_BoneIndex;
 
 	unordered_map<string, UINT> m_TextureIdMap;
@@ -93,6 +94,8 @@ private:
 	string determineTextureType(const aiScene* scene, aiMaterial* mat);
 	int getTextureIndex(aiString* str);
 	ID3D11ShaderResourceView* getTextureFromModel(const aiScene* scene, int textureindex);
+
+	void set_bone(const aiNode* Node, vector<XMMATRIX>& v);
 
 public:
 	FBXmodel() {}

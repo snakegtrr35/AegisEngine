@@ -190,14 +190,7 @@ void MESH_FIELD::Draw()
 
 					CRenderer::Set_MatrixBuffer01(*camera01->Get_Pos());
 
-					if (RENDERING_PASS::GEOMETRY == CRenderer::Get_Rendering_Pass())
-					{
-						CRenderer::Set_Shader(SHADER_INDEX_V::GEOMETRY, SHADER_INDEX_P::GEOMETRY);
-					}
-					else
-					{
-						CRenderer::Set_Shader();
-					}
+					CRenderer::Set_Shader();
 				}
 			}
 			else
@@ -218,15 +211,7 @@ void MESH_FIELD::Draw()
 
 					CRenderer::Set_MatrixBuffer01(*camera02->Get_Pos());
 
-					if (RENDERING_PASS::GEOMETRY == CRenderer::Get_Rendering_Pass())
-					{
-						CRenderer::Set_Shader(SHADER_INDEX_V::GEOMETRY, SHADER_INDEX_P::GEOMETRY);
-					}
-					else
-					{
-						CRenderer::Set_Shader();
-						CRenderer::Set_Shader(SHADER_INDEX_V::DEFAULT, SHADER_INDEX_P::LIGHT);
-					}
+					CRenderer::Set_Shader();
 				}
 			}
 		}
@@ -500,10 +485,7 @@ void MESH_WALL::Draw()
 
 					CRenderer::Set_MatrixBuffer01(*camera02->Get_Pos());
 
-					if (RENDERING_PASS::GEOMETRY != CRenderer::Get_Rendering_Pass())
-					{
-						CRenderer::Set_Shader();
-					}
+					CRenderer::Set_Shader();
 				}
 			}
 			else
@@ -524,10 +506,7 @@ void MESH_WALL::Draw()
 
 					CRenderer::Set_MatrixBuffer01(*camera02->Get_Pos());
 
-					if (RENDERING_PASS::GEOMETRY != CRenderer::Get_Rendering_Pass())
-					{
-						CRenderer::Set_Shader();
-					}
+					CRenderer::Set_Shader();
 				}
 			}
 		}

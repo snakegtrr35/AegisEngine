@@ -239,9 +239,6 @@
     <ClCompile Include="Bounding_Capsule.cpp">
       <Filter>ソース ファイル\GameObject\Bounding</Filter>
     </ClCompile>
-    <ClCompile Include="Clustered.cpp">
-      <Filter>ソース ファイル\System\Clustered</Filter>
-    </ClCompile>
     <ClCompile Include="ForwardPlus.cpp">
       <Filter>ソース ファイル\System\Clustered</Filter>
     </ClCompile>
@@ -442,9 +439,6 @@
     <ClInclude Include="Bounding_Capsule.h">
       <Filter>ソース ファイル\GameObject\Bounding</Filter>
     </ClInclude>
-    <ClInclude Include="Clustered.h">
-      <Filter>ソース ファイル\System\Clustered</Filter>
-    </ClInclude>
     <ClInclude Include="ForwardPlus.h">
       <Filter>ソース ファイル\System\Clustered</Filter>
     </ClInclude>
@@ -483,17 +477,17 @@
     <FxCompile Include="VertexShader_Geometry.hlsl">
       <Filter>リソース ファイル\VertexShader</Filter>
     </FxCompile>
-    <FxCompile Include="ComputeShader_ComputeFrustums.hlsl">
-      <Filter>リソース ファイル</Filter>
-    </FxCompile>
-    <FxCompile Include="CommonInclude.hlsl">
-      <Filter>リソース ファイル</Filter>
-    </FxCompile>
-    <FxCompile Include="ComputeShader_LightCulling.hlsl">
-      <Filter>リソース ファイル</Filter>
-    </FxCompile>
     <FxCompile Include="PixelShader_Created.hlsl">
       <Filter>リソース ファイル\PixelShader</Filter>
+    </FxCompile>
+    <FxCompile Include="TilingForward.hlsl">
+      <Filter>リソース ファイル</Filter>
+    </FxCompile>
+    <FxCompile Include="ParallelReduction.hlsl">
+      <Filter>リソース ファイル</Filter>
+    </FxCompile>
+    <FxCompile Include="VertexShader_ShadowMap_Anime.hlsl">
+      <Filter>リソース ファイル\VertexShader</Filter>
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
@@ -505,5 +499,13 @@
     <Image Include="..\AegisEngine.ico">
       <Filter>リソース ファイル</Filter>
     </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="TilingCommonHeader.h">
+      <Filter>リソース ファイル</Filter>
+    </None>
+    <None Include="CommonHeader.h">
+      <Filter>リソース ファイル</Filter>
+    </None>
   </ItemGroup>
 </Project>

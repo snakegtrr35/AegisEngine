@@ -19,7 +19,7 @@ cbuffer ShadowBuffer : register( b1 )
 }
 
 
-cbuffer BoneBuffer : register( b5 )
+cbuffer BoneBuffer : register( b6 )
 {
     matrix BoneMatrix[2]          : packoffset(c0);
     matrix BoneMatrixDmmy[253]    : packoffset(c8);

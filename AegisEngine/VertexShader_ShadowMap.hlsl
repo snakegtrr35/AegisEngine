@@ -1,5 +1,3 @@
-
-
 //*****************************************************************************
 // 定数バッファ
 //*****************************************************************************
@@ -28,9 +26,9 @@ void main( in float4 inPosition     : POSITION0,
     wvp = mul(World, View);
     wvp = mul(wvp, Projection);
     
-    inPosition.w = 1.0f;
+    inPosition.w = 1.0;
     
     outPosition = mul(inPosition, wvp);
     
-    outPos = mul(inPosition, wvp);
+    outPos = outPosition;
 }

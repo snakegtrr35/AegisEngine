@@ -231,14 +231,7 @@ void CMODEL::Draw()
 		}
 		else
 		{
-			if (RENDERING_PASS::GEOMETRY == CRenderer::Get_Rendering_Pass())
-			{
-				CRenderer::Set_Shader(SHADER_INDEX_V::GEOMETRY, SHADER_INDEX_P::GEOMETRY);
-			}
-			else
-			{
-				CRenderer::Set_Shader();
-			}
+			CRenderer::Set_Shader();
 		}
 	}
 
@@ -283,7 +276,15 @@ void CMODEL::Update(float delta_time)
 
 	Anime_State_Machine.Update();
 
-	Frame++;
+	static float f = 0.f;
+
+	f += delta_time;
+
+	if (0.01666f <= f)
+	{
+		Frame++;
+		f = 0.f;
+	}
 }
 
 void CMODEL::Uninit()

@@ -13,117 +13,79 @@ void FORWARDLUS::Update()
 
 void FORWARDLUS::Draw()
 {
+	ID3D11RenderTargetView* pNULLRTV = nullptr;
+	ID3D11DepthStencilView* pNULLDSV = nullptr;
+	ID3D11ShaderResourceView* pNULLSRV = nullptr;
+	ID3D11UnorderedAccessView* pNULLUAV = nullptr;
+	ID3D11SamplerState* pNULLSampler = nullptr;
 
+	// Depth pre-pass
+	{
+		// Depth pre-pass (to eliminate pixel overdraw during forward rendering)
+		CRenderer::GetDeviceContext()->OMSetRenderTargets(1, &pNULLRTV, m_pDepthStencilView.get());  // null color buffer
+		CRenderer::GetDeviceContext()->OMSetDepthStencilState(m_DepthStateEnable.get(), NULL);  // we are using inverted 32-bit float depth for better precision
+		//CRenderer::GetDeviceContext()->IASetInputLayout(m_pLayoutPositionOnly11);
+		CRenderer::GetDeviceContext()->VSSetShader(m_VertexShader.get(), nullptr, 0);
+		CRenderer::GetDeviceContext()->PSSetShader(nullptr, nullptr, 0);  // null pixel shader
+		CRenderer::GetDeviceContext()->PSSetShaderResources(0, 1, &pNULLSRV);
+		CRenderer::GetDeviceContext()->PSSetShaderResources(1, 1, &pNULLSRV);
+		CRenderer::GetDeviceContext()->PSSetSamplers(0, 1, &pNULLSampler);
+
+		// Draw the main scene
+		//Scene.m_pSceneMesh->Render(pd3dImmediateContext);
+
+		//// Draw the alpha test geometry
+		//ID3D11BlendState* pBlendStateForAlphaTest = m_pBlendStateOpaqueDepthOnly;
+		//pd3dImmediateContext->RSSetState(CommonUtil.GetRasterizerState(RASTERIZER_STATE_DISABLE_CULLING));
+		//pd3dImmediateContext->OMSetBlendState(pBlendStateForAlphaTest, BlendFactor, 0xffffffff);
+		//pd3dImmediateContext->OMSetRenderTargets(1, &pRTV, DepthStencilBuffer.m_pDepthStencilView);  // bind color buffer to prevent D3D warning
+		//pd3dImmediateContext->IASetInputLayout(m_pLayoutPositionAndTex11);
+		//pd3dImmediateContext->VSSetShader(m_pScenePositionAndTexVS, NULL, 0);
+		//pd3dImmediateContext->PSSetShader(m_pSceneAlphaTestOnlyPS, NULL, 0);
+		//pd3dImmediateContext->PSSetSamplers(0, 1, CommonUtil.GetSamplerStateParam(SAMPLER_STATE_ANISO));
+		//Scene.m_pAlphaMesh->Render(pd3dImmediateContext, 0);
+
+		// Restore to default
+		CRenderer::GetDeviceContext()->RSSetState(nullptr);
+		CRenderer::GetDeviceContext()->OMSetBlendState(m_pBlendStateOpaque, BlendFactor, 0xffffffff);
+	}
+
+	// Light culling
+	{
+		CRenderer::GetDeviceContext()->OMSetRenderTargets(1, &pNULLRTV, pNULLDSV);  // null color buffer and depth-stencil
+		CRenderer::GetDeviceContext()->OMSetDepthStencilState(CommonUtil.GetDepthStencilState(DEPTH_STENCIL_STATE_DISABLE_DEPTH_TEST), 0x00);
+		CRenderer::GetDeviceContext()->VSSetShader(nullptr, nullptr, 0);  // null vertex shader
+		CRenderer::GetDeviceContext()->PSSetShader(nullptr, nullptr, 0);  // null pixel shader
+		CRenderer::GetDeviceContext()->PSSetShaderResources(0, 1, &pNULLSRV);
+		CRenderer::GetDeviceContext()->PSSetShaderResources(1, 1, &pNULLSRV);
+		CRenderer::GetDeviceContext()->PSSetSamplers(0, 1, &pNULLSampler);
+
+		// Calculate per-tile depth bounds on the GPU, using a Compute Shader
+		CRenderer::GetDeviceContext()->CSSetShader(pDepthBoundsCS, nullptr, 0);
+		CRenderer::GetDeviceContext()->CSSetShaderResources(0, 1, &pDepthSRV);
+		CRenderer::GetDeviceContext()->CSSetUnorderedAccessViews(0, 1, CommonUtil.GetDepthBoundsUAVParam(), nullptr);
+		CRenderer::GetDeviceContext()->Dispatch(CommonUtil.GetNumTilesX(), CommonUtil.GetNumTilesY(), 1);
+		CRenderer::GetDeviceContext()->CSSetUnorderedAccessViews(0, 1, &pNULLUAV, nullptr);
+
+		// Cull lights on the GPU, using a Compute Shader
+		CRenderer::GetDeviceContext()->CSSetShader(CommonUtil.GetLightCullCS(), nullptr, 0);
+		CRenderer::GetDeviceContext()->CSSetShaderResources(0, 1, LightUtil.GetPointLightBufferCenterAndRadiusSRVParam());
+		CRenderer::GetDeviceContext()->CSSetShaderResources(1, 1, LightUtil.GetSpotLightBufferCenterAndRadiusSRVParam());
+		CRenderer::GetDeviceContext()->CSSetShaderResources(2, 1, CommonUtil.GetDepthBoundsSRVParam());
+		CRenderer::GetDeviceContext()->CSSetUnorderedAccessViews(0, 1, CommonUtil.GetLightIndexBufferUAVParam(), nullptr);
+		CRenderer::GetDeviceContext()->CSSetUnorderedAccessViews(1, 1, CommonUtil.GetSpotIndexBufferUAVParam(), nullptr);
+		CRenderer::GetDeviceContext()->Dispatch(CommonUtil.GetNumTilesX(), CommonUtil.GetNumTilesY(), 1);
+
+		CRenderer::GetDeviceContext()->CSSetShader(nullptr, nullptr, 0);
+		CRenderer::GetDeviceContext()->CSSetShaderResources(0, 1, &pNULLSRV);
+		CRenderer::GetDeviceContext()->CSSetShaderResources(1, 1, &pNULLSRV);
+		CRenderer::GetDeviceContext()->CSSetShaderResources(2, 1, &pNULLSRV);
+		CRenderer::GetDeviceContext()->CSSetUnorderedAccessViews(0, 1, &pNULLUAV, nullptr);
+		CRenderer::GetDeviceContext()->CSSetUnorderedAccessViews(1, 1, &pNULLUAV, nullptr);
+	}
 }
 
 void FORWARDLUS::Uninit()
 {
 
-}
-
-void FORWARDLUS::CreateBuffer(UINT bindFlags, const void* data, size_t count, UINT stride, CPUAccess cpuAccess, bool bUAV)
-{
-	// Assign the data to the system buffer.
-	size_t numBytes = (UINT)count * stride;
-
-	// Create a GPU buffer to store the data.
-	D3D11_BUFFER_DESC bufferDesc = {};
-	bufferDesc.ByteWidth = (UINT)numBytes;
-
-	vector<BYTE> Data;
-
-	if (data)
-	{
-		Data.assign((uint8_t*)data, (uint8_t*)data + numBytes);
-	}
-	else
-	{
-		Data.reserve(numBytes);
-	}
-
-	if (((int)cpuAccess & (int)CPUAccess::Read) != 0)
-	{
-		bufferDesc.Usage = D3D11_USAGE_STAGING;
-		bufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE | D3D11_CPU_ACCESS_READ;
-	}
-	else if (((int)cpuAccess & (int)CPUAccess::Write) != 0)
-	{
-		bufferDesc.Usage = D3D11_USAGE_DYNAMIC;
-		bufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
-		bufferDesc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
-	}
-	else
-	{
-		bufferDesc.Usage = D3D11_USAGE_DEFAULT;
-		bufferDesc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
-		if (bUAV)
-		{
-			bufferDesc.BindFlags |= D3D11_BIND_UNORDERED_ACCESS;
-		}
-	}
-
-	bufferDesc.MiscFlags = D3D11_RESOURCE_MISC_BUFFER_STRUCTURED;
-	bufferDesc.StructureByteStride = stride;
-
-	{
-		HRESULT hr = S_OK;
-		ID3D11Buffer* Buffer = nullptr;
-
-		{
-			D3D11_SUBRESOURCE_DATA subResourceData;
-			subResourceData.pSysMem = (void*)Data.data();
-			subResourceData.SysMemPitch = 0;
-			subResourceData.SysMemSlicePitch = 0;
-
-			hr = CRenderer::GetDevice()->CreateBuffer(&bufferDesc, &subResourceData, &Buffer);
-
-			if (FAILED(hr))
-			{
-				FAILDE_ASSERT;
-				return;
-			}
-		}
-
-		if ((bufferDesc.BindFlags & D3D11_BIND_SHADER_RESOURCE) != 0)
-		{
-			ID3D11ShaderResourceView* srv = nullptr;
-
-			D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc;
-			srvDesc.Format = DXGI_FORMAT_UNKNOWN;
-			srvDesc.ViewDimension = D3D11_SRV_DIMENSION_BUFFER;
-			srvDesc.Buffer.FirstElement = 0;
-			srvDesc.Buffer.NumElements = (UINT)count;
-
-			hr = CRenderer::GetDevice()->CreateShaderResourceView(Buffer, &srvDesc, &srv);
-
-			if (FAILED(hr))
-			{
-				FAILDE_ASSERT;
-				return;
-			}
-
-			m_SRV.reset(srv);
-		}
-
-		if ((bufferDesc.BindFlags & D3D11_BIND_UNORDERED_ACCESS) != 0)
-		{
-			ID3D11UnorderedAccessView* uav = nullptr;
-
-			D3D11_UNORDERED_ACCESS_VIEW_DESC uavDesc;
-			uavDesc.Format = DXGI_FORMAT_UNKNOWN;
-			uavDesc.ViewDimension = D3D11_UAV_DIMENSION_BUFFER;
-			uavDesc.Buffer.FirstElement = 0;
-			uavDesc.Buffer.NumElements = (UINT)count;
-			uavDesc.Buffer.Flags = 0;
-
-			hr = CRenderer::GetDevice()->CreateUnorderedAccessView(Buffer, &uavDesc, &uav);
-
-			if (FAILED(hr))
-			{
-				FAILDE_ASSERT;
-				return;
-			}
-			m_UAV.reset(uav);
-		}
-	}
 }

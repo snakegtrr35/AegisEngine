@@ -3,25 +3,13 @@
 #ifndef FORWARDLUS_H
 #define FORWARDLUS_H
 
-enum class CPUAccess {
-	None = 0,					// No CPU access to this texture is necessary.
-	Read = (1 << 0),			// CPU reads permitted.
-	Write = (1 << 1),			// CPU writes permitted.
-	ReadWrite = Read | Write
-};
-
-struct Frustum {
-	XMFLOAT4 plane[4];
-};
-
 class FORWARDLUS {
 private:
-	unique_ptr<ID3D11Buffer, Release>				m_ConstantBuffer;
+	unique_ptr<ID3D11DepthStencilView, Release>			m_pDepthStencilView;
 
-	unique_ptr<ID3D11ShaderResourceView, Release>	m_SRV;
-	unique_ptr<ID3D11UnorderedAccessView, Release>	m_UAV;
+	unique_ptr<ID3D11DepthStencilState, Release>		m_DepthStateEnable;
 
-	void CreateBuffer(UINT bindFlags, const void* data, size_t count, UINT stride, CPUAccess cpuAccess = CPUAccess::None, bool bUAV = false);
+	unique_ptr <ID3D11VertexShader, Release>			m_VertexShader;
 
 public:
 
