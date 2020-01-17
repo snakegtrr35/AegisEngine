@@ -9,6 +9,7 @@
 #include	"ShadowMap.h"
 #include	"Effekseer.h"
 
+#include	"ForwardPlus.h"
 
 #ifdef _DEBUG
 #include	"My_imgui.h"
@@ -70,6 +71,9 @@ bool CManager::Init()
 	pShadowMap = new SHADOW_MAP();//
 	pShadowMap->Init();
 	pShadowMap->Set_Target(pSceneManager->Get_Scene()->Get_Game_Object<PLAYER>("player"));
+
+	FORWARDLUS f;
+	f.Init();
 
 	return true;
 }

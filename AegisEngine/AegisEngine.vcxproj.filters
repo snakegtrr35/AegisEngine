@@ -57,6 +57,9 @@
     <Filter Include="ソース ファイル\System\Clustered">
       <UniqueIdentifier>{b0bb7ab5-4d54-4096-896d-c4d09202ba2f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="リソース ファイル\ForwardPlus">
+      <UniqueIdentifier>{95738370-2f99-4c4a-bac9-603e4d6f302b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="imgui\imgui.cpp">
@@ -244,6 +247,9 @@
     </ClCompile>
     <ClCompile Include="FBXmodel.cpp">
       <Filter>ソース ファイル\GameObject</Filter>
+    </ClCompile>
+    <ClCompile Include="Light.cpp">
+      <Filter>ソース ファイル</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -445,6 +451,7 @@
     <ClInclude Include="FBXmodel.h">
       <Filter>ソース ファイル\GameObject</Filter>
     </ClInclude>
+    <ClInclude Include="Light.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="pixelShader.hlsl">
@@ -480,14 +487,17 @@
     <FxCompile Include="PixelShader_Created.hlsl">
       <Filter>リソース ファイル\PixelShader</Filter>
     </FxCompile>
-    <FxCompile Include="TilingForward.hlsl">
-      <Filter>リソース ファイル</Filter>
-    </FxCompile>
-    <FxCompile Include="ParallelReduction.hlsl">
-      <Filter>リソース ファイル</Filter>
-    </FxCompile>
     <FxCompile Include="VertexShader_ShadowMap_Anime.hlsl">
       <Filter>リソース ファイル\VertexShader</Filter>
+    </FxCompile>
+    <FxCompile Include="VertexShader_Depth_Pre_Pass.hlsl">
+      <Filter>リソース ファイル\VertexShader</Filter>
+    </FxCompile>
+    <FxCompile Include="ParallelReduction.hlsl">
+      <Filter>リソース ファイル\ForwardPlus</Filter>
+    </FxCompile>
+    <FxCompile Include="TilingForward.hlsl">
+      <Filter>リソース ファイル\ForwardPlus</Filter>
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
@@ -501,11 +511,11 @@
     </Image>
   </ItemGroup>
   <ItemGroup>
-    <None Include="TilingCommonHeader.h">
-      <Filter>リソース ファイル</Filter>
-    </None>
     <None Include="CommonHeader.h">
-      <Filter>リソース ファイル</Filter>
+      <Filter>リソース ファイル\ForwardPlus</Filter>
+    </None>
+    <None Include="TilingCommonHeader.h">
+      <Filter>リソース ファイル\ForwardPlus</Filter>
     </None>
   </ItemGroup>
 </Project>
