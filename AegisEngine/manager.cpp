@@ -68,12 +68,12 @@ bool CManager::Init()
 
 	//CRenderer::Change_Window_Mode();
 
+	FORWARDLUS f;
+	f.Init();
+
 	pShadowMap = new SHADOW_MAP();//
 	pShadowMap->Init();
 	pShadowMap->Set_Target(pSceneManager->Get_Scene()->Get_Game_Object<PLAYER>("player"));
-
-	FORWARDLUS f;
-	f.Init();
 
 	return true;
 }

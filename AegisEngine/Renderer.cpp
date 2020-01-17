@@ -1106,6 +1106,7 @@ void CRenderer::Set_Shader(const SHADER_INDEX_V v_index, const SHADER_INDEX_P p_
 
 		case (int)SHADER_INDEX_P::SHADOW_MAP:
 			m_ImmediateContext->PSSetShader(m_PixelShader[(int)SHADER_INDEX_P::SHADOW_MAP], NULL, 0);
+			//m_ImmediateContext->PSSetShader(nullptr, NULL, 0);
 			break;
 
 		default:
@@ -1158,6 +1159,8 @@ void CRenderer::SetPass_Rendring()
 
 		Set_Shader();
 		Set_RasterizerState();
+
+		SetDepthEnable(true);
 	}
 }
 
