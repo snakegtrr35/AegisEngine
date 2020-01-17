@@ -44,6 +44,7 @@ public:
 
 	virtual void Init() = 0;
 	virtual void Draw() = 0;
+	//virtual void Draw_DPP() = 0;
 	virtual void Update(float delta_time) = 0;
 	virtual void Uninit() = 0;
 
