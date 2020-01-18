@@ -129,15 +129,11 @@ void CManager::Draw()
 
 	CRenderer::Begin();
 
-	//{
-	//	if (nullptr != Clustered.get()) Clustered->Draw();///
-	//}
-
 	// シャドウマップの描画
 	{
-		//pShadowMap->Begin();
-		//pSceneManager->Draw();
-		//pShadowMap->End();//
+		pShadowMap->Begin();
+		pSceneManager->Draw();
+		pShadowMap->End();//
 	}
 
 	// 1パス目

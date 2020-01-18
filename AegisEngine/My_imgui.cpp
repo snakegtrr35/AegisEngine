@@ -20,6 +20,9 @@ extern float radius;
 
 static string old_name;
 
+static BoundingFrustum Frustum;
+static BoundingBox Aabb;
+
 void EditTransform(const float* cameraView, float* cameraProjection, float* matrix, bool enable, GAME_OBJECT* object);
 
 void My_imgui::Init(HWND hWnd)
@@ -58,6 +61,21 @@ void My_imgui::Init(HWND hWnd)
 	ImGuiStyle& style = ImGui::GetStyle();
 
 	style.Colors[ImGuiCol_WindowBg] = color;
+
+	{
+		BoundingFrustum::CreateFromMatrix(Frustum, XMMatrixPerspectiveFovLH(XMConvertToRadians(80.0f), float(SCREEN_WIDTH / SCREEN_HEIGHT), 1.0f, 100.0f));
+		Frustum.Origin.z = 0.0f;
+		{
+			XMMATRIX matrix = XMMatrixRotationRollPitchYaw(XMConvertToRadians(0.f), XMConvertToRadians(180.f), XMConvertToRadians(0.f));
+			XMVECTOR rotate = XMQuaternionRotationMatrix(matrix);
+			Frustum.Transform(Frustum, 1.0f, rotate, XMVectorSet(0.f, 0.f, 0.f, 0.f));
+		}
+	}
+
+	{
+		Aabb.Center = XMFLOAT3(0.f, 0.f, 0.f);
+		Aabb.Extents = XMFLOAT3(5.f, 5.f, 5.f);
+	}
 }
 
 void My_imgui::Draw(void)
@@ -267,58 +285,58 @@ void My_imgui::Draw(void)
 
 			// レンダリングテクスチャ
 			{
-				// タイトルバーありの場合、imageyよりWindowSizeがImVec2(17, 40)分大きければ丁度いい
-				// タイトルバーなしの場合、imageyよりWindowSizeがImVec2(13, 16)分大きければ丁度いい
+			// タイトルバーありの場合、imageyよりWindowSizeがImVec2(17, 40)分大きければ丁度いい
+			// タイトルバーなしの場合、imageyよりWindowSizeがImVec2(13, 16)分大きければ丁度いい
 
-				ImGuiWindowFlags window_flags = ImGuiWindowFlags_NoResize;
+			ImGuiWindowFlags window_flags = ImGuiWindowFlags_NoResize;
 
-				{
-					ImGui::SetNextWindowSize(ImVec2(512 + 17, 512 + 40), ImGuiCond_Once);
+			{
+				ImGui::SetNextWindowSize(ImVec2(512 + 17, 512 + 40), ImGuiCond_Once);
 
-					ImGui::Begin("Shadow", nullptr, window_flags);
+				ImGui::Begin("Shadow", nullptr, window_flags);
 
-					ImTextureID image = CManager::Get_ShadowMap()->Get();
+				ImTextureID image = CManager::Get_ShadowMap()->Get();
 
-					ImGui::Image(image, ImVec2(512, 512));
+				ImGui::Image(image, ImVec2(512, 512));
 
-					ImGui::End();
-				}
+				ImGui::End();
+			}
 
-				{
-					ImGui::SetNextWindowSize(ImVec2(512 + 17, 512 + 40), ImGuiCond_Once);
+			{
+				ImGui::SetNextWindowSize(ImVec2(512 + 17, 512 + 40), ImGuiCond_Once);
 
-					ImGui::Begin("Depth", nullptr, window_flags);
+				ImGui::Begin("Depth", nullptr, window_flags);
 
-					ImTextureID image = CRenderer::Get();
+				ImTextureID image = CRenderer::Get();
 
-					ImGui::Image(image, ImVec2(512, 512));
+				ImGui::Image(image, ImVec2(512, 512));
 
-					ImGui::End();
-				}
+				ImGui::End();
+			}
 
-				{
-					ImGui::SetNextWindowSize(ImVec2(512 + 17, 512 + 40), ImGuiCond_Once);
+			{
+				ImGui::SetNextWindowSize(ImVec2(512 + 17, 512 + 40), ImGuiCond_Once);
 
-					ImGui::Begin("Diffeuse", nullptr, window_flags);
+				ImGui::Begin("Diffeuse", nullptr, window_flags);
 
-					ImTextureID image = CRenderer::Get2();
+				ImTextureID image = CRenderer::Get2();
 
-					ImGui::Image(image, ImVec2(512, 512));
+				ImGui::Image(image, ImVec2(512, 512));
 
-					ImGui::End();
-				}
+				ImGui::End();
+			}
 
-				{
-					ImGui::SetNextWindowSize(ImVec2(512 + 17, 512 + 40), ImGuiCond_Once);
+			{
+				ImGui::SetNextWindowSize(ImVec2(512 + 17, 512 + 40), ImGuiCond_Once);
 
-					ImGui::Begin("Normal", nullptr, window_flags);
+				ImGui::Begin("Normal", nullptr, window_flags);
 
-					ImTextureID image = CRenderer::Get3();
+				ImTextureID image = CRenderer::Get3();
 
-					ImGui::Image(image, ImVec2(512, 512));
+				ImGui::Image(image, ImVec2(512, 512));
 
-					ImGui::End();
-				}
+				ImGui::End();
+			}
 			}
 
 			// オブジェクト一覧
@@ -365,6 +383,72 @@ void My_imgui::Draw(void)
 
 			}
 		}
+
+		/*{
+			ImGuiWindowFlags window_flags = ImGuiWindowFlags_NoResize;
+
+			ImGui::SetNextWindowSize(ImVec2(512 + 17, 512 + 40), ImGuiCond_Once);
+
+			ImGui::Begin("Test", nullptr, window_flags);
+
+			{
+				float Translation[3] = { Aabb.Center.x, Aabb.Center.y, Aabb.Center.z };
+				float Extents[3] = { Aabb.Extents.x, Aabb.Extents.y, Aabb.Extents.z };
+
+				//ImGui::DragFloat3("Translation", Translation, 0.01f);
+				//ImGui::DragFloat3("Extents", Extents, 0.1f);
+
+				Aabb.Center = XMFLOAT3(Translation[0], Translation[1], Translation[2]);
+				Aabb.Extents = XMFLOAT3(Extents[0], Extents[1], Extents[2]);
+			}
+
+			{
+				switch (Frustum.Contains(Aabb))
+				{
+					case ContainmentType::CONTAINS:
+						ImGui::Text((char*)u8"含まれている");
+						break;
+
+					case ContainmentType::DISJOINT:
+						ImGui::Text((char*)u8"重なっている");
+						break;
+
+					case ContainmentType::INTERSECTS:
+						ImGui::Text((char*)u8"含まれていない");
+						break;
+				}
+
+				if (ContainmentType::CONTAINS == Frustum.Contains(Aabb))
+				{
+					ImGui::Text((char*)u8"含まれている");
+				}
+				else
+
+				if((ContainmentType::DISJOINT == Frustum.Contains(Aabb)))
+				{
+					ImGui::Text((char*)u8"重なっている");
+				}
+
+				if ((ContainmentType::INTERSECTS == Frustum.Contains(Aabb)))
+				{
+					ImGui::Text((char*)u8"含まれていない");
+				}
+			}
+
+			{
+				static float Trans[3] = { 0.f, 0.f, 0.f };
+				static float Rotate[3] = { 0.f, 180.f, 0.f };
+
+				ImGui::DragFloat3("Trans", Trans, 0.01f);
+				ImGui::DragFloat3("Rotate", Rotate, 0.1f);
+
+				XMMATRIX matrix = XMMatrixRotationRollPitchYaw(XMConvertToRadians(Rotate[0]), XMConvertToRadians(Rotate[1]), XMConvertToRadians(Rotate[2]));
+				XMVECTOR rotate = XMQuaternionRotationMatrix(matrix);
+				Frustum.Transform(Frustum, 1.0f, rotate, XMVectorSet(XMConvertToRadians(Trans[0]), XMConvertToRadians(Trans[1]), XMConvertToRadians(Trans[2]), 0.f));
+			}
+
+			ImGui::End();
+		}*/
 
 		// インスペクター
 		{

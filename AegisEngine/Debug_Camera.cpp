@@ -8,7 +8,6 @@ XMMATRIX DEBUG_CAMERA::m_ProjectionMatrix;
 
 float DEBUG_CAMERA::Lenght = 15.0f;
 
-
 void DEBUG_CAMERA::Init()
 {
 	XMFLOAT4 at = XMFLOAT4(0.0f, 0.0f, 0.0f, 0.0f);

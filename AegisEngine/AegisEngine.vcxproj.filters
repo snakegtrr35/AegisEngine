@@ -248,6 +248,9 @@
     <ClCompile Include="FBXmodel.cpp">
       <Filter>ソース ファイル\GameObject</Filter>
     </ClCompile>
+    <ClCompile Include="Bounding_Frustum.cpp">
+      <Filter>ソース ファイル\GameObject\Bounding</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="imgui\imconfig.h">
@@ -450,6 +453,9 @@
     </ClInclude>
     <ClInclude Include="FBXmodel.h">
       <Filter>ソース ファイル\GameObject</Filter>
+    </ClInclude>
+    <ClInclude Include="Bounding_Frustum.h">
+      <Filter>ソース ファイル\GameObject\Bounding</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

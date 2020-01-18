@@ -25,6 +25,7 @@
     <ClCompile Include="Bounding.cpp" />
     <ClCompile Include="Bounding_Aabb.cpp" />
     <ClCompile Include="Bounding_Capsule.cpp" />
+    <ClCompile Include="Bounding_Frustum.cpp" />
     <ClCompile Include="Bounding_Shpere.cpp" />
     <ClCompile Include="Bullet.cpp" />
     <ClCompile Include="camera.cpp" />
@@ -97,6 +98,7 @@
     <ClInclude Include="Bounding.h" />
     <ClInclude Include="Bounding_Aabb.h" />
     <ClInclude Include="Bounding_Capsule.h" />
+    <ClInclude Include="Bounding_Frustum.h" />
     <ClInclude Include="Bounding_Obb.h" />
     <ClInclude Include="Bounding_Shpere.h" />
     <ClInclude Include="Bullet.h" />

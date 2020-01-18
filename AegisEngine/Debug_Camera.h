@@ -42,6 +42,8 @@ private:
 	bool MoveEnable;
 	bool RotateEnable;
 
+	//BoundingFrustum Frustum;
+
 public:
 	DEBUG_CAMERA() {}
 	~DEBUG_CAMERA() {}
@@ -134,6 +136,10 @@ public:
 		Up = XMLoadFloat3(&U);
 		Right = XMLoadFloat3(&R);
 	}
+
+	//const BoundingFrustum& Get_Frustum() {
+	//	return Frustum;
+	//}
 
 	/*template<class Archive>
 	void save(Archive& ar) const
