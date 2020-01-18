@@ -13,5 +13,5 @@ void main(in float4 inPosition      : POSITION0,
 { 
     float depthValue = inPos.z / inPos.w;
     
-    outDepth = float4(depthValue, depthValue, depthValue, 1.0f);
+    outDepth = float4(depthValue, 0.0, 0.0, 1.0);
 }

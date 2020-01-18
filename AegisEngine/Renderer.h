@@ -191,15 +191,13 @@ enum class SHADER_INDEX_P {
 	NO_TEXTURE,
 	NO_LIGHT,
 	SHADOW_MAP,
-	GEOMETRY,
-	LIGHT,
 };
 
 enum class SHADER_INDEX_V {
 	DEFAULT,
 	SHADOW_MAP,
 	ANIMATION,
-	GEOMETRY,
+	SHADOW_MAP_ANIMATION,
 };
 
 class CVertexBuffer;
@@ -213,14 +211,6 @@ struct CONSTANT {
 
 struct CONSTANT_02 {
 	XMFLOAT4 Camera_Pos;	// カメラの座標
-};
-
-enum RENDERING_PASS
-{
-	GEOMETRY = 0,
-	LIGHTING,
-	REDRING,
-	MAX_PASS
 };
 
 enum INPUTLAYOUT {
@@ -268,7 +258,7 @@ private:
 	static IDWriteFactory*			m_DwriteFactory;
 
 	static ID3D11VertexShader*		m_VertexShader[4];
-	static ID3D11PixelShader*		m_PixelShader[6];
+	static ID3D11PixelShader*		m_PixelShader[4];
 
 	static ID3D11DepthStencilState* m_DepthStateEnable;
 	static ID3D11DepthStencilState* m_DepthStateDisable;
@@ -292,8 +282,6 @@ private:
 
 	// ライト
 	static LIGHT m_Light;//
-
-	static RENDERING_PASS Pass;
 
 	/**
 	* @brief Direct3Dの初期化
@@ -354,6 +342,9 @@ public:
 		cons.Camera_Pos.w = 0.0f;
 
 		CRenderer::GetDeviceContext()->UpdateSubresource(m_ConstantBuffer_02, 0, NULL, &cons, 0, 0);
+
+		m_ImmediateContext->VSSetConstantBuffers(5, 1, &m_ConstantBuffer_02);
+		m_ImmediateContext->PSSetConstantBuffers(5, 1, &m_ConstantBuffer_02);
 	}
 
 	/**
@@ -472,8 +463,6 @@ public:
 	static void SetPass_Geometry();
 
 	static bool Create();
-
-	static RENDERING_PASS Get_Rendering_Pass();
 
 	static ID3D11ShaderResourceView* Get() {
 		return ShaderResourceView[0].get();

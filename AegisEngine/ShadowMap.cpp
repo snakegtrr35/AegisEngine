@@ -10,7 +10,7 @@ static ID3D11DepthStencilState* m_DepthStateEnable;
 
 SHADOW_MAP::SHADOW_MAP()
 {
-	LightPos = XMFLOAT3(10.0f, 10.0f, -10.0f);
+	LightPos = XMFLOAT3(15.0f, 15.0f, -15.0f);
 
 	Enable = false;
 
@@ -23,7 +23,7 @@ SHADOW_MAP::SHADOW_MAP()
 		// プロジェクションマトリックス
 		//PlojectionMatrix = XMMatrixPerspectiveFovLH(XMConvertToRadians(80.0f), WIDTH / HEIGHT, 1.0f, 100.0f);
 
-		PlojectionMatrix = XMMatrixOrthographicLH(30.0f, 30.0f, 0.1f, 100.0f);
+		PlojectionMatrix = XMMatrixOrthographicLH(40.0f, 40.0f, 0.1f, 100.0f);
 	}
 
 	{
@@ -322,7 +322,7 @@ void SHADOW_MAP::Begin()
     CRenderer::GetDeviceContext()->OMSetRenderTargets( 1, &pRTV, pDSV );
 
 	// バックバッファクリア
-	float ClearColor[4] = { 0.5f, 0.5f, 0.5f, 1.0f };
+	float ClearColor[4] = { 1.0f, 0.0f, 0.0f, 1.0f };
 	CRenderer::GetDeviceContext()->ClearRenderTargetView(pRTV, ClearColor);
     CRenderer::GetDeviceContext()->ClearDepthStencilView( pDSV, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0 );
 
@@ -334,7 +334,7 @@ void SHADOW_MAP::Begin()
 	float blendFactor[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
 	//CRenderer::GetDeviceContext()->OMSetBlendState(BlendState.get(), blendFactor, 0xffffffff);
 
-	CRenderer::GetDeviceContext()->OMSetDepthStencilState(m_DepthStateEnable, NULL);
+	CRenderer::GetDeviceContext()->OMSetDepthStencilState(m_DepthStateEnable, 0x00);
 
 
 	Set_Light(LightPos);

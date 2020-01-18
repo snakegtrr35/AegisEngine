@@ -109,7 +109,7 @@ void MAIN_MENU::Init()
 		//}
 
 		{
-			//auto player = Add_Game_Object<PLAYER>(LAYER_NAME::GAMEOBJECT, "player");
+			auto player = Add_Game_Object<PLAYER>(LAYER_NAME::GAMEOBJECT, "player");
 		}
 
 		{
@@ -231,7 +231,7 @@ void MAIN_MENU::Draw()
 
 	auto m = XMMatrixIdentity();
 
-	m = XMMatrixScaling(2, 2, 2);
+	m = XMMatrixScaling(2.5, 2.5, 2.5);
 
 	model->Draw(m);
 

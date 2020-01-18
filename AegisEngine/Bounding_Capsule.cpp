@@ -17,7 +17,7 @@ void BOUNDING_CAPSULE::Init()
 
 void BOUNDING_CAPSULE::Draw()
 {
-	if (false == CManager::Get_ShadowMap()->Get_Enable() && RENDERING_PASS::REDRING == CRenderer::Get_Rendering_Pass())
+	if (false == CManager::Get_ShadowMap()->Get_Enable())
 	{
 		XMFLOAT3 pos(Position.x, Position.y, Position.z);
 		XMFLOAT3 rotation(Rotation.x, Rotation.y, Rotation.z);
