@@ -20,6 +20,7 @@ static bool flag = false;
 
 static FBXmodel* model;
 static BOUNDING_FRUSTUM Frustun;
+BOUNDING_AABB AABB;
 
 string Replace_String(string& replacedStr, const string& from, const string& to)
 {
@@ -216,6 +217,7 @@ void MAIN_MENU::Init()
 	model->Load("asset/model/SambaDancing2.fbx");
 
 	Frustun.Init();
+	AABB.Init();
 
 	SCENE::Init();
 
@@ -229,13 +231,14 @@ void MAIN_MENU::Draw()
 {
 	SCENE::Draw();
 
+	Frustun.Draw();
+	AABB.Draw();
+
 	auto m = XMMatrixIdentity();
 
 	m = XMMatrixScaling(2.5, 2.5, 2.5);
 
 	model->Draw(m);
-
-	Frustun.Draw();
 }
 
 void MAIN_MENU::Update(float delta_time)
@@ -243,6 +246,7 @@ void MAIN_MENU::Update(float delta_time)
 	SCENE::Update(delta_time);
 
 	model->Update(delta_time);
+	Frustun.Update(delta_time);
 
 	{
 		/*{
@@ -305,6 +309,7 @@ void MAIN_MENU::Uninit()
 
 	SAFE_DELETE(model);
 	Frustun.Uninit();
+	AABB.Uninit();
 
 	AUDIO_MANAGER::Stop_Sound_Object();
 }

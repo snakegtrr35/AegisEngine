@@ -10,43 +10,12 @@ cbuffer ConstantBuffer : register(b0)
     matrix Projection;
 }
 
+
 // シャドウマップ用のマトリックス
 cbuffer ShadowBuffer : register(b1)
 {
     matrix ShadowView;
     matrix ShadowProjection;
-}
-
-// マテリアルバッファ
-struct MATERIAL
-{
-	float4		Ambient;
-	float4		Diffuse;
-	float4		Specular;
-	float4		Emission;
-	float		Shininess;
-	float3		Dummy;//16bit境界用
-};
-
-cbuffer MaterialBuffer : register( b3 )
-{
-	MATERIAL	Material;
-}
-
-
-// ライトバッファ
-struct LIGHT
-{
-	float4  Direction;
-    float4 Position;
-    float4 Diffuse;
-    float4 Ambient;
-    float4 Specular;
-};
-
-cbuffer LightBuffer : register( b4 )
-{
-	LIGHT	Light;
 }
 
 

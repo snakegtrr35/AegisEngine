@@ -5,15 +5,18 @@
 
 void BOUNDING_FRUSTUM::Init()
 {
+
 	{
-		BoundingFrustum::CreateFromMatrix(Frustum, XMMatrixPerspectiveFovLH(XMConvertToRadians(80.0f), float(SCREEN_WIDTH / SCREEN_HEIGHT), 1.0f, 100.0f));
+		BoundingFrustum::CreateFromMatrix(Frustum, XMMatrixPerspectiveFovLH(XMConvertToRadians(80.0f), float(SCREEN_WIDTH / SCREEN_HEIGHT), 0.1f, 10.0f));
 		Frustum.Origin.z = 0.0f;
 		{
-			XMMATRIX matrix = XMMatrixRotationRollPitchYaw(XMConvertToRadians(0.f), XMConvertToRadians(180.f), XMConvertToRadians(0.f));
+			XMMATRIX matrix = XMMatrixRotationRollPitchYaw(XMConvertToRadians(0.f), XMConvertToRadians(0.f), XMConvertToRadians(0.f));
 			XMVECTOR rotate = XMQuaternionRotationMatrix(matrix);
 			Frustum.Transform(Frustum, 1.0f, rotate, XMVectorSet(0.f, 0.f, 0.f, 0.f));
 		}
 	}
+
+	Color = COLOR(1.f, 0.f, 0.f, 1.f);
 
 	if (nullptr != pVertexBuffer.get())
 		pVertexBuffer.reset(nullptr);
@@ -117,7 +120,7 @@ void BOUNDING_FRUSTUM::Init()
 
 void BOUNDING_FRUSTUM::Draw()
 {
-	if (false == CManager::Get_ShadowMap()->Get_Enable() && RENDERING_PASS::REDRING == CRenderer::Get_Rendering_Pass())
+	if (false == CManager::Get_ShadowMap()->Get_Enable())
 	{
 		// 入力アセンブラに頂点バッファを設定
 		CRenderer::SetVertexBuffers(pVertexBuffer.get());
@@ -135,8 +138,8 @@ void BOUNDING_FRUSTUM::Draw()
 			{
 				XMMATRIX world = XMMatrixIdentity();
 
-				//world = XMMatrixScaling(Scaling.x, Scaling.y, Scaling.z);
-				//world *= XMMatrixRotationRollPitchYaw(XMConvertToRadians(rotation.x), XMConvertToRadians(rotation.y), XMConvertToRadians(rotation.z));
+				world = XMMatrixScaling(Scaling.x, Scaling.y, Scaling.z);
+				world *= XMMatrixRotationRollPitchYaw(XMConvertToRadians(Rotation.x), XMConvertToRadians(Rotation.y), XMConvertToRadians(Rotation.z));
 				//world *= XMMatrixTranslation(Position.x, Position.y, Position.z);
 
 				auto camera01 = CManager::Get_Scene()->Get_Game_Object<CCamera>("camera");
@@ -166,6 +169,21 @@ void BOUNDING_FRUSTUM::Draw()
 
 void BOUNDING_FRUSTUM::Update(float delta_time)
 {
+	BoundingFrustum::CreateFromMatrix(Frustum, XMMatrixPerspectiveFovLH(XMConvertToRadians(80.0f), float(SCREEN_WIDTH / SCREEN_HEIGHT), 0.01f, 10.0f));
+
+	XMFLOAT3 r;
+	auto camera = CManager::Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
+
+	if (nullptr != camera)
+	{
+		XMStoreFloat3(&r, XMLoadFloat3(camera->Get_Rotation()) );
+
+		Rotation = r;
+	}
+
+	XMMATRIX matrix = XMMatrixRotationRollPitchYaw(XMConvertToRadians(Rotation.x), XMConvertToRadians(Rotation.y), XMConvertToRadians(Rotation.z));
+	XMVECTOR rotate = XMQuaternionRotationMatrix(matrix);
+	Frustum.Transform(Frustum, 1.0f, rotate, XMVectorSet(0.f, 0.f, 0.f, 0.f));
 }
 
 void BOUNDING_FRUSTUM::Uninit()

@@ -1,22 +1,6 @@
-
-
 //*****************************************************************************
 // 定数バッファ
 //*****************************************************************************
-
-// マテリアルバッファ
-cbuffer MaterialBuffer : register( b1 )
-{
-	float4		Ambient;
-	float4		Diffuse;
-	float4		Specular;
-	float4		Emission;
-	float		Shininess;
-	float3		Dummy;//16bit境界用
-}
-
-
-
 
 
 //*****************************************************************************
@@ -36,7 +20,7 @@ void main( in float4 inPosition     : POSITION0,
 		   in float4 outWPos        : TEXCOORD1,
            in float4 inShadowMapPos : POSITION_SHADOWMAP,
 
-		   out float4 outDiffuse	: SV_Target1 )
+		   out float4 outDiffuse	: SV_Target0 )
 {
 	outDiffuse = inDiffuse;
 }
