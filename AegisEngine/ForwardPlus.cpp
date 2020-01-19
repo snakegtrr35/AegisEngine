@@ -87,7 +87,7 @@ bool FORWARDLUS::Init()
 				return false;
 			}
 
-			m_pLightCullCS.reset(pCS);
+			m_pDepthBoundsCS.reset(pCS);
 		}
 	}
 
@@ -130,11 +130,12 @@ bool FORWARDLUS::Init()
 	}
 
 	{
-		auto texture = m_pDepthBoundsTexture.get();
-		auto srv = m_pDepthBoundsSRV.get();
-		auto uav = m_pDepthBoundsUAV.get();
+		bool flag = CreateSurface(m_pDepthBoundsTexture, m_pDepthBoundsSRV, nullptr, m_pDepthBoundsUAV, DXGI_FORMAT_R32G32B32A32_FLOAT, GetNumTilesX(), GetNumTilesY(), 1);
 
-		bool flag = CreateSurface(&texture, &srv, nullptr, &uav, DXGI_FORMAT_R32G32B32A32_FLOAT, GetNumTilesX(), GetNumTilesY(), 1);
+		if (false == flag)
+		{
+			return false;
+		}
 	}
 
 	{
@@ -437,20 +438,22 @@ bool FORWARDLUS::CreateDepthStencilSurface(ID3D11Texture2D** ppDepthStencilTextu
 	return true;
 }
 
-bool FORWARDLUS::CreateSurface(ID3D11Texture2D** ppTexture, ID3D11ShaderResourceView** ppTextureSRV,
-	ID3D11RenderTargetView** ppTextureRTV, ID3D11UnorderedAccessView** ppTextureUAV,
+bool FORWARDLUS::CreateSurface(unique_ptr<ID3D11Texture2D, Release>& ppTexture, unique_ptr<ID3D11ShaderResourceView, Release>& ppTextureSRV,
+	ID3D11RenderTargetView** ppTextureRTV, unique_ptr<ID3D11UnorderedAccessView, Release>& ppTextureUAV,
 	DXGI_FORMAT Format, unsigned int uWidth, unsigned int uHeight, unsigned int uSampleCount)
 {
 	auto device = CRenderer::GetDevice();
 	HRESULT hr = S_OK;
 
-	if (ppTexture)
+	if (nullptr == ppTexture.get())
 	{
 		D3D11_TEXTURE2D_DESC Desc;
 		ZeroMemory(&Desc, sizeof(Desc));
 
-		if (NULL == *ppTexture)
+		if (nullptr == ppTexture.get())
 		{
+			ID3D11Texture2D* pTex = nullptr;
+
 			Desc.Width = uWidth;
 			Desc.Height = uHeight;
 			Desc.MipLevels = 1;
@@ -459,33 +462,37 @@ bool FORWARDLUS::CreateSurface(ID3D11Texture2D** ppTexture, ID3D11ShaderResource
 			Desc.SampleDesc.Count = uSampleCount;
 			Desc.SampleDesc.Quality = 0;//( uSampleCount > 1 ) ? ( D3D10_STANDARD_MULTISAMPLE_PATTERN ) : ( 0 );
 			Desc.Usage = D3D11_USAGE_DEFAULT;
-			Desc.BindFlags = D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE;
-			if (ppTextureUAV)
-			{
-				Desc.BindFlags |= D3D11_BIND_UNORDERED_ACCESS;
-			}
-			hr = device->CreateTexture2D(&Desc, NULL, ppTexture);
+			Desc.BindFlags = D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_UNORDERED_ACCESS;
+			//if (ppTextureUAV)
+			//{
+			//	Desc.BindFlags |= D3D11_BIND_UNORDERED_ACCESS;
+			//}
+			hr = device->CreateTexture2D(&Desc, nullptr, &pTex);
 			if (FAILED(hr))
 			{
 				FAILDE_ASSERT;
 				return false;
 			}
+			ppTexture.reset(pTex);
 		}
 
-		if (ppTextureSRV)
+		if (nullptr == ppTextureSRV.get())
 		{
+			ID3D11ShaderResourceView* pSrv = nullptr;
+
 			D3D11_SHADER_RESOURCE_VIEW_DESC SRVDesc;
 			ZeroMemory(&SRVDesc, sizeof(D3D11_SHADER_RESOURCE_VIEW_DESC));
 			SRVDesc.Format = Format;
 			SRVDesc.ViewDimension = (uSampleCount > 1) ? (D3D11_SRV_DIMENSION_TEXTURE2DMS) : (D3D11_SRV_DIMENSION_TEXTURE2D);
 			SRVDesc.Texture2D.MostDetailedMip = 0;
 			SRVDesc.Texture2D.MipLevels = 1;
-			hr = device->CreateShaderResourceView(*ppTexture, &SRVDesc, ppTextureSRV);
+			hr = device->CreateShaderResourceView(ppTexture.get(), &SRVDesc, &pSrv);
 			if (FAILED(hr))
 			{
 				FAILDE_ASSERT;
 				return false;
 			}
+			ppTextureSRV.reset(pSrv);
 		}
 
 		if (ppTextureRTV)
@@ -495,7 +502,7 @@ bool FORWARDLUS::CreateSurface(ID3D11Texture2D** ppTexture, ID3D11ShaderResource
 			RTVDesc.Format = Format;
 			RTVDesc.ViewDimension = (uSampleCount > 1) ? (D3D11_RTV_DIMENSION_TEXTURE2DMS) : (D3D11_RTV_DIMENSION_TEXTURE2D);
 			RTVDesc.Texture2D.MipSlice = 0;
-			hr = device->CreateRenderTargetView(*ppTexture, &RTVDesc, ppTextureRTV);
+			hr = device->CreateRenderTargetView(ppTexture.get(), &RTVDesc, ppTextureRTV);
 			if (FAILED(hr))
 			{
 				FAILDE_ASSERT;
@@ -503,20 +510,23 @@ bool FORWARDLUS::CreateSurface(ID3D11Texture2D** ppTexture, ID3D11ShaderResource
 			}
 		}
 
-		if (ppTextureUAV)
+		if (nullptr == ppTextureUAV.get())
 		{
+			ID3D11UnorderedAccessView* pUva = nullptr;
+
 			D3D11_UNORDERED_ACCESS_VIEW_DESC UAVDesc;
 			ZeroMemory(&UAVDesc, sizeof(D3D11_UNORDERED_ACCESS_VIEW_DESC));
 			UAVDesc.Format = Format;
 			UAVDesc.ViewDimension = D3D11_UAV_DIMENSION_TEXTURE2D;
 			UAVDesc.Buffer.FirstElement = 0;
 			UAVDesc.Buffer.NumElements = Desc.Width * Desc.Height;
-			hr = device->CreateUnorderedAccessView(*ppTexture, &UAVDesc, ppTextureUAV);
+			hr = device->CreateUnorderedAccessView(ppTexture.get(), &UAVDesc, &pUva);
 			if (FAILED(hr))
 			{
 				FAILDE_ASSERT;
 				return false;
 			}
+			ppTextureUAV.reset(pUva);
 		}
 	}
 

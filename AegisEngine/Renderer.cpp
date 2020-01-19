@@ -31,6 +31,8 @@ ID3D11InputLayout*			CRenderer::m_VertexLayout[2] = { nullptr };
 ID3D11Buffer*				CRenderer::m_MaterialBuffer = nullptr;
 ID3D11Buffer*				CRenderer::m_LightBuffer = nullptr;
 
+unique_ptr<ID3D11SamplerState, Release>				CRenderer::m_SamplerState;
+
 ID3D11Buffer*				CRenderer::m_Bone_Matrix_Buffer = nullptr;
 
 ID3D11DepthStencilState*	CRenderer::m_DepthStateEnable = nullptr;
@@ -657,6 +659,8 @@ bool CRenderer::Init3D()
 
 	m_ImmediateContext->PSSetSamplers(0, 1, &samplerState);
 
+	m_SamplerState.reset(samplerState);
+
 	return true;
 }
 
@@ -1185,6 +1189,9 @@ void CRenderer::SetPass_Rendring()
 
 		Set_Shader();
 		Set_RasterizerState();
+
+		ID3D11SamplerState* pSS = m_SamplerState.get();
+		m_ImmediateContext->PSSetSamplers(0, 1, &pSS);
 
 		SetDepthEnable(true);
 	}

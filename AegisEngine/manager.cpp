@@ -9,8 +9,8 @@
 #include	"ShadowMap.h"
 #include	"Effekseer.h"
 
-//#include	"Clustered.h"
-//unique_ptr<CLUSTERED> Clustered;
+#include	"ForwardPlus.h"
+unique_ptr<FORWARDLUS> ForwardPlus;
 
 #ifdef _DEBUG
 #include	"My_imgui.h"
@@ -73,8 +73,8 @@ bool CManager::Init()
 	pShadowMap->Init();
 	pShadowMap->Set_Target(pSceneManager->Get_Scene()->Get_Game_Object<PLAYER>("player"));
 
-	//Clustered.reset(new CLUSTERED());///
-	//Clustered->Init();///
+	ForwardPlus.reset(new FORWARDLUS());//
+	ForwardPlus->Init();//
 
 	return true;
 }
@@ -135,6 +135,8 @@ void CManager::Draw()
 		pSceneManager->Draw();
 		pShadowMap->End();//
 	}
+	
+	if(nullptr != ForwardPlus.get()) ForwardPlus->Light_Culling();
 
 	// 1ƒpƒX–Ú
 	{
@@ -212,7 +214,7 @@ void CManager::Draw()
 
 void CManager::Uninit()
 {
-	//Clustered.reset(nullptr);///
+	ForwardPlus.reset(nullptr);///
 
 	SAFE_DELETE(pSceneManager);
 

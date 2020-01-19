@@ -63,8 +63,9 @@ private:
 		ID3D11DepthStencilView** ppDepthStencilView, DXGI_FORMAT DSFormat, DXGI_FORMAT SRVFormat,
 		unsigned int uWidth, unsigned int uHeight, unsigned int uSampleCount);
 
-	bool CreateSurface(ID3D11Texture2D** ppTexture, ID3D11ShaderResourceView** ppTextureSRV,
-		ID3D11RenderTargetView** ppTextureRTV, ID3D11UnorderedAccessView** ppTextureUAV,
+
+	bool CreateSurface(unique_ptr<ID3D11Texture2D, Release>& ppTexture, unique_ptr<ID3D11ShaderResourceView, Release>& ppTextureSRV,
+		ID3D11RenderTargetView** ppTextureRTV, unique_ptr<ID3D11UnorderedAccessView, Release>& ppTextureUAV,
 		DXGI_FORMAT Format, unsigned int uWidth, unsigned int uHeight, unsigned int uSampleCount);
 
 	WORD GetNumTilesX();

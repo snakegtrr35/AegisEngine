@@ -226,61 +226,63 @@ class CRenderer {
 private:
 
 	//! DirectXのフューチャーレベル
-	static D3D_FEATURE_LEVEL		m_FeatureLevel;
+	static D3D_FEATURE_LEVEL									m_FeatureLevel;
 	//! DirectX11のデバイス
-	static ID3D11Device*			m_D3DDevice;
+	static ID3D11Device*										m_D3DDevice;
 	//! DirectX11のデバイスコンテキスト
-	static ID3D11DeviceContext*		m_ImmediateContext;
+	static ID3D11DeviceContext*									m_ImmediateContext;
 	//! スワップチェイン
-	static IDXGISwapChain1*			m_SwapChain;
+	static IDXGISwapChain1*										m_SwapChain;
 	//! レンダーターゲットビュー
-	static ID3D11RenderTargetView*	m_RenderTargetView;
+	static ID3D11RenderTargetView*								m_RenderTargetView;
 
 	static unique_ptr<ID3D11RenderTargetView, Release>			RenderTargetView[3];
 	static unique_ptr<ID3D11ShaderResourceView, Release>		ShaderResourceView[3];
 
 	//! デプスステンシル
-	static ID3D11DepthStencilView*	m_DepthStencilView;
+	static ID3D11DepthStencilView*								m_DepthStencilView;
 	//! Direct2Dのデバイス
-	static ID2D1Device*				m_D2DDevice;
+	static ID2D1Device*											m_D2DDevice;
 	//! Direct2Dのデバイスコンテキスト
-	static ID2D1DeviceContext*		m_D2DDeviceContext;
+	static ID2D1DeviceContext*									m_D2DDeviceContext;
 	//! Direct2Dのターゲットビットマップ
-	static ID2D1Bitmap1*			m_D2DTargetBitmap;
+	static ID2D1Bitmap1*										m_D2DTargetBitmap;
 	//! Dxgi
-	static IDXGIDevice1*			m_dxgiDev;
+	static IDXGIDevice1*										m_dxgiDev;
 
 	//! テキストフォーマット
-	static IDWriteTextFormat*		m_DwriteTextFormat;
+	static IDWriteTextFormat*									m_DwriteTextFormat;
 	//! テキストレイアウト
-	static IDWriteTextLayout*		m_TextLayout;
+	static IDWriteTextLayout*									m_TextLayout;
 	//! Direct2Dのライトファクトリー
-	static IDWriteFactory*			m_DwriteFactory;
+	static IDWriteFactory*										m_DwriteFactory;
 
 	//static ID3D11VertexShader*		m_VertexShader[4];
 	static unordered_map<SHADER_INDEX_V, ID3D11VertexShader*>	m_VertexShader;
 	//static ID3D11PixelShader*		m_PixelShader[4];
 	static unordered_map<SHADER_INDEX_P, ID3D11PixelShader*>	m_PixelShader;
 
-	static ID3D11DepthStencilState* m_DepthStateEnable;
-	static ID3D11DepthStencilState* m_DepthStateDisable;
-	static ID3D11RasterizerState*	m_RasterizerState;
+	static ID3D11DepthStencilState*								m_DepthStateEnable;
+	static ID3D11DepthStencilState*								m_DepthStateDisable;
+	static ID3D11RasterizerState*								m_RasterizerState;
+
+	static unique_ptr<ID3D11SamplerState, Release>				m_SamplerState;
 
 	//! 頂点レイアウト
-	static ID3D11InputLayout*		m_VertexLayout[2];
+	static ID3D11InputLayout*									m_VertexLayout[2];
 	//! マテリアルバッファ
-	static ID3D11Buffer*			m_MaterialBuffer;
+	static ID3D11Buffer*										m_MaterialBuffer;
 	//! ライトバッファ
-	static ID3D11Buffer*			m_LightBuffer;
+	static ID3D11Buffer*										m_LightBuffer;
 	//! ボーン情報バッファ
-	static ID3D11Buffer*			m_Bone_Matrix_Buffer;
+	static ID3D11Buffer*										m_Bone_Matrix_Buffer;
 	//! コンスタントバッファ
-	static ID3D11Buffer*			m_ConstantBuffer;
+	static ID3D11Buffer*										m_ConstantBuffer;
 	
-	static ID3D11Buffer*			m_ConstantBuffer_02;
+	static ID3D11Buffer*										m_ConstantBuffer_02;
 
 	//! スタンバイモードフラグ
-	static bool						Stand_By_Enable;
+	static bool													Stand_By_Enable;
 
 	// ライト
 	static LIGHT m_Light;//

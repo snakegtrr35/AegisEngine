@@ -51,27 +51,6 @@
 
 
 //--------------------------------------------------------------------------------------
-// Miscellaneous constants
-//--------------------------------------------------------------------------------------
-static const float4 kRadarColors[14] = 
-{
-    {0,0.9255,0.9255,1},   // cyan
-    {0,0.62745,0.9647,1},  // light blue
-    {0,0,0.9647,1},        // blue
-    {0,1,0,1},             // bright green
-    {0,0.7843,0,1},        // green
-    {0,0.5647,0,1},        // dark green
-    {1,1,0,1},             // yellow
-    {0.90588,0.75294,0,1}, // yellow-orange
-    {1,0.5647,0,1},        // orange
-    {1,0,0,1},             // bright red
-    {0.8392,0,0,1},        // red
-    {0.75294,0,0,1},       // dark red
-    {1,0,1,1},             // magenta
-    {0.6,0.3333,0.7882,1}, // purple
-};
-
-//--------------------------------------------------------------------------------------
 // Light culling constants.
 // These must match their counterparts in CommonUtil.h
 //--------------------------------------------------------------------------------------
@@ -81,34 +60,42 @@ static const float4 kRadarColors[14] =
 //--------------------------------------------------------------------------------------
 // Constant Buffers
 //--------------------------------------------------------------------------------------
-cbuffer cbPerObject : register( b0 )
-{
-    matrix  g_mWorld                   : packoffset( c0 );
-}
+//cbuffer cbPerObject : register( b0 )
+//{
+//    matrix  g_mWorld                   : packoffset( c0 );
+//}
 
-cbuffer cbPerCamera : register( b1 )
-{
-    matrix  g_mViewProjection          : packoffset( c0 );
-};
+//cbuffer cbPerCamera : register( b1 )
+//{
+//    matrix  g_mViewProjection          : packoffset( c0 );
+//};
 
 cbuffer cbPerFrame : register( b2 )
 {
     matrix              g_mView                      : packoffset( c0 );
-    matrix              g_mProjection                : packoffset( c4 );
+    //matrix              g_mProjection                : packoffset( c4 );
     matrix              g_mProjectionInv             : packoffset( c8 );
-    matrix              g_mViewProjectionInvViewport : packoffset( c12 );
-    float4              g_AmbientColorUp             : packoffset( c16 );
-    float4              g_AmbientColorDown           : packoffset( c17 );
-    float3              g_vCameraPos                 : packoffset( c18 );
-    float               g_fAlphaTest                 : packoffset( c18.w );
-    uint                g_uNumLights                 : packoffset( c19 );
-    uint                g_uNumSpotLights             : packoffset( c19.y );
-    uint                g_uWindowWidth               : packoffset( c19.z );
-    uint                g_uWindowHeight              : packoffset( c19.w );
-    uint                g_uMaxNumLightsPerTile       : packoffset( c20 );
-    uint                g_uMaxNumElementsPerTile     : packoffset( c20.y );
-    uint                g_uNumTilesX                 : packoffset( c20.z );
-    uint                g_uNumTilesY                 : packoffset( c20.w );
+    //matrix              g_mViewProjectionInvViewport : packoffset( c12 );
+    //float4              g_AmbientColorUp             : packoffset( c16 );
+    //float4              g_AmbientColorDown           : packoffset( c17 );
+    //float3              g_vCameraPos                 : packoffset( c18 );
+    //float               g_fAlphaTest                 : packoffset( c18.w );
+    //uint                g_uNumLights                 : packoffset( c19 );
+    //uint                g_uNumSpotLights             : packoffset( c19.y );
+    //uint                g_uWindowWidth               : packoffset( c19.z );
+    //uint                g_uWindowHeight              : packoffset( c19.w );
+    //uint                g_uMaxNumLightsPerTile       : packoffset( c20 );
+    //uint                g_uMaxNumElementsPerTile     : packoffset( c20.y );
+    //uint                g_uNumTilesX                 : packoffset( c20.z );
+    //uint                g_uNumTilesY                 : packoffset( c20.w );
+	uint                g_uNumLights				: packoffset(c16);
+	uint                g_uNumSpotLights			: packoffset(c16.y);
+	///uint                g_uWindowWidth				: packoffset(c16.z);
+	//uint                g_uWindowHeight				: packoffset(c16.w);
+	uint                g_uMaxNumLightsPerTile		: packoffset(c17);
+	uint                g_uMaxNumElementsPerTile	: packoffset(c17.y);
+	uint                g_uNumTilesX				: packoffset(c17.z);
+	uint                g_uNumTilesY				: packoffset(c17.w);
 };
 
 //-----------------------------------------------------------------------------------------
@@ -159,49 +146,25 @@ void GetLightListInfo(in Buffer<uint> PerTileLightIndexBuffer, in uint uMaxNumLi
     uNumLights = (fViewPosZ < fHalfZ) ? PerTileLightIndexBuffer[nStartIndex + 2] : PerTileLightIndexBuffer[nStartIndex + 3];
 }
 
-// PerTileLightIndexBuffer layout:
-// | HalfZ High Bits | HalfZ Low Bits | Light Count List A | Light Count List B | space for max num lights per tile light indices (List A) | space for max num lights per tile light indices (List B) |
-void GetLightListInfo2(in Buffer<uint> PerTileLightIndexBuffer, in uint uMaxNumLightsPerTile, in uint uMaxNumElementsPerTile, in float2 ScreenPos, in float fViewPosZ, out uint uFirstLightIndex, out uint uNumLights)
-{
-    uint nTileIndex = GetTileIndex(ScreenPos);
-    uint nStartIndex = uMaxNumElementsPerTile*nTileIndex;
+//// PerTileLightIndexBuffer layout:
+//// | HalfZ High Bits | HalfZ Low Bits | Light Count List A | Light Count List B | space for max num lights per tile light indices (List A) | space for max num lights per tile light indices (List B) |
+//void GetLightListInfo2(in Buffer<uint> PerTileLightIndexBuffer, in uint uMaxNumLightsPerTile, in uint uMaxNumElementsPerTile, in float2 ScreenPos, in float fViewPosZ, out uint uFirstLightIndex, out uint uNumLights)
+//{
+//    uint nTileIndex = GetTileIndex(ScreenPos);
+//    uint nStartIndex = uMaxNumElementsPerTile*nTileIndex;
+//
+//    // reconstruct fHalfZ
+//    uint uHalfZBitsHigh = PerTileLightIndexBuffer[nStartIndex];
+//    uint uHalfZBitsLow = PerTileLightIndexBuffer[nStartIndex + 1];
+//    uint uHalfZBits = (uHalfZBitsHigh << 16) | uHalfZBitsLow;
+//    float fHalfZ = asfloat(uHalfZBits);
+//
+//    uFirstLightIndex = (fViewPosZ < fHalfZ) ? (nStartIndex + 4) : (nStartIndex + 4 + uMaxNumLightsPerTile);
+//    uNumLights = (fViewPosZ < fHalfZ) ? PerTileLightIndexBuffer[nStartIndex + 2] : PerTileLightIndexBuffer[nStartIndex + 3];
+//}
 
-    // reconstruct fHalfZ
-    uint uHalfZBitsHigh = PerTileLightIndexBuffer[nStartIndex];
-    uint uHalfZBitsLow = PerTileLightIndexBuffer[nStartIndex + 1];
-    uint uHalfZBits = (uHalfZBitsHigh << 16) | uHalfZBitsLow;
-    float fHalfZ = asfloat(uHalfZBits);
-
-    uFirstLightIndex = (fViewPosZ < fHalfZ) ? (nStartIndex + 4) : (nStartIndex + 4 + uMaxNumLightsPerTile);
-    uNumLights = (fViewPosZ < fHalfZ) ? PerTileLightIndexBuffer[nStartIndex + 2] : PerTileLightIndexBuffer[nStartIndex + 3];
-}
-
-float4 ConvertNumberOfLightsToGrayscale(uint nNumLightsInThisTile, uint uMaxNumLightsPerTile)
-{
-    float fPercentOfMax = (float)nNumLightsInThisTile / (float)uMaxNumLightsPerTile;
-    return float4(fPercentOfMax, fPercentOfMax, fPercentOfMax, 1.0f);
-}
-
-float4 ConvertNumberOfLightsToRadarColor(uint nNumLightsInThisTile, uint uMaxNumLightsPerTile)
-{
-    // black for no lights
-    if( nNumLightsInThisTile == 0 ) return float4(0,0,0,1);
-    // light purple for reaching the max
-    else if( nNumLightsInThisTile == uMaxNumLightsPerTile ) return float4(0.847,0.745,0.921,1);
-    // white for going over the max
-    else if ( nNumLightsInThisTile > uMaxNumLightsPerTile ) return float4(1,1,1,1);
-    // else use weather radar colors
-    else
-    {
-        // use a log scale to provide more detail when the number of lights is smaller
-
-        // want to find the base b such that the logb of uMaxNumLightsPerTile is 14
-        // (because we have 14 radar colors)
-        float fLogBase = exp2(0.07142857f*log2((float)uMaxNumLightsPerTile));
-
-        // change of base
-        // logb(x) = log2(x) / log2(b)
-        uint nColorIndex = floor(log2((float)nNumLightsInThisTile) / log2(fLogBase));
-        return kRadarColors[nColorIndex];
-    }
-}
+//float4 ConvertNumberOfLightsToGrayscale(uint nNumLightsInThisTile, uint uMaxNumLightsPerTile)
+//{
+//    float fPercentOfMax = (float)nNumLightsInThisTile / (float)uMaxNumLightsPerTile;
+//    return float4(fPercentOfMax, fPercentOfMax, fPercentOfMax, 1.0f);
+//}
