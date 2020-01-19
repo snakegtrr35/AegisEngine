@@ -2,8 +2,8 @@
 #include	"Game_Object.h"
 #include	"Renderer.h"
 
-float SHADOW_MAP::WIDTH = 2048.0f;
-float SHADOW_MAP::HEIGHT = 2048.0f;
+UINT SHADOW_MAP::WIDTH = 2048;
+UINT SHADOW_MAP::HEIGHT = 2048;
 
 static ID3D11DepthStencilState* m_DepthStateEnable;
 
@@ -30,8 +30,8 @@ SHADOW_MAP::SHADOW_MAP()
 		// ビューポートの設定設定
 		Viewport.left = 0;
 		Viewport.top = 0;
-		Viewport.right = WIDTH;
-		Viewport.bottom = HEIGHT;
+		Viewport.right = (LONG)WIDTH;
+		Viewport.bottom = (LONG)HEIGHT;
 
 		// ビューポート設定
 		DxViewport.Width = (float)(Viewport.right - Viewport.left);
@@ -210,7 +210,7 @@ bool SHADOW_MAP::Init()
 		rd.CullMode = D3D11_CULL_BACK;
 		rd.DepthClipEnable = TRUE;
 		rd.MultisampleEnable = FALSE;
-		rd.DepthBias = 0.005f;
+		rd.DepthBias = 0.003f;
 		rd.DepthBiasClamp = 0.01f;
 		rd.SlopeScaledDepthBias = 0.003f;
 
@@ -231,7 +231,7 @@ bool SHADOW_MAP::Init()
 		desc.BorderColor[1] = 1.0f;
 		desc.BorderColor[2] = 1.0f;
 		desc.BorderColor[3] = 1.0f;
-		desc.ComparisonFunc = D3D11_COMPARISON_GREATER_EQUAL;
+		desc.ComparisonFunc = D3D11_COMPARISON_ALWAYS;
 		desc.Filter = D3D11_FILTER_COMPARISON_MIN_MAG_MIP_POINT;
 		desc.MaxAnisotropy = 1;
 		desc.MipLODBias = 0;
@@ -324,7 +324,7 @@ void SHADOW_MAP::Begin()
 	// バックバッファクリア
 	float ClearColor[4] = { 1.0f, 0.0f, 0.0f, 1.0f };
 	CRenderer::GetDeviceContext()->ClearRenderTargetView(pRTV, ClearColor);
-    CRenderer::GetDeviceContext()->ClearDepthStencilView( pDSV, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0 );
+    CRenderer::GetDeviceContext()->ClearDepthStencilView( pDSV, D3D11_CLEAR_DEPTH, 1.0f, 0 );
 
 
 	CRenderer::GetDeviceContext()->RSSetViewports(1, &DxViewport);

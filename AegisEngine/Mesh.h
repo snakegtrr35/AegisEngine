@@ -24,20 +24,6 @@ struct TEXTURE_S {
 	ID3D11ShaderResourceView* Texture = nullptr;
 };
 
-struct Weight {
-	UINT vertex_id;
-	float value;
-};
-
-struct Bone {
-	string name;
-	XMMATRIX matrix;
-	XMMATRIX animation;
-	XMMATRIX offset;
-
-	vector<Weight> weights;
-};
-
 //
 struct BONEINFO {
 	XMMATRIX Offset;
@@ -89,8 +75,6 @@ private:
 	vector<TEXTURE_S> Textures;
 
 	unordered_map<string, Anim> Animation;
-
-	vector<Bone> Bones;
 
 	ID3D11Buffer* VertexBuffer;
 	ID3D11Buffer* IndexBuffer;
@@ -168,6 +152,48 @@ private:
 		for (auto child : ChildMeshes)
 		{
 			child.second.Draw_Mesh(matrix);
+		}
+	}
+
+	void Draw_DPP_Mesh(XMMATRIX& parent_matrix) {
+		XMMATRIX matrix;
+
+		if (!Indices.empty())
+		{
+			// 3Dマトリックス設定
+			{
+				matrix = XMMatrixMultiply(Matrix, parent_matrix);
+
+				auto camera01 = CManager::Get_Scene()->Get_Game_Object<CCamera>("camera");
+				auto camera02 = CManager::Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
+
+				// 普通のカメラかデバッグカメラか?
+				if (nullptr != camera01)
+				{
+					CRenderer::Set_MatrixBuffer(matrix, camera01->Get_Camera_View(), camera01->Get_Camera_Projection());
+				}
+				else
+				{
+					CRenderer::Set_MatrixBuffer(matrix, camera02->Get_Camera_View(), camera02->Get_Camera_Projection());
+				}
+			}
+
+			CRenderer::SetVertexBuffers(VertexBuffer);
+
+			CRenderer::GetDeviceContext()->IASetIndexBuffer(IndexBuffer, DXGI_FORMAT_R32_UINT, 0);
+
+			CRenderer::GetDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+			CRenderer::GetDeviceContext()->DrawIndexed(Indices.size(), 0, 0);
+		}
+		else
+		{
+			matrix = XMMatrixMultiply(Matrix, parent_matrix);
+		}
+
+		for (auto child : ChildMeshes)
+		{
+			child.second.Draw_DPP_Mesh(matrix);
 		}
 	}
 
@@ -349,6 +375,129 @@ private:
 		}
 	}
 
+	void Draw_DPP_Mesh_Animation(XMMATRIX& parent_matrix, unordered_map<string, Anim>& anime, DWORD frame, const string& name1, const string& name2 = string("none"), float blend = 0.0f) {
+		XMMATRIX world;
+
+		// 3Dマトリックス設定
+		{
+			if ("none" == name2)
+			{
+				for (auto i : anime[name1].body)
+				{
+					if (i.node_name == Name)
+					{
+						unsigned int f = frame % i.translate.begin()->time;
+
+						XMFLOAT3 pos = i.translate[f].value;
+						XMMATRIX trans = XMMatrixTranslation(pos.x, pos.y, pos.z);
+
+						f = frame % i.rotation.begin()->time;
+
+						XMFLOAT4 rotation = i.rotation[f].value;
+						XMVECTOR quat = XMLoadFloat4(&rotation);
+
+						world = XMMatrixRotationQuaternion(quat);
+
+						world = XMMatrixMultiply(world, trans);
+
+						world = XMMatrixMultiply(world, parent_matrix);
+
+						auto camera01 = CManager::Get_Scene()->Get_Game_Object<CCamera>("camera");
+						auto camera02 = CManager::Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
+
+						// 普通のカメラかデバッグカメラか?
+						if (nullptr != camera01)
+						{
+								CRenderer::Set_MatrixBuffer(world, camera01->Get_Camera_View(), camera01->Get_Camera_Projection());
+						}
+						else
+						{
+							CRenderer::Set_MatrixBuffer(world, camera02->Get_Camera_View(), camera02->Get_Camera_Projection());
+						}
+
+						break;
+					}
+				}
+			}
+			else
+			{
+				XMMATRIX trans1, trans2, trans;
+				XMVECTOR quat1, quat2, puat;
+
+				for (auto i : anime[name1].body)
+				{
+					if (i.node_name == Name)
+					{
+						unsigned int f = frame % i.translate.begin()->time;
+
+						XMFLOAT3 pos = i.translate[f].value;
+						trans1 = XMMatrixTranslation(pos.x, pos.y, pos.z);
+
+						f = frame % i.rotation.begin()->time;
+
+						XMFLOAT4 rotation = i.rotation[f].value;
+						quat1 = XMLoadFloat4(&rotation);
+
+						break;
+					}
+				}
+
+				for (auto i : anime[name2].body)
+				{
+					if (i.node_name == Name)
+					{
+						unsigned int f = frame % i.translate.begin()->time;
+
+						XMFLOAT3 pos = i.translate[f].value;
+						trans2 = XMMatrixTranslation(pos.x, pos.y, pos.z);
+
+						f = frame % i.rotation.begin()->time;
+
+						XMFLOAT4 rotation = i.rotation[f].value;
+						quat2 = XMLoadFloat4(&rotation);
+
+						break;
+					}
+				}
+
+				trans = trans1 * (1.0f - blend) + trans2 * blend;
+				puat = XMQuaternionSlerp(quat1, quat2, blend);
+
+				world = XMMatrixRotationQuaternion(puat);
+
+				world = XMMatrixMultiply(world, trans);
+
+				world = XMMatrixMultiply(world, parent_matrix);
+
+				auto camera01 = CManager::Get_Scene()->Get_Game_Object<CCamera>("camera");
+				auto camera02 = CManager::Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
+
+				// 普通のカメラかデバッグカメラか?
+				if (nullptr != camera01)
+				{
+					CRenderer::Set_MatrixBuffer(world, camera01->Get_Camera_View(), camera01->Get_Camera_Projection());
+				}
+				else
+				{
+					CRenderer::Set_MatrixBuffer(world, camera02->Get_Camera_View(), camera02->Get_Camera_Projection());
+				}
+			}
+		}
+
+		CRenderer::SetVertexBuffers(VertexBuffer);
+
+		CRenderer::GetDeviceContext()->IASetIndexBuffer(IndexBuffer, DXGI_FORMAT_R32_UINT, 0);
+
+		CRenderer::GetDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+		CRenderer::GetDeviceContext()->DrawIndexed(Indices.size(), 0, 0);
+
+		for (auto child : ChildMeshes)
+		{
+			child.second.Draw_DPP_Mesh_Animation(world, anime, frame, name1, name2, blend);
+		}
+	}
+
 	bool SetupMesh(vector<VERTEX_3D>& vertices) {
 		HRESULT hr;
 
@@ -422,21 +571,25 @@ public:
 		Draw_Mesh(matrix);
 	}
 
+	void Draw_DPP(XMMATRIX& matrix) {
+		Draw_DPP_Mesh(matrix);
+	}
+
 	void Draw_Animation(XMMATRIX& matrix, unordered_map<string, Anim>& anime, DWORD frame, const string& name1, const string& name2 = string("none"), float blend = 0.0f) {
 		Draw_Mesh_Animation(matrix, anime, frame, name1, name2, blend);
 	}
 
-	void Update() {
-		
+	void Draw_DPP_Animation(XMMATRIX& matrix, unordered_map<string, Anim>& anime, DWORD frame, const string& name1, const string& name2 = string("none"), float blend = 0.0f) {
+		Draw_DPP_Mesh_Animation(matrix, anime, frame, name1, name2, blend);
 	}
+
+	void Update() {}
 
 	void Uninit() {
 		SAFE_RELEASE(VertexBuffer);
 		SAFE_RELEASE(IndexBuffer);
 
 		Indices.clear();
-
-		Bones.clear();
 
 		for (auto tex : Textures)
 		{
@@ -475,10 +628,6 @@ public:
 
 		return true;
 	}
-
-	/*vector<Bone>& Get_Bone() {
-		return Bones;
-	}*/
 };
 
 #endif

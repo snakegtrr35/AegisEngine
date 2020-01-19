@@ -174,3 +174,37 @@ void MESH_DOOM::Draw()
 		CRenderer::Set_Shader();
 	}
 }
+
+void MESH_DOOM::Draw_DPP()
+{
+	{
+		XMMATRIX world;
+
+		world = XMMatrixScaling(Scaling.x, Scaling.y, Scaling.z);
+		world *= XMMatrixRotationRollPitchYaw(XMConvertToRadians(Rotation.x), XMConvertToRadians(Rotation.y), XMConvertToRadians(Rotation.z));
+		world *= XMMatrixTranslation(Position.x, Position.y, Position.z);
+
+		auto camera01 = CManager::Get_Scene()->Get_Game_Object<CCamera>("camera");
+		auto camera02 = CManager::Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
+
+		if (nullptr != camera01)
+		{
+			CRenderer::Set_MatrixBuffer(world, camera01->Get_Camera_View(), camera01->Get_Camera_Projection());
+		}
+		else
+		{
+			CRenderer::Set_MatrixBuffer(world, camera02->Get_Camera_View(), camera02->Get_Camera_Projection());
+		}
+	}
+
+	CRenderer::SetVertexBuffers(VertexBuffer.get());
+	CRenderer::SetIndexBuffer(IndexBuffer.get());
+
+	// ƒgƒ|ƒƒWÝ’è
+	CRenderer::GetDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
+
+	// ƒ|ƒŠƒSƒ“•`‰æ
+	CRenderer::GetDeviceContext()->DrawIndexed(IndexNum, 0, 0);
+
+	CRenderer::Set_Shader();
+}

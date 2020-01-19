@@ -260,16 +260,6 @@ void FORWARDLUS::Depth_Pre_Pass()
 		// Draw the main scene
 		//Scene.m_pSceneMesh->Render(pd3dImmediateContext);
 
-		//// Draw the alpha test geometry
-		//ID3D11BlendState* pBlendStateForAlphaTest = m_pBlendStateOpaqueDepthOnly;
-		//pd3dImmediateContext->RSSetState(CommonUtil.GetRasterizerState(RASTERIZER_STATE_DISABLE_CULLING));
-		//pd3dImmediateContext->OMSetBlendState(pBlendStateForAlphaTest, BlendFactor, 0xffffffff);
-		//pd3dImmediateContext->OMSetRenderTargets(1, &pRTV, DepthStencilBuffer.m_pDepthStencilView);  // bind color buffer to prevent D3D warning
-		//pd3dImmediateContext->IASetInputLayout(m_pLayoutPositionAndTex11);
-		//pd3dImmediateContext->VSSetShader(m_pScenePositionAndTexVS, NULL, 0);
-		//pd3dImmediateContext->PSSetShader(m_pSceneAlphaTestOnlyPS, NULL, 0);
-		//pd3dImmediateContext->PSSetSamplers(0, 1, CommonUtil.GetSamplerStateParam(SAMPLER_STATE_ANISO));
-		//Scene.m_pAlphaMesh->Render(pd3dImmediateContext, 0);
 
 		// Restore to default
 		//CRenderer::GetDeviceContext()->RSSetState(nullptr);

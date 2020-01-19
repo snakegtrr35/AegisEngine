@@ -117,11 +117,6 @@ void BOUNDING_AABB::Draw()
 {
 	if (false == CManager::Get_ShadowMap()->Get_Enable())
 	{
-		// 入力アセンブラに頂点バッファを設定.
-		CRenderer::SetVertexBuffers(pVertexBuffer_BOX.get());
-
-		CRenderer::SetIndexBuffer(pIndexBuffer_BOX.get());
-
 		// 3Dマトリックス設定
 		{
 			XMMATRIX world = XMMatrixScaling(Scaling.x, Scaling.y, Scaling.z);
@@ -144,6 +139,11 @@ void BOUNDING_AABB::Draw()
 			}
 		}
 
+		// 入力アセンブラに頂点バッファを設定.
+		CRenderer::SetVertexBuffers(pVertexBuffer_BOX.get());
+
+		CRenderer::SetIndexBuffer(pIndexBuffer_BOX.get());
+
 		// トポロジの設定
 		CRenderer::GetDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_LINESTRIP);
 
@@ -159,7 +159,6 @@ void BOUNDING_AABB::Update(float delta_time)
 {
 	OverWrite();
 }
-
 
 void BOUNDING_AABB::Uninit()
 {

@@ -60,7 +60,6 @@ Texture2D       g_ShadowMap : register(t1);     // シャドウマップ
 SamplerState	g_SamplerState : register( s0 );
 SamplerState    g_ShadowSamplerState : register(s1);        // シャドウマップ用のサンプラー
 
-
 //=============================================================================
 // ピクセルシェーダ
 //=============================================================================

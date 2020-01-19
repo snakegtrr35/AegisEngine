@@ -11,12 +11,10 @@
 #include	"Field.h"
 #include	"Player.h"
 #include	"Enemy.h"
-#include	"model.h"
 #include	"Sprite.h"
 #include	"Polygon_3D.h"
 #include	"Billboard.h"
 #include	"Score.h"
-#include	"Circle_Shadow.h"
 
 #include	"Grid.h"
 #include	"XYZ_Axis.h"

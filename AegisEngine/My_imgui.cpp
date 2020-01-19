@@ -407,19 +407,22 @@ void My_imgui::Draw(void)
 
 		{
 			{
-				BoundingFrustum::CreateFromMatrix(Frustum, XMMatrixPerspectiveFovLH(XMConvertToRadians(80.0f), float(SCREEN_WIDTH / SCREEN_HEIGHT), 0.01f, 10.0f));
+				BoundingFrustum::CreateFromMatrix(Frustum, XMMatrixPerspectiveFovLH(XMConvertToRadians(80.0f), float(SCREEN_WIDTH / SCREEN_HEIGHT), 0.01f, 20.0f));
 
 				XMFLOAT3 r;
+				XMVECTOR p = XMVectorSet(0,0,0,0);
 				auto camera = CManager::Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
 
 				if (nullptr != camera)
 				{
 					XMStoreFloat3(&r, XMLoadFloat3(camera->Get_Rotation()));
+
+					p = XMLoadFloat3(camera->Get_Position());
 				}
 
 				XMMATRIX matrix = XMMatrixRotationRollPitchYaw(XMConvertToRadians(r.x), XMConvertToRadians(r.y), XMConvertToRadians(r.z));
 				XMVECTOR rotate = XMQuaternionRotationMatrix(matrix);
-				Frustum.Transform(Frustum, 1.0f, rotate, XMVectorSet(0.f, 0.f, 0.f, 0.f));
+				Frustum.Transform(Frustum, 1.0f, rotate, p);
 			}
 
 			ImGuiWindowFlags window_flags = ImGuiWindowFlags_NoResize;

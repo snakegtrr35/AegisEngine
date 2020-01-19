@@ -17,17 +17,14 @@ public:
 
 	void Init() override;
 
-	void Draw();
+	void Draw() override;
+	void Draw_DPP() override {}
 
 	void Update(float delta_time) override;
 
 	void Uninit() override;
 
 	void OverWrite() override;
-
-	//void Set_Radius(const XMFLOAT3& radius);
-
-	//XMFLOAT3& const Get_Radius();
 
 	template<typename Archive>
 	void serialize(Archive& ar)

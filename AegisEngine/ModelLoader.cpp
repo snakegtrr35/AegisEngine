@@ -270,6 +270,68 @@ void CMODEL::Draw()
 	CRenderer::Set_Shader();
 }
 
+void CMODEL::Draw_DPP()
+{
+	auto camera = CManager::Get_Scene()->Get_Game_Object<CCamera>("camera");
+
+	if (nullptr != camera)
+	{
+		if (false == camera->Get_Visibility(Position))
+		{
+			return;
+		}
+	}
+
+	XMMATRIX matrix = XMMatrixIdentity();
+	XMMATRIX scaling = XMMatrixScaling(Scaling.x, Scaling.y, Scaling.z);
+	XMMATRIX rotation = XMMatrixRotationRollPitchYaw(XMConvertToRadians(Rotation.x), XMConvertToRadians(Rotation.y), XMConvertToRadians(Rotation.z));
+	XMMATRIX transform = XMMatrixTranslation(Position.x, Position.y, Position.z);
+
+	matrix = XMMatrixMultiply(matrix, scaling);
+	matrix = XMMatrixMultiply(matrix, rotation);
+	matrix = XMMatrixMultiply(matrix, transform);
+
+	{
+		auto camera01 = CManager::Get_Scene()->Get_Game_Object<CCamera>("camera");
+		auto camera02 = CManager::Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
+
+	}
+
+	if (Meshes.GetAnime())
+	{
+		// アニメーション
+		for (auto mesh : Meshes.Get())
+		{
+			auto anime = Meshes.Get_Anime();
+
+			for (auto i : mesh.second.Get())
+			{
+				if (Anime_State_Machine.Get_Enable())
+				{
+					i.second.Draw_DPP_Animation(matrix, anime, Frame, Anime_State_Machine.Get_Anime_Name(), Anime_State_Machine.Get_Next_Anime_Name(), Anime_State_Machine.Get_Ratio());
+				}
+				else
+				{
+					i.second.Draw_DPP_Animation(matrix, anime, Frame, Anime_State_Machine.Get_Anime_Name());
+				}
+			}
+		}
+	}
+	else
+	{
+		// 普通の描画
+		for (auto mesh : Meshes.Get())
+		{
+			for (auto i : mesh.second.Get())
+			{
+				i.second.Draw_DPP(matrix);
+			}
+		}
+	}
+
+	CRenderer::Set_Shader();
+}
+
 void CMODEL::Update(float delta_time)
 {
 	Meshes.Update();
@@ -318,8 +380,6 @@ MESH CMODEL::processMesh(aiMesh* mesh, aiNode* node, const aiScene* scene)
 	vector<TEXTURE_S> textures;
 
 	XMMATRIX matrix;
-
-	vector<Bone> bones;
 
 	string name = node->mName.C_Str();
 
@@ -385,28 +445,6 @@ MESH CMODEL::processMesh(aiMesh* mesh, aiNode* node, const aiScene* scene)
 		vector<TEXTURE_S> diffuseMaps = this->loadMaterialTextures(material, aiTextureType_DIFFUSE, "texture_diffuse", scene);
 		textures.insert(textures.end(), diffuseMaps.begin(), diffuseMaps.end());
 	}
-
-	//// ボーン情報の設定
-	//if (mesh->HasBones())
-	//{
-	//	auto bone = Meshes.Get_Bone();
-
-	//	aiBone** b = mesh->mBones;
-	//	for (UINT i = 0; i < mesh->mNumBones; ++i)
-	//	{
-	//		bones.push_back(createBone(b[i]));
-
-	//		aiVertexWeight* w = b[i]->mWeights;
-
-	//		for (u_int j = 0; j < b[i]->mNumWeights; ++j)
-	//		{
-	//			for (auto vertex : vertices)
-	//			{
-	//				//vertex.BoneIndex = w[j].mVertexId;
-	//			}
-	//		}
-	//	}
-	//}
 
 	// マトリックスの設定
 	{

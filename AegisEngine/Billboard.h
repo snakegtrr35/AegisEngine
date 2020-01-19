@@ -33,6 +33,7 @@ public:
 
 	void Init() override;
 	void Draw() override;
+	void Draw_DPP() override;
 	void Update(float delta_time) override;
 	void Uninit() override;
 
@@ -70,6 +71,7 @@ private:
 	unsigned char  Pattern_Max_Y;
 
 	void Draw(float tx = -1.0f, float ty = -1.0f);
+	void Draw_DPP(float tx = -1.0f, float ty = -1.0f);
 
 protected:
 
@@ -87,6 +89,7 @@ public:
 
 	void Init() override;
 	void Draw() override;
+	void Draw_DPP() override;
 	void Update(float delta_time) override;
 	void Uninit() override;
 

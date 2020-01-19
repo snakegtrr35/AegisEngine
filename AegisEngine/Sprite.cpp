@@ -169,13 +169,62 @@ void SPRITE::Draw(void)
 			CRenderer::Set_Shader(SHADER_INDEX_V::DEFAULT, SHADER_INDEX_P::NO_LIGHT);
 
 			CRenderer::DrawIndexed(6, 0, 0);
-
 		}
 
 		Draw_Child();
 
 		CRenderer::Set_Shader();
 	}
+}
+
+void SPRITE::Draw_DPP()
+{
+	if (Enable)
+	{
+		Vertex[0].Position = XMFLOAT3(Position.x - Size.w, Position.y - Size.x, 0.0f);
+		Vertex[0].Normal = XMFLOAT3(0.0f, 1.0f, 0.0f);
+		Vertex[0].Diffuse = XMFLOAT4(Color.r, Color.g, Color.b, Color.a);
+		Vertex[0].TexCoord = XMFLOAT2(0.0f, 0.0f);
+
+		Vertex[1].Position = XMFLOAT3(Position.x + Size.y, Position.y - Size.x, 0.0f);
+		Vertex[1].Normal = XMFLOAT3(0.0f, 1.0f, 0.0f);
+		Vertex[1].Diffuse = XMFLOAT4(Color.r, Color.g, Color.b, Color.a);
+		Vertex[1].TexCoord = XMFLOAT2(1.0f, 0.0f);
+
+		Vertex[2].Position = XMFLOAT3(Position.x - Size.w, Position.y + Size.z, 0.0f);
+		Vertex[2].Normal = XMFLOAT3(0.0f, 1.0f, 0.0f);
+		Vertex[2].Diffuse = XMFLOAT4(Color.r, Color.g, Color.b, Color.a);
+		Vertex[2].TexCoord = XMFLOAT2(0.0f, 1.0f);
+
+		Vertex[3].Position = XMFLOAT3(Position.x + Size.y, Position.y + Size.z, 0.0f);
+		Vertex[3].Normal = XMFLOAT3(0.0f, 1.0f, 0.0f);
+		Vertex[3].Diffuse = XMFLOAT4(Color.r, Color.g, Color.b, Color.a);
+		Vertex[3].TexCoord = XMFLOAT2(1.0f, 1.0f);
+
+		// 頂点バッファの書き換え
+		{
+			D3D11_MAPPED_SUBRESOURCE msr;
+			CRenderer::GetDeviceContext()->Map(pVertexBuffer.get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &msr);
+			memcpy(msr.pData, Vertex, sizeof(VERTEX_3D) * 4);
+			CRenderer::GetDeviceContext()->Unmap(pVertexBuffer.get(), 0);
+		}
+
+		// 入力アセンブラに頂点バッファを設定
+		CRenderer::SetVertexBuffers(pVertexBuffer.get());
+
+		// 入力アセンブラにインデックスバッファを設定
+		CRenderer::SetIndexBuffer(pIndexBuffer.get());
+
+
+		// 2Dマトリックス設定
+		CRenderer::SetWorldViewProjection2D(Scaling);
+
+		CRenderer::DrawIndexed(6, 0, 0);
+	}
+
+	Draw_DPP_Child();
+
+	CRenderer::Set_Shader();
 }
 
 void SPRITE::Update(float delta_time)
@@ -311,6 +360,11 @@ void SPRITE_ANIMATION::Draw(void)
 	}
 }
 
+void SPRITE_ANIMATION::Draw_DPP(void)
+{
+	Draw_DPP2(Tx_Param, Ty_Param);
+}
+
 void SPRITE_ANIMATION::Draw2(float tx, float ty)
 {
 	if (-1.0f == tx)
@@ -388,6 +442,76 @@ void SPRITE_ANIMATION::Draw2(float tx, float ty)
 	CRenderer::Set_Shader();
 }
 
+void SPRITE_ANIMATION::Draw_DPP2(float tx, float ty)
+{
+	if (-1.0f == tx)
+	{
+		Tx = (float)(Tw * (PatternCount % Pattern_Max_X));
+	}
+	else
+	{
+		Tx = tx;
+	}
+
+
+	if (-1.0f == tx)
+	{
+		Ty = (float)(Th * (PatternCount / Pattern_Max_Y));
+	}
+	else
+	{
+		Ty = ty;
+	}
+
+	XMINT2* wh = Texture->Get_WH();
+
+	// UV座標計算
+	float u[2], v[2];
+	u[0] = (float)(Tx / wh->x);
+	v[0] = (float)(Ty / wh->y);
+	u[1] = (float)((Tx + Tw) / wh->x);
+	v[1] = (float)((Ty + Th) / wh->y);
+
+	Vertex[0].Position = XMFLOAT3(Position.x - Size.y, Position.y + Size.x, 0.0f);
+	Vertex[0].Normal = XMFLOAT3(0.0f, 0.0f, -1.0f);
+	Vertex[0].Diffuse = XMFLOAT4(Color.r, Color.g, Color.b, Color.a);
+	Vertex[0].TexCoord = XMFLOAT2(u[0], v[1]);
+
+	Vertex[1].Position = XMFLOAT3(Position.x + Size.w, Position.y + Size.x, 0.0f);
+	Vertex[1].Normal = XMFLOAT3(0.0f, 0.0f, -1.0f);
+	Vertex[1].Diffuse = XMFLOAT4(Color.r, Color.g, Color.b, Color.a);
+	Vertex[1].TexCoord = XMFLOAT2(u[1], v[1]);
+
+	Vertex[2].Position = XMFLOAT3(Position.x - Size.y, Position.y - Size.z, 0.0f);
+	Vertex[2].Normal = XMFLOAT3(0.0f, 0.0f, -1.0f);
+	Vertex[2].Diffuse = XMFLOAT4(Color.r, Color.g, Color.b, Color.a);
+	Vertex[2].TexCoord = XMFLOAT2(u[0], v[0]);
+
+	Vertex[3].Position = XMFLOAT3(Position.x + Size.w, Position.y - Size.z, 0.0f);
+	Vertex[3].Normal = XMFLOAT3(0.0f, 0.0f, -1.0f);
+	Vertex[3].Diffuse = XMFLOAT4(Color.r, Color.g, Color.b, Color.a);
+	Vertex[3].TexCoord = XMFLOAT2(u[1], v[0]);
+
+	// 頂点バッファの書き換え
+	{
+		D3D11_MAPPED_SUBRESOURCE msr;
+		CRenderer::GetDeviceContext()->Map(pVertexBuffer.get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &msr);
+		memcpy(msr.pData, Vertex, sizeof(VERTEX_3D) * 4); // 4頂点分コピー
+		CRenderer::GetDeviceContext()->Unmap(pVertexBuffer.get(), 0);
+	}
+
+	// 入力アセンブラに頂点バッファを設定
+	CRenderer::SetVertexBuffers(pVertexBuffer.get());
+
+	// 入力アセンブラにインデックスバッファを設定
+	CRenderer::SetIndexBuffer(pIndexBuffer.get());
+
+	// 2Dマトリックス設定
+	CRenderer::SetWorldViewProjection2D(Scaling);
+
+	CRenderer::DrawIndexed(6, 0, 0);
+}
+
 void SPRITE_ANIMATION::Update(float delta_time)
 {
 	Age++;
@@ -459,6 +583,13 @@ void TEXTS::Draw(void)
 	}
 }
 
+void TEXTS::Draw_DPP(void)
+{
+	Text_Draw(Text);
+
+	Draw_DPP_Child();
+}
+
 void TEXTS::Update(float delta_time)
 {
 }
@@ -505,5 +636,38 @@ void TEXTS::Text_Draw(const string& text)
 
 			font.pop_back();
 		}
+	}
+}
+
+void TEXTS::Text_Draw_DPP(const string& text)
+{
+	SPRITE sprite;
+	ID3D11ShaderResourceView* shader_resource_view = nullptr;
+	wstring font;
+	short i = 0;
+
+	sprite.Init();
+
+	sprite.SetSize(Size);
+
+	sprite.SetColor(Color);
+
+	string ctext = text;
+	wstring wtext = stringTowstring(ctext);
+
+	for (auto itr : wtext)
+	{
+		font.push_back(itr);
+		shader_resource_view = FONT::Get_Font_Resource(font);
+
+		sprite.Set(shader_resource_view);
+
+		sprite.SetPosition(XMFLOAT2(Position.x + (Size.w * i * 2), Position.y));
+
+		sprite.Draw_DPP();
+
+		i++;
+
+		font.pop_back();
 	}
 }

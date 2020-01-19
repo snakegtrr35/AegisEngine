@@ -21,11 +21,12 @@ protected:
 	COLOR Color;
 
 public:
-	BOUNDING() : Color(COLOR(0.f, 0.f, 0.f, 1.0f)) {}
+	BOUNDING() : Color(Default_Color) {}
 	virtual ~BOUNDING() {}
 
 	void Init() override {}
 	void Draw() override {}
+	void Draw_DPP() override {}
 	void Update(float delta_time) override {}
 	void Uninit() override {}
 

@@ -1,6 +1,7 @@
 #include	"Score.h"
 #include	"Sprite.h"
-#include	"main.h"
+#include	"manager.h"
+#include	"ShadowMap.h"
 
 const unsigned int SCORE::MaxScore = 999999999;
 
@@ -14,7 +15,6 @@ SCORE::SCORE()
 	Number = new SPRITE_ANIMATION();
 	Number->SetTexture(string("number02.png"));
 	Number->SetParam(0, 10, 1);
-	//Number->SetWH(XMFLOAT2(32.0f, 32.0f));
 	Number->SetSize(XMFLOAT4(32.0f, 32.0f, 32.0f, 32.0f));
 }
 
@@ -28,6 +28,31 @@ void SCORE::Init(void)
 }
 
 void SCORE::Draw(void)
+{
+	if (false == CManager::Get_ShadowMap()->Get_Enable())
+	{
+		short i;
+		unsigned int number, score = NowScore;
+
+		XMFLOAT2 wh = Number->Get_Twh();
+
+		XMFLOAT2 pos;
+
+		for (i = Digit - 1; 0 <= i; i--)
+		{
+			pos = XMFLOAT2(Position.x + wh.x * i, Position.y);
+
+			number = score % 10;
+			Number->Set_Param_Txy(wh.x * number, 1.0f);
+			Number->SetPosition(pos);
+			Number->Draw();
+			score -= number;
+			score /= 10;
+		}
+	}
+}
+
+void SCORE::Draw_DPP(void)
 {
 	short i;
 	unsigned int number, score = NowScore;
@@ -43,7 +68,7 @@ void SCORE::Draw(void)
 		number = score % 10;
 		Number->Set_Param_Txy(wh.x * number, 1.0f);
 		Number->SetPosition(pos);
-		Number->Draw();
+		Number->Draw_DPP();
 		score -= number;
 		score /= 10;
 	}
@@ -76,8 +101,6 @@ void SCORE::Update(float delta_time)
 			NowScore = 0;
 		}
 	}
-
-
 
 	WaitFrame++;
 }

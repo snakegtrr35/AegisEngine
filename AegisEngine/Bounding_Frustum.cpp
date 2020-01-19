@@ -138,9 +138,9 @@ void BOUNDING_FRUSTUM::Draw()
 			{
 				XMMATRIX world = XMMatrixIdentity();
 
-				world = XMMatrixScaling(Scaling.x, Scaling.y, Scaling.z);
+				//world = XMMatrixScaling(Scaling.x, Scaling.y, Scaling.z);
 				world *= XMMatrixRotationRollPitchYaw(XMConvertToRadians(Rotation.x), XMConvertToRadians(Rotation.y), XMConvertToRadians(Rotation.z));
-				//world *= XMMatrixTranslation(Position.x, Position.y, Position.z);
+				world *= XMMatrixTranslation(Position.x, Position.y, Position.z);
 
 				auto camera01 = CManager::Get_Scene()->Get_Game_Object<CCamera>("camera");
 				auto camera02 = CManager::Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
@@ -169,9 +169,11 @@ void BOUNDING_FRUSTUM::Draw()
 
 void BOUNDING_FRUSTUM::Update(float delta_time)
 {
-	BoundingFrustum::CreateFromMatrix(Frustum, XMMatrixPerspectiveFovLH(XMConvertToRadians(80.0f), float(SCREEN_WIDTH / SCREEN_HEIGHT), 0.01f, 10.0f));
+	BoundingFrustum::CreateFromMatrix(Frustum, XMMatrixPerspectiveFovLH(XMConvertToRadians(80.0f), float(SCREEN_WIDTH / SCREEN_HEIGHT), 0.01f, 20.0f));
 
 	XMFLOAT3 r;
+	XMVECTOR p = XMVectorSet(0, 0, 0, 0);
+
 	auto camera = CManager::Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
 
 	if (nullptr != camera)
@@ -179,11 +181,20 @@ void BOUNDING_FRUSTUM::Update(float delta_time)
 		XMStoreFloat3(&r, XMLoadFloat3(camera->Get_Rotation()) );
 
 		Rotation = r;
+
+		Position.x = camera->Get_Position()->x;
+		Position.y = camera->Get_Position()->y;
+		Position.z = camera->Get_Position()->z;
+
+		p = XMLoadFloat3(&Position);
 	}
+
+
 
 	XMMATRIX matrix = XMMatrixRotationRollPitchYaw(XMConvertToRadians(Rotation.x), XMConvertToRadians(Rotation.y), XMConvertToRadians(Rotation.z));
 	XMVECTOR rotate = XMQuaternionRotationMatrix(matrix);
-	Frustum.Transform(Frustum, 1.0f, rotate, XMVectorSet(0.f, 0.f, 0.f, 0.f));
+
+	Frustum.Transform(Frustum, 1.0f, rotate,  p);
 }
 
 void BOUNDING_FRUSTUM::Uninit()

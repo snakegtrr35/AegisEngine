@@ -117,13 +117,13 @@ void MAIN_MENU::Init()
 			auto pmd = Add_Game_Object<MESH_DOOM>(LAYER_NAME::BACKGROUND, "sky_doom");
 		}
 
-		//{
-		//	//Add_Game_Object<GRID>(LAYER_NAME::BACKGROUND, "grid");
-		//}
-
 		{
 			Add_Game_Object<MESH_FIELD>(LAYER_NAME::GAMEOBJECT, "field");
 		}
+
+		//{
+		//	//Add_Game_Object<GRID>(LAYER_NAME::BACKGROUND, "grid");
+		//}
 
 		//{
 		//	Add_Game_Object<POLYGON_3D>(LAYER_NAME::GAMEOBJECT, "cube");

@@ -305,8 +305,6 @@ void FBXmodel::Draw(XMMATRIX &Matrix)
 
 		set_bone(m_Scene->mRootNode, bone);
 
-
-
 		SetBoneMatrix(bone);
 	}
 
@@ -319,6 +317,27 @@ void FBXmodel::Draw(XMMATRIX &Matrix)
 
 	CRenderer::Set_InputLayout();
 	CRenderer::Set_Shader();
+}
+
+void FBXmodel::Draw_DPP(XMMATRIX& Matrix)
+{
+	{
+		vector<XMMATRIX> bone;
+		bone.reserve(m_BoneNum);
+
+		set_bone(m_Scene->mRootNode, bone);
+
+		SetBoneMatrix(bone);
+	}
+
+	CRenderer::Set_InputLayout(INPUTLAYOUT::ANIMATION);
+
+	CRenderer::GetDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+	DrawMesh_DPP(m_Scene->mRootNode, Matrix);
+
+	//CRenderer::Set_InputLayout();
+	//CRenderer::Set_Shader();
 }
 
 void FBXmodel::set_bone(const aiNode* Node, vector<XMMATRIX>& v)
@@ -394,6 +413,58 @@ void FBXmodel::DrawMesh(const aiNode* Node, const XMMATRIX& Matrix)
 
 					CRenderer::Set_Shader(SHADER_INDEX_V::ANIMATION, SHADER_INDEX_P::DEFAULT);
 				}
+			}
+		}
+
+		// 頂点バッファの設定
+		{
+			const UINT stride = sizeof(ANIME_VERTEX);
+			const UINT offset = 0;
+			ID3D11Buffer* vb[1] = { m_Meshes[m].VertexBuffer };
+			CRenderer::GetDeviceContext()->IASetVertexBuffers(0, 1, vb, &stride, &offset);
+		}
+
+		// インデックスバッファの設定
+		{
+			CRenderer::SetIndexBuffer(m_Meshes[m].IndexBuffer);
+		}
+
+		CRenderer::DrawIndexed(m_Meshes[m].IndexNum, 0, 0);
+	}
+
+	for (unsigned int i = 0; i < Node->mNumChildren; i++)
+	{
+		DrawMesh(Node->mChildren[i], world);
+	}
+}
+
+void FBXmodel::DrawMesh_DPP(const aiNode* Node, const XMMATRIX& Matrix)
+{
+	XMMATRIX world;
+	world = XMMatrixTranspose(aiMatrixToMatrix(Node->mTransformation));
+	world *= Matrix;
+
+	auto camera01 = CManager::Get_Scene()->Get_Game_Object<CCamera>("camera");
+	auto camera02 = CManager::Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
+
+	for (UINT n = 0; n < Node->mNumMeshes; n++)
+	{
+		UINT m = Node->mMeshes[n];
+
+		// 3Dマトリックス設定
+		{
+			// 普通のカメラかデバッグカメラか?
+			if (nullptr != camera01)
+			{
+				CRenderer::Set_MatrixBuffer(world, camera01->Get_Camera_View(), camera01->Get_Camera_Projection());
+
+				//CRenderer::Set_Shader(SHADER_INDEX_V::ANIMATION, SHADER_INDEX_P::DEFAULT);
+			}
+			else
+			{
+				CRenderer::Set_MatrixBuffer(world, camera02->Get_Camera_View(), camera02->Get_Camera_Projection());
+
+				//CRenderer::Set_Shader(SHADER_INDEX_V::ANIMATION, SHADER_INDEX_P::DEFAULT);
 			}
 		}
 

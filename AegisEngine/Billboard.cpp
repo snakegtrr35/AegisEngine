@@ -267,6 +267,85 @@ void BILL_BOARD::Draw()
 	CRenderer::Set_Shader();
 }
 
+void BILL_BOARD::Draw_DPP()
+{
+	Vertex[0].Position = XMFLOAT3(-WH.x, WH.y, 0.0f);
+	Vertex[0].Normal = XMFLOAT3(0.0f, 0.0f, 1.0f);
+	Vertex[0].Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+	Vertex[0].TexCoord = XMFLOAT2(0.0f, 0.0f);
+
+	Vertex[1].Position = XMFLOAT3(WH.x, WH.y, 0.0f);
+	Vertex[1].Normal = XMFLOAT3(0.0f, 0.0f, 1.0f);
+	Vertex[1].Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+	Vertex[1].TexCoord = XMFLOAT2(1.0f, 0.0f);
+
+	Vertex[2].Position = XMFLOAT3(-WH.x, -WH.y, 0.0f);
+	Vertex[2].Normal = XMFLOAT3(0.0f, 0.0f, 1.0f);
+	Vertex[2].Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+	Vertex[2].TexCoord = XMFLOAT2(0.0f, 1.0f);
+
+	Vertex[3].Position = XMFLOAT3(WH.x, -WH.y, 0.0f);
+	Vertex[3].Normal = XMFLOAT3(0.0f, 0.0f, 1.0f);
+	Vertex[3].Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+	Vertex[3].TexCoord = XMFLOAT2(1.0f, 1.0f);
+
+	// 頂点バッファの書き換え
+	{
+		D3D11_MAPPED_SUBRESOURCE msr;
+		CRenderer::GetDeviceContext()->Map(pVertexBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &msr);
+		memcpy(msr.pData, Vertex, sizeof(VERTEX_3D) * 4); // 4頂点分コピー
+		CRenderer::GetDeviceContext()->Unmap(pVertexBuffer, 0);
+	}
+
+	// 入力アセンブラに頂点バッファを設定.
+	CRenderer::SetVertexBuffers(pVertexBuffer);
+
+	CRenderer::SetIndexBuffer(pIndexBuffer);
+
+	// 3Dマトリックス設定
+	{
+		XMMATRIX world = XMMatrixIdentity();
+		XMMATRIX mtxViewInv;		// mtxViewの逆行列
+
+		mtxViewInv = CCamera::Get_Camera_View();
+
+		// 逆行列の転置行列 ( 逆行列(mtxViewInv)の生成 )
+		XMVECTOR det;
+		mtxViewInv = XMMatrixInverse(&det, mtxViewInv);
+
+		// 逆行列(mtxViewInv)の値の変更
+		XMFLOAT4X4 mat44;
+		XMStoreFloat4x4(&mat44, mtxViewInv);
+
+		mat44._41 = 0.0f;
+		mat44._42 = 0.0f;
+		mat44._43 = 0.0f;
+
+		mtxViewInv = XMLoadFloat4x4(&mat44);
+
+		world = XMMatrixMultiply(world, mtxViewInv);
+
+		world *= XMMatrixScaling(Scaling.x, Scaling.y, Scaling.z);							// 拡大縮小
+		world *= XMMatrixRotationRollPitchYaw(Rotation.x, Rotation.y, Rotation.z);			// 回転
+		world *= XMMatrixTranslation(Position.x, Position.y, Position.z);					// 移動
+
+		auto camera01 = CManager::Get_Scene()->Get_Game_Object<CCamera>("camera");
+		auto camera02 = CManager::Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
+
+		if (nullptr != camera01)
+
+		{
+			CRenderer::Set_MatrixBuffer(world, camera01->Get_Camera_View(), camera01->Get_Camera_Projection());
+		}
+		else
+		{
+			CRenderer::Set_MatrixBuffer(world, camera02->Get_Camera_View(), camera02->Get_Camera_Projection());
+		}
+	}
+
+	CRenderer::DrawIndexed(6, 0, 0);
+}
+
 void BILL_BOARD::Update(float delta_time)
 {
 }
@@ -341,6 +420,11 @@ void BILL_BOARD_ANIMATION::Draw()
 	Draw(Tx_Param, Ty_Param);
 }
 
+void BILL_BOARD_ANIMATION::Draw_DPP()
+{
+	Draw_DPP(Tx_Param, Ty_Param);
+}
+
 void BILL_BOARD_ANIMATION::Draw(float tx, float ty)
 {
 	if (-1.0f == tx)
@@ -351,7 +435,6 @@ void BILL_BOARD_ANIMATION::Draw(float tx, float ty)
 	{
 		Tx = tx;
 	}
-
 
 	if (-1.0f == tx)
 	{
@@ -430,57 +513,28 @@ void BILL_BOARD_ANIMATION::Draw(float tx, float ty)
 
 		world = XMMatrixMultiply(world, mtxViewInv);
 
-		world *= XMMatrixScaling(Scaling.x, Scaling.y, Scaling.z);						// 拡大縮小
-
-		world *= XMMatrixTranslation(Position.x, Position.y, Position.z);				// 移動
-		//world *= XMMatrixRotationRollPitchYaw(Rotation.x, Rotation.y, Rotation.z);		// 回転
-
-		//CRenderer::Set_MatrixBufferSetWorldMatrix(&world);
+		world *= XMMatrixScaling(Scaling.x, Scaling.y, Scaling.z);
+		world *= XMMatrixTranslation(Position.x, Position.y, Position.z);
+		//world *= XMMatrixRotationRollPitchYaw(Rotation.x, Rotation.y, Rotation.z);
 
 		auto camera01 = CManager::Get_Scene()->Get_Game_Object<CCamera>("camera");
 		auto camera02 = CManager::Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
 
 		if (nullptr != camera01)
 		{
-			//// シャドウマップ用の描画か?
-			//if (CManager::Get_ShadowMap()->Get_Enable())
-			//{
-			//	XMMATRIX view = CManager::Get_ShadowMap()->Get_View();
-			//	XMMATRIX proj = CManager::Get_ShadowMap()->Get_Plojection();
+			CRenderer::Set_MatrixBuffer(world, camera01->Get_Camera_View(), camera01->Get_Camera_Projection());
 
-			//	CRenderer::Set_MatrixBuffer(world, view, proj);
+			CRenderer::Set_MatrixBuffer01(*camera01->Get_Pos());
 
-			//	CRenderer::Set_Shader(SHADER_INDEX_V::SHADOW_MAP, SHADER_INDEX_P::SHADOW_MAP);
-			//}
-			//else
-			{
-				CRenderer::Set_MatrixBuffer(world, camera01->Get_Camera_View(), camera01->Get_Camera_Projection());
-
-				CRenderer::Set_MatrixBuffer01(*camera01->Get_Pos());
-
-				CRenderer::Set_Shader();
-			}
+			CRenderer::Set_Shader();
 		}
 		else
 		{
-			//// シャドウマップ用の描画か?
-			//if (CManager::Get_ShadowMap()->Get_Enable())
-			//{
-			//	XMMATRIX view = CManager::Get_ShadowMap()->Get_View();
-			//	XMMATRIX proj = CManager::Get_ShadowMap()->Get_Plojection();
-
-			//	CRenderer::Set_MatrixBuffer(world, view, proj);
-
-			//	CRenderer::Set_Shader(SHADER_INDEX_V::SHADOW_MAP, SHADER_INDEX_P::SHADOW_MAP);
-			//}
-			//else
-			{
-				CRenderer::Set_MatrixBuffer(world, camera02->Get_Camera_View(), camera02->Get_Camera_Projection());
-
-				CRenderer::Set_MatrixBuffer01(*camera02->Get_Pos());
-
-				CRenderer::Set_Shader();
-			}
+			CRenderer::Set_MatrixBuffer(world, camera02->Get_Camera_View(), camera02->Get_Camera_Projection());
+			
+			CRenderer::Set_MatrixBuffer01(*camera02->Get_Pos());
+			
+			CRenderer::Set_Shader();
 		}
 	}
 
@@ -489,6 +543,111 @@ void BILL_BOARD_ANIMATION::Draw(float tx, float ty)
 	CRenderer::DrawIndexed(6, 0, 0);
 
 	CRenderer::Set_Shader();
+}
+
+void BILL_BOARD_ANIMATION::Draw_DPP(float tx, float ty)
+{
+	if (-1.0f == tx)
+	{
+		Tx = (float)(Tw * (PatternCount % Pattern_Max_X));
+	}
+	else
+	{
+		Tx = tx;
+	}
+
+	if (-1.0f == tx)
+	{
+		Ty = (float)(Th * (PatternCount / Pattern_Max_Y));
+	}
+	else
+	{
+		Ty = ty;
+	}
+
+	XMINT2* wh = Texture->Get_WH();
+
+	// UV座標計算
+	float u[2], v[2];
+	u[0] = Tx / wh->x;
+	v[0] = Ty / wh->y;
+	u[1] = (Tx + Tw) / wh->x;
+	v[1] = (Ty + Th) / wh->y;
+
+	Vertex[0].Position = XMFLOAT3(-WH.x, WH.y, 0.0f);
+	Vertex[0].Normal = XMFLOAT3(0.0f, 0.0f, -1.0f);
+	Vertex[0].Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+	Vertex[0].TexCoord = XMFLOAT2(u[0], v[0]);
+
+	Vertex[1].Position = XMFLOAT3(WH.x, WH.y, 0.0f);
+	Vertex[1].Normal = XMFLOAT3(0.0f, 0.0f, -1.0f);
+	Vertex[1].Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+	Vertex[1].TexCoord = XMFLOAT2(u[1], v[0]);
+
+	Vertex[2].Position = XMFLOAT3(-WH.x, -WH.y, 0.0f);
+	Vertex[2].Normal = XMFLOAT3(0.0f, 0.0f, -1.0f);
+	Vertex[2].Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+	Vertex[2].TexCoord = XMFLOAT2(u[0], v[1]);
+
+	Vertex[3].Position = XMFLOAT3(WH.x, -WH.y, 0.0f);
+	Vertex[3].Normal = XMFLOAT3(0.0f, 0.0f, -1.0f);
+	Vertex[3].Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+	Vertex[3].TexCoord = XMFLOAT2(u[1], v[1]);
+
+	// 頂点バッファの書き換え
+	{
+		D3D11_MAPPED_SUBRESOURCE msr;
+		CRenderer::GetDeviceContext()->Map(pVertexBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &msr);
+		memcpy(msr.pData, Vertex, sizeof(VERTEX_3D) * 4); // 4頂点分コピー
+		CRenderer::GetDeviceContext()->Unmap(pVertexBuffer, 0);
+	}
+
+	// 入力アセンブラに頂点バッファを設定.
+	CRenderer::SetVertexBuffers(pVertexBuffer);
+
+	CRenderer::SetIndexBuffer(pIndexBuffer);
+
+	// 3Dマトリックス設定
+	{
+		XMMATRIX world = XMMatrixIdentity();
+		XMMATRIX mtxViewInv;		// mtxViewの逆行列
+
+		mtxViewInv = CCamera::Get_Camera_View();
+
+		// 逆行列の転置行列 ( 逆行列(mtxViewInv)の生成 )
+		XMVECTOR det;
+		mtxViewInv = XMMatrixInverse(&det, mtxViewInv);
+
+		// 逆行列(mtxViewInv)の値の変更
+		XMFLOAT4X4 mat44;
+		XMStoreFloat4x4(&mat44, mtxViewInv);
+
+		mat44._41 = 0.0f;
+		mat44._42 = 0.0f;
+		mat44._43 = 0.0f;
+
+		mtxViewInv = XMLoadFloat4x4(&mat44);
+
+		world = XMMatrixMultiply(world, mtxViewInv);
+
+		world *= XMMatrixScaling(Scaling.x, Scaling.y, Scaling.z);
+		world *= XMMatrixTranslation(Position.x, Position.y, Position.z);
+		//world *= XMMatrixRotationRollPitchYaw(Rotation.x, Rotation.y, Rotation.z);
+
+		auto camera01 = CManager::Get_Scene()->Get_Game_Object<CCamera>("camera");
+		auto camera02 = CManager::Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
+
+		if (nullptr != camera01)
+		{
+			CRenderer::Set_MatrixBuffer(world, camera01->Get_Camera_View(), camera01->Get_Camera_Projection());
+		}
+		else
+		{
+			CRenderer::Set_MatrixBuffer(world, camera02->Get_Camera_View(), camera02->Get_Camera_Projection());
+		}
+	}
+
+	CRenderer::DrawIndexed(6, 0, 0);
 }
 
 void BILL_BOARD_ANIMATION::Update(float delta_time)

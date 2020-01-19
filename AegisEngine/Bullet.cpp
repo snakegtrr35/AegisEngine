@@ -1,7 +1,6 @@
 #include	"manager.h"
 #include	"Scene.h"
 #include	"ModelLoader.h"
-#include	"Circle_Shadow.h"
 #include	"Collision.h"
 #include	"Score.h"
 #include	"Bullet.h"
@@ -29,11 +28,6 @@ BULLET::BULLET()
 	dynamic_cast<COLLISIION_AABB*>(Collision)->Set_Position(Position);
 
 	dynamic_cast<COLLISIION_AABB*>(Collision)->Set_Radius(XMFLOAT3(0.5f, 0.5f, 0.5f));
-
-	Shadow = new CIRCLE_SHADOW();
-	Shadow->Set_Position(&Position);
-
-	Shadow->SetWH(XMFLOAT2(0.3f, 0.3f));
 }
 
 BULLET::BULLET(XMFLOAT3& position, XMFLOAT3& move_vector)
@@ -79,7 +73,11 @@ void BULLET::Init()
 void BULLET::Draw()
 {
 	Model->Draw();
-	Shadow->Draw();
+}
+
+void BULLET::Draw_DPP()
+{
+	Model->Draw_DPP();
 }
 
 void BULLET::Update(float delta_time)
@@ -87,15 +85,6 @@ void BULLET::Update(float delta_time)
 	Position.x += MoveVector.x * 0.2f;
 	Position.y += MoveVector.y * 0.2f;
 	Position.z += MoveVector.z * 0.2f;
-
-	// ‰e‚ÌXV
-	{
-		XMFLOAT3 pos = Position;
-
-		pos.y = 0.01f;
-
-		Shadow->Set_Position(&pos);
-	}
 
 	Model->Set_Position(Position);
 	Model->Set_Rotation(Rotation);
@@ -105,7 +94,6 @@ void BULLET::Update(float delta_time)
 	dynamic_cast<COLLISIION_AABB*>(Collision)->Set_Position(Position);
 
 	HP--;
-
 
 	if (HP <= 0)
 	{
@@ -165,7 +153,6 @@ void BULLET::Update(float delta_time)
 void BULLET::Uninit()
 {
 	SAFE_DELETE(Model);
-	SAFE_DELETE(Shadow);
 }
 
 void BULLET::Set_Move_Vector(const XMFLOAT3 move_vector)

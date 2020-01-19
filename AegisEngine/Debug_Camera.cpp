@@ -175,13 +175,14 @@ void DEBUG_CAMERA::Draw()
 	dxViewport.TopLeftX = (float)Viewport.left;
 	dxViewport.TopLeftY = (float)Viewport.top;
 
-	//CRenderer::GetDeviceContext()->RSSetViewports(1, &dxViewport);
-
 	// ビューマトリクス設定
 	m_ViewMatrix = XMMatrixLookAtLH(Pos, At, Up);
-	//CRenderer::SetViewMatrix(&m_ViewMatrix);
 
 	// プロジェクションマトリクス設定
 	m_ProjectionMatrix = XMMatrixPerspectiveFovLH(XMConvertToRadians(Viewing_Angle), dxViewport.Width / dxViewport.Height, 1.0f, 1000.0f);
-	//CRenderer::SetProjectionMatrix(&m_ProjectionMatrix);
+}
+
+void DEBUG_CAMERA::Draw_DPP()
+{
+	Draw();
 }

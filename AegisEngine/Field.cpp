@@ -202,9 +202,7 @@ void FIELD::Draw()
 
 	// 3Dマトリックス設定
 	{
-		XMMATRIX world;
-
-		world = XMMatrixScaling(Scaling.x, Scaling.y, Scaling.z);
+		XMMATRIX world = XMMatrixScaling(Scaling.x, Scaling.y, Scaling.z);
 		world *= XMMatrixRotationRollPitchYaw(XMConvertToRadians(Rotation.x), XMConvertToRadians(Rotation.y), XMConvertToRadians(Rotation.z));
 		world *= XMMatrixTranslation(Position.x, Position.y, Position.z);
 
@@ -260,10 +258,37 @@ void FIELD::Draw()
 	CRenderer::Set_Shader();
 }
 
+void FIELD::Draw_DPP()
+{
+	// 3Dマトリックス設定
+	{
+		XMMATRIX world = XMMatrixScaling(Scaling.x, Scaling.y, Scaling.z);
+		world *= XMMatrixRotationRollPitchYaw(XMConvertToRadians(Rotation.x), XMConvertToRadians(Rotation.y), XMConvertToRadians(Rotation.z));
+		world *= XMMatrixTranslation(Position.x, Position.y, Position.z);
+
+		auto camera01 = CManager::Get_Scene()->Get_Game_Object<CCamera>("camera");
+		auto camera02 = CManager::Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
+
+		if (nullptr != camera01)
+		{
+			CRenderer::Set_MatrixBuffer(world, camera01->Get_Camera_View(), camera01->Get_Camera_Projection());
+		}
+		else
+		{
+			CRenderer::Set_MatrixBuffer(world, camera02->Get_Camera_View(), camera02->Get_Camera_Projection());
+		}
+	}
+
+	// 入力アセンブラに頂点バッファを設定.
+	CRenderer::SetVertexBuffers(pVertexBuffer);
+
+	CRenderer::SetIndexBuffer(pIndexBuffer);
+
+	CRenderer::DrawIndexed(6, 0, 0);
+}
 
 void FIELD::Update(float delta_time)
 {
-
 }
 
 

@@ -19,8 +19,6 @@ ENEMY::ENEMY()
 
 	Scaling = XMFLOAT3(1.0f, 1.0f, 1.0f);
 
-	Model = new CMODEL();
-
 	{
 		//string name("asset/model/miku_01.obj");
 		string name("asset/model/viranrifle.fbx");
@@ -58,6 +56,11 @@ void ENEMY::Init()
 void ENEMY::Draw()
 {
 	Model->Draw();
+}
+
+void ENEMY::Draw_DPP()
+{
+	Model->Draw_DPP();
 }
 
 void ENEMY::Update(float delta_time)

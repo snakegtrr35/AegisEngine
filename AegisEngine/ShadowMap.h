@@ -54,8 +54,8 @@ private:
 
 	GAME_OBJECT* Target;
 
-	static float WIDTH;
-	static float HEIGHT;
+	static UINT WIDTH;
+	static UINT HEIGHT;
 
 	void Set_LightPos(const XMFLOAT3& pos);
 

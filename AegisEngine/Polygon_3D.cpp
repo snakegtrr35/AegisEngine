@@ -209,20 +209,14 @@ void POLYGON_3D::Init(void)
 
 void POLYGON_3D::Draw(void)
 {
-	// 入力アセンブラに頂点バッファを設定.
-	CRenderer::SetVertexBuffers(pVertexBuffer);
-
-	// テクスチャの設定
-	Texture->Set_Texture();
-
 	// 3Dマトリックス設定
 	{
 		XMMATRIX world;
 
-		world = XMMatrixScaling(Scaling.x , Scaling.y, Scaling.z);																						// 拡大縮小
-		world *= XMMatrixRotationRollPitchYaw( XMConvertToRadians(Rotation.x), XMConvertToRadians(Rotation.y), XMConvertToRadians(Rotation.z) );		// 回転(ロールピッチヨウ)
-		world *= XMMatrixTranslation(Position.x, Position.y, Position.z);																				// 移動
-		
+		world = XMMatrixScaling(Scaling.x , Scaling.y, Scaling.z);
+		world *= XMMatrixRotationRollPitchYaw( XMConvertToRadians(Rotation.x), XMConvertToRadians(Rotation.y), XMConvertToRadians(Rotation.z) );
+		world *= XMMatrixTranslation(Position.x, Position.y, Position.z);
+
 		auto camera01 = CManager::Get_Scene()->Get_Game_Object<CCamera>("camera");
 		auto camera02 = CManager::Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
 
@@ -269,6 +263,44 @@ void POLYGON_3D::Draw(void)
 			}
 		}
 	}
+
+	// 入力アセンブラに頂点バッファを設定.
+	CRenderer::SetVertexBuffers(pVertexBuffer);
+
+	// テクスチャの設定
+	Texture->Set_Texture();
+
+	// トポロジの設定
+	CRenderer::GetDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
+
+	CRenderer::GetDeviceContext()->Draw(4 * 6, 0);
+}
+
+void POLYGON_3D::Draw_DPP(void)
+{
+	// 3Dマトリックス設定
+	{
+		XMMATRIX world;
+
+		world = XMMatrixScaling(Scaling.x, Scaling.y, Scaling.z);
+		world *= XMMatrixRotationRollPitchYaw(XMConvertToRadians(Rotation.x), XMConvertToRadians(Rotation.y), XMConvertToRadians(Rotation.z));
+		world *= XMMatrixTranslation(Position.x, Position.y, Position.z);
+
+		auto camera01 = CManager::Get_Scene()->Get_Game_Object<CCamera>("camera");
+		auto camera02 = CManager::Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
+
+		if (nullptr != camera01)
+		{
+			CRenderer::Set_MatrixBuffer(world, camera01->Get_Camera_View(), camera01->Get_Camera_Projection());
+		}
+		else
+		{
+			CRenderer::Set_MatrixBuffer(world, camera02->Get_Camera_View(), camera02->Get_Camera_Projection());
+		}
+	}
+
+	// 入力アセンブラに頂点バッファを設定.
+	CRenderer::SetVertexBuffers(pVertexBuffer);
 
 	// トポロジの設定
 	CRenderer::GetDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);

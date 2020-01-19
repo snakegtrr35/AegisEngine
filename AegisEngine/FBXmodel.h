@@ -86,6 +86,7 @@ private:
 	unique_ptr<ID3D11Buffer, Release> MatrixBuffer;
 
 	void DrawMesh(const aiNode* Node, const XMMATRIX& Matrix);
+	void DrawMesh_DPP(const aiNode* Node, const XMMATRIX& Matrix);
 	void CreateBone(const aiNode* Node);
 	void UpdateBoneMatrix(const aiNode* Node, const XMMATRIX& Matrix);
 	void SetBoneMatrix(const vector<XMMATRIX>& matrix);
@@ -102,6 +103,7 @@ public:
 	~FBXmodel() {}
 
 	void Draw(XMMATRIX &Matrix);
+	void Draw_DPP(XMMATRIX& Matrix);
 	bool Load(const string& FileName);
 	void UnLoad();
 	void Update(float delta_time);

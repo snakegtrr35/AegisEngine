@@ -20,7 +20,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="audio_clip.cpp" />
-    <ClCompile Include="Ball.cpp" />
     <ClCompile Include="Billboard.cpp" />
     <ClCompile Include="Bounding.cpp" />
     <ClCompile Include="Bounding_Aabb.cpp" />
@@ -29,7 +28,6 @@
     <ClCompile Include="Bounding_Shpere.cpp" />
     <ClCompile Include="Bullet.cpp" />
     <ClCompile Include="camera.cpp" />
-    <ClCompile Include="Circle_Shadow.cpp" />
     <ClCompile Include="Collision.cpp" />
     <ClCompile Include="common.cpp" />
     <ClCompile Include="Debug_Camera.cpp" />
@@ -63,7 +61,6 @@
     <ClCompile Include="Mesh_Cylinder.cpp" />
     <ClCompile Include="Mesh_Dome.cpp" />
     <ClCompile Include="Mesh_Field.cpp" />
-    <ClCompile Include="model.cpp" />
     <ClCompile Include="ModelLoader.cpp" />
     <ClCompile Include="Mouse.cpp" />
     <ClCompile Include="My_imgui.cpp" />
@@ -93,7 +90,6 @@
     <ClInclude Include="Animetion_State_Machine.h" />
     <ClInclude Include="audio_clip.h" />
     <ClInclude Include="Axis.h" />
-    <ClInclude Include="Ball.h" />
     <ClInclude Include="Billboard.h" />
     <ClInclude Include="Bounding.h" />
     <ClInclude Include="Bounding_Aabb.h" />
@@ -104,7 +100,6 @@
     <ClInclude Include="Bullet.h" />
     <ClInclude Include="camera.h" />
     <ClInclude Include="Cereal.h" />
-    <ClInclude Include="Circle_Shadow.h" />
     <ClInclude Include="Collision.h" />
     <ClInclude Include="common.h" />
     <None Include="CommonHeader.h">
@@ -145,7 +140,6 @@
     <ClInclude Include="Mesh_Cylinder.h" />
     <ClInclude Include="Mesh_Dome.h" />
     <ClInclude Include="Mesh_Field.h" />
-    <ClInclude Include="model.h" />
     <ClInclude Include="ModelLoader.h" />
     <ClInclude Include="Mouse.h" />
     <ClInclude Include="My_imgui.h" />
@@ -236,6 +230,12 @@
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">5.0</ShaderModel>
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">%(Filename).cso</ObjectFileOutput>
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">%(Filename).cso</ObjectFileOutput>
+    </FxCompile>
+    <FxCompile Include="VertexShader_Animation_Depth_Pre_Pass.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
     </FxCompile>
     <FxCompile Include="VertexShader_Depth_Pre_Pass.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>

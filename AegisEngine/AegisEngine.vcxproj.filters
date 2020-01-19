@@ -101,9 +101,6 @@
     <ClCompile Include="imgui\imgui_stdlib.cpp">
       <Filter>Imgui</Filter>
     </ClCompile>
-    <ClCompile Include="Ball.cpp">
-      <Filter>ソース ファイル\GameObject</Filter>
-    </ClCompile>
     <ClCompile Include="Billboard.cpp">
       <Filter>ソース ファイル\GameObject</Filter>
     </ClCompile>
@@ -167,9 +164,6 @@
     <ClCompile Include="Field.cpp">
       <Filter>ソース ファイル\GameObject</Filter>
     </ClCompile>
-    <ClCompile Include="model.cpp">
-      <Filter>ソース ファイル\GameObject</Filter>
-    </ClCompile>
     <ClCompile Include="Score.cpp">
       <Filter>ソース ファイル\GameObject</Filter>
     </ClCompile>
@@ -181,9 +175,6 @@
     </ClCompile>
     <ClCompile Include="Mesh_Field.cpp">
       <Filter>ソース ファイル\GameObject\Mesh</Filter>
-    </ClCompile>
-    <ClCompile Include="Circle_Shadow.cpp">
-      <Filter>ソース ファイル\GameObject</Filter>
     </ClCompile>
     <ClCompile Include="Menu_Component.cpp">
       <Filter>ソース ファイル\System</Filter>
@@ -239,9 +230,6 @@
     <ClCompile Include="Bounding_Capsule.cpp">
       <Filter>ソース ファイル\GameObject\Bounding</Filter>
     </ClCompile>
-    <ClCompile Include="Clustered.cpp">
-      <Filter>ソース ファイル\System\Clustered</Filter>
-    </ClCompile>
     <ClCompile Include="ForwardPlus.cpp">
       <Filter>ソース ファイル\System\Clustered</Filter>
     </ClCompile>
@@ -250,6 +238,9 @@
     </ClCompile>
     <ClCompile Include="Bounding_Frustum.cpp">
       <Filter>ソース ファイル\GameObject\Bounding</Filter>
+    </ClCompile>
+    <ClCompile Include="Light.cpp">
+      <Filter>ソース ファイル\System</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -376,9 +367,6 @@
     <ClInclude Include="ModelLoader.h">
       <Filter>ソース ファイル\GameObject</Filter>
     </ClInclude>
-    <ClInclude Include="model.h">
-      <Filter>ソース ファイル\GameObject</Filter>
-    </ClInclude>
     <ClInclude Include="Mesh.h">
       <Filter>ソース ファイル\GameObject</Filter>
     </ClInclude>
@@ -394,13 +382,7 @@
     <ClInclude Include="Enemy.h">
       <Filter>ソース ファイル\GameObject</Filter>
     </ClInclude>
-    <ClInclude Include="Circle_Shadow.h">
-      <Filter>ソース ファイル\GameObject</Filter>
-    </ClInclude>
     <ClInclude Include="Bullet.h">
-      <Filter>ソース ファイル\GameObject</Filter>
-    </ClInclude>
-    <ClInclude Include="Ball.h">
       <Filter>ソース ファイル\GameObject</Filter>
     </ClInclude>
     <ClInclude Include="Billboard.h">
@@ -445,9 +427,6 @@
     <ClInclude Include="Bounding_Capsule.h">
       <Filter>ソース ファイル\GameObject\Bounding</Filter>
     </ClInclude>
-    <ClInclude Include="Clustered.h">
-      <Filter>ソース ファイル\System\Clustered</Filter>
-    </ClInclude>
     <ClInclude Include="ForwardPlus.h">
       <Filter>ソース ファイル\System\Clustered</Filter>
     </ClInclude>
@@ -456,6 +435,9 @@
     </ClInclude>
     <ClInclude Include="Bounding_Frustum.h">
       <Filter>ソース ファイル\GameObject\Bounding</Filter>
+    </ClInclude>
+    <ClInclude Include="Light.h">
+      <Filter>ソース ファイル\System</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -489,17 +471,23 @@
     <FxCompile Include="VertexShader_Geometry.hlsl">
       <Filter>リソース ファイル\VertexShader</Filter>
     </FxCompile>
-    <FxCompile Include="ComputeShader_ComputeFrustums.hlsl">
-      <Filter>リソース ファイル</Filter>
-    </FxCompile>
-    <FxCompile Include="CommonInclude.hlsl">
-      <Filter>リソース ファイル</Filter>
-    </FxCompile>
-    <FxCompile Include="ComputeShader_LightCulling.hlsl">
-      <Filter>リソース ファイル</Filter>
-    </FxCompile>
     <FxCompile Include="PixelShader_Created.hlsl">
       <Filter>リソース ファイル\PixelShader</Filter>
+    </FxCompile>
+    <FxCompile Include="VertexShader_ShadowMap_Anime.hlsl">
+      <Filter>リソース ファイル\VertexShader</Filter>
+    </FxCompile>
+    <FxCompile Include="ParallelReduction.hlsl">
+      <Filter>リソース ファイル</Filter>
+    </FxCompile>
+    <FxCompile Include="TilingForward.hlsl">
+      <Filter>リソース ファイル</Filter>
+    </FxCompile>
+    <FxCompile Include="VertexShader_Depth_Pre_Pass.hlsl">
+      <Filter>リソース ファイル</Filter>
+    </FxCompile>
+    <FxCompile Include="VertexShader_Animation_Depth_Pre_Pass.hlsl">
+      <Filter>リソース ファイル</Filter>
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
@@ -511,5 +499,13 @@
     <Image Include="..\AegisEngine.ico">
       <Filter>リソース ファイル</Filter>
     </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="CommonHeader.h">
+      <Filter>リソース ファイル</Filter>
+    </None>
+    <None Include="TilingCommonHeader.h">
+      <Filter>リソース ファイル</Filter>
+    </None>
   </ItemGroup>
 </Project>

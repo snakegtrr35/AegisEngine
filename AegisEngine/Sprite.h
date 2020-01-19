@@ -82,6 +82,23 @@ protected:
 		}
 	};
 
+	/**
+	* @brief 子スプライトの描画関数
+	* @details 子スプライトの描画する関数
+	*/
+	void Draw_DPP_Child() {
+
+		for (CHILD_DATE child : Children)
+		{
+			if (child.Child->Enable)
+			{
+				child.Child->Draw_DPP();
+
+				child.Child->Draw_DPP_Child();
+			}
+		}
+	};
+
 public:
 	/**
 	* @brief コンストラクタ
@@ -114,6 +131,12 @@ public:
 	* @details 描画する関数
 	*/
 	void Draw() override;
+
+	/**
+	* @brief 描画(Depth pre-pass)関数
+	* @details Depth pre-passを行う関数
+	*/
+	void Draw_DPP() override;
 
 	/**
 	* @brief 更新関数
@@ -432,6 +455,12 @@ private:
 	*/
 	void Draw2(float tx = -1.0f, float ty = -1.0f);
 
+	/**
+	* @brief 描画(Depth pre-pass)関数
+	* @details 実際にDepth pre-passを行う関数
+	*/
+	void Draw_DPP2(float tx = -1.0f, float ty = -1.0f);
+
 public:
 
 	/**
@@ -465,6 +494,12 @@ public:
 	* @details 描画する関数
 	*/
 	void Draw() override;
+
+	/**
+	* @brief 描画(Depth pre-pass)関数
+	* @details Depth pre-passを行う関数
+	*/
+	void Draw_DPP() override;
 
 	/**
 	* @brief 更新関数
@@ -562,6 +597,12 @@ private:
 	*/
 	void Text_Draw(const string& text);
 
+	/**
+	* @brief 描画(Depth pre-pass)関数
+	* @details Depth pre-passを行う関数
+	*/
+	void Text_Draw_DPP(const string& text);
+
 public:
 	/**
 	* @brief コンストラクタ
@@ -586,6 +627,12 @@ public:
 	* @details 描画する関数
 	*/
 	void Draw() override;
+
+	/**
+	* @brief 描画(Depth pre-pass)関数
+	* @details Depth pre-passを行う関数
+	*/
+	void Draw_DPP() override;
 
 	/**
 	* @brief 更新関数

@@ -2,7 +2,6 @@
 #include	"Scene.h"
 #include	"ModelLoader.h"
 #include	"Input.h"
-#include	"Circle_Shadow.h"
 #include	"Collision.h"
 #include	"Player.h"
 
@@ -61,6 +60,13 @@ void PLAYER::Init(void)
 void PLAYER::Draw(void)
 {
 	Model->Draw();
+
+	//Shpere->Draw();
+}
+
+void PLAYER::Draw_DPP(void)
+{
+	Model->Draw_DPP();
 
 	//Shpere->Draw();
 }
