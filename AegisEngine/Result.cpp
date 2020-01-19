@@ -42,6 +42,11 @@ void RESULT::Draw()
 	SCENE::Draw();
 }
 
+void RESULT::Draw_DPP()
+{
+	SCENE::Draw_DPP();
+}
+
 void RESULT::Update(float delta_time)
 {
 	SCENE::Update(delta_time);

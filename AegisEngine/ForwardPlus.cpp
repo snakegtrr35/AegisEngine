@@ -3,6 +3,8 @@
 #include	"Renderer.h"
 #include	<io.h>
 
+#include	"Scene.h"
+
 static LIGHTS g_Light;
 
 bool FORWARDLUS::Init()
@@ -235,7 +237,7 @@ void FORWARDLUS::Uninit()
 	m_pDepthStencilState.reset(nullptr);
 }
 
-void FORWARDLUS::Depth_Pre_Pass()
+void FORWARDLUS::Depth_Pre_Pass(SCENE_MANAGER* scene_manager)
 {
 	ID3D11RenderTargetView* pNULLRTV = nullptr;
 	ID3D11DepthStencilView* pNULLDSV = nullptr;
@@ -258,8 +260,7 @@ void FORWARDLUS::Depth_Pre_Pass()
 		device_context->PSSetSamplers(0, 1, &pNULLSampler);
 
 		// Draw the main scene
-		//Scene.m_pSceneMesh->Render(pd3dImmediateContext);
-
+		scene_manager->Draw_DPP();
 
 		// Restore to default
 		//CRenderer::GetDeviceContext()->RSSetState(nullptr);

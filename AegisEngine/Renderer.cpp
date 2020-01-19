@@ -23,8 +23,10 @@ IDWriteTextLayout*			CRenderer::m_TextLayout = nullptr;
 
 IDWriteFactory*				CRenderer::m_DwriteFactory = nullptr;
 
-ID3D11VertexShader*			CRenderer::m_VertexShader[4] = { nullptr };
-ID3D11PixelShader*			CRenderer::m_PixelShader[4] = { nullptr };
+//ID3D11VertexShader*			CRenderer::m_VertexShader[4] = { nullptr };
+//ID3D11PixelShader*			CRenderer::m_PixelShader[4] = { nullptr };
+unordered_map<SHADER_INDEX_V, ID3D11VertexShader*>			CRenderer::m_VertexShader;
+unordered_map<SHADER_INDEX_P, ID3D11PixelShader*>			CRenderer::m_PixelShader;
 ID3D11InputLayout*			CRenderer::m_VertexLayout[2] = { nullptr };
 ID3D11Buffer*				CRenderer::m_MaterialBuffer = nullptr;
 ID3D11Buffer*				CRenderer::m_LightBuffer = nullptr;
@@ -88,7 +90,8 @@ bool CRenderer::Init()
 			fread(buffer, fsize, 1, file);
 			fclose(file);
 
-			m_D3DDevice->CreateVertexShader(buffer, fsize, NULL, &m_VertexShader[0]);
+			//m_D3DDevice->CreateVertexShader(buffer, fsize, NULL, &m_VertexShader[0]);
+			m_D3DDevice->CreateVertexShader(buffer, fsize, NULL, &m_VertexShader[SHADER_INDEX_V::DEFAULT]);
 
 			m_D3DDevice->CreateInputLayout(layout,
 				numElements,
@@ -123,7 +126,8 @@ bool CRenderer::Init()
 			fread(buffer, fsize, 1, file);
 			fclose(file);
 
-			m_D3DDevice->CreateVertexShader(buffer, fsize, NULL, &m_VertexShader[1]);
+			//m_D3DDevice->CreateVertexShader(buffer, fsize, NULL, &m_VertexShader[1]);
+			m_D3DDevice->CreateVertexShader(buffer, fsize, NULL, &m_VertexShader[SHADER_INDEX_V::SHADOW_MAP]);
 
 			delete[] buffer;
 		}
@@ -154,7 +158,8 @@ bool CRenderer::Init()
 			fread(buffer, fsize, 1, file);
 			fclose(file);
 
-			m_D3DDevice->CreateVertexShader(buffer, fsize, NULL, &m_VertexShader[2]);
+			//m_D3DDevice->CreateVertexShader(buffer, fsize, NULL, &m_VertexShader[2]);
+			m_D3DDevice->CreateVertexShader(buffer, fsize, NULL, &m_VertexShader[SHADER_INDEX_V::ANIMATION]);
 
 			m_D3DDevice->CreateInputLayout(animation_layout,
 				numElements,
@@ -191,7 +196,8 @@ bool CRenderer::Init()
 			fread(buffer, fsize, 1, file);
 			fclose(file);
 
-			m_D3DDevice->CreateVertexShader(buffer, fsize, NULL, &m_VertexShader[3]);
+			//m_D3DDevice->CreateVertexShader(buffer, fsize, NULL, &m_VertexShader[3]);
+			m_D3DDevice->CreateVertexShader(buffer, fsize, NULL, &m_VertexShader[SHADER_INDEX_V::SHADOW_MAP_ANIMATION]);
 
 			m_D3DDevice->CreateInputLayout(animation_layout,
 				numElements,
@@ -216,7 +222,8 @@ bool CRenderer::Init()
 			fread(buffer, fsize, 1, file);
 			fclose(file);
 
-			m_D3DDevice->CreatePixelShader(buffer, fsize, NULL, &m_PixelShader[0]);
+			//m_D3DDevice->CreatePixelShader(buffer, fsize, NULL, &m_PixelShader[0]);
+			m_D3DDevice->CreatePixelShader(buffer, fsize, NULL, &m_PixelShader[SHADER_INDEX_P::DEFAULT]);
 
 			delete[] buffer;
 		}
@@ -232,7 +239,8 @@ bool CRenderer::Init()
 			fread(buffer, fsize, 1, file);
 			fclose(file);
 
-			m_D3DDevice->CreatePixelShader(buffer, fsize, NULL, &m_PixelShader[1]);
+			//m_D3DDevice->CreatePixelShader(buffer, fsize, NULL, &m_PixelShader[1]);
+			m_D3DDevice->CreatePixelShader(buffer, fsize, NULL, &m_PixelShader[SHADER_INDEX_P::NO_TEXTURE]);
 
 			delete[] buffer;
 		}
@@ -248,7 +256,8 @@ bool CRenderer::Init()
 			fread(buffer, fsize, 1, file);
 			fclose(file);
 
-			m_D3DDevice->CreatePixelShader(buffer, fsize, NULL, &m_PixelShader[2]);
+			//m_D3DDevice->CreatePixelShader(buffer, fsize, NULL, &m_PixelShader[2]);
+			m_D3DDevice->CreatePixelShader(buffer, fsize, NULL, &m_PixelShader[SHADER_INDEX_P::NO_LIGHT]);
 
 			delete[] buffer;
 		}
@@ -264,7 +273,8 @@ bool CRenderer::Init()
 			fread(buffer, fsize, 1, file);
 			fclose(file);
 
-			m_D3DDevice->CreatePixelShader(buffer, fsize, NULL, &m_PixelShader[3]);
+			//m_D3DDevice->CreatePixelShader(buffer, fsize, NULL, &m_PixelShader[3]);
+			m_D3DDevice->CreatePixelShader(buffer, fsize, NULL, &m_PixelShader[SHADER_INDEX_P::SHADOW_MAP]);
 
 			delete[] buffer;
 		}
@@ -314,8 +324,10 @@ bool CRenderer::Init()
 	m_ImmediateContext->IASetInputLayout(m_VertexLayout[0]);
 
 	// シェーダ設定
-	m_ImmediateContext->VSSetShader(m_VertexShader[0], NULL, 0);
-	m_ImmediateContext->PSSetShader(m_PixelShader[0], NULL, 0);
+	//m_ImmediateContext->VSSetShader(m_VertexShader[0], NULL, 0);
+	//m_ImmediateContext->PSSetShader(m_PixelShader[0], NULL, 0);
+	m_ImmediateContext->VSSetShader(m_VertexShader[SHADER_INDEX_V::DEFAULT], NULL, 0);
+	m_ImmediateContext->PSSetShader(m_PixelShader[SHADER_INDEX_P::DEFAULT], NULL, 0);
 
 	// ライト初期化
 	ZeroMemory(&m_Light, sizeof(m_Light));
@@ -362,14 +374,24 @@ void CRenderer::Uninit()
 	SAFE_RELEASE(m_VertexLayout[0]);
 	SAFE_RELEASE(m_VertexLayout[1]);
 
-	SAFE_RELEASE(m_VertexShader[0]);
-	SAFE_RELEASE(m_VertexShader[1]);
-	SAFE_RELEASE(m_VertexShader[2]);
+	//SAFE_RELEASE(m_VertexShader[0]);
+	//SAFE_RELEASE(m_VertexShader[1]);
+	//SAFE_RELEASE(m_VertexShader[2]);
 
-	SAFE_RELEASE(m_PixelShader[0]);
-	SAFE_RELEASE(m_PixelShader[1]);
-	SAFE_RELEASE(m_PixelShader[2]);
-	SAFE_RELEASE(m_PixelShader[3]);
+	for (auto s : m_VertexShader)
+	{
+		s.second->Release();
+	}
+
+	//SAFE_RELEASE(m_PixelShader[0]);
+	//SAFE_RELEASE(m_PixelShader[1]);
+	//SAFE_RELEASE(m_PixelShader[2]);
+	//SAFE_RELEASE(m_PixelShader[3]);
+
+	for (auto s : m_PixelShader)
+	{
+		s.second->Release();
+	}
 
 	SAFE_RELEASE(m_RenderTargetView)
 	SAFE_RELEASE(m_SwapChain)
@@ -1068,50 +1090,54 @@ void CRenderer::DrawIndexed( unsigned int IndexCount, unsigned int StartIndexLoc
 // シェーダ設定
 void CRenderer::Set_Shader(const SHADER_INDEX_V v_index, const SHADER_INDEX_P p_index)
 {
-	switch ((int)v_index)
-	{
-		case (int)SHADER_INDEX_V::DEFAULT:
-			m_ImmediateContext->VSSetShader(m_VertexShader[(int)SHADER_INDEX_V::DEFAULT], NULL, 0);
-			break;
+	//switch ((int)v_index)
+	//{
+	//	case (int)SHADER_INDEX_V::DEFAULT:
+	//		m_ImmediateContext->VSSetShader(m_VertexShader[(int)SHADER_INDEX_V::DEFAULT], NULL, 0);
+	//		break;
 
-		case (int)SHADER_INDEX_V::SHADOW_MAP:
-			m_ImmediateContext->VSSetShader(m_VertexShader[(int)SHADER_INDEX_V::SHADOW_MAP], NULL, 0);
-			break;
+	//	case (int)SHADER_INDEX_V::SHADOW_MAP:
+	//		m_ImmediateContext->VSSetShader(m_VertexShader[(int)SHADER_INDEX_V::SHADOW_MAP], NULL, 0);
+	//		break;
 
-		case (int)SHADER_INDEX_V::ANIMATION:
-			m_ImmediateContext->VSSetShader(m_VertexShader[(int)SHADER_INDEX_V::ANIMATION], NULL, 0);
-			break;
+	//	case (int)SHADER_INDEX_V::ANIMATION:
+	//		m_ImmediateContext->VSSetShader(m_VertexShader[(int)SHADER_INDEX_V::ANIMATION], NULL, 0);
+	//		break;
 
-		case (int)SHADER_INDEX_V::SHADOW_MAP_ANIMATION:
-			m_ImmediateContext->VSSetShader(m_VertexShader[(int)SHADER_INDEX_V::SHADOW_MAP_ANIMATION], NULL, 0);
-			break;
+	//	case (int)SHADER_INDEX_V::SHADOW_MAP_ANIMATION:
+	//		m_ImmediateContext->VSSetShader(m_VertexShader[(int)SHADER_INDEX_V::SHADOW_MAP_ANIMATION], NULL, 0);
+	//		break;
 
-		default:
-			break;
-	}
+	//	default:
+	//		break;
+	//}
 
-	switch ((int)p_index)
-	{
-		case (int)SHADER_INDEX_P::DEFAULT:
-			m_ImmediateContext->PSSetShader(m_PixelShader[(int)SHADER_INDEX_P::DEFAULT], NULL, 0);
-			break;
+	m_ImmediateContext->VSSetShader(m_VertexShader[v_index], NULL, 0);
 
-		case (int)SHADER_INDEX_P::NO_TEXTURE:
-			m_ImmediateContext->PSSetShader(m_PixelShader[(int)SHADER_INDEX_P::NO_TEXTURE], NULL, 0);
-			break;
+	//switch ((int)p_index)
+	//{
+	//	case (int)SHADER_INDEX_P::DEFAULT:
+	//		m_ImmediateContext->PSSetShader(m_PixelShader[(int)SHADER_INDEX_P::DEFAULT], NULL, 0);
+	//		break;
 
-		case (int)SHADER_INDEX_P::NO_LIGHT:
-			m_ImmediateContext->PSSetShader(m_PixelShader[(int)SHADER_INDEX_P::NO_LIGHT], NULL, 0);
-			break;
+	//	case (int)SHADER_INDEX_P::NO_TEXTURE:
+	//		m_ImmediateContext->PSSetShader(m_PixelShader[(int)SHADER_INDEX_P::NO_TEXTURE], NULL, 0);
+	//		break;
 
-		case (int)SHADER_INDEX_P::SHADOW_MAP:
-			m_ImmediateContext->PSSetShader(m_PixelShader[(int)SHADER_INDEX_P::SHADOW_MAP], NULL, 0);
-			//m_ImmediateContext->PSSetShader(nullptr, NULL, 0);
-			break;
+	//	case (int)SHADER_INDEX_P::NO_LIGHT:
+	//		m_ImmediateContext->PSSetShader(m_PixelShader[(int)SHADER_INDEX_P::NO_LIGHT], NULL, 0);
+	//		break;
 
-		default:
-			break;
-	}
+	//	case (int)SHADER_INDEX_P::SHADOW_MAP:
+	//		m_ImmediateContext->PSSetShader(m_PixelShader[(int)SHADER_INDEX_P::SHADOW_MAP], NULL, 0);
+	//		//m_ImmediateContext->PSSetShader(nullptr, NULL, 0);
+	//		break;
+
+	//	default:
+	//		break;
+	//}
+
+	m_ImmediateContext->PSSetShader(m_PixelShader[p_index], NULL, 0);
 }
 
 void CRenderer::Set_InputLayout(const INPUTLAYOUT InputLayout)

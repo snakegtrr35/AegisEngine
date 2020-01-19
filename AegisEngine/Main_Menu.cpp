@@ -241,6 +241,20 @@ void MAIN_MENU::Draw()
 	model->Draw(m);
 }
 
+void MAIN_MENU::Draw_DPP()
+{
+	SCENE::Draw_DPP();
+
+	Frustun.Draw_DPP();
+	AABB.Draw_DPP();
+
+	auto m = XMMatrixIdentity();
+
+	m = XMMatrixScaling(2.5, 2.5, 2.5);
+
+	model->Draw_DPP(m);
+}
+
 void MAIN_MENU::Update(float delta_time)
 {
 	SCENE::Update(delta_time);

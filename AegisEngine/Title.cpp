@@ -93,6 +93,11 @@ void TITLE::Draw()
 	SCENE::Draw();
 }
 
+void TITLE::Draw_DPP()
+{
+	SCENE::Draw_DPP();
+}
+
 void TITLE::Update(float delta_time)
 {
 	SCENE::Update(delta_time);

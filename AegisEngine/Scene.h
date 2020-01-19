@@ -247,6 +247,20 @@ public:
 	};
 
 	/**
+	* @brief 描画(Depth pre-pass)関数
+	* @details Depth pre-passを行う関数
+	*/
+	virtual void Draw_DPP(void) {
+		for (int i = 0; i < (int)LAYER_NAME::MAX_LAYER; i++)
+		{
+			for (auto object = GameObjects[i].begin(); object != GameObjects[i].end(); object++)
+			{
+				object->get()->Draw_DPP();
+			}
+		}
+	};
+
+	/**
 	* @brief 簡単な説明（～する関数）
 	* @param[in] a(引数名) 引数の説明
 	* @param[out] b(引数名) 引数の説明
@@ -383,6 +397,7 @@ public:
 
 	void Init() override;
 	void Draw() override;
+	void Draw_DPP() override;
 	void Update(float delta_time) override;
 	void Uninit() override;
 
@@ -425,6 +440,7 @@ public:
 
 	void Init() override;
 	void Draw() override;
+	void Draw_DPP() override;
 	void Update(float delta_time) override;
 	void Uninit() override;
 
@@ -467,6 +483,7 @@ public:
 
 	void Init() override;
 	void Draw() override;
+	void Draw_DPP() override;
 	void Update(float delta_time) override;
 	void Uninit() override;
 
@@ -512,6 +529,7 @@ public:
 
 	void Init() override;
 	void Draw() override;
+	void Draw_DPP() override;
 	void Update(float delta_time) override;
 	void Uninit() override;
 
@@ -565,6 +583,10 @@ public:
 
 	void Draw() {
 		pScene->Draw();
+	};
+
+	void Draw_DPP() {
+		pScene->Draw_DPP();
 	};
 
 	void Update(float delta_time) {

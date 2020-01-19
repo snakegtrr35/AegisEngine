@@ -257,8 +257,10 @@ private:
 	//! Direct2Dのライトファクトリー
 	static IDWriteFactory*			m_DwriteFactory;
 
-	static ID3D11VertexShader*		m_VertexShader[4];
-	static ID3D11PixelShader*		m_PixelShader[4];
+	//static ID3D11VertexShader*		m_VertexShader[4];
+	static unordered_map<SHADER_INDEX_V, ID3D11VertexShader*>	m_VertexShader;
+	//static ID3D11PixelShader*		m_PixelShader[4];
+	static unordered_map<SHADER_INDEX_P, ID3D11PixelShader*>	m_PixelShader;
 
 	static ID3D11DepthStencilState* m_DepthStateEnable;
 	static ID3D11DepthStencilState* m_DepthStateDisable;

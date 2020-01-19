@@ -8,6 +8,8 @@
 //#include <wrl/client.h>
 //using namespace Microsoft::WRL;
 
+class SCENE_MANAGER;
+
 static const constexpr WORD TILE_RES = 16;
 static const constexpr WORD MAX_NUM_LIGHTS_PER_TILE = 272;
 
@@ -80,7 +82,7 @@ public:
 	void Draw();
 	void Uninit();
 
-	void Depth_Pre_Pass();
+	void Depth_Pre_Pass(SCENE_MANAGER* scene_manager);
 	void Light_Culling();
 };
 

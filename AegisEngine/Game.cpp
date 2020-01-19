@@ -231,6 +231,11 @@ void GAME::Draw()
 	SCENE::Draw();
 }
 
+void GAME::Draw_DPP()
+{
+	SCENE::Draw_DPP();
+}
+
 void GAME::Update(float delta_time)
 {
 	SCENE::Update(delta_time);
