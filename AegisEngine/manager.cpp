@@ -129,14 +129,15 @@ void CManager::Draw()
 
 	CRenderer::Begin();
 
+	if (nullptr != ForwardPlus.get()) ForwardPlus->Depth_Pre_Pass(pSceneManager);
+	if (nullptr != ForwardPlus.get()) ForwardPlus->Light_Culling();
+
 	// シャドウマップの描画
 	{
 		pShadowMap->Begin();
 		pSceneManager->Draw();
 		pShadowMap->End();//
 	}
-	
-	if(nullptr != ForwardPlus.get()) ForwardPlus->Light_Culling();
 
 	// 1パス目
 	{

@@ -534,7 +534,7 @@ bool CRenderer::Init3D()
 	td.Height = sc.Height;
 	td.MipLevels = 1;
 	td.ArraySize = 1;
-	td.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
+	td.Format = DXGI_FORMAT_R32_TYPELESS;
 	td.SampleDesc = sc.SampleDesc;
 	td.Usage = D3D11_USAGE_DEFAULT;
 	td.BindFlags = D3D11_BIND_DEPTH_STENCIL;
@@ -550,9 +550,10 @@ bool CRenderer::Init3D()
 	//ステンシルターゲット作成
 	D3D11_DEPTH_STENCIL_VIEW_DESC dsvd;
 	ZeroMemory(&dsvd, sizeof(dsvd));
-	dsvd.Format = td.Format;
+	dsvd.Format = DXGI_FORMAT_D32_FLOAT;
 	dsvd.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
 	//dsvd.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2DMS;		// MSAA用
+	dsvd.Texture2D.MipSlice = 0;
 	dsvd.Flags = 0;
 	hr = m_D3DDevice->CreateDepthStencilView(depthTexture, &dsvd, &m_DepthStencilView);
 	if (FAILED(hr))
@@ -563,6 +564,25 @@ bool CRenderer::Init3D()
 
 	m_ImmediateContext->OMSetRenderTargets(1, &m_RenderTargetView, m_DepthStencilView);
 
+	//// シェーダーリソースビュー設定
+	//{
+	//	ID3D11ShaderResourceView* srv = nullptr;
+
+	//	// シェーダーリソースビューの設定
+	//	D3D11_SHADER_RESOURCE_VIEW_DESC desc;
+	//	desc.Format = DXGI_FORMAT_R32_FLOAT;
+	//	desc.ViewDimension = D3D_SRV_DIMENSION_TEXTURE2D;
+	//	desc.Texture2D.MostDetailedMip = 0;
+	//	desc.Texture2D.MipLevels = 1;
+
+	//	hr = m_D3DDevice->CreateShaderResourceView(depthTexture, &desc, &srv);
+	//	if (FAILED(hr))
+	//	{
+	//		FAILDE_ASSERT;
+	//		return false;
+	//	}
+	//	ShaderResourceView[0].reset(srv);
+	//}
 
 
 	// ビューポート設定
@@ -1299,107 +1319,107 @@ bool CRenderer::Create()
 		}
 	}
 
-	// アルベドバッファの作成
-	{
-		ID3D11Texture2D* pTex = nullptr;
+	//// アルベドバッファの作成
+	//{
+	//	ID3D11Texture2D* pTex = nullptr;
 
-		// テクスチャの作成
-		D3D11_TEXTURE2D_DESC td;
-		td.Width = SCREEN_WIDTH;
-		td.Height = SCREEN_HEIGHT;
-		td.MipLevels = 1;
-		td.ArraySize = 1;
-		td.Format = DXGI_FORMAT_R16G16B16A16_FLOAT;
-		td.SampleDesc.Count = 1;
-		td.SampleDesc.Quality = 0;
-		td.Usage = D3D11_USAGE_DEFAULT;
-		td.BindFlags = D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE;
-		td.CPUAccessFlags = 0;
-		td.MiscFlags = 0;
+	//	// テクスチャの作成
+	//	D3D11_TEXTURE2D_DESC td;
+	//	td.Width = SCREEN_WIDTH;
+	//	td.Height = SCREEN_HEIGHT;
+	//	td.MipLevels = 1;
+	//	td.ArraySize = 1;
+	//	td.Format = DXGI_FORMAT_R16G16B16A16_FLOAT;
+	//	td.SampleDesc.Count = 1;
+	//	td.SampleDesc.Quality = 0;
+	//	td.Usage = D3D11_USAGE_DEFAULT;
+	//	td.BindFlags = D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE;
+	//	td.CPUAccessFlags = 0;
+	//	td.MiscFlags = 0;
 
-		hr = m_D3DDevice->CreateTexture2D(&td, nullptr, &pTex);
-		if (FAILED(hr))
-		{
-			FAILDE_ASSERT;
-			return false;
-		}
+	//	hr = m_D3DDevice->CreateTexture2D(&td, nullptr, &pTex);
+	//	if (FAILED(hr))
+	//	{
+	//		FAILDE_ASSERT;
+	//		return false;
+	//	}
 
-		// レンダーターゲットビュー設定
-		{
-			ID3D11RenderTargetView* pRtv;
+	//	// レンダーターゲットビュー設定
+	//	{
+	//		ID3D11RenderTargetView* pRtv;
 
-			hr = m_D3DDevice->CreateRenderTargetView(pTex, nullptr, &pRtv);
-			if (FAILED(hr))
-			{
-				return false;
-			}
+	//		hr = m_D3DDevice->CreateRenderTargetView(pTex, nullptr, &pRtv);
+	//		if (FAILED(hr))
+	//		{
+	//			return false;
+	//		}
 
-			RenderTargetView[1].reset(pRtv);
-		}
+	//		RenderTargetView[1].reset(pRtv);
+	//	}
 
-		// シェーダーリソースビュー設定
-		{
-			ID3D11ShaderResourceView* srv = nullptr;
+	//	// シェーダーリソースビュー設定
+	//	{
+	//		ID3D11ShaderResourceView* srv = nullptr;
 
-			hr = m_D3DDevice->CreateShaderResourceView(pTex, nullptr, &srv);
-			if (FAILED(hr))
-			{
-				FAILDE_ASSERT;
-				return false;
-			}
-			ShaderResourceView[1].reset(srv);
-		}
-	}
+	//		hr = m_D3DDevice->CreateShaderResourceView(pTex, nullptr, &srv);
+	//		if (FAILED(hr))
+	//		{
+	//			FAILDE_ASSERT;
+	//			return false;
+	//		}
+	//		ShaderResourceView[1].reset(srv);
+	//	}
+	//}
 
-	// 法線バッファの作成
-	{
-		ID3D11Texture2D* pTex = nullptr;
+	//// 法線バッファの作成
+	//{
+	//	ID3D11Texture2D* pTex = nullptr;
 
-		// テクスチャの作成
-		D3D11_TEXTURE2D_DESC td;
-		td.Width = SCREEN_WIDTH;
-		td.Height = SCREEN_HEIGHT;
-		td.MipLevels = 1;
-		td.ArraySize = 1;
-		td.Format = DXGI_FORMAT_R11G11B10_FLOAT;
-		td.SampleDesc.Count = 1;
-		td.SampleDesc.Quality = 0;
-		td.Usage = D3D11_USAGE_DEFAULT;
-		td.BindFlags = D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE;
-		td.CPUAccessFlags = 0;
-		td.MiscFlags = 0;
+	//	// テクスチャの作成
+	//	D3D11_TEXTURE2D_DESC td;
+	//	td.Width = SCREEN_WIDTH;
+	//	td.Height = SCREEN_HEIGHT;
+	//	td.MipLevels = 1;
+	//	td.ArraySize = 1;
+	//	td.Format = DXGI_FORMAT_R11G11B10_FLOAT;
+	//	td.SampleDesc.Count = 1;
+	//	td.SampleDesc.Quality = 0;
+	//	td.Usage = D3D11_USAGE_DEFAULT;
+	//	td.BindFlags = D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE;
+	//	td.CPUAccessFlags = 0;
+	//	td.MiscFlags = 0;
 
-		hr = m_D3DDevice->CreateTexture2D(&td, nullptr, &pTex);
-		if (FAILED(hr))
-		{
-			FAILDE_ASSERT;
-			return false;
-		}
+	//	hr = m_D3DDevice->CreateTexture2D(&td, nullptr, &pTex);
+	//	if (FAILED(hr))
+	//	{
+	//		FAILDE_ASSERT;
+	//		return false;
+	//	}
 
-		// レンダーターゲットビュー設定
-		{
-			ID3D11RenderTargetView* pRtv;
+	//	// レンダーターゲットビュー設定
+	//	{
+	//		ID3D11RenderTargetView* pRtv;
 
-			hr = m_D3DDevice->CreateRenderTargetView(pTex, nullptr, &pRtv);
-			if (FAILED(hr))
-			{
-				return false;
-			}
+	//		hr = m_D3DDevice->CreateRenderTargetView(pTex, nullptr, &pRtv);
+	//		if (FAILED(hr))
+	//		{
+	//			return false;
+	//		}
 
-			RenderTargetView[2].reset(pRtv);
-		}
+	//		RenderTargetView[2].reset(pRtv);
+	//	}
 
-		// シェーダーリソースビュー設定
-		{
-			ID3D11ShaderResourceView* srv = nullptr;
+	//	// シェーダーリソースビュー設定
+	//	{
+	//		ID3D11ShaderResourceView* srv = nullptr;
 
-			hr = m_D3DDevice->CreateShaderResourceView(pTex, nullptr, &srv);
-			if (FAILED(hr))
-			{
-				FAILDE_ASSERT;
-				return false;
-			}
-			ShaderResourceView[2].reset(srv);
-		}
-	}
+	//		hr = m_D3DDevice->CreateShaderResourceView(pTex, nullptr, &srv);
+	//		if (FAILED(hr))
+	//		{
+	//			FAILDE_ASSERT;
+	//			return false;
+	//		}
+	//		ShaderResourceView[2].reset(srv);
+	//	}
+	//}
 }

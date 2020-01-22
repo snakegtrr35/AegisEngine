@@ -61,6 +61,7 @@ bool SHADOW_MAP::Init()
 		td.MipLevels = 1;
 		td.ArraySize = 1;
 		td.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
+		//td.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
 		td.SampleDesc.Count = 1;
 		td.SampleDesc.Quality = 0;
 		td.Usage = D3D11_USAGE_DEFAULT;
@@ -78,6 +79,7 @@ bool SHADOW_MAP::Init()
 		{
 			D3D11_DEPTH_STENCIL_VIEW_DESC desc;
 			desc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
+			//desc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
 			desc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
 			desc.Flags = 0;
 			desc.Texture2D.MipSlice = 0;
@@ -99,6 +101,7 @@ bool SHADOW_MAP::Init()
 		//	D3D11_SHADER_RESOURCE_VIEW_DESC desc;
 		//	ZeroMemory(&desc, sizeof(desc));
 		//	desc.Format = DXGI_FORMAT_R24_UNORM_X8_TYPELESS;
+		//	//desc.Format = DXGI_FORMAT_R24_UNORM_X8_TYPELESS;
 		//	desc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
 		//	desc.Texture2D.MipLevels = 1;
 		//	desc.Texture2D.MostDetailedMip = 0;
@@ -355,23 +358,23 @@ void SHADOW_MAP::Update()
 	LightPos.y = light->Position.y;
 	LightPos.z = light->Position.z;
 
-	if (nullptr != Target)
-	{
-		XMFLOAT3* at = Target->Get_Position();
+	//if (nullptr != Target)
+	//{
+	//	XMFLOAT3* at = Target->Get_Position();
 
 
-		XMFLOAT3 pos;
-		pos.x = at->x + LightPos.x;
-		pos.y = at->y + LightPos.y;
-		pos.z = at->z + LightPos.z;
+	//	XMFLOAT3 pos;
+	//	pos.x = at->x + LightPos.x;
+	//	pos.y = at->y + LightPos.y;
+	//	pos.z = at->z + LightPos.z;
 
-		ViewMatrix = XMMatrixLookAtLH(XMLoadFloat3(&pos), XMVectorSet(at->x, at->y, at->z, 0.f), XMVectorSet(0.f, 1.0f, 0.f, 0.f));
+	//	ViewMatrix = XMMatrixLookAtLH(XMLoadFloat3(&pos), XMVectorSet(at->x, at->y, at->z, 0.f), XMVectorSet(0.f, 1.0f, 0.f, 0.f));
 
-		Shadow.ViewMatrix = XMMatrixTranspose(ViewMatrix);
+	//	Shadow.ViewMatrix = XMMatrixTranspose(ViewMatrix);
 
-		// シャドウ生成パスの定数バッファを更新
-		CRenderer::GetDeviceContext()->UpdateSubresource(ShadowBuffer.get(), 0, nullptr, &Shadow, 0, 0);
-	}
+	//	// シャドウ生成パスの定数バッファを更新
+	//	CRenderer::GetDeviceContext()->UpdateSubresource(ShadowBuffer.get(), 0, nullptr, &Shadow, 0, 0);
+	//}
 }
 
 void SHADOW_MAP::Uninit()

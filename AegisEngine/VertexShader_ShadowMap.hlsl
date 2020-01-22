@@ -27,7 +27,6 @@ void main( in float4 inPosition     : POSITION0,
     wvp = mul(wvp, Projection);
     
     inPosition.w = 1.0;
-    
     outPosition = mul(inPosition, wvp);
     
     outPos = outPosition;

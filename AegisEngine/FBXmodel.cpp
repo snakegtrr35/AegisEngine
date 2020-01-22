@@ -336,8 +336,8 @@ void FBXmodel::Draw_DPP(XMMATRIX& Matrix)
 
 	DrawMesh_DPP(m_Scene->mRootNode, Matrix);
 
-	//CRenderer::Set_InputLayout();
-	//CRenderer::Set_Shader();
+	CRenderer::Set_InputLayout();
+	CRenderer::Set_Shader();
 }
 
 void FBXmodel::set_bone(const aiNode* Node, vector<XMMATRIX>& v)
@@ -457,14 +457,10 @@ void FBXmodel::DrawMesh_DPP(const aiNode* Node, const XMMATRIX& Matrix)
 			if (nullptr != camera01)
 			{
 				CRenderer::Set_MatrixBuffer(world, camera01->Get_Camera_View(), camera01->Get_Camera_Projection());
-
-				//CRenderer::Set_Shader(SHADER_INDEX_V::ANIMATION, SHADER_INDEX_P::DEFAULT);
 			}
 			else
 			{
 				CRenderer::Set_MatrixBuffer(world, camera02->Get_Camera_View(), camera02->Get_Camera_Projection());
-
-				//CRenderer::Set_Shader(SHADER_INDEX_V::ANIMATION, SHADER_INDEX_P::DEFAULT);
 			}
 		}
 

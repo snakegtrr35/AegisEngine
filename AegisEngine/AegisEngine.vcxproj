@@ -102,11 +102,11 @@
     <ClInclude Include="Cereal.h" />
     <ClInclude Include="Collision.h" />
     <ClInclude Include="common.h" />
-    <None Include="CommonHeader.h">
+    <FxCompile Include="CommonHeader.h">
       <FileType>Document</FileType>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
-    </None>
+    </FxCompile>
     <ClInclude Include="Component.h" />
     <ClInclude Include="Debug_Camera.h" />
     <ClInclude Include="Effekseer.h" />
@@ -154,11 +154,11 @@
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="texture.h" />
     <ClInclude Include="Texture_Manager.h" />
-    <None Include="TilingCommonHeader.h">
+    <FxCompile Include="TilingCommonHeader.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <FileType>Document</FileType>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
-    </None>
+    </FxCompile>
     <ClInclude Include="Timer.h" />
     <ClInclude Include="Xbox.h" />
     <ClInclude Include="XYZ_Axis.h" />

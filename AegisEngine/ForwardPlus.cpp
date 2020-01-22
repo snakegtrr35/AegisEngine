@@ -100,7 +100,7 @@ bool FORWARDLUS::Init()
 		ZeroMemory(&DepthStencilDesc, sizeof(D3D11_DEPTH_STENCIL_DESC));
 		DepthStencilDesc.DepthEnable = TRUE;
 		DepthStencilDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
-		DepthStencilDesc.DepthFunc = D3D11_COMPARISON_GREATER;  // we are using inverted 32-bit float depth for better precision
+		DepthStencilDesc.DepthFunc = D3D11_COMPARISON_LESS;  // we are using inverted 32-bit float depth for better precision
 		DepthStencilDesc.StencilEnable = FALSE;
 		DepthStencilDesc.StencilReadMask = D3D11_DEFAULT_STENCIL_READ_MASK;
 		DepthStencilDesc.StencilWriteMask = D3D11_DEFAULT_STENCIL_WRITE_MASK;
@@ -120,6 +120,8 @@ bool FORWARDLUS::Init()
 		DXGI_SAMPLE_DESC sample_dasc;
 		sample_dasc.Count = 1;
 
+		//bool flag = CreateDepthStencilSurface(&m_DepthStencilBuffer.m_pDepthStencilTexture, &m_DepthStencilBuffer.m_pDepthStencilSRV, &m_DepthStencilBuffer.m_pDepthStencilView,
+		//	DXGI_FORMAT_D24_UNORM_S8_UINT, DXGI_FORMAT_R24_UNORM_X8_TYPELESS, SCREEN_WIDTH, SCREEN_HEIGHT, sample_dasc.Count);
 		bool flag = CreateDepthStencilSurface(&m_DepthStencilBuffer.m_pDepthStencilTexture, &m_DepthStencilBuffer.m_pDepthStencilSRV, &m_DepthStencilBuffer.m_pDepthStencilView,
 			DXGI_FORMAT_D32_FLOAT, DXGI_FORMAT_R32_FLOAT, SCREEN_WIDTH, SCREEN_HEIGHT, sample_dasc.Count);
 
@@ -233,7 +235,7 @@ void FORWARDLUS::Uninit()
 	m_pDepthBoundsCS.reset(nullptr);
 	m_pLightCullCS.reset(nullptr);
 
-	m_pDepthStencilView.reset(nullptr);
+	//m_pDepthStencilView.reset(nullptr);
 	m_DepthStateEnable.reset(nullptr);
 	m_pDepthStencilState.reset(nullptr);
 }
@@ -248,10 +250,12 @@ void FORWARDLUS::Depth_Pre_Pass(SCENE_MANAGER* scene_manager)
 
 	auto device_context = CRenderer::GetDeviceContext();
 
+	device_context->ClearDepthStencilView(m_DepthStencilBuffer.m_pDepthStencilView, D3D11_CLEAR_DEPTH, 1.0f, 0);  // we are using inverted depth, so clear to zero
+
 	// Depth pre-pass
 	{
 		// Depth pre-pass (to eliminate pixel overdraw during forward rendering)
-		device_context->OMSetRenderTargets(1, &pNULLRTV, m_pDepthStencilView.get());  // null color buffer
+		device_context->OMSetRenderTargets(1, &pNULLRTV, m_DepthStencilBuffer.m_pDepthStencilView);  // null color buffer
 		device_context->OMSetDepthStencilState(m_DepthStateEnable.get(), NULL);  // we are using inverted 32-bit float depth for better precision
 		//device_context->IASetInputLayout(m_pLayoutPositionOnly11);
 		device_context->VSSetShader(m_VertexShader.get(), nullptr, 0);

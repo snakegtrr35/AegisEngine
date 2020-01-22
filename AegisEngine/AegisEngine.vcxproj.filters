@@ -489,6 +489,12 @@
     <FxCompile Include="VertexShader_Animation_Depth_Pre_Pass.hlsl">
       <Filter>リソース ファイル</Filter>
     </FxCompile>
+    <FxCompile Include="CommonHeader.h">
+      <Filter>リソース ファイル</Filter>
+    </FxCompile>
+    <FxCompile Include="TilingCommonHeader.h">
+      <Filter>リソース ファイル</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="AegisEngine.rc">
@@ -499,13 +505,5 @@
     <Image Include="..\AegisEngine.ico">
       <Filter>リソース ファイル</Filter>
     </Image>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="CommonHeader.h">
-      <Filter>リソース ファイル</Filter>
-    </None>
-    <None Include="TilingCommonHeader.h">
-      <Filter>リソース ファイル</Filter>
-    </None>
   </ItemGroup>
 </Project>

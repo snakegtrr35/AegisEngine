@@ -34,7 +34,7 @@ private:
 	//! compute shader for tiled culling
 	unique_ptr <ID3D11ComputeShader, Release>			m_pLightCullCS;
 
-	unique_ptr <ID3D11DepthStencilView, Release>		m_pDepthStencilView;
+	//unique_ptr <ID3D11DepthStencilView, Release>		m_pDepthStencilView;
 
 	unique_ptr <ID3D11DepthStencilState, Release>		m_DepthStateEnable;
 
@@ -85,6 +85,10 @@ public:
 
 	void Depth_Pre_Pass(SCENE_MANAGER* scene_manager);
 	void Light_Culling();
+
+	DepthStencilBuffer& Get() {
+		return m_DepthStencilBuffer;
+	}
 };
 
 #endif // !FORWARDLUS_H

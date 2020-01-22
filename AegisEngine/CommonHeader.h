@@ -90,7 +90,7 @@ cbuffer cbPerFrame : register( b2 )
     //uint                g_uNumTilesY                 : packoffset( c20.w );
 	uint                g_uNumLights				: packoffset(c16);
 	uint                g_uNumSpotLights			: packoffset(c16.y);
-	///uint                g_uWindowWidth				: packoffset(c16.z);
+	//uint                g_uWindowWidth				: packoffset(c16.z);
 	//uint                g_uWindowHeight				: packoffset(c16.w);
 	uint                g_uMaxNumLightsPerTile		: packoffset(c17);
 	uint                g_uMaxNumElementsPerTile	: packoffset(c17.y);

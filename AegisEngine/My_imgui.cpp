@@ -16,6 +16,8 @@
 
 #include	"common.h"
 
+#include	"ForwardPlus.h"
+
 extern float radius;
 
 static string old_name;
@@ -23,6 +25,8 @@ static string old_name;
 static BoundingFrustum Frustum;
 static BoundingBox Aabb;
 extern BOUNDING_AABB AABB;
+
+extern unique_ptr<FORWARDLUS> ForwardPlus;
 
 void EditTransform(const float* cameraView, float* cameraProjection, float* matrix, bool enable, GAME_OBJECT* object);
 
@@ -306,58 +310,59 @@ void My_imgui::Draw(void)
 
 			// レンダリングテクスチャ
 			{
-			// タイトルバーありの場合、imageyよりWindowSizeがImVec2(17, 40)分大きければ丁度いい
-			// タイトルバーなしの場合、imageyよりWindowSizeがImVec2(13, 16)分大きければ丁度いい
+				// タイトルバーありの場合、imageyよりWindowSizeがImVec2(17, 40)分大きければ丁度いい
+				// タイトルバーなしの場合、imageyよりWindowSizeがImVec2(13, 16)分大きければ丁度いい
 
-			ImGuiWindowFlags window_flags = ImGuiWindowFlags_NoResize;
+				ImGuiWindowFlags window_flags = ImGuiWindowFlags_NoResize;
 
-			{
-				ImGui::SetNextWindowSize(ImVec2(512 + 17, 512 + 40), ImGuiCond_Once);
+				{
+					ImGui::SetNextWindowSize(ImVec2(512 + 17, 512 + 40), ImGuiCond_Once);
 
-				ImGui::Begin("Shadow", nullptr, window_flags);
+					ImGui::Begin("Shadow", nullptr, window_flags);
 
-				ImTextureID image = CManager::Get_ShadowMap()->Get();
+					ImTextureID image = CManager::Get_ShadowMap()->Get();
 
-				ImGui::Image(image, ImVec2(512, 512));
+					ImGui::Image(image, ImVec2(512, 512));
 
-				ImGui::End();
-			}
+					ImGui::End();
+				}
 
-			{
-				ImGui::SetNextWindowSize(ImVec2(512 + 17, 512 + 40), ImGuiCond_Once);
+				{
+					ImGui::SetNextWindowSize(ImVec2(512 + 17, 512 + 40), ImGuiCond_Once);
 
-				ImGui::Begin("Depth", nullptr, window_flags);
+					ImGui::Begin("Depth", nullptr, window_flags);
 
-				ImTextureID image = CRenderer::Get();
+					ImTextureID image = ForwardPlus->Get().m_pDepthStencilSRV;
 
-				ImGui::Image(image, ImVec2(512, 512));
+					ImGui::Image(image, ImVec2(512, 512));
 
-				ImGui::End();
-			}
+					ImGui::End();
+				}
 
-			{
-				ImGui::SetNextWindowSize(ImVec2(512 + 17, 512 + 40), ImGuiCond_Once);
+				/*{
+					ImGui::SetNextWindowSize(ImVec2(512 + 17, 512 + 40), ImGuiCond_Once);
 
-				ImGui::Begin("Diffeuse", nullptr, window_flags);
+					ImGui::Begin("Diffeuse", nullptr, window_flags);
 
-				ImTextureID image = CRenderer::Get2();
+					ImTextureID image = CRenderer::Get2();
 
-				ImGui::Image(image, ImVec2(512, 512));
+					ImGui::Image(image, ImVec2(512, 512));
 
-				ImGui::End();
-			}
+					ImGui::End();
+				}*/
 
-			{
-				ImGui::SetNextWindowSize(ImVec2(512 + 17, 512 + 40), ImGuiCond_Once);
+				/*{
+					ImGui::SetNextWindowSize(ImVec2(512 + 17, 512 + 40), ImGuiCond_Once);
 
-				ImGui::Begin("Normal", nullptr, window_flags);
+					ImGui::Begin("Normal", nullptr, window_flags);
 
-				ImTextureID image = CRenderer::Get3();
+					ImTextureID image = CRenderer::Get3();
 
-				ImGui::Image(image, ImVec2(512, 512));
+					ImGui::Image(image, ImVec2(512, 512));
 
-				ImGui::End();
-			}
+					ImGui::End();
+				}*/
+
 			}
 
 			// オブジェクト一覧
