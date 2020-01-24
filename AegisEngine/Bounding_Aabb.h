@@ -9,7 +9,7 @@
 class BOUNDING_AABB : public BOUNDING {
 private:
 
-	//XMFLOAT3 Radius;
+	XMFLOAT3 Radius = XMFLOAT3(0.5f, 0.5f, 0.5f);
 
 public:
 	BOUNDING_AABB();
@@ -26,10 +26,20 @@ public:
 
 	void OverWrite() override;
 
+	void Set_Radius(const XMFLOAT3& radius);
+	void Set_Radius(const XMFLOAT3* radius);
+
+	XMFLOAT3* Get_Radius() {
+		return &Radius;
+	}
+
+	BoundingBox Aabb;
+
 	template<typename Archive>
 	void serialize(Archive& ar)
 	{
 		ar(cereal::base_class<BOUNDING>(this));
+		ar(Radius);
 	}
 
 	//template<class Archive>

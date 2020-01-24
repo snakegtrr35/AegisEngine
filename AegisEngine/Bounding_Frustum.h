@@ -11,8 +11,6 @@ private:
 	unique_ptr<ID3D11Buffer, Release> pVertexBuffer;		// 頂点バッファ
 	unique_ptr<ID3D11Buffer, Release> pIndexBuffer;			// インデックスバッファ
 
-	BoundingFrustum Frustum;
-
 public:
 	BOUNDING_FRUSTUM(){}
 	~BOUNDING_FRUSTUM() { Uninit(); }
@@ -23,8 +21,9 @@ public:
 	void Update(float delta_time) override;
 	void Uninit() override;
 
-	void OverWrite() override {}
+	void OverWrite() override;
 
+	BoundingFrustum Frustum;
 };
 
 CEREAL_REGISTER_TYPE(BOUNDING_FRUSTUM)

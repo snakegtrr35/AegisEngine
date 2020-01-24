@@ -19,7 +19,8 @@ string MAIN_MENU::Model_Name = "asset/model/herorifle.fbx";
 static bool flag = false;
 
 static FBXmodel* model;
-static BOUNDING_FRUSTUM Frustun;
+
+BOUNDING_FRUSTUM Bounding_Frustun;
 BOUNDING_AABB AABB;
 
 string Replace_String(string& replacedStr, const string& from, const string& to)
@@ -216,7 +217,7 @@ void MAIN_MENU::Init()
 	model = new FBXmodel();
 	model->Load("asset/model/SambaDancing2.fbx");
 
-	Frustun.Init();
+	Bounding_Frustun.Init();
 	AABB.Init();
 
 	SCENE::Init();
@@ -231,7 +232,7 @@ void MAIN_MENU::Draw()
 {
 	SCENE::Draw();
 
-	Frustun.Draw();
+	Bounding_Frustun.Draw();
 	AABB.Draw();
 
 	auto m = XMMatrixIdentity();
@@ -245,7 +246,7 @@ void MAIN_MENU::Draw_DPP()
 {
 	SCENE::Draw_DPP();
 
-	Frustun.Draw_DPP();
+	Bounding_Frustun.Draw_DPP();
 	AABB.Draw_DPP();
 
 	auto m = XMMatrixIdentity();
@@ -260,7 +261,8 @@ void MAIN_MENU::Update(float delta_time)
 	SCENE::Update(delta_time);
 
 	model->Update(delta_time);
-	Frustun.Update(delta_time);
+	Bounding_Frustun.Update(delta_time);
+	AABB.Update(delta_time);
 
 	{
 		/*{
@@ -322,7 +324,8 @@ void MAIN_MENU::Uninit()
 	SCENE::Uninit();
 
 	SAFE_DELETE(model);
-	Frustun.Uninit();
+
+	Bounding_Frustun.Uninit();
 	AABB.Uninit();
 
 	AUDIO_MANAGER::Stop_Sound_Object();

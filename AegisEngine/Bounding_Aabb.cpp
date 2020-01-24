@@ -14,31 +14,42 @@ BOUNDING_AABB::~BOUNDING_AABB()
 
 void BOUNDING_AABB::Init()
 {
+	{
+		Aabb = BoundingBox(XMFLOAT3(0.f, 0.f, 0.f), Radius);
+
+		XMMATRIX matrix = XMMatrixScaling(Scaling.x, Scaling.y, Scaling.z);
+		matrix *= XMMatrixTranslation(Position.x, Position.y, Position.z);
+
+		Aabb.Transform(Aabb, matrix);
+	}
+
 	// 頂点バッファの設定
 	if (nullptr == pVertexBuffer_BOX.get())
 	{
-		const char VertexNum = 8;
+		XMFLOAT3 corners[BoundingBox::CORNER_COUNT];
 
-		VERTEX_3D Vertex[VertexNum];
+		Aabb.GetCorners(corners);
 
-		Vertex[0].Position = XMFLOAT3(-0.5f, 0.5f, -0.5f);
+		VERTEX_3D Vertex[BoundingBox::CORNER_COUNT];
 
-		Vertex[1].Position = XMFLOAT3(0.5f, 0.5f, -0.5f);
+		Vertex[0].Position = corners[7];
 
-		Vertex[2].Position = XMFLOAT3(-0.5f, -0.5f, -0.5f);
+		Vertex[1].Position = corners[6];
 
-		Vertex[3].Position = XMFLOAT3(0.5f, -0.5f, -0.5f);
+		Vertex[2].Position = corners[4];
+
+		Vertex[3].Position = corners[5];
 
 
-		Vertex[4].Position = XMFLOAT3(-0.5f, 0.5f, 0.5f);
+		Vertex[4].Position = corners[3];
 
-		Vertex[5].Position = XMFLOAT3(0.5f, 0.5f, 0.5f);
+		Vertex[5].Position = corners[2];
 
-		Vertex[6].Position = XMFLOAT3(-0.5f, -0.5f, 0.5f);
+		Vertex[6].Position = corners[0];
 
-		Vertex[7].Position = XMFLOAT3(0.5f, -0.5f, 0.5f);
+		Vertex[7].Position = corners[1];
 
-		for (char i = 0; i < VertexNum; i++)
+		for (char i = 0; i < BoundingBox::CORNER_COUNT; i++)
 		{
 			Vertex[i].Normal = XMFLOAT3(1.0f, 0.0f, 0.0f);
 			Vertex[i].Diffuse = XMFLOAT4(Color.r, Color.g, Color.b, Color.a);
@@ -52,7 +63,7 @@ void BOUNDING_AABB::Init()
 			D3D11_BUFFER_DESC bd;
 			ZeroMemory(&bd, sizeof(bd));
 
-			bd.ByteWidth = sizeof(VERTEX_3D) * VertexNum;
+			bd.ByteWidth = sizeof(VERTEX_3D) * BoundingBox::CORNER_COUNT;
 			bd.Usage = D3D11_USAGE_DYNAMIC;
 			bd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
 			bd.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
@@ -119,8 +130,9 @@ void BOUNDING_AABB::Draw()
 	{
 		// 3Dマトリックス設定
 		{
-			XMMATRIX world = XMMatrixScaling(Scaling.x, Scaling.y, Scaling.z);
-			world *= XMMatrixTranslation(Position.x, Position.y, Position.z);
+			XMMATRIX world = XMMatrixIdentity();
+			//world *= XMMatrixScaling(Scaling.x, Scaling.y, Scaling.z);
+			//world *= XMMatrixTranslation(Position.x, Position.y, Position.z);
 
 			CCamera* camera01 = CManager::Get_Scene()->Get_Game_Object<CCamera>("camera");
 			DEBUG_CAMERA* camera02 = CManager::Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
@@ -166,41 +178,41 @@ void BOUNDING_AABB::Uninit()
 
 void BOUNDING_AABB::OverWrite()
 {
-	if (Color != Default_Color && nullptr != pVertexBuffer_BOX.get())
 	{
-		Color = Default_Color;
+		//Color = Default_Color;
 
-		const char VertexNum = 8;
+		Aabb = BoundingBox(XMFLOAT3(0.f, 0.f, 0.f), Radius);
 
-		VERTEX_3D Vertex[VertexNum];
+		XMMATRIX matrix = XMMatrixScaling(Scaling.x, Scaling.y, Scaling.z);
+		matrix *= XMMatrixTranslation(Position.x, Position.y, Position.z);
 
-		Vertex[0].Position = XMFLOAT3(-0.5f, 0.5f, -0.5f);
-		Vertex[0].Diffuse = XMFLOAT4(Color.r, Color.g, Color.b, Color.a);
+		Aabb.Transform(Aabb, matrix);
 
-		Vertex[1].Position = XMFLOAT3(0.5f, 0.5f, -0.5f);
-		Vertex[1].Diffuse = XMFLOAT4(Color.r, Color.g, Color.b, Color.a);
+		VERTEX_3D Vertex[BoundingBox::CORNER_COUNT];
+		XMFLOAT3 corners[BoundingBox::CORNER_COUNT];
 
-		Vertex[2].Position = XMFLOAT3(-0.5f, -0.5f, -0.5f);
-		Vertex[2].Diffuse = XMFLOAT4(Color.r, Color.g, Color.b, Color.a);
+		Aabb.GetCorners(corners);
 
-		Vertex[3].Position = XMFLOAT3(0.5f, -0.5f, -0.5f);
-		Vertex[3].Diffuse = XMFLOAT4(Color.r, Color.g, Color.b, Color.a);
+		Vertex[0].Position = corners[7];
+
+		Vertex[1].Position = corners[6];
+
+		Vertex[2].Position = corners[4];
+
+		Vertex[3].Position = corners[5];
 
 
-		Vertex[4].Position = XMFLOAT3(-0.5f, 0.5f, 0.5f);
-		Vertex[4].Diffuse = XMFLOAT4(Color.r, Color.g, Color.b, Color.a);
+		Vertex[4].Position = corners[3];
 
-		Vertex[5].Position = XMFLOAT3(0.5f, 0.5f, 0.5f);
-		Vertex[5].Diffuse = XMFLOAT4(Color.r, Color.g, Color.b, Color.a);
+		Vertex[5].Position = corners[2];
 
-		Vertex[6].Position = XMFLOAT3(-0.5f, -0.5f, 0.5f);
-		Vertex[6].Diffuse = XMFLOAT4(Color.r, Color.g, Color.b, Color.a);
+		Vertex[6].Position = corners[0];
 
-		Vertex[7].Position = XMFLOAT3(0.5f, -0.5f, 0.5f);
-		Vertex[7].Diffuse = XMFLOAT4(Color.r, Color.g, Color.b, Color.a);
+		Vertex[7].Position = corners[1];
 
-		for (char i = 0; i < VertexNum; i++)
+		for (char i = 0; i < BoundingBox::CORNER_COUNT; i++)
 		{
+			Vertex[i].Diffuse = XMFLOAT4(Color.r, Color.g, Color.b, Color.a);
 			Vertex[i].Normal = XMFLOAT3(1.0f, 0.0f, 0.0f);
 			Vertex[i].TexCoord = XMFLOAT2(0.0f, 0.0f);
 		}
@@ -209,8 +221,18 @@ void BOUNDING_AABB::OverWrite()
 		{
 			D3D11_MAPPED_SUBRESOURCE msr;
 			CRenderer::GetDeviceContext()->Map(pVertexBuffer_BOX.get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &msr);
-			memcpy(msr.pData, Vertex, sizeof(VERTEX_3D) * VertexNum);
+			memcpy(msr.pData, Vertex, sizeof(VERTEX_3D) * BoundingBox::CORNER_COUNT);
 			CRenderer::GetDeviceContext()->Unmap(pVertexBuffer_BOX.get(), 0);
 		}
 	}
+}
+
+void BOUNDING_AABB::Set_Radius(const XMFLOAT3& radius)
+{
+	Radius = radius;
+}
+
+void BOUNDING_AABB::Set_Radius(const XMFLOAT3* radius)
+{
+	Radius = *radius;
 }

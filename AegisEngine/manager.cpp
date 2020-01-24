@@ -9,8 +9,8 @@
 #include	"ShadowMap.h"
 #include	"Effekseer.h"
 
-#include	"ForwardPlus.h"
-unique_ptr<FORWARDLUS> ForwardPlus;
+//#include	"ForwardPlus.h"
+//unique_ptr<FORWARDLUS> ForwardPlus;
 
 #ifdef _DEBUG
 #include	"My_imgui.h"
@@ -73,8 +73,8 @@ bool CManager::Init()
 	pShadowMap->Init();
 	pShadowMap->Set_Target(pSceneManager->Get_Scene()->Get_Game_Object<PLAYER>("player"));
 
-	ForwardPlus.reset(new FORWARDLUS());//
-	ForwardPlus->Init();//
+	//ForwardPlus.reset(new FORWARDLUS());//
+	//ForwardPlus->Init();//
 
 	return true;
 }
@@ -129,8 +129,8 @@ void CManager::Draw()
 
 	CRenderer::Begin();
 
-	if (nullptr != ForwardPlus.get()) ForwardPlus->Depth_Pre_Pass(pSceneManager);
-	if (nullptr != ForwardPlus.get()) ForwardPlus->Light_Culling();
+	//if (nullptr != ForwardPlus.get()) ForwardPlus->Depth_Pre_Pass(pSceneManager);
+	//if (nullptr != ForwardPlus.get()) ForwardPlus->Light_Culling();
 
 	// シャドウマップの描画
 	{
@@ -215,7 +215,7 @@ void CManager::Draw()
 
 void CManager::Uninit()
 {
-	ForwardPlus.reset(nullptr);///
+	//ForwardPlus.reset(nullptr);///
 
 	SAFE_DELETE(pSceneManager);
 

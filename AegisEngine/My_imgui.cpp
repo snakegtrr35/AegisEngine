@@ -16,17 +16,15 @@
 
 #include	"common.h"
 
-#include	"ForwardPlus.h"
+#include	"Bounding_Aabb.h"
+#include	"Bounding_Frustum.h"
 
 extern float radius;
 
 static string old_name;
 
-static BoundingFrustum Frustum;
-static BoundingBox Aabb;
+extern BOUNDING_FRUSTUM Bounding_Frustun;
 extern BOUNDING_AABB AABB;
-
-extern unique_ptr<FORWARDLUS> ForwardPlus;
 
 void EditTransform(const float* cameraView, float* cameraProjection, float* matrix, bool enable, GAME_OBJECT* object);
 
@@ -66,41 +64,6 @@ void My_imgui::Init(HWND hWnd)
 	ImGuiStyle& style = ImGui::GetStyle();
 
 	style.Colors[ImGuiCol_WindowBg] = color;
-
-	{
-		BoundingFrustum::CreateFromMatrix(Frustum, XMMatrixPerspectiveFovLH(XMConvertToRadians(80.0f), float(SCREEN_WIDTH / SCREEN_HEIGHT), 0.01f, 10.0f));
-		Frustum.Origin.z = 0.0f;
-		{
-			XMMATRIX matrix = XMMatrixRotationRollPitchYaw(XMConvertToRadians(0.f), XMConvertToRadians(0.f), XMConvertToRadians(0.f));
-			XMVECTOR rotate = XMQuaternionRotationMatrix(matrix);
-			Frustum.Transform(Frustum, 1.0f, rotate, XMVectorSet(0.f, 0.f, 0.f, 0.f));
-		}
-	}
-
-	{
-		Aabb.Center = XMFLOAT3(0.f, 0.f, 0.f);
-		Aabb.Extents = XMFLOAT3(0.5f, 0.5f, 0.5f);
-	}
-
-	//{
-	//	XMFLOAT3 corners[BoundingBox::CORNER_COUNT];
-
-	//	Aabb.GetCorners(corners);
-
-	//	XMFLOAT3 verts[8];
-
-
-	//	verts[0] = corners[0];
-	//	verts[1] = corners[1];
-	//	verts[2] = corners[2];
-	//	verts[3] = corners[3];
-	//	verts[4] = corners[4];
-	//	verts[5] = corners[5];
-	//	verts[6] = corners[6];
-	//	verts[7] = corners[7];
-
-	//	int a = 0;
-	//}
 }
 
 void My_imgui::Draw(void)
@@ -327,18 +290,6 @@ void My_imgui::Draw(void)
 					ImGui::End();
 				}
 
-				{
-					ImGui::SetNextWindowSize(ImVec2(512 + 17, 512 + 40), ImGuiCond_Once);
-
-					ImGui::Begin("Depth", nullptr, window_flags);
-
-					ImTextureID image = ForwardPlus->Get().m_pDepthStencilSRV;
-
-					ImGui::Image(image, ImVec2(512, 512));
-
-					ImGui::End();
-				}
-
 				/*{
 					ImGui::SetNextWindowSize(ImVec2(512 + 17, 512 + 40), ImGuiCond_Once);
 
@@ -411,25 +362,6 @@ void My_imgui::Draw(void)
 		}
 
 		{
-			{
-				BoundingFrustum::CreateFromMatrix(Frustum, XMMatrixPerspectiveFovLH(XMConvertToRadians(80.0f), float(SCREEN_WIDTH / SCREEN_HEIGHT), 0.01f, 20.0f));
-
-				XMFLOAT3 r;
-				XMVECTOR p = XMVectorSet(0,0,0,0);
-				auto camera = CManager::Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
-
-				if (nullptr != camera)
-				{
-					XMStoreFloat3(&r, XMLoadFloat3(camera->Get_Rotation()));
-
-					p = XMLoadFloat3(camera->Get_Position());
-				}
-
-				XMMATRIX matrix = XMMatrixRotationRollPitchYaw(XMConvertToRadians(r.x), XMConvertToRadians(r.y), XMConvertToRadians(r.z));
-				XMVECTOR rotate = XMQuaternionRotationMatrix(matrix);
-				Frustum.Transform(Frustum, 1.0f, rotate, p);
-			}
-
 			ImGuiWindowFlags window_flags = ImGuiWindowFlags_NoResize;
 
 			ImGui::SetNextWindowSize(ImVec2(500, 500), ImGuiCond_Once);
@@ -437,22 +369,37 @@ void My_imgui::Draw(void)
 			ImGui::Begin("Test", nullptr, window_flags);
 
 			{
-				float Translation[3] = { Aabb.Center.x, Aabb.Center.y, Aabb.Center.z };
-				float Extents[3] = { Aabb.Extents.x, Aabb.Extents.y, Aabb.Extents.z };
+				float Translation[3] = { AABB.Get_Position()->x, AABB.Get_Position()->y, AABB.Get_Position()->z };
+				float Radius[3] = { AABB.Get_Radius()->x, AABB.Get_Radius()->y, AABB.Get_Radius()->z };
 
-				ImGui::DragFloat3("Translation", Translation, 0.01f);
-				//ImGui::DragFloat3("Extents", Extents, 0.1f);
+				ImGui::DragFloat3("Position AABB", Translation, 0.01f);
+				ImGui::DragFloat3("Radius", Radius, 0.01f);
 
-				Aabb.Center = XMFLOAT3(Translation[0], Translation[1], Translation[2]);
-				//Aabb.Extents = XMFLOAT3(Extents[0], Extents[1], Extents[2]);
+				XMFLOAT3 P(Translation[0], Translation[1], Translation[2]);
+				XMFLOAT3 R(Radius[0], Radius[1], Radius[2]);
 
+				AABB.Set_Position(P);
+				AABB.Set_Radius(R);
+			}
 
-				XMFLOAT3 p(Translation[0], Translation[1], Translation[2]);
-				AABB.Set_Position(p);
+			ImGui::Spacing();
+
+			{
+				float Position[3] = { Bounding_Frustun.Get_Position()->x, Bounding_Frustun.Get_Position()->y, Bounding_Frustun.Get_Position()->z };
+				float Rotate[3] = { Bounding_Frustun.Get_Rotation()->x, Bounding_Frustun.Get_Rotation()->y, Bounding_Frustun.Get_Rotation()->z };
+
+				ImGui::DragFloat3("Position", Position, 0.01f);
+				ImGui::DragFloat3("Rotate", Rotate, 0.01f);
+
+				XMFLOAT3 P(Position[0], Position[1], Position[2]);
+				XMFLOAT3 R(Rotate[0], Rotate[1], Rotate[2]);
+
+				Bounding_Frustun.Set_Position(P);
+				Bounding_Frustun.Set_Rotation(R);
 			}
 
 			{
-				switch (Frustum.Contains(Aabb))
+				switch (Bounding_Frustun.Frustum.Contains(AABB.Aabb))
 				{
 					case ContainmentType::CONTAINS:
 						ImGui::Text((char*)u8"オブジェクトが含まれます");
