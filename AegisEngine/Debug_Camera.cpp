@@ -90,7 +90,7 @@ void DEBUG_CAMERA::Update(float delta_time)
 		Up = XMVector3TransformNormal(Up, mtxRotation);
 		Up = XMVector3Normalize(Up);
 
-		Rotation.x += point.y * delta_time * 20.0;
+		Rotation.x += (point.y * delta_time * 20.0);
 	}
 
 	if (flag2 && MOUSE::Get_Mouse()->Get_Move_Flag())
@@ -109,7 +109,7 @@ void DEBUG_CAMERA::Update(float delta_time)
 		Right = XMVector3TransformNormal(Right, mtxRotation);
 		Right = XMVector3Normalize(Right);
 
-		Rotation.y += point.x * delta_time * 20.0;
+		Rotation.y += (point.x * delta_time * 20.0);
 	}
 
 	if (flag)

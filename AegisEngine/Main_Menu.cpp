@@ -18,7 +18,7 @@ string MAIN_MENU::Model_Name = "asset/model/herorifle.fbx";
 
 static bool flag = false;
 
-static FBXmodel* model;
+//static FBXmodel* model;
 
 BOUNDING_FRUSTUM Bounding_Frustun;
 BOUNDING_AABB AABB;
@@ -214,8 +214,8 @@ void MAIN_MENU::Init()
 		}
 	}
 
-	model = new FBXmodel();
-	model->Load("asset/model/SambaDancing2.fbx");
+	//model = new FBXmodel();
+	//model->Load("asset/model/SambaDancing2.fbx");
 
 	Bounding_Frustun.Init();
 	AABB.Init();
@@ -239,7 +239,7 @@ void MAIN_MENU::Draw()
 
 	m = XMMatrixScaling(2.5, 2.5, 2.5);
 
-	model->Draw(m);
+	//model->Draw(m);
 }
 
 void MAIN_MENU::Draw_DPP()
@@ -253,14 +253,14 @@ void MAIN_MENU::Draw_DPP()
 
 	m = XMMatrixScaling(2.5, 2.5, 2.5);
 
-	model->Draw_DPP(m);
+	//model->Draw_DPP(m);
 }
 
 void MAIN_MENU::Update(float delta_time)
 {
 	SCENE::Update(delta_time);
 
-	model->Update(delta_time);
+	//model->Update(delta_time);
 	Bounding_Frustun.Update(delta_time);
 	AABB.Update(delta_time);
 
@@ -323,7 +323,7 @@ void MAIN_MENU::Uninit()
 
 	SCENE::Uninit();
 
-	SAFE_DELETE(model);
+	//SAFE_DELETE(model);
 
 	Bounding_Frustun.Uninit();
 	AABB.Uninit();

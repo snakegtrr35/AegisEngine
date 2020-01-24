@@ -362,6 +362,8 @@ void My_imgui::Draw(void)
 		}
 
 		{
+			auto camera = CManager::Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
+
 			ImGuiWindowFlags window_flags = ImGuiWindowFlags_NoResize;
 
 			ImGui::SetNextWindowSize(ImVec2(500, 500), ImGuiCond_Once);
@@ -390,6 +392,11 @@ void My_imgui::Draw(void)
 
 				ImGui::DragFloat3("Position", Position, 0.01f);
 				ImGui::DragFloat3("Rotate", Rotate, 0.01f);
+
+				XMFLOAT3 r;
+				XMStoreFloat3(&r, *camera->Get_Front());
+
+				ImGui::Text("%f  %f  %f", r.x, r.y, r.z);
 
 				XMFLOAT3 P(Position[0], Position[1], Position[2]);
 				XMFLOAT3 R(Rotate[0], Rotate[1], Rotate[2]);
