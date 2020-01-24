@@ -66,7 +66,7 @@ void My_imgui::Init(HWND hWnd)
 	style.Colors[ImGuiCol_WindowBg] = color;
 
 	{
-		BoundingFrustum::CreateFromMatrix(Frustum, XMMatrixPerspectiveFovLH(XMConvertToRadians(80.0f), float(SCREEN_WIDTH / SCREEN_HEIGHT), 0.001f, 10.0f));
+		BoundingFrustum::CreateFromMatrix(Frustum, XMMatrixPerspectiveFovLH(XMConvertToRadians(80.0f), float(SCREEN_WIDTH / SCREEN_HEIGHT), 0.001f, 50.0f));
 		Frustum.Origin.z = 0.0f;
 		{
 			XMMATRIX matrix = XMMatrixRotationRollPitchYaw(XMConvertToRadians(0.f), XMConvertToRadians(0.f), XMConvertToRadians(0.f));
@@ -409,21 +409,53 @@ void My_imgui::Draw(void)
 		}
 
 		{
+			XMFLOAT3 r(0, 0, 0);
+			XMFLOAT3 vec;
 			{
-				BoundingFrustum::CreateFromMatrix(Frustum, XMMatrixPerspectiveFovLH(XMConvertToRadians(80.0f), float(SCREEN_WIDTH / SCREEN_HEIGHT), 0.001f, 20.0f));
+				BoundingFrustum::CreateFromMatrix(Frustum, XMMatrixPerspectiveFovLH(XMConvertToRadians(80.0f), float(SCREEN_WIDTH / SCREEN_HEIGHT), 0.001f, 50.0f));
+				Frustum.Origin.z = 0.0f;
 
-				XMFLOAT3 r;
 				XMVECTOR p = XMVectorSet(0,0,0,0);
 				auto camera = CManager::Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
 
 				if (nullptr != camera)
 				{
-					XMStoreFloat3(&r, XMLoadFloat3(camera->Get_Rotation()));
+					//XMStoreFloat3(&r, XMLoadFloat3(camera->Get_Rotation()));
+
+					
+					XMStoreFloat3(&vec, *camera->Get_Front());
+
+
+					if (vec.x <= 0.0f && vec.y <= 0.0f)
+					{
+						r.x = 0;
+					}
+					else if (vec.z >= 0.0f)
+					{
+						r.x = -atan(vec.y / vec.z);
+					}
+					else
+					{
+						r.x = (atan(vec.y / vec.z)) /*+ -XM_PI*/;
+					}
+
+					if (vec.x <= 0.0f)
+					{
+						r.y = 0;
+					}
+					else if (vec.z >= 0.0f)
+					{
+						r.y = atan(vec.x / vec.z);
+					}
+					else
+					{
+						r.y = atan(vec.x / vec.z) + XM_PI;
+					}
 
 					p = XMLoadFloat3(camera->Get_Position());
 				}
 
-				XMMATRIX matrix = XMMatrixRotationRollPitchYaw(XMConvertToRadians(r.x), XMConvertToRadians(r.y), XMConvertToRadians(r.z));
+				XMMATRIX matrix = XMMatrixRotationRollPitchYaw(r.x, r.y, r.z);
 				XMVECTOR rotate = XMQuaternionRotationMatrix(matrix);
 				Frustum.Transform(Frustum, 1.0f, rotate, p);
 			}
@@ -466,6 +498,13 @@ void My_imgui::Draw(void)
 						break;
 				}
 			}
+
+			{
+				ImGui::Text((char*)u8"x  %f", r.x);
+				ImGui::Text((char*)u8"z  %f", r.y);
+				ImGui::Text((char*)u8"vex  %f, %f, %f", vec.x, vec.y, vec.z);
+			}
+
 
 			ImGui::End();
 		}

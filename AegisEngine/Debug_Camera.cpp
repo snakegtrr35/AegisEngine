@@ -14,7 +14,7 @@ void DEBUG_CAMERA::Init()
 
 	Viewing_Angle = 80.0f;
 
-	Front = XMVectorSet(0.0f, -0.4f, 1.0f, 0.0f);
+	Front = XMVectorSet(0.0f, -0.0f, 1.0f, 0.0f);
 	Front = XMVector3Normalize(Front);
 
 	Up = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
