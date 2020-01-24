@@ -12,31 +12,31 @@ bool FORWARDLUS::Init()
 	HRESULT hr;
 	auto device = CRenderer::GetDevice();
 	
-	// 頂点シェーダ生成
-	{
-		ID3D11VertexShader* vertex_shader = nullptr;
+	//// 頂点シェーダ生成
+	//{
+	//	ID3D11VertexShader* vertex_shader = nullptr;
 
-		FILE* file;
-		long int fsize;
+	//	FILE* file;
+	//	long int fsize;
 
-		file = fopen("VertexShader_Depth_Pre_Pass.cso", "rb");
-		fsize = _filelength(_fileno(file));
-		unsigned char* buffer = new unsigned char[fsize];
-		fread(buffer, fsize, 1, file);
-		fclose(file);
+	//	file = fopen("VertexShader_Depth_Pre_Pass.cso", "rb");
+	//	fsize = _filelength(_fileno(file));
+	//	unsigned char* buffer = new unsigned char[fsize];
+	//	fread(buffer, fsize, 1, file);
+	//	fclose(file);
 
-		hr = device->CreateVertexShader(buffer, fsize, NULL, &vertex_shader);
+	//	hr = device->CreateVertexShader(buffer, fsize, NULL, &vertex_shader);
 
-		delete[] buffer;
+	//	delete[] buffer;
 
-		if (FAILED(hr))
-		{
-			FAILDE_ASSERT;
-			return false;
-		}
+	//	if (FAILED(hr))
+	//	{
+	//		FAILDE_ASSERT;
+	//		return false;
+	//	}
 
-		m_VertexShader.reset(vertex_shader);
-	}
+	//	m_VertexShader.reset(vertex_shader);
+	//}
 
 	// コンピュートシェーダーの生成
 	{
@@ -100,20 +100,41 @@ bool FORWARDLUS::Init()
 		ZeroMemory(&DepthStencilDesc, sizeof(D3D11_DEPTH_STENCIL_DESC));
 		DepthStencilDesc.DepthEnable = TRUE;
 		DepthStencilDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
-		DepthStencilDesc.DepthFunc = D3D11_COMPARISON_LESS;  // we are using inverted 32-bit float depth for better precision
+		DepthStencilDesc.DepthFunc = D3D11_COMPARISON_GREATER;  // we are using inverted 32-bit float depth for better precision
 		DepthStencilDesc.StencilEnable = FALSE;
 		DepthStencilDesc.StencilReadMask = D3D11_DEFAULT_STENCIL_READ_MASK;
 		DepthStencilDesc.StencilWriteMask = D3D11_DEFAULT_STENCIL_WRITE_MASK;
 
-		// Disable depth test write
-		DepthStencilDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ZERO;
 		hr = device->CreateDepthStencilState(&DepthStencilDesc, &pDSS);
 		if (FAILED(hr))
 		{
 			FAILDE_ASSERT;
 			return false;
 		}
-		m_pDepthStencilState.reset(pDSS);
+		m_DepthStateEnable.reset(pDSS);
+	}
+
+	{
+		ID3D11DepthStencilState* pDSS = nullptr;
+
+		// Default depth-stencil state, except with inverted DepthFunc 
+		// (because we are using inverted 32-bit float depth for better precision)
+		D3D11_DEPTH_STENCIL_DESC DepthStencilDesc;
+		ZeroMemory(&DepthStencilDesc, sizeof(D3D11_DEPTH_STENCIL_DESC));
+		DepthStencilDesc.DepthEnable = FALSE;
+		DepthStencilDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
+		DepthStencilDesc.DepthFunc = D3D11_COMPARISON_LESS;  // we are using inverted 32-bit float depth for better precision
+		DepthStencilDesc.StencilEnable = FALSE;
+		DepthStencilDesc.StencilReadMask = D3D11_DEFAULT_STENCIL_READ_MASK;
+		DepthStencilDesc.StencilWriteMask = D3D11_DEFAULT_STENCIL_WRITE_MASK;
+
+		hr = device->CreateDepthStencilState(&DepthStencilDesc, &pDSS);
+		if (FAILED(hr))
+		{
+			FAILDE_ASSERT;
+			return false;
+		}
+		m_DepthStateDisable.reset(pDSS);
 	}
 
 	{
@@ -231,13 +252,14 @@ void FORWARDLUS::Draw()
 
 void FORWARDLUS::Uninit()
 {	
-	m_VertexShader.reset(nullptr);
+	//m_VertexShader.reset(nullptr);
 	m_pDepthBoundsCS.reset(nullptr);
 	m_pLightCullCS.reset(nullptr);
 
 	//m_pDepthStencilView.reset(nullptr);
 	m_DepthStateEnable.reset(nullptr);
-	m_pDepthStencilState.reset(nullptr);
+
+	m_DepthStateDisable.reset(nullptr);
 }
 
 void FORWARDLUS::Depth_Pre_Pass(SCENE_MANAGER* scene_manager)
@@ -250,15 +272,17 @@ void FORWARDLUS::Depth_Pre_Pass(SCENE_MANAGER* scene_manager)
 
 	auto device_context = CRenderer::GetDeviceContext();
 
-	device_context->ClearDepthStencilView(m_DepthStencilBuffer.m_pDepthStencilView, D3D11_CLEAR_DEPTH, 1.0f, 0);  // we are using inverted depth, so clear to zero
+	device_context->ClearDepthStencilView(m_DepthStencilBuffer.m_pDepthStencilView, D3D11_CLEAR_DEPTH, 0.0f, 0);  // we are using inverted depth, so clear to zero
 
 	// Depth pre-pass
 	{
 		// Depth pre-pass (to eliminate pixel overdraw during forward rendering)
 		device_context->OMSetRenderTargets(1, &pNULLRTV, m_DepthStencilBuffer.m_pDepthStencilView);  // null color buffer
-		device_context->OMSetDepthStencilState(m_DepthStateEnable.get(), NULL);  // we are using inverted 32-bit float depth for better precision
+		device_context->OMSetDepthStencilState(m_DepthStateEnable.get(), 0x00);  // we are using inverted 32-bit float depth for better precision
 		//device_context->IASetInputLayout(m_pLayoutPositionOnly11);
-		device_context->VSSetShader(m_VertexShader.get(), nullptr, 0);
+
+		CRenderer::Set_Shader(SHADER_INDEX_V::DEPTH_PRE, SHADER_INDEX_P::MAX);
+
 		device_context->PSSetShader(nullptr, nullptr, 0);  // null pixel shader
 		device_context->PSSetShaderResources(0, 1, &pNULLSRV);
 		device_context->PSSetShaderResources(1, 1, &pNULLSRV);
@@ -288,7 +312,9 @@ void FORWARDLUS::Light_Culling()
 	//Light culling
 	{
 		device_context->OMSetRenderTargets(1, &pNULLRTV, pNULLDSV);  // null color buffer and depth-stencil
-		device_context->OMSetDepthStencilState(m_pDepthStencilState.get(), 0x00);
+
+		device_context->OMSetDepthStencilState(m_DepthStateDisable.get(), 0x00);
+
 		device_context->VSSetShader(nullptr, nullptr, 0);  // null vertex shader
 		device_context->PSSetShader(nullptr, nullptr, 0);  // null pixel shader
 		device_context->PSSetShaderResources(0, 1, &pNULLSRV);
@@ -313,10 +339,10 @@ void FORWARDLUS::Light_Culling()
 
 			device_context->CSSetShader(m_pLightCullCS.get(), nullptr, 0);
 
-			srv = g_Light.GetPointLightBufferCenterAndRadiusSRVParam();
+			//srv = g_Light.GetPointLightBufferCenterAndRadiusSRVParam();
 			device_context->CSSetShaderResources(0, 1, &srv);
 
-			srv = g_Light.GetSpotLightBufferCenterAndRadiusSRVParam();
+			//srv = g_Light.GetSpotLightBufferCenterAndRadiusSRVParam();
 			device_context->CSSetShaderResources(1, 1, &srv);
 
 			srv = m_pDepthBoundsSRV.get();

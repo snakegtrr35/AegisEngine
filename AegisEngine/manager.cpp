@@ -139,12 +139,6 @@ void CManager::Draw()
 		pShadowMap->End();//
 	}
 
-	// 1パス目
-	{
-		//CRenderer::SetPass_Geometry();
-		//pSceneManager->Draw();
-	}
-
 	// 最終レンダリング
 	{
 		CRenderer::SetPass_Rendring();

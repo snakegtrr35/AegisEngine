@@ -5,12 +5,6 @@
 
 #include	"main.h"
 
-#include	<assimp/Importer.hpp>
-#include	<assimp/cimport.h>
-#include	<assimp/scene.h>
-#include	<assimp/postprocess.h>
-#include	<assimp/matrix4x4.h>
-
 //! 頂点構造体
 struct VERTEX_3D
 {
@@ -186,18 +180,22 @@ typedef struct {
 	float Height;
 }TEXT_LAYOUT;
 
-enum class SHADER_INDEX_P {
-	DEFAULT,
-	NO_TEXTURE,
-	NO_LIGHT,
-	SHADOW_MAP,
-};
-
 enum class SHADER_INDEX_V {
 	DEFAULT,
 	SHADOW_MAP,
 	ANIMATION,
 	SHADOW_MAP_ANIMATION,
+	DEPTH_PRE,
+	DEPTH_PRE_ANIME,
+	MAX,
+};
+
+enum class SHADER_INDEX_P {
+	DEFAULT,
+	NO_TEXTURE,
+	NO_LIGHT,
+	SHADOW_MAP,
+	MAX
 };
 
 class CVertexBuffer;
@@ -257,9 +255,7 @@ private:
 	//! Direct2Dのライトファクトリー
 	static IDWriteFactory*										m_DwriteFactory;
 
-	//static ID3D11VertexShader*		m_VertexShader[4];
 	static unordered_map<SHADER_INDEX_V, ID3D11VertexShader*>	m_VertexShader;
-	//static ID3D11PixelShader*		m_PixelShader[4];
 	static unordered_map<SHADER_INDEX_P, ID3D11PixelShader*>	m_PixelShader;
 
 	static ID3D11DepthStencilState*								m_DepthStateEnable;

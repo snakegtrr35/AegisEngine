@@ -331,13 +331,14 @@ void FBXmodel::Draw_DPP(XMMATRIX& Matrix)
 	}
 
 	CRenderer::Set_InputLayout(INPUTLAYOUT::ANIMATION);
+	CRenderer::Set_Shader(SHADER_INDEX_V::DEPTH_PRE_ANIME, SHADER_INDEX_P::MAX);
 
 	CRenderer::GetDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 	DrawMesh_DPP(m_Scene->mRootNode, Matrix);
 
 	CRenderer::Set_InputLayout();
-	CRenderer::Set_Shader();
+	CRenderer::Set_Shader(SHADER_INDEX_V::DEPTH_PRE, SHADER_INDEX_P::MAX);
 }
 
 void FBXmodel::set_bone(const aiNode* Node, vector<XMMATRIX>& v)
@@ -482,7 +483,7 @@ void FBXmodel::DrawMesh_DPP(const aiNode* Node, const XMMATRIX& Matrix)
 
 	for (unsigned int i = 0; i < Node->mNumChildren; i++)
 	{
-		DrawMesh(Node->mChildren[i], world);
+		DrawMesh_DPP(Node->mChildren[i], world);
 	}
 }
 

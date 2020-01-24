@@ -38,9 +38,9 @@ private:
 
 	unique_ptr <ID3D11DepthStencilState, Release>		m_DepthStateEnable;
 
-	unique_ptr <ID3D11VertexShader, Release>			m_VertexShader;
+	//unique_ptr <ID3D11VertexShader, Release>			m_VertexShader;
 
-	unique_ptr <ID3D11DepthStencilState, Release>		m_pDepthStencilState;
+	unique_ptr <ID3D11DepthStencilState, Release>		m_DepthStateDisable;
 
 	DepthStencilBuffer									m_DepthStencilBuffer;
 

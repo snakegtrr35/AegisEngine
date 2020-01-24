@@ -5,14 +5,17 @@
 
 #include	"Game_Object.h"
 
-class CMODEL;
+//class CMODEL;
+class FBXmodel;
+
 class BULLET;
 class COLLISION;
 class BOUNDING_SHPERE;
 
 class PLAYER : public GAME_OBJECT {
 private:
-	CMODEL* Model = nullptr;
+	//CMODEL* Model = nullptr;
+	FBXmodel* Model = nullptr;
 	//COLLISION* Collision;
 	//BOUNDING_SHPERE* Shpere;
 	//BOUNDING_AABB* Shpere;

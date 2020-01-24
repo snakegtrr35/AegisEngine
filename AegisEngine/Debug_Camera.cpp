@@ -14,7 +14,7 @@ void DEBUG_CAMERA::Init()
 
 	Viewing_Angle = 80.0f;
 
-	Front = XMVectorSet(0.0f, -0.4f, 1.0f, 0.0f);
+	Front = XMVectorSet(0.0f, -0.0f, 1.0f, 0.0f);
 	Front = XMVector3Normalize(Front);
 
 	Up = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
@@ -179,7 +179,7 @@ void DEBUG_CAMERA::Draw()
 	m_ViewMatrix = XMMatrixLookAtLH(Pos, At, Up);
 
 	// プロジェクションマトリクス設定
-	m_ProjectionMatrix = XMMatrixPerspectiveFovLH(XMConvertToRadians(Viewing_Angle), dxViewport.Width / dxViewport.Height, 1.0f, 1000.0f);
+	m_ProjectionMatrix = XMMatrixPerspectiveFovLH(XMConvertToRadians(Viewing_Angle), dxViewport.Width / dxViewport.Height, 0.001f, 1000.0f);
 }
 
 void DEBUG_CAMERA::Draw_DPP()

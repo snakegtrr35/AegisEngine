@@ -36,7 +36,12 @@
     <ClCompile Include="Fade.cpp" />
     <ClCompile Include="FBXmodel.cpp" />
     <ClCompile Include="Field.cpp" />
-    <ClCompile Include="ForwardPlus.cpp" />
+    <ClCompile Include="ForwardPlus.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+      </ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="Game_Object.cpp" />
     <ClCompile Include="Grid.cpp" />
@@ -114,7 +119,12 @@
     <ClInclude Include="Fade.h" />
     <ClInclude Include="FBXmodel.h" />
     <ClInclude Include="Field.h" />
-    <ClInclude Include="ForwardPlus.h" />
+    <ClInclude Include="ForwardPlus.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+      </ExcludedFromBuild>
+    </ClInclude>
     <ClInclude Include="Game_Object.h" />
     <ClInclude Include="Grid.h" />
     <ClInclude Include="imgui\imconfig.h" />
