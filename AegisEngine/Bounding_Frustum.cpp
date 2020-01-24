@@ -7,7 +7,7 @@ void BOUNDING_FRUSTUM::Init()
 {
 
 	{
-		BoundingFrustum::CreateFromMatrix(Frustum, XMMatrixPerspectiveFovLH(XMConvertToRadians(80.0f), float(SCREEN_WIDTH / SCREEN_HEIGHT), 0.1f, 10.0f));
+		BoundingFrustum::CreateFromMatrix(Frustum, XMMatrixPerspectiveFovLH(XMConvertToRadians(80.0f), float(SCREEN_WIDTH / SCREEN_HEIGHT), 0.001f, 10.0f));
 		Frustum.Origin.z = 0.0f;
 		{
 			XMMATRIX matrix = XMMatrixRotationRollPitchYaw(XMConvertToRadians(0.f), XMConvertToRadians(0.f), XMConvertToRadians(0.f));
@@ -169,7 +169,7 @@ void BOUNDING_FRUSTUM::Draw()
 
 void BOUNDING_FRUSTUM::Update(float delta_time)
 {
-	BoundingFrustum::CreateFromMatrix(Frustum, XMMatrixPerspectiveFovLH(XMConvertToRadians(80.0f), float(SCREEN_WIDTH / SCREEN_HEIGHT), 0.01f, 20.0f));
+	BoundingFrustum::CreateFromMatrix(Frustum, XMMatrixPerspectiveFovLH(XMConvertToRadians(80.0f), float(SCREEN_WIDTH / SCREEN_HEIGHT), 0.001f, 20.0f));
 
 	XMFLOAT3 r;
 	XMVECTOR p = XMVectorSet(0, 0, 0, 0);

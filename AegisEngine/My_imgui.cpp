@@ -26,8 +26,6 @@ static BoundingFrustum Frustum;
 static BoundingBox Aabb;
 extern BOUNDING_AABB AABB;
 
-extern unique_ptr<FORWARDLUS> ForwardPlus;
-
 void EditTransform(const float* cameraView, float* cameraProjection, float* matrix, bool enable, GAME_OBJECT* object);
 
 void My_imgui::Init(HWND hWnd)
@@ -68,7 +66,7 @@ void My_imgui::Init(HWND hWnd)
 	style.Colors[ImGuiCol_WindowBg] = color;
 
 	{
-		BoundingFrustum::CreateFromMatrix(Frustum, XMMatrixPerspectiveFovLH(XMConvertToRadians(80.0f), float(SCREEN_WIDTH / SCREEN_HEIGHT), 0.01f, 10.0f));
+		BoundingFrustum::CreateFromMatrix(Frustum, XMMatrixPerspectiveFovLH(XMConvertToRadians(80.0f), float(SCREEN_WIDTH / SCREEN_HEIGHT), 0.001f, 10.0f));
 		Frustum.Origin.z = 0.0f;
 		{
 			XMMATRIX matrix = XMMatrixRotationRollPitchYaw(XMConvertToRadians(0.f), XMConvertToRadians(0.f), XMConvertToRadians(0.f));
@@ -327,17 +325,17 @@ void My_imgui::Draw(void)
 					ImGui::End();
 				}
 
-				{
-					ImGui::SetNextWindowSize(ImVec2(512 + 17, 512 + 40), ImGuiCond_Once);
+				//{
+				//	ImGui::SetNextWindowSize(ImVec2(512 + 17, 512 + 40), ImGuiCond_Once);
 
-					ImGui::Begin("Depth", nullptr, window_flags);
+				//	ImGui::Begin("Depth", nullptr, window_flags);
 
-					ImTextureID image = ForwardPlus->Get().m_pDepthStencilSRV;
+				//	ImTextureID image = ForwardPlus->Get().m_pDepthStencilSRV;
 
-					ImGui::Image(image, ImVec2(512, 512));
+				//	ImGui::Image(image, ImVec2(512, 512));
 
-					ImGui::End();
-				}
+				//	ImGui::End();
+				//}
 
 				/*{
 					ImGui::SetNextWindowSize(ImVec2(512 + 17, 512 + 40), ImGuiCond_Once);
@@ -412,7 +410,7 @@ void My_imgui::Draw(void)
 
 		{
 			{
-				BoundingFrustum::CreateFromMatrix(Frustum, XMMatrixPerspectiveFovLH(XMConvertToRadians(80.0f), float(SCREEN_WIDTH / SCREEN_HEIGHT), 0.01f, 20.0f));
+				BoundingFrustum::CreateFromMatrix(Frustum, XMMatrixPerspectiveFovLH(XMConvertToRadians(80.0f), float(SCREEN_WIDTH / SCREEN_HEIGHT), 0.001f, 20.0f));
 
 				XMFLOAT3 r;
 				XMVECTOR p = XMVectorSet(0,0,0,0);

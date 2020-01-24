@@ -141,40 +141,7 @@ void MAIN_MENU::Init()
 		//	text->Edit("Hello HELL World!!!ínãÖÇÃñ¢óàÇ…Ç≤ïÚédÇ∑ÇÈÇ…Ç·ÇÒÅI");
 		//}
 
-
-
 		//// âÊëú
-		//{
-		//	XMFLOAT2 pos(300, 300);
-
-		//	SPRITE* s = Add_Game_Object<SPRITE>(LAYER_NAME::UI, "depth");
-
-		//	s->SetPosition(pos);
-
-		//	s->SetSize(XMFLOAT4(128, 128, 128, 128));
-
-		//	s->Set_Object_Name("depth");
-		//}
-
-		//{
-		//	XMFLOAT2 pos(300, 600);
-
-		//	SPRITE* s = Add_Game_Object<SPRITE>(LAYER_NAME::UI, "albed");
-
-		//	s->SetPosition(pos);
-
-		//	s->SetSize(XMFLOAT4(128, 128, 128, 128));
-		//}
-
-		//{
-		//	XMFLOAT2 pos(300, 900);
-
-		//	SPRITE* s = Add_Game_Object<SPRITE>(LAYER_NAME::UI, "normal");
-
-		//	s->SetPosition(pos);
-
-		//	s->SetSize(XMFLOAT4(128, 128, 128, 128));
-		//}
 
 		//{
 		//	auto text = Add_Game_Object<TEXTS>(LAYER_NAME::UI);
@@ -205,16 +172,14 @@ void MAIN_MENU::Init()
 		}*/
 
 		{
-			//Add_Game_Object<BOUNDING_AABB>(LAYER_NAME::GAMEOBJECT, "aabb");
-		}
+			auto model = Add_Game_Object<CMODEL>(LAYER_NAME::GAMEOBJECT, "model");
 
-		{
-			//Add_Game_Object<BOUNDING_OBB>(LAYER_NAME::GAMEOBJECT, "obb");
+			model->Load("asset/model/bill01.fbx");
 		}
 	}
 
-	model = new FBXmodel();
-	model->Load("asset/model/SambaDancing2.fbx");
+	//model = new FBXmodel();
+	//model->Load("asset/model/SambaDancing2.fbx");
 
 	Frustun.Init();
 	AABB.Init();
@@ -238,7 +203,7 @@ void MAIN_MENU::Draw()
 
 	m = XMMatrixScaling(2.5, 2.5, 2.5);
 
-	model->Draw(m);
+	//model->Draw_DPP(m);
 }
 
 void MAIN_MENU::Draw_DPP()
@@ -252,14 +217,14 @@ void MAIN_MENU::Draw_DPP()
 
 	m = XMMatrixScaling(2.5, 2.5, 2.5);
 
-	model->Draw_DPP(m);
+	//model->Draw_DPP(m);
 }
 
 void MAIN_MENU::Update(float delta_time)
 {
 	SCENE::Update(delta_time);
 
-	model->Update(delta_time);
+	//model->Update(delta_time);
 	Frustun.Update(delta_time);
 
 	{
@@ -321,7 +286,7 @@ void MAIN_MENU::Uninit()
 
 	SCENE::Uninit();
 
-	SAFE_DELETE(model);
+	//SAFE_DELETE(model);
 	Frustun.Uninit();
 	AABB.Uninit();
 

@@ -30,7 +30,7 @@ CMODEL::~CMODEL()
 	Uninit();
 }
 
-bool CMODEL::Load(string& filename)
+bool CMODEL::Load(const string& filename)
 {
 	Assimp::Importer importer;
 
@@ -64,41 +64,41 @@ bool CMODEL::Load(string& filename)
 			}
 		}
 
-		//
-		pScene = importer.ReadFile("asset/model/human01_Walk.fbx",
-			aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_LimitBoneWeights | aiProcess_ConvertToLeftHanded | aiProcessPreset_TargetRealtime_MaxQuality);
+		////
+		//pScene = importer.ReadFile("asset/model/human01_Walk.fbx",
+		//	aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_LimitBoneWeights | aiProcess_ConvertToLeftHanded | aiProcessPreset_TargetRealtime_MaxQuality);
 
-		if (pScene->HasAnimations())
-		{
-			aiAnimation** anim = pScene->mAnimations;
+		//if (pScene->HasAnimations())
+		//{
+		//	aiAnimation** anim = pScene->mAnimations;
 
-			for (UINT i = 0; i < pScene->mNumAnimations; i++)
-			{
-				animation = createAnimation(anim[i]);
+		//	for (UINT i = 0; i < pScene->mNumAnimations; i++)
+		//	{
+		//		animation = createAnimation(anim[i]);
 
-				Meshes.SetAnimation(anim[i]->mName.data, animation);
+		//		Meshes.SetAnimation(anim[i]->mName.data, animation);
 
-				Anime_State_Machine.Add_Name(anim[i]->mName.data);
-			}
-		}
+		//		Anime_State_Machine.Add_Name(anim[i]->mName.data);
+		//	}
+		//}
 
-		//
-		pScene = importer.ReadFile("asset/model/human01_Jump.fbx",
-			aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_LimitBoneWeights | aiProcess_ConvertToLeftHanded | aiProcessPreset_TargetRealtime_MaxQuality);
+		////
+		//pScene = importer.ReadFile("asset/model/human01_Jump.fbx",
+		//	aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_LimitBoneWeights | aiProcess_ConvertToLeftHanded | aiProcessPreset_TargetRealtime_MaxQuality);
 
-		if (pScene->HasAnimations())
-		{
-			aiAnimation** anim = pScene->mAnimations;
+		//if (pScene->HasAnimations())
+		//{
+		//	aiAnimation** anim = pScene->mAnimations;
 
-			for (UINT i = 0; i < pScene->mNumAnimations; i++)
-			{
-				animation = createAnimation(anim[i]);
+		//	for (UINT i = 0; i < pScene->mNumAnimations; i++)
+		//	{
+		//		animation = createAnimation(anim[i]);
 
-				Meshes.SetAnimation(anim[i]->mName.data, animation);
+		//		Meshes.SetAnimation(anim[i]->mName.data, animation);
 
-				Anime_State_Machine.Add_Name(anim[i]->mName.data);
-			}
-		}
+		//		Anime_State_Machine.Add_Name(anim[i]->mName.data);
+		//	}
+		//}
 	}
 
 	Anime_State_Machine.Set_Anime_Name("Stop");
@@ -106,7 +106,7 @@ bool CMODEL::Load(string& filename)
 	return true;
 }
 
-bool CMODEL::Reload(string& filename)
+bool CMODEL::Reload(const string& filename)
 {
 	Assimp::Importer importer;
 

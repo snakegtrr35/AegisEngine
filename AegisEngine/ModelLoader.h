@@ -43,8 +43,8 @@ public:
 
 	~CMODEL();
 
-	bool Load(string& filename);
-	bool Reload(string& filename);
+	bool Load(const string& filename);
+	bool Reload(const string& filename);
 
 	void Init() override {};
 	void Draw() override;
@@ -59,6 +59,15 @@ public:
 		return Anime_State_Machine;
 	}
 
+	template<typename Archive>
+	void serialize(Archive& ar)
+	{
+		ar(cereal::base_class<GAME_OBJECT>(this));
+	}
+
 };
+
+CEREAL_REGISTER_TYPE(CMODEL)
+CEREAL_REGISTER_POLYMORPHIC_RELATION(GAME_OBJECT, CMODEL)
 
 #endif // !MODEL_LOADER_H

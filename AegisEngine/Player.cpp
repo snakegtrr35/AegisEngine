@@ -1,6 +1,9 @@
 #include	"manager.h"
 #include	"Scene.h"
-#include	"ModelLoader.h"
+
+//#include	"ModelLoader.h"
+#include	"FBXmodel.h"
+
 #include	"Input.h"
 #include	"Collision.h"
 #include	"Player.h"
@@ -29,13 +32,17 @@ void PLAYER::Init(void)
 
 		string name = "asset/model/human01_Stop.fbx";
 
-		Model = new CMODEL();
+		/*Model = new CMODEL();
 
 		Model->Load(name);
 
 		Model->Set_Position(Position);
 		Model->Set_Rotation(Rotation);
-		Model->Set_Scaling(Scaling);
+		Model->Set_Scaling(Scaling);*/
+
+		Model = new FBXmodel();
+
+		Model->Load("asset/model/SambaDancing2.fbx");
 	}
 
 	//Collision = new COLLISIION_SPHERE();
@@ -59,14 +66,31 @@ void PLAYER::Init(void)
 
 void PLAYER::Draw(void)
 {
-	Model->Draw();
+	//Model->Draw();
+
+	{
+		XMMATRIX matrix= XMMatrixScaling(Scaling.x, Scaling.y, Scaling.z);
+		matrix *= XMMatrixRotationRollPitchYaw(XMConvertToRadians(Rotation.x), XMConvertToRadians(Rotation.y), XMConvertToRadians(Rotation.z));
+		matrix *= XMMatrixTranslation(Position.x, Position.y, Position.z);
+
+		Model->Draw(matrix);
+	}
+
 
 	//Shpere->Draw();
 }
 
 void PLAYER::Draw_DPP(void)
 {
-	Model->Draw_DPP();
+	//Model->Draw_DPP();
+
+	{
+		XMMATRIX matrix = XMMatrixScaling(Scaling.x, Scaling.y, Scaling.z);
+		matrix *= XMMatrixRotationRollPitchYaw(XMConvertToRadians(Rotation.x), XMConvertToRadians(Rotation.y), XMConvertToRadians(Rotation.z));
+		matrix *= XMMatrixTranslation(Position.x, Position.y, Position.z);
+
+		Model->Draw_DPP(matrix);
+	}
 
 	//Shpere->Draw();
 }
@@ -153,13 +177,13 @@ void PLAYER::Update(float delta_time)
 			Blend = max(0.0f, Blend - (1.0f / 60.0f));
 		}
 
-		Model->Set_Position(Position);
-		Model->Set_Rotation(Rotation);
-		Model->Set_Scaling(Scaling);
+		//Model->Set_Position(Position);
+		//Model->Set_Rotation(Rotation);
+		//Model->Set_Scaling(Scaling);
 
 		Model->Update(delta_time);
 
-		Blend = Model->Get().Get_Ratio();
+		//Blend = Model->Get().Get_Ratio();
 	}
 
 	//dynamic_cast<COLLISIION_SPHERE*>(Collision)->Set_Position(Position);
@@ -189,20 +213,20 @@ void PLAYER::Update(float delta_time)
 		//	score->Add(-10);
 	}
 
-	if (KEYBOARD::Trigger_Keyboard(VK_F1))
-	{
-		Model->Get().Change_Anime("Stop", 60);
-	}
+	//if (KEYBOARD::Trigger_Keyboard(VK_F1))
+	//{
+	//	Model->Get().Change_Anime("Stop", 60);
+	//}
 
-	if (KEYBOARD::Trigger_Keyboard(VK_F2))
-	{
-		Model->Get().Change_Anime("Walk", 60);
-	}
+	//if (KEYBOARD::Trigger_Keyboard(VK_F2))
+	//{
+	//	Model->Get().Change_Anime("Walk", 60);
+	//}
 
-	if (KEYBOARD::Trigger_Keyboard(VK_F3))
-	{
-		Model->Get().Change_Anime("Jump", 60);
-	}
+	//if (KEYBOARD::Trigger_Keyboard(VK_F3))
+	//{
+	//	Model->Get().Change_Anime("Jump", 60);
+	//}
 }
 
 void PLAYER::Uninit(void)

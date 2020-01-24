@@ -6,47 +6,45 @@
 
 #include	"manager.h"
 
-D3D_FEATURE_LEVEL			CRenderer::m_FeatureLevel = D3D_FEATURE_LEVEL_11_0;
+D3D_FEATURE_LEVEL											CRenderer::m_FeatureLevel = D3D_FEATURE_LEVEL_11_0;
 
-ID3D11Device*				CRenderer::m_D3DDevice = nullptr;
-ID3D11DeviceContext*		CRenderer::m_ImmediateContext = nullptr;
-IDXGIDevice1*				CRenderer::m_dxgiDev = nullptr;
-IDXGISwapChain1*			CRenderer::m_SwapChain = nullptr;//
-ID3D11RenderTargetView*		CRenderer::m_RenderTargetView = nullptr;
-ID3D11DepthStencilView*		CRenderer::m_DepthStencilView = nullptr;
-ID2D1Device*				CRenderer::m_D2DDevice = nullptr;
-ID2D1DeviceContext*			CRenderer::m_D2DDeviceContext = nullptr;
-ID2D1Bitmap1*				CRenderer::m_D2DTargetBitmap = nullptr;
+ID3D11Device*												CRenderer::m_D3DDevice = nullptr;
+ID3D11DeviceContext*										CRenderer::m_ImmediateContext = nullptr;
+IDXGIDevice1*												CRenderer::m_dxgiDev = nullptr;
+IDXGISwapChain1*											CRenderer::m_SwapChain = nullptr;//
+ID3D11RenderTargetView*										CRenderer::m_RenderTargetView = nullptr;
+ID3D11DepthStencilView*										CRenderer::m_DepthStencilView = nullptr;
+ID2D1Device*												CRenderer::m_D2DDevice = nullptr;
+ID2D1DeviceContext*											CRenderer::m_D2DDeviceContext = nullptr;
+ID2D1Bitmap1*												CRenderer::m_D2DTargetBitmap = nullptr;
 
-IDWriteTextFormat*			CRenderer::m_DwriteTextFormat = nullptr;
-IDWriteTextLayout*			CRenderer::m_TextLayout = nullptr;
+IDWriteTextFormat*											CRenderer::m_DwriteTextFormat = nullptr;
+IDWriteTextLayout*											CRenderer::m_TextLayout = nullptr;
 
-IDWriteFactory*				CRenderer::m_DwriteFactory = nullptr;
+IDWriteFactory*												CRenderer::m_DwriteFactory = nullptr;
 
-//ID3D11VertexShader*			CRenderer::m_VertexShader[4] = { nullptr };
-//ID3D11PixelShader*			CRenderer::m_PixelShader[4] = { nullptr };
 unordered_map<SHADER_INDEX_V, ID3D11VertexShader*>			CRenderer::m_VertexShader;
 unordered_map<SHADER_INDEX_P, ID3D11PixelShader*>			CRenderer::m_PixelShader;
-ID3D11InputLayout*			CRenderer::m_VertexLayout[2] = { nullptr };
-ID3D11Buffer*				CRenderer::m_MaterialBuffer = nullptr;
-ID3D11Buffer*				CRenderer::m_LightBuffer = nullptr;
+ID3D11InputLayout*											CRenderer::m_VertexLayout[2] = { nullptr };
+ID3D11Buffer*												CRenderer::m_MaterialBuffer = nullptr;
+ID3D11Buffer*												CRenderer::m_LightBuffer = nullptr;
 
-unique_ptr<ID3D11SamplerState, Release>				CRenderer::m_SamplerState;
+unique_ptr<ID3D11SamplerState, Release>						CRenderer::m_SamplerState;
 
-ID3D11Buffer*				CRenderer::m_Bone_Matrix_Buffer = nullptr;
+ID3D11Buffer*												CRenderer::m_Bone_Matrix_Buffer = nullptr;
 
-ID3D11DepthStencilState*	CRenderer::m_DepthStateEnable = nullptr;
-ID3D11DepthStencilState*	CRenderer::m_DepthStateDisable = nullptr;
-ID3D11RasterizerState*		CRenderer::m_RasterizerState = nullptr;
+ID3D11DepthStencilState*									CRenderer::m_DepthStateEnable = nullptr;
+ID3D11DepthStencilState*									CRenderer::m_DepthStateDisable = nullptr;
+ID3D11RasterizerState*										CRenderer::m_RasterizerState = nullptr;
 
 bool CRenderer::Stand_By_Enable = false;
 
 
-ID3D11Buffer*	CRenderer::m_ConstantBuffer;//
-ID3D11Buffer* CRenderer::m_ConstantBuffer_02;
+ID3D11Buffer*												CRenderer::m_ConstantBuffer;//
+ID3D11Buffer*												CRenderer::m_ConstantBuffer_02;
 
-unique_ptr<ID3D11RenderTargetView, Release>			CRenderer::RenderTargetView[3];
-unique_ptr<ID3D11ShaderResourceView, Release>		CRenderer::ShaderResourceView[3];
+unique_ptr<ID3D11RenderTargetView, Release>					CRenderer::RenderTargetView[3];
+unique_ptr<ID3D11ShaderResourceView, Release>				CRenderer::ShaderResourceView[3];
 
 // ライト
 LIGHT CRenderer::m_Light;//
@@ -92,32 +90,29 @@ bool CRenderer::Init()
 			fread(buffer, fsize, 1, file);
 			fclose(file);
 
-			//m_D3DDevice->CreateVertexShader(buffer, fsize, NULL, &m_VertexShader[0]);
-			m_D3DDevice->CreateVertexShader(buffer, fsize, NULL, &m_VertexShader[SHADER_INDEX_V::DEFAULT]);
+			hr = m_D3DDevice->CreateVertexShader(buffer, fsize, NULL, &m_VertexShader[SHADER_INDEX_V::DEFAULT]);
+			if (FAILED(hr))
+			{
+				FAILDE_ASSERT;
+				return false;
+			}
 
-			m_D3DDevice->CreateInputLayout(layout,
+			hr = m_D3DDevice->CreateInputLayout(layout,
 				numElements,
 				buffer,
 				fsize,
 				&m_VertexLayout[0]);
 
+			if (FAILED(hr))
+			{
+				FAILDE_ASSERT;
+				return false;
+			}
+
 			delete[] buffer;
 		}
-	}
 
-	// 頂点シェーダ生成 シャドウマップ
-	{
-		// 入力レイアウト生成
-		D3D11_INPUT_ELEMENT_DESC layout[] =
-		{
-			{ "POSITION",	0, DXGI_FORMAT_R32G32B32_FLOAT,		0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-			{ "NORMAL",		0, DXGI_FORMAT_R32G32B32_FLOAT,		0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-			{ "COLOR",		0, DXGI_FORMAT_R32G32B32A32_FLOAT,	0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-			{ "TEXCOORD",	0, DXGI_FORMAT_R32G32_FLOAT,		0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 }
-		};
-
-		UINT numElements = ARRAYSIZE(layout);
-
+		// 頂点シェーダ生成 シャドウマップ
 		{
 			FILE* file;
 			long int fsize;
@@ -128,12 +123,38 @@ bool CRenderer::Init()
 			fread(buffer, fsize, 1, file);
 			fclose(file);
 
-			//m_D3DDevice->CreateVertexShader(buffer, fsize, NULL, &m_VertexShader[1]);
-			m_D3DDevice->CreateVertexShader(buffer, fsize, NULL, &m_VertexShader[SHADER_INDEX_V::SHADOW_MAP]);
+			hr = m_D3DDevice->CreateVertexShader(buffer, fsize, NULL, &m_VertexShader[SHADER_INDEX_V::SHADOW_MAP]);
+			if (FAILED(hr))
+			{
+				FAILDE_ASSERT;
+				return false;
+			}
+
+			delete[] buffer;
+		}
+
+		// 頂点シェーダ生成 (Depth Pre Pass)
+		{
+			FILE* file;
+			long int fsize;
+
+			file = fopen("VertexShader_Depth_Pre_Pass.cso", "rb");
+			fsize = _filelength(_fileno(file));
+			unsigned char* buffer = new unsigned char[fsize];
+			fread(buffer, fsize, 1, file);
+			fclose(file);
+
+			hr = m_D3DDevice->CreateVertexShader(buffer, fsize, NULL, &m_VertexShader[SHADER_INDEX_V::DEPTH_PRE]);
+			if (FAILED(hr))
+			{
+				FAILDE_ASSERT;
+				return false;
+			}
 
 			delete[] buffer;
 		}
 	}
+
 
 	// 頂点シェーダ生成 アニメーション
 	{
@@ -160,34 +181,29 @@ bool CRenderer::Init()
 			fread(buffer, fsize, 1, file);
 			fclose(file);
 
-			//m_D3DDevice->CreateVertexShader(buffer, fsize, NULL, &m_VertexShader[2]);
-			m_D3DDevice->CreateVertexShader(buffer, fsize, NULL, &m_VertexShader[SHADER_INDEX_V::ANIMATION]);
+			hr = m_D3DDevice->CreateVertexShader(buffer, fsize, NULL, &m_VertexShader[SHADER_INDEX_V::ANIMATION]);
+			if (FAILED(hr))
+			{
+				FAILDE_ASSERT;
+				return false;
+			}
 
-			m_D3DDevice->CreateInputLayout(animation_layout,
+			hr = m_D3DDevice->CreateInputLayout(animation_layout,
 				numElements,
 				buffer,
 				fsize,
 				&m_VertexLayout[1]);
 
+			if (FAILED(hr))
+			{
+				FAILDE_ASSERT;
+				return false;
+			}
+
 			delete[] buffer;
 		}
-	}
 
-	// 頂点シェーダ生成 アニメーション(シャドウマップ付き)
-	{
-		// 入力レイアウト生成
-		D3D11_INPUT_ELEMENT_DESC animation_layout[] =
-		{
-			{ "POSITION",	 0, DXGI_FORMAT_R32G32B32_FLOAT,	0, D3D11_APPEND_ALIGNED_ELEMENT,	D3D11_INPUT_PER_VERTEX_DATA, 0 },
-			{ "NORMAL",		 0, DXGI_FORMAT_R32G32B32_FLOAT,	0, D3D11_APPEND_ALIGNED_ELEMENT,	D3D11_INPUT_PER_VERTEX_DATA, 0 },
-			{ "COLOR",		 0, DXGI_FORMAT_R32G32B32A32_FLOAT,	0, D3D11_APPEND_ALIGNED_ELEMENT,	D3D11_INPUT_PER_VERTEX_DATA, 0 },
-			{ "TEXCOORD",	 0, DXGI_FORMAT_R32G32_FLOAT,		0, D3D11_APPEND_ALIGNED_ELEMENT,	D3D11_INPUT_PER_VERTEX_DATA, 0 },
-			{ "BLENDINDICE", 0, DXGI_FORMAT_R32G32B32A32_UINT,	0, D3D11_APPEND_ALIGNED_ELEMENT,	D3D11_INPUT_PER_VERTEX_DATA, 0 },
-			{ "BLENDWEIGHT", 0, DXGI_FORMAT_R32G32B32A32_FLOAT,	0, D3D11_APPEND_ALIGNED_ELEMENT,	D3D11_INPUT_PER_VERTEX_DATA, 0 }
-		};
-
-		UINT numElements = ARRAYSIZE(animation_layout);
-
+		// 頂点シェーダ生成 アニメーション(シャドウマップ付き)
 		{
 			FILE* file;
 			long int fsize;
@@ -198,18 +214,38 @@ bool CRenderer::Init()
 			fread(buffer, fsize, 1, file);
 			fclose(file);
 
-			//m_D3DDevice->CreateVertexShader(buffer, fsize, NULL, &m_VertexShader[3]);
-			m_D3DDevice->CreateVertexShader(buffer, fsize, NULL, &m_VertexShader[SHADER_INDEX_V::SHADOW_MAP_ANIMATION]);
+			hr = m_D3DDevice->CreateVertexShader(buffer, fsize, NULL, &m_VertexShader[SHADER_INDEX_V::SHADOW_MAP_ANIMATION]);
+			if (FAILED(hr))
+			{
+				FAILDE_ASSERT;
+				return false;
+			}
 
-			m_D3DDevice->CreateInputLayout(animation_layout,
-				numElements,
-				buffer,
-				fsize,
-				&m_VertexLayout[1]);
+			delete[] buffer;
+		}
+
+		// 頂点シェーダ生成 アニメーション(Depth Pre Pass)
+		{
+			FILE* file;
+			long int fsize;
+
+			file = fopen("VertexShader_Animation_Depth_Pre_Pass.cso", "rb");
+			fsize = _filelength(_fileno(file));
+			unsigned char* buffer = new unsigned char[fsize];
+			fread(buffer, fsize, 1, file);
+			fclose(file);
+
+			hr = m_D3DDevice->CreateVertexShader(buffer, fsize, NULL, &m_VertexShader[SHADER_INDEX_V::DEPTH_PRE_ANIME]);
+			if (FAILED(hr))
+			{
+				FAILDE_ASSERT;
+				return false;
+			}
 
 			delete[] buffer;
 		}
 	}
+
 
 	// ピクセルシェーダ生成
 	{
@@ -224,8 +260,12 @@ bool CRenderer::Init()
 			fread(buffer, fsize, 1, file);
 			fclose(file);
 
-			//m_D3DDevice->CreatePixelShader(buffer, fsize, NULL, &m_PixelShader[0]);
-			m_D3DDevice->CreatePixelShader(buffer, fsize, NULL, &m_PixelShader[SHADER_INDEX_P::DEFAULT]);
+			hr = m_D3DDevice->CreatePixelShader(buffer, fsize, NULL, &m_PixelShader[SHADER_INDEX_P::DEFAULT]);
+			if (FAILED(hr))
+			{
+				FAILDE_ASSERT;
+				return false;
+			}
 
 			delete[] buffer;
 		}
@@ -241,8 +281,12 @@ bool CRenderer::Init()
 			fread(buffer, fsize, 1, file);
 			fclose(file);
 
-			//m_D3DDevice->CreatePixelShader(buffer, fsize, NULL, &m_PixelShader[1]);
-			m_D3DDevice->CreatePixelShader(buffer, fsize, NULL, &m_PixelShader[SHADER_INDEX_P::NO_TEXTURE]);
+			hr = m_D3DDevice->CreatePixelShader(buffer, fsize, NULL, &m_PixelShader[SHADER_INDEX_P::NO_TEXTURE]);
+			if (FAILED(hr))
+			{
+				FAILDE_ASSERT;
+				return false;
+			}
 
 			delete[] buffer;
 		}
@@ -258,8 +302,12 @@ bool CRenderer::Init()
 			fread(buffer, fsize, 1, file);
 			fclose(file);
 
-			//m_D3DDevice->CreatePixelShader(buffer, fsize, NULL, &m_PixelShader[2]);
-			m_D3DDevice->CreatePixelShader(buffer, fsize, NULL, &m_PixelShader[SHADER_INDEX_P::NO_LIGHT]);
+			hr = m_D3DDevice->CreatePixelShader(buffer, fsize, NULL, &m_PixelShader[SHADER_INDEX_P::NO_LIGHT]);
+			if (FAILED(hr))
+			{
+				FAILDE_ASSERT;
+				return false;
+			}
 
 			delete[] buffer;
 		}
@@ -275,11 +323,20 @@ bool CRenderer::Init()
 			fread(buffer, fsize, 1, file);
 			fclose(file);
 
-			//m_D3DDevice->CreatePixelShader(buffer, fsize, NULL, &m_PixelShader[3]);
-			m_D3DDevice->CreatePixelShader(buffer, fsize, NULL, &m_PixelShader[SHADER_INDEX_P::SHADOW_MAP]);
+			hr = m_D3DDevice->CreatePixelShader(buffer, fsize, NULL, &m_PixelShader[SHADER_INDEX_P::SHADOW_MAP]);
+			if (FAILED(hr))
+			{
+				FAILDE_ASSERT;
+				return false;
+			}
 
 			delete[] buffer;
 		}
+	}
+
+	{
+		m_VertexShader[SHADER_INDEX_V::MAX] = nullptr;
+		m_PixelShader[SHADER_INDEX_P::MAX] = nullptr;
 	}
 
 	// 定数バッファ生成
@@ -311,16 +368,6 @@ bool CRenderer::Init()
 	m_D3DDevice->CreateBuffer(&hBufferDesc, NULL, &m_ConstantBuffer_02);
 	m_ImmediateContext->VSSetConstantBuffers(5, 1, &m_ConstantBuffer_02);
 	m_ImmediateContext->PSSetConstantBuffers(5, 1, &m_ConstantBuffer_02);
-
-	/*{
-		// 定数バッファ生成
-		D3D11_BUFFER_DESC hBufferDesc;
-		hBufferDesc.ByteWidth = sizeof(XMMATRIX) * 128;
-		hBufferDesc.StructureByteStride = sizeof(float);
-
-		m_D3DDevice->CreateBuffer(&hBufferDesc, NULL, &m_Bone_Matrix_Buffer);
-		m_ImmediateContext->VSSetConstantBuffers(0, 1, &m_Bone_Matrix_Buffer);
-	}*/
 
 	// 入力レイアウト設定
 	m_ImmediateContext->IASetInputLayout(m_VertexLayout[0]);
@@ -382,7 +429,7 @@ void CRenderer::Uninit()
 
 	for (auto s : m_VertexShader)
 	{
-		s.second->Release();
+		if(nullptr != s.second) s.second->Release();
 	}
 
 	//SAFE_RELEASE(m_PixelShader[0]);
@@ -392,7 +439,7 @@ void CRenderer::Uninit()
 
 	for (auto s : m_PixelShader)
 	{
-		s.second->Release();
+		if (nullptr != s.second) s.second->Release();
 	}
 
 	SAFE_RELEASE(m_RenderTargetView)
@@ -1119,49 +1166,49 @@ void CRenderer::Set_Shader(const SHADER_INDEX_V v_index, const SHADER_INDEX_P p_
 	//	case (int)SHADER_INDEX_V::DEFAULT:
 	//		m_ImmediateContext->VSSetShader(m_VertexShader[(int)SHADER_INDEX_V::DEFAULT], NULL, 0);
 	//		break;
-
+	//
 	//	case (int)SHADER_INDEX_V::SHADOW_MAP:
 	//		m_ImmediateContext->VSSetShader(m_VertexShader[(int)SHADER_INDEX_V::SHADOW_MAP], NULL, 0);
 	//		break;
-
+	//
 	//	case (int)SHADER_INDEX_V::ANIMATION:
 	//		m_ImmediateContext->VSSetShader(m_VertexShader[(int)SHADER_INDEX_V::ANIMATION], NULL, 0);
 	//		break;
-
+	//
 	//	case (int)SHADER_INDEX_V::SHADOW_MAP_ANIMATION:
 	//		m_ImmediateContext->VSSetShader(m_VertexShader[(int)SHADER_INDEX_V::SHADOW_MAP_ANIMATION], NULL, 0);
 	//		break;
-
+	//
 	//	default:
 	//		break;
 	//}
 
-	m_ImmediateContext->VSSetShader(m_VertexShader[v_index], NULL, 0);
+	m_ImmediateContext->VSSetShader(m_VertexShader[v_index], nullptr, 0);
 
 	//switch ((int)p_index)
 	//{
 	//	case (int)SHADER_INDEX_P::DEFAULT:
 	//		m_ImmediateContext->PSSetShader(m_PixelShader[(int)SHADER_INDEX_P::DEFAULT], NULL, 0);
 	//		break;
-
+	//
 	//	case (int)SHADER_INDEX_P::NO_TEXTURE:
 	//		m_ImmediateContext->PSSetShader(m_PixelShader[(int)SHADER_INDEX_P::NO_TEXTURE], NULL, 0);
 	//		break;
-
+	//
 	//	case (int)SHADER_INDEX_P::NO_LIGHT:
 	//		m_ImmediateContext->PSSetShader(m_PixelShader[(int)SHADER_INDEX_P::NO_LIGHT], NULL, 0);
 	//		break;
-
+	//
 	//	case (int)SHADER_INDEX_P::SHADOW_MAP:
 	//		m_ImmediateContext->PSSetShader(m_PixelShader[(int)SHADER_INDEX_P::SHADOW_MAP], NULL, 0);
 	//		//m_ImmediateContext->PSSetShader(nullptr, NULL, 0);
 	//		break;
-
+	//
 	//	default:
 	//		break;
 	//}
 
-	m_ImmediateContext->PSSetShader(m_PixelShader[p_index], NULL, 0);
+	m_ImmediateContext->PSSetShader(m_PixelShader[p_index], nullptr, 0);
 }
 
 void CRenderer::Set_InputLayout(const INPUTLAYOUT InputLayout)
@@ -1177,8 +1224,8 @@ void CRenderer::Set_InputLayout(const INPUTLAYOUT InputLayout)
 			m_ImmediateContext->IASetInputLayout(m_VertexLayout[(int)INPUTLAYOUT::ANIMATION]);
 			break;
 
-	default:
-		break;
+		default:
+			break;
 	}
 }
 

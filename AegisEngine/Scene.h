@@ -251,7 +251,15 @@ public:
 	* @details Depth pre-passÇçsÇ§ä÷êî
 	*/
 	virtual void Draw_DPP(void) {
-		for (int i = 0; i < (int)LAYER_NAME::MAX_LAYER; i++)
+		//for (int i = 0; i < (int)LAYER_NAME::MAX_LAYER; i++)
+		//{
+		//	for (auto object = GameObjects[i].begin(); object != GameObjects[i].end(); object++)
+		//	{
+		//		object->get()->Draw_DPP();
+		//	}
+		//}
+
+		for (int i = (int)LAYER_NAME::MAX_LAYER - 1; (int)LAYER_NAME::BACKGROUND <= i; i--)
 		{
 			for (auto object = GameObjects[i].begin(); object != GameObjects[i].end(); object++)
 			{

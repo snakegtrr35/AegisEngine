@@ -73,8 +73,8 @@ bool CManager::Init()
 	pShadowMap->Init();
 	pShadowMap->Set_Target(pSceneManager->Get_Scene()->Get_Game_Object<PLAYER>("player"));
 
-	ForwardPlus.reset(new FORWARDLUS());//
-	ForwardPlus->Init();//
+	//ForwardPlus.reset(new FORWARDLUS());//
+	//ForwardPlus->Init();//
 
 	return true;
 }
@@ -137,12 +137,6 @@ void CManager::Draw()
 		pShadowMap->Begin();
 		pSceneManager->Draw();
 		pShadowMap->End();//
-	}
-
-	// 1パス目
-	{
-		//CRenderer::SetPass_Geometry();
-		//pSceneManager->Draw();
 	}
 
 	// 最終レンダリング
