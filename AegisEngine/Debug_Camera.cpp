@@ -8,18 +8,18 @@ XMMATRIX DEBUG_CAMERA::m_ProjectionMatrix;
 
 float DEBUG_CAMERA::Lenght = 15.0f;
 
-void DEBUG_CAMERA::Init()
+DEBUG_CAMERA::DEBUG_CAMERA()
 {
-	XMFLOAT4 at = XMFLOAT4(0.0f, 0.0f, 0.0f, 0.0f);
+	XMFLOAT4 at = XMFLOAT4(0.f, 0.f, 0.f, 0.f);
 
 	Viewing_Angle = 80.0f;
 
-	Front = XMVectorSet(0.0f, -0.0f, 1.0f, 0.0f);
+	Front = XMVectorSet(0.f, 0.f, 1.0f, 0.f);
 	Front = XMVector3Normalize(Front);
 
-	Up = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
+	Up = XMVectorSet(0.f, 1.0f, 0.f, 0.f);
 
-	Right = XMVectorSet(1.0f, 0.0f, 0.0f, 0.0f);
+	Right = XMVectorSet(1.0f, 0.f, 0.f, 0.f);
 
 
 	// 三つのベクトルを垂直にする
@@ -44,6 +44,10 @@ void DEBUG_CAMERA::Init()
 	RotateEnable = MoveEnable = true;
 
 	Rotation = XMFLOAT3(0, 0, 0);
+}
+
+void DEBUG_CAMERA::Init()
+{
 }
 
 void DEBUG_CAMERA::Uninit()
@@ -151,8 +155,14 @@ void DEBUG_CAMERA::Update(float delta_time)
 
 	if (false == flag)
 	{
+		//XMVECTOR f = XMVector3Normalize(Front);
+		//XMVECTOR u = XMVector3Normalize(Up);
+
 		At = Front * Lenght + Pos;
+		//At = Pos + (f * Lenght) - ( u * 2.0 );
+
 		Pos = At - Front * Lenght;
+		//Pos = At - (f * Lenght) + (u * 2.0);
 	}
 
 	XMStoreFloat3(&Position, Pos);

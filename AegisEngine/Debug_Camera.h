@@ -45,7 +45,7 @@ private:
 	//BoundingFrustum Frustum;
 
 public:
-	DEBUG_CAMERA() {}
+	DEBUG_CAMERA();
 	~DEBUG_CAMERA() {}
 
 	void Init() override;
@@ -119,6 +119,9 @@ public:
 	template<typename Archive>
 	void serialize(Archive& ar)
 	{
+		XMStoreFloat3(&Position, Pos);
+		XMStoreFloat3(&A, At);
+
 		ar(cereal::base_class<GAME_OBJECT>(this));
 		ar(A);
 
