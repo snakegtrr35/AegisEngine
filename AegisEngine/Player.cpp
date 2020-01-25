@@ -42,7 +42,7 @@ void PLAYER::Init(void)
 
 		Model = new FBXmodel();
 
-		Model->Load("asset/model/SambaDancing2.fbx");
+		Model->Load("asset/model/kakunin_joint.fbx");
 	}
 
 	//Collision = new COLLISIION_SPHERE();

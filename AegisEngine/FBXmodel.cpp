@@ -54,7 +54,7 @@ bool FBXmodel::Load(const string& FileName)
 	HRESULT hr;
 
 	//ÉÇÉfÉãÇÃì«Ç›çûÇ›
-	m_Scene = aiImportFile(FileName.c_str(), aiProcessPreset_TargetRealtime_MaxQuality);
+	m_Scene = aiImportFile(FileName.c_str(), aiProcess_Triangulate | aiProcess_LimitBoneWeights | aiProcess_ConvertToLeftHanded | aiProcessPreset_TargetRealtime_MaxQuality);
 	
 	if (nullptr == m_Scene)
 	{

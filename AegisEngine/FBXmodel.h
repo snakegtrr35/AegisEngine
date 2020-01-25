@@ -48,7 +48,9 @@ struct BONE
 
 const constexpr UINT BONE_MAX = 256;
 
-const constexpr float ANIMETION_FRAME = 1.f / 60.0f;		// 60FPS
+//const constexpr float ANIMETION_FRAME = 1.f / 60.0f;		// 60FPS
+const constexpr float ANIMETION_FRAME = 1.f / 30.0f;		// 30FPS
+
 
 /*** FBXmodelƒNƒ‰ƒX ***/
 class FBXmodel 

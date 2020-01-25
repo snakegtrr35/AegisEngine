@@ -106,6 +106,7 @@
     <ClInclude Include="camera.h" />
     <ClInclude Include="Cereal.h" />
     <ClInclude Include="Collision.h" />
+    <ClInclude Include="Color.h" />
     <ClInclude Include="common.h" />
     <FxCompile Include="CommonHeader.h">
       <FileType>Document</FileType>

@@ -19,11 +19,12 @@
 #undef NOMINMAX
 #include	<assert.h>
 
-#include	"common.h"
-
 #include	<DirectXMath.h>
 #include	<directxcollision.h>
 using namespace DirectX;
+
+#include	"common.h"
+#include	"Color.h"
 
 #include	"Math.h"
 using namespace Math;

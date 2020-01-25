@@ -502,7 +502,7 @@ void Draw_Inspector(const string& name)
 			const auto camera2 = SCENE::Get_Game_Object<DEBUG_CAMERA>("camera");
 
 			{
-				if (camera1.expired())
+				if (!camera1.expired() && Empty_weak_ptr<CCamera>(camera1))
 				{
 					mtr = camera1.lock()->Get_Camera_View();
 				}
@@ -522,7 +522,7 @@ void Draw_Inspector(const string& name)
 			};
 
 			{
-				if (camera1.expired())
+				if (!camera1.expired() && Empty_weak_ptr<CCamera>(camera1))
 				{
 					mtr = camera1.lock()->Get_Camera_Projection();
 				}

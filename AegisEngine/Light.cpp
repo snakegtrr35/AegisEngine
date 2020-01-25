@@ -26,6 +26,11 @@ bool LIGHTS::Init()
 	return true;
 }
 
+void LIGHTS::Update()
+{
+
+}
+
 void LIGHTS::Uninit()
 {
 	m_pPointLightBuffer.reset(nullptr);
