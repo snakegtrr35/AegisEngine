@@ -143,21 +143,20 @@ void BOUNDING_FRUSTUM::Draw()
 				//world *= XMMatrixRotationRollPitchYaw(XMConvertToRadians(Rotation.x), XMConvertToRadians(Rotation.y), XMConvertToRadians(Rotation.z));
 				//world *= XMMatrixTranslation(Position.x, Position.y, Position.z);
 
-				auto camera01 = CManager::Get_Scene()->Get_Game_Object<CCamera>("camera");
-				auto camera02 = CManager::Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
+				const auto camera01 = CManager::Get_Scene()->Get_Game_Object<CCamera>("camera");
+				const auto camera02 = CManager::Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
 
-				if (nullptr != camera01)
-
+				if (!camera01.expired() && Empty_weak_ptr<CCamera>(camera01))
 				{
-					CRenderer::Set_MatrixBuffer(world, camera01->Get_Camera_View(), camera01->Get_Camera_Projection());
+					CRenderer::Set_MatrixBuffer(world, camera01.lock()->Get_Camera_View(), camera01.lock()->Get_Camera_Projection());
 
-					CRenderer::Set_MatrixBuffer01(*camera01->Get_Pos());
+					CRenderer::Set_MatrixBuffer01(*camera01.lock()->Get_Pos());
 				}
 				else
 				{
-					CRenderer::Set_MatrixBuffer(world, camera02->Get_Camera_View(), camera02->Get_Camera_Projection());
+					CRenderer::Set_MatrixBuffer(world, camera02.lock()->Get_Camera_View(), camera02.lock()->Get_Camera_Projection());
 
-					CRenderer::Set_MatrixBuffer01(*camera02->Get_Pos());
+					CRenderer::Set_MatrixBuffer01(*camera02.lock()->Get_Pos());
 				}
 			}
 
@@ -175,18 +174,18 @@ void BOUNDING_FRUSTUM::Update(float delta_time)
 
 	XMFLOAT3 r;
 
-	auto camera = CManager::Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
+	const auto camera = CManager::Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
 
 	//if (nullptr != camera)
 	{
 		//XMStoreFloat3(&r, XMLoadFloat3(camera->Get_Rotation()) );
 
-		Position.x = camera->Get_Position()->x;
-		Position.y = camera->Get_Position()->y;
-		Position.z = camera->Get_Position()->z;
+		Position.x = camera.lock()->Get_Position()->x;
+		Position.y = camera.lock()->Get_Position()->y;
+		Position.z = camera.lock()->Get_Position()->z;
 
 		XMFLOAT3 vec;
-		XMStoreFloat3(&vec, *camera->Get_Front());
+		XMStoreFloat3(&vec, *camera.lock()->Get_Front());
 
 		/*if (vec.z >= 0.0f)
 		{
@@ -206,7 +205,7 @@ void BOUNDING_FRUSTUM::Update(float delta_time)
 			r.y = atan(vec.x / vec.z) + XM_PI;
 		}*/
 
-		Rotation = *camera->Get_Rotation();
+		Rotation = *camera.lock()->Get_Rotation();
 	}
 
 	XMMATRIX matrix = XMMatrixRotationRollPitchYaw(XMConvertToRadians(Rotation.x), XMConvertToRadians(Rotation.y), XMConvertToRadians(Rotation.z));

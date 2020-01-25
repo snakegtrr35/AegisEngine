@@ -366,8 +366,8 @@ void FBXmodel::DrawMesh(const aiNode* Node, const XMMATRIX& Matrix)
 	world = XMMatrixTranspose(aiMatrixToMatrix(Node->mTransformation));
 	world *= Matrix;
 
-	auto camera01 = CManager::Get_Scene()->Get_Game_Object<CCamera>("camera");
-	auto camera02 = CManager::Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
+	const auto camera01 = CManager::Get_Scene()->Get_Game_Object<CCamera>("camera");
+	const auto camera02 = CManager::Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
 
 	XMMATRIX view = CManager::Get_ShadowMap()->Get_View();
 	XMMATRIX proj = CManager::Get_ShadowMap()->Get_Plojection();
@@ -379,7 +379,7 @@ void FBXmodel::DrawMesh(const aiNode* Node, const XMMATRIX& Matrix)
 		// 3Dマトリックス設定
 		{
 			// 普通のカメラかデバッグカメラか?
-			if (nullptr != camera01)
+			if (!camera01.expired() && Empty_weak_ptr<CCamera>(camera01))
 			{
 				// シャドウマップ用の描画か?
 				if (CManager::Get_ShadowMap()->Get_Enable())
@@ -390,9 +390,9 @@ void FBXmodel::DrawMesh(const aiNode* Node, const XMMATRIX& Matrix)
 				}
 				else
 				{
-					CRenderer::Set_MatrixBuffer(world, camera01->Get_Camera_View(), camera01->Get_Camera_Projection());
+					CRenderer::Set_MatrixBuffer(world, camera01.lock()->Get_Camera_View(), camera01.lock()->Get_Camera_Projection());
 
-					CRenderer::Set_MatrixBuffer01(*camera01->Get_Pos());
+					CRenderer::Set_MatrixBuffer01(*camera01.lock()->Get_Pos());
 
 					CRenderer::Set_Shader(SHADER_INDEX_V::ANIMATION, SHADER_INDEX_P::DEFAULT);
 				}
@@ -408,9 +408,9 @@ void FBXmodel::DrawMesh(const aiNode* Node, const XMMATRIX& Matrix)
 				}
 				else
 				{
-					CRenderer::Set_MatrixBuffer(world, camera02->Get_Camera_View(), camera02->Get_Camera_Projection());
+					CRenderer::Set_MatrixBuffer(world, camera02.lock()->Get_Camera_View(), camera02.lock()->Get_Camera_Projection());
 
-					CRenderer::Set_MatrixBuffer01(*camera02->Get_Pos());
+					CRenderer::Set_MatrixBuffer01(*camera02.lock()->Get_Pos());
 
 					CRenderer::Set_Shader(SHADER_INDEX_V::ANIMATION, SHADER_INDEX_P::DEFAULT);
 				}
@@ -441,12 +441,13 @@ void FBXmodel::DrawMesh(const aiNode* Node, const XMMATRIX& Matrix)
 
 void FBXmodel::DrawMesh_DPP(const aiNode* Node, const XMMATRIX& Matrix)
 {
+
 	XMMATRIX world;
 	world = XMMatrixTranspose(aiMatrixToMatrix(Node->mTransformation));
 	world *= Matrix;
 
-	auto camera01 = CManager::Get_Scene()->Get_Game_Object<CCamera>("camera");
-	auto camera02 = CManager::Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
+	const auto camera01 = CManager::Get_Scene()->Get_Game_Object<CCamera>("camera");
+	const auto camera02 = CManager::Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
 
 	for (UINT n = 0; n < Node->mNumMeshes; n++)
 	{
@@ -455,13 +456,13 @@ void FBXmodel::DrawMesh_DPP(const aiNode* Node, const XMMATRIX& Matrix)
 		// 3Dマトリックス設定
 		{
 			// 普通のカメラかデバッグカメラか?
-			if (nullptr != camera01)
+			if (!camera01.expired() && Empty_weak_ptr<CCamera>(camera01))
 			{
-				CRenderer::Set_MatrixBuffer(world, camera01->Get_Camera_View(), camera01->Get_Camera_Projection());
+				CRenderer::Set_MatrixBuffer(world, camera01.lock()->Get_Camera_View(), camera01.lock()->Get_Camera_Projection());
 			}
 			else
 			{
-				CRenderer::Set_MatrixBuffer(world, camera02->Get_Camera_View(), camera02->Get_Camera_Projection());
+				CRenderer::Set_MatrixBuffer(world, camera02.lock()->Get_Camera_View(), camera02.lock()->Get_Camera_Projection());
 			}
 		}
 

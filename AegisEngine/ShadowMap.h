@@ -52,7 +52,7 @@ private:
 
 	unique_ptr<ID3D11RenderTargetView, Release> RenderTargetView;
 
-	GAME_OBJECT* Target;
+	weak_ptr<GAME_OBJECT> Target;
 
 	static UINT WIDTH;
 	static UINT HEIGHT;
@@ -94,7 +94,7 @@ public:
 		return ShaderResourceView.get();
 	}
 
-	void Set_Target(GAME_OBJECT* object);
+	void Set_Target(const weak_ptr<GAME_OBJECT>& object);
 
 	void Set();
 };

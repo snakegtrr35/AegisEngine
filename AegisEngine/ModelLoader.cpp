@@ -119,7 +119,7 @@ bool CMODEL::Reload(const string& filename)
 	this->directory = filename.substr(0, filename.find_last_of('/'));
 
 	//Meshes[pScene->mRootNode->mName.C_Str()] = MESH();
-	//processNode(pScene->mRootNode, nullptr, pScene, Meshes);
+	//processNode(pScene->mRootNode, nullptr, pScene, Meshes);if (camera
 	processNode(pScene->mRootNode, pScene, Meshes.Get());
 
 	{
@@ -145,11 +145,11 @@ bool CMODEL::Reload(const string& filename)
 
 void CMODEL::Draw()
 {
-	auto camera = CManager::Get_Scene()->Get_Game_Object<CCamera>("camera");
+	const auto camera = CManager::Get_Scene()->Get_Game_Object<CCamera>("camera");
 
-	if (nullptr != camera)
+	if (camera.expired() && Empty_weak_ptr<CCamera>(camera))
 	{
-		if (false == camera->Get_Visibility(Position))
+		if (false == camera.lock()->Get_Visibility(Position))
 		{
 			return;
 		}
@@ -191,8 +191,8 @@ void CMODEL::Draw()
 	matrix = XMMatrixMultiply(matrix, transform);
 
 	{
-		auto camera01 = CManager::Get_Scene()->Get_Game_Object<CCamera>("camera");
-		auto camera02 = CManager::Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
+		const auto camera01 = CManager::Get_Scene()->Get_Game_Object<CCamera>("camera");
+		const auto camera02 = CManager::Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
 
 		{
 			XMVECTOR camera_pos;
@@ -202,9 +202,9 @@ void CMODEL::Draw()
 
 			light_pos = XMVectorScale(light_pos, 10.0f);
 
-			if (nullptr != camera01)
+			if (!camera01.expired() && Empty_weak_ptr<CCamera>(camera01))
 			{
-				camera_pos = *camera01->Get_Pos();
+				camera_pos = *camera01.lock()->Get_Pos();
 
 				XMFLOAT4 pos;
 				XMStoreFloat4(&pos, camera_pos);
@@ -214,7 +214,7 @@ void CMODEL::Draw()
 			}
 			else
 			{
-				camera_pos = *camera02->Get_Pos();
+				camera_pos = *camera02.lock()->Get_Pos();
 
 				XMFLOAT4 pos;
 				XMStoreFloat4(&pos, camera_pos);
@@ -272,11 +272,11 @@ void CMODEL::Draw()
 
 void CMODEL::Draw_DPP()
 {
-	auto camera = CManager::Get_Scene()->Get_Game_Object<CCamera>("camera");
+	const auto camera = CManager::Get_Scene()->Get_Game_Object<CCamera>("camera");
 
-	if (nullptr != camera)
+	if (camera.expired() && Empty_weak_ptr<CCamera>(camera))
 	{
-		if (false == camera->Get_Visibility(Position))
+		if (false == camera.lock()->Get_Visibility(Position))
 		{
 			return;
 		}

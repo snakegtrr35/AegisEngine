@@ -137,20 +137,20 @@ void GRID::Draw()
 			world *= XMMatrixRotationRollPitchYaw(XMConvertToRadians(Rotation.x), XMConvertToRadians(Rotation.y), XMConvertToRadians(Rotation.z));			// 回転(ロールピッチヨウ)
 			world *= XMMatrixTranslation(Position.x, Position.y, Position.z);																				// 移動
 
-			auto camera01 = CManager::Get_Scene()->Get_Game_Object<CCamera>("camera");
-			auto camera02 = CManager::Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
+			const auto camera01 = CManager::Get_Scene()->Get_Game_Object<CCamera>("camera");
+			const auto camera02 = CManager::Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
 
-			if (nullptr != camera01)
+			if (!camera01.expired() && Empty_weak_ptr<CCamera>(camera01))
 			{
-				CRenderer::Set_MatrixBuffer(world, camera01->Get_Camera_View(), camera01->Get_Camera_Projection());
+				CRenderer::Set_MatrixBuffer(world, camera01.lock()->Get_Camera_View(), camera01.lock()->Get_Camera_Projection());
 
-				CRenderer::Set_MatrixBuffer01(*camera01->Get_Pos());
+				CRenderer::Set_MatrixBuffer01(*camera01.lock()->Get_Pos());
 			}
 			else
 			{
-				CRenderer::Set_MatrixBuffer(world, camera02->Get_Camera_View(), camera02->Get_Camera_Projection());
+				CRenderer::Set_MatrixBuffer(world, camera02.lock()->Get_Camera_View(), camera02.lock()->Get_Camera_Projection());
 
-				CRenderer::Set_MatrixBuffer01(*camera02->Get_Pos());
+				CRenderer::Set_MatrixBuffer01(*camera02.lock()->Get_Pos());
 			}
 		}
 

@@ -20,11 +20,12 @@ public:
 		Owner.reset();
 	}
 
+	COMPONENT(const shared_ptr<GAME_OBJECT>& owner) : Owner(owner), Enable(true), DestroyFlag(false) {}
+
 	virtual ~COMPONENT() {};
 
-	void Init(shared_ptr<GAME_OBJECT> owner) {
+	void Init(const shared_ptr<GAME_OBJECT>& owner) {
 		Owner = owner;
-
 	}
 
 	virtual void Update(float delta_time) = 0;
@@ -39,7 +40,7 @@ public:
 		return Enable;
 	}
 
-	void Set_Destroy() {
+	void SetDestroy() {
 		DestroyFlag = true;
 	}
 
@@ -55,7 +56,7 @@ public:
 	template<class Archive>
 	void serialize(Archive& ar)
 	{
-		//ar(ptr);
+		ar(Owner);
 	}
 
 	/*template<class Archive>
@@ -84,7 +85,7 @@ public:
 
 	// リストへのメニューオブジェクトの追加
 	template <typename T>
-	T* Add_Component()
+	T* Add_Component(const shared_ptr<GAME_OBJECT>& owner)
 	{
 		for (auto object = Conponent_List.begin(); object != Conponent_List.end(); object++)
 		{
@@ -94,7 +95,7 @@ public:
 			}
 		}
 
-		T* object = new T();
+		T* object = new T(owner);
 
 		Conponent_List.emplace_back(object);
 

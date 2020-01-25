@@ -362,7 +362,7 @@ void My_imgui::Draw(void)
 		}
 
 		{
-			auto camera = CManager::Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
+			const weak_ptr<DEBUG_CAMERA> camera = CManager::Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
 
 			ImGuiWindowFlags window_flags = ImGuiWindowFlags_NoResize;
 
@@ -394,7 +394,7 @@ void My_imgui::Draw(void)
 				ImGui::DragFloat3("Rotate", Rotate, 0.01f);
 
 				XMFLOAT3 r;
-				XMStoreFloat3(&r, *camera->Get_Front());
+				XMStoreFloat3(&r, *camera.lock()->Get_Front());
 
 				ImGui::Text("%f  %f  %f", r.x, r.y, r.z);
 
@@ -498,19 +498,17 @@ void Draw_Inspector(const string& name)
 		{
 			XMMATRIX mtr;
 
-			CCamera* camera1;
-			DEBUG_CAMERA* camera2;
+			const auto camera1 = SCENE::Get_Game_Object<CCamera>("camera");
+			const auto camera2 = SCENE::Get_Game_Object<DEBUG_CAMERA>("camera");
 
 			{
-				camera1 = SCENE::Get_Game_Object<CCamera>("camera");
-				if (nullptr == camera1)
+				if (camera1.expired())
 				{
-					camera2 = SCENE::Get_Game_Object<DEBUG_CAMERA>("camera");
-					mtr = camera2->Get_Camera_View();
+					mtr = camera1.lock()->Get_Camera_View();
 				}
 				else
 				{
-					mtr = camera1->Get_Camera_View();
+					mtr = camera2.lock()->Get_Camera_View();
 				}
 			}
 
@@ -524,13 +522,13 @@ void Draw_Inspector(const string& name)
 			};
 
 			{
-				if (nullptr == camera1)
+				if (camera1.expired())
 				{
-					mtr = camera2->Get_Camera_Projection();
+					mtr = camera1.lock()->Get_Camera_Projection();
 				}
 				else
 				{
-					mtr = camera1->Get_Camera_Projection();
+					mtr = camera2.lock()->Get_Camera_Projection();
 				}
 			}
 

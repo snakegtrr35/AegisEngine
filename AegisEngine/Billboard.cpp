@@ -242,21 +242,20 @@ void BILL_BOARD::Draw()
 
 		//CRenderer::SetWorldMatrix(&world);
 
-		auto camera01 = CManager::Get_Scene()->Get_Game_Object<CCamera>("camera");
-		auto camera02 = CManager::Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
+		const auto camera01 = CManager::Get_Scene()->Get_Game_Object<CCamera>("camera");
+		const auto camera02 = CManager::Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
 
-		if (nullptr != camera01)
-
+		if (!camera01.expired() && Empty_weak_ptr<CCamera>(camera01))
 		{
-			CRenderer::Set_MatrixBuffer(world, camera01->Get_Camera_View(), camera01->Get_Camera_Projection());
+			CRenderer::Set_MatrixBuffer(world, camera01.lock()->Get_Camera_View(), camera01.lock()->Get_Camera_Projection());
 
-			CRenderer::Set_MatrixBuffer01(*camera01->Get_Pos());
+			CRenderer::Set_MatrixBuffer01(*camera01.lock()->Get_Pos());
 		}
 		else
 		{
-			CRenderer::Set_MatrixBuffer(world, camera02->Get_Camera_View(), camera02->Get_Camera_Projection());
+			CRenderer::Set_MatrixBuffer(world, camera02.lock()->Get_Camera_View(), camera02.lock()->Get_Camera_Projection());
 
-			CRenderer::Set_MatrixBuffer01(*camera02->Get_Pos());
+			CRenderer::Set_MatrixBuffer01(*camera02.lock()->Get_Pos());
 		}
 	}
 
@@ -329,17 +328,16 @@ void BILL_BOARD::Draw_DPP()
 		world *= XMMatrixRotationRollPitchYaw(Rotation.x, Rotation.y, Rotation.z);			// ‰ñ“]
 		world *= XMMatrixTranslation(Position.x, Position.y, Position.z);					// ˆÚ“®
 
-		auto camera01 = CManager::Get_Scene()->Get_Game_Object<CCamera>("camera");
-		auto camera02 = CManager::Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
+		const auto camera01 = CManager::Get_Scene()->Get_Game_Object<CCamera>("camera");
+		const auto camera02 = CManager::Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
 
-		if (nullptr != camera01)
-
+		if (!camera01.expired() && Empty_weak_ptr<CCamera>(camera01))
 		{
-			CRenderer::Set_MatrixBuffer(world, camera01->Get_Camera_View(), camera01->Get_Camera_Projection());
+			CRenderer::Set_MatrixBuffer(world, camera01.lock()->Get_Camera_View(), camera01.lock()->Get_Camera_Projection());
 		}
 		else
 		{
-			CRenderer::Set_MatrixBuffer(world, camera02->Get_Camera_View(), camera02->Get_Camera_Projection());
+			CRenderer::Set_MatrixBuffer(world, camera02.lock()->Get_Camera_View(), camera02.lock()->Get_Camera_Projection());
 		}
 	}
 
@@ -517,22 +515,22 @@ void BILL_BOARD_ANIMATION::Draw(float tx, float ty)
 		world *= XMMatrixTranslation(Position.x, Position.y, Position.z);
 		//world *= XMMatrixRotationRollPitchYaw(Rotation.x, Rotation.y, Rotation.z);
 
-		auto camera01 = CManager::Get_Scene()->Get_Game_Object<CCamera>("camera");
-		auto camera02 = CManager::Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
+		const auto camera01 = CManager::Get_Scene()->Get_Game_Object<CCamera>("camera");
+		const auto camera02 = CManager::Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
 
-		if (nullptr != camera01)
+		if (!camera01.expired() && Empty_weak_ptr<CCamera>(camera01))
 		{
-			CRenderer::Set_MatrixBuffer(world, camera01->Get_Camera_View(), camera01->Get_Camera_Projection());
+			CRenderer::Set_MatrixBuffer(world, camera01.lock()->Get_Camera_View(), camera01.lock()->Get_Camera_Projection());
 
-			CRenderer::Set_MatrixBuffer01(*camera01->Get_Pos());
+			CRenderer::Set_MatrixBuffer01(*camera01.lock()->Get_Pos());
 
 			CRenderer::Set_Shader();
 		}
 		else
 		{
-			CRenderer::Set_MatrixBuffer(world, camera02->Get_Camera_View(), camera02->Get_Camera_Projection());
+			CRenderer::Set_MatrixBuffer(world, camera02.lock()->Get_Camera_View(), camera02.lock()->Get_Camera_Projection());
 			
-			CRenderer::Set_MatrixBuffer01(*camera02->Get_Pos());
+			CRenderer::Set_MatrixBuffer01(*camera02.lock()->Get_Pos());
 			
 			CRenderer::Set_Shader();
 		}
@@ -634,16 +632,16 @@ void BILL_BOARD_ANIMATION::Draw_DPP(float tx, float ty)
 		world *= XMMatrixTranslation(Position.x, Position.y, Position.z);
 		//world *= XMMatrixRotationRollPitchYaw(Rotation.x, Rotation.y, Rotation.z);
 
-		auto camera01 = CManager::Get_Scene()->Get_Game_Object<CCamera>("camera");
-		auto camera02 = CManager::Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
+		const auto camera01 = CManager::Get_Scene()->Get_Game_Object<CCamera>("camera");
+		const auto camera02 = CManager::Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
 
-		if (nullptr != camera01)
+		if (!camera01.expired() && Empty_weak_ptr<CCamera>(camera01))
 		{
-			CRenderer::Set_MatrixBuffer(world, camera01->Get_Camera_View(), camera01->Get_Camera_Projection());
+			CRenderer::Set_MatrixBuffer(world, camera01.lock()->Get_Camera_View(), camera01.lock()->Get_Camera_Projection());
 		}
 		else
 		{
-			CRenderer::Set_MatrixBuffer(world, camera02->Get_Camera_View(), camera02->Get_Camera_Projection());
+			CRenderer::Set_MatrixBuffer(world, camera02.lock()->Get_Camera_View(), camera02.lock()->Get_Camera_Projection());
 		}
 	}
 

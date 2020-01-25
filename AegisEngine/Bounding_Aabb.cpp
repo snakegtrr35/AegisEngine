@@ -134,18 +134,18 @@ void BOUNDING_AABB::Draw()
 			//world *= XMMatrixScaling(Scaling.x, Scaling.y, Scaling.z);
 			//world *= XMMatrixTranslation(Position.x, Position.y, Position.z);
 
-			CCamera* camera01 = CManager::Get_Scene()->Get_Game_Object<CCamera>("camera");
-			DEBUG_CAMERA* camera02 = CManager::Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
+			const auto camera01 = CManager::Get_Scene()->Get_Game_Object<CCamera>("camera");
+			const auto camera02 = CManager::Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
 
-			if (nullptr != camera01)
+			if (!camera01.expired() && Empty_weak_ptr<CCamera>(camera01))
 			{
-				CRenderer::Set_MatrixBuffer(world, camera01->Get_Camera_View(), camera01->Get_Camera_Projection());
+				CRenderer::Set_MatrixBuffer(world, camera01.lock()->Get_Camera_View(), camera01.lock()->Get_Camera_Projection());
 
 				CRenderer::Set_Shader();
 			}
 			else
 			{
-				CRenderer::Set_MatrixBuffer(world, camera02->Get_Camera_View(), camera02->Get_Camera_Projection());
+				CRenderer::Set_MatrixBuffer(world, camera02.lock()->Get_Camera_View(), camera02.lock()->Get_Camera_Projection());
 
 				CRenderer::Set_Shader();
 			}

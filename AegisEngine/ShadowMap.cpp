@@ -42,7 +42,7 @@ SHADOW_MAP::SHADOW_MAP()
 		DxViewport.TopLeftY = (float)Viewport.top;
 	}
 
-	Target = nullptr;
+	Target.reset();
 }
 
 bool SHADOW_MAP::Init()
@@ -403,7 +403,7 @@ void SHADOW_MAP::Set_LightPos(const XMFLOAT3& pos)
 	LightPos = pos;
 }
 
-void SHADOW_MAP::Set_Target(GAME_OBJECT* object)
+void SHADOW_MAP::Set_Target(const weak_ptr<GAME_OBJECT>& object)
 {
 	Target = object;
 }

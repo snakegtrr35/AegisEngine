@@ -100,11 +100,11 @@ private:
 			{
 				matrix = XMMatrixMultiply(Matrix, parent_matrix);
 
-				auto camera01 = CManager::Get_Scene()->Get_Game_Object<CCamera>("camera");
-				auto camera02 = CManager::Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
+				const auto camera01 = CManager::Get_Scene()->Get_Game_Object<CCamera>("camera");
+				const auto camera02 = CManager::Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
 				
 				// 普通のカメラかデバッグカメラか?
-				if (nullptr != camera01)
+				if (!camera01.expired() && Empty_weak_ptr<CCamera>(camera01))
 				{
 					// シャドウマップ用の描画か?
 					if (CManager::Get_ShadowMap()->Get_Enable())
@@ -116,9 +116,9 @@ private:
 					}
 					else
 					{
-						CRenderer::Set_MatrixBuffer(matrix, camera01->Get_Camera_View(), camera01->Get_Camera_Projection());
+						CRenderer::Set_MatrixBuffer(matrix, camera01.lock()->Get_Camera_View(), camera01.lock()->Get_Camera_Projection());
 
-						CRenderer::Set_MatrixBuffer01(*camera01->Get_Pos());
+						CRenderer::Set_MatrixBuffer01(*camera01.lock()->Get_Pos());
 					}
 				}
 				else
@@ -133,9 +133,9 @@ private:
 					}
 					else
 					{
-						CRenderer::Set_MatrixBuffer(matrix, camera02->Get_Camera_View(), camera02->Get_Camera_Projection());
+						CRenderer::Set_MatrixBuffer(matrix, camera02.lock()->Get_Camera_View(), camera02.lock()->Get_Camera_Projection());
 
-						CRenderer::Set_MatrixBuffer01(*camera02->Get_Pos());
+						CRenderer::Set_MatrixBuffer01(*camera02.lock()->Get_Pos());
 					}
 				}
 			}
@@ -164,17 +164,17 @@ private:
 			{
 				matrix = XMMatrixMultiply(Matrix, parent_matrix);
 
-				auto camera01 = CManager::Get_Scene()->Get_Game_Object<CCamera>("camera");
-				auto camera02 = CManager::Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
+				const auto camera01 = CManager::Get_Scene()->Get_Game_Object<CCamera>("camera");
+				const auto camera02 = CManager::Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
 
-				// 普通のカメラかデバッグカメラか?
-				if (nullptr != camera01)
+				// 普通のカメラかデバッグカメラ
+				if (!camera01.expired() && Empty_weak_ptr<CCamera>(camera01))
 				{
-					CRenderer::Set_MatrixBuffer(matrix, camera01->Get_Camera_View(), camera01->Get_Camera_Projection());
+					CRenderer::Set_MatrixBuffer(matrix, camera01.lock()->Get_Camera_View(), camera01.lock()->Get_Camera_Projection());
 				}
 				else
 				{
-					CRenderer::Set_MatrixBuffer(matrix, camera02->Get_Camera_View(), camera02->Get_Camera_Projection());
+					CRenderer::Set_MatrixBuffer(matrix, camera02.lock()->Get_Camera_View(), camera02.lock()->Get_Camera_Projection());
 				}
 			}
 
@@ -234,7 +234,7 @@ private:
 						auto camera02 = CManager::Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
 
 						// 普通のカメラかデバッグカメラか?
-						if (nullptr != camera01)
+						if (!camera01.expired() && Empty_weak_ptr<CCamera>(camera01))
 						{
 							// シャドウマップ用の描画か?
 							if (CManager::Get_ShadowMap()->Get_Enable())
@@ -246,9 +246,9 @@ private:
 							}
 							else
 							{
-								CRenderer::Set_MatrixBuffer(world, camera01->Get_Camera_View(), camera01->Get_Camera_Projection());
+								CRenderer::Set_MatrixBuffer(world, camera01.lock()->Get_Camera_View(), camera01.lock()->Get_Camera_Projection());
 
-								CRenderer::Set_MatrixBuffer01(*camera01->Get_Pos());
+								CRenderer::Set_MatrixBuffer01(*camera01.lock()->Get_Pos());
 							}
 						}
 						else
@@ -263,9 +263,9 @@ private:
 							}
 							else
 							{
-								CRenderer::Set_MatrixBuffer(world, camera02->Get_Camera_View(), camera02->Get_Camera_Projection());
+								CRenderer::Set_MatrixBuffer(world, camera02.lock()->Get_Camera_View(), camera02.lock()->Get_Camera_Projection());
 
-								CRenderer::Set_MatrixBuffer01(*camera02->Get_Pos());
+								CRenderer::Set_MatrixBuffer01(*camera02.lock()->Get_Pos());
 							}
 						}
 
@@ -328,7 +328,7 @@ private:
 				auto camera02 = CManager::Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
 
 				// 普通のカメラかデバッグカメラか?
-				if (nullptr != camera01)
+				if (!camera01.expired() && Empty_weak_ptr<CCamera>(camera01))
 				{
 					// シャドウマップ用の描画か?
 					if (CManager::Get_ShadowMap()->Get_Enable())
@@ -340,9 +340,9 @@ private:
 					}
 					else
 					{
-						CRenderer::Set_MatrixBuffer(world, camera01->Get_Camera_View(), camera01->Get_Camera_Projection());
+						CRenderer::Set_MatrixBuffer(world, camera01.lock()->Get_Camera_View(), camera01.lock()->Get_Camera_Projection());
 
-						CRenderer::Set_MatrixBuffer01(*camera01->Get_Pos());
+						CRenderer::Set_MatrixBuffer01(*camera01.lock()->Get_Pos());
 					}
 				}
 				else
@@ -357,9 +357,9 @@ private:
 					}
 					else
 					{
-						CRenderer::Set_MatrixBuffer(world, camera02->Get_Camera_View(), camera02->Get_Camera_Projection());
+						CRenderer::Set_MatrixBuffer(world, camera02.lock()->Get_Camera_View(), camera02.lock()->Get_Camera_Projection());
 
-						CRenderer::Set_MatrixBuffer01(*camera02->Get_Pos());
+						CRenderer::Set_MatrixBuffer01(*camera02.lock()->Get_Pos());
 					}
 				}
 			}
@@ -406,13 +406,13 @@ private:
 						auto camera02 = CManager::Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
 
 						// 普通のカメラかデバッグカメラか?
-						if (nullptr != camera01)
+						if (!camera01.expired() && Empty_weak_ptr<CCamera>(camera01))
 						{
-								CRenderer::Set_MatrixBuffer(world, camera01->Get_Camera_View(), camera01->Get_Camera_Projection());
+								CRenderer::Set_MatrixBuffer(world, camera01.lock()->Get_Camera_View(), camera01.lock()->Get_Camera_Projection());
 						}
 						else
 						{
-							CRenderer::Set_MatrixBuffer(world, camera02->Get_Camera_View(), camera02->Get_Camera_Projection());
+							CRenderer::Set_MatrixBuffer(world, camera02.lock()->Get_Camera_View(), camera02.lock()->Get_Camera_Projection());
 						}
 
 						break;
@@ -473,13 +473,13 @@ private:
 				auto camera02 = CManager::Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
 
 				// 普通のカメラかデバッグカメラか?
-				if (nullptr != camera01)
+				if (!camera01.expired() && Empty_weak_ptr<CCamera>(camera01))
 				{
-					CRenderer::Set_MatrixBuffer(world, camera01->Get_Camera_View(), camera01->Get_Camera_Projection());
+					CRenderer::Set_MatrixBuffer(world, camera01.lock()->Get_Camera_View(), camera01.lock()->Get_Camera_Projection());
 				}
 				else
 				{
-					CRenderer::Set_MatrixBuffer(world, camera02->Get_Camera_View(), camera02->Get_Camera_Projection());
+					CRenderer::Set_MatrixBuffer(world, camera02.lock()->Get_Camera_View(), camera02.lock()->Get_Camera_Projection());
 				}
 			}
 		}

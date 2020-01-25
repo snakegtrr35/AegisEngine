@@ -83,7 +83,7 @@ void GAME::Init()
 
 			auto component = enemy->Get_Component();
 
-			component->Add_Component<AXIS_COMPONENT>();
+			//component->Add_Component<AXIS_COMPONENT>();
 
 			name.pop_back();
 			number.clear();
