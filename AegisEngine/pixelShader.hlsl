@@ -1,5 +1,5 @@
 #include    "Commom_Hlsl.h"
-//#include    "Light_Hlsl.h"
+#include    "Light_Hlsl.h"
 
 //*****************************************************************************
 // 定数バッファ
@@ -7,49 +7,50 @@
 
 
 
-// マトリクスバッファ
-struct Lights
-{
-	// 共通部分
-    float3   Position;
-    float4   Color;
-    float    Radius;
-    float3   Attenuation;
-	uint     Enable;
-};
+//// マトリクスバッファ
+//struct Lights
+//{
+//	// 共通部分
+//    bool        Enable          /*: packoffset(c0)*/;
+//    float3      Position        /*: packoffset(c0.x)*/;
+//    float4      Color           /*: packoffset(c1)*/;
+//    float       Radius          /*: packoffset(c2.x)*/;
+//    float3      Attenuation     /*: packoffset(c2.y)*/;
+//};.
 
-// マトリクスバッファ
-cbuffer LightsBuffer : register(b6)
-{
-    Lights LightsBuf;
-}
+//// マトリクスバッファ
+//cbuffer LightsBuffer : register(b10)
+//{
+//    Lights LightsBuf;
+//}
 
-float3 DoPointLight(Lights light, float4 Position, float4 CameraPos, float4 Normal)
-{
-    float3 result = (float) 1.0;
+//float3 DoPointLight(Lights light, float4 Position, float4 CameraPos, float4 Normal)
+//{
+//    float3 result = (float) 1.0;
 
-    float3 Dir = Position.xyz - light.Position;
-    float distance = length(Dir);
-    Dir = normalize(Dir);
+//    float3 Dir = light.Position - Position.xyz;
+//    float distance = length(Dir);
+//    Dir = normalize(Dir);
 
-	//拡散
-    float colD = saturate(dot(Normal.xyz, Dir));
+//	//拡散
+//    float colD = 0.5 - 0.5 * dot(Normal.xyz, Dir);
 
-    float colA = saturate(1.0f / (light.Attenuation.x + light.Attenuation.y * distance + light.Attenuation.z * distance * distance));
+//    float colA = saturate(1.0f / (light.Attenuation.x + light.Attenuation.y * distance + light.Attenuation.z * distance * distance));
 
-    result = light.Color.rgb * (colD * colA);
-    return result;
-}
+//    result = light.Color.rgb * (colD * colA);
+//    return result;
+//}
 
-bool Cul_Radius(Lights light, float4 Position)
-{
-    float3 Dir = Position.xyz - light.Position;
-    float distance = length(Dir);
-    distance *= distance;
-
-    return (distance) <= (light.Radius * light.Radius);
-
-}
+//bool Cul_Radius(Lights light, float4 Position)
+//{
+//    float x = (Position.xyz.x - light.Position.x) * (Position.xyz.x - light.Position.x);
+//    float y = (Position.xyz.y - light.Position.y) * (Position.xyz.y - light.Position.y);
+//    float z = (Position.xyz.z - light.Position.z) * (Position.xyz.z - light.Position.z);
+    
+//    float Dir = x + y + z;
+    
+//    return (Dir <= (light.Radius * light.Radius));
+//}
 
 
 
@@ -196,67 +197,19 @@ void main( PS_IN Input,
 
     //}
     
-    light_color = DoPointLight(LightsBuf, Input.Position, CameraPos, Input.Normal);
-    //light_color *= 100;
-    light_color = saturate(light_color);
+    //if (1 == LightsBuf.Enable)
+    if (LightsBuf.Enable)
+    {
+        //if (Cul_Radius(LightsBuf, Input.WPos))
+        {
+            light_color = DoPointLight(LightsBuf, Input.WPos, CameraPos, Input.Normal);
+            light_color = saturate(light_color);
+        }
+    }
     
-    color.rgb = saturate(color.rgb + light_color);
+    color.rgb += light_color;
+    
+    //color.r *= 2;
     
     outDiffuse = color;
 }
-
-
-
-//// マトリクスバッファ
-//struct Lights
-//{
-//    // 共通部分
-//    float3 Position;
-//    float4 Color;
-//    float Radius;
-
-//	// ポイントライト
-//    float3 Attenuation;
-
-//	// スポットライト
-//	//float3	Attenuation;
-
-//	// 共通部分
-//    bool Enable;
-//    uint Type;
-//    float3 Dummy;
-//};
-
-//// マトリクスバッファ
-//cbuffer LightsBuffer : register(b6)
-//{
-//    Lights LightsBuf[64];
-//}
-
-//float3 DoPointLight(Lights light, float4 Position, float4 CameraPos, float4 Normal)
-//{
-//    float3 result = (float3) 1.0;
-
-//    float3 Dir = Position.xyz - light.Position;
-//    float distance = length(Dir);
-//    Dir = normalize(Dir);
-
-//    //拡散
-//    float colD = saturate(dot(Normal.xyz, Dir));
-    
-//    float colA = saturate(1.0f / (light.Attenuation.x + light.Attenuation.y * distance + light.Attenuation.z * distance * distance));
-    
-//    result = light.Color.rgb * (colD * colA);
-//    return result;
-
-//}
-
-//bool Cul_Radius(Lights light, float4 Position )
-//{
-//    float3 Dir = Position.xyz - light.Position;
-//    float distance = length(Dir);
-//    distance *= distance;
-    
-//    return (distance) <= (light.Radius * light.Radius);
-
-//}

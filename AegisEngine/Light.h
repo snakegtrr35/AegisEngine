@@ -54,11 +54,11 @@ enum class LIGHT_TYPE : UINT {
 
 struct LIGHT_BUFFER {
 	// ‹¤’Ê•”•ª
+	UINT		Enable;
 	XMFLOAT3	Position;
 	COLOR		Color;
 	float		Radius;
 	XMFLOAT3	Attenuation;
-	UINT		Enable;
 
 	LIGHT_BUFFER() : Position(0.f, 0.f, 0.f), Color(0.f, 0.f, 0.f, 0.f), Radius(0.f), Attenuation(1.0f, 0.f, 0.2f) {}
 };
@@ -76,6 +76,7 @@ public:
 	~LIGHTS() { Uninit(); }
 
 	bool Init();
+	void Draw();
 	void Update();
 	void Uninit();
 };

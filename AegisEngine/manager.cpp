@@ -141,6 +141,9 @@ void CManager::Draw()
 	{
 		CRenderer::SetPass_Rendring();
 		pShadowMap->Set();
+
+		Light.Draw();
+
 		pSceneManager->Draw();
 	}
 

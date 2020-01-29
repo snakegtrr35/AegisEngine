@@ -13,8 +13,9 @@
 #include	"manager.h"
 #include	"ShadowMap.h"
 #include	"Texture_Manager.h"
-
 #include	"common.h"
+
+#include	"Light.h"
 
 #include	"Bounding_Aabb.h"
 #include	"Bounding_Frustum.h"
@@ -25,6 +26,8 @@ static string old_name;
 
 extern BOUNDING_FRUSTUM Bounding_Frustun;
 extern BOUNDING_AABB AABB;
+
+extern LIGHT_BUFFER Light;
 
 void EditTransform(const float* cameraView, float* cameraProjection, float* matrix, bool enable, GAME_OBJECT* object);
 
@@ -421,6 +424,26 @@ void My_imgui::Draw(void)
 						ImGui::Text((char*)u8"オブジェクトが交差します");
 						break;
 				}
+			}
+
+			{
+				static bool flag = true;
+				static float Position[] = { Light.Position.x, Light.Position.y, Light.Position.z };
+				static float Color[] = { Light.Color.r, Light.Color.g, Light.Color.b };
+				static float Radius = Light.Radius;
+				static float Attenuation[] = { Light.Attenuation.x, Light.Attenuation.y, Light.Attenuation.z };
+
+				ImGui::Checkbox("Enable", &flag);
+				ImGui::DragFloat3("Position", Position, 0.001f, 0.0f, 100.0f);
+				ImGui::DragFloat3("Color", Color, 0.001f, 0.0f, 100.0f);
+				ImGui::DragFloat("Radius", &Radius, 0.001f, 0.0f, 100.0f);
+				ImGui::DragFloat3("Attenuation", Attenuation, 0.001f, 0.0f, 100.0f);
+				
+				Light.Enable = flag ? 1 : 0;
+				Light.Position = XMFLOAT3(Position[0], Position[1], Position[2]);
+				Light.Color = COLOR(Color[0], Color[1], Color[2], 1.0f);
+				Light.Radius = Radius;
+				Light.Attenuation = XMFLOAT3(Attenuation[0], Attenuation[1], Attenuation[2]);
 			}
 
 			ImGui::End();

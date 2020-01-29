@@ -4,52 +4,47 @@
 // マトリクスバッファ
 struct Lights
 {
-	// 共通部分
-	float3   Position;
-	float4   Color;
-	float    Radius;
-
-	// ポイントライト
-	float3   Attenuation;
-
-	// スポットライト
-	//float3	Attenuation;
-
-	// 共通部分
-	//int     Enable;
+    // 共通部分
+    bool        Enable          /*: packoffset(c0)*/;
+    float3      Position        /*: packoffset(c0.x)*/;
+    float4      Color           /*: packoffset(c1)*/;
+    float       Radius          /*: packoffset(c2.x)*/;
+    float3      Attenuation     /*: packoffset(c2.y)*/;
 };
 
 // マトリクスバッファ
-cbuffer LightsBuffer : register(b6)
+cbuffer LightsBuffer : register(b10)
 {
-	Lights LightsBuf;
+    Lights LightsBuf;
 }
 
 float3 DoPointLight(Lights light, float4 Position, float4 CameraPos, float4 Normal)
 {
-	float3 result = (float) 1.0;
+    float3 result = (float)1.0;
 
-	float3 Dir = Position.xyz - light.Position;
-	float distance = length(Dir);
-	Dir = normalize(Dir);
+    float3 Dir = light.Position - Position.xyz;
+    //float3 Dir = Position.xyz - light.Position;
+    float distance = length(Dir);
+    Dir = normalize(Dir);
 
-	//拡散
-	float colD = saturate(dot(Normal.xyz, Dir));
+    //拡散
+    float colD = 0.5 - 0.5 * dot(Normal.xyz, Dir);
 
-	float colA = saturate(1.0f / (light.Attenuation.x + light.Attenuation.y * distance + light.Attenuation.z * distance * distance));
+    float colA = saturate(1.0f / (light.Attenuation.x + light.Attenuation.y * distance + light.Attenuation.z * distance * distance));
 
-	result = light.Color.rgb * (colD * colA);
-	return result;
+    result = light.Color.rgb * (colD * colA);
+    return result;
 }
 
 bool Cul_Radius(Lights light, float4 Position)
 {
-	float3 Dir = Position.xyz - light.Position;
-	float distance = length(Dir);
-	distance *= distance;
+    float x = (Position.xyz.x - light.Position.x) * (Position.xyz.x - light.Position.x);
+    float y = (Position.xyz.y - light.Position.y) * (Position.xyz.y - light.Position.y);
+    float z = (Position.xyz.z - light.Position.z) * (Position.xyz.z - light.Position.z);
 
-	return (distance) <= (light.Radius * light.Radius);
+    float Dir = x + y + z;
 
+    return (Dir <= (light.Radius * light.Radius));
 }
 
 #endif // !LIGHT_HLSL_H

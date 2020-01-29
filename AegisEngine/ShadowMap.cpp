@@ -55,7 +55,7 @@ bool SHADOW_MAP::Init()
 		ID3D11Texture2D* pTex = nullptr;
 
 		// テクスチャの作成
-		D3D11_TEXTURE2D_DESC td;
+		D3D11_TEXTURE2D_DESC td = {};
 		td.Width = WIDTH;
 		td.Height = HEIGHT;
 		td.MipLevels = 1;
@@ -76,7 +76,7 @@ bool SHADOW_MAP::Init()
 		}
 
 		{
-			D3D11_DEPTH_STENCIL_VIEW_DESC desc;
+			D3D11_DEPTH_STENCIL_VIEW_DESC desc = {};
 			desc.Format = DXGI_FORMAT_D32_FLOAT;
 			desc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
 			desc.Flags = 0;
@@ -96,7 +96,7 @@ bool SHADOW_MAP::Init()
 		//{
 		//	ID3D11ShaderResourceView* srv = nullptr;
 
-		//	D3D11_SHADER_RESOURCE_VIEW_DESC desc;
+		//	D3D11_SHADER_RESOURCE_VIEW_DESC desc = {};
 		//	ZeroMemory(&desc, sizeof(desc));
 		//	desc.Format = DXGI_FORMAT_R32_FLOAT;
 		//	desc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
@@ -118,7 +118,7 @@ bool SHADOW_MAP::Init()
 		ID3D11Texture2D* pTex = nullptr;
 
 		// テクスチャの作成
-		D3D11_TEXTURE2D_DESC td;
+		D3D11_TEXTURE2D_DESC td = {};
 		td.Width = WIDTH;
 		td.Height = HEIGHT;
 		td.MipLevels = 1;
@@ -142,7 +142,7 @@ bool SHADOW_MAP::Init()
 		{
 			ID3D11RenderTargetView* pRtv;
 
-			D3D11_RENDER_TARGET_VIEW_DESC desc;
+			D3D11_RENDER_TARGET_VIEW_DESC desc = {};
 			desc.Format = td.Format;
 			desc.ViewDimension = D3D11_RTV_DIMENSION_TEXTURE2D;
 			desc.Texture2D.MipSlice = 0;
@@ -161,7 +161,7 @@ bool SHADOW_MAP::Init()
 			ID3D11ShaderResourceView* srv = nullptr;
 
 			// シェーダーリソースビューの設定
-			D3D11_SHADER_RESOURCE_VIEW_DESC desc;
+			D3D11_SHADER_RESOURCE_VIEW_DESC desc = {};
 			desc.Format = td.Format;
 			desc.ViewDimension = D3D_SRV_DIMENSION_TEXTURE2D;
 			desc.Texture2D.MostDetailedMip = 0;
@@ -182,8 +182,7 @@ bool SHADOW_MAP::Init()
 		ID3D11RasterizerState* rs = nullptr;
 
 		// ラスタライザステート設定
-		D3D11_RASTERIZER_DESC rd;
-		ZeroMemory(&rd, sizeof(rd));
+		D3D11_RASTERIZER_DESC rd = {};
 		rd.FillMode = D3D11_FILL_SOLID;
 		rd.CullMode = D3D11_CULL_BACK;
 		rd.DepthClipEnable = TRUE;
@@ -198,7 +197,7 @@ bool SHADOW_MAP::Init()
 	{
 		ID3D11SamplerState* sampler = nullptr;
 
-		D3D11_SAMPLER_DESC desc;
+		D3D11_SAMPLER_DESC desc = {};
 		desc.AddressU = D3D11_TEXTURE_ADDRESS_BORDER;
 		desc.AddressV = D3D11_TEXTURE_ADDRESS_BORDER;
 		desc.AddressW = D3D11_TEXTURE_ADDRESS_BORDER;
@@ -230,7 +229,7 @@ bool SHADOW_MAP::Init()
 	{
 		ID3D11Buffer* buffer = nullptr;
 
-		D3D11_BUFFER_DESC hBufferDesc;
+		D3D11_BUFFER_DESC hBufferDesc = {};
 		hBufferDesc.ByteWidth = sizeof(CONSTANT_SHADOW_MAP);
 		hBufferDesc.Usage = D3D11_USAGE_DEFAULT;
 		hBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
@@ -276,8 +275,7 @@ bool SHADOW_MAP::Init()
 
 	{
 		// 深度ステンシルステート設定
-		D3D11_DEPTH_STENCIL_DESC depthStencilDesc;
-		ZeroMemory(&depthStencilDesc, sizeof(depthStencilDesc));
+		D3D11_DEPTH_STENCIL_DESC depthStencilDesc = {};
 		depthStencilDesc.DepthEnable = TRUE;
 		depthStencilDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
 		depthStencilDesc.DepthFunc = D3D11_COMPARISON_LESS_EQUAL;
