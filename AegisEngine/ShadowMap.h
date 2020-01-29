@@ -26,8 +26,6 @@ private:
 	unique_ptr <ID3D11ShaderResourceView, Release>		ShaderResourceView;
 	unique_ptr <ID3D11ShaderResourceView, Release>		SRV;
 
-	unique_ptr <ID3D11BlendState, Release>				BlendState;
-
 	//! ラスタライザステート
 	unique_ptr <ID3D11RasterizerState, Release>		RasterizerState;
 	//! サンプラー

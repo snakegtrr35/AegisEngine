@@ -64,7 +64,7 @@ bool SHADOW_MAP::Init()
 		td.SampleDesc.Count = 1;
 		td.SampleDesc.Quality = 0;
 		td.Usage = D3D11_USAGE_DEFAULT;
-		td.BindFlags = D3D11_BIND_DEPTH_STENCIL /*| D3D11_BIND_SHADER_RESOURCE*/;
+		td.BindFlags = D3D11_BIND_DEPTH_STENCIL | D3D11_BIND_SHADER_RESOURCE;
 		td.CPUAccessFlags = 0;
 		td.MiscFlags = 0;
 
@@ -109,7 +109,7 @@ bool SHADOW_MAP::Init()
 		//		FAILDE_ASSERT;
 		//		return false;
 		//	}
-		//	SRV.reset(srv);
+		//	ShaderResourceView.reset(srv);
 		//}
     }
 
@@ -177,28 +177,6 @@ bool SHADOW_MAP::Init()
 		}
 	}
 
-	{
-		// ブレンドステート設定
-		D3D11_BLEND_DESC blendDesc;
-		ZeroMemory(&blendDesc, sizeof(blendDesc));
-		blendDesc.AlphaToCoverageEnable = FALSE;
-		blendDesc.IndependentBlendEnable = FALSE;
-		blendDesc.RenderTarget[0].BlendEnable = TRUE;
-		blendDesc.RenderTarget[0].SrcBlend = D3D11_BLEND_SRC_ALPHA;
-		blendDesc.RenderTarget[0].DestBlend = D3D11_BLEND_INV_SRC_ALPHA;
-		blendDesc.RenderTarget[0].BlendOp = D3D11_BLEND_OP_ADD;
-		blendDesc.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_ONE;
-		blendDesc.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ZERO;
-		blendDesc.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
-		blendDesc.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
-
-		float blendFactor[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
-		ID3D11BlendState* bs = NULL;
-		CRenderer::GetDevice()->CreateBlendState(&blendDesc, &bs);
-
-		BlendState.reset(bs);
-	}
-
 	// ラスタライズステートの設定
 	{
 		ID3D11RasterizerState* rs = nullptr;
@@ -210,9 +188,6 @@ bool SHADOW_MAP::Init()
 		rd.CullMode = D3D11_CULL_BACK;
 		rd.DepthClipEnable = TRUE;
 		rd.MultisampleEnable = FALSE;
-		rd.DepthBias = 0.003f;
-		rd.DepthBiasClamp = 0.01f;
-		rd.SlopeScaledDepthBias = 0.003f;
 
 		CRenderer::GetDevice()->CreateRasterizerState(&rd, &rs);
 
@@ -305,7 +280,7 @@ bool SHADOW_MAP::Init()
 		ZeroMemory(&depthStencilDesc, sizeof(depthStencilDesc));
 		depthStencilDesc.DepthEnable = TRUE;
 		depthStencilDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
-		depthStencilDesc.DepthFunc = D3D11_COMPARISON_LESS;
+		depthStencilDesc.DepthFunc = D3D11_COMPARISON_LESS_EQUAL;
 		depthStencilDesc.StencilEnable = FALSE;
 
 		CRenderer::GetDevice()->CreateDepthStencilState(&depthStencilDesc, &m_DepthStateEnable);
@@ -320,6 +295,7 @@ void SHADOW_MAP::Begin()
 	ID3D11RenderTargetView* pRTV = RenderTargetView.get();
 
     CRenderer::GetDeviceContext()->OMSetRenderTargets( 1, &pRTV, pDSV );
+	//CRenderer::GetDeviceContext()->OMSetRenderTargets(0, nullptr, pDSV);
 
 	// バックバッファクリア
 	float ClearColor[4] = { 1.0f, 0.0f, 0.0f, 1.0f };
@@ -330,9 +306,6 @@ void SHADOW_MAP::Begin()
 	CRenderer::GetDeviceContext()->RSSetViewports(1, &DxViewport);
 
 	CRenderer::GetDeviceContext()->RSSetState(RasterizerState.get());
-
-	float blendFactor[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
-	//CRenderer::GetDeviceContext()->OMSetBlendState(BlendState.get(), blendFactor, 0xffffffff);
 
 	CRenderer::GetDeviceContext()->OMSetDepthStencilState(m_DepthStateEnable, 0x00);
 
@@ -377,8 +350,6 @@ void SHADOW_MAP::Update()
 void SHADOW_MAP::Uninit()
 {
 	RenderTargetView.reset(nullptr);
-
-	BlendState.reset(nullptr);
 
 	ShaderResourceView.reset(nullptr);
 

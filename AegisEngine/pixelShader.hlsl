@@ -1,8 +1,57 @@
 #include    "Commom_Hlsl.h"
+//#include    "Light_Hlsl.h"
 
 //*****************************************************************************
 // 定数バッファ
 //*****************************************************************************
+
+
+
+// マトリクスバッファ
+struct Lights
+{
+	// 共通部分
+    float3   Position;
+    float4   Color;
+    float    Radius;
+    float3   Attenuation;
+	uint     Enable;
+};
+
+// マトリクスバッファ
+cbuffer LightsBuffer : register(b6)
+{
+    Lights LightsBuf;
+}
+
+float3 DoPointLight(Lights light, float4 Position, float4 CameraPos, float4 Normal)
+{
+    float3 result = (float) 1.0;
+
+    float3 Dir = Position.xyz - light.Position;
+    float distance = length(Dir);
+    Dir = normalize(Dir);
+
+	//拡散
+    float colD = saturate(dot(Normal.xyz, Dir));
+
+    float colA = saturate(1.0f / (light.Attenuation.x + light.Attenuation.y * distance + light.Attenuation.z * distance * distance));
+
+    result = light.Color.rgb * (colD * colA);
+    return result;
+}
+
+bool Cul_Radius(Lights light, float4 Position)
+{
+    float3 Dir = Position.xyz - light.Position;
+    float distance = length(Dir);
+    distance *= distance;
+
+    return (distance) <= (light.Radius * light.Radius);
+
+}
+
+
 
 
 // マトリクスバッファ
@@ -127,14 +176,40 @@ void main( PS_IN Input,
     
     color.rgb += (ambient.rgb * TexColor.rgb);
 
+    float3 light_color = (float3) 0.0;
+    
+    //for (int i = 0; i < 1; i++)
+    //{      
+    //    if ( /*(1 == LightsBuf.Enable) &&*/ LightsBuf.Type < 2)
+    //    {
+    //        switch (LightsBuf.Type)
+    //        {
+    //            case 0:
+    //                if (Cul_Radius(LightsBuf, Input.Position))
+    //                {
+    //                    light_color = DoPointLight(LightsBuf, Input.Position, CameraPos, Input.Normal);
+    //                    light_color = saturate(light_color);
+    //                }
+    //                break;
+    //        }
+    //    }
+
+    //}
+    
+    light_color = DoPointLight(LightsBuf, Input.Position, CameraPos, Input.Normal);
+    //light_color *= 100;
+    light_color = saturate(light_color);
+    
+    color.rgb = saturate(color.rgb + light_color);
+    
     outDiffuse = color;
 }
 
 
 
-
 //// マトリクスバッファ
-//struct Lights {
+//struct Lights
+//{
 //    // 共通部分
 //    float3 Position;
 //    float4 Color;
@@ -148,19 +223,21 @@ void main( PS_IN Input,
 
 //	// 共通部分
 //    bool Enable;
+//    uint Type;
+//    float3 Dummy;
 //};
 
 //// マトリクスバッファ
-//cbuffer LightsBuffer  : register(b6)
+//cbuffer LightsBuffer : register(b6)
 //{
-//    Lights LightsBuf;
+//    Lights LightsBuf[64];
 //}
 
-//float4 DoPointLight(Lights light, float4 Position, float4 CameraPos, float4 Normal)
+//float3 DoPointLight(Lights light, float4 Position, float4 CameraPos, float4 Normal)
 //{
-//    float4 result = (float4)1.0;
+//    float3 result = (float3) 1.0;
 
-//    float3 Dir = light.Position - Position.xyz;
+//    float3 Dir = Position.xyz - light.Position;
 //    float distance = length(Dir);
 //    Dir = normalize(Dir);
 
@@ -169,7 +246,17 @@ void main( PS_IN Input,
     
 //    float colA = saturate(1.0f / (light.Attenuation.x + light.Attenuation.y * distance + light.Attenuation.z * distance * distance));
     
-//    result.rgb = light.Color.rgb * (colD * colA);
+//    result = light.Color.rgb * (colD * colA);
 //    return result;
+
+//}
+
+//bool Cul_Radius(Lights light, float4 Position )
+//{
+//    float3 Dir = Position.xyz - light.Position;
+//    float distance = length(Dir);
+//    distance *= distance;
+    
+//    return (distance) <= (light.Radius * light.Radius);
 
 //}

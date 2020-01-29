@@ -41,12 +41,15 @@
 //};
 
 
-static const constexpr UINT MAX_NUM_LIGHTS = 64;
 
-enum class LIGHT_TYPE : BYTE {
+
+
+static const constexpr UINT MAX_NUM_LIGHTS = 1;
+
+enum class LIGHT_TYPE : UINT {
 	POINT = 0,
 	SPOT,
-	MAX,
+	NONE,
 };
 
 struct LIGHT_BUFFER {
@@ -54,29 +57,19 @@ struct LIGHT_BUFFER {
 	XMFLOAT3	Position;
 	COLOR		Color;
 	float		Radius;
-
-	// ポイントライト
 	XMFLOAT3	Attenuation;
-
-	// スポットライト
-	//XMFLOAT3	Attenuation;
-
-	// 共通部分
 	UINT		Enable;
-};
 
-struct SPOT_LIGHT {
-
+	LIGHT_BUFFER() : Position(0.f, 0.f, 0.f), Color(0.f, 0.f, 0.f, 0.f), Radius(0.f), Attenuation(1.0f, 0.f, 0.2f) {}
 };
 
 class LIGHTS {
 private:
 
-	// point lights
-	unique_ptr <ID3D11Buffer, Release>			m_pPointLightBuffer;
+	//static array<LIGHT_BUFFER, MAX_NUM_LIGHTS> Lights;
+	static LIGHT_BUFFER Lights;
 
-	// spot lights
-	unique_ptr <ID3D11Buffer, Release>			m_pSpotLightBuffer;
+	unique_ptr <ID3D11Buffer, Release>			LightBuffer;
 
 public:
 	LIGHTS() {}
@@ -85,7 +78,6 @@ public:
 	bool Init();
 	void Update();
 	void Uninit();
-
 };
 
 #endif // !LIGHT_H

@@ -65,6 +65,7 @@ using namespace Math;
 #ifndef INCLUDE
 #define INCLUDE
 
+#include	<array>
 #include	<list>
 #include	<vector>
 #include	<map>

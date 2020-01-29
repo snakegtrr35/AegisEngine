@@ -9,8 +9,8 @@
 #include	"ShadowMap.h"
 #include	"Effekseer.h"
 
-//#include	"ForwardPlus.h"
-//unique_ptr<FORWARDLUS> ForwardPlus;
+#include	"Light.h"
+LIGHTS Light;
 
 #ifdef _DEBUG
 #include	"My_imgui.h"
@@ -73,8 +73,7 @@ bool CManager::Init()
 	pShadowMap->Init();
 	pShadowMap->Set_Target(pSceneManager->Get_Scene()->Get_Game_Object<PLAYER>("player"));
 
-	//ForwardPlus.reset(new FORWARDLUS());//
-	//ForwardPlus->Init();//
+	Light.Init();
 
 	return true;
 }
@@ -92,6 +91,8 @@ void CManager::Update()
 #endif // _DEBUG
 
 	pSceneManager->Update(TIMER::Get_DeltaTime());
+
+	Light.Update();
 
 	// シャドウマップの更新
 	{
@@ -128,9 +129,6 @@ void CManager::Draw()
 #endif // _DEBUG
 
 	CRenderer::Begin();
-
-	//if (nullptr != ForwardPlus.get()) ForwardPlus->Depth_Pre_Pass(pSceneManager);
-	//if (nullptr != ForwardPlus.get()) ForwardPlus->Light_Culling();
 
 	// シャドウマップの描画
 	{
@@ -209,7 +207,7 @@ void CManager::Draw()
 
 void CManager::Uninit()
 {
-	//ForwardPlus.reset(nullptr);///
+	Light.Uninit();//
 
 	SAFE_DELETE(pSceneManager);
 
