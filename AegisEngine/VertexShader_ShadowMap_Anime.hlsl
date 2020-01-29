@@ -22,31 +22,41 @@ cbuffer BoneBuffer : register(b6)
     // 4 * 256(ボーンの最大数)
 }
 
+struct VS_IN {
+    float4 Position   : POSITION0;
+    float4 Normal     : NORMAL0;
+    float4 Diffuse    : COLOR0;
+    float2 TexCoord   : TEXCOORD0;
+    uint4  Ineces     : BLENDINDICE;
+    float4 Weight     : BLENDWEIGHT;
+};
+
+struct PS_IN {
+    float4 Position     : SV_POSITION;
+    float4 Pos          : POSITION1;
+};
+
 //=============================================================================
 // 頂点シェーダ
 //=============================================================================
-void main(  in float4 inPosition        : POSITION0,
-		    in float4 inNormal          : NORMAL0,
-		    in float4 inDiffuse         : COLOR0,
-		    in float2 inTexCoord        : TEXCOORD0,
-            in uint4 inIneces           : BLENDINDICE,
-            in float4 inWeight          : BLENDWEIGHT,
-
-            out float4 outPosition      : SV_POSITION,
-            out float4 outPos           : POSITION1)
+PS_IN main(VS_IN Input)
 {
-    matrix BoneTransform = BoneMatrix[inIneces[0]] * inWeight[0]
-                         + BoneMatrix[inIneces[1]] * inWeight[1]
-                         + BoneMatrix[inIneces[2]] * inWeight[2]
-                         + BoneMatrix[inIneces[3]] * inWeight[3];
-
+    PS_IN Output = (PS_IN) 0;
+    
+    matrix BoneTransform = BoneMatrix[Input.Ineces[0]] * Input.Weight[0]
+                         + BoneMatrix[Input.Ineces[1]] * Input.Weight[1]
+                         + BoneMatrix[Input.Ineces[2]] * Input.Weight[2]
+                         + BoneMatrix[Input.Ineces[3]] * Input.Weight[3];
+    
     matrix wvp;
     wvp = mul(World, View);
     wvp = mul(wvp, Projection);
 
-    inPosition.w = 1.0;
-    outPosition = mul(inPosition, BoneTransform);
-    outPosition = mul(outPosition, wvp);
+    Input.Position.w = 1.0;
+    Output.Position = mul(Input.Position, BoneTransform);
+    Output.Position = mul(Output.Position, wvp);
     
-    outPos = outPosition;
+    Output.Pos = Output.Position;
+    
+    return Output;
 }

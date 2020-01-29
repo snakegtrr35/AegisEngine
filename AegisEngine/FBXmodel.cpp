@@ -199,16 +199,16 @@ bool FBXmodel::Load(const string& FileName)
 
 		m_Meshes.emplace_back(temp_mesh);
 
-		//// テクスチャの設定
-		//if (mesh->mMaterialIndex >= 0)
-		//{
-		//	aiMaterial* material = m_Scene->mMaterials[mesh->mMaterialIndex];
+		// テクスチャの設定
+		if (mesh->mMaterialIndex >= 0)
+		{
+			aiMaterial* material = m_Scene->mMaterials[mesh->mMaterialIndex];
 
-		//	if (textype.empty()) textype = determineTextureType(m_Scene, material);
+			if (textype.empty()) textype = determineTextureType(m_Scene, material);
 
-		//	vector<TEXTURE_S> diffuseMaps = this->loadMaterialTextures(material, aiTextureType_DIFFUSE, "texture_diffuse", m_Scene);
-		//	Textures.insert(Textures.end(), diffuseMaps.begin(), diffuseMaps.end());
-		//}
+			vector<TEXTURE_S> diffuseMaps = this->loadMaterialTextures(material, aiTextureType_DIFFUSE, "texture_diffuse", m_Scene);
+			Textures.insert(Textures.end(), diffuseMaps.begin(), diffuseMaps.end());
+		}
 
 		Bone_num.clear();
 		vertex.clear();
@@ -415,6 +415,11 @@ void FBXmodel::DrawMesh(const aiNode* Node, const XMMATRIX& Matrix)
 					CRenderer::Set_Shader(SHADER_INDEX_V::ANIMATION, SHADER_INDEX_P::DEFAULT);
 				}
 			}
+		}
+
+		// テクスチャの設定
+		{
+			CRenderer::GetDeviceContext()->PSSetShaderResources(0, 1, &Textures[0].Texture);
 		}
 
 		// 頂点バッファの設定

@@ -3,7 +3,7 @@
 #ifndef GAME_OBJECT_H
 #define GAME_OBJECT_H
 
-#include	"Component.h"
+class COMPONENT_MANEGER;
 
 class GAME_OBJECT {
 private:
@@ -26,7 +26,7 @@ protected:
 	XMFLOAT3 Scaling;					//! 拡大縮小値
 
 
-	COMPONENT_MANEGER Component;		//! コンポーネント
+	COMPONENT_MANEGER* Component;		//! コンポーネント
 
 #ifdef _DEBUG
 	XMFLOAT3 Edit_Position;				//! デバッグ用の座標
@@ -124,7 +124,7 @@ public:
 	};
 
 	COMPONENT_MANEGER* const Get_Component() {
-		return &Component;
+		return Component;
 	}
 
 	//static const unordered_map<size_t, string>& Get_Object_Name_Map() {

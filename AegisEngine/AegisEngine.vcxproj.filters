@@ -57,6 +57,9 @@
     <Filter Include="ソース ファイル\System\Clustered">
       <UniqueIdentifier>{b0bb7ab5-4d54-4096-896d-c4d09202ba2f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="リソース ファイル\NewFilter1">
+      <UniqueIdentifier>{f2e29b43-ef72-4b28-b0b5-b8270fcc76a2}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="imgui\imgui.cpp">
@@ -439,7 +442,12 @@
     <ClInclude Include="Light.h">
       <Filter>ソース ファイル\System</Filter>
     </ClInclude>
-    <ClInclude Include="Color.h" />
+    <ClInclude Include="Color.h">
+      <Filter>ソース ファイル\System</Filter>
+    </ClInclude>
+    <ClInclude Include="Light_hlsl.h">
+      <Filter>リソース ファイル</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="pixelShader.hlsl">
@@ -469,32 +477,29 @@
     <FxCompile Include="PixelShader_Geometry.hlsl">
       <Filter>リソース ファイル\PixelShader</Filter>
     </FxCompile>
-    <FxCompile Include="VertexShader_Geometry.hlsl">
-      <Filter>リソース ファイル\VertexShader</Filter>
-    </FxCompile>
     <FxCompile Include="PixelShader_Created.hlsl">
       <Filter>リソース ファイル\PixelShader</Filter>
     </FxCompile>
     <FxCompile Include="VertexShader_ShadowMap_Anime.hlsl">
       <Filter>リソース ファイル\VertexShader</Filter>
     </FxCompile>
-    <FxCompile Include="ParallelReduction.hlsl">
-      <Filter>リソース ファイル</Filter>
-    </FxCompile>
-    <FxCompile Include="TilingForward.hlsl">
-      <Filter>リソース ファイル</Filter>
-    </FxCompile>
-    <FxCompile Include="VertexShader_Depth_Pre_Pass.hlsl">
-      <Filter>リソース ファイル</Filter>
-    </FxCompile>
-    <FxCompile Include="VertexShader_Animation_Depth_Pre_Pass.hlsl">
-      <Filter>リソース ファイル</Filter>
-    </FxCompile>
     <FxCompile Include="CommonHeader.h">
-      <Filter>リソース ファイル</Filter>
+      <Filter>リソース ファイル\NewFilter1</Filter>
+    </FxCompile>
+    <FxCompile Include="ParallelReduction.hlsl">
+      <Filter>リソース ファイル\NewFilter1</Filter>
     </FxCompile>
     <FxCompile Include="TilingCommonHeader.h">
-      <Filter>リソース ファイル</Filter>
+      <Filter>リソース ファイル\NewFilter1</Filter>
+    </FxCompile>
+    <FxCompile Include="TilingForward.hlsl">
+      <Filter>リソース ファイル\NewFilter1</Filter>
+    </FxCompile>
+    <FxCompile Include="VertexShader_Animation_Depth_Pre_Pass.hlsl">
+      <Filter>リソース ファイル\NewFilter1</Filter>
+    </FxCompile>
+    <FxCompile Include="VertexShader_Depth_Pre_Pass.hlsl">
+      <Filter>リソース ファイル\NewFilter1</Filter>
     </FxCompile>
   </ItemGroup>
   <ItemGroup>

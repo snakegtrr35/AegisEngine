@@ -79,67 +79,67 @@ void ENEMY::Update(float delta_time)
 
 		XMVector3Normalize(vec);
 
-		auto axis = Component.Get_Component<AXIS_COMPONENT>();
+		//auto axis = Component.Get_Component<AXIS_COMPONENT>();
 
-		axis->Set_Front(vec);
+		//axis->Set_Front(vec);
 
-		axis->Init();
+		//axis->Init();
 	}
 
 	// 移動
 	{
-		static int i = 0;
-		XMFLOAT3 move;
-		XMVECTOR vec = Component.Get_Component<AXIS_COMPONENT>()->Get_Right();
-		vec = XMVectorScale(vec, 0.2f);
-		XMStoreFloat3(&move, vec);
+	//	static int i = 0;
+	//	XMFLOAT3 move;
+	//	XMVECTOR vec = Component.Get_Component<AXIS_COMPONENT>()->Get_Right();
+	//	vec = XMVectorScale(vec, 0.2f);
+	//	XMStoreFloat3(&move, vec);
 
-		if (Random_Bool(Date.RL_Probability))
-		{
-			Date.RL = !Date.RL;
-		}
+	//	if (Random_Bool(Date.RL_Probability))
+	//	{
+	//		Date.RL = !Date.RL;
+	//	}
 
-		if (Date.RL)
-		{
-			XMStoreFloat3(&move, XMVectorScale(vec, -1.0f));
-		}
+	//	if (Date.RL)
+	//	{
+	//		XMStoreFloat3(&move, XMVectorScale(vec, -1.0f));
+	//	}
 
-		// プレイヤーとの距離を一定にする
-		{
-			XMVECTOR vec = Component.Get_Component<AXIS_COMPONENT>()->Get_Front();
-			vec = XMVectorScale(vec, -0.2f);
+	//	// プレイヤーとの距離を一定にする
+	//	{
+	//		XMVECTOR vec = Component.Get_Component<AXIS_COMPONENT>()->Get_Front();
+	//		vec = XMVectorScale(vec, -0.2f);
 
-			XMFLOAT3 pos;
-			XMStoreFloat3(&pos, vec);
+	//		XMFLOAT3 pos;
+	//		XMStoreFloat3(&pos, vec);
 
-			const auto player = CManager::Get_Scene()->Get_Game_Object<PLAYER>("player");
+	//		const auto player = CManager::Get_Scene()->Get_Game_Object<PLAYER>("player");
 
-			float r = (Position.x - player.lock()->Get_Position()->x) * (Position.x - player.lock()->Get_Position()->x) + (Position.z - player.lock()->Get_Position()->z) * (Position.z - player.lock()->Get_Position()->z);
-			float abr = Date.Lenght * Date.Lenght;
+	//		float r = (Position.x - player.lock()->Get_Position()->x) * (Position.x - player.lock()->Get_Position()->x) + (Position.z - player.lock()->Get_Position()->z) * (Position.z - player.lock()->Get_Position()->z);
+	//		float abr = Date.Lenght * Date.Lenght;
 
-			// 離す
-			if (r <= abr * abr)
-			{
-				move.x += pos.x;
-				move.z += pos.z;
-			}
+	//		// 離す
+	//		if (r <= abr * abr)
+	//		{
+	//			move.x += pos.x;
+	//			move.z += pos.z;
+	//		}
 
-			// 引く
-			abr = (Date.Lenght* 1.5f) * (Date.Lenght* 1.5f);
+	//		// 引く
+	//		abr = (Date.Lenght* 1.5f) * (Date.Lenght* 1.5f);
 
-			if (r >= abr * abr)
-			{
-				vec = XMVectorScale(vec, -1.0f);
-				XMStoreFloat3(&pos, vec);
+	//		if (r >= abr * abr)
+	//		{
+	//			vec = XMVectorScale(vec, -1.0f);
+	//			XMStoreFloat3(&pos, vec);
 
-				move.x += pos.x;
-				move.z += pos.z;
-			}
+	//			move.x += pos.x;
+	//			move.z += pos.z;
+	//		}
 
-		}
+	//	}
 
-		Position.x += move.x;
-		Position.z += move.z;
+	//	Position.x += move.x;
+	//	Position.z += move.z;
 	}
 
 	// 弾を撃つ
@@ -148,7 +148,7 @@ void ENEMY::Update(float delta_time)
 		XMFLOAT3 f;
 		XMFLOAT3 pos = Position;
 
-		XMStoreFloat3(&f, Component.Get_Component<AXIS_COMPONENT>()->Get_Front());
+		//XMStoreFloat3(&f, Component.Get_Component<AXIS_COMPONENT>()->Get_Front());
 
 		pos.x += f.x * 2;
 		pos.y += f.y;

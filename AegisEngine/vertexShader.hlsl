@@ -19,41 +19,51 @@ cbuffer ShadowBuffer : register(b1)
 }
 
 
+struct VS_IN {
+    float4 Position   : POSITION0;
+    float4 Normal     : NORMAL0;
+    float4 Diffuse    : COLOR0;
+    float2 TexCoord   : TEXCOORD0;
+    uint   InstansID  : SV_InstanceID;
+};
+
+struct PS_IN {
+    float4 Position      : SV_POSITION;
+    float4 Normal        : NORMAL0;
+    float2 TexCoord      : TEXCOORD0;
+    float4 Diffuse       : COLOR0;
+    float4 WPos          : POSITION1;
+    float4 ShadowMapPos  : POSITION_SHADOWMAP;
+};
+
 //=============================================================================
 // 頂点シェーダ
 //=============================================================================
-void main( in float4 inPosition		    : POSITION0,
-		   in float4 inNormal		    : NORMAL0,
-		   in float4 inDiffuse		    : COLOR0,
-		   in float2 inTexCoord		    : TEXCOORD0,
-		   in uint   inInstansID        : SV_InstanceID,
-           
-		   out float4 outPosition	    : SV_POSITION,
-		   out float4 outNormal		    : NORMAL0,
-		   out float2 outTexCoord	    : TEXCOORD0,
-		   out float4 outDiffuse	    : COLOR0,
-		   out float4 outWPos           : POSITION1,
-           out float4 outShadowMapPos   : POSITION_SHADOWMAP)
+PS_IN main( VS_IN Input)
 {
+    PS_IN Output = (PS_IN) 0;
+    
 	matrix wvp;
 	wvp = mul(World, View);
 	wvp = mul(wvp, Projection);
 
-    //inPosition.x += inInstansID % 100;
-    //inPosition.z += inInstansID / 100;
+    //Input.Position.x += inInstansID % 100;
+    //Input.Position.z += inInstansID / 100;
 
-	outPosition = mul( inPosition, wvp);
+    Output.Position = mul(Input.Position, wvp);
 
-    inNormal.w = 0.0;
-    outNormal = mul(inNormal, World);
+    Input.Normal.w = 0.0;
+    Output.Normal = mul(Input.Normal, World);
 
-	outTexCoord = inTexCoord;
+    Output.TexCoord = Input.TexCoord;
     
-    outDiffuse = inDiffuse;
+    Output.Diffuse = Input.Diffuse;
     
-    outWPos = mul(inPosition, World);
+    Output.WPos = mul(Input.Position, World);
     
     wvp = mul(World, ShadowView);
     wvp = mul(wvp, ShadowProjection);
-    outShadowMapPos = mul(inPosition, wvp);
+    Output.ShadowMapPos = mul(Input.Position, wvp);
+    
+    return Output;
 }

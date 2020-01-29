@@ -10,24 +10,35 @@ cbuffer ConstantBuffer : register(b0)
     matrix Projection;
 }
 
+struct VS_IN {
+   float4 Position    : POSITION0;
+   float4 Normal      : NORMAL0;
+   float4 Diffuse     : COLOR0;
+   float2 TexCoord    : TEXCOORD0;
+};
+
+struct PS_IN {
+    float4 Position     : SV_POSITION;
+    float4 Pos          : POSITION1;
+};
+
+
 //=============================================================================
 // 頂点シェーダ
 //=============================================================================
-void main( in float4 inPosition     : POSITION0,
-		   in float4 inNormal       : NORMAL0,
-		   in float4 inDiffuse      : COLOR0,
-		   in float2 inTexCoord     : TEXCOORD0,
-           
-           out float4 outPosition   : SV_POSITION,
-           out float4 outPos        : POSITION1)
+PS_IN main( VS_IN Input)
 {
+    PS_IN Output = (PS_IN) 0;
+    
     matrix wvp;
 
     wvp = mul(World, View);
     wvp = mul(wvp, Projection);
     
-    inPosition.w = 1.0;
-    outPosition = mul(inPosition, wvp);
+    Input.Position.w = 1.0;
+    Output.Position = mul(Input.Position, wvp);
     
-    outPos = outPosition;
+    Output.Pos = Output.Position;
+    
+    return Output;
 }

@@ -31,54 +31,64 @@ cbuffer BoneBuffer : register( b6 )
 }
 
 
+struct VS_IN {
+    float4 Position     : POSITION0;
+    float4 Normal       : NORMAL0;
+    float4 Diffuse      : COLOR0;
+    float2 TexCoord     : TEXCOORD0;
+    uint4  Ineces       : BLENDINDICE;
+    float4 Weight       : BLENDWEIGHT;
+};
+
+struct PS_IN
+{
+    float4 Position : SV_POSITION;
+    float4 Normal : NORMAL0;
+    float2 TexCoord : TEXCOORD0;
+    float4 Diffuse : COLOR0;
+    float4 WPos : POSITION1;
+    float4 ShadowMapPos : POSITION_SHADOWMAP;
+};
 
 //=============================================================================
 // 頂点シェーダ
 //=============================================================================
-void main(  in float4 inPosition         : POSITION0,
-		    in float4 inNormal           : NORMAL0,
-		    in float4 inDiffuse          : COLOR0,
-		    in float2 inTexCoord         : TEXCOORD0,
-            in uint4  inIneces           : BLENDINDICE,
-            in float4 inWeight           : BLENDWEIGHT,
-
-            out float4 outPosition       : SV_POSITION,
-		    out float4 outNormal         : NORMAL0,
-		    out float2 outTexCoord       : TEXCOORD0,
-		    out float4 outDiffuse        : COLOR0,
-		    out float4 outWPos           : POSITION1,
-            out float4 outShadowMapPos   : POSITION_SHADOWMAP )
+PS_IN main(  VS_IN Input)
 {
-    matrix BoneTransform = BoneMatrix[inIneces[0]] * inWeight[0]
-                         + BoneMatrix[inIneces[1]] * inWeight[1]
-                         + BoneMatrix[inIneces[2]] * inWeight[2]
-                         + BoneMatrix[inIneces[3]] * inWeight[3];
+    PS_IN Output = (PS_IN) 0;
+    
+    matrix BoneTransform = BoneMatrix[Input.Ineces[0]] * Input.Weight[0]
+                         + BoneMatrix[Input.Ineces[1]] * Input.Weight[1]
+                         + BoneMatrix[Input.Ineces[2]] * Input.Weight[2]
+                         + BoneMatrix[Input.Ineces[3]] * Input.Weight[3];
 
     matrix wvp;
     wvp = mul(World, View);
     wvp = mul(wvp, Projection);
 
-    outPosition = mul(inPosition, BoneTransform);
-    outPosition = mul(outPosition, wvp);
+    Output.Position = mul(Input.Position, BoneTransform);
+    Output.Position = mul(Output.Position, wvp);
 
-    inNormal.w = 0.0;
-    outNormal = mul(inNormal, BoneTransform);
-    outNormal = mul(outNormal, World);
+    Input.Normal.w = 0.0;
+    Output.Normal = mul(Input.Normal, BoneTransform);
+    Output.Normal = mul(Output.Normal, World);
 
-    outTexCoord = inTexCoord;
+    Output.TexCoord = Input.TexCoord;
 	
     float4 worldNormal, normal;
-    normal = float4(outNormal.xyz, 0.0);
+    normal = float4(Output.Normal.xyz, 0.0);
     worldNormal = mul(normal, World);
     worldNormal = normalize(worldNormal);
 
-    outDiffuse = inDiffuse;
+    Output.Diffuse = Input.Diffuse;
     
-    outWPos = mul(inPosition, BoneTransform);
-    outWPos = mul(outPosition, World);
+    Output.WPos = mul(Input.Position, BoneTransform);
+    Output.WPos = mul(Output.Position, World);
     
     wvp = mul(World, ShadowView);
     wvp = mul(wvp, ShadowProjection);
-    outShadowMapPos = mul(inPosition, BoneTransform);
-    outShadowMapPos = mul(inPosition, wvp);
+    Output.ShadowMapPos = mul(Input.Position, BoneTransform);
+    Output.ShadowMapPos = mul(Input.Position, wvp);
+    
+    return Output;
 }

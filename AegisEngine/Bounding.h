@@ -6,9 +6,9 @@
 #define BOUNDING_H
 
 #include	"Renderer.h"
-#include	"Game_Object.h"
+#include	"Component.h"
 
-class BOUNDING : public GAME_OBJECT {
+class BOUNDING : public COMPONENT {
 private:
 protected:
 
@@ -24,11 +24,11 @@ public:
 	BOUNDING() : Color(Default_Color) {}
 	virtual ~BOUNDING() {}
 
-	void Init() override {}
-	void Draw() override {}
-	void Draw_DPP() override {}
-	void Update(float delta_time) override {}
-	void Uninit() override {}
+	virtual void Init(){}
+	virtual void Draw() {}
+	virtual void Draw_DPP() {}
+	virtual void Update(float delta_time) {}
+	virtual void Uninit() {}
 
 	virtual void OverWrite() = 0;
 
@@ -47,7 +47,7 @@ public:
 	template<typename Archive>
 	void serialize(Archive& ar)
 	{
-		ar(cereal::base_class<GAME_OBJECT>(this));
+		ar(cereal::base_class<COMPONENT>(this));
 		ar(Default_Color);
 		ar(Color);
 	}
@@ -70,6 +70,6 @@ public:
 };
 
 CEREAL_REGISTER_TYPE(BOUNDING)
-CEREAL_REGISTER_POLYMORPHIC_RELATION(GAME_OBJECT, BOUNDING)
+CEREAL_REGISTER_POLYMORPHIC_RELATION(COMPONENT, BOUNDING)
 
 #endif // !BOUNDING_H

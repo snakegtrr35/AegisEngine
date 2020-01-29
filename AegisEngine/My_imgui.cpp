@@ -565,13 +565,65 @@ void Draw_Inspector(const string& name)
 			EditTransform(view, pro, pos, enable, object);
 		}
 
-		static int clicked = 0;
-		if (ImGui::Button("Add Component"))
-			clicked++;
-		if (clicked & 1)
 		{
-			ImGui::SameLine();
-			ImGui::Text("Thanks for clicking me!");
+			vector<const char*> Items;
+
+			Items.emplace_back("AAAA");
+			Items.emplace_back("BBBB");
+			Items.emplace_back("CCCC");
+			Items.emplace_back("DDDD");
+			Items.emplace_back("EEEE");
+			Items.emplace_back("FFFF");
+			Items.emplace_back("GGGG");
+			Items.emplace_back("HHHH");
+			Items.emplace_back("IIII");
+			Items.emplace_back("JJJJ");
+			Items.emplace_back("KKKK");
+			Items.emplace_back("LLLL");
+			Items.emplace_back("MMMM");
+			Items.emplace_back("NNNN");
+
+
+			//static const char* item_current = items[0];
+			static const char* item_current = Items[0];
+
+			{
+				// Expose flags as checkbox for the demo
+				static ImGuiComboFlags flags = ImGuiComboFlags_NoArrowButton;
+
+				// General BeginCombo() API, you have full control over your selection data and display type.
+				// (your selection data could be an index, a pointer to the object, an id for the object, a flag stored in the object itself, etc.)
+
+				if (ImGui::BeginCombo((char*)u8"コンポーネント", item_current, flags)) // The second parameter is the label previewed before opening the combo.
+				{
+					for (int n = 0; n <Items.size(); n++)
+					{
+						bool is_selected = (item_current == Items[n]);
+						if (ImGui::Selectable(Items[n], is_selected))
+							item_current = Items[n];
+						if (is_selected)
+							ImGui::SetItemDefaultFocus();   // Set the initial focus when opening the combo (scrolling + for keyboard navigation support in the upcoming navigation branch)
+					}
+					ImGui::EndCombo();
+				}
+			}
+
+			static int clicked = 0;
+			if (ImGui::Button("Add Component"))
+			{
+				clicked++;
+				//if (clicked & 1)
+				//{
+				//	ImGui::SameLine();
+				//	ImGui::Text("%s", item_current);
+				//}
+			}
+
+			if (clicked & 1)
+			{
+				ImGui::SameLine();
+				ImGui::Text("%s", item_current);
+			}
 		}
 
 		ImGui::End();

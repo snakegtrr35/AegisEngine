@@ -3,15 +3,16 @@
 #ifndef COMPONENT_H
 #define COMPONENT_H
 
-class GAME_OBJECT;
+#include	"Game_Object.h"
 
 // コンポーネントクラス
-class COMPONENT {
+class COMPONENT : public GAME_OBJECT {
 protected:
 
 	weak_ptr<GAME_OBJECT> Owner;
 
 	bool Enable;
+	bool Draw_Enable;
 	bool DestroyFlag;
 
 public:
@@ -22,15 +23,16 @@ public:
 
 	COMPONENT(const shared_ptr<GAME_OBJECT>& owner) : Owner(owner), Enable(true), DestroyFlag(false) {}
 
-	virtual ~COMPONENT() {};
+	virtual ~COMPONENT() {}
 
-	void Init(const shared_ptr<GAME_OBJECT>& owner) {
-		Owner = owner;
-	}
+	virtual void Init() {}
 
-	virtual void Update(float delta_time) = 0;
+	virtual void Draw() {}
+	virtual void Draw_DPP() {}
 
-	virtual void Uninit() = 0;
+	virtual void Update(float delta_time) {}
+
+	virtual void Uninit() {}
 
 	void SetEnable(const bool flag) {
 		Enable = flag;
@@ -42,6 +44,14 @@ public:
 
 	void SetDestroy() {
 		DestroyFlag = true;
+	}
+
+	void Set_Draw_Enable(const bool flag) {
+		Draw_Enable = flag;
+	}
+
+	bool Get_Draw_Enable() {
+		return Draw_Enable;
 	}
 
 	// メモリ上からの削除
@@ -56,6 +66,7 @@ public:
 	template<class Archive>
 	void serialize(Archive& ar)
 	{
+		ar(cereal::base_class<GAME_OBJECT>(this));
 		ar(Owner);
 	}
 
@@ -72,7 +83,8 @@ public:
 	}*/
 };
 
-
+CEREAL_REGISTER_TYPE(COMPONENT)
+CEREAL_REGISTER_POLYMORPHIC_RELATION(GAME_OBJECT, COMPONENT)
 
 
 
@@ -125,6 +137,30 @@ public:
 		for (auto object = Conponent_List.begin(); object != Conponent_List.end(); object++)
 		{
 			object->get()->Update(delta_time);
+		}
+
+		Conponent_List.remove_if([](auto& object) { return object->Destroy(); }); // リストから削除
+	}
+
+	void Draw() {
+		for (auto object = Conponent_List.begin(); object != Conponent_List.end(); object++)
+		{
+			if (object->get()->Get_Draw_Enable())
+			{
+				object->get()->Draw();
+			}
+		}
+
+		Conponent_List.remove_if([](auto& object) { return object->Destroy(); }); // リストから削除
+	}
+
+	void Draw_DPP() {
+		for (auto object = Conponent_List.begin(); object != Conponent_List.end(); object++)
+		{
+			if (object->get()->Get_Draw_Enable())
+			{
+				object->get()->Draw_DPP();
+			}
 		}
 
 		Conponent_List.remove_if([](auto& object) { return object->Destroy(); }); // リストから削除

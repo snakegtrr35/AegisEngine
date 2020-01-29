@@ -51,6 +51,22 @@ struct POINT_LIGHT {
 	int			Enable;
 };
 
+struct LIGHT_BUFFER {
+	// 共通部分
+	XMFLOAT3	Position;
+	COLOR		Color;
+	float		Radius;
+
+	// ポイントライト
+	XMFLOAT3	Attenuation;
+
+	// スポットライト
+	//XMFLOAT3	Attenuation;
+
+	// 共通部分
+	UINT		Enable;
+};
+
 struct SPOT_LIGHT {
 
 };
