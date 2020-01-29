@@ -43,12 +43,10 @@
 
 static const constexpr UINT MAX_NUM_LIGHTS = 64;
 
-struct POINT_LIGHT {
-	XMFLOAT3	Position;
-	float		Radius;
-	XMFLOAT3	Attenuation;
-	COLOR		Color;
-	int			Enable;
+enum class LIGHT_TYPE : BYTE {
+	POINT = 0,
+	SPOT,
+	MAX,
 };
 
 struct LIGHT_BUFFER {

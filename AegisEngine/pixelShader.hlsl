@@ -93,7 +93,7 @@ void main( PS_IN Input,
     float3 refrect = reflect(Light.Direction.xyz, Input.Normal.xyz);
     refrect = normalize(refrect);
     // 視線ベクトル
-    float3 eye_vec = Input.WPos - CameraPos;
+    float3 eye_vec = Input.WPos.xyz - CameraPos.xyz;
     eye_vec = normalize(eye_vec);
     // スペキュラ成分を求める
     float speculer = -dot(eye_vec, refrect);
@@ -125,7 +125,51 @@ void main( PS_IN Input,
 
     color.rgb *= shadow;
     
-    color.rgb += (ambient * TexColor);
+    color.rgb += (ambient.rgb * TexColor.rgb);
 
     outDiffuse = color;
 }
+
+
+
+
+//// マトリクスバッファ
+//struct Lights {
+//    // 共通部分
+//    float3 Position;
+//    float4 Color;
+//    float Radius;
+
+//	// ポイントライト
+//    float3 Attenuation;
+
+//	// スポットライト
+//	//float3	Attenuation;
+
+//	// 共通部分
+//    bool Enable;
+//};
+
+//// マトリクスバッファ
+//cbuffer LightsBuffer  : register(b6)
+//{
+//    Lights LightsBuf;
+//}
+
+//float4 DoPointLight(Lights light, float4 Position, float4 CameraPos, float4 Normal)
+//{
+//    float4 result = (float4)1.0;
+
+//    float3 Dir = light.Position - Position.xyz;
+//    float distance = length(Dir);
+//    Dir = normalize(Dir);
+
+//    //拡散
+//    float colD = saturate(dot(Normal.xyz, Dir));
+    
+//    float colA = saturate(1.0f / (light.Attenuation.x + light.Attenuation.y * distance + light.Attenuation.z * distance * distance));
+    
+//    result.rgb = light.Color.rgb * (colD * colA);
+//    return result;
+
+//}

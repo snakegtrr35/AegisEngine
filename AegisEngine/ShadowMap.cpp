@@ -60,8 +60,7 @@ bool SHADOW_MAP::Init()
 		td.Height = HEIGHT;
 		td.MipLevels = 1;
 		td.ArraySize = 1;
-		td.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
-		//td.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
+		td.Format = DXGI_FORMAT_R32_TYPELESS;
 		td.SampleDesc.Count = 1;
 		td.SampleDesc.Quality = 0;
 		td.Usage = D3D11_USAGE_DEFAULT;
@@ -78,8 +77,7 @@ bool SHADOW_MAP::Init()
 
 		{
 			D3D11_DEPTH_STENCIL_VIEW_DESC desc;
-			desc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
-			//desc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
+			desc.Format = DXGI_FORMAT_D32_FLOAT;
 			desc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
 			desc.Flags = 0;
 			desc.Texture2D.MipSlice = 0;
@@ -100,8 +98,7 @@ bool SHADOW_MAP::Init()
 
 		//	D3D11_SHADER_RESOURCE_VIEW_DESC desc;
 		//	ZeroMemory(&desc, sizeof(desc));
-		//	desc.Format = DXGI_FORMAT_R24_UNORM_X8_TYPELESS;
-		//	//desc.Format = DXGI_FORMAT_R24_UNORM_X8_TYPELESS;
+		//	desc.Format = DXGI_FORMAT_R32_FLOAT;
 		//	desc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
 		//	desc.Texture2D.MipLevels = 1;
 		//	desc.Texture2D.MostDetailedMip = 0;

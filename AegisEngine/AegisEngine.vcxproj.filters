@@ -495,9 +495,6 @@
     <FxCompile Include="VertexShader_Depth_Pre_Pass.hlsl">
       <Filter>リソース ファイル\NewFilter1</Filter>
     </FxCompile>
-    <FxCompile Include="PixelShader_Created.hlsl">
-      <Filter>リソース ファイル\NewFilter1</Filter>
-    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="AegisEngine.rc">
