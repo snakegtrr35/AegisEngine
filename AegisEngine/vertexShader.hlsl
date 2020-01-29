@@ -1,3 +1,5 @@
+#include    "Commom_Hlsl.h"
+
 //*****************************************************************************
 // 定数バッファ
 //*****************************************************************************
@@ -17,24 +19,6 @@ cbuffer ShadowBuffer : register(b1)
     matrix ShadowView;
     matrix ShadowProjection;
 }
-
-
-struct VS_IN {
-    float4 Position   : POSITION0;
-    float4 Normal     : NORMAL0;
-    float4 Diffuse    : COLOR0;
-    float2 TexCoord   : TEXCOORD0;
-    uint   InstansID  : SV_InstanceID;
-};
-
-struct PS_IN {
-    float4 Position      : SV_POSITION;
-    float4 Normal        : NORMAL0;
-    float2 TexCoord      : TEXCOORD0;
-    float4 Diffuse       : COLOR0;
-    float4 WPos          : POSITION1;
-    float4 ShadowMapPos  : POSITION_SHADOWMAP;
-};
 
 //=============================================================================
 // 頂点シェーダ

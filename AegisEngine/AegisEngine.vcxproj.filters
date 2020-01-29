@@ -448,6 +448,9 @@
     <ClInclude Include="Light_hlsl.h">
       <Filter>リソース ファイル</Filter>
     </ClInclude>
+    <ClInclude Include="Commom_Hlsl.h">
+      <Filter>リソース ファイル</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="pixelShader.hlsl">
@@ -462,9 +465,6 @@
     <FxCompile Include="PixelShader_ShadowMap.hlsl">
       <Filter>リソース ファイル\PixelShader</Filter>
     </FxCompile>
-    <FxCompile Include="PixelShader1.hlsl">
-      <Filter>リソース ファイル\PixelShader</Filter>
-    </FxCompile>
     <FxCompile Include="VertexShader_ShadowMap.hlsl">
       <Filter>リソース ファイル\VertexShader</Filter>
     </FxCompile>
@@ -473,12 +473,6 @@
     </FxCompile>
     <FxCompile Include="VertexShader_Animation.hlsl">
       <Filter>リソース ファイル\VertexShader</Filter>
-    </FxCompile>
-    <FxCompile Include="PixelShader_Geometry.hlsl">
-      <Filter>リソース ファイル\PixelShader</Filter>
-    </FxCompile>
-    <FxCompile Include="PixelShader_Created.hlsl">
-      <Filter>リソース ファイル\PixelShader</Filter>
     </FxCompile>
     <FxCompile Include="VertexShader_ShadowMap_Anime.hlsl">
       <Filter>リソース ファイル\VertexShader</Filter>
@@ -499,6 +493,9 @@
       <Filter>リソース ファイル\NewFilter1</Filter>
     </FxCompile>
     <FxCompile Include="VertexShader_Depth_Pre_Pass.hlsl">
+      <Filter>リソース ファイル\NewFilter1</Filter>
+    </FxCompile>
+    <FxCompile Include="PixelShader_Created.hlsl">
       <Filter>リソース ファイル\NewFilter1</Filter>
     </FxCompile>
   </ItemGroup>

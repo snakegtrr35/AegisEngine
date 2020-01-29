@@ -1,3 +1,5 @@
+#include    "Commom_Hlsl.h"
+
 //*****************************************************************************
 // 定数バッファ
 //*****************************************************************************
@@ -7,12 +9,11 @@
 // ピクセルシェーダ
 //=============================================================================
 //[earlydepthstencil]
-void main(in float4 inPosition      : POSITION0,
-		  in float4 inPos           : POSITION1,
+void main(PS_IN_SHADOW Input,
 
 		  out float4 outDepth       : SV_Target)
 { 
-    float depthValue = inPos.z / inPos.w;
+    float depthValue = Input.Pos.z / Input.Pos.w;
     
     outDepth = float4(depthValue, 0.0, 0.0, 1.0);
 }

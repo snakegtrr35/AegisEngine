@@ -1,3 +1,5 @@
+#include    "Commom_Hlsl.h"
+
 //*****************************************************************************
 // 定数バッファ
 //*****************************************************************************
@@ -30,30 +32,10 @@ cbuffer BoneBuffer : register( b6 )
     // 4 * 256(ボーンの最大数)
 }
 
-
-struct VS_IN {
-    float4 Position     : POSITION0;
-    float4 Normal       : NORMAL0;
-    float4 Diffuse      : COLOR0;
-    float2 TexCoord     : TEXCOORD0;
-    uint4  Ineces       : BLENDINDICE;
-    float4 Weight       : BLENDWEIGHT;
-};
-
-struct PS_IN
-{
-    float4 Position : SV_POSITION;
-    float4 Normal : NORMAL0;
-    float2 TexCoord : TEXCOORD0;
-    float4 Diffuse : COLOR0;
-    float4 WPos : POSITION1;
-    float4 ShadowMapPos : POSITION_SHADOWMAP;
-};
-
 //=============================================================================
 // 頂点シェーダ
 //=============================================================================
-PS_IN main(  VS_IN Input)
+PS_IN main( VS_IN_ANIMA Input)
 {
     PS_IN Output = (PS_IN) 0;
     

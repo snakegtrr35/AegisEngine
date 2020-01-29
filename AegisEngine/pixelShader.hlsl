@@ -1,3 +1,5 @@
+#include    "Commom_Hlsl.h"
+
 //*****************************************************************************
 // íËêîÉoÉbÉtÉ@
 //*****************************************************************************
@@ -63,40 +65,35 @@ SamplerState    g_ShadowSamplerState : register(s1);        // ÉVÉÉÉhÉEÉ}ÉbÉvópÇ
 //=============================================================================
 // ÉsÉNÉZÉãÉVÉFÅ[É_
 //=============================================================================
-void main( in float4 inPosition     : POSITION0,
-		   in float4 inNormal       : NORMAL0,
-		   in float2 inTexCoord     : TEXCOORD0,
-		   in float4 inDiffuse      : COLOR0,
-		   in float4 inWPos         : POSITION1,
-           in float4 inShadowMapPos : POSITION_SHADOWMAP,
+void main( PS_IN Input,
            
 		   out float4 outDiffuse	: SV_Target )
 {
-    float4 TexColor = g_Texture.Sample(g_SamplerState, inTexCoord);
+    float4 TexColor = g_Texture.Sample(g_SamplerState, Input.TexCoord);
     
     if (TexColor.a <= 0.0)
         discard;
     
-    inNormal = normalize(inNormal);
-    float light = 0.5 - 0.5 * dot(Light.Direction.xyz, inNormal.xyz);
+    Input.Normal = normalize(Input.Normal);
+    float light = 0.5 - 0.5 * dot(Light.Direction.xyz, Input.Normal.xyz);
     
     
-    float vec = dot(inNormal.xyz, Light.Direction.xyz);
+    float vec = dot(Input.Normal.xyz, Light.Direction.xyz);
     //vec = normalize(vec);
    
     
     // ä¬ã´îΩéÀåı
-    float4 ambient = inDiffuse * float4(Material.Ambient.rgb * Light.Ambient.rgb, 1.0);
+    float4 ambient = Input.Diffuse * float4(Material.Ambient.rgb * Light.Ambient.rgb, 1.0);
     // ägéUîΩéÀåı
-    float4 diffuse = inDiffuse * float4(Material.Diffuse.rgb * (light * Light.Diffuse.rgb), 1.0);
+    float4 diffuse = Input.Diffuse * float4(Material.Diffuse.rgb * (light * Light.Diffuse.rgb), 1.0);
 
     float4 color = (float4)0.0;
 
     //
-    float3 refrect = reflect(Light.Direction.xyz, inNormal.xyz);
+    float3 refrect = reflect(Light.Direction.xyz, Input.Normal.xyz);
     refrect = normalize(refrect);
     // éãê¸ÉxÉNÉgÉã
-    float3 eye_vec = inWPos - CameraPos;
+    float3 eye_vec = Input.WPos - CameraPos;
     eye_vec = normalize(eye_vec);
     // ÉXÉyÉLÉÖÉâê¨ï™ÇãÅÇﬂÇÈ
     float speculer = -dot(eye_vec, refrect);
@@ -108,13 +105,13 @@ void main( in float4 inPosition     : POSITION0,
     float shadow = 0.5;
     
     float2 ShadowTexCoord;
-    ShadowTexCoord.x = inShadowMapPos.x / inShadowMapPos.w / 2.0 + 0.5;
-    ShadowTexCoord.y = -inShadowMapPos.y / inShadowMapPos.w / 2.0 + 0.5;
+    ShadowTexCoord.x = Input.ShadowMapPos.x / Input.ShadowMapPos.w / 2.0 + 0.5;
+    ShadowTexCoord.y = -Input.ShadowMapPos.y / Input.ShadowMapPos.w / 2.0 + 0.5;
     
     {
         float depthValue = g_ShadowMap.Sample(g_ShadowSamplerState, ShadowTexCoord).r;
 
-        float lightDepthValue = inShadowMapPos.z / inShadowMapPos.w;
+        float lightDepthValue = Input.ShadowMapPos.z / Input.ShadowMapPos.w;
 
         lightDepthValue = lightDepthValue - 0.005;
 
