@@ -65,7 +65,7 @@ PS_IN main( VS_IN_ANIMA Input)
     Output.Diffuse = Input.Diffuse;
     
     Output.WPos = mul(Input.Position, BoneTransform);
-    Output.WPos = mul(Output.Position, World);
+    Output.WPos = mul(Output.WPos, World);
     
     wvp = mul(World, ShadowView);
     wvp = mul(wvp, ShadowProjection);

@@ -27,8 +27,6 @@ static string old_name;
 extern BOUNDING_FRUSTUM Bounding_Frustun;
 extern BOUNDING_AABB AABB;
 
-extern LIGHT_BUFFER Light;
-
 void EditTransform(const float* cameraView, float* cameraProjection, float* matrix, bool enable, GAME_OBJECT* object);
 
 void My_imgui::Init(HWND hWnd)
@@ -292,31 +290,6 @@ void My_imgui::Draw(void)
 
 					ImGui::End();
 				}
-
-				/*{
-					ImGui::SetNextWindowSize(ImVec2(512 + 17, 512 + 40), ImGuiCond_Once);
-
-					ImGui::Begin("Diffeuse", nullptr, window_flags);
-
-					ImTextureID image = CRenderer::Get2();
-
-					ImGui::Image(image, ImVec2(512, 512));
-
-					ImGui::End();
-				}*/
-
-				/*{
-					ImGui::SetNextWindowSize(ImVec2(512 + 17, 512 + 40), ImGuiCond_Once);
-
-					ImGui::Begin("Normal", nullptr, window_flags);
-
-					ImTextureID image = CRenderer::Get3();
-
-					ImGui::Image(image, ImVec2(512, 512));
-
-					ImGui::End();
-				}*/
-
 			}
 
 			// オブジェクト一覧
@@ -426,27 +399,12 @@ void My_imgui::Draw(void)
 				}
 			}
 
-			{
-				static bool flag = true;
-				static float Position[] = { Light.Position.x, Light.Position.y, Light.Position.z };
-				static float Color[] = { Light.Color.r, Light.Color.g, Light.Color.b };
-				static float Radius = Light.Radius;
-				static float Attenuation[] = { Light.Attenuation.x, Light.Attenuation.y, Light.Attenuation.z };
-
-				ImGui::Checkbox("Enable", &flag);
-				ImGui::DragFloat3("Position", Position, 0.001f, 0.0f, 100.0f);
-				ImGui::DragFloat3("Color", Color, 0.001f, 0.0f, 100.0f);
-				ImGui::DragFloat("Radius", &Radius, 0.001f, 0.0f, 100.0f);
-				ImGui::DragFloat3("Attenuation", Attenuation, 0.001f, 0.0f, 100.0f);
-				
-				Light.Enable = flag ? 1 : 0;
-				Light.Position = XMFLOAT3(Position[0], Position[1], Position[2]);
-				Light.Color = COLOR(Color[0], Color[1], Color[2], 1.0f);
-				Light.Radius = Radius;
-				Light.Attenuation = XMFLOAT3(Attenuation[0], Attenuation[1], Attenuation[2]);
-			}
-
 			ImGui::End();
+		}
+
+		// ライトの設定(ディレクショナルライトではない)
+		{
+			Light_Setting();
 		}
 
 		// インスペクター
@@ -1000,6 +958,132 @@ void My_imgui::File()
 
 		ImGui::End();
 	}
+}
+
+void My_imgui::Light_Setting()
+{
+	// ライトの設定(ディレクショナルライトではない)
+	auto lights = LIGHTS::Get_Lights();
+
+	ImGuiWindowFlags window_flags = ImGuiWindowFlags_NoResize;
+
+	ImGui::SetNextWindowSize(ImVec2(500, 500), ImGuiCond_Once);
+
+	ImGui::Begin("Light", nullptr, window_flags);
+
+	if (ImGui::TreeNode("Light Tree"))
+	{
+		ImGuiTreeNodeFlags_ node_flags = ImGuiTreeNodeFlags_None;
+
+		ImGui::Unindent(ImGui::GetTreeNodeToLabelSpacing());
+
+		for (int i = 0; i < lights->size(); i++)
+		{
+			// Disable the default open on single-click behavior and pass in Selected flag according to our selection state.
+
+			//if(1 == lights->at(i).Enable)
+			{
+				bool node_open = ImGui::TreeNodeEx((void*)(intptr_t)i, node_flags, "Light %d", i);
+				if (node_open)
+				{
+					{
+						bool flag = lights->at(i).Enable;
+						float Position[3] = { lights->at(i).Position.x, lights->at(i).Position.y, lights->at(i).Position.z };
+						float Color[3] = { lights->at(i).Color.r, lights->at(i).Color.g, lights->at(i).Color.b };
+						float Radius = lights->at(i).Radius;
+
+						UINT Type = lights->at(i).Type;//
+
+						ImGui::Checkbox("Enable", &flag);
+						ImGui::DragFloat3("Position", Position, 0.01f);
+						ImGui::DragFloat3("Color", Color, 0.01f, 0.f, 1.0f);
+						ImGui::DragFloat("Radius", &Radius, 0.01f, 0.f, 1000.0f);
+
+						////
+						{
+							vector<const char*> Items;
+
+							Items.emplace_back((char*)u8"ポイントライト");
+							Items.emplace_back((char*)u8"スポットライト");
+							Items.emplace_back((char*)u8"無効");
+
+
+							const char* item_current;
+
+							switch (lights->at(i).Type)
+							{
+								case (UINT)LIGHT_TYPE::POINT:
+									item_current = Items[(UINT)LIGHT_TYPE::POINT];
+								break;
+
+								case (UINT)LIGHT_TYPE::SPOT:
+									item_current = Items[(UINT)LIGHT_TYPE::SPOT];
+									break;
+
+								case (UINT)LIGHT_TYPE::NONE:
+									item_current = Items[(UINT)LIGHT_TYPE::NONE];
+									break;
+							}
+
+							bool is_selected = false;
+
+							{
+								static ImGuiComboFlags flags = ImGuiComboFlags_NoArrowButton;
+
+								if (ImGui::BeginCombo((char*)u8"ライトの種類", item_current, flags))
+								{
+									for (int n = 0; n < Items.size(); n++)
+									{
+										//bool is_selected = (item_current == Items[n]);
+										if (ImGui::Selectable(Items[n], is_selected))
+										{
+											item_current = Items[n];
+											is_selected = true;
+										}
+										//if (is_selected)
+										//	ImGui::SetItemDefaultFocus();
+									}
+									ImGui::EndCombo();
+								}
+							}
+
+							if (is_selected)
+							{
+								if (Items[0] == item_current)
+								{
+									lights->at(i).Type = (UINT)LIGHT_TYPE::POINT;
+								}
+
+								if (Items[1] == item_current)
+								{
+									lights->at(i).Type = (UINT)LIGHT_TYPE::SPOT;
+								}
+
+								if (Items[2] == item_current)
+								{
+									lights->at(i).Type = (UINT)LIGHT_TYPE::NONE;
+								}
+							}
+						}
+						////
+
+						lights->at(i).Enable = flag;
+						lights->at(i).Position = XMFLOAT3(Position[0], Position[1], Position[2]);
+						lights->at(i).Color = COLOR(Color[0], Color[1], Color[2], 0.0f);
+						lights->at(i).Radius = Radius;
+					}
+
+					ImGui::TreePop();
+				}
+			}
+
+		}
+
+		ImGui::Indent(ImGui::GetTreeNodeToLabelSpacing());
+		ImGui::TreePop();
+	}
+
+	ImGui::End();
 }
 
 #endif // _DEBUG

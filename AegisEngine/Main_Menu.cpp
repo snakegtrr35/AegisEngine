@@ -126,9 +126,9 @@ void MAIN_MENU::Init()
 		//	//Add_Game_Object<GRID>(LAYER_NAME::BACKGROUND, "grid");
 		//}
 
-		//{
-		//	Add_Game_Object<POLYGON_3D>(LAYER_NAME::GAMEOBJECT, "cube");
-		//}
+		/*{
+			Add_Game_Object<POLYGON_3D>(LAYER_NAME::GAMEOBJECT, "cube");
+		}*/
 
 		//// テキスト画像
 		//{

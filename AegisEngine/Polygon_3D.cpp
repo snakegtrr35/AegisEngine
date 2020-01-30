@@ -14,12 +14,13 @@ static float yaw = 0.0f;
 POLYGON_3D::POLYGON_3D()
 {
 	pVertexBuffer = nullptr;
-	Texture = nullptr;
+	Texture.reset(nullptr);
 
 	XYZ = XMFLOAT3(0.5f, 0.5f, 0.5f);
 
 	// テクスチャの設定
-	Texture = new TEXTURE(string("field004.png"));
+	//Texture = new TEXTURE(string("field004.png"));
+	Texture = make_unique<TEXTURE>(string("field004.png"));
 }
 
 POLYGON_3D::POLYGON_3D(XMFLOAT3 position, XMFLOAT3 xyz)
@@ -35,13 +36,14 @@ POLYGON_3D::POLYGON_3D(XMFLOAT3 position, XMFLOAT3 xyz)
 	XYZ = xyz;
 
 	// テクスチャの設定
-	Texture = new TEXTURE(string("field004.png"));
+	//Texture = new TEXTURE(string("field004.png"));
+	Texture = make_unique<TEXTURE>(string("field004.png"));
 }
 
 POLYGON_3D::~POLYGON_3D()
 {
 	SAFE_RELEASE(pVertexBuffer);
-	SAFE_DELETE(Texture);
+	Texture.reset(nullptr);
 }
 
 void POLYGON_3D::Init(void)
@@ -316,7 +318,7 @@ void POLYGON_3D::Update(float delta_time)
 void POLYGON_3D::Uninit(void)
 {
 	SAFE_RELEASE(pVertexBuffer);
-	SAFE_DELETE(Texture);
+	Texture.reset(nullptr);
 }
 
 //==============================

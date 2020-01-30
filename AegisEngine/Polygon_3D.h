@@ -14,10 +14,10 @@ struct POLYGOM {
 
 class POLYGON_3D : public GAME_OBJECT {
 private:
-	ID3D11Buffer* pVertexBuffer;	// 頂点バッファ
-	TEXTURE* Texture;				// テクスチャ
+	ID3D11Buffer* pVertexBuffer;		// 頂点バッファ
+	unique_ptr<TEXTURE> Texture;		// テクスチャ
 
-	XMFLOAT3 XYZ;					// 幅と高さと奥行き
+	XMFLOAT3 XYZ;						// 幅と高さと奥行き
 
 protected:
 
@@ -45,6 +45,28 @@ public:
 	XMFLOAT3* const Get_Position();
 	XMFLOAT3* const Get_Rotation();
 	XMFLOAT3* const Get_Scaling();
+
+	//template<typename Archive>
+	//void serialize(Archive& ar)
+	//{
+	//	ar(cereal::base_class<GAME_OBJECT>(this));
+	//	ar(Texture);
+	//}
+
+	/*template<class Archive>
+	void save(Archive& ar) const
+	{
+		ar(cereal::base_class<GAME_OBJECT>(this));
+	}
+
+	template<class Archive>
+	void load(Archive& ar)
+	{
+		ar(cereal::base_class<GAME_OBJECT>(this));
+	}*/
 };
+
+//CEREAL_REGISTER_TYPE(POLYGOM)
+//CEREAL_REGISTER_POLYMORPHIC_RELATION(GAME_OBJECT, POLYGOM)
 
 #endif // ! POLYGON_3D_H

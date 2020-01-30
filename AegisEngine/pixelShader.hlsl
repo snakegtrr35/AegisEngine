@@ -7,6 +7,10 @@
 
 
 
+#define MAX_NUM_LIGHTS 64
+#define LIGHT_TYPE_POINT 0          // ポイントライト
+#define LIGHT_TYPE_SPOT 1           // スポットライト
+
 // ライトバッファ
 struct Lights
 {
@@ -16,25 +20,30 @@ struct Lights
     float4 Color /*: packoffset(c1)*/;
     float Radius /*: packoffset(c2.x)*/;
     float3 Attenuation /*: packoffset(c2.y)*/;
+    
+    uint Type;
+    float3 Dummy;
 };
 
 // マトリクスバッファ
-cbuffer LightsBuffer : register(b10)
+cbuffer LightsBuffer : register(b6)
 {
-    Lights LightsBuf;
+    Lights LightsBuf[MAX_NUM_LIGHTS];
 }
 
 float3 DoPointLight(Lights light, float4 Position, float4 CameraPos, float4 Normal)
 {
-    float3 result = (float) 1.0;
+    float3 result = (float) 0.0;
 
     float3 Dir = light.Position - Position.xyz;
     //float3 Dir = Position.xyz - light.Position;
     float distance = length(Dir);
-    Dir = normalize(Dir);
+    //Dir = normalize(Dir);
+    Dir = Dir / distance;
 
     //拡散
     float colD = 0.5 - 0.5 * dot(Normal.xyz, Dir);
+    colD = 1;
 
     float colA = saturate(1.0f / (light.Attenuation.x + light.Attenuation.y * distance + light.Attenuation.z * distance * distance));
 
@@ -154,6 +163,7 @@ void main( PS_IN Input,
     
     // シャドウマップ
     float shadow = 0.5;
+    //float shadow = 1.0;
     
     float2 ShadowTexCoord;
     ShadowTexCoord.x = Input.ShadowMapPos.x / Input.ShadowMapPos.w / 2.0 + 0.5;
@@ -180,37 +190,28 @@ void main( PS_IN Input,
 
     float3 light_color = (float3) 0.0;
     
-    //for (int i = 0; i < 1; i++)
-    //{      
-    //    if ( /*(1 == LightsBuf.Enable) &&*/ LightsBuf.Type < 2)
-    //    {
-    //        switch (LightsBuf.Type)
-    //        {
-    //            case 0:
-    //                if (Cul_Radius(LightsBuf, Input.Position))
-    //                {
-    //                    light_color = DoPointLight(LightsBuf, Input.Position, CameraPos, Input.Normal);
-    //                    light_color = saturate(light_color);
-    //                }
-    //                break;
-    //        }
-    //    }
-
-    //}
-    
-    //if (1 == LightsBuf.Enable)
-    if (LightsBuf.Enable)
+    for (int i = 0; i < MAX_NUM_LIGHTS; i++)
     {
-        if (Cul_Radius(LightsBuf, Input.WPos))
+        if (LightsBuf[i].Enable)
         {
-            light_color = DoPointLight(LightsBuf, Input.WPos, CameraPos, Input.Normal);
-            light_color = saturate(light_color);
+            switch (LightsBuf[i].Type)
+            {
+                case LIGHT_TYPE_POINT:
+                    if (Cul_Radius(LightsBuf[i], Input.WPos))
+                    {
+                        float3 col = DoPointLight(LightsBuf[i], Input.WPos, CameraPos, Input.Normal);
+                        light_color = saturate(col + light_color);
+                    }
+                break;
+                
+                case LIGHT_TYPE_SPOT:
+                    break;
+            }
         }
+
     }
-    
+       
     color.rgb += light_color;
-    
-    //color.r *= 2;
     
     outDiffuse = color;
 }

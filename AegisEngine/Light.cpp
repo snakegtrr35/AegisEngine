@@ -1,47 +1,30 @@
 #include	"Light.h"
 #include	"Renderer.h"
 
-//bool LIGHTS::Init()
-//{
-//	return true;
-//}
-//
-//void LIGHTS::Uninit()
-//{
-//	m_pPointLightBufferCenterAndRadius.reset(nullptr);
-//	m_pPointLightBufferCenterAndRadiusSRV.reset(nullptr);
-//	m_pPointLightBufferColor.reset(nullptr);
-//	m_pPointLightBufferCenterAndRadius.reset(nullptr);
-//
-//	m_pSpotLightBufferCenterAndRadius.reset(nullptr);
-//	m_pSpotLightBufferCenterAndRadiusSRV.reset(nullptr);
-//	m_pSpotLightBufferColor.reset(nullptr);
-//	m_pSpotLightBufferColorSRV.reset(nullptr);
-//	m_pSpotLightBufferSpotParams.reset(nullptr);
-//	m_pSpotLightBufferSpotParamsSRV.reset(nullptr);
-//}
+array<LIGHT_BUFFER, MAX_NUM_LIGHTS> LIGHTS::Lights;
 
-//array<LIGHT_BUFFER, MAX_NUM_LIGHTS> LIGHTS::Lights;
-LIGHT_BUFFER LIGHTS::Lights;
+LIGHTS::LIGHTS()
+{
+	for (UINT i = 0; i < MAX_NUM_LIGHTS; i++)
+	{
+		Lights[i] = LIGHT_BUFFER();
+	}
 
-LIGHT_BUFFER Light;
+	Lights[0].Enable = 1;
+	Lights[0].Position = XMFLOAT3(0.0f, 0.0f, 0.0f);
+	Lights[0].Color = COLOR(1.0f, 0.f, 0.f, 1.0f);
+	Lights[0].Radius = 3.0f;
+	Lights[0].Type = (UINT)LIGHT_TYPE::POINT;
+
+	Lights[1].Enable = 1;
+	Lights[1].Position = XMFLOAT3(2.0f, 0.0f, 0.0f);
+	Lights[1].Color = COLOR(0.0f, 0.f, 1.0f, 1.0f);
+	Lights[1].Radius = 4.0f;
+	Lights[1].Type = (UINT)LIGHT_TYPE::POINT;
+}
 
 bool LIGHTS::Init()
 {
-	//Lights[0].Enable = 1.0;
-	//Lights[0].Position = XMFLOAT3(0.0f, 2.0f, 0.0f);
-	//Lights[0].Color = COLOR(1.0f, 0.f, 0.f, 1.0f);
-	//Lights[0].Radius = 10.0f;
-	//Lights[0].Type = (UINT)LIGHT_TYPE::POINT;
-
-	Lights.Enable = 1;
-	Lights.Position = XMFLOAT3(0.0f, 0.0f, 0.0f);
-	Lights.Color = COLOR(1.0f, 0.f, 0.f, 1.0f);
-	Lights.Radius = 5.0f;
-	Lights.Attenuation = XMFLOAT3(1.0f, 0.f, 0.f);
-
-	Light = Lights;
-
 	// 定数バッファ生成
 	{
 		ID3D11Buffer* buffer = nullptr;
@@ -51,10 +34,10 @@ bool LIGHTS::Init()
 		hBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
 		hBufferDesc.CPUAccessFlags = 0;
 		hBufferDesc.MiscFlags = 0;
-		hBufferDesc.ByteWidth = sizeof(LIGHT_BUFFER);
+		hBufferDesc.ByteWidth = sizeof(LIGHT_BUFFER) * MAX_NUM_LIGHTS;
 
 		D3D11_SUBRESOURCE_DATA date = {};
-		date.pSysMem = &Lights;
+		date.pSysMem = Lights.data();
 
 		HRESULT hr = CRenderer::GetDevice()->CreateBuffer(&hBufferDesc, &date, &buffer);
 		if (FAILED(hr))
@@ -65,7 +48,7 @@ bool LIGHTS::Init()
 
 		LightBuffer.reset(buffer);
 
-		CRenderer::GetDeviceContext()->PSSetConstantBuffers(10, 1, &buffer);
+		CRenderer::GetDeviceContext()->PSSetConstantBuffers(6, 1, &buffer);
 	}
 
 	return true;
@@ -74,38 +57,12 @@ bool LIGHTS::Init()
 void LIGHTS::Draw()
 {
 	auto buffer = LightBuffer.get();
-	CRenderer::GetDeviceContext()->PSSetConstantBuffers(10, 1, &buffer);
+	CRenderer::GetDeviceContext()->PSSetConstantBuffers(6, 1, &buffer);
 }
 
 void LIGHTS::Update()
 {
-	/*LIGHT_BUFFER light;
-
-	light.Enable = 1;
-	light.Position = XMFLOAT3(0.0f, 0.0f, 0.0f);
-	light.Color = COLOR(1.0f, 0.f, 0.f, 1.0f);
-	light.Radius = 3.0f;
-	light.Attenuation = attenuation;*/
-
-	CRenderer::GetDeviceContext()->UpdateSubresource(LightBuffer.get(), 0, nullptr, &Light, 0, 0);
-
-	//// 頂点バッファの書き換え
-	//{
-	//	D3D11_MAPPED_SUBRESOURCE msr;
-	//	CRenderer::GetDeviceContext()->Map(LightBuffer.get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &msr);
-
-	//	LIGHT_BUFFER light;
-
-	//	light.Position = XMFLOAT3(0.0f, 0.0f, 0.0f);
-	//	light.Color = COLOR(1.0f, 0.f, 0.f, 1.0f);
-	//	light.Radius = 10.0f;
-	//	light.Attenuation = XMFLOAT3(1.0f, 0.f, 0.2f);
-	//	light.Enable = 1;
-
-	//	memcpy(msr.pData, &light, sizeof(LIGHT_BUFFER));
-
-	//	CRenderer::GetDeviceContext()->Unmap(LightBuffer.get(), 0);
-	//}
+	CRenderer::GetDeviceContext()->UpdateSubresource(LightBuffer.get(), 0, nullptr, Lights.data(), 0, 0);
 }
 
 void LIGHTS::Uninit()
