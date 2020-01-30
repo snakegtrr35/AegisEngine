@@ -50,6 +50,7 @@ using namespace Math;
 #include	<cereal/types/polymorphic.hpp>
 
 #include	<cereal/types/memory.hpp>
+#include	<cereal/types/array.hpp>
 #include	<cereal/types/list.hpp>
 #include	<cereal/types/vector.hpp>
 #include	<cereal/types/map.hpp>

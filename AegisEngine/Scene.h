@@ -18,6 +18,7 @@
 
 #include	"Grid.h"
 #include	"XYZ_Axis.h"
+#include	"Light.h"
 
 #include	"Bounding.h"
 #include	"Bounding_Shpere.h"
@@ -74,6 +75,8 @@ protected:
 	static list<shared_ptr<GAME_OBJECT>> GameObjects[(int)LAYER_NAME::MAX_LAYER];
 
 	static bool PauseEnable;
+
+	static LIGHTS Light_Manager;
 
 public:
 
@@ -357,22 +360,34 @@ public:
 		return GameObjects[(int)layer].size();
 	}
 
+	/**
+	* @brief オブジェクトの個数を取得する関数
+	* @details 特定レイヤーのオブジェクトの個数を返す
+	* @return UINT オブジェクトの個数
+	*/
+	static LIGHTS* Get_Light_Manager() {
+		return &Light_Manager;
+	}
+
 	template<typename Archive>
 	void serialize(Archive& ar)
 	{
 		ar(GameObjects);
+		ar(Light_Manager);
 	}
 
 	/*template<class Archive>
 	void save(Archive& ar) const
 	{
 		ar(GameObjects);
+		ar(Light_Manager);
 	}
 
 	template<class Archive>
 	void load(Archive& ar)
 	{
 		ar(GameObjects);
+		ar(Light_Manager);
 	}*/
 };
 

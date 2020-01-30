@@ -42,7 +42,7 @@ private:
 
 	static array<LIGHT_BUFFER, MAX_NUM_LIGHTS> Lights;
 
-	unique_ptr <ID3D11Buffer, Release>			LightBuffer;
+	unique_ptr <ID3D11Buffer, Release>		LightBuffer;
 
 public:
 	LIGHTS();
@@ -60,8 +60,11 @@ public:
 	template<typename Archive>
 	void serialize(Archive& ar)
 	{
+		//for (UINT i = 0; i < MAX_NUM_LIGHTS; i++)
+		//{
+		//	ar(Lights[i]);
+		//}
 		ar(Lights);
 	}
 };
-
 #endif // !LIGHT_H

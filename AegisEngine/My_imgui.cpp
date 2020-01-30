@@ -963,7 +963,9 @@ void My_imgui::File()
 void My_imgui::Light_Setting()
 {
 	// ライトの設定(ディレクショナルライトではない)
-	auto lights = LIGHTS::Get_Lights();
+
+	auto light_manager = CManager::Get_Scene()->Get_Light_Manager();
+	auto lights = light_manager->Get_Lights();
 
 	ImGuiWindowFlags window_flags = ImGuiWindowFlags_NoResize;
 
