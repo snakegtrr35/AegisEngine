@@ -25,7 +25,7 @@ IDWriteFactory*												CRenderer::m_DwriteFactory = nullptr;
 
 unordered_map<SHADER_INDEX_V, ID3D11VertexShader*>			CRenderer::m_VertexShader;
 unordered_map<SHADER_INDEX_P, ID3D11PixelShader*>			CRenderer::m_PixelShader;
-ID3D11InputLayout*											CRenderer::m_VertexLayout[2] = { nullptr };
+ID3D11InputLayout*											CRenderer::m_VertexLayout[3] = { nullptr };
 ID3D11Buffer*												CRenderer::m_MaterialBuffer = nullptr;
 ID3D11Buffer*												CRenderer::m_LightBuffer = nullptr;
 
@@ -80,6 +80,8 @@ bool CRenderer::Init()
 		};
 		UINT numElements = ARRAYSIZE(layout);
 
+
+		// 頂点シェーダ生成 デフォルト
 		{
 			FILE* file;
 			long int fsize;
@@ -97,19 +99,14 @@ bool CRenderer::Init()
 				return false;
 			}
 
-			hr = m_D3DDevice->CreateInputLayout(layout,
-				numElements,
-				buffer,
-				fsize,
-				&m_VertexLayout[0]);
+			hr = m_D3DDevice->CreateInputLayout(layout, numElements, buffer, fsize, &m_VertexLayout[INPUTLAYOUT::DEFAULT]);
+			delete[] buffer;
 
 			if (FAILED(hr))
 			{
 				FAILDE_ASSERT;
 				return false;
 			}
-
-			delete[] buffer;
 		}
 
 		// 頂点シェーダ生成 シャドウマップ
@@ -188,19 +185,14 @@ bool CRenderer::Init()
 				return false;
 			}
 
-			hr = m_D3DDevice->CreateInputLayout(animation_layout,
-				numElements,
-				buffer,
-				fsize,
-				&m_VertexLayout[1]);
+			hr = m_D3DDevice->CreateInputLayout(animation_layout, numElements, buffer, fsize, &m_VertexLayout[INPUTLAYOUT::ANIMATION]);
+			delete[] buffer;
 
 			if (FAILED(hr))
 			{
 				FAILDE_ASSERT;
 				return false;
 			}
-
-			delete[] buffer;
 		}
 
 		// 頂点シェーダ生成 アニメーション(シャドウマップ付き)
@@ -215,13 +207,13 @@ bool CRenderer::Init()
 			fclose(file);
 
 			hr = m_D3DDevice->CreateVertexShader(buffer, fsize, NULL, &m_VertexShader[SHADER_INDEX_V::SHADOW_MAP_ANIMATION]);
+			delete[] buffer;
+
 			if (FAILED(hr))
 			{
 				FAILDE_ASSERT;
 				return false;
 			}
-
-			delete[] buffer;
 		}
 
 		// 頂点シェーダ生成 アニメーション(Depth Pre Pass)
@@ -236,16 +228,61 @@ bool CRenderer::Init()
 			fclose(file);
 
 			hr = m_D3DDevice->CreateVertexShader(buffer, fsize, NULL, &m_VertexShader[SHADER_INDEX_V::DEPTH_PRE_ANIME]);
+			delete[] buffer;
+
+			if (FAILED(hr))
+			{
+				FAILDE_ASSERT;
+				return false;
+			}
+		}
+	}
+
+	// 頂点シェーダ生成 インスタンシング
+	{
+		// 入力レイアウト生成
+		D3D11_INPUT_ELEMENT_DESC animation_layout[] =
+		{
+			{ "POSITION",	0, DXGI_FORMAT_R32G32B32_FLOAT,		0,	D3D11_APPEND_ALIGNED_ELEMENT,	D3D11_INPUT_PER_VERTEX_DATA,	0 },
+			{ "NORMAL",		0, DXGI_FORMAT_R32G32B32_FLOAT,		0,	D3D11_APPEND_ALIGNED_ELEMENT,	D3D11_INPUT_PER_VERTEX_DATA,	0 },
+			{ "COLOR",		0, DXGI_FORMAT_R32G32B32A32_FLOAT,	0,	D3D11_APPEND_ALIGNED_ELEMENT,	D3D11_INPUT_PER_VERTEX_DATA,	0 },
+			{ "TEXCOORD",	0, DXGI_FORMAT_R32G32_FLOAT,		0,	D3D11_APPEND_ALIGNED_ELEMENT,	D3D11_INPUT_PER_VERTEX_DATA,	0 },
+
+			{ "MATRIX",		0, DXGI_FORMAT_R32G32B32A32_FLOAT,	1,	D3D11_APPEND_ALIGNED_ELEMENT,	D3D11_INPUT_PER_INSTANCE_DATA,	1 },
+			{ "MATRIX",		1, DXGI_FORMAT_R32G32B32A32_FLOAT,	1,	D3D11_APPEND_ALIGNED_ELEMENT,	D3D11_INPUT_PER_INSTANCE_DATA,	1 },
+			{ "MATRIX",		2, DXGI_FORMAT_R32G32B32A32_FLOAT,	1,	D3D11_APPEND_ALIGNED_ELEMENT,	D3D11_INPUT_PER_INSTANCE_DATA,	1 },
+			{ "MATRIX",		3, DXGI_FORMAT_R32G32B32A32_FLOAT,	1,	D3D11_APPEND_ALIGNED_ELEMENT,	D3D11_INPUT_PER_INSTANCE_DATA,	1 },
+		};
+
+		UINT numElements = ARRAYSIZE(animation_layout);
+
+		{
+			FILE* file;
+			long int fsize;
+
+			file = fopen("VertexShader_Instancing.cso", "rb");
+			fsize = _filelength(_fileno(file));
+			unsigned char* buffer = new unsigned char[fsize];
+			fread(buffer, fsize, 1, file);
+			fclose(file);
+
+			hr = m_D3DDevice->CreateVertexShader(buffer, fsize, NULL, &m_VertexShader[SHADER_INDEX_V::INSTANCING]);
 			if (FAILED(hr))
 			{
 				FAILDE_ASSERT;
 				return false;
 			}
 
+			hr = m_D3DDevice->CreateInputLayout(animation_layout, numElements, buffer, fsize, &m_VertexLayout[INPUTLAYOUT::INSTANCING]);
 			delete[] buffer;
+
+			if (FAILED(hr))
+			{
+				FAILDE_ASSERT;
+				return false;
+			}
 		}
 	}
-
 
 	// ピクセルシェーダ生成
 	{
@@ -422,20 +459,12 @@ void CRenderer::Uninit()
 
 	SAFE_RELEASE(m_VertexLayout[0]);
 	SAFE_RELEASE(m_VertexLayout[1]);
-
-	//SAFE_RELEASE(m_VertexShader[0]);
-	//SAFE_RELEASE(m_VertexShader[1]);
-	//SAFE_RELEASE(m_VertexShader[2]);
+	SAFE_RELEASE(m_VertexLayout[2]);
 
 	for (auto s : m_VertexShader)
 	{
 		if(nullptr != s.second) s.second->Release();
 	}
-
-	//SAFE_RELEASE(m_PixelShader[0]);
-	//SAFE_RELEASE(m_PixelShader[1]);
-	//SAFE_RELEASE(m_PixelShader[2]);
-	//SAFE_RELEASE(m_PixelShader[3]);
 
 	for (auto s : m_PixelShader)
 	{
@@ -648,8 +677,6 @@ bool CRenderer::Init3D()
 	D3D11_RASTERIZER_DESC rd;
 	ZeroMemory(&rd, sizeof(rd));
 	rd.FillMode = D3D11_FILL_SOLID;
-	//rd.FillMode = D3D11_FILL_WIREFRAME;
-	//rd.CullMode = D3D11_CULL_NONE;
 	rd.CullMode = D3D11_CULL_BACK;
 	rd.DepthClipEnable = TRUE;
 	rd.MultisampleEnable = FALSE;
@@ -1147,6 +1174,14 @@ void CRenderer::SetVertexBuffers( ID3D11Buffer* VertexBuffer )
 	m_ImmediateContext->IASetVertexBuffers( 0, 1, vb, &stride, &offset );
 }
 
+void CRenderer::SetVertexBuffers(ID3D11Buffer* VertexBuffer, ID3D11Buffer* InstancingBuffer, UINT size)
+{
+	UINT stride[2] = { size, sizeof(XMMATRIX) };
+	UINT offset[2] = { 0, 0 };
+	ID3D11Buffer* vb[2] = { VertexBuffer, InstancingBuffer };
+	m_ImmediateContext->IASetVertexBuffers(0, 2, vb, stride, offset);
+}
+
 void CRenderer::SetIndexBuffer( ID3D11Buffer* IndexBuffer )
 {
 	m_ImmediateContext->IASetIndexBuffer( IndexBuffer, DXGI_FORMAT_R16_UINT, 0 );
@@ -1161,52 +1196,7 @@ void CRenderer::DrawIndexed( unsigned int IndexCount, unsigned int StartIndexLoc
 // シェーダ設定
 void CRenderer::Set_Shader(const SHADER_INDEX_V v_index, const SHADER_INDEX_P p_index)
 {
-	//switch ((int)v_index)
-	//{
-	//	case (int)SHADER_INDEX_V::DEFAULT:
-	//		m_ImmediateContext->VSSetShader(m_VertexShader[(int)SHADER_INDEX_V::DEFAULT], NULL, 0);
-	//		break;
-	//
-	//	case (int)SHADER_INDEX_V::SHADOW_MAP:
-	//		m_ImmediateContext->VSSetShader(m_VertexShader[(int)SHADER_INDEX_V::SHADOW_MAP], NULL, 0);
-	//		break;
-	//
-	//	case (int)SHADER_INDEX_V::ANIMATION:
-	//		m_ImmediateContext->VSSetShader(m_VertexShader[(int)SHADER_INDEX_V::ANIMATION], NULL, 0);
-	//		break;
-	//
-	//	case (int)SHADER_INDEX_V::SHADOW_MAP_ANIMATION:
-	//		m_ImmediateContext->VSSetShader(m_VertexShader[(int)SHADER_INDEX_V::SHADOW_MAP_ANIMATION], NULL, 0);
-	//		break;
-	//
-	//	default:
-	//		break;
-	//}
-
 	m_ImmediateContext->VSSetShader(m_VertexShader[v_index], nullptr, 0);
-
-	//switch ((int)p_index)
-	//{
-	//	case (int)SHADER_INDEX_P::DEFAULT:
-	//		m_ImmediateContext->PSSetShader(m_PixelShader[(int)SHADER_INDEX_P::DEFAULT], NULL, 0);
-	//		break;
-	//
-	//	case (int)SHADER_INDEX_P::NO_TEXTURE:
-	//		m_ImmediateContext->PSSetShader(m_PixelShader[(int)SHADER_INDEX_P::NO_TEXTURE], NULL, 0);
-	//		break;
-	//
-	//	case (int)SHADER_INDEX_P::NO_LIGHT:
-	//		m_ImmediateContext->PSSetShader(m_PixelShader[(int)SHADER_INDEX_P::NO_LIGHT], NULL, 0);
-	//		break;
-	//
-	//	case (int)SHADER_INDEX_P::SHADOW_MAP:
-	//		m_ImmediateContext->PSSetShader(m_PixelShader[(int)SHADER_INDEX_P::SHADOW_MAP], NULL, 0);
-	//		//m_ImmediateContext->PSSetShader(nullptr, NULL, 0);
-	//		break;
-	//
-	//	default:
-	//		break;
-	//}
 
 	m_ImmediateContext->PSSetShader(m_PixelShader[p_index], nullptr, 0);
 }
@@ -1222,6 +1212,10 @@ void CRenderer::Set_InputLayout(const INPUTLAYOUT InputLayout)
 
 		case (int)INPUTLAYOUT::ANIMATION:
 			m_ImmediateContext->IASetInputLayout(m_VertexLayout[(int)INPUTLAYOUT::ANIMATION]);
+			break;
+
+		case (int)INPUTLAYOUT::INSTANCING:
+			m_ImmediateContext->IASetInputLayout(m_VertexLayout[(int)INPUTLAYOUT::INSTANCING]);
 			break;
 
 		default:

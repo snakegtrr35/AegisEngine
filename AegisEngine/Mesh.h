@@ -142,7 +142,7 @@ private:
 
 			CRenderer::GetDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-			CRenderer::GetDeviceContext()->DrawIndexed(Indices.size(), 0, 0);
+			CRenderer::GetDeviceContext()->DrawIndexed((UINT)Indices.size(), 0, 0);
 		}
 		else
 		{
@@ -184,7 +184,7 @@ private:
 
 			CRenderer::GetDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-			CRenderer::GetDeviceContext()->DrawIndexed(Indices.size(), 0, 0);
+			CRenderer::GetDeviceContext()->DrawIndexed((UINT)Indices.size(), 0, 0);
 		}
 		else
 		{
@@ -367,7 +367,7 @@ private:
 
 		CRenderer::GetDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-		CRenderer::GetDeviceContext()->DrawIndexed(Indices.size(), 0, 0);
+		CRenderer::GetDeviceContext()->DrawIndexed((UINT)Indices.size(), 0, 0);
 
 		for (auto child : ChildMeshes)
 		{
@@ -490,7 +490,7 @@ private:
 
 		CRenderer::GetDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-		CRenderer::GetDeviceContext()->DrawIndexed(Indices.size(), 0, 0);
+		CRenderer::GetDeviceContext()->DrawIndexed((UINT)Indices.size(), 0, 0);
 
 		for (auto child : ChildMeshes)
 		{
@@ -525,7 +525,7 @@ private:
 		{
 			D3D11_BUFFER_DESC ibd;
 			ibd.Usage = D3D11_USAGE_DEFAULT;
-			ibd.ByteWidth = sizeof(UINT) * Indices.size();
+			ibd.ByteWidth = sizeof(UINT) * (UINT)Indices.size();
 			ibd.BindFlags = D3D11_BIND_INDEX_BUFFER;
 			ibd.CPUAccessFlags = 0;
 			ibd.MiscFlags = 0;

@@ -131,7 +131,7 @@ bool FBXmodel::Load(const string& FileName)
 			D3D11_BUFFER_DESC bd;
 			ZeroMemory(&bd, sizeof(bd));
 			bd.Usage = D3D11_USAGE_DEFAULT;
-			bd.ByteWidth = sizeof(ANIME_VERTEX) * vertex.size();
+			bd.ByteWidth = sizeof(ANIME_VERTEX) * (UINT)vertex.size();
 			bd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
 			bd.CPUAccessFlags = 0;
 			bd.MiscFlags = 0;
@@ -167,12 +167,12 @@ bool FBXmodel::Load(const string& FileName)
 				}
 			}
 
-			index_Num = index.size();
+			index_Num = (UINT)index.size();
 	
 			D3D11_BUFFER_DESC bd;
 			ZeroMemory(&bd, sizeof(bd));
 			bd.Usage = D3D11_USAGE_DEFAULT;
-			bd.ByteWidth = sizeof(WORD) * index.size();
+			bd.ByteWidth = sizeof(WORD) * (UINT)index.size();
 			bd.BindFlags = D3D11_BIND_INDEX_BUFFER;
 			bd.CPUAccessFlags = 0;
 

@@ -131,9 +131,9 @@ void FADE::Start_FadeOut(const float time)
 
 	pFade->Init();
 
-	pFade->Set_Time(time);
+	pFade->Set_Time((WORD)time);
 	pFade->Set_Color(XMFLOAT4(0.f, 0.f, 0.f, 0.f));
-	pFade->Set_AdditionalAlpha(time, 1.0f);
+	pFade->Set_AdditionalAlpha((WORD)time, 1.0f);
 	FadeEnable = false;
 }
 
@@ -145,9 +145,9 @@ void FADE::Start_FadeIn(const float time)
 
 	pFade->Init();
 
-	pFade->Set_Time(time);
+	pFade->Set_Time((WORD)time);
 	pFade->Set_Color(XMFLOAT4(0.f, 0.f, 0.f, 1.0f));
-	pFade->Set_AdditionalAlpha(time, -1.0f);
+	pFade->Set_AdditionalAlpha((WORD)time, -1.0f);
 	FadeEnable = false;
 }
 

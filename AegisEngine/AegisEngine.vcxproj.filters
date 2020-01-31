@@ -445,9 +445,6 @@
     <ClInclude Include="Color.h">
       <Filter>ソース ファイル\System</Filter>
     </ClInclude>
-    <ClInclude Include="Light_hlsl.h">
-      <Filter>リソース ファイル</Filter>
-    </ClInclude>
     <ClInclude Include="Commom_Hlsl.h">
       <Filter>リソース ファイル</Filter>
     </ClInclude>
@@ -494,6 +491,10 @@
     </FxCompile>
     <FxCompile Include="VertexShader_Depth_Pre_Pass.hlsl">
       <Filter>リソース ファイル\NewFilter1</Filter>
+    </FxCompile>
+    <FxCompile Include="Light_hlsl.h" />
+    <FxCompile Include="VertexShader_Instancing.hlsl">
+      <Filter>リソース ファイル\VertexShader</Filter>
     </FxCompile>
   </ItemGroup>
   <ItemGroup>

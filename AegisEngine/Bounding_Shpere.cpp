@@ -148,8 +148,8 @@ void BOUNDING_SHPERE::Create_Buffer()
 
 		for (int i = 0; i < cnt; i++)
 		{
-			index_array[i * 2] = i;
-			index_array[i * 2 + 1] = (i + 1) % cnt;
+			index_array[i * 2] = (WORD)i;
+			index_array[i * 2 + 1] = (WORD)((i + 1) % cnt);
 		}
 
 		// インデックスバッファの設定
@@ -191,7 +191,7 @@ void BOUNDING_SHPERE::OverWrite()
 
 		const float angle = XM_2PI / cnt;
 
-		for (int i = 0; i < cnt; i++)
+		for (UINT i = 0; i < cnt; i++)
 		{
 			vertex[i].Position = XMFLOAT3(cosf(angle * i) * Radius, sinf(angle * i) * Radius, 0.0f);
 			vertex[i].Normal = XMFLOAT3(0.0f, 0.0f, 0.0f);

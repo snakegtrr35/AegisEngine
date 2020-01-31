@@ -80,9 +80,10 @@ typedef struct {
 
 enum class SHADER_INDEX_V {
 	DEFAULT,
-	SHADOW_MAP,
 	ANIMATION,
+	SHADOW_MAP,
 	SHADOW_MAP_ANIMATION,
+	INSTANCING,
 	DEPTH_PRE,
 	DEPTH_PRE_ANIME,
 	MAX,
@@ -112,6 +113,8 @@ struct CONSTANT_02 {
 enum INPUTLAYOUT {
 	DEFAULT = 0,
 	ANIMATION,
+	INSTANCING,
+	MAX
 };
 
 /**
@@ -163,7 +166,7 @@ private:
 	static unique_ptr<ID3D11SamplerState, Release>				m_SamplerState;
 
 	//! 頂点レイアウト
-	static ID3D11InputLayout*									m_VertexLayout[2];
+	static ID3D11InputLayout*									m_VertexLayout[3];
 	//! マテリアルバッファ
 	static ID3D11Buffer*										m_MaterialBuffer;
 	//! ライトバッファ
@@ -276,6 +279,12 @@ public:
 	* @details 頂点バッファ設定を設定する
 	*/
 	static void SetVertexBuffers( ID3D11Buffer* VertexBuffer );
+
+	/**
+	* @brief 頂点バッファの設定(インスタンシング用)
+	* @details インスタンシング用の頂点バッファ設定を設定する
+	*/
+	static void SetVertexBuffers(ID3D11Buffer* IndexBuffer, ID3D11Buffer* InstancingBuffer, UINT size);
 
 	/**
 	* @brief インデックスバッファの設定

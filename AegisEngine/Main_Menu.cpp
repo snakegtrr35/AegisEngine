@@ -35,8 +35,8 @@ string Replace_String(string& replacedStr, const string& from, const string& to)
 		return replacedStr;
 	}
 
-	const UINT pos = replacedStr.find(from);
-	const UINT len = from.length();
+	const UINT pos = (UINT)replacedStr.find(from);
+	const UINT len = (UINT)from.length();
 
 	if (replacedStr.size() < pos)
 	{
@@ -120,6 +120,10 @@ void MAIN_MENU::Init()
 
 		{
 			Add_Game_Object<MESH_FIELD>(LAYER_NAME::GAMEOBJECT, "field");
+		}
+
+		{
+			Add_Game_Object<FIELD>(LAYER_NAME::GAMEOBJECT, "plane");
 		}
 
 		//{

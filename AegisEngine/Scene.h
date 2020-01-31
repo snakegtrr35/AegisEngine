@@ -357,7 +357,7 @@ public:
 	* @return UINT オブジェクトの個数
 	*/
 	static const UINT Get_Game_Object_Count(const LAYER_NAME layer) {
-		return GameObjects[(int)layer].size();
+		return (UINT)GameObjects[(int)layer].size();
 	}
 
 	/**
