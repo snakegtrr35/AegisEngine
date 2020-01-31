@@ -60,10 +60,6 @@ public:
 	template<typename Archive>
 	void serialize(Archive& ar)
 	{
-		//for (UINT i = 0; i < MAX_NUM_LIGHTS; i++)
-		//{
-		//	ar(Lights[i]);
-		//}
 		ar(Lights);
 	}
 };
