@@ -402,6 +402,35 @@ void My_imgui::Draw(void)
 			ImGui::End();
 		}
 
+		{
+			XMVECTOR z = XMVectorSet(0.f, 0.f, 1.0f, 1.0f);
+			XMVECTOR x = XMVectorSet(1.0f, 0.f, 0.f, 1.0f);
+
+			static XMVECTOR quat01 = XMQuaternionRotationAxis(z, 1.0f);
+			static XMVECTOR quat02 = XMQuaternionRotationAxis(x, 1.0f);
+			XMVECTOR quat;
+			static float t = 0.0f;
+
+			XMFLOAT4 v;
+
+			ImGui::Begin("Quaternion");
+
+			ImGui::SliderFloat("t", &t, 0.0f, 1.0f);
+
+			quat = XMQuaternionSlerp(quat01, quat02, t);
+
+			XMStoreFloat4(&v, quat);
+			ImGui::Text("quat  x = %f y = %f z = %f w = %f", v.x, v.y, v.z, v.w);
+
+			XMStoreFloat4(&v, quat01);
+			ImGui::Text("quat01  x = %f y = %f z = %f w = %f", v.x, v.y, v.z, v.w);
+
+			XMStoreFloat4(&v, quat02);
+			ImGui::Text("quat02  x = %f y = %f z = %f w = %f", v.x, v.y, v.z, v.w);
+
+			ImGui::End();
+		}
+
 		// ライトの設定(ディレクショナルライトではない)
 		{
 			Light_Setting();

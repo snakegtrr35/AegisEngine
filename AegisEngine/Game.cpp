@@ -389,9 +389,9 @@ void GAME::Update(float delta_time)
 
 			axis->Rotation_Right(-1.0f);
 
-			XMFLOAT3 vec = axis->Get_Axis();
+			//XMFLOAT3 vec = axis->Get_Axis();
 
-			enemy->SetRotation(vec);
+			//enemy->SetRotation(vec);
 		}
 	}
 
