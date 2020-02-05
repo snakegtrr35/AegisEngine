@@ -546,6 +546,8 @@ public:
 	void Update(float delta_time) override;
 	void Uninit() override;
 
+	void Init(bool);
+
 	static string Model_Name;
 
 	template<typename Archive>
