@@ -115,7 +115,7 @@ void SPRITE::Init(void)
 
 void SPRITE::Draw(void)
 {
-	if (false == CManager::Get_ShadowMap()->Get_Enable())
+	if (false == CManager::Get_Instance()->Get_ShadowMap()->Get_Enable())
 	{
 		if (Enable)
 		{
@@ -319,7 +319,7 @@ void TEXTS::Init(void)
 
 void TEXTS::Draw(void)
 {
-	if (false == CManager::Get_ShadowMap()->Get_Enable())
+	if (false == CManager::Get_Instance()->Get_ShadowMap()->Get_Enable())
 	{
 		Text_Draw(Text);
 

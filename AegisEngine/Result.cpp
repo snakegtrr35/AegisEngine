@@ -58,7 +58,7 @@ void RESULT::Update(float delta_time)
 
 	if (KEYBOARD::Trigger_Keyboard(VK_SHIFT))
 	{
-		CManager::GameEnd();
+		CManager::Get_Instance()->GameEnd();
 	}
 }
 

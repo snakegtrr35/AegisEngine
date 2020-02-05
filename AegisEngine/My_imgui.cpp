@@ -186,7 +186,7 @@ void My_imgui::Draw(void)
 
 					if (ImGui::MenuItem("Close"))
 					{
-						CManager::GameEnd();
+						CManager::Get_Instance()->GameEnd();
 					}
 
 					ImGui::EndMenu();
@@ -284,7 +284,7 @@ void My_imgui::Draw(void)
 
 					ImGui::Begin("Shadow", nullptr, window_flags);
 
-					ImTextureID image = CManager::Get_ShadowMap()->Get();
+					ImTextureID image = CManager::Get_Instance()->Get_ShadowMap()->Get();
 
 					ImGui::Image(image, ImVec2(512, 512));
 
@@ -338,7 +338,7 @@ void My_imgui::Draw(void)
 		}
 
 		{
-			const weak_ptr<DEBUG_CAMERA> camera = CManager::Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
+			const weak_ptr<DEBUG_CAMERA> camera = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
 
 			ImGuiWindowFlags window_flags = ImGuiWindowFlags_NoResize;
 
@@ -728,7 +728,7 @@ void My_imgui::Texture_Import()
 
 				if (1 == check)
 				{
-					TEXTURE_MANEGER::Add(file_name);
+					TEXTURE_MANEGER::Get_Instance()->Add(file_name);
 
 					ImGui::Text((char*)u8"テクスチャが読み込まれました");
 				}
@@ -799,7 +799,7 @@ const char My_imgui::File_Check(const string& file_name)
 		return -1;
 	}
 
-	if (TEXTURE_MANEGER::Get_TextureFile().find(file_name) != TEXTURE_MANEGER::Get_TextureFile().end())
+	if (TEXTURE_MANEGER::Get_Instance()->Get_TextureFile().find(file_name) != TEXTURE_MANEGER::Get_Instance()->Get_TextureFile().end())
 	{
 		// 既に読み込んでいるテクスチャ
 		return -2;
@@ -858,7 +858,7 @@ void My_imgui::Texture_Delete()
 
 				if (-1 != check)
 				{
-					TEXTURE_MANEGER::Unload(file_name);
+					TEXTURE_MANEGER::Get_Instance()->Unload(file_name);
 
 					ImGui::Text((char*)u8"テクスチャが削除されました");
 				}
@@ -957,8 +957,8 @@ void My_imgui::File()
 
 		ImGui::Begin("Texture");
 
-		auto texture = TEXTURE_MANEGER::Get_TextureData_Start();
-		auto end = TEXTURE_MANEGER::Get_TextureData_End();
+		auto texture = TEXTURE_MANEGER::Get_Instance()->Get_TextureData_Start();
+		auto end = TEXTURE_MANEGER::Get_Instance()->Get_TextureData_End();
 
 		for(; texture != end; texture++)
 		{
@@ -993,7 +993,7 @@ void My_imgui::Light_Setting()
 {
 	// ライトの設定(ディレクショナルライトではない)
 
-	auto light_manager = CManager::Get_Scene()->Get_Light_Manager();
+	auto light_manager = CManager::Get_Instance()->Get_Scene()->Get_Light_Manager();
 	auto lights = light_manager->Get_Lights();
 
 	ImGuiWindowFlags window_flags = ImGuiWindowFlags_NoResize;

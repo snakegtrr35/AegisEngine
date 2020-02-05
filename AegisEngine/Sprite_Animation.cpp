@@ -59,7 +59,7 @@ void SPRITE_ANIMATION::Init(void)
 
 void SPRITE_ANIMATION::Draw(void)
 {
-	if (false == CManager::Get_ShadowMap()->Get_Enable())
+	if (false == CManager::Get_Instance()->Get_ShadowMap()->Get_Enable())
 	{
 		Draw2(Tx_Param, Ty_Param);
 	}

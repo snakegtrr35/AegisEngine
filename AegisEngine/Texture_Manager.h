@@ -31,35 +31,47 @@ struct TEXTURE_DATA {
 //========================================
 class TEXTURE_MANEGER {
 private:
-	static unordered_map<string, string> Default_Texture_File;		//! デフォルトのテクスチャのファイルパス
-	static unordered_map<string, TEXTURE_FILE> TextureFile;			//! テクスチャのファイルデータ
-	static unordered_map<string, TEXTURE_DATA> TextureData;			//! テクスチャデータ
 
-	static void Default_Load(const bool flag);		// デフォルトのテクスチャの読み込み
-	static void Load(const bool flag);				// テクスチャの読み込み
+	static unique_ptr<TEXTURE_MANEGER> Texture_Manager;
 
-	static DWORD Get_File_Time(const string& path);
+	unordered_map<string, string> Default_Texture_File;		//! デフォルトのテクスチャのファイルパス
+	unordered_map<string, TEXTURE_FILE> TextureFile;			//! テクスチャのファイルデータ
+	unordered_map<string, TEXTURE_DATA> TextureData;			//! テクスチャデータ
+
+	void Default_Load(const bool flag);		// デフォルトのテクスチャの読み込み
+	void Load(const bool flag);				// テクスチャの読み込み
+
+	DWORD Get_File_Time(const string& path);
+
+	std::mutex isLoadedMutex;
 
 public:
+	TEXTURE_MANEGER() {};
+	~TEXTURE_MANEGER() { Uninit(); }
+
 
 	static void Init();
-	static void Update();
-	static void Uninit();
 
-	static void Add(const string& file_name);
-	static const bool Unload(const string& const file_name);
+	void Update();
 
-	static void Add_ReferenceCnt(const string& const file_name);
-	static void Sub_ReferenceCnt(const string& const file_name);
+	void Uninit();
+
+	static TEXTURE_MANEGER* Get_Instance();
+
+	void Add(const string& file_name);
+	const bool Unload(const string& const file_name);
+
+	void Add_ReferenceCnt(const string& const file_name);
+	void Sub_ReferenceCnt(const string& const file_name);
 	
-	static XMINT2* const Get_WH(const string& const file_name);
+	XMINT2* const Get_WH(const string& const file_name);
 
-	static ID3D11ShaderResourceView* const GetShaderResourceView(const string& const file_name);
+	ID3D11ShaderResourceView* const GetShaderResourceView(const string& const file_name);
 
-	static unordered_map<string, TEXTURE_FILE>& Get_TextureFile();
+	unordered_map<string, TEXTURE_FILE>& Get_TextureFile();
 
-	static unordered_map<string, TEXTURE_DATA>::iterator Get_TextureData_Start();
-	static unordered_map<string, TEXTURE_DATA>::iterator Get_TextureData_End();
+	unordered_map<string, TEXTURE_DATA>::iterator Get_TextureData_Start();
+	unordered_map<string, TEXTURE_DATA>::iterator Get_TextureData_End();
 
 	template<class T>
 	void serialize(T& archive) {

@@ -145,7 +145,7 @@ bool CMODEL::Reload(const string& filename)
 
 void CMODEL::Draw()
 {
-	const auto camera = CManager::Get_Scene()->Get_Game_Object<CCamera>("camera");
+	const auto camera = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<CCamera>("camera");
 
 	if (camera.expired() && Empty_weak_ptr<CCamera>(camera))
 	{
@@ -191,8 +191,8 @@ void CMODEL::Draw()
 	matrix = XMMatrixMultiply(matrix, transform);
 
 	{
-		const auto camera01 = CManager::Get_Scene()->Get_Game_Object<CCamera>("camera");
-		const auto camera02 = CManager::Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
+		const auto camera01 = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<CCamera>("camera");
+		const auto camera02 = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
 
 		{
 			XMVECTOR camera_pos;
@@ -225,7 +225,7 @@ void CMODEL::Draw()
 			CRenderer::Set_MatrixBuffer01(camera_pos);
 		}
 
-		if (CManager::Get_ShadowMap()->Get_Enable())
+		if (CManager::Get_Instance()->Get_ShadowMap()->Get_Enable())
 		{
 			CRenderer::Set_Shader(SHADER_INDEX_V::SHADOW_MAP, SHADER_INDEX_P::SHADOW_MAP);
 		}
@@ -272,7 +272,7 @@ void CMODEL::Draw()
 
 void CMODEL::Draw_DPP()
 {
-	const auto camera = CManager::Get_Scene()->Get_Game_Object<CCamera>("camera");
+	const auto camera = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<CCamera>("camera");
 
 	if (camera.expired() && Empty_weak_ptr<CCamera>(camera))
 	{
@@ -292,8 +292,8 @@ void CMODEL::Draw_DPP()
 	matrix = XMMatrixMultiply(matrix, transform);
 
 	{
-		auto camera01 = CManager::Get_Scene()->Get_Game_Object<CCamera>("camera");
-		auto camera02 = CManager::Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
+		auto camera01 = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<CCamera>("camera");
+		auto camera02 = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
 
 	}
 

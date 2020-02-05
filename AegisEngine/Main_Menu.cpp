@@ -18,8 +18,6 @@ string MAIN_MENU::Model_Name = "asset/model/herorifle.fbx";
 
 static bool flag = false;
 
-//static FBXmodel* model;
-
 BOUNDING_FRUSTUM Bounding_Frustun;
 BOUNDING_AABB AABB;
 
@@ -239,7 +237,7 @@ void MAIN_MENU::Init()
 
 		sprite_anime->SetTexture("Load.png");
 
-		sprite_anime->SetParam(20, 3, 1);
+		sprite_anime->SetParam(10, 3, 1);
 
 		sprite_anime->Init();
 	}
@@ -329,7 +327,6 @@ void MAIN_MENU::Update(float delta_time)
 
 			flag = true;
 		}*/
-
 	}
 	else
 	{

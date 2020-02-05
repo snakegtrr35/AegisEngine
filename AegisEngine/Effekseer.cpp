@@ -142,7 +142,7 @@ void EFFEKSEER_MANAGER::Draw()
 
 void EFFEKSEER_MANAGER::Update(float delta_time)
 {
-	auto player = CManager::Get_Scene()->Get_Game_Object("player");
+	auto player = CManager::Get_Instance()->Get_Scene()->Get_Game_Object("player");
 
 	//	Set_Location("test", XMFLOAT3(player->Get_Position()->x, player->Get_Position()->y, player->Get_Position()->z));
 
@@ -159,11 +159,11 @@ void EFFEKSEER_MANAGER::Update(float delta_time)
 void EFFEKSEER_MANAGER::Set()
 {
 	weak_ptr<DEBUG_CAMERA> D_camera;
-	auto camera = CManager::Get_Scene()->Get_Game_Object<CCamera>("camera");
+	auto camera = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<CCamera>("camera");
 
 	if (camera.expired() && Empty_weak_ptr<CCamera>(camera))
 	{
-		D_camera = CManager::Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
+		D_camera = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
 	}
 
 	{
@@ -260,7 +260,7 @@ void EFFEKSEER_MANAGER::Play(const string& name)
 {
 	Manager->StopEffect(Handles[name]);
 
-	auto player = CManager::Get_Scene()->Get_Game_Object("player");
+	auto player = CManager::Get_Instance()->Get_Scene()->Get_Game_Object("player");
 
 	Handles[name] = Manager->Play(Effects[name], player->Get_Position()->x, player->Get_Position()->y, player->Get_Position()->z);
 

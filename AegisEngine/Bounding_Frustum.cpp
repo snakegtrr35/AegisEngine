@@ -120,7 +120,7 @@ void BOUNDING_FRUSTUM::Init()
 
 void BOUNDING_FRUSTUM::Draw()
 {
-	if (false == CManager::Get_ShadowMap()->Get_Enable())
+	if (false == CManager::Get_Instance()->Get_ShadowMap()->Get_Enable())
 	{
 		// 入力アセンブラに頂点バッファを設定
 		CRenderer::SetVertexBuffers(pVertexBuffer.get());
@@ -143,8 +143,8 @@ void BOUNDING_FRUSTUM::Draw()
 				//world *= XMMatrixRotationRollPitchYaw(XMConvertToRadians(Rotation.x), XMConvertToRadians(Rotation.y), XMConvertToRadians(Rotation.z));
 				//world *= XMMatrixTranslation(Position.x, Position.y, Position.z);
 
-				const auto camera01 = CManager::Get_Scene()->Get_Game_Object<CCamera>("camera");
-				const auto camera02 = CManager::Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
+				const auto camera01 = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<CCamera>("camera");
+				const auto camera02 = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
 
 				if (!camera01.expired() && Empty_weak_ptr<CCamera>(camera01))
 				{
@@ -174,7 +174,7 @@ void BOUNDING_FRUSTUM::Update(float delta_time)
 
 	XMFLOAT3 r;
 
-	const auto camera = CManager::Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
+	const auto camera = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
 
 	//if (nullptr != camera)
 	{

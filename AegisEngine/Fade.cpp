@@ -92,7 +92,7 @@ void FADE::Update(float delta_time)
 
 	if (Get_FadeEnable())
 	{
-		CManager::Get_Scene()->Destroy_Game_Object(this);
+		CManager::Get_Instance()->Get_Scene()->Destroy_Game_Object(this);
 		FadeEnable = true;
 		Enable = false;
 	}
@@ -127,7 +127,7 @@ void FADE::Start_FadeOut(const float time)
 {
 	FADE* pFade = nullptr;
 
-	pFade = CManager::Get_Scene()->Add_Game_Object<FADE>(LAYER_NAME::UI, "fade");
+	pFade = CManager::Get_Instance()->Get_Scene()->Add_Game_Object<FADE>(LAYER_NAME::UI, "fade");
 
 	pFade->Init();
 
@@ -141,7 +141,7 @@ void FADE::Start_FadeIn(const float time)
 {
 	FADE* pFade = nullptr;
 
-	pFade = CManager::Get_Scene()->Add_Game_Object<FADE>(LAYER_NAME::UI, "fade");
+	pFade = CManager::Get_Instance()->Get_Scene()->Add_Game_Object<FADE>(LAYER_NAME::UI, "fade");
 
 	pFade->Init();
 

@@ -16,10 +16,7 @@ LIGHTS Light;
 #include	"My_imgui.h"
 #endif // _DEBUG
 
-SCENE_MANAGER* CManager::pSceneManager = nullptr;		// シーンマネージャー
-bool CManager::GameEnable = true;			// プログラム自体の終了のためのフラグ
-
-SHADOW_MAP* CManager::pShadowMap = nullptr;
+unique_ptr<CManager> CManager::Manager;
 
 #ifdef _DEBUG
 My_imgui* g_MyImgui;		// Imguiのクラス
@@ -27,7 +24,20 @@ My_imgui* g_MyImgui;		// Imguiのクラス
 
 bool CManager::Init()
 {
+	if (nullptr == Manager.get())
+	{
+		Manager = make_unique<CManager>();
+	}
+
 	HRESULT hr;
+
+	UINT count = thread::hardware_concurrency();
+	if (0 == count)
+	{
+		FAILDE_ASSERT;
+		return false;
+	}
+	Manager->Set_ThreadCount(count);
 
 	// COMの初期化
 	hr = CoInitializeEx(0, COINITBASE_MULTITHREADED);
@@ -59,19 +69,19 @@ bool CManager::Init()
 	TIMER::Init();
 	CLOCK_TIMER::Init();
 
-	pSceneManager = new SCENE_MANAGER();
+	Manager->pSceneManager = new SCENE_MANAGER();
 
-	pSceneManager->Init();
+	Manager->pSceneManager->Init();
 	//pSceneManager->Set_Scene<TITLE>();
-	pSceneManager->Set_Scene<MAIN_MENU>();
+	Manager->pSceneManager->Set_Scene<MAIN_MENU>();
 
 	EFFEKSEER_MANAGER::Init();
 
 	//CRenderer::Change_Window_Mode();
 
-	pShadowMap = new SHADOW_MAP();//
-	pShadowMap->Init();
-	pShadowMap->Set_Target(pSceneManager->Get_Scene()->Get_Game_Object<PLAYER>("player"));
+	Manager->pShadowMap = new SHADOW_MAP();//
+	Manager->pShadowMap->Init();
+	Manager->pShadowMap->Set_Target(Manager->pSceneManager->Get_Scene()->Get_Game_Object<PLAYER>("player"));
 
 	Light.Init();
 
@@ -87,7 +97,7 @@ void CManager::Update()
 	CINPUT::Update();
 
 #ifdef _DEBUG
-	TEXTURE_MANEGER::Update();
+	TEXTURE_MANEGER::Get_Instance()->Update();
 #endif // _DEBUG
 
 	pSceneManager->Update(TIMER::Get_DeltaTime());
@@ -132,8 +142,8 @@ void CManager::Draw()
 
 	// シャドウマップの描画
 	{
-		//pShadowMap->Begin();
-		//pSceneManager->Draw();
+		pShadowMap->Begin();
+		pSceneManager->Draw();
 		pShadowMap->End();//
 	}
 
@@ -219,8 +229,6 @@ void CManager::Uninit()
 
 	FONT::Uninit();
 
-	TEXTURE_MANEGER::Uninit();
-
 	AUDIO_MANAGER::Uninit();
 
 	SAFE_DELETE(pShadowMap);//
@@ -259,4 +267,24 @@ bool CManager::Get_GameEnd()
 void CManager::GameEnd()
 {
 	GameEnable = false;
+}
+
+CManager* CManager::Get_Instance()
+{
+	return Manager.get();
+}
+
+void CManager::Delete()
+{
+	Manager.reset(nullptr);
+}
+
+void CManager::Set_ThreadCount(const UINT count)
+{
+	ThreadCount = count;
+}
+
+const UINT CManager::Get_ThreadCount()
+{
+	return ThreadCount;
 }
