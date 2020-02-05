@@ -12,6 +12,7 @@
 #include	"Player.h"
 #include	"Enemy.h"
 #include	"Sprite.h"
+#include	"Sprite_Animation.h"
 #include	"Polygon_3D.h"
 #include	"Billboard.h"
 #include	"Score.h"

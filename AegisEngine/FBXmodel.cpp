@@ -260,7 +260,7 @@ void FBXmodel::Update(float delta_time)
 
 	fr += delta_time;
 
-	if (ANIMETION_FRAME <= fr)
+	if (ANIMETION_FRAME_30 <= fr)
 	{
 		frame++;
 
