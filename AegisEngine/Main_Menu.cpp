@@ -111,7 +111,7 @@ void MAIN_MENU::Init()
 		//}
 
 		{
-			auto player = Add_Game_Object<PLAYER>(LAYER_NAME::GAMEOBJECT, "player");
+			//auto player = Add_Game_Object<PLAYER>(LAYER_NAME::GAMEOBJECT, "player");
 		}
 
 		{
@@ -119,11 +119,11 @@ void MAIN_MENU::Init()
 		}
 
 		{
-			Add_Game_Object<MESH_FIELD>(LAYER_NAME::GAMEOBJECT, "field");
+			//Add_Game_Object<MESH_FIELD>(LAYER_NAME::GAMEOBJECT, "field");
 		}
 
 		{
-			Add_Game_Object<FIELD>(LAYER_NAME::GAMEOBJECT, "plane");
+			//Add_Game_Object<FIELD>(LAYER_NAME::GAMEOBJECT, "plane");
 		}
 
 		//{
@@ -181,20 +181,30 @@ void MAIN_MENU::Init()
 		//	s->SetSize(XMFLOAT4(128, 128, 128, 128));
 		//}
 
-		//{
-		//	auto text = Add_Game_Object<TEXTS>(LAYER_NAME::UI);
+		{
+			auto text = Add_Game_Object<SPRITE_ANIMATION>(LAYER_NAME::UI, "sprite");
 
-		//	XMFLOAT2 pos(100.0f, 300.0f);
+			XMFLOAT2 pos(SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.5f);
+
+			text->SetPosition(pos);
+
+			text->SetSize(XMFLOAT4(100, 100, 100, 100));
+
+			text->SetTexture("Explosion.png");
+
+			text->SetParam(10.0f, 4, 4);
+		}
+
+		//{
+		//	auto text = Add_Game_Object<SPRITE>(LAYER_NAME::UI, "sprite");
+
+		//	XMFLOAT2 pos(SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.5f);
 
 		//	text->SetPosition(pos);
 
-		//	text->SetSize(XMFLOAT4(20, 20, 20, 20));
+		//	text->SetSize(XMFLOAT4(100, 100, 100, 100));
 
-		//	text->Set_Object_Name(string("delta_time"));
-
-		//	//string time = to_string(Time);
-
-		//	text->Edit("0.000");
+		//	text->SetTexture("UVCheckerMap01-512.png");
 		//}
 
 		/*{
