@@ -28,11 +28,11 @@ public:
 	PLAYER();
 	~PLAYER();
 
-	void Init(void) override;
-	void Draw(void) override;
-	void Draw_DPP() override;
-	void Update(float delta_time) override;
-	void Uninit(void) override;
+	void Init(void);
+	void Draw(void);
+	void Draw_DPP();
+	void Update(float delta_time);
+	void Uninit(void);
 
 	void SetPosition(const XMFLOAT3 position);					// ポジションの設定
 	void SetScaling(const XMFLOAT3 scaling);					// 拡大縮小の値の設定

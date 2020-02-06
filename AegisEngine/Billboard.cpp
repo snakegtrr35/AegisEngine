@@ -242,8 +242,8 @@ void BILL_BOARD::Draw()
 
 		//CRenderer::SetWorldMatrix(&world);
 
-		const auto camera01 = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<CCamera>("camera");
-		const auto camera02 = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
+		const auto camera01 = CManager::Get_Scene()->Get_Game_Object<CCamera>("camera");
+		const auto camera02 = CManager::Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
 
 		if (!camera01.expired() && Empty_weak_ptr<CCamera>(camera01))
 		{
@@ -328,8 +328,8 @@ void BILL_BOARD::Draw_DPP()
 		world *= XMMatrixRotationRollPitchYaw(Rotation.x, Rotation.y, Rotation.z);			// ‰ñ“]
 		world *= XMMatrixTranslation(Position.x, Position.y, Position.z);					// ˆÚ“®
 
-		const auto camera01 = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<CCamera>("camera");
-		const auto camera02 = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
+		const auto camera01 = CManager::Get_Scene()->Get_Game_Object<CCamera>("camera");
+		const auto camera02 = CManager::Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
 
 		if (!camera01.expired() && Empty_weak_ptr<CCamera>(camera01))
 		{
@@ -515,8 +515,8 @@ void BILL_BOARD_ANIMATION::Draw(float tx, float ty)
 		world *= XMMatrixTranslation(Position.x, Position.y, Position.z);
 		//world *= XMMatrixRotationRollPitchYaw(Rotation.x, Rotation.y, Rotation.z);
 
-		const auto camera01 = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<CCamera>("camera");
-		const auto camera02 = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
+		const auto camera01 = CManager::Get_Scene()->Get_Game_Object<CCamera>("camera");
+		const auto camera02 = CManager::Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
 
 		if (!camera01.expired() && Empty_weak_ptr<CCamera>(camera01))
 		{
@@ -632,8 +632,8 @@ void BILL_BOARD_ANIMATION::Draw_DPP(float tx, float ty)
 		world *= XMMatrixTranslation(Position.x, Position.y, Position.z);
 		//world *= XMMatrixRotationRollPitchYaw(Rotation.x, Rotation.y, Rotation.z);
 
-		const auto camera01 = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<CCamera>("camera");
-		const auto camera02 = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
+		const auto camera01 = CManager::Get_Scene()->Get_Game_Object<CCamera>("camera");
+		const auto camera02 = CManager::Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
 
 		if (!camera01.expired() && Empty_weak_ptr<CCamera>(camera01))
 		{

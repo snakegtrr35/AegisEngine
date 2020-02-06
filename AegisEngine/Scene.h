@@ -19,6 +19,7 @@
 
 #include	"Grid.h"
 #include	"XYZ_Axis.h"
+#include	"Axis.h"
 #include	"Light.h"
 
 #include	"Bounding.h"
@@ -124,9 +125,46 @@ public:
 				}
 			}
 		}
-
 		weak_ptr<T> obj;
-		//obj.reset();
+		return obj;
+	}
+
+	// リストから特定の名前のオブジェクトの取得
+	static weak_ptr<GAME_OBJECT> Get_Game_Object(const string& name = "none")
+	{
+		for (int i = 0; i < (int)LAYER_NAME::MAX_LAYER; i++)
+		{
+			for (auto object : GameObjects[i])
+			{
+				if (name == object.get()->Get_Object_Name())
+				{
+					weak_ptr<GAME_OBJECT> obj(static_pointer_cast<GAME_OBJECT>(object));
+
+					return  obj;
+				}
+			}
+		}
+		weak_ptr<GAME_OBJECT> obj;
+		return obj;
+	}
+
+	// リストから特定のオブジェクの取得
+	// 引数 name オブジェクト名
+	static weak_ptr<GAME_OBJECT> Get_Game_Object(const GAME_OBJECT* me)
+	{
+		for (int i = 0; i < (int)LAYER_NAME::MAX_LAYER; i++)
+		{
+			for (auto object : GameObjects[i])
+			{
+				if (me == object.get())
+				{
+					weak_ptr<GAME_OBJECT> obj( static_pointer_cast<GAME_OBJECT>(object) );
+
+					return  obj;
+				}
+			}
+		}
+		weak_ptr<GAME_OBJECT> obj;
 		return obj;
 	}
 
@@ -137,54 +175,15 @@ public:
 		vector<T*> objects;
 		for (int i = 0; i < (int)LAYER_NAME::MAX_LAYER; i++)
 		{
-			for (auto object = GameObjects[i].begin(); object != GameObjects[i].end(); object++)
+			for (auto object : GameObjects[i])
 			{
-				if (typeid(T) == typeid( *object->get()) )
+				if (typeid(T) == typeid( *object.get()) )
 				{
-					objects.emplace_back( (T*)object->get() );
+					objects.emplace_back( (T*)object.get() );
 				}
 			}
 		}
 		return objects;
-	}
-
-	//// リストから特定のオブジェクト（複数）の取得
-	//// 引数 T* 型名 name オブジェクト名
-	//template <typename T>
-	//static vector<T*> Get_Game_Objects(const string& name)
-	//{
-	//	vector<T*> objects;
-	//	for (int i = 0; i < (int)LAYER_NAME::MAX_LAYER; i++)
-	//	{
-	//		for (auto object = GameObjects[i].begin(); object != GameObjects[i].end(); object++)
-	//		{
-	//			if (typeid(T) == typeid(*object->get()))
-	//			{
-	//				if (name == object->get()->Get_Object_Name())
-	//				{
-	//					objects.push_back((T*)object->get());
-	//				}
-	//			}
-	//		}
-	//	}
-	//	return objects;
-	//}
-
-	// リストから特定のオブジェクの取得
-	// 引数 name オブジェクト名
-	static GAME_OBJECT* Get_Game_Object(const string& name)
-	{
-		for (int i = 0; i < (int)LAYER_NAME::MAX_LAYER; i++)
-		{
-			for (auto object = GameObjects[i].begin(); object != GameObjects[i].end(); object++)
-			{
-				if (name == object->get()->Get_Object_Name())
-				{
-					return object->get();
-				}
-			}
-		}
-		return nullptr;
 	}
 
 	// 全オブジェクトの取得
@@ -193,9 +192,9 @@ public:
 		vector<GAME_OBJECT*> objects;
 		for (int i = 0; i < (int)LAYER_NAME::MAX_LAYER; i++)
 		{
-			for (auto object = GameObjects[i].begin(); object != GameObjects[i].end(); object++)
+			for (auto object : GameObjects[i])
 			{
-				objects.push_back(object->get());
+				objects.emplace_back(object.get());
 			}
 		}
 		return objects;

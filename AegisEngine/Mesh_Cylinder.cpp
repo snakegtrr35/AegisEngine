@@ -120,7 +120,7 @@ void MESH_CYlLINDER::Uninit()
 
 void MESH_CYlLINDER::Draw()
 {
-	if (false == CManager::Get_Instance()->Get_ShadowMap()->Get_Enable())
+	if (false == CManager::Get_ShadowMap()->Get_Enable())
 	{
 		{
 			XMMATRIX world;
@@ -129,8 +129,8 @@ void MESH_CYlLINDER::Draw()
 			world *= XMMatrixRotationRollPitchYaw(Rotation.x, Rotation.y, Rotation.z);
 			world *= XMMatrixTranslation(Position.x, Position.y, Position.z);
 
-			const auto camera01 = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<CCamera>("camera");
-			const auto camera02 = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
+			const auto camera01 = CManager::Get_Scene()->Get_Game_Object<CCamera>("camera");
+			const auto camera02 = CManager::Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
 
 			if (!camera01.expired() && Empty_weak_ptr<CCamera>(camera01))
 
@@ -168,8 +168,8 @@ void MESH_CYlLINDER::Draw_DPP()
 		world *= XMMatrixRotationRollPitchYaw(Rotation.x, Rotation.y, Rotation.z);
 		world *= XMMatrixTranslation(Position.x, Position.y, Position.z);
 
-		const auto camera01 = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<CCamera>("camera");
-		const auto camera02 = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
+		const auto camera01 = CManager::Get_Scene()->Get_Game_Object<CCamera>("camera");
+		const auto camera02 = CManager::Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
 
 		if (!camera01.expired() && Empty_weak_ptr<CCamera>(camera01))
 		{

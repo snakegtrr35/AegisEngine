@@ -17,7 +17,7 @@ void BOUNDING_CAPSULE::Init()
 
 void BOUNDING_CAPSULE::Draw()
 {
-	if (false == CManager::Get_Instance()->Get_ShadowMap()->Get_Enable())
+	if (false == CManager::Get_ShadowMap()->Get_Enable())
 	{
 		XMFLOAT3 pos(Position.x, Position.y, Position.z);
 		XMFLOAT3 rotation(Rotation.x, Rotation.y, Rotation.z);
@@ -329,8 +329,8 @@ void BOUNDING_CAPSULE::Draw_Semicircle(const XMFLOAT3& position, const XMFLOAT3&
 	// ƒgƒ|ƒƒW‚ÌÝ’è
 	CRenderer::GetDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_LINESTRIP);
 
-	const auto camera01 = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<CCamera>("camera");
-	const auto camera02 = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
+	const auto camera01 = CManager::Get_Scene()->Get_Game_Object<CCamera>("camera");
+	const auto camera02 = CManager::Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
 
 	XMMATRIX world = XMMatrixRotationRollPitchYaw(XMConvertToRadians(rotation.x), XMConvertToRadians(rotation.y), XMConvertToRadians(rotation.z));
 	world *= XMMatrixTranslation(position.x, position.y, position.z);
@@ -389,8 +389,8 @@ void BOUNDING_CAPSULE::Draw_Ring(const XMFLOAT3& position, const XMFLOAT3& rotat
 		XMMATRIX world = XMMatrixRotationRollPitchYaw(XMConvertToRadians(rotation.x), XMConvertToRadians(rotation.y), XMConvertToRadians(rotation.z));
 		world *= XMMatrixTranslation(position.x, position.y, position.z);
 
-		const auto camera01 = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<CCamera>("camera");
-		const auto camera02 = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
+		const auto camera01 = CManager::Get_Scene()->Get_Game_Object<CCamera>("camera");
+		const auto camera02 = CManager::Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
 
 		if (!camera01.expired() && Empty_weak_ptr<CCamera>(camera01))
 		{

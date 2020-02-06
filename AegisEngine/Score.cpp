@@ -29,7 +29,7 @@ void SCORE::Init(void)
 
 void SCORE::Draw(void)
 {
-	if (false == CManager::Get_Instance()->Get_ShadowMap()->Get_Enable())
+	if (false == CManager::Get_ShadowMap()->Get_Enable())
 	{
 		short i;
 		unsigned int number, score = NowScore;

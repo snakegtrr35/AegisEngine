@@ -38,7 +38,7 @@ ENEMY::ENEMY()
 
 	dynamic_cast<COLLISIION_AABB*>(Collision)->Set_Radius(XMFLOAT3(0.5f, 0.5f, 0.5f));
 
-	Aabb = CManager::Get_Instance()->Get_Scene()->Add_Game_Object<BOUNDING_AABB>(LAYER_NAME::GAMEOBJECT);
+	Aabb = CManager::Get_Scene()->Add_Game_Object<BOUNDING_AABB>(LAYER_NAME::GAMEOBJECT);
 
 	Aabb->Set_Position(Position);
 	//Aabb->Set_Radius(XMFLOAT3(0.5f, 0.5f, 0.5f));
@@ -70,7 +70,7 @@ void ENEMY::Update(float delta_time)
 		XMFLOAT3 pos = Position;
 		XMVECTOR vec;
 
-		const auto player = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<PLAYER>("player");
+		const auto player = CManager::Get_Scene()->Get_Game_Object<PLAYER>("player");
 
 		pos.x = player.lock()->Get_Position()->x - pos.x;
 		pos.z = player.lock()->Get_Position()->z - pos.z;
@@ -191,7 +191,7 @@ void ENEMY::SetScaling(const XMFLOAT3& scaling)
 
 void Create_Bullet(XMFLOAT3& position, XMFLOAT3& front)
 {
-	SCENE* scene = CManager::Get_Instance()->Get_Scene();
+	SCENE* scene = CManager::Get_Scene();
 
 	BULLET* bullet = scene->Add_Game_Object<BULLET>(LAYER_NAME::GAMEOBJECT);
 

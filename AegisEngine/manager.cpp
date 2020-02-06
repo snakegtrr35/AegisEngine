@@ -24,20 +24,15 @@ My_imgui* g_MyImgui;		// Imguiのクラス
 
 bool CManager::Init()
 {
-	if (nullptr == Manager.get())
-	{
-		Manager = make_unique<CManager>();
-	}
-
-	HRESULT hr;
-
-	UINT count = thread::hardware_concurrency();
-	if (0 == count)
+	UINT cnt = thread::hardware_concurrency();
+	if (0 <= cnt)
 	{
 		FAILDE_ASSERT;
 		return false;
 	}
-	Manager->Set_ThreadCount(count);
+	Manager->ThreaCount = cnt;
+
+	HRESULT hr;
 
 	// COMの初期化
 	hr = CoInitializeEx(0, COINITBASE_MULTITHREADED);
@@ -86,6 +81,12 @@ bool CManager::Init()
 	Light.Init();
 
 	return true;
+}
+
+CManager* CManager::Get_Instance()
+{
+	if (nullptr == Manager.get()) Manager = make_unique<CManager>();
+	return Manager.get();
 }
 
 void CManager::Update()
@@ -142,8 +143,8 @@ void CManager::Draw()
 
 	// シャドウマップの描画
 	{
-		pShadowMap->Begin();
-		pSceneManager->Draw();
+		//pShadowMap->Begin();
+		//pSceneManager->Draw();
 		pShadowMap->End();//
 	}
 
@@ -218,6 +219,11 @@ void CManager::Draw()
 	CRenderer::End();
 }
 
+void CManager::Delete()
+{
+	Manager.reset(nullptr);
+}
+
 void CManager::Uninit()
 {
 	Light.Uninit();//
@@ -228,6 +234,8 @@ void CManager::Uninit()
 	EFFEKSEER_MANAGER::Uninit();
 
 	FONT::Uninit();
+
+	TEXTURE_MANEGER::Get_Instance()->Uninit();
 
 	AUDIO_MANAGER::Uninit();
 
@@ -269,22 +277,7 @@ void CManager::GameEnd()
 	GameEnable = false;
 }
 
-CManager* CManager::Get_Instance()
-{
-	return Manager.get();
-}
-
-void CManager::Delete()
-{
-	Manager.reset(nullptr);
-}
-
-void CManager::Set_ThreadCount(const UINT count)
-{
-	ThreadCount = count;
-}
-
 const UINT CManager::Get_ThreadCount()
 {
-	return ThreadCount;
+	return ThreaCount;
 }

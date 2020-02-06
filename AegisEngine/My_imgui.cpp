@@ -27,7 +27,7 @@ static string old_name;
 extern BOUNDING_FRUSTUM Bounding_Frustun;
 extern BOUNDING_AABB AABB;
 
-void EditTransform(const float* cameraView, float* cameraProjection, float* matrix, bool enable, GAME_OBJECT* object);
+void EditTransform(const float* cameraView, float* cameraProjection, float* matrix, bool enable, weak_ptr<GAME_OBJECT>& object);
 
 void My_imgui::Init(HWND hWnd)
 {
@@ -186,7 +186,7 @@ void My_imgui::Draw(void)
 
 					if (ImGui::MenuItem("Close"))
 					{
-						CManager::Get_Instance()->GameEnd();
+						CManager::GameEnd();
 					}
 
 					ImGui::EndMenu();
@@ -284,7 +284,7 @@ void My_imgui::Draw(void)
 
 					ImGui::Begin("Shadow", nullptr, window_flags);
 
-					ImTextureID image = CManager::Get_Instance()->Get_ShadowMap()->Get();
+					ImTextureID image = CManager::Get_ShadowMap()->Get();
 
 					ImGui::Image(image, ImVec2(512, 512));
 
@@ -338,7 +338,7 @@ void My_imgui::Draw(void)
 		}
 
 		{
-			const weak_ptr<DEBUG_CAMERA> camera = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
+			const weak_ptr<DEBUG_CAMERA> camera = CManager::Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
 
 			ImGuiWindowFlags window_flags = ImGuiWindowFlags_NoResize;
 
@@ -495,11 +495,11 @@ void Draw_Inspector(const string& name)
 
 	auto object = SCENE::Get_Game_Object(name);
 
-	if (nullptr != object)
+	if (!object.expired())
 	{
 		ImGui::Begin("Inspector");
 
-		ImGui::Text(object->Get_Object_Name().c_str());
+		ImGui::Text(object.lock()->Get_Object_Name().c_str());
 
 		static bool enable = true;
 		ImGui::Checkbox("Enable", &enable);
@@ -550,7 +550,7 @@ void Draw_Inspector(const string& name)
 								mat44._41, mat44._42, mat44._43,mat44._44
 			};
 
-			mtr = XMMatrixTranslation(object->Get_Position()->x, object->Get_Position()->y, object->Get_Position()->z);
+			mtr = XMMatrixTranslation(object.lock()->Get_Position()->x, object.lock()->Get_Position()->y, object.lock()->Get_Position()->z);
 			XMStoreFloat4x4(&mat44, mtr);
 
 			static float pos[16] = { mat44._11, mat44._12, mat44._13,mat44._14,
@@ -561,8 +561,8 @@ void Draw_Inspector(const string& name)
 
 			if (flag)
 			{
-				mtr = XMMatrixScaling(object->Get_Scaling()->x, object->Get_Scaling()->y, object->Get_Scaling()->z);
-				mtr *= XMMatrixTranslation(object->Get_Position()->x, object->Get_Position()->y, object->Get_Position()->z);
+				mtr = XMMatrixScaling(object.lock()->Get_Scaling()->x, object.lock()->Get_Scaling()->y, object.lock()->Get_Scaling()->z);
+				mtr *= XMMatrixTranslation(object.lock()->Get_Position()->x, object.lock()->Get_Position()->y, object.lock()->Get_Position()->z);
 				XMStoreFloat4x4(&mat44, mtr);
 
 				pos[0] = mat44._11, pos[1] = mat44._12, pos[2] = mat44._13, pos[3] = mat44._14;
@@ -618,15 +618,14 @@ void Draw_Inspector(const string& name)
 				}
 			}
 
+			{
+
+			}
+
 			static int clicked = 0;
 			if (ImGui::Button("Add Component"))
 			{
-				clicked++;
-				//if (clicked & 1)
-				//{
-				//	ImGui::SameLine();
-				//	ImGui::Text("%s", item_current);
-				//}
+				
 			}
 
 			if (clicked & 1)
@@ -640,7 +639,7 @@ void Draw_Inspector(const string& name)
 	}
 }
 
-void EditTransform(const float* cameraView, float* cameraProjection, float* matrix, bool enable, GAME_OBJECT* object)
+void EditTransform(const float* cameraView, float* cameraProjection, float* matrix, bool enable, weak_ptr<GAME_OBJECT>& object)
 {
 	static ImGuizmo::OPERATION mCurrentGizmoOperation(ImGuizmo::TRANSLATE);
 	static float snap[3] = { 0.001f, 0.001f, 0.001f };
@@ -655,10 +654,10 @@ void EditTransform(const float* cameraView, float* cameraProjection, float* matr
 		mCurrentGizmoOperation = ImGuizmo::SCALE;
 
 	{
-		float	Translation[3] = { object->Get_Position()->x, object->Get_Position()->y, object->Get_Position()->z };
-		float	Rotation[3] = { object->Get_Rotation()->x, object->Get_Rotation()->y, object->Get_Rotation()->z };
-		float	R[3] = { object->Get_Rotation()->x, object->Get_Rotation()->y, object->Get_Rotation()->z };
-		float	Scale[3] = { object->Get_Scaling()->x, object->Get_Scaling()->y, object->Get_Scaling()->z };
+		float	Translation[3] = { object.lock()->Get_Position()->x, object.lock()->Get_Position()->y, object.lock()->Get_Position()->z };
+		float	Rotation[3] = { object.lock()->Get_Rotation()->x, object.lock()->Get_Rotation()->y, object.lock()->Get_Rotation()->z };
+		float	R[3] = { object.lock()->Get_Rotation()->x, object.lock()->Get_Rotation()->y, object.lock()->Get_Rotation()->z };
+		float	Scale[3] = { object.lock()->Get_Scaling()->x, object.lock()->Get_Scaling()->y, object.lock()->Get_Scaling()->z };
 
 		ImGuizmo::DecomposeMatrixToComponents(matrix, Translation, Rotation, Scale);
 
@@ -674,13 +673,13 @@ void EditTransform(const float* cameraView, float* cameraProjection, float* matr
 			XMFLOAT3 vec2/*(Rotation[0], Rotation[1], Rotation[2])*/;
 			XMFLOAT3 vec3(Scale[0], Scale[1], Scale[2]);
 
-			object->Set_Position(vec1);
+			object.lock()->Set_Position(vec1);
 			//object->Set_Rotation(vec2);
-			object->Set_Scaling(vec3);
+			object.lock()->Set_Scaling(vec3);
 
 			ImGui::DragFloat3("Rotation", R, 0.2f, -180.f, 180.f);
 			vec2 = XMFLOAT3(R[0], R[1], R[2]);
-			object->Set_Rotation(vec2);
+			object.lock()->Set_Rotation(vec2);
 		}
 	}
 
@@ -831,13 +830,13 @@ void My_imgui::Texture_Delete()
 
 	ImGuiWindowFlags window_flags = ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoDocking;
 
-	if (Texture_Import_Enable)
+	if (Texture_Delete_Enable)
 	{
 		static char check;
 
 		ImGui::SetNextWindowSize(ImVec2(360, 167), ImGuiCond_Appearing);
 
-		ImGui::Begin((char*)u8"テクスチャ 削除", &Texture_Import_Enable, window_flags);
+		ImGui::Begin((char*)u8"テクスチャ 削除", &Texture_Delete_Enable, window_flags);
 		{
 			ImGui::Indent(15.0f);
 

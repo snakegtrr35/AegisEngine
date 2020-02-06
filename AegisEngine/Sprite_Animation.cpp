@@ -1,5 +1,6 @@
 #include	"Sprite_Animation.h"
 #include	"manager.h"
+#include	"Scene.h"
 #include	"ShadowMap.h"
 
 
@@ -19,6 +20,8 @@ SPRITE_ANIMATION::SPRITE_ANIMATION()
 	Pattern_Max_Y = 0;
 
 	Ty_Param = Tx_Param = -1.0f;
+
+	Loop_Enable = false;
 
 	SetTexture(string("Explosion.png"));
 }
@@ -44,6 +47,8 @@ SPRITE_ANIMATION::SPRITE_ANIMATION(XMFLOAT2 position, XMFLOAT4 size)
 
 	Ty_Param = Tx_Param = -1.0f;
 
+	Loop_Enable = false;
+
 	SetTexture(string("Explosion.png"));
 }
 
@@ -59,7 +64,7 @@ void SPRITE_ANIMATION::Init(void)
 
 void SPRITE_ANIMATION::Draw(void)
 {
-	if (false == CManager::Get_Instance()->Get_ShadowMap()->Get_Enable())
+	if (false == CManager::Get_ShadowMap()->Get_Enable())
 	{
 		Draw2(Tx_Param, Ty_Param);
 	}
@@ -232,7 +237,7 @@ void SPRITE_ANIMATION::Update(float delta_time)
 
 	if ((Pattern_Max_X * Pattern_Max_Y) <= PatternCount)
 	{
-		//SCENE::Destroy_Game_Object(this);
+		if(false == Loop_Enable) CManager::Get_Instance()->Get_Scene()->Destroy_Game_Object(this);
 	}
 }
 
@@ -240,12 +245,7 @@ void SPRITE_ANIMATION::Uninit(void)
 {
 }
 
-// テクスチャアニメーションのパラメーターの設定
-//
-// 引数:wait_frame ... 待ちフレーム
-//      tw ... テクスチャ切り取り数（x）
-//      th ... テクスチャ切り取り数（y）
-void SPRITE_ANIMATION::SetParam(const float& wait_frame, const unsigned char& x, const unsigned char& y)
+void SPRITE_ANIMATION::SetParam(const WORD wait_frame, const BYTE x, const BYTE y)
 {
 	WaitFrame = wait_frame;
 	Pattern_Max_X = x;
@@ -257,12 +257,18 @@ void SPRITE_ANIMATION::SetParam(const float& wait_frame, const unsigned char& x,
 	Th = (float)(wh->y / Pattern_Max_Y);
 }
 
-// テクスチャアニメーションのテクスチャ切り取り座標の設定
-//
-// 引数:tx_param ... テクスチャ切り取り幅（手動）
-//      ty_param ... テクスチャ切り取り高さ（手動）
-void SPRITE_ANIMATION::Set_Param_Txy(const float& tx_param, const float& ty_param)
+void SPRITE_ANIMATION::Set_Param_Txy(const float tx_param, const float ty_param)
 {
 	Tx_Param = tx_param;
 	Ty_Param = ty_param;
+}
+
+void SPRITE_ANIMATION::Set_Loop_Enable(const bool flag)
+{
+	Loop_Enable = flag;
+}
+
+const bool SPRITE_ANIMATION::Get_Loop_Enable()
+{
+	return Loop_Enable;
 }

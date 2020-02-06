@@ -5,6 +5,9 @@
 
 #include	"Game_Object.h"
 
+#include	"manager.h"
+#include	"Scene.h"
+
 // コンポーネントクラス
 class COMPONENT : public GAME_OBJECT {
 protected:
@@ -17,11 +20,11 @@ protected:
 
 public:
 
-	COMPONENT() : Enable(true), DestroyFlag(false) {
+	COMPONENT() : Enable(true), Draw_Enable (true), DestroyFlag(false) {
 		Owner.reset();
 	}
 
-	COMPONENT(const shared_ptr<GAME_OBJECT>& owner) : Owner(owner), Enable(true), DestroyFlag(false) {}
+	COMPONENT(const shared_ptr<GAME_OBJECT>& owner) : Owner(owner), Enable(true), Draw_Enable(true), DestroyFlag(false) {}
 
 	virtual ~COMPONENT() {}
 
@@ -91,7 +94,7 @@ CEREAL_REGISTER_POLYMORPHIC_RELATION(GAME_OBJECT, COMPONENT)
 class COMPONENT_MANEGER {
 private:
 
-	list< unique_ptr<COMPONENT> > Conponent_List;
+	vector< unique_ptr<COMPONENT> > Conponent_List;
 
 public:
 
@@ -106,6 +109,27 @@ public:
 				return (T*)object->get();
 			}
 		}
+
+		T* object = new T(owner);
+
+		Conponent_List.emplace_back(object);
+
+		return object;
+	}
+
+	// リストへのメニューオブジェクトの追加
+	template <typename T>
+	T* Add_Component(const GAME_OBJECT* obj)
+	{
+		for (auto object = Conponent_List.begin(); object != Conponent_List.end(); object++)
+		{
+			if (typeid(T) == typeid(*object->get()))
+			{
+				return (T*)object->get();
+			}
+		}
+
+		auto owner = CManager::Get_Instance()->Get_Scene()->Get_Game_Object(obj);
 
 		T* object = new T(owner);
 
@@ -139,7 +163,9 @@ public:
 			object->get()->Update(delta_time);
 		}
 
-		Conponent_List.remove_if([](auto& object) { return object->Destroy(); }); // リストから削除
+		//Conponent_List.remove_if([](auto& object) { return object->Destroy(); }); // リストから削除
+		//std::remove_if(Conponent_List.begin(), Conponent_List.end(), [](auto& object) { return object->Destroy(); } );
+		Conponent_List.erase( remove_if(Conponent_List.begin(), Conponent_List.end(), [](auto& object) { return object->Destroy(); } ), Conponent_List.end());
 	}
 
 	void Draw() {
@@ -150,8 +176,6 @@ public:
 				object->get()->Draw();
 			}
 		}
-
-		Conponent_List.remove_if([](auto& object) { return object->Destroy(); }); // リストから削除
 	}
 
 	void Draw_DPP() {
@@ -162,8 +186,6 @@ public:
 				object->get()->Draw_DPP();
 			}
 		}
-
-		Conponent_List.remove_if([](auto& object) { return object->Destroy(); }); // リストから削除
 	}
 
 	void Uninit() {

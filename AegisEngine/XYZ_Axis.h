@@ -17,10 +17,10 @@ public:
 	AXIS();
 	~AXIS();
 
-	void Init() override;
-	void Draw() override;
-	void Update(float delta_time) override;
-	void Uninit() override;
+	void Init();
+	void Draw();
+	void Update(float delta_time);
+	void Uninit() ;
 };
 
 #endif // !CUBE_H

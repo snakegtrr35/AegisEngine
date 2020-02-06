@@ -1,6 +1,6 @@
 #include	"Renderer.h"
-#include	"manager.h"
 #include	"Scene.h"
+#include	"manager.h"
 #include	"Input.h"
 #include	"camera.h"
 
@@ -66,14 +66,14 @@ void CCamera::Update(float delta_time)
 	bool flag = KEYBOARD::Press_Keyboard(VK_RBUTTON);
 
 	{
-		auto player = CManager::Get_Instance()->Get_Scene()->Get_Game_Object("player");
-		if (nullptr == player)
+		auto player = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<PLAYER>("player");
+		if (!player.expired() && Empty_weak_ptr<PLAYER>(player))
 		{
 			//At = XMLoadFloat3(player->Get_Position());
 
 			//At = Front * Lenght + Pos;
 
-			Pos = XMLoadFloat3(player->Get_Position());
+			Pos = XMLoadFloat3(player.lock()->Get_Position());
 		}
 	}
 

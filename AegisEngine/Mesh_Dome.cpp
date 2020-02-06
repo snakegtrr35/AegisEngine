@@ -135,7 +135,7 @@ void MESH_DOOM::Update(float delta_time)
 //***********************************************************************************************
 void MESH_DOOM::Draw()
 {
-	if (false == CManager::Get_Instance()->Get_ShadowMap()->Get_Enable() /*&& RENDERING_PASS::REDRING == CRenderer::Get_Rendering_Pass()*/)
+	if (false == CManager::Get_ShadowMap()->Get_Enable() /*&& RENDERING_PASS::REDRING == CRenderer::Get_Rendering_Pass()*/)
 	{
 		{
 			XMMATRIX world;
@@ -144,8 +144,8 @@ void MESH_DOOM::Draw()
 			world *= XMMatrixRotationRollPitchYaw(XMConvertToRadians(Rotation.x), XMConvertToRadians(Rotation.y), XMConvertToRadians(Rotation.z));			// ‰ñ“]
 			world *= XMMatrixTranslation(Position.x, Position.y, Position.z);																				// ˆÚ“®
 
-			const auto camera01 = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<CCamera>("camera");
-			const auto camera02 = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
+			const auto camera01 = CManager::Get_Scene()->Get_Game_Object<CCamera>("camera");
+			const auto camera02 = CManager::Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
 
 			if (!camera01.expired() && Empty_weak_ptr<CCamera>(camera01))
 			{

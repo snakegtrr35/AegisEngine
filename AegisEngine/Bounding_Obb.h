@@ -15,13 +15,13 @@ public:
 	BOUNDING_OBB();
 	~BOUNDING_OBB();
 
-	void Init() override;
-	void Draw() override;
-	void Draw_DPP() override {}
-	void Update(float delta_time) override;
-	void Uninit() override;
+	void Init();
+	void Draw();
+	void Draw_DPP() {}
+	void Update(float delta_time);
+	void Uninit();
 
-	void OverWrite() override;
+	void OverWrite();
 
 	//void Set_Radius(const XMFLOAT3& radius);
 

@@ -100,17 +100,17 @@ private:
 			{
 				matrix = XMMatrixMultiply(Matrix, parent_matrix);
 
-				const auto camera01 = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<CCamera>("camera");
-				const auto camera02 = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
+				const auto camera01 = CManager::Get_Scene()->Get_Game_Object<CCamera>("camera");
+				const auto camera02 = CManager::Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
 				
 				// 普通のカメラかデバッグカメラか?
 				if (!camera01.expired() && Empty_weak_ptr<CCamera>(camera01))
 				{
 					// シャドウマップ用の描画か?
-					if (CManager::Get_Instance()->Get_ShadowMap()->Get_Enable())
+					if (CManager::Get_ShadowMap()->Get_Enable())
 					{
-						XMMATRIX view = CManager::Get_Instance()->Get_ShadowMap()->Get_View();
-						XMMATRIX proj = CManager::Get_Instance()->Get_ShadowMap()->Get_Plojection();
+						XMMATRIX view = CManager::Get_ShadowMap()->Get_View();
+						XMMATRIX proj = CManager::Get_ShadowMap()->Get_Plojection();
 
 						CRenderer::Set_MatrixBuffer(matrix, view, proj);
 					}
@@ -124,10 +124,10 @@ private:
 				else
 				{
 					// シャドウマップ用の描画か?
-					if (CManager::Get_Instance()->Get_ShadowMap()->Get_Enable())
+					if (CManager::Get_ShadowMap()->Get_Enable())
 					{
-						XMMATRIX view = CManager::Get_Instance()->Get_ShadowMap()->Get_View();
-						XMMATRIX proj = CManager::Get_Instance()->Get_ShadowMap()->Get_Plojection();
+						XMMATRIX view = CManager::Get_ShadowMap()->Get_View();
+						XMMATRIX proj = CManager::Get_ShadowMap()->Get_Plojection();
 
 						CRenderer::Set_MatrixBuffer(matrix, view, proj);
 					}
@@ -164,8 +164,8 @@ private:
 			{
 				matrix = XMMatrixMultiply(Matrix, parent_matrix);
 
-				const auto camera01 = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<CCamera>("camera");
-				const auto camera02 = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
+				const auto camera01 = CManager::Get_Scene()->Get_Game_Object<CCamera>("camera");
+				const auto camera02 = CManager::Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
 
 				// 普通のカメラかデバッグカメラ
 				if (!camera01.expired() && Empty_weak_ptr<CCamera>(camera01))
@@ -230,17 +230,17 @@ private:
 
 						world = XMMatrixMultiply(world, parent_matrix);
 
-						auto camera01 = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<CCamera>("camera");
-						auto camera02 = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
+						auto camera01 = CManager::Get_Scene()->Get_Game_Object<CCamera>("camera");
+						auto camera02 = CManager::Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
 
 						// 普通のカメラかデバッグカメラか?
 						if (!camera01.expired() && Empty_weak_ptr<CCamera>(camera01))
 						{
 							// シャドウマップ用の描画か?
-							if (CManager::Get_Instance()->Get_ShadowMap()->Get_Enable())
+							if (CManager::Get_ShadowMap()->Get_Enable())
 							{
-								XMMATRIX view = CManager::Get_Instance()->Get_ShadowMap()->Get_View();
-								XMMATRIX proj = CManager::Get_Instance()->Get_ShadowMap()->Get_Plojection();
+								XMMATRIX view = CManager::Get_ShadowMap()->Get_View();
+								XMMATRIX proj = CManager::Get_ShadowMap()->Get_Plojection();
 
 								CRenderer::Set_MatrixBuffer(world, view, proj);
 							}
@@ -254,10 +254,10 @@ private:
 						else
 						{
 							// シャドウマップ用の描画か?
-							if (CManager::Get_Instance()->Get_ShadowMap()->Get_Enable())
+							if (CManager::Get_ShadowMap()->Get_Enable())
 							{
-								XMMATRIX view = CManager::Get_Instance()->Get_ShadowMap()->Get_View();
-								XMMATRIX proj = CManager::Get_Instance()->Get_ShadowMap()->Get_Plojection();
+								XMMATRIX view = CManager::Get_ShadowMap()->Get_View();
+								XMMATRIX proj = CManager::Get_ShadowMap()->Get_Plojection();
 
 								CRenderer::Set_MatrixBuffer(world, view, proj);
 							}
@@ -324,17 +324,17 @@ private:
 
 				world = XMMatrixMultiply(world, parent_matrix);
 
-				auto camera01 = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<CCamera>("camera");
-				auto camera02 = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
+				auto camera01 = CManager::Get_Scene()->Get_Game_Object<CCamera>("camera");
+				auto camera02 = CManager::Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
 
 				// 普通のカメラかデバッグカメラか?
 				if (!camera01.expired() && Empty_weak_ptr<CCamera>(camera01))
 				{
 					// シャドウマップ用の描画か?
-					if (CManager::Get_Instance()->Get_ShadowMap()->Get_Enable())
+					if (CManager::Get_ShadowMap()->Get_Enable())
 					{
-						XMMATRIX view = CManager::Get_Instance()->Get_ShadowMap()->Get_View();
-						XMMATRIX proj = CManager::Get_Instance()->Get_ShadowMap()->Get_Plojection();
+						XMMATRIX view = CManager::Get_ShadowMap()->Get_View();
+						XMMATRIX proj = CManager::Get_ShadowMap()->Get_Plojection();
 
 						CRenderer::Set_MatrixBuffer(world, view, proj);
 					}
@@ -348,10 +348,10 @@ private:
 				else
 				{
 					// シャドウマップ用の描画か?
-					if (CManager::Get_Instance()->Get_ShadowMap()->Get_Enable())
+					if (CManager::Get_ShadowMap()->Get_Enable())
 					{
-						XMMATRIX view = CManager::Get_Instance()->Get_ShadowMap()->Get_View();
-						XMMATRIX proj = CManager::Get_Instance()->Get_ShadowMap()->Get_Plojection();
+						XMMATRIX view = CManager::Get_ShadowMap()->Get_View();
+						XMMATRIX proj = CManager::Get_ShadowMap()->Get_Plojection();
 
 						CRenderer::Set_MatrixBuffer(world, view, proj);
 					}
@@ -402,8 +402,8 @@ private:
 
 						world = XMMatrixMultiply(world, parent_matrix);
 
-						auto camera01 = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<CCamera>("camera");
-						auto camera02 = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
+						auto camera01 = CManager::Get_Scene()->Get_Game_Object<CCamera>("camera");
+						auto camera02 = CManager::Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
 
 						// 普通のカメラかデバッグカメラか?
 						if (!camera01.expired() && Empty_weak_ptr<CCamera>(camera01))
@@ -469,8 +469,8 @@ private:
 
 				world = XMMatrixMultiply(world, parent_matrix);
 
-				auto camera01 = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<CCamera>("camera");
-				auto camera02 = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
+				auto camera01 = CManager::Get_Scene()->Get_Game_Object<CCamera>("camera");
+				auto camera02 = CManager::Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
 
 				// 普通のカメラかデバッグカメラか?
 				if (!camera01.expired() && Empty_weak_ptr<CCamera>(camera01))

@@ -195,7 +195,7 @@ void TITLE::Update(float delta_time)
 							break;
 
 						case 2:
-							CManager::Get_Instance()->GameEnd();//
+							CManager::GameEnd();//
 							break;
 
 						/*case 3:
