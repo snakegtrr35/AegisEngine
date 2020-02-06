@@ -4,6 +4,7 @@
 #define GAME_OBJECT_H
 
 class COMPONENT_MANEGER;
+//#include	"Component.h"
 
 class GAME_OBJECT {
 private:
@@ -26,7 +27,7 @@ protected:
 	XMFLOAT3 Scaling;					//! 拡大縮小値
 
 
-	COMPONENT_MANEGER* Component;		//! コンポーネント
+	unique_ptr<COMPONENT_MANEGER, Delete> Component;		//! コンポーネント
 
 #ifdef _DEBUG
 	XMFLOAT3 Edit_Position;				//! デバッグ用の座標
@@ -36,16 +37,17 @@ protected:
 	//XMFLOAT4 Edit_Q_num;				//! デバッグ用のクオータニオン用の入れ物
 #endif // _DEBUG
 
-public:
-	GAME_OBJECT() : Object_Name("none"), DestroyFlag(false), Rotation(XMFLOAT3(0.0f, 0.0f, 0.0f)), Position(XMFLOAT3(0.0f, 0.0f, 0.0f)), Scaling(XMFLOAT3(1.0f, 1.0f, 1.0f))/*, Quaternion(XMQuaternionIdentity())*/ {}
 	virtual ~GAME_OBJECT() {
 		Object_Name_Map.erase(Object_Name);
 	};
 
+public:
+	GAME_OBJECT() : Object_Name("none"), DestroyFlag(false), Rotation(XMFLOAT3(0.0f, 0.0f, 0.0f)), Position(XMFLOAT3(0.0f, 0.0f, 0.0f)), Scaling(XMFLOAT3(1.0f, 1.0f, 1.0f))/*, Quaternion(XMQuaternionIdentity())*/ {}
+
 	virtual void Init() = 0;
 	virtual void Draw() = 0;
 	virtual void Draw_DPP() = 0;
-	virtual void Update(float delta_time) = 0;
+	virtual void Update(float delta_time);
 	virtual void Uninit() = 0;
 
 	void Set_Destroy() {
@@ -124,7 +126,7 @@ public:
 	};
 
 	COMPONENT_MANEGER* const Get_Component() {
-		return Component;
+		return Component.get();
 	}
 
 	//static const unordered_map<size_t, string>& Get_Object_Name_Map() {

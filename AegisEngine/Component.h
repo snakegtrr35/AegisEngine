@@ -3,6 +3,7 @@
 #ifndef COMPONENT_H
 #define COMPONENT_H
 
+//class GAME_OBJECT;
 #include	"Game_Object.h"
 
 // コンポーネントクラス

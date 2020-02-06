@@ -126,8 +126,24 @@ public:
 		}
 
 		weak_ptr<T> obj;
-		//obj.reset();
 		return obj;
+	}
+
+	// リストから特定のオブジェクの取得
+	// 引数 name オブジェクト名
+	static GAME_OBJECT* Get_Game_Object(const string& name)
+	{
+		for (int i = 0; i < (int)LAYER_NAME::MAX_LAYER; i++)
+		{
+			for (auto object = GameObjects[i].begin(); object != GameObjects[i].end(); object++)
+			{
+				if (name == object->get()->Get_Object_Name())
+				{
+					return object->get();
+				}
+			}
+		}
+		return nullptr;
 	}
 
 	// リストから特定のオブジェクト（複数）の取得
@@ -146,45 +162,6 @@ public:
 			}
 		}
 		return objects;
-	}
-
-	//// リストから特定のオブジェクト（複数）の取得
-	//// 引数 T* 型名 name オブジェクト名
-	//template <typename T>
-	//static vector<T*> Get_Game_Objects(const string& name)
-	//{
-	//	vector<T*> objects;
-	//	for (int i = 0; i < (int)LAYER_NAME::MAX_LAYER; i++)
-	//	{
-	//		for (auto object = GameObjects[i].begin(); object != GameObjects[i].end(); object++)
-	//		{
-	//			if (typeid(T) == typeid(*object->get()))
-	//			{
-	//				if (name == object->get()->Get_Object_Name())
-	//				{
-	//					objects.push_back((T*)object->get());
-	//				}
-	//			}
-	//		}
-	//	}
-	//	return objects;
-	//}
-
-	// リストから特定のオブジェクの取得
-	// 引数 name オブジェクト名
-	static GAME_OBJECT* Get_Game_Object(const string& name)
-	{
-		for (int i = 0; i < (int)LAYER_NAME::MAX_LAYER; i++)
-		{
-			for (auto object = GameObjects[i].begin(); object != GameObjects[i].end(); object++)
-			{
-				if (name == object->get()->Get_Object_Name())
-				{
-					return object->get();
-				}
-			}
-		}
-		return nullptr;
 	}
 
 	// 全オブジェクトの取得

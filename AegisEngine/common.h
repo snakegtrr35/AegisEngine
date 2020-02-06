@@ -47,7 +47,6 @@ struct Destroy {
 struct Delete {
 	template<class T>
 	void operator()(T* p) const {
-		p->Uninit();
 		p = nullptr;
 	}
 };
