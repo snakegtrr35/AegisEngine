@@ -35,28 +35,28 @@ private:
 	static unique_ptr<TEXTURE_MANEGER> Texture_Manager;
 
 	unordered_map<string, string> Default_Texture_File;		//! デフォルトのテクスチャのファイルパス
-	unordered_map<string, TEXTURE_FILE> TextureFile;		//! テクスチャのファイルデータ
-	unordered_map<string, TEXTURE_DATA> TextureData;		//! テクスチャデータ
+	unordered_map<string, TEXTURE_FILE> TextureFile;			//! テクスチャのファイルデータ
+	unordered_map<string, TEXTURE_DATA> TextureData;			//! テクスチャデータ
 
-	std::mutex LoadMutex;
-
-	static void Load2(TEXTURE_MANEGER* manager, const vector<string>* files);
-
-	void Default_Load(const bool flag);						// デフォルトのテクスチャの読み込み
-	void Load(const bool flag);								// テクスチャの読み込み
+	void Default_Load(const bool flag);		// デフォルトのテクスチャの読み込み
+	void Load(const bool flag);				// テクスチャの読み込み
 
 	DWORD Get_File_Time(const string& path);
+
+	std::mutex isLoadedMutex;
 
 public:
 	TEXTURE_MANEGER() {};
 	~TEXTURE_MANEGER() { Uninit(); }
 
-	static TEXTURE_MANEGER* Get_Instance();
+
 	static void Init();
 
 	void Update();
 
 	void Uninit();
+
+	static TEXTURE_MANEGER* Get_Instance();
 
 	void Add(const string& file_name);
 	const bool Unload(const string& const file_name);

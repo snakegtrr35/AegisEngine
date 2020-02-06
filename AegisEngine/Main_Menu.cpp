@@ -18,8 +18,6 @@ string MAIN_MENU::Model_Name = "asset/model/herorifle.fbx";
 
 static bool flag = false;
 
-//static FBXmodel* model;
-
 BOUNDING_FRUSTUM Bounding_Frustun;
 BOUNDING_AABB AABB;
 
@@ -219,7 +217,7 @@ void Load(MAIN_MENU* scene)
 
 	scene->Init(true);
 
-	//Sleep(5000);
+	Sleep(5000);
 
 	SetLockFlag();
 }
@@ -239,13 +237,9 @@ void MAIN_MENU::Init()
 
 		sprite_anime->SetTexture("Load.png");
 
-		sprite_anime->SetParam(20, 3, 1);
+		sprite_anime->SetParam(10, 3, 1);
 
 		sprite_anime->Init();
-
-		sprite_anime->Get_Component()->Add_Component<BOUNDING>(sprite_anime.get());
-
-		sprite_anime->Get_Component()->Add_Component<AXIS_COMPONENT>(sprite_anime.get());
 	}
 
 	std::thread th(Load, this);
@@ -333,7 +327,6 @@ void MAIN_MENU::Update(float delta_time)
 
 			flag = true;
 		}*/
-
 	}
 	else
 	{

@@ -64,8 +64,8 @@ public:
 		Right = XMLoadFloat4(&R);
 	};
 
-	void Update(float delta_time) {};
-	void Uninit() {};
+	void Update(float delta_time) override {};
+	void Uninit() override {};
 
 	/**
 	* @brief フロントベクトルを設定する関数

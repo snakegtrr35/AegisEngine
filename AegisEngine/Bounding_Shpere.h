@@ -22,11 +22,11 @@ public:
 	BOUNDING_SHPERE() : Radius(0.f), IndexNum(0) {}
 	~BOUNDING_SHPERE() { Uninit(); }
 
-	void Init();
-	void Draw();
-	void Draw_DPP() {}
-	void Update(float delta_time);
-	void Uninit();
+	void Init() override;
+	void Draw() override;
+	void Draw_DPP() override {}
+	void Update(float delta_time) override;
+	void Uninit() override;
 
 	void OverWrite() override;
 

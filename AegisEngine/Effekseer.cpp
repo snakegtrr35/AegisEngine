@@ -142,7 +142,7 @@ void EFFEKSEER_MANAGER::Draw()
 
 void EFFEKSEER_MANAGER::Update(float delta_time)
 {
-	auto player = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<PLAYER>("player");
+	auto player = CManager::Get_Instance()->Get_Scene()->Get_Game_Object("player");
 
 	//	Set_Location("test", XMFLOAT3(player->Get_Position()->x, player->Get_Position()->y, player->Get_Position()->z));
 
@@ -260,9 +260,9 @@ void EFFEKSEER_MANAGER::Play(const string& name)
 {
 	Manager->StopEffect(Handles[name]);
 
-	auto player = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<PLAYER>("player");
+	auto player = CManager::Get_Instance()->Get_Scene()->Get_Game_Object("player");
 
-	Handles[name] = Manager->Play(Effects[name], player.lock()->Get_Position()->x, player.lock()->Get_Position()->y, player.lock()->Get_Position()->z);
+	Handles[name] = Manager->Play(Effects[name], player->Get_Position()->x, player->Get_Position()->y, player->Get_Position()->z);
 
 	//Effects[name].Handle = Manager->Play(Effects[name].Effect, 0, 0, 0);
 }

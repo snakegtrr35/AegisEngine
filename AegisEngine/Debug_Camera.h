@@ -48,11 +48,11 @@ public:
 	DEBUG_CAMERA();
 	~DEBUG_CAMERA() {}
 
-	void Init();
-	void Uninit();
-	void Update(float delta_time);
-	void Draw();
-	void Draw_DPP();
+	void Init() override;
+	void Uninit() override;
+	void Update(float delta_time) override;
+	void Draw() override;
+	void Draw_DPP() override;
 
 	static DEBUG_CAMERA* const Get_Camera() {
 		return pDebugCamera;

@@ -24,7 +24,7 @@ public:
 	BOUNDING() : Color(Default_Color) {}
 	virtual ~BOUNDING() {}
 
-	virtual void Init() {}
+	virtual void Init(){}
 	virtual void Draw() {}
 	virtual void Draw_DPP() {}
 	virtual void Update(float delta_time) {}
