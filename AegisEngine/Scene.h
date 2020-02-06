@@ -19,7 +19,6 @@
 
 #include	"Grid.h"
 #include	"XYZ_Axis.h"
-#include	"Axis.h"
 #include	"Light.h"
 
 #include	"Bounding.h"
@@ -125,47 +124,26 @@ public:
 				}
 			}
 		}
+
 		weak_ptr<T> obj;
-		return obj;
-	}
-
-	// リストから特定の名前のオブジェクトの取得
-	static weak_ptr<GAME_OBJECT> Get_Game_Object(const string& name = "none")
-	{
-		for (int i = 0; i < (int)LAYER_NAME::MAX_LAYER; i++)
-		{
-			for (auto object : GameObjects[i])
-			{
-				if (name == object.get()->Get_Object_Name())
-				{
-					weak_ptr<GAME_OBJECT> obj(static_pointer_cast<GAME_OBJECT>(object));
-
-					return  obj;
-				}
-			}
-		}
-		weak_ptr<GAME_OBJECT> obj;
 		return obj;
 	}
 
 	// リストから特定のオブジェクの取得
 	// 引数 name オブジェクト名
-	static weak_ptr<GAME_OBJECT> Get_Game_Object(const GAME_OBJECT* me)
+	static GAME_OBJECT* Get_Game_Object(const string& name)
 	{
 		for (int i = 0; i < (int)LAYER_NAME::MAX_LAYER; i++)
 		{
-			for (auto object : GameObjects[i])
+			for (auto object = GameObjects[i].begin(); object != GameObjects[i].end(); object++)
 			{
-				if (me == object.get())
+				if (name == object->get()->Get_Object_Name())
 				{
-					weak_ptr<GAME_OBJECT> obj( static_pointer_cast<GAME_OBJECT>(object) );
-
-					return  obj;
+					return object->get();
 				}
 			}
 		}
-		weak_ptr<GAME_OBJECT> obj;
-		return obj;
+		return nullptr;
 	}
 
 	// リストから特定のオブジェクト（複数）の取得
@@ -175,11 +153,11 @@ public:
 		vector<T*> objects;
 		for (int i = 0; i < (int)LAYER_NAME::MAX_LAYER; i++)
 		{
-			for (auto object : GameObjects[i])
+			for (auto object = GameObjects[i].begin(); object != GameObjects[i].end(); object++)
 			{
-				if (typeid(T) == typeid( *object.get()) )
+				if (typeid(T) == typeid( *object->get()) )
 				{
-					objects.emplace_back( (T*)object.get() );
+					objects.emplace_back( (T*)object->get() );
 				}
 			}
 		}
@@ -192,9 +170,9 @@ public:
 		vector<GAME_OBJECT*> objects;
 		for (int i = 0; i < (int)LAYER_NAME::MAX_LAYER; i++)
 		{
-			for (auto object : GameObjects[i])
+			for (auto object = GameObjects[i].begin(); object != GameObjects[i].end(); object++)
 			{
-				objects.emplace_back(object.get());
+				objects.push_back(object->get());
 			}
 		}
 		return objects;
