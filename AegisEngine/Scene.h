@@ -146,6 +146,27 @@ public:
 		return nullptr;
 	}
 
+	// リストから特定のオブジェクの取得
+	// 引数 name オブジェクト名
+
+	static weak_ptr<GAME_OBJECT> Get_Game_Object(const GAME_OBJECT* me)
+	{
+		for (int i = 0; i < (int)LAYER_NAME::MAX_LAYER; i++)
+		{
+			for (auto object = GameObjects[i].begin(); object != GameObjects[i].end(); object++)
+			{
+				if (me == object->get())
+				{
+					weak_ptr<GAME_OBJECT> obj( *object );
+
+					return  obj;
+				}
+			}
+		}
+		weak_ptr<GAME_OBJECT> obj;
+		return obj;
+	}
+
 	// リストから特定のオブジェクト（複数）の取得
 	template <typename T>
 	static vector<T*> Get_Game_Objects()

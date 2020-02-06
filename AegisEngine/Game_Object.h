@@ -42,10 +42,10 @@ protected:
 	};
 
 public:
-	GAME_OBJECT() : Object_Name("none"), DestroyFlag(false), Rotation(XMFLOAT3(0.0f, 0.0f, 0.0f)), Position(XMFLOAT3(0.0f, 0.0f, 0.0f)), Scaling(XMFLOAT3(1.0f, 1.0f, 1.0f))/*, Quaternion(XMQuaternionIdentity())*/ {}
+	GAME_OBJECT();
 
 	virtual void Init() = 0;
-	virtual void Draw() = 0;
+	virtual void Draw();
 	virtual void Draw_DPP() = 0;
 	virtual void Update(float delta_time);
 	virtual void Uninit() = 0;

@@ -5,6 +5,7 @@
 
 //class GAME_OBJECT;
 #include	"Game_Object.h"
+#include	"manager.h"
 
 // コンポーネントクラス
 class COMPONENT : public GAME_OBJECT {
@@ -92,7 +93,7 @@ CEREAL_REGISTER_POLYMORPHIC_RELATION(GAME_OBJECT, COMPONENT)
 class COMPONENT_MANEGER {
 private:
 
-	list< unique_ptr<COMPONENT> > Conponent_List;
+	vector< unique_ptr<COMPONENT> > Conponents;
 
 public:
 
@@ -100,17 +101,38 @@ public:
 	template <typename T>
 	T* Add_Component(const shared_ptr<GAME_OBJECT>& owner)
 	{
-		for (auto object = Conponent_List.begin(); object != Conponent_List.end(); object++)
+		//for (auto object = Conponent_List.begin(); object != Conponent_List.end(); object++)
+		for (const auto& object : Conponents)
 		{
-			if (typeid(T) == typeid(*object->get()))
+			if (typeid(T) == typeid(*object.get()))
 			{
-				return (T*)object->get();
+				return (T*)object.get();
 			}
 		}
 
 		T* object = new T(owner);
 
-		Conponent_List.emplace_back(object);
+		Conponents.emplace_back(object);
+
+		return object;
+	}
+
+	// リストへのメニューオブジェクトの追加
+	template <typename T>
+	T* Add_Component(const weak_ptr<GAME_OBJECT>& owner)
+	{
+		//for (auto object = Conponent_List.begin(); object != Conponent_List.end(); object++)
+		for (const auto& object : Conponents)
+		{
+			if (typeid(T) == typeid(*object.get()))
+			{
+				return (T*)object.get();
+			}
+		}
+
+		T* object = new T(owner);
+
+		Conponents.emplace_back(object);
 
 		return object;
 	}
@@ -118,11 +140,12 @@ public:
 	// リストから特定のメニューオブジェクトの取得
 	template <typename T>
 	T* Get_Component() {
-		for (auto object = Conponent_List.begin(); object != Conponent_List.end(); object++)
+		//for (auto object = Conponent_List.begin(); object != Conponent_List.end(); object++)
+		for (const auto& object : Conponents)
 		{
-			if (typeid(T) == typeid(*object->get()))
+			if (typeid(T) == typeid(*object.get()))
 			{
-				return (T*)object->get();
+				return (T*)object.get();
 			}
 		}
 		return nullptr;
@@ -135,44 +158,48 @@ public:
 	}
 
 	void Update(float delta_time) {
-		for (auto object = Conponent_List.begin(); object != Conponent_List.end(); object++)
+		//for (auto object = Conponent_List.begin(); object != Conponent_List.end(); object++)
+		for (const auto& object : Conponents)
 		{
-			object->get()->Update(delta_time);
+			if (object->GetEnable())
+			{
+				object->Update(delta_time);
+			}
 		}
 
-		Conponent_List.remove_if([](auto& object) { return object->Destroy(); }); // リストから削除
+		//Conponent_List.remove_if([](auto& object) { return object->Destroy(); }); // リストから削除
+		Conponents.erase(std::remove_if(Conponents.begin(), Conponents.end(), [](auto& object) { return object->Destroy(); } ), Conponents.end());
 	}
 
 	void Draw() {
-		for (auto object = Conponent_List.begin(); object != Conponent_List.end(); object++)
+		//for (auto object = Conponent_List.begin(); object != Conponent_List.end(); object++)
+		for (const auto& object : Conponents)
 		{
-			if (object->get()->Get_Draw_Enable())
+			if (object->Get_Draw_Enable())
 			{
-				object->get()->Draw();
+				object->Draw();
 			}
 		}
-
-		Conponent_List.remove_if([](auto& object) { return object->Destroy(); }); // リストから削除
 	}
 
 	void Draw_DPP() {
-		for (auto object = Conponent_List.begin(); object != Conponent_List.end(); object++)
+		//for (auto object = Conponent_List.begin(); object != Conponent_List.end(); object++)
+		for (const auto& object : Conponents)
 		{
-			if (object->get()->Get_Draw_Enable())
+			if (object->Get_Draw_Enable())
 			{
-				object->get()->Draw_DPP();
+				object->Draw_DPP();
 			}
 		}
-
-		Conponent_List.remove_if([](auto& object) { return object->Destroy(); }); // リストから削除
 	}
 
 	void Uninit() {
-		for (auto object = Conponent_List.begin(); object != Conponent_List.end(); object++)
+		//for (auto object = Conponent_List.begin(); object != Conponent_List.end(); object++)
+		for (auto& object : Conponents)
 		{
-			object->reset(nullptr);
+			object.reset(nullptr);
 		}
-		Conponent_List.clear();
+		Conponents.clear();
 	}
 };
 
