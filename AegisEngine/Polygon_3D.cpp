@@ -219,16 +219,16 @@ void POLYGON_3D::Draw(void)
 		world *= XMMatrixRotationRollPitchYaw( XMConvertToRadians(Rotation.x), XMConvertToRadians(Rotation.y), XMConvertToRadians(Rotation.z) );
 		world *= XMMatrixTranslation(Position.x, Position.y, Position.z);
 
-		const auto camera01 = CManager::Get_Scene()->Get_Game_Object<CCamera>("camera");
-		const auto camera02 = CManager::Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
+		const auto camera01 = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<CCamera>("camera");
+		const auto camera02 = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
 
 		if (!camera01.expired() && Empty_weak_ptr<CCamera>(camera01))
 		{
 			// シャドウマップ用の描画か?
-			if (CManager::Get_ShadowMap()->Get_Enable())
+			if (CManager::Get_Instance()->Get_ShadowMap()->Get_Enable())
 			{
-				XMMATRIX view = CManager::Get_ShadowMap()->Get_View();
-				XMMATRIX proj = CManager::Get_ShadowMap()->Get_Plojection();
+				XMMATRIX view = CManager::Get_Instance()->Get_ShadowMap()->Get_View();
+				XMMATRIX proj = CManager::Get_Instance()->Get_ShadowMap()->Get_Plojection();
 
 				CRenderer::Set_MatrixBuffer(world, view, proj);
 
@@ -246,10 +246,10 @@ void POLYGON_3D::Draw(void)
 		else
 		{
 			// シャドウマップ用の描画か?
-			if (CManager::Get_ShadowMap()->Get_Enable())
+			if (CManager::Get_Instance()->Get_ShadowMap()->Get_Enable())
 			{
-				XMMATRIX view = CManager::Get_ShadowMap()->Get_View();
-				XMMATRIX proj = CManager::Get_ShadowMap()->Get_Plojection();
+				XMMATRIX view = CManager::Get_Instance()->Get_ShadowMap()->Get_View();
+				XMMATRIX proj = CManager::Get_Instance()->Get_ShadowMap()->Get_Plojection();
 
 				CRenderer::Set_MatrixBuffer(world, view, proj);
 
@@ -288,8 +288,8 @@ void POLYGON_3D::Draw_DPP(void)
 		world *= XMMatrixRotationRollPitchYaw(XMConvertToRadians(Rotation.x), XMConvertToRadians(Rotation.y), XMConvertToRadians(Rotation.z));
 		world *= XMMatrixTranslation(Position.x, Position.y, Position.z);
 
-		const auto camera01 = CManager::Get_Scene()->Get_Game_Object<CCamera>("camera");
-		const auto camera02 = CManager::Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
+		const auto camera01 = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<CCamera>("camera");
+		const auto camera02 = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
 
 		if (!camera01.expired() && Empty_weak_ptr<CCamera>(camera01))
 		{

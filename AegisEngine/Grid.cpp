@@ -124,7 +124,7 @@ void GRID::Init()
 
 void GRID::Draw()
 {
-	if (false == CManager::Get_ShadowMap()->Get_Enable())
+	if (false == CManager::Get_Instance()->Get_ShadowMap()->Get_Enable())
 	{
 		// 入力アセンブラに頂点バッファを設定.
 		CRenderer::SetVertexBuffers(pVertexBuffer);
@@ -137,8 +137,8 @@ void GRID::Draw()
 			world *= XMMatrixRotationRollPitchYaw(XMConvertToRadians(Rotation.x), XMConvertToRadians(Rotation.y), XMConvertToRadians(Rotation.z));			// 回転(ロールピッチヨウ)
 			world *= XMMatrixTranslation(Position.x, Position.y, Position.z);																				// 移動
 
-			const auto camera01 = CManager::Get_Scene()->Get_Game_Object<CCamera>("camera");
-			const auto camera02 = CManager::Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
+			const auto camera01 = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<CCamera>("camera");
+			const auto camera02 = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
 
 			if (!camera01.expired() && Empty_weak_ptr<CCamera>(camera01))
 			{

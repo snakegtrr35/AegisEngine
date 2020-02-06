@@ -66,7 +66,7 @@ void CCamera::Update(float delta_time)
 	bool flag = KEYBOARD::Press_Keyboard(VK_RBUTTON);
 
 	{
-		auto player = CManager::Get_Scene()->Get_Game_Object("player");
+		auto player = CManager::Get_Instance()->Get_Scene()->Get_Game_Object("player");
 		if (nullptr == player)
 		{
 			//At = XMLoadFloat3(player->Get_Position());

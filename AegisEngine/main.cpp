@@ -92,7 +92,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 	MSG msg;
 	ZeroMemory(&msg, sizeof msg);
 
-	while(CManager::Get_GameEnd())
+	while(CManager::Get_Instance()->Get_GameEnd())
 	{
         if(PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
 		{
@@ -116,10 +116,10 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 				dwExecLastTime = dwCurrentTime;
 
 				// çXêVèàóù
-				CManager::Update();
+				CManager::Get_Instance()->Update();
 
 				// ï`âÊèàóù
-				CManager::Draw();
+				CManager::Get_Instance()->Draw();
 			}
 		}
 	}
@@ -130,7 +130,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 	UnregisterClass(CLASS_NAME, wcex.hInstance);
 
 	// èIóπèàóù
-	CManager::Uninit();
+	CManager::Delete();
 
 	return (int)msg.wParam;
 }

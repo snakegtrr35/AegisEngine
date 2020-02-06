@@ -97,12 +97,12 @@ void BULLET::Update(float delta_time)
 
 	if (HP <= 0)
 	{
-		CManager::Get_Scene()->Destroy_Game_Object(this);
+		CManager::Get_Instance()->Get_Scene()->Destroy_Game_Object(this);
 	}
 
 	// 敵と弾の当たり判定
 	{
-		vector<ENEMY*> enemys = CManager::Get_Scene()->Get_Game_Objects<ENEMY>();
+		vector<ENEMY*> enemys = CManager::Get_Instance()->Get_Scene()->Get_Game_Objects<ENEMY>();
 
 		for (ENEMY* enemy : enemys)
 		{
@@ -111,7 +111,7 @@ void BULLET::Update(float delta_time)
 			{
 				// ビルボード
 				{
-					BILL_BOARD_ANIMATION* bba = CManager::Get_Scene()->Add_Game_Object<BILL_BOARD_ANIMATION>(LAYER_NAME::EFFECT);
+					BILL_BOARD_ANIMATION* bba = CManager::Get_Instance()->Get_Scene()->Add_Game_Object<BILL_BOARD_ANIMATION>(LAYER_NAME::EFFECT);
 					bba->Set_Position(&Position);
 					bba->SetWH(XMFLOAT2(1.0f, 1.0f));
 					bba->SetParam(3.0f, 4, 4);
@@ -121,8 +121,8 @@ void BULLET::Update(float delta_time)
 
 				//score->Add(100);
 
-				CManager::Get_Scene()->Destroy_Game_Object(this);
-				CManager::Get_Scene()->Destroy_Game_Object(enemy);
+				CManager::Get_Instance()->Get_Scene()->Destroy_Game_Object(this);
+				CManager::Get_Instance()->Get_Scene()->Destroy_Game_Object(enemy);
 
 				AUDIO_MANAGER::Play_Sound_Object(SOUND_INDEX::SOUND_INDEX_EXPLOSION);
 			}
@@ -131,7 +131,7 @@ void BULLET::Update(float delta_time)
 
 	// プレイヤーと弾の当たり判定
 	{
-		const auto player = CManager::Get_Scene()->Get_Game_Object<PLAYER>("player");
+		const auto player = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<PLAYER>("player");
 
 		//if (Collision_HitAABB(this->Get_Collison(), player->Get_Collision()))
 		//{

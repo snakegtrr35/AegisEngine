@@ -98,7 +98,7 @@ void PLAYER::Draw_DPP(void)
 void PLAYER::Update(float delta_time)
 {
 	//CCamera* camera = CManager::Get_Scene()->Get_Game_Object<CCamera>("camera");
-	const auto camera = CManager::Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
+	const auto camera = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
 
 	XMVECTOR* vec = camera.lock()->Get_At();
 	XMVECTOR* front = camera.lock()->Get_Front();

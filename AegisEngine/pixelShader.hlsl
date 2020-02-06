@@ -183,7 +183,7 @@ void main( PS_IN Input,
     }
     
     color = (diffuse * TexColor) + speculer;
-
+    
     color.rgb *= shadow;
     
     color.rgb += (ambient.rgb * TexColor.rgb);

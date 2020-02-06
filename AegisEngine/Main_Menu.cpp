@@ -18,10 +18,26 @@ string MAIN_MENU::Model_Name = "asset/model/herorifle.fbx";
 
 static bool flag = false;
 
-//static FBXmodel* model;
-
 BOUNDING_FRUSTUM Bounding_Frustun;
 BOUNDING_AABB AABB;
+
+static bool isLoaded = false;
+static std::mutex isLoadedMutex;
+
+
+unique_ptr<SPRITE_ANIMATION> sprite_anime = nullptr;
+
+void SetLockFlag()
+{
+	std::lock_guard<std::mutex>  lock(isLoadedMutex);
+	isLoaded = true;
+}
+
+bool GetLockFlag()
+{
+	std::lock_guard<std::mutex>  lock(isLoadedMutex);
+	return isLoaded;
+}
 
 string Replace_String(string& replacedStr, const string& from, const string& to)
 {
@@ -46,16 +62,15 @@ string Replace_String(string& replacedStr, const string& from, const string& to)
 	return replacedStr.replace(pos, len, to);
 }
 
-
-void MAIN_MENU::Init()
+void Load(MAIN_MENU* scene)
 {
 	bool flag;
 
 	{
-		const type_info& id = typeid(this);
+		const type_info& id = typeid(scene);
 
 		string name(id.name());
-		
+
 		// 置換
 		Replace_String(name, "class ", "      ");
 		Replace_String(name, "__ptr64", "       ");
@@ -69,7 +84,7 @@ void MAIN_MENU::Init()
 		if (flag)
 		{
 			cereal::BinaryInputArchive archive(file);
-			archive(*this);
+			archive(*scene);
 		}
 	}
 
@@ -78,7 +93,7 @@ void MAIN_MENU::Init()
 		// カメラ
 		{
 			//auto camera = Add_Game_Object<CCamera>(LAYER_NAME::BACKGROUND, "camera");
-			auto camera = Add_Game_Object<DEBUG_CAMERA>(LAYER_NAME::BACKGROUND, "camera");
+			auto camera = scene->Add_Game_Object<DEBUG_CAMERA>(LAYER_NAME::BACKGROUND, "camera");
 
 			camera->Set_Viewing_Angle(80.0f);
 
@@ -86,44 +101,20 @@ void MAIN_MENU::Init()
 			//camera->Set_Rotate_Enable(false);
 		}
 
-		////プレイヤー
-		//{
-		//	CMODEL* player = Add_Game_Object<CMODEL>(LAYER_NAME::GAMEOBJECT, "player");
-
-		//	//string name("asset/model/herorifle.fbx");
-		//	string name("asset/model/human01_Stop.fbx");
-		//	//string name("asset/model/untitled.fbx");
-		//	//string name("asset/model/Dragon 2.5_fbx.fbx");
-
-		//	XMFLOAT3 f3;
-
-		//	f3 = XMFLOAT3(0.f, 0.f, 0.f);
-		//	player->Set_Position(f3);
-
-		//	f3 = XMFLOAT3(0.f, 0.f, 0.f);
-		//	player->Set_Rotation(f3);
-
-		//	//f3 = XMFLOAT3(0.1f, 0.1f, 0.1f);
-		//	f3 = XMFLOAT3(1.0f, 1.0f, 1.0f);
-		//	player->Set_Scaling(f3);
-
-		//	player->Load(name);
-		//}
-
 		{
-			//auto player = Add_Game_Object<PLAYER>(LAYER_NAME::GAMEOBJECT, "player");
+			//auto player = scene->Add_Game_Object<PLAYER>(LAYER_NAME::GAMEOBJECT, "player");
 		}
 
 		{
-			auto pmd = Add_Game_Object<MESH_DOOM>(LAYER_NAME::BACKGROUND, "sky_doom");
+			auto pmd = scene->Add_Game_Object<MESH_DOOM>(LAYER_NAME::BACKGROUND, "sky_doom");
 		}
 
 		{
-			//Add_Game_Object<MESH_FIELD>(LAYER_NAME::GAMEOBJECT, "field");
+			scene->Add_Game_Object<MESH_FIELD>(LAYER_NAME::GAMEOBJECT, "field");
 		}
 
 		{
-			//Add_Game_Object<FIELD>(LAYER_NAME::GAMEOBJECT, "plane");
+			scene->Add_Game_Object<FIELD>(LAYER_NAME::GAMEOBJECT, "plane");
 		}
 
 		//{
@@ -181,30 +172,20 @@ void MAIN_MENU::Init()
 		//	s->SetSize(XMFLOAT4(128, 128, 128, 128));
 		//}
 
-		{
-			auto text = Add_Game_Object<SPRITE_ANIMATION>(LAYER_NAME::UI, "sprite");
-
-			XMFLOAT2 pos(SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.5f);
-
-			text->SetPosition(pos);
-
-			text->SetSize(XMFLOAT4(100, 100, 100, 100));
-
-			text->SetTexture("Explosion.png");
-
-			text->SetParam(10.0f, 4, 4);
-		}
-
 		//{
-		//	auto text = Add_Game_Object<SPRITE>(LAYER_NAME::UI, "sprite");
+		//	auto text = Add_Game_Object<TEXTS>(LAYER_NAME::UI);
 
-		//	XMFLOAT2 pos(SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.5f);
+		//	XMFLOAT2 pos(100.0f, 300.0f);
 
 		//	text->SetPosition(pos);
 
-		//	text->SetSize(XMFLOAT4(100, 100, 100, 100));
+		//	text->SetSize(XMFLOAT4(20, 20, 20, 20));
 
-		//	text->SetTexture("UVCheckerMap01-512.png");
+		//	text->Set_Object_Name(string("delta_time"));
+
+		//	//string time = to_string(Time);
+
+		//	text->Edit("0.000");
 		//}
 
 		/*{
@@ -234,7 +215,36 @@ void MAIN_MENU::Init()
 	Bounding_Frustun.Init();
 	AABB.Init();
 
+	scene->Init(true);
+
+	Sleep(5000);
+
+	SetLockFlag();
+}
+
+void MAIN_MENU::Init(bool)
+{
 	SCENE::Init();
+}
+
+void MAIN_MENU::Init()
+{
+	{
+		sprite_anime = make_unique<SPRITE_ANIMATION>();
+
+		sprite_anime->SetPosition(XMFLOAT2(SCREEN_WIDTH * 0.5, SCREEN_HEIGHT * 0.5));
+		sprite_anime->SetSize(XMFLOAT4(SCREEN_HEIGHT * 0.5, SCREEN_WIDTH * 0.5, SCREEN_HEIGHT * 0.5, SCREEN_WIDTH * 0.5));
+
+		sprite_anime->SetTexture("Load.png");
+
+		sprite_anime->SetParam(10, 3, 1);
+
+		sprite_anime->Init();
+	}
+
+	std::thread th(Load, this);
+
+	th.detach();
 
 	//cnt = 0;
 
@@ -244,69 +254,84 @@ void MAIN_MENU::Init()
 
 void MAIN_MENU::Draw()
 {
-	SCENE::Draw();
+	if (GetLockFlag())
+	{
+		sprite_anime.reset(nullptr);
 
-	Bounding_Frustun.Draw();
-	AABB.Draw();
+		SCENE::Draw();
 
-	auto m = XMMatrixIdentity();
+		Bounding_Frustun.Draw();
+		AABB.Draw();
 
-	m = XMMatrixScaling(2.5, 2.5, 2.5);
+		auto m = XMMatrixIdentity();
 
-	//model->Draw(m);
+		m = XMMatrixScaling(2.5, 2.5, 2.5);
+	}
+	else
+	{
+		sprite_anime->Draw();
+	}
 }
 
 void MAIN_MENU::Draw_DPP()
 {
-	SCENE::Draw_DPP();
+	if (GetLockFlag())
+	{
+		sprite_anime.reset(nullptr);
 
-	Bounding_Frustun.Draw_DPP();
-	AABB.Draw_DPP();
+		SCENE::Draw_DPP();
 
-	auto m = XMMatrixIdentity();
+		Bounding_Frustun.Draw_DPP();
+		AABB.Draw_DPP();
 
-	m = XMMatrixScaling(2.5, 2.5, 2.5);
+		auto m = XMMatrixIdentity();
 
-	//model->Draw_DPP(m);
+		m = XMMatrixScaling(2.5, 2.5, 2.5);
+	}
 }
 
 void MAIN_MENU::Update(float delta_time)
 {
-	SCENE::Update(delta_time);
-
-	//model->Update(delta_time);
-	Bounding_Frustun.Update(delta_time);
-	AABB.Update(delta_time);
-
+	if (GetLockFlag())
 	{
-		/*{
-			vector<SPRITE*> sprites = Get_Game_Objects<SPRITE>();
+		SCENE::Update(delta_time);
+		Bounding_Frustun.Update(delta_time);
+		AABB.Update(delta_time);
 
-			for (auto s : sprites)
-			{
-				if ("depth" == s->Get_Object_Name())
+		{
+			/*{
+				vector<SPRITE*> sprites = Get_Game_Objects<SPRITE>();
+
+				for (auto s : sprites)
 				{
-					s->Set(CRenderer::Get());
+					if ("depth" == s->Get_Object_Name())
+					{
+						s->Set(CRenderer::Get());
+					}
 				}
-			}
-		}*/
+			}*/
 
-		/*{
-			auto text = Get_Game_Object<TEXTS>("fps");
+			/*{
+				auto text = Get_Game_Object<TEXTS>("fps");
 
-			auto time = TIMER::Get_FPS();
+				auto time = TIMER::Get_FPS();
 
-			text->Edit(to_string(time));
+				text->Edit(to_string(time));
+			}*/
+		}
+
+		/*if (FADE::End_Fade())
+		{
+			if(flag)
+				SCENE_MANAGER::Set_Scene<GAME>();
+
+			flag = true;
 		}*/
 	}
-
-	/*if (FADE::End_Fade())
+	else
 	{
-		if(flag)
-			SCENE_MANAGER::Set_Scene<GAME>();
-
-		flag = true;
-	}*/
+		sprite_anime->Update(delta_time);
+	}
 }
 
 void MAIN_MENU::Uninit()

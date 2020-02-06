@@ -1026,7 +1026,7 @@ void CRenderer::End()
 				// リセット
 				case DXGI_ERROR_DEVICE_HUNG:
 				case DXGI_ERROR_DEVICE_RESET:
-					CManager::GameEnd();
+					CManager::Get_Instance()->GameEnd();
 					break;
 
 				// エラー 終了
@@ -1034,7 +1034,7 @@ void CRenderer::End()
 				case DXGI_ERROR_DRIVER_INTERNAL_ERROR:
 				case DXGI_ERROR_INVALID_CALL:
 				default:
-					CManager::GameEnd();
+					CManager::Get_Instance()->GameEnd();
 					break;
 			}
 		}

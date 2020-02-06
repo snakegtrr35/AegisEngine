@@ -12,6 +12,7 @@
 #include	"Player.h"
 #include	"Enemy.h"
 #include	"Sprite.h"
+#include	"Sprite_Animation.h"
 #include	"Polygon_3D.h"
 #include	"Billboard.h"
 #include	"Score.h"
@@ -545,6 +546,8 @@ public:
 	void Draw_DPP() override;
 	void Update(float delta_time) override;
 	void Uninit() override;
+
+	void Init(bool);
 
 	static string Model_Name;
 

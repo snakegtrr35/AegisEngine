@@ -47,7 +47,7 @@ TEXTURE::TEXTURE()
 TEXTURE::TEXTURE(const string& file_name)
 {
 	FileName = file_name;
-	TEXTURE_MANEGER::Add_ReferenceCnt(FileName);
+	TEXTURE_MANEGER::Get_Instance()->Add_ReferenceCnt(FileName);
 }
 
 //========================================
@@ -55,7 +55,7 @@ TEXTURE::TEXTURE(const string& file_name)
 //========================================
 void TEXTURE::Set_Texture(void)
 {
-	ID3D11ShaderResourceView* shader_resouce_view = TEXTURE_MANEGER::GetShaderResourceView(FileName);
+	ID3D11ShaderResourceView* shader_resouce_view = TEXTURE_MANEGER::Get_Instance()->GetShaderResourceView(FileName);
 
 	CRenderer::GetDeviceContext()->PSSetShaderResources(0, 1, &shader_resouce_view);
 }
@@ -67,9 +67,9 @@ void TEXTURE::Set_Texture_Name(const string& file_name)
 {
 	if (file_name != FileName)
 	{
-		TEXTURE_MANEGER::Sub_ReferenceCnt(FileName);
+		TEXTURE_MANEGER::Get_Instance()->Sub_ReferenceCnt(FileName);
 		FileName = file_name;
-		TEXTURE_MANEGER::Add_ReferenceCnt(FileName);
+		TEXTURE_MANEGER::Get_Instance()->Add_ReferenceCnt(FileName);
 	}
 }
 
@@ -83,7 +83,7 @@ const string& TEXTURE::Get_Texture_Name(void)
 
 XMINT2* const TEXTURE::Get_WH()
 {
-	return TEXTURE_MANEGER::Get_WH(FileName);
+	return TEXTURE_MANEGER::Get_Instance()->Get_WH(FileName);
 }
 
 

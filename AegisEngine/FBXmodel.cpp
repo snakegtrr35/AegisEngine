@@ -260,7 +260,7 @@ void FBXmodel::Update(float delta_time)
 
 	fr += delta_time;
 
-	if (ANIMETION_FRAME <= fr)
+	if (ANIMETION_FRAME_30 <= fr)
 	{
 		frame++;
 
@@ -366,11 +366,11 @@ void FBXmodel::DrawMesh(const aiNode* Node, const XMMATRIX& Matrix)
 	world = XMMatrixTranspose(aiMatrixToMatrix(Node->mTransformation));
 	world *= Matrix;
 
-	const auto camera01 = CManager::Get_Scene()->Get_Game_Object<CCamera>("camera");
-	const auto camera02 = CManager::Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
+	const auto camera01 = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<CCamera>("camera");
+	const auto camera02 = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
 
-	XMMATRIX view = CManager::Get_ShadowMap()->Get_View();
-	XMMATRIX proj = CManager::Get_ShadowMap()->Get_Plojection();
+	XMMATRIX view = CManager::Get_Instance()->Get_ShadowMap()->Get_View();
+	XMMATRIX proj = CManager::Get_Instance()->Get_ShadowMap()->Get_Plojection();
 
 	for (UINT n = 0; n < Node->mNumMeshes; n++)
 	{
@@ -382,7 +382,7 @@ void FBXmodel::DrawMesh(const aiNode* Node, const XMMATRIX& Matrix)
 			if (!camera01.expired() && Empty_weak_ptr<CCamera>(camera01))
 			{
 				// シャドウマップ用の描画か?
-				if (CManager::Get_ShadowMap()->Get_Enable())
+				if (CManager::Get_Instance()->Get_ShadowMap()->Get_Enable())
 				{
 					CRenderer::Set_MatrixBuffer(world, view, proj);
 
@@ -400,7 +400,7 @@ void FBXmodel::DrawMesh(const aiNode* Node, const XMMATRIX& Matrix)
 			else
 			{
 				// シャドウマップ用の描画か?
-				if (CManager::Get_ShadowMap()->Get_Enable())
+				if (CManager::Get_Instance()->Get_ShadowMap()->Get_Enable())
 				{
 					CRenderer::Set_MatrixBuffer(world, view, proj);
 
@@ -451,8 +451,8 @@ void FBXmodel::DrawMesh_DPP(const aiNode* Node, const XMMATRIX& Matrix)
 	world = XMMatrixTranspose(aiMatrixToMatrix(Node->mTransformation));
 	world *= Matrix;
 
-	const auto camera01 = CManager::Get_Scene()->Get_Game_Object<CCamera>("camera");
-	const auto camera02 = CManager::Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
+	const auto camera01 = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<CCamera>("camera");
+	const auto camera02 = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
 
 	for (UINT n = 0; n < Node->mNumMeshes; n++)
 	{
