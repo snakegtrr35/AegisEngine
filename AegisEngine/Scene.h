@@ -3,56 +3,9 @@
 #ifndef SCENE_H
 #define SCENE_H
 
-#include	"main.h"
-#include	"Renderer.h"
-
 #include	"Game_Object.h"
-
-//#include	"camera.h"
-//#include	"Debug_Camera.h"
-////#include	"Field.h"
-////class FIELD;
-//#include	"Player.h"
-//#include	"Enemy.h"
-//#include	"Sprite.h"
-//#include	"Sprite_Animation.h"
-//#include	"Polygon_3D.h"
-//#include	"Billboard.h"
-//#include	"Score.h"
-//
-//#include	"Grid.h"
-//#include	"XYZ_Axis.h"
 #include	"Light.h"
-//
-//#include	"Bounding.h"
-//#include	"Bounding_Shpere.h"
-//#include	"Bounding_Aabb.h"
-//#include	"Bounding_Obb.h"
-//
-//#include	"Mesh_Field.h"
-//#include	"Mesh_Cylinder.h"
-//#include	"Mesh_Dome.h"
 
-//class CCamera;
-//class DEBUG_CAMERA;
-//class FIELD;
-//class PLAYER;
-//class ENEMY;
-//class SPRITE;
-//class SPRITE_ANIMATION;
-//class TEXTS;
-//class POLYGON_3D;
-//class BILL_BOARD;
-//class SCORE;
-//class GRID;
-//class AXIS;
-////class BOUNDING;
-//class BOUNDING_SHPERE;
-//class BOUNDING_AABB;
-//class BOUNDING_OBB;
-//class MESH_FIELD;
-//class MESH_CYlLINDER;
-//class MESH_DOOM;
 
 template <typename T>
 bool Empty_weak_ptr(const weak_ptr<T>& w)
