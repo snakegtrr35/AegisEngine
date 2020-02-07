@@ -15,6 +15,7 @@
 #include	"Texture_Manager.h"
 #include	"common.h"
 
+#include	"Component.h"
 #include	"Light.h"
 
 #include	"Bounding_Aabb.h"
@@ -488,7 +489,7 @@ void My_imgui::Render(void)
 	ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
 }
 
-void Draw_Inspector(const string& name)
+void My_imgui::Draw_Inspector(const string& name)
 {
 	bool flag = false;
 	if (old_name != name) flag = true;
@@ -618,6 +619,10 @@ void Draw_Inspector(const string& name)
 				}
 			}
 
+			{
+				Draw_Components(object->Get_Component()->Get_All_Components());
+			}
+
 			static int clicked = 0;
 			if (ImGui::Button("Add Component"))
 			{
@@ -687,6 +692,11 @@ void EditTransform(const float* cameraView, float* cameraProjection, float* matr
 	ImGuiIO& io = ImGui::GetIO();
 	ImGuizmo::SetRect(0, 0, io.DisplaySize.x, io.DisplaySize.y);
 	ImGuizmo::Manipulate(cameraView, cameraProjection, mCurrentGizmoOperation, ImGuizmo::LOCAL, matrix, NULL, &snap[0], NULL, NULL);
+}
+
+void My_imgui::Draw_Components(const vector<COMPONENT*>& components)
+{
+
 }
 
 void My_imgui::Texture_Import()

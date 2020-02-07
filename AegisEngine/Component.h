@@ -97,7 +97,7 @@ private:
 
 public:
 
-	// リストへのメニューオブジェクトの追加
+	// リストへのコンポーネントの追加
 	template <typename T>
 	T* Add_Component(const shared_ptr<GAME_OBJECT>& owner)
 	{
@@ -117,7 +117,7 @@ public:
 		return object;
 	}
 
-	// リストへのメニューオブジェクトの追加
+	// リストへのコンポーネントの追加
 	template <typename T>
 	T* Add_Component(const weak_ptr<GAME_OBJECT>& owner)
 	{
@@ -137,7 +137,7 @@ public:
 		return object;
 	}
 
-	// リストから特定のメニューオブジェクトの取得
+	// リストから特定のコンポーネントの取得
 	template <typename T>
 	T* Get_Component() {
 		//for (auto object = Conponent_List.begin(); object != Conponent_List.end(); object++)
@@ -149,6 +149,19 @@ public:
 			}
 		}
 		return nullptr;
+	}
+
+	// リストから全てのコンポーネントの取得
+	vector<COMPONENT*> Get_All_Components() {
+		vector<COMPONENT*> objects;
+		objects.reserve(Conponents.size());
+
+		//for (auto object = Conponent_List.begin(); object != Conponent_List.end(); object++)
+		for (const auto& object : Conponents)
+		{ 
+			objects.emplace_back(object.get());
+		}
+		return objects;
 	}
 
 	COMPONENT_MANEGER() {}

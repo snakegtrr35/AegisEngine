@@ -7,6 +7,8 @@
 
 #include	"main.h"
 
+class COMPONENT;
+
 class My_imgui{
 private:
 	bool show_demo_window;
@@ -31,6 +33,10 @@ private:
 	void File();
 
 	void Light_Setting();
+
+	void Draw_Inspector(const string& name);
+
+	void Draw_Components(const vector<COMPONENT*>& components);
 
 public:
 	My_imgui() : show_demo_window(false), show_another_window(false), show_default_window(false),
