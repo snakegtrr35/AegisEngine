@@ -3,7 +3,7 @@
 #ifndef RESULT_H
 #define RESULT_H
 
-#include	"Scene.h"
+class SCENE;
 
 /**
 * @brief リザルトシーンクラス

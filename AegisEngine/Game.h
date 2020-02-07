@@ -3,7 +3,7 @@
 #ifndef GAME_H
 #define GAME_H
 
-#include	"Scene.h"
+class SCENE;
 
 /**
 * @brief ゲームシーンクラス

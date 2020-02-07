@@ -1,3 +1,4 @@
+#include	"Scene.h"
 #include	"Result.h"
 #include	"Input.h"
 #include	"manager.h"
