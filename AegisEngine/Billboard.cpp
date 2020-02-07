@@ -2,6 +2,8 @@
 #include	"texture.h"
 #include	"Billboard.h"
 
+#include	"camera.h"
+#include	"Debug_Camera.h"
 #include	"manager.h"
 #include	"Scene.h"
 
@@ -354,6 +356,18 @@ void BILL_BOARD::Uninit()
 	SAFE_RELEASE(pIndexBuffer);
 	SAFE_DELETE(Texture);
 }
+
+// 幅と高さの設定
+void BILL_BOARD::SetWH(const XMFLOAT2 wh)
+{
+	WH = wh;
+};
+
+// テクスチャの設定
+void BILL_BOARD::SetTexture(const string& const file_name)
+{
+	Texture->Set_Texture_Name(file_name);
+};
 
 //////////////////////////////////////////////////
 

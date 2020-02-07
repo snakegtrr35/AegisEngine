@@ -74,6 +74,7 @@
     <ClCompile Include="Renderer.cpp" />
     <ClCompile Include="Result.cpp" />
     <ClCompile Include="Scene.cpp" />
+    <ClCompile Include="Scene_Manager.cpp" />
     <ClCompile Include="Score.cpp" />
     <ClCompile Include="ShadowMap.cpp" />
     <ClCompile Include="Bounding_Obb.cpp" />
@@ -131,6 +132,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
       </ExcludedFromBuild>
     </ClInclude>
+    <ClInclude Include="Game.h" />
     <ClInclude Include="Game_Object.h" />
     <ClInclude Include="Grid.h" />
     <ClInclude Include="imgui\imconfig.h" />
@@ -154,6 +156,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </FxCompile>
     <ClInclude Include="main.h" />
+    <ClInclude Include="Main_Menu.h" />
     <ClInclude Include="manager.h" />
     <ClInclude Include="Math.h" />
     <ClInclude Include="Menu_Component.h" />
@@ -168,7 +171,9 @@
     <ClInclude Include="Polygon_3D.h" />
     <ClInclude Include="Renderer.h" />
     <ClInclude Include="resource.h" />
+    <ClInclude Include="Result.h" />
     <ClInclude Include="Scene.h" />
+    <ClInclude Include="Scene_Manager.h" />
     <ClInclude Include="Score.h" />
     <ClInclude Include="ShadowMap.h" />
     <ClInclude Include="Sprite.h" />
@@ -182,6 +187,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </FxCompile>
     <ClInclude Include="Timer.h" />
+    <ClInclude Include="Title.h" />
     <ClInclude Include="Xbox.h" />
     <ClInclude Include="XYZ_Axis.h" />
   </ItemGroup>

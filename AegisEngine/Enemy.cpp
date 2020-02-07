@@ -1,5 +1,6 @@
 #include	"ModelLoader.h"
 #include	"Collision.h"
+#include	"Player.h"
 #include	"Enemy.h"
 #include	"Scene.h"
 #include	"manager.h"

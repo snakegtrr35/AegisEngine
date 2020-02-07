@@ -1,17 +1,20 @@
-#include	"Scene.h"
+#include	"Main_Menu.h"
 #include	"ModelLoader.h"
 #include	"Input.h"
 #include	"manager.h"
 #include	"Component.h"
 #include	"audio_clip.h"
 #include	"Math.h"
-
+#include	"Field.h"
+#include	"Mesh_Dome.h"
+#include	"Mesh_Field.h"
 #include	"Fade.h"
 
 #include	"Timer.h"
 
 #include	"FBXmodel.h"
-
+#include	"Sprite_Animation.h"
+#include	"Bounding_Aabb.h"
 #include	"Bounding_Frustum.h"
 
 string MAIN_MENU::Model_Name = "asset/model/herorifle.fbx";

@@ -1,7 +1,8 @@
 #include "renderer.h"
 #include "texture.h"
 #include "Mesh_Field.h"
-
+#include	"camera.h"
+#include	"Debug_Camera.h"
 #include	"manager.h"
 #include	"Scene.h"
 #include	"ShadowMap.h"

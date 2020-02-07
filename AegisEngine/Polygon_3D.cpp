@@ -1,8 +1,8 @@
 #include	"Polygon_3D.h"
 #include	"texture.h"
 #include	"Input.h"
-#include	"My_imgui.h"
-
+#include	"camera.h"
+#include	"Debug_Camera.h"
 #include	"manager.h"
 #include	"ShadowMap.h"
 #include	"Scene.h"

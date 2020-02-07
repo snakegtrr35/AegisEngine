@@ -1,6 +1,7 @@
-#include "renderer.h"
-#include "Mesh_Cylinder.h"
-
+#include	"renderer.h"
+#include	"Mesh_Cylinder.h"
+#include	"camera.h"
+#include	"Debug_Camera.h"
 #include	"manager.h"
 #include	"Scene.h"
 #include	"ShadowMap.h"

@@ -1,10 +1,13 @@
-#include	"Scene.h"
+#include	"Result.h"
 #include	"Input.h"
 #include	"manager.h"
 #include	"Component.h"
 #include	"audio_clip.h"
 
 #include	"Fade.h"
+
+#include	"Scene_Manager.h"
+#include	"Title.h"
 
 bool RESULT::Clear_Flag;
 

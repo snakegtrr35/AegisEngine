@@ -3,18 +3,18 @@
 #include	"imgui/imgui.h"
 #include	"imgui/imgui_impl_dx11.h"
 #include	"imgui/imgui_impl_win32.h"
-
 #include	"imgui/imgui_stdlib.h"
 
 #include	"My_imgui.h"
+
 #include	"imgui/ImGuizmo.h"
 
 #include	"Scene.h"
 #include	"manager.h"
 #include	"ShadowMap.h"
 #include	"Texture_Manager.h"
-#include	"common.h"
-
+#include	"camera.h"
+#include	"Debug_Camera.h"
 #include	"Component.h"
 #include	"Light.h"
 

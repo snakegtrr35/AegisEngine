@@ -1,4 +1,4 @@
-#include	"Scene.h"
+#include	"Title.h"
 #include	"Input.h"
 #include	"manager.h"
 #include	"Component.h"
@@ -7,6 +7,9 @@
 #include	"Fade.h"
 
 #include	"Timer.h"
+
+#include	"Scene_Manager.h"
+#include	"Main_Menu.h"
 
 static bool flag = false;
 

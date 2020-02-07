@@ -408,6 +408,7 @@ void FBXmodel::DrawMesh(const aiNode* Node, const XMMATRIX& Matrix)
 				}
 				else
 				{
+
 					CRenderer::Set_MatrixBuffer(world, camera02.lock()->Get_Camera_View(), camera02.lock()->Get_Camera_Projection());
 
 					CRenderer::Set_MatrixBuffer01(*camera02.lock()->Get_Pos());

@@ -4,6 +4,9 @@
 #include	"Collision.h"
 #include	"Score.h"
 #include	"Bullet.h"
+#include	"Player.h"
+#include	"Enemy.h"
+#include	"Billboard.h"
 
 #include	"audio_clip.h"
 

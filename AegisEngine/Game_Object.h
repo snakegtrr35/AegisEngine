@@ -37,18 +37,18 @@ protected:
 	//XMFLOAT4 Edit_Q_num;				//! デバッグ用のクオータニオン用の入れ物
 #endif // _DEBUG
 
+public:
+
+	GAME_OBJECT();
 	virtual ~GAME_OBJECT() {
 		Object_Name_Map.erase(Object_Name);
 	};
 
-public:
-	GAME_OBJECT();
-
-	virtual void Init() = 0;
+	virtual void Init() {}
 	virtual void Draw();
-	virtual void Draw_DPP() = 0;
+	virtual void Draw_DPP() {}
 	virtual void Update(float delta_time);
-	virtual void Uninit() = 0;
+	virtual void Uninit() {}
 
 	void Set_Destroy() {
 		DestroyFlag = true;

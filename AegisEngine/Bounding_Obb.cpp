@@ -1,4 +1,6 @@
 #include	"Bounding_Obb.h"
+#include	"camera.h"
+#include	"Debug_Camera.h"
 #include	"manager.h"
 #include	"Scene.h"
 #include	"ShadowMap.h"

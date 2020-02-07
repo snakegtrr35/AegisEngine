@@ -11,6 +11,8 @@
 
 #include	"Renderer.h"
 
+#include	"camera.h"
+#include	"Debug_Camera.h"
 #include	"manager.h"
 #include	"ShadowMap.h"
 #include	"Scene.h"

@@ -1,11 +1,21 @@
-#include	"Scene.h"
+#include	"Game.h"
 #include	"Input.h"
 #include	"manager.h"
 #include	"Component.h"
 #include	"audio_clip.h"
 #include	"Fade.h"
-
+#include	"Enemy.h"
+#include	"Score.h"
+#include	"Mesh_Field.h"
+#include	"Mesh_Dome.h"
+#include	"Player.h"
+#include	"camera.h"
+#include	"Debug_Camera.h"
 #include	"Axis.h"
+
+#include	"Scene_Manager.h"
+#include	"Title.h"
+#include	"Result.h"
 
 static bool flag = false;
 static bool flag1 = true;
@@ -56,13 +66,13 @@ void GAME::Init()
 
 	// “G
 	{
-		PROBABILITY_DATE date;
+		/*PROBABILITY_DATE date;
 
 		date.Attack_Probability = 0.01f;
 		date.Lenght = 3.0f;
 		date.Move_Lenght = 1.0f;
 		date.RL_Probability = 0.01f;
-		date.RL = true;
+		date.RL = true;*/
 
 		string name("enemy");
 		string number;
@@ -75,7 +85,7 @@ void GAME::Init()
 			enemy->SetPosition(XMFLOAT3((float)(-10.0f + i * 5.0f), 0.0f, 0.0f));
 			enemy->SetRotation(XMFLOAT3(0.0f, 0.0f, 0.0f));
 
-			enemy->Set_Date(date);
+			//enemy->Set_Date(date);
 
 			name = name + number;
 

@@ -2,12 +2,19 @@
 #include	"manager.h"
 #include	"Renderer.h"
 #include	"Input.h"
+
 #include	"Scene.h"
+#include	"Scene_Manager.h"
+#include	"Main_Menu.h"
+
+#include	"texture.h"
 #include	"Texture_Manager.h"
 #include	"Timer.h"
 #include	"audio_clip.h"
 #include	"ShadowMap.h"
 #include	"Effekseer.h"
+
+#include	"Player.h"
 
 #include	"Light.h"
 LIGHTS Light;

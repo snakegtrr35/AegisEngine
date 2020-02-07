@@ -20,15 +20,16 @@ protected:
 
 	COLOR Color;
 
-public:
 	BOUNDING() : Color(Default_Color) {}
+
+public:
 	virtual ~BOUNDING() {}
 
-	virtual void Init(){}
-	virtual void Draw() {}
-	virtual void Draw_DPP() {}
-	virtual void Update(float delta_time) {}
-	virtual void Uninit() {}
+	void Init() override {}
+	void Draw() override {}
+	void Draw_DPP() override {}
+	void Update(float delta_time) override {}
+	void Uninit() override {}
 
 	virtual void OverWrite() = 0;
 

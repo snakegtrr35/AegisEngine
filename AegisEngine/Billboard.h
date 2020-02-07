@@ -38,16 +38,10 @@ public:
 	void Uninit() override;
 
 	// 幅と高さの設定
-	void SetWH(const XMFLOAT2 wh)
-	{
-		WH = wh;
-	};								
+	void SetWH(const XMFLOAT2 wh);
 	
 	// テクスチャの設定
-	void SetTexture(const string& const file_name)
-	{
-		Texture->Set_Texture_Name(file_name);
-	};
+	void SetTexture(const string& const file_name);
 };
 
 //////////////////////////////////////////////////

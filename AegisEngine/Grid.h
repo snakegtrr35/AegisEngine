@@ -16,6 +16,7 @@ public:
 
 	void Init() override;
 	void Draw() override;
+	void Draw_DPP() {}
 	void Update(float delta_time) override;
 	void Uninit() override;
 };

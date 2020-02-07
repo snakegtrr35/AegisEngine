@@ -3,7 +3,7 @@
 #include	"Renderer.h"
 #include	<io.h>
 
-#include	"Scene.h"
+#include	"Scene_Manager.h"
 
 static LIGHTS g_Light;
 

@@ -6,31 +6,53 @@
 #include	"main.h"
 #include	"Renderer.h"
 
-#include	"camera.h"
-#include	"Debug_Camera.h"
-#include	"Field.h"
-#include	"Player.h"
-#include	"Enemy.h"
-#include	"Sprite.h"
-#include	"Sprite_Animation.h"
-#include	"Polygon_3D.h"
-#include	"Billboard.h"
-#include	"Score.h"
+#include	"Game_Object.h"
 
-#include	"Grid.h"
-#include	"XYZ_Axis.h"
+//#include	"camera.h"
+//#include	"Debug_Camera.h"
+////#include	"Field.h"
+////class FIELD;
+//#include	"Player.h"
+//#include	"Enemy.h"
+//#include	"Sprite.h"
+//#include	"Sprite_Animation.h"
+//#include	"Polygon_3D.h"
+//#include	"Billboard.h"
+//#include	"Score.h"
+//
+//#include	"Grid.h"
+//#include	"XYZ_Axis.h"
 #include	"Light.h"
+//
+//#include	"Bounding.h"
+//#include	"Bounding_Shpere.h"
+//#include	"Bounding_Aabb.h"
+//#include	"Bounding_Obb.h"
+//
+//#include	"Mesh_Field.h"
+//#include	"Mesh_Cylinder.h"
+//#include	"Mesh_Dome.h"
 
-#include	"Bounding.h"
-#include	"Bounding_Shpere.h"
-#include	"Bounding_Aabb.h"
-#include	"Bounding_Obb.h"
-
-#include	"Mesh_Field.h"
-#include	"Mesh_Cylinder.h"
-#include	"Mesh_Dome.h"
-
-//#include	"manager.h"
+//class CCamera;
+//class DEBUG_CAMERA;
+//class FIELD;
+//class PLAYER;
+//class ENEMY;
+//class SPRITE;
+//class SPRITE_ANIMATION;
+//class TEXTS;
+//class POLYGON_3D;
+//class BILL_BOARD;
+//class SCORE;
+//class GRID;
+//class AXIS;
+////class BOUNDING;
+//class BOUNDING_SHPERE;
+//class BOUNDING_AABB;
+//class BOUNDING_OBB;
+//class MESH_FIELD;
+//class MESH_CYlLINDER;
+//class MESH_DOOM;
 
 template <typename T>
 bool Empty_weak_ptr(const weak_ptr<T>& w)
@@ -69,10 +91,9 @@ enum class SCENE_INDEX {
 class SCENE {
 private:
 
-	friend class GAME_OBJECT;
+	//friend class GAME_OBJECT;
 
 protected:
-	//static list<GAME_OBJECT*> GameObjects[(int)LAYER_NAME::MAX_LAYER];
 	static list<shared_ptr<GAME_OBJECT>> GameObjects[(int)LAYER_NAME::MAX_LAYER];
 
 	static bool PauseEnable;
@@ -81,17 +102,18 @@ protected:
 
 public:
 
-	// リストへの追加
+	//// リストへの追加
 	template <typename T>
 	static T* Add_Game_Object(LAYER_NAME layer, const string& name = "none")
 	{
-		T* object = new T();
-			
+		//T* object = new T();
+		shared_ptr<T> object(new T());
+
 		object->Set_Object_Name(name);
 
 		GameObjects[(int)layer].emplace_back(object);
 
-		return object;
+		return object.get();
 	}
 
 	// リストから特定の名前のオブジェクトの取得
@@ -390,242 +412,245 @@ public:
 	}*/
 };
 
-//CEREAL_REGISTER_TYPE(SCENE)
 
-/**
-* @brief タイトルシーンクラス
-* @details シーンクラスの派生クラス
-*/
-class TITLE : public SCENE {
-private:
 
-protected:
+//#include "Scene.cpp"
 
-public:
-	TITLE() {}
-	~TITLE() {
-		Uninit();
-	}
+///**
+//* @brief タイトルシーンクラス
+//* @details シーンクラスの派生クラス
+//*/
+//class TITLE : public SCENE {
+//private:
+//
+//protected:
+//
+//public:
+//	TITLE() {}
+//	~TITLE() {
+//		Uninit();
+//	}
+//
+//	void Init() override;
+//	void Draw() override;
+//	void Draw_DPP() override;
+//	void Update(float delta_time) override;
+//	void Uninit() override;
+//
+//	template<typename Archive>
+//	void serialize(Archive& ar)
+//	{
+//		ar(cereal::base_class<SCENE>(this));
+//	}
+//
+//	/*template<class Archive>
+//	void save(Archive& ar) const
+//	{
+//		ar(cereal::base_class<SCENE>(this));
+//	}
+//
+//	template<class Archive>
+//	void load(Archive& ar)
+//	{
+//		ar(cereal::base_class<SCENE>(this));
+//	}*/
+//};
+//
+//CEREAL_REGISTER_TYPE(TITLE)
+//CEREAL_REGISTER_POLYMORPHIC_RELATION(SCENE, TITLE)
 
-	void Init() override;
-	void Draw() override;
-	void Draw_DPP() override;
-	void Update(float delta_time) override;
-	void Uninit() override;
+///**
+//* @brief ゲームシーンクラス
+//* @details シーンクラスの派生クラス
+//*/
+//class GAME : public SCENE {
+//private:
+//
+//protected:
+//
+//public:
+//	GAME() {}
+//	~GAME() {
+//		Uninit();
+//	}
+//
+//	void Init() override;
+//	void Draw() override;
+//	void Draw_DPP() override;
+//	void Update(float delta_time) override;
+//	void Uninit() override;
+//
+//	template<typename Archive>
+//	void serialize(Archive& ar)
+//	{
+//		ar(cereal::base_class<SCENE>(this));
+//	}
+//
+//
+//	/*template<class Archive>
+//	void save(Archive& ar) const
+//	{
+//		ar(cereal::base_class<SCENE>(this));
+//	}
+//
+//	template<class Archive>
+//	void load(Archive& ar)
+//	{
+//		ar(cereal::base_class<SCENE>(this));
+//	}*/
+//};
+//
+//CEREAL_REGISTER_TYPE(GAME)
+//CEREAL_REGISTER_POLYMORPHIC_RELATION(SCENE, GAME)
 
-	template<typename Archive>
-	void serialize(Archive& ar)
-	{
-		ar(cereal::base_class<SCENE>(this));
-	}
+///**
+//* @brief リザルトシーンクラス
+//* @details シーンクラスの派生クラス
+//*/
+//class RESULT : public SCENE {
+//private:
+//
+//protected:
+//
+//public:
+//	RESULT() {}
+//	~RESULT() {
+//		Uninit();
+//	}
+//
+//	void Init() override;
+//	void Draw() override;
+//	void Draw_DPP() override;
+//	void Update(float delta_time) override;
+//	void Uninit() override;
+//
+//	static bool Clear_Flag;
+//
+//	template<typename Archive>
+//	void serialize(Archive& ar)
+//	{
+//		ar(cereal::base_class<SCENE>(this));
+//	}
+//
+//	/*template<class Archive>
+//	void save(Archive& ar) const
+//	{
+//		ar(cereal::base_class<SCENE>(this));
+//	}
+//
+//	template<class Archive>
+//	void load(Archive& ar)
+//	{
+//		ar(cereal::base_class<SCENE>(this));
+//	}*/
+//};
+//
+//CEREAL_REGISTER_TYPE(RESULT)
+//CEREAL_REGISTER_POLYMORPHIC_RELATION(SCENE, RESULT)
 
-	/*template<class Archive>
-	void save(Archive& ar) const
-	{
-		ar(cereal::base_class<SCENE>(this));
-	}
+///**
+//* @brief メインメニューシーンクラス
+//* @details シーンクラスの派生クラス
+//* @details タイトルとゲームの間のシーン
+//*/
+//class MAIN_MENU : public SCENE {
+//private:
+//
+//protected:
+//
+//public:
+//	MAIN_MENU() {}
+//	~MAIN_MENU() {
+//		Uninit();
+//	}
+//
+//	void Init() override;
+//	void Draw() override;
+//	void Draw_DPP() override;
+//	void Update(float delta_time) override;
+//	void Uninit() override;
+//
+//	void Init(bool);
+//
+//	static string Model_Name;
+//
+//	template<typename Archive>
+//	void serialize(Archive& ar)
+//	{
+//		ar(cereal::base_class<SCENE>(this));
+//	}
+//
+//	/*template<class Archive>
+//	void save(Archive& ar) const
+//	{
+//		ar(cereal::base_class<SCENE>(this));
+//	}
+//
+//	template<class Archive>
+//	void load(Archive& ar)
+//	{
+//		ar(cereal::base_class<SCENE>(this));
+//	}*/
+//};
+//
+//CEREAL_REGISTER_TYPE(MAIN_MENU)
+//CEREAL_REGISTER_POLYMORPHIC_RELATION(SCENE, MAIN_MENU)
 
-	template<class Archive>
-	void load(Archive& ar)
-	{
-		ar(cereal::base_class<SCENE>(this));
-	}*/
-};
-
-CEREAL_REGISTER_TYPE(TITLE)
-CEREAL_REGISTER_POLYMORPHIC_RELATION(SCENE, TITLE)
-
-/**
-* @brief ゲームシーンクラス
-* @details シーンクラスの派生クラス
-*/
-class GAME : public SCENE {
-private:
-
-protected:
-
-public:
-	GAME() {}
-	~GAME() {
-		Uninit();
-	}
-
-	void Init() override;
-	void Draw() override;
-	void Draw_DPP() override;
-	void Update(float delta_time) override;
-	void Uninit() override;
-
-	template<typename Archive>
-	void serialize(Archive& ar)
-	{
-		ar(cereal::base_class<SCENE>(this));
-	}
-
-	/*template<class Archive>
-	void save(Archive& ar) const
-	{
-		ar(cereal::base_class<SCENE>(this));
-	}
-
-	template<class Archive>
-	void load(Archive& ar)
-	{
-		ar(cereal::base_class<SCENE>(this));
-	}*/
-};
-
-CEREAL_REGISTER_TYPE(GAME)
-CEREAL_REGISTER_POLYMORPHIC_RELATION(SCENE, GAME)
-
-/**
-* @brief リザルトシーンクラス
-* @details シーンクラスの派生クラス
-*/
-class RESULT : public SCENE {
-private:
-
-protected:
-
-public:
-	RESULT() {}
-	~RESULT() {
-		Uninit();
-	}
-
-	void Init() override;
-	void Draw() override;
-	void Draw_DPP() override;
-	void Update(float delta_time) override;
-	void Uninit() override;
-
-	static bool Clear_Flag;
-
-	template<typename Archive>
-	void serialize(Archive& ar)
-	{
-		ar(cereal::base_class<SCENE>(this));
-	}
-
-	/*template<class Archive>
-	void save(Archive& ar) const
-	{
-		ar(cereal::base_class<SCENE>(this));
-	}
-
-	template<class Archive>
-	void load(Archive& ar)
-	{
-		ar(cereal::base_class<SCENE>(this));
-	}*/
-};
-
-CEREAL_REGISTER_TYPE(RESULT)
-CEREAL_REGISTER_POLYMORPHIC_RELATION(SCENE, RESULT)
-
-/**
-* @brief メインメニューシーンクラス
-* @details シーンクラスの派生クラス
-* @details タイトルとゲームの間のシーン
-*/
-class MAIN_MENU : public SCENE {
-private:
-
-protected:
-
-public:
-	MAIN_MENU() {}
-	~MAIN_MENU() {
-		Uninit();
-	}
-
-	void Init() override;
-	void Draw() override;
-	void Draw_DPP() override;
-	void Update(float delta_time) override;
-	void Uninit() override;
-
-	void Init(bool);
-
-	static string Model_Name;
-
-	template<typename Archive>
-	void serialize(Archive& ar)
-	{
-		ar(cereal::base_class<SCENE>(this));
-	}
-
-	/*template<class Archive>
-	void save(Archive& ar) const
-	{
-		ar(cereal::base_class<SCENE>(this));
-	}
-
-	template<class Archive>
-	void load(Archive& ar)
-	{
-		ar(cereal::base_class<SCENE>(this));
-	}*/
-};
-
-CEREAL_REGISTER_TYPE(MAIN_MENU)
-CEREAL_REGISTER_POLYMORPHIC_RELATION(SCENE, MAIN_MENU)
-
-/**
-* @brief シーン管理クラス
-* @details シーンクラスを管理するためのクラス
-*/
-class SCENE_MANAGER {
-private:
-	static SCENE* pScene;
-
-protected:
-
-public:
-	SCENE_MANAGER() {
-		//if (nullptr == pScene)
-		//	pScene = new SCENE();
-	};
-
-	~SCENE_MANAGER() {
-		Uninit();
-	};
-
-	void Init() {
-		if(nullptr != pScene) pScene->Init();
-	};
-
-	void Draw() {
-		pScene->Draw();
-	};
-
-	void Draw_DPP() {
-		pScene->Draw_DPP();
-	};
-
-	void Update(float delta_time) {
-		pScene->Update(delta_time);
-	};
-
-	void Uninit() {
-		//pScene->Uninit();
-		SAFE_DELETE(pScene);
-	};
-
-	static SCENE* const Get_Scene() {
-		return pScene;
-	};
-
-	template <typename T>
-	static void Set_Scene() {
-		T* scene = new T();
-
-		SAFE_DELETE(pScene);
-
-		pScene = scene;
-
-		pScene->Init();
-	};
-};
+///**
+//* @brief シーン管理クラス
+//* @details シーンクラスを管理するためのクラス
+//*/
+//class SCENE_MANAGER {
+//private:
+//	static SCENE* pScene;
+//
+//protected:
+//
+//public:
+//	SCENE_MANAGER() {
+//		//if (nullptr == pScene)
+//		//	pScene = new SCENE();
+//	};
+//
+//	~SCENE_MANAGER() {
+//		Uninit();
+//	};
+//
+//	void Init() {
+//		if(nullptr != pScene) pScene->Init();
+//	};
+//
+//	void Draw() {
+//		pScene->Draw();
+//	};
+//
+//	void Draw_DPP() {
+//		pScene->Draw_DPP();
+//	};
+//
+//	void Update(float delta_time) {
+//		pScene->Update(delta_time);
+//	};
+//
+//	void Uninit() {
+//		//pScene->Uninit();
+//		SAFE_DELETE(pScene);
+//	};
+//
+//	static SCENE* const Get_Scene() {
+//		return pScene;
+//	};
+//
+//	template <typename T>
+//	static void Set_Scene() {
+//		T* scene = new T();
+//
+//		SAFE_DELETE(pScene);
+//
+//		pScene = scene;
+//
+//		pScene->Init();
+//	};
+//};
 
 #endif // !SCENE_H
