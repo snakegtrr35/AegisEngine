@@ -3,8 +3,8 @@
 #ifndef SCENE_MANAGER_H
 #define SCENE_MANAGER_H
 
-#include	"Scene.h"
-//class SCENE;
+//#include	"Scene.h"
+class SCENE;
 
 /**
 * @brief シーン管理クラス
@@ -12,52 +12,34 @@
 */
 class SCENE_MANAGER {
 private:
-	static SCENE* pScene;
+	static unique_ptr<SCENE> pScene;
 
 protected:
 
 public:
-	SCENE_MANAGER() {
-		//if (nullptr == pScene)
-		//	pScene = new SCENE();
-	};
+	SCENE_MANAGER() {}
 
-	~SCENE_MANAGER() {
-		Uninit();
-	};
+	~SCENE_MANAGER() { Uninit(); }
 
-	void Init() {
-		if (nullptr != pScene) pScene->Init();
-	};
+	void Init();
 
-	void Draw() {
-		pScene->Draw();
-	};
+	void Draw();
 
-	void Draw_DPP() {
-		pScene->Draw_DPP();
-	};
+	void Draw_DPP();
 
-	void Update(float delta_time) {
-		pScene->Update(delta_time);
-	};
+	void Update(float delta_time);
 
-	void Uninit() {
-		//pScene->Uninit();
-		SAFE_DELETE(pScene);
-	};
+	void Uninit();
 
 	static SCENE* const Get_Scene() {
-		return pScene;
+		return pScene.get();
 	};
 
 	template <typename T>
 	static void Set_Scene() {
 		T* scene = new T();
 
-		SAFE_DELETE(pScene);
-
-		pScene = scene;
+		pScene.reset(scene);
 
 		pScene->Init();
 	};

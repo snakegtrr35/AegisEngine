@@ -56,8 +56,6 @@ public:
 	void Render(void);
 };
 
-void Draw_Inspector(const string& name);
-
 static void HelpMarker(const char* desc)
 {
 	ImGui::TextDisabled("(?)");

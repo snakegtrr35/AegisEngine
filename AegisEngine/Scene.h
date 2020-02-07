@@ -413,9 +413,6 @@ public:
 };
 
 
-
-//#include "Scene.cpp"
-
 ///**
 //* @brief タイトルシーンクラス
 //* @details シーンクラスの派生クラス
