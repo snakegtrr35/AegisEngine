@@ -286,6 +286,7 @@ public:
 			}
 			GameObjects[i].clear();
 		}
+		Light_Manager.Uninit();
 	};
 
 	/**

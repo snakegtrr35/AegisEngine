@@ -230,9 +230,15 @@ void AUDIO_MANAGER::Stop_Sound_Object(SOUND_INDEX index) {
 
 	if (SOUND_INDEX::SOUND_INDEX_MAX == index)
 	{
-		for (int i = 0; i < SOUND_FILE_COUNT; i++)
+		if (!Sound_Dates.empty())
 		{
-			Sound_Dates[g_SoundFiles[i].Name]->Stop();
+			for (int i = 0; i < SOUND_FILE_COUNT; i++)
+			{
+				if (nullptr == Sound_Dates[g_SoundFiles[i].Name])
+				{
+					Sound_Dates[g_SoundFiles[i].Name]->Stop();
+				}
+			}
 		}
 	}
 	else

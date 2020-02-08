@@ -7,16 +7,21 @@ class SCENE_MANAGER;
 class SCENE;
 
 class SHADOW_MAP;
+class My_imgui;
 
 class CManager {
 private:
 
 	static unique_ptr<CManager> Manager;
 
-	SCENE_MANAGER* pSceneManager;
+	unique_ptr<SCENE_MANAGER, Delete> pSceneManager;
 	bool GameEnable;
 
-	SHADOW_MAP* pShadowMap;
+	unique_ptr<SHADOW_MAP, Delete> pShadowMap;
+
+#ifdef _DEBUG
+	unique_ptr<My_imgui, Delete> imgui;		// Imgui‚ÌƒNƒ‰ƒX
+#endif // _DEBUG
 
 	UINT ThreadCount;
 
@@ -35,6 +40,9 @@ public:
 
 	SCENE* const Get_Scene();
 	SHADOW_MAP* const Get_ShadowMap();
+
+	const bool Get_Mouse_Over_ImGui();
+
 	bool Get_GameEnd();
 	void GameEnd();
 	void Set_ThreadCount(const UINT count);

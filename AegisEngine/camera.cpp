@@ -188,12 +188,12 @@ void CCamera::Update(float delta_time)
 			Pos -= r * 0.5f;
 		}
 
-		if ((MOUSE::Get_Mouse()->Get_Wheel_Move_Flag() == WHEEL_MOVE_ENUM::UP))
+		if ((MOUSE::Get_Mouse()->Get_Wheel_Move_Flag() == WHEEL_MOVE_ENUM::UP) && false == CManager::Get_Instance()->Get_Mouse_Over_ImGui())
 		{
 			Pos += f * 2.0f;
 		}
 
-		if ((MOUSE::Get_Mouse()->Get_Wheel_Move_Flag() == WHEEL_MOVE_ENUM::DOWN))
+		if ((MOUSE::Get_Mouse()->Get_Wheel_Move_Flag() == WHEEL_MOVE_ENUM::DOWN) && false == CManager::Get_Instance()->Get_Mouse_Over_ImGui())
 		{
 			Pos -= f * 2.0f;
 		}

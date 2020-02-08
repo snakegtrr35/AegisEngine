@@ -1,6 +1,7 @@
 #include	"Renderer.h"
 #include	"Input.h"
 #include	"Debug_Camera.h"
+#include	"manager.h"
 
 DEBUG_CAMERA* DEBUG_CAMERA::pDebugCamera = nullptr;
 XMMATRIX DEBUG_CAMERA::m_ViewMatrix;
@@ -142,12 +143,12 @@ void DEBUG_CAMERA::Update(float delta_time)
 			Pos -= r * delta_time * 15.0f;
 		}
 
-		if ((MOUSE::Get_Mouse()->Get_Wheel_Move_Flag() == WHEEL_MOVE_ENUM::UP))
+		if ((MOUSE::Get_Mouse()->Get_Wheel_Move_Flag() == WHEEL_MOVE_ENUM::UP) && false == CManager::Get_Instance()->Get_Mouse_Over_ImGui())
 		{
 			Pos += f * delta_time * 150.0f;
 		}
 
-		if ((MOUSE::Get_Mouse()->Get_Wheel_Move_Flag() == WHEEL_MOVE_ENUM::DOWN))
+		if ((MOUSE::Get_Mouse()->Get_Wheel_Move_Flag() == WHEEL_MOVE_ENUM::DOWN) && false == CManager::Get_Instance()->Get_Mouse_Over_ImGui())
 		{
 			Pos -= f * delta_time * 150.0f;
 		}

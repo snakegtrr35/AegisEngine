@@ -16,18 +16,11 @@
 
 #include	"Player.h"
 
-#include	"Light.h"
-LIGHTS Light;
-
 #ifdef _DEBUG
 #include	"My_imgui.h"
 #endif // _DEBUG
 
 unique_ptr<CManager> CManager::Manager;
-
-#ifdef _DEBUG
-My_imgui* g_MyImgui;		// Imguiのクラス
-#endif // _DEBUG
 
 bool CManager::Init()
 {
@@ -62,10 +55,6 @@ bool CManager::Init()
 
 	CRenderer::CreateRenderTexture();
 
-#ifdef _DEBUG
-	g_MyImgui = new My_imgui();
-	g_MyImgui->Init(GetWindow());
-#endif // _DEBUG
 	AUDIO_MANAGER::Init();
 
 	TEXTURE_MANEGER::Init();
@@ -76,21 +65,26 @@ bool CManager::Init()
 	TIMER::Init();
 	CLOCK_TIMER::Init();
 
-	Manager->pSceneManager = new SCENE_MANAGER();
+	EFFEKSEER_MANAGER::Init();
+
+	//CRenderer::Change_Window_Mode();
+
+#ifdef _DEBUG
+	Manager->imgui.reset(new My_imgui());
+	Manager->imgui->Init(GetWindow());
+#endif // _DEBUG
+
+	Manager->pSceneManager.reset(new SCENE_MANAGER());
 
 	Manager->pSceneManager->Init();
 	//pSceneManager->Set_Scene<TITLE>();
 	Manager->pSceneManager->Set_Scene<MAIN_MENU>();
 
-	EFFEKSEER_MANAGER::Init();
-
-	//CRenderer::Change_Window_Mode();
-
-	Manager->pShadowMap = new SHADOW_MAP();//
+	Manager->pShadowMap.reset(new SHADOW_MAP());//
 	Manager->pShadowMap->Init();
 	Manager->pShadowMap->Set_Target(Manager->pSceneManager->Get_Scene()->Get_Game_Object<PLAYER>("player"));
 
-	Light.Init();
+	Manager->pSceneManager->Get_Scene()->Get_Light_Manager()->Init();
 
 	return true;
 }
@@ -108,9 +102,6 @@ void CManager::Update()
 #endif // _DEBUG
 
 	pSceneManager->Update(TIMER::Get_DeltaTime());
-
-	Light.Update();
-
 	// シャドウマップの更新
 	{
 		pShadowMap->Update();//
@@ -122,6 +113,8 @@ void CManager::Update()
 	}
 
 	MOUSE::Get_Mouse()->Reset_Wheel_Moveset();
+
+	Manager->pSceneManager->Get_Scene()->Get_Light_Manager()->Update();
 
 	/*if (KEYBOARD::Trigger_Keyboard(VK_F1))
 	{
@@ -137,12 +130,16 @@ void CManager::Update()
 	{
 		EFFEKSEER_MANAGER::Play("test");
 	}
+
+#ifdef _DEBUG
+	imgui->Update();
+#endif // _DEBUG
 }
 
 void CManager::Draw()
 {
 #ifdef _DEBUG
-	g_MyImgui->Begin();
+	imgui->Begin();
 #endif // _DEBUG
 
 	CRenderer::Begin();
@@ -158,9 +155,7 @@ void CManager::Draw()
 	{
 		CRenderer::SetPass_Rendring();
 		pShadowMap->Set();
-
-		Light.Draw();
-
+		Manager->pSceneManager->Get_Scene()->Get_Light_Manager()->Draw();
 		pSceneManager->Draw();
 	}
 
@@ -217,9 +212,9 @@ void CManager::Draw()
 	//}
 
 #ifdef _DEBUG
-	g_MyImgui->Draw();//
-	g_MyImgui->End();
-	g_MyImgui->Render();//
+	imgui->Draw();//
+	imgui->End();
+	imgui->Render();//
 #endif // _DEBUG
 
 	CRenderer::End();
@@ -227,9 +222,16 @@ void CManager::Draw()
 
 void CManager::Uninit()
 {
-	Light.Uninit();//
+	//Manager->pSceneManager->Get_Scene()->Get_Light_Manager()->Uninit();
 
-	SAFE_DELETE(pSceneManager);
+	pSceneManager.reset(nullptr);
+
+	pShadowMap.reset(nullptr);//
+
+#ifdef _DEBUG
+	imgui->Uninit();
+	imgui.reset(nullptr);
+#endif // _DEBUG
 
 	// Effekseer
 	EFFEKSEER_MANAGER::Uninit();
@@ -237,13 +239,6 @@ void CManager::Uninit()
 	FONT::Uninit();
 
 	AUDIO_MANAGER::Uninit();
-
-	SAFE_DELETE(pShadowMap);//
-
-#ifdef _DEBUG
-	g_MyImgui->Uninit();
-	delete g_MyImgui;
-#endif // _DEBUG
 
 	CRenderer::Uninit();
 
@@ -263,7 +258,15 @@ SCENE* const CManager::Get_Scene()
 
 SHADOW_MAP* const CManager::Get_ShadowMap()
 {
-	return pShadowMap;
+	return pShadowMap.get();
+}
+
+const bool CManager::Get_Mouse_Over_ImGui()
+{
+#ifdef _DEBUG
+	return imgui->Get_Mouse_Over_Enable();
+#endif // _DEBUG
+	return false;
 }
 
 bool CManager::Get_GameEnd()

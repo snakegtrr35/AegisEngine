@@ -400,6 +400,20 @@ void My_imgui::Draw(void)
 				}
 			}
 
+			{
+				ImGuiIO& io = ImGui::GetIO();
+
+				if (io.WantCaptureMouse)
+				{
+					ImGui::Text((char*)u8"true");
+				}
+				else
+				{
+					ImGui::Text((char*)u8"false");
+
+				}
+			}
+
 			ImGui::End();
 		}
 
@@ -461,6 +475,16 @@ void My_imgui::Draw(void)
 
 void My_imgui::Update(void)
 {
+	{
+		if (ImGui::GetIO().WantCaptureMouse)
+		{
+			Mouse_Over_Enable = true;
+		}
+		else
+		{
+			Mouse_Over_Enable = false;
+		}
+	}
 }
 
 void My_imgui::Uninit(void)
@@ -488,6 +512,13 @@ void My_imgui::Render(void)
 {
 	ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
 }
+
+const bool My_imgui::Get_Mouse_Over_Enable()
+{
+	return Mouse_Over_Enable;
+}
+
+
 
 void My_imgui::Draw_Inspector(const string& name)
 {
