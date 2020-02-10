@@ -3,12 +3,14 @@
 #ifndef GAME_OBJECT_H
 #define GAME_OBJECT_H
 
-class COMPONENT_MANEGER;
 //#include	"Component.h"
+#include	"Component_Manager.h"
 
 class GAME_OBJECT {
 private:
 	static unordered_set<string> Object_Name_Map;
+
+	friend COMPONENT_MANEGER;
 
 protected:
 	string Object_Name;					//! オブジェクトの名前
@@ -44,7 +46,7 @@ public:
 		Object_Name_Map.erase(Object_Name);
 	};
 
-	virtual void Init() {}
+	virtual void Init();
 	virtual void Draw();
 	virtual void Draw_DPP() {}
 	virtual void Update(float delta_time);
@@ -147,17 +149,7 @@ public:
 
 		Set_Object_Map(Object_Name);
 
-#ifdef _DEBUG
-		//ar(edit_position.x, edit_position.y, edit_position.z);
-		//ar(edit_rotation.x, edit_rotation.y, edit_rotation.z);
-		//ar(edit_scaling.x, edit_scaling.y, edit_scaling.z);
-
-		//XMFLOAT4 Q_num;					//! クオータニオン用の入れ物
-		//XMFLOAT4 Edit_Q_num;				//! デバッグ用のクオータニオン用の入れ物
-#endif // _DEBUG
-
-		//ar(Object_Name_Map);
-		//ar(component);
+		ar(Component);
 	}
 
 	//template<class Archive>

@@ -5,10 +5,6 @@
 #include	"Scene.h"
 #include	"ShadowMap.h"
 
-BOUNDING_AABB::BOUNDING_AABB()
-{
-}
-
 BOUNDING_AABB::~BOUNDING_AABB()
 {
 	Uninit();
@@ -17,10 +13,12 @@ BOUNDING_AABB::~BOUNDING_AABB()
 void BOUNDING_AABB::Init()
 {
 	{
+		XMFLOAT3 pos = *Owner.lock()->Get_Position();
+
 		Aabb = BoundingBox(XMFLOAT3(0.f, 0.f, 0.f), Radius);
 
 		XMMATRIX matrix = XMMatrixScaling(Scaling.x, Scaling.y, Scaling.z);
-		matrix *= XMMatrixTranslation(Position.x, Position.y, Position.z);
+		matrix *= XMMatrixTranslation(Position.x + pos.x, Position.y + pos.y, Position.z + pos.z);
 
 		Aabb.Transform(Aabb, matrix);
 	}
@@ -128,7 +126,7 @@ void BOUNDING_AABB::Init()
 
 void BOUNDING_AABB::Draw()
 {
-	if (false == CManager::Get_Instance()->Get_ShadowMap()->Get_Enable())
+	//if (false == CManager::Get_Instance()->Get_ShadowMap()->Get_Enable())
 	{
 		// 3Dマトリックス設定
 		{
@@ -142,18 +140,14 @@ void BOUNDING_AABB::Draw()
 			if (!camera01.expired() && Empty_weak_ptr<CCamera>(camera01))
 			{
 				CRenderer::Set_MatrixBuffer(world, camera01.lock()->Get_Camera_View(), camera01.lock()->Get_Camera_Projection());
-
-				CRenderer::Set_Shader();
 			}
 			else
 			{
 				CRenderer::Set_MatrixBuffer(world, camera02.lock()->Get_Camera_View(), camera02.lock()->Get_Camera_Projection());
-
-				CRenderer::Set_Shader();
 			}
 		}
 
-		// 入力アセンブラに頂点バッファを設定.
+		// 入力アセンブラに頂点バッファを設定
 		CRenderer::SetVertexBuffers(pVertexBuffer_BOX.get());
 
 		CRenderer::SetIndexBuffer(pIndexBuffer_BOX.get());
@@ -183,10 +177,12 @@ void BOUNDING_AABB::OverWrite()
 	{
 		//Color = Default_Color;
 
+		XMFLOAT3 pos = *Owner.lock()->Get_Position();
+
 		Aabb = BoundingBox(XMFLOAT3(0.f, 0.f, 0.f), Radius);
 
 		XMMATRIX matrix = XMMatrixScaling(Scaling.x, Scaling.y, Scaling.z);
-		matrix *= XMMatrixTranslation(Position.x, Position.y, Position.z);
+		matrix *= XMMatrixTranslation(Position.x + pos.x, Position.y + pos.y, Position.z + pos.z);
 
 		Aabb.Transform(Aabb, matrix);
 
@@ -237,4 +233,25 @@ void BOUNDING_AABB::Set_Radius(const XMFLOAT3& radius)
 void BOUNDING_AABB::Set_Radius(const XMFLOAT3* radius)
 {
 	Radius = *radius;
+}
+
+
+
+#include	"imgui/imgui.h"
+
+void BOUNDING_AABB::Draw_Inspector()
+{
+	//ImGui::Text("Position  x %.5f  y %.5f  z %.5f", Position.x, Position.y, Position.z);
+	//ImGui::Text("Radius  x %.5f y %.5f  z %.5f", Radius.x, Radius.y, Radius.z);
+
+	float position[3] = { Position.x, Position.y, Position.z };
+	float radius[3] = { Radius.x, Radius.y, Radius.z };
+
+	ImGui::DragFloat3("Position", position, 0.01f);
+	ImGui::DragFloat3("Radius", radius, 0.01f, 0.01f, 1000.0f);
+
+	Position = XMFLOAT3(position[0], position[1], position[2]);
+	Radius = XMFLOAT3(radius[0], radius[1], radius[2]);
+
+	OverWrite();
 }

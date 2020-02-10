@@ -11,6 +11,11 @@ GAME_OBJECT::GAME_OBJECT() : Object_Name("none"), DestroyFlag(false), Rotation(X
 	Component.reset(new COMPONENT_MANEGER());
 }
 
+void GAME_OBJECT::Init()
+{
+	Component->Init();
+}
+
 void GAME_OBJECT::Draw()
 {
 	Component->Draw();

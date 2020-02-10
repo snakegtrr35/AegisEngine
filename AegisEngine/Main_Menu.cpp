@@ -5,25 +5,19 @@
 #include	"manager.h"
 #include	"Component.h"
 #include	"audio_clip.h"
-#include	"Math.h"
+
 #include	"Field.h"
 #include	"Mesh_Dome.h"
 #include	"Mesh_Field.h"
 #include	"Fade.h"
+#include	"Bill.h"
+#include	"Player.h"
 
 #include	"Timer.h"
 
 #include	"FBXmodel.h"
 #include	"Sprite_Animation.h"
-#include	"Bounding_Aabb.h"
-#include	"Bounding_Frustum.h"
 
-string MAIN_MENU::Model_Name = "asset/model/herorifle.fbx";
-
-static bool flag = false;
-
-BOUNDING_FRUSTUM Bounding_Frustun;
-BOUNDING_AABB AABB;
 
 static bool isLoaded = false;
 static std::mutex isLoadedMutex;
@@ -106,7 +100,7 @@ void Load(MAIN_MENU* scene)
 		}
 
 		{
-			//auto player = scene->Add_Game_Object<PLAYER>(LAYER_NAME::GAMEOBJECT, "player");
+			auto player = scene->Add_Game_Object<PLAYER>(LAYER_NAME::GAMEOBJECT, "player");
 		}
 
 		{
@@ -117,8 +111,12 @@ void Load(MAIN_MENU* scene)
 			scene->Add_Game_Object<MESH_FIELD>(LAYER_NAME::GAMEOBJECT, "field");
 		}
 
-		{
+		/*{
 			scene->Add_Game_Object<FIELD>(LAYER_NAME::GAMEOBJECT, "plane");
+		}*/
+
+		{
+			auto bill = scene->Add_Game_Object<BILL>(LAYER_NAME::GAMEOBJECT, "bull");
 		}
 
 		//{
@@ -156,25 +154,7 @@ void Load(MAIN_MENU* scene)
 		//	s->Set_Object_Name("depth");
 		//}
 
-		//{
-		//	XMFLOAT2 pos(300, 600);
-
-		//	SPRITE* s = Add_Game_Object<SPRITE>(LAYER_NAME::UI, "albed");
-
-		//	s->SetPosition(pos);
-
-		//	s->SetSize(XMFLOAT4(128, 128, 128, 128));
-		//}
-
-		//{
-		//	XMFLOAT2 pos(300, 900);
-
-		//	SPRITE* s = Add_Game_Object<SPRITE>(LAYER_NAME::UI, "normal");
-
-		//	s->SetPosition(pos);
-
-		//	s->SetSize(XMFLOAT4(128, 128, 128, 128));
-		//}
+		
 
 		//{
 		//	auto text = Add_Game_Object<TEXTS>(LAYER_NAME::UI);
@@ -203,25 +183,14 @@ void Load(MAIN_MENU* scene)
 
 			text->Edit("0.000");
 		}*/
-
-		{
-			//Add_Game_Object<BOUNDING_AABB>(LAYER_NAME::GAMEOBJECT, "aabb");
-		}
-
-		{
-			//Add_Game_Object<BOUNDING_OBB>(LAYER_NAME::GAMEOBJECT, "obb");
-		}
 	}
 
 	//model = new FBXmodel();
 	//model->Load("asset/model/SambaDancing2.fbx");
 
-	Bounding_Frustun.Init();
-	AABB.Init();
-
 	scene->Init(true);
 
-	Sleep(5000);
+	//Sleep(5000);
 
 	SetLockFlag();
 }
@@ -253,7 +222,6 @@ void MAIN_MENU::Init()
 	//cnt = 0;
 
 	//FADE::Start_FadeIn(60);
-	flag = false;
 }
 
 void MAIN_MENU::Draw()
@@ -263,9 +231,6 @@ void MAIN_MENU::Draw()
 		sprite_anime.reset(nullptr);
 
 		SCENE::Draw();
-
-		Bounding_Frustun.Draw();
-		AABB.Draw();
 
 		auto m = XMMatrixIdentity();
 
@@ -285,9 +250,6 @@ void MAIN_MENU::Draw_DPP()
 
 		SCENE::Draw_DPP();
 
-		Bounding_Frustun.Draw_DPP();
-		AABB.Draw_DPP();
-
 		auto m = XMMatrixIdentity();
 
 		m = XMMatrixScaling(2.5, 2.5, 2.5);
@@ -299,8 +261,6 @@ void MAIN_MENU::Update(float delta_time)
 	if (GetLockFlag())
 	{
 		SCENE::Update(delta_time);
-		Bounding_Frustun.Update(delta_time);
-		AABB.Update(delta_time);
 
 		{
 			/*{
@@ -367,9 +327,6 @@ void MAIN_MENU::Uninit()
 	SCENE::Uninit();
 
 	//SAFE_DELETE(model);
-
-	Bounding_Frustun.Uninit();
-	AABB.Uninit();
 
 	AUDIO_MANAGER::Stop_Sound_Object();
 }

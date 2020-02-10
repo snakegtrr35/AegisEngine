@@ -414,6 +414,8 @@ void FIELD::Draw()
 
 	CRenderer::Set_Shader();
 	CRenderer::Set_InputLayout();//
+
+	GAME_OBJECT::Draw();
 }
 
 void FIELD::Draw_DPP()
@@ -447,6 +449,7 @@ void FIELD::Draw_DPP()
 
 void FIELD::Update(float delta_time)
 {
+	GAME_OBJECT::Update(delta_time);
 }
 
 

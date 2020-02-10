@@ -111,7 +111,7 @@ bool CMODEL::Reload(const string& filename)
 	Assimp::Importer importer;
 
 	const aiScene* pScene = importer.ReadFile(filename,
-		aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_LimitBoneWeights | aiProcess_ConvertToLeftHanded | aiProcessPreset_TargetRealtime_MaxQuality);
+		aiProcess_Triangulate | aiProcess_LimitBoneWeights | aiProcess_ConvertToLeftHanded | aiProcessPreset_TargetRealtime_MaxQuality);
 
 	if (pScene == NULL)
 		return false;
@@ -147,7 +147,7 @@ void CMODEL::Draw()
 {
 	const auto camera = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<CCamera>("camera");
 
-	if (camera.expired() && Empty_weak_ptr<CCamera>(camera))
+	if (!camera.expired() && Empty_weak_ptr<CCamera>(camera))
 	{
 		if (false == camera.lock()->Get_Visibility(Position))
 		{

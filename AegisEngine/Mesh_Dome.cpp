@@ -129,6 +129,7 @@ void MESH_DOOM::Uninit()
 //***********************************************************************************************
 void MESH_DOOM::Update(float delta_time)
 {
+	GAME_OBJECT::Update(delta_time);
 }
 
 //***********************************************************************************************
@@ -174,6 +175,8 @@ void MESH_DOOM::Draw()
 
 		CRenderer::Set_Shader();
 	}
+
+	GAME_OBJECT::Draw();
 }
 
 void MESH_DOOM::Draw_DPP()

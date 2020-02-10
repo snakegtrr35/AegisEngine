@@ -33,6 +33,13 @@ public:
 	void Set_Radius(const float radius);
 
 	const float Get_Radius();
+
+	template<typename Archive>
+	void serialize(Archive& ar)
+	{
+		ar(cereal::base_class<BOUNDING>(this));
+		ar(Radius);
+	}
 };
 
 CEREAL_REGISTER_TYPE(BOUNDING_SHPERE)

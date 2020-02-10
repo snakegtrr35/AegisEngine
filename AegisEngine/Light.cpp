@@ -3,6 +3,9 @@
 
 array<LIGHT_BUFFER, MAX_NUM_LIGHTS> LIGHTS::Lights;
 
+
+LIGHT_BUFFER::LIGHT_BUFFER() : Enable(0), Position(0.f, 0.f, 0.f), Color(0.f, 0.f, 0.f, 0.f), Radius(0.f), Attenuation(1.0f, 0.1f, 0.2f), Type((UINT)LIGHT_TYPE::NONE) {}
+
 LIGHTS::LIGHTS()
 {
 	for (UINT i = 0; i < MAX_NUM_LIGHTS; i++)

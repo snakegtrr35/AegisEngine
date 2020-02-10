@@ -25,9 +25,6 @@ extern float radius;
 
 static string old_name;
 
-extern BOUNDING_FRUSTUM Bounding_Frustun;
-extern BOUNDING_AABB AABB;
-
 void EditTransform(const float* cameraView, float* cameraProjection, float* matrix, bool enable, GAME_OBJECT* object);
 
 void My_imgui::Init(HWND hWnd)
@@ -346,59 +343,6 @@ void My_imgui::Draw(void)
 			ImGui::SetNextWindowSize(ImVec2(500, 500), ImGuiCond_Once);
 
 			ImGui::Begin("Test", nullptr, window_flags);
-
-			{
-				float Translation[3] = { AABB.Get_Position()->x, AABB.Get_Position()->y, AABB.Get_Position()->z };
-				float Radius[3] = { AABB.Get_Radius()->x, AABB.Get_Radius()->y, AABB.Get_Radius()->z };
-
-				ImGui::DragFloat3("Position AABB", Translation, 0.01f);
-				ImGui::DragFloat3("Radius", Radius, 0.01f);
-
-				XMFLOAT3 P(Translation[0], Translation[1], Translation[2]);
-				XMFLOAT3 R(Radius[0], Radius[1], Radius[2]);
-
-				AABB.Set_Position(P);
-				AABB.Set_Radius(R);
-			}
-
-			ImGui::Spacing();
-
-			{
-				float Position[3] = { Bounding_Frustun.Get_Position()->x, Bounding_Frustun.Get_Position()->y, Bounding_Frustun.Get_Position()->z };
-				float Rotate[3] = { Bounding_Frustun.Get_Rotation()->x, Bounding_Frustun.Get_Rotation()->y, Bounding_Frustun.Get_Rotation()->z };
-
-				ImGui::DragFloat3("Position", Position, 0.01f);
-				ImGui::DragFloat3("Rotate", Rotate, 0.01f);
-
-				XMFLOAT3 r;
-				XMStoreFloat3(&r, *camera.lock()->Get_Front());
-
-				ImGui::Text("%f  %f  %f", r.x, r.y, r.z);
-
-				XMFLOAT3 P(Position[0], Position[1], Position[2]);
-				XMFLOAT3 R(Rotate[0], Rotate[1], Rotate[2]);
-
-				Bounding_Frustun.Set_Position(P);
-				Bounding_Frustun.Set_Rotation(R);
-			}
-
-			{
-				switch (Bounding_Frustun.Frustum.Contains(AABB.Aabb))
-				{
-					case ContainmentType::CONTAINS:
-						ImGui::Text((char*)u8"オブジェクトが含まれます");
-						break;
-
-					case ContainmentType::DISJOINT:
-						ImGui::Text((char*)u8"オブジェクトが含まれていません");
-						break;
-
-					//case ContainmentType::CONTAINS:
-					case ContainmentType::INTERSECTS:
-						ImGui::Text((char*)u8"オブジェクトが交差します");
-						break;
-				}
-			}
 
 			{
 				ImGuiIO& io = ImGui::GetIO();
@@ -727,7 +671,15 @@ void EditTransform(const float* cameraView, float* cameraProjection, float* matr
 
 void My_imgui::Draw_Components(const vector<COMPONENT*>& components)
 {
+	ImGui::Spacing();
+	ImGui::Text((char*)u8"コンポーネント");
+	ImGui::Spacing();
 
+	for (const auto& com : components)
+	{
+		com->Draw_Inspector();
+		ImGui::Spacing();
+	}
 }
 
 void My_imgui::Texture_Import()

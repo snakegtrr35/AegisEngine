@@ -150,6 +150,7 @@ void MESH_FIELD::Uninit()
 
 void MESH_FIELD::Update(float delta_time)
 {
+	GAME_OBJECT::Update(delta_time);
 }
 
 void MESH_FIELD::Draw()
@@ -228,6 +229,8 @@ void MESH_FIELD::Draw()
 	CRenderer::GetDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
 
 	CRenderer::GetDeviceContext()->DrawIndexed(IndexNum, 0, 0);
+
+	GAME_OBJECT::Draw();
 }
 
 void MESH_FIELD::Draw_DPP()
@@ -482,6 +485,7 @@ void MESH_WALL::Uninit()
 
 void MESH_WALL::Update(float delta_time)
 {
+	GAME_OBJECT::Update(delta_time);
 }
 
 void MESH_WALL::Draw()
@@ -561,6 +565,7 @@ void MESH_WALL::Draw()
 			CRenderer::Set_Shader();
 		}
 	}
+	GAME_OBJECT::Draw();
 }
 
 void MESH_WALL::Draw_DPP()

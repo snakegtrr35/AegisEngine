@@ -29,8 +29,6 @@ public:
 
 	void Init(bool);
 
-	static string Model_Name;
-
 	template<typename Archive>
 	void serialize(Archive& ar)
 	{

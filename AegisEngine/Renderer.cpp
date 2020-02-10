@@ -417,9 +417,8 @@ bool CRenderer::Init()
 
 	// ÉâÉCÉgèâä˙âª
 	ZeroMemory(&m_Light, sizeof(m_Light));
-	m_Light.Direction = XMFLOAT4(-10.0f, -10.0f, 10.0f, 0.0f);
-
-	m_Light.Position = XMFLOAT4(10.0f, 10.0f, -10.0f, 0.0f);
+	m_Light.Position = XMFLOAT4(20.0f, 20.0f, -20.0f, 0.0f);
+	m_Light.Direction = m_Light.Position * -1.0f;
 	m_Light.Diffuse = COLOR(1.0f, 1.0f, 1.0f, 1.0f);
 	m_Light.Ambient = COLOR(1.0f, 1.0f, 1.0f, 1.0f);
 	m_Light.Specular = COLOR(1.0f, 1.0f, 1.0f, 1.0f);

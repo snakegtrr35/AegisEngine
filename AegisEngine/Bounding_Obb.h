@@ -12,7 +12,7 @@ private:
 	//XMFLOAT3 Radius;
 
 public:
-	BOUNDING_OBB();
+	BOUNDING_OBB() {}
 	~BOUNDING_OBB();
 
 	void Init() override;

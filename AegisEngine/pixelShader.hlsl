@@ -43,7 +43,7 @@ float3 DoPointLight(Lights light, float4 Position, float4 CameraPos, float4 Norm
 
     //ŠgŽU
     float colD = 0.5 - 0.5 * dot(Normal.xyz, Dir);
-    colD = 1;
+    //colD = 1;
 
     float colA = saturate(1.0f / (light.Attenuation.x + light.Attenuation.y * distance + light.Attenuation.z * distance * distance));
 

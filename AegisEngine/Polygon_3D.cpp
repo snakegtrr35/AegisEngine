@@ -276,6 +276,8 @@ void POLYGON_3D::Draw(void)
 	CRenderer::GetDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
 
 	CRenderer::GetDeviceContext()->Draw(4 * 6, 0);
+
+	GAME_OBJECT::Draw();
 }
 
 void POLYGON_3D::Draw_DPP(void)
@@ -312,6 +314,7 @@ void POLYGON_3D::Draw_DPP(void)
 
 void POLYGON_3D::Update(float delta_time)
 {
+	GAME_OBJECT::Update(delta_time);
 }
 
 

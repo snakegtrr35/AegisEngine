@@ -266,6 +266,8 @@ void BILL_BOARD::Draw()
 	CRenderer::DrawIndexed(6, 0, 0);
 
 	CRenderer::Set_Shader();
+
+	GAME_OBJECT::Draw();
 }
 
 void BILL_BOARD::Draw_DPP()
@@ -348,6 +350,7 @@ void BILL_BOARD::Draw_DPP()
 
 void BILL_BOARD::Update(float delta_time)
 {
+	GAME_OBJECT::Update(delta_time);
 }
 
 void BILL_BOARD::Uninit()

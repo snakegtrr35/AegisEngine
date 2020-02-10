@@ -158,6 +158,8 @@ void MESH_CYlLINDER::Draw()
 		// ƒ|ƒŠƒSƒ“•`‰æ
 		CRenderer::GetDeviceContext()->DrawIndexed(IndexNum, 0, 0);
 	}
+
+	GAME_OBJECT::Draw();
 }
 
 void MESH_CYlLINDER::Draw_DPP()
@@ -193,4 +195,5 @@ void MESH_CYlLINDER::Draw_DPP()
 
 void MESH_CYlLINDER::Update(float delta_time)
 {
+	GAME_OBJECT::Update(delta_time);
 }

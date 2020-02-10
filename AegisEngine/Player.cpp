@@ -7,7 +7,7 @@
 #include	"Input.h"
 #include	"Collision.h"
 #include	"Player.h"
-
+#include	"Bounding_Aabb.h"
 #include	"Score.h"
 #include	"Fade.h"
 
@@ -45,6 +45,18 @@ void PLAYER::Init(void)
 		Model->Load("asset/model/kakunin_joint.fbx");
 	}
 
+	{
+		//auto scene = CManager::Get_Instance()->Get_Scene();
+
+		//auto aabb = Get_Component()->Add_Component<BOUNDING_AABB>(scene->Get_Game_Object(this));
+
+		//aabb->Set_Position(Position);
+
+		//aabb->Set_Radius(XMFLOAT3(10, 10, 10));
+
+		GAME_OBJECT::Init();
+	}
+
 	//Collision = new COLLISIION_SPHERE();
 
 	//dynamic_cast<COLLISIION_SPHERE*>(Collision)->Set_Position(Position);
@@ -76,7 +88,7 @@ void PLAYER::Draw(void)
 		Model->Draw(matrix);
 	}
 
-
+	GAME_OBJECT::Draw();
 	//Shpere->Draw();
 }
 
@@ -227,6 +239,8 @@ void PLAYER::Update(float delta_time)
 	//{
 	//	Model->Get().Change_Anime("Jump", 60);
 	//}
+
+	GAME_OBJECT::Update(delta_time);
 }
 
 void PLAYER::Uninit(void)

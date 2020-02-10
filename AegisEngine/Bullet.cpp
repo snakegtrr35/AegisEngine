@@ -76,6 +76,8 @@ void BULLET::Init()
 void BULLET::Draw()
 {
 	Model->Draw();
+
+	GAME_OBJECT::Draw();
 }
 
 void BULLET::Draw_DPP()
@@ -151,6 +153,8 @@ void BULLET::Update(float delta_time)
 		//	AUDIO_MANAGER::Play_Sound_Object(SOUND_INDEX::SOUND_INDEX_EXPLOSION);
 		//}
 	}
+
+	GAME_OBJECT::Update(delta_time);
 }
 
 void BULLET::Uninit()

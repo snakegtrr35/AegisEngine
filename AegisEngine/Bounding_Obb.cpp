@@ -5,9 +5,6 @@
 #include	"Scene.h"
 #include	"ShadowMap.h"
 
-BOUNDING_OBB::BOUNDING_OBB()
-{
-}
 
 BOUNDING_OBB::~BOUNDING_OBB()
 {

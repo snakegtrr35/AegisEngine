@@ -77,3 +77,8 @@ XMFLOAT3 operator*(const XMFLOAT3& left, const float s)
 {
 	return XMFLOAT3(left.x * s, left.y * s, left.z * s);
 }
+
+XMFLOAT4 operator*(const XMFLOAT4& left, const float s)
+{
+	return XMFLOAT4(left.x * s, left.y * s, left.z * s, left.w * s);
+}

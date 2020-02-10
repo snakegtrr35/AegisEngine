@@ -12,7 +12,7 @@ private:
 	unique_ptr<ID3D11Buffer, Release> pIndexBuffer;			// インデックスバッファ
 
 public:
-	BOUNDING_FRUSTUM(){}
+	BOUNDING_FRUSTUM() {}
 	~BOUNDING_FRUSTUM() { Uninit(); }
 
 	void Init() override;
@@ -24,6 +24,12 @@ public:
 	void OverWrite() override;
 
 	BoundingFrustum Frustum;
+
+	template<typename Archive>
+	void serialize(Archive& ar)
+	{
+		ar(cereal::base_class<BOUNDING>(this));
+	}
 };
 
 CEREAL_REGISTER_TYPE(BOUNDING_FRUSTUM)

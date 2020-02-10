@@ -23,7 +23,7 @@ struct LIGHT_BUFFER {
 	UINT Type;
 	float Dummy[3];
 
-	LIGHT_BUFFER() : Enable(0), Position(0.f, 0.f, 0.f), Color(0.f, 0.f, 0.f, 0.f), Radius(0.f), Attenuation(1.0f, 0.f, 0.2f), Type((UINT)LIGHT_TYPE::NONE) {}
+	LIGHT_BUFFER();
 };
 
 template<typename Archive>

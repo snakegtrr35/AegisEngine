@@ -797,4 +797,6 @@ XMFLOAT3 operator+(const XMFLOAT3& left, const XMFLOAT3 right);
 
 XMFLOAT3 operator*(const XMFLOAT3& left, const float s);
 
+XMFLOAT4 operator*(const XMFLOAT4& left, const float s);
+
 #endif // !MATH_H

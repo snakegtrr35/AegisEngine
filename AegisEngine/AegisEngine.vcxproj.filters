@@ -251,6 +251,9 @@
     <ClCompile Include="Scene_Manager.cpp">
       <Filter>ソース ファイル\System\Scene</Filter>
     </ClCompile>
+    <ClCompile Include="Bill.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="imgui\imconfig.h">
@@ -472,6 +475,8 @@
     <ClInclude Include="Main_Menu.h">
       <Filter>ソース ファイル\System\Scene</Filter>
     </ClInclude>
+    <ClInclude Include="Bill.h" />
+    <ClInclude Include="Component_Manager.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="pixelShader.hlsl">

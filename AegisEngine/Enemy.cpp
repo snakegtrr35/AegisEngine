@@ -38,11 +38,6 @@ ENEMY::ENEMY()
 	dynamic_cast<COLLISIION_AABB*>(Collision)->Set_Position(Position);
 
 	dynamic_cast<COLLISIION_AABB*>(Collision)->Set_Radius(XMFLOAT3(0.5f, 0.5f, 0.5f));
-
-	Aabb = CManager::Get_Instance()->Get_Scene()->Add_Game_Object<BOUNDING_AABB>(LAYER_NAME::GAMEOBJECT);
-
-	Aabb->Set_Position(Position);
-	//Aabb->Set_Radius(XMFLOAT3(0.5f, 0.5f, 0.5f));
 }
 
 ENEMY::~ENEMY()
@@ -57,6 +52,8 @@ void ENEMY::Init()
 void ENEMY::Draw()
 {
 	Model->Draw();
+
+	GAME_OBJECT::Draw();
 }
 
 void ENEMY::Draw_DPP()
@@ -165,6 +162,8 @@ void ENEMY::Update(float delta_time)
 
 	//dynamic_cast<COLLISIION_SPHERE*>(Collision)->Set_Position(Position);
 	dynamic_cast<COLLISIION_AABB*>(Collision)->Set_Position(Position);
+
+	GAME_OBJECT::Update(delta_time);
 }
 
 void ENEMY::Uninit(void)
