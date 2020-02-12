@@ -1,4 +1,6 @@
 #include	"Bounding_Shpere.h"
+#include	"camera.h"
+#include	"Debug_Camera.h"
 #include	"manager.h"
 #include	"Scene.h"
 #include	"ShadowMap.h"
@@ -10,7 +12,7 @@ void BOUNDING_SHPERE::Init()
 
 void BOUNDING_SHPERE::Draw()
 {
-	if (false == CManager::Get_ShadowMap()->Get_Enable() && RENDERING_PASS::REDRING == CRenderer::Get_Rendering_Pass())
+	if (false == CManager::Get_Instance()->Get_ShadowMap()->Get_Enable())
 	{
 		// 入力アセンブラに頂点バッファを設定
 		CRenderer::SetVertexBuffers(pVertexBuffer.get());
@@ -66,21 +68,20 @@ void BOUNDING_SHPERE::Draw_Ring(const XMFLOAT3& rotation)
 		world *= XMMatrixRotationRollPitchYaw(XMConvertToRadians(rotation.x), XMConvertToRadians(rotation.y), XMConvertToRadians(rotation.z));
 		world *= XMMatrixTranslation(Position.x, Position.y, Position.z);
 
-		auto camera01 = CManager::Get_Scene()->Get_Game_Object<CCamera>("camera");
-		auto camera02 = CManager::Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
+		const auto camera01 = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<CCamera>("camera");
+		const auto camera02 = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
 
-		if (nullptr != camera01)
-
+		if (!camera01.expired() && Empty_weak_ptr<CCamera>(camera01))
 		{
-			CRenderer::Set_MatrixBuffer(world, camera01->Get_Camera_View(), camera01->Get_Camera_Projection());
+			CRenderer::Set_MatrixBuffer(world, camera01.lock()->Get_Camera_View(), camera01.lock()->Get_Camera_Projection());
 
-			CRenderer::Set_MatrixBuffer01(*camera01->Get_Pos());
+			CRenderer::Set_MatrixBuffer01(*camera01.lock()->Get_Pos());
 		}
 		else
 		{
-			CRenderer::Set_MatrixBuffer(world, camera02->Get_Camera_View(), camera02->Get_Camera_Projection());
+			CRenderer::Set_MatrixBuffer(world, camera02.lock()->Get_Camera_View(), camera02.lock()->Get_Camera_Projection());
 
-			CRenderer::Set_MatrixBuffer01(*camera02->Get_Pos());
+			CRenderer::Set_MatrixBuffer01(*camera02.lock()->Get_Pos());
 		}
 	}
 
@@ -149,8 +150,8 @@ void BOUNDING_SHPERE::Create_Buffer()
 
 		for (int i = 0; i < cnt; i++)
 		{
-			index_array[i * 2] = i;
-			index_array[i * 2 + 1] = (i + 1) % cnt;
+			index_array[i * 2] = (WORD)i;
+			index_array[i * 2 + 1] = (WORD)((i + 1) % cnt);
 		}
 
 		// インデックスバッファの設定
@@ -192,7 +193,7 @@ void BOUNDING_SHPERE::OverWrite()
 
 		const float angle = XM_2PI / cnt;
 
-		for (int i = 0; i < cnt; i++)
+		for (UINT i = 0; i < cnt; i++)
 		{
 			vertex[i].Position = XMFLOAT3(cosf(angle * i) * Radius, sinf(angle * i) * Radius, 0.0f);
 			vertex[i].Normal = XMFLOAT3(0.0f, 0.0f, 0.0f);

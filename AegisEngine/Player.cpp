@@ -1,11 +1,13 @@
 #include	"manager.h"
 #include	"Scene.h"
-#include	"ModelLoader.h"
+
+//#include	"ModelLoader.h"
+#include	"FBXmodel.h"
+
 #include	"Input.h"
-#include	"Circle_Shadow.h"
 #include	"Collision.h"
 #include	"Player.h"
-
+#include	"Bounding_Aabb.h"
 #include	"Score.h"
 #include	"Fade.h"
 
@@ -30,13 +32,29 @@ void PLAYER::Init(void)
 
 		string name = "asset/model/human01_Stop.fbx";
 
-		Model = new CMODEL();
+		/*Model = new CMODEL();
 
 		Model->Load(name);
 
 		Model->Set_Position(Position);
 		Model->Set_Rotation(Rotation);
-		Model->Set_Scaling(Scaling);
+		Model->Set_Scaling(Scaling);*/
+
+		Model = new FBXmodel();
+
+		Model->Load("asset/model/kakunin_joint.fbx");
+	}
+
+	{
+		//auto scene = CManager::Get_Instance()->Get_Scene();
+
+		//auto aabb = Get_Component()->Add_Component<BOUNDING_AABB>(scene->Get_Game_Object(this));
+
+		//aabb->Set_Position(Position);
+
+		//aabb->Set_Radius(XMFLOAT3(10, 10, 10));
+
+		GAME_OBJECT::Init();
 	}
 
 	//Collision = new COLLISIION_SPHERE();
@@ -60,7 +78,31 @@ void PLAYER::Init(void)
 
 void PLAYER::Draw(void)
 {
-	Model->Draw();
+	//Model->Draw();
+
+	{
+		XMMATRIX matrix= XMMatrixScaling(Scaling.x, Scaling.y, Scaling.z);
+		matrix *= XMMatrixRotationRollPitchYaw(XMConvertToRadians(Rotation.x), XMConvertToRadians(Rotation.y), XMConvertToRadians(Rotation.z));
+		matrix *= XMMatrixTranslation(Position.x, Position.y, Position.z);
+
+		Model->Draw(matrix);
+	}
+
+	GAME_OBJECT::Draw();
+	//Shpere->Draw();
+}
+
+void PLAYER::Draw_DPP(void)
+{
+	//Model->Draw_DPP();
+
+	{
+		XMMATRIX matrix = XMMatrixScaling(Scaling.x, Scaling.y, Scaling.z);
+		matrix *= XMMatrixRotationRollPitchYaw(XMConvertToRadians(Rotation.x), XMConvertToRadians(Rotation.y), XMConvertToRadians(Rotation.z));
+		matrix *= XMMatrixTranslation(Position.x, Position.y, Position.z);
+
+		Model->Draw_DPP(matrix);
+	}
 
 	//Shpere->Draw();
 }
@@ -68,12 +110,12 @@ void PLAYER::Draw(void)
 void PLAYER::Update(float delta_time)
 {
 	//CCamera* camera = CManager::Get_Scene()->Get_Game_Object<CCamera>("camera");
-	DEBUG_CAMERA* camera = CManager::Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
+	const auto camera = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
 
-	XMVECTOR* vec = camera->Get_At();
-	XMVECTOR* front = camera->Get_Front();
+	XMVECTOR* vec = camera.lock()->Get_At();
+	XMVECTOR* front = camera.lock()->Get_Front();
 	*front = XMVector4Normalize(*front);
-	XMVECTOR* right = camera->Get_Right();
+	XMVECTOR* right = camera.lock()->Get_Right();
 	*right = XMVector4Normalize(*right);
 	XMFLOAT3 pos;
 
@@ -147,13 +189,13 @@ void PLAYER::Update(float delta_time)
 			Blend = max(0.0f, Blend - (1.0f / 60.0f));
 		}
 
-		Model->Set_Position(Position);
-		Model->Set_Rotation(Rotation);
-		Model->Set_Scaling(Scaling);
+		//Model->Set_Position(Position);
+		//Model->Set_Rotation(Rotation);
+		//Model->Set_Scaling(Scaling);
 
 		Model->Update(delta_time);
 
-		Blend = Model->Get().Get_Ratio();
+		//Blend = Model->Get().Get_Ratio();
 	}
 
 	//dynamic_cast<COLLISIION_SPHERE*>(Collision)->Set_Position(Position);
@@ -183,20 +225,22 @@ void PLAYER::Update(float delta_time)
 		//	score->Add(-10);
 	}
 
-	if (KEYBOARD::Trigger_Keyboard(VK_F1))
-	{
-		Model->Get().Change_Anime("Stop", 60);
-	}
+	//if (KEYBOARD::Trigger_Keyboard(VK_F1))
+	//{
+	//	Model->Get().Change_Anime("Stop", 60);
+	//}
 
-	if (KEYBOARD::Trigger_Keyboard(VK_F2))
-	{
-		Model->Get().Change_Anime("Walk", 60);
-	}
+	//if (KEYBOARD::Trigger_Keyboard(VK_F2))
+	//{
+	//	Model->Get().Change_Anime("Walk", 60);
+	//}
 
-	if (KEYBOARD::Trigger_Keyboard(VK_F3))
-	{
-		Model->Get().Change_Anime("Jump", 60);
-	}
+	//if (KEYBOARD::Trigger_Keyboard(VK_F3))
+	//{
+	//	Model->Get().Change_Anime("Jump", 60);
+	//}
+
+	GAME_OBJECT::Update(delta_time);
 }
 
 void PLAYER::Uninit(void)

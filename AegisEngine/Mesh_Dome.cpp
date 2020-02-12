@@ -1,7 +1,8 @@
 #include	"renderer.h"
 #include	"texture.h"
 #include	"Mesh_Dome.h"
-
+#include	"camera.h"
+#include	"Debug_Camera.h"
 #include	"manager.h"
 #include	"Scene.h"
 #include	"ShadowMap.h"
@@ -128,6 +129,7 @@ void MESH_DOOM::Uninit()
 //***********************************************************************************************
 void MESH_DOOM::Update(float delta_time)
 {
+	GAME_OBJECT::Update(delta_time);
 }
 
 //***********************************************************************************************
@@ -135,7 +137,7 @@ void MESH_DOOM::Update(float delta_time)
 //***********************************************************************************************
 void MESH_DOOM::Draw()
 {
-	if (false == CManager::Get_ShadowMap()->Get_Enable() /*&& RENDERING_PASS::REDRING == CRenderer::Get_Rendering_Pass()*/)
+	if (false == CManager::Get_Instance()->Get_ShadowMap()->Get_Enable() /*&& RENDERING_PASS::REDRING == CRenderer::Get_Rendering_Pass()*/)
 	{
 		{
 			XMMATRIX world;
@@ -144,16 +146,16 @@ void MESH_DOOM::Draw()
 			world *= XMMatrixRotationRollPitchYaw(XMConvertToRadians(Rotation.x), XMConvertToRadians(Rotation.y), XMConvertToRadians(Rotation.z));			// ‰ñ“]
 			world *= XMMatrixTranslation(Position.x, Position.y, Position.z);																				// ˆÚ“®
 
-			auto camera01 = CManager::Get_Scene()->Get_Game_Object<CCamera>("camera");
-			auto camera02 = CManager::Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
+			const auto camera01 = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<CCamera>("camera");
+			const auto camera02 = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
 
-			if (nullptr != camera01)
+			if (!camera01.expired() && Empty_weak_ptr<CCamera>(camera01))
 			{
-				CRenderer::Set_MatrixBuffer(world, camera01->Get_Camera_View(), camera01->Get_Camera_Projection());
+				CRenderer::Set_MatrixBuffer(world, camera01.lock()->Get_Camera_View(), camera01.lock()->Get_Camera_Projection());
 			}
 			else
 			{
-				CRenderer::Set_MatrixBuffer(world, camera02->Get_Camera_View(), camera02->Get_Camera_Projection());
+				CRenderer::Set_MatrixBuffer(world, camera02.lock()->Get_Camera_View(), camera02.lock()->Get_Camera_Projection());
 			}
 		}
 
@@ -173,4 +175,40 @@ void MESH_DOOM::Draw()
 
 		CRenderer::Set_Shader();
 	}
+
+	GAME_OBJECT::Draw();
+}
+
+void MESH_DOOM::Draw_DPP()
+{
+	//{
+	//	XMMATRIX world;
+
+	//	world = XMMatrixScaling(Scaling.x, Scaling.y, Scaling.z);
+	//	world *= XMMatrixRotationRollPitchYaw(XMConvertToRadians(Rotation.x), XMConvertToRadians(Rotation.y), XMConvertToRadians(Rotation.z));
+	//	world *= XMMatrixTranslation(Position.x, Position.y, Position.z);
+
+	//	auto camera01 = CManager::Get_Scene()->Get_Game_Object<CCamera>("camera");
+	//	auto camera02 = CManager::Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
+
+	//	if (nullptr != camera01)
+	//	{
+	//		CRenderer::Set_MatrixBuffer(world, camera01->Get_Camera_View(), camera01->Get_Camera_Projection());
+	//	}
+	//	else
+	//	{
+	//		CRenderer::Set_MatrixBuffer(world, camera02->Get_Camera_View(), camera02->Get_Camera_Projection());
+	//	}
+	//}
+
+	//CRenderer::SetVertexBuffers(VertexBuffer.get());
+	//CRenderer::SetIndexBuffer(IndexBuffer.get());
+
+	//// ƒgƒ|ƒƒWÝ’è
+	//CRenderer::GetDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
+
+	//// ƒ|ƒŠƒSƒ“•`‰æ
+	//CRenderer::GetDeviceContext()->DrawIndexed(IndexNum, 0, 0);
+
+	//CRenderer::Set_Shader();
 }

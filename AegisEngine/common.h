@@ -19,6 +19,9 @@
 #define TEXT(x) TEXT_PASTE(x)
 #define TEXT_U8(x) TEXT_UTF_8(x)
 
+const constexpr float ANIMETION_FRAME_60 = 1.f / 60.0f;		// 60FPS
+const constexpr float ANIMETION_FRAME_30 = 1.f / 30.0f;		// 30FPS
+
 //! スマートポインタ用のカスタムデリータ
 /*! Release() がある */
 struct Release {
@@ -44,7 +47,6 @@ struct Destroy {
 struct Delete {
 	template<class T>
 	void operator()(T* p) const {
-		p->Uninit();
 		p = nullptr;
 	}
 };

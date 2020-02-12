@@ -1,4 +1,4 @@
-
+#include    "Commom_Hlsl.h"
 
 //*****************************************************************************
 // 定数バッファ
@@ -48,17 +48,11 @@ SamplerState g_SamplerState : register(s0);
 //=============================================================================
 // ピクセルシェーダ
 //=============================================================================
-void main( in float4 inPosition      : POSITION0,
-		   in float4 inNormal        : NORMAL0,
-		   in float2 inTexCoord      : TEXCOORD0,
-		   in float4 inDiffuse       : COLOR0,
-		   in float4 outWPos         : TEXCOORD1,
-           in float4 inShadowMapPos  : POSITION_SHADOWMAP,
+void main( PS_IN Input,
 
-           out float4 outalbedo      : SV_Target0,
-		   out float4 outDiffuse     : SV_Target1)
+		   out float4 outDiffuse     : SV_Target)
 {
-    outDiffuse = g_Texture.Sample(g_SamplerState, inTexCoord);
+    outDiffuse = g_Texture.Sample(g_SamplerState, Input.TexCoord);
 
     if (outDiffuse.a <= 0.0)
         discard;
@@ -98,8 +92,6 @@ void main( in float4 inPosition      : POSITION0,
 
     outDiffuse.b *= 0.43f;*/
 
-    outDiffuse *= inDiffuse;
-    
-    outalbedo = outDiffuse;
+    outDiffuse *= Input.Diffuse;
 
 }

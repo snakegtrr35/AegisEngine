@@ -142,7 +142,7 @@ void EFFEKSEER_MANAGER::Draw()
 
 void EFFEKSEER_MANAGER::Update(float delta_time)
 {
-	auto player = CManager::Get_Scene()->Get_Game_Object("player");
+	auto player = CManager::Get_Instance()->Get_Scene()->Get_Game_Object("player");
 
 	//	Set_Location("test", XMFLOAT3(player->Get_Position()->x, player->Get_Position()->y, player->Get_Position()->z));
 
@@ -158,11 +158,12 @@ void EFFEKSEER_MANAGER::Update(float delta_time)
 
 void EFFEKSEER_MANAGER::Set()
 {
-	DEBUG_CAMERA* D_camera = nullptr;
-	CCamera* camera = CManager::Get_Scene()->Get_Game_Object<CCamera>("camera");
-	if (nullptr == camera)
+	weak_ptr<DEBUG_CAMERA> D_camera;
+	auto camera = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<CCamera>("camera");
+
+	if (!camera.expired() && Empty_weak_ptr<CCamera>(camera))
 	{
-		D_camera = CManager::Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
+		D_camera = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
 	}
 
 	{
@@ -172,58 +173,58 @@ void EFFEKSEER_MANAGER::Set()
 		static ::Effekseer::Vector3D at;
 		static ::Effekseer::Vector3D up;
 
-		if (nullptr != camera)
+		if (!camera.expired() && Empty_weak_ptr<CCamera>(camera))
 		{
-			position.X = camera->Get_Position()->x;
-			position.Y = camera->Get_Position()->y;
-			position.Z = camera->Get_Position()->z;
+			position.X = camera.lock()->Get_Position()->x;
+			position.Y = camera.lock()->Get_Position()->y;
+			position.Z = camera.lock()->Get_Position()->z;
 
 			XMFLOAT3 vec;
-			XMStoreFloat3(&vec, *camera->Get_At());
+			XMStoreFloat3(&vec, *camera.lock()->Get_At());
 
 			at.X = vec.x;
 			at.Y = vec.y;
 			at.Z = vec.z;
 
-			XMStoreFloat3(&vec, *camera->Get_Up());
+			XMStoreFloat3(&vec, *camera.lock()->Get_Up());
 
 			up.X = vec.x;
 			up.Y = vec.y;
 			up.Z = vec.z;
 
-			angle = camera->Get_Viewing_Angle();
+			angle = camera.lock()->Get_Viewing_Angle();
 		}
 		else
 		{
-			position.X = D_camera->Get_Position()->x;
-			position.Y = D_camera->Get_Position()->y;
-			position.Z = D_camera->Get_Position()->z;
+			position.X = D_camera.lock()->Get_Position()->x;
+			position.Y = D_camera.lock()->Get_Position()->y;
+			position.Z = D_camera.lock()->Get_Position()->z;
 
 			XMFLOAT3 vec;
-			XMStoreFloat3(&vec, *D_camera->Get_At());
+			XMStoreFloat3(&vec, *D_camera.lock()->Get_At());
 
 			at.X = vec.x;
 			at.Y = vec.y;
 			at.Z = vec.z;
 
-			XMStoreFloat3(&vec, *D_camera->Get_Up());
+			XMStoreFloat3(&vec, *D_camera.lock()->Get_Up());
 
 			up.X = vec.x;
 			up.Y = vec.y;
 			up.Z = vec.z;
 
-			angle = D_camera->Get_Viewing_Angle();
+			angle = D_camera.lock()->Get_Viewing_Angle();
 		}
 
 		{
 			XMMATRIX mtr;
-			if (nullptr != camera)
+			if (!camera.expired() && Empty_weak_ptr<CCamera>(camera))
 			{
-				mtr = camera->Get_Camera_Projection();
+				mtr = camera.lock()->Get_Camera_Projection();
 			}
 			else
 			{
-				mtr = D_camera->Get_Camera_Projection();
+				mtr = D_camera.lock()->Get_Camera_Projection();
 			}
 
 			::Effekseer::Matrix44 matrix = XMMATRIXToMatrix44(mtr);
@@ -235,13 +236,13 @@ void EFFEKSEER_MANAGER::Set()
 		{
 			XMMATRIX mtr;
 
-			if (nullptr != camera)
+			if (!camera.expired() && Empty_weak_ptr<CCamera>(camera))
 			{
-				mtr = camera->Get_Camera_View();
+				mtr = camera.lock()->Get_Camera_View();
 			}
 			else
 			{
-				mtr = D_camera->Get_Camera_View();
+				mtr = D_camera.lock()->Get_Camera_View();
 			}
 
 			::Effekseer::Matrix44 matrix = XMMATRIXToMatrix44(mtr);
@@ -259,7 +260,7 @@ void EFFEKSEER_MANAGER::Play(const string& name)
 {
 	Manager->StopEffect(Handles[name]);
 
-	auto player = CManager::Get_Scene()->Get_Game_Object("player");
+	auto player = CManager::Get_Instance()->Get_Scene()->Get_Game_Object("player");
 
 	Handles[name] = Manager->Play(Effects[name], player->Get_Position()->x, player->Get_Position()->y, player->Get_Position()->z);
 

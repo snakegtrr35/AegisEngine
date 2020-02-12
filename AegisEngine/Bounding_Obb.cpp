@@ -1,11 +1,10 @@
 #include	"Bounding_Obb.h"
+#include	"camera.h"
+#include	"Debug_Camera.h"
 #include	"manager.h"
 #include	"Scene.h"
 #include	"ShadowMap.h"
 
-BOUNDING_OBB::BOUNDING_OBB()
-{
-}
 
 BOUNDING_OBB::~BOUNDING_OBB()
 {
@@ -115,7 +114,7 @@ void BOUNDING_OBB::Init()
 
 void BOUNDING_OBB::Draw()
 {
-	if (false == CManager::Get_ShadowMap()->Get_Enable() && RENDERING_PASS::REDRING == CRenderer::Get_Rendering_Pass())
+	if (false == CManager::Get_Instance()->Get_ShadowMap()->Get_Enable())
 	{
 		// 入力アセンブラに頂点バッファを設定.
 		CRenderer::SetVertexBuffers(pVertexBuffer_BOX.get());
@@ -128,18 +127,18 @@ void BOUNDING_OBB::Draw()
 			world *= XMMatrixRotationRollPitchYaw(XMConvertToRadians(Rotation.x), XMConvertToRadians(Rotation.y), XMConvertToRadians(Rotation.z));
 			world *= XMMatrixTranslation(Position.x, Position.y, Position.z);
 
-			CCamera* camera01 = CManager::Get_Scene()->Get_Game_Object<CCamera>("camera");
-			DEBUG_CAMERA* camera02 = CManager::Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
+			const auto camera01 = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<CCamera>("camera");
+			const auto camera02 = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
 
-			if (nullptr != camera01)
+			if (!camera01.expired() && Empty_weak_ptr<CCamera>(camera01))
 			{
-				CRenderer::Set_MatrixBuffer(world, camera01->Get_Camera_View(), camera01->Get_Camera_Projection());
+				CRenderer::Set_MatrixBuffer(world, camera01.lock()->Get_Camera_View(), camera01.lock()->Get_Camera_Projection());
 
 				CRenderer::Set_Shader();
 			}
 			else
 			{
-				CRenderer::Set_MatrixBuffer(world, camera02->Get_Camera_View(), camera02->Get_Camera_Projection());
+				CRenderer::Set_MatrixBuffer(world, camera02.lock()->Get_Camera_View(), camera02.lock()->Get_Camera_Projection());
 
 				CRenderer::Set_Shader();
 			}

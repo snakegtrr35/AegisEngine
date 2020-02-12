@@ -42,14 +42,17 @@ private:
 	bool MoveEnable;
 	bool RotateEnable;
 
+	//BoundingFrustum Frustum;
+
 public:
-	DEBUG_CAMERA() {}
+	DEBUG_CAMERA();
 	~DEBUG_CAMERA() {}
 
 	void Init() override;
 	void Uninit() override;
 	void Update(float delta_time) override;
 	void Draw() override;
+	void Draw_DPP() override;
 
 	static DEBUG_CAMERA* const Get_Camera() {
 		return pDebugCamera;
@@ -116,6 +119,9 @@ public:
 	template<typename Archive>
 	void serialize(Archive& ar)
 	{
+		XMStoreFloat3(&Position, Pos);
+		XMStoreFloat3(&A, At);
+
 		ar(cereal::base_class<GAME_OBJECT>(this));
 		ar(A);
 
@@ -134,6 +140,10 @@ public:
 		Up = XMLoadFloat3(&U);
 		Right = XMLoadFloat3(&R);
 	}
+
+	//const BoundingFrustum& Get_Frustum() {
+	//	return Frustum;
+	//}
 
 	/*template<class Archive>
 	void save(Archive& ar) const

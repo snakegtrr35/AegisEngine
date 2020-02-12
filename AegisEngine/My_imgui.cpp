@@ -3,18 +3,23 @@
 #include	"imgui/imgui.h"
 #include	"imgui/imgui_impl_dx11.h"
 #include	"imgui/imgui_impl_win32.h"
-
 #include	"imgui/imgui_stdlib.h"
 
 #include	"My_imgui.h"
+
 #include	"imgui/ImGuizmo.h"
 
 #include	"Scene.h"
 #include	"manager.h"
 #include	"ShadowMap.h"
 #include	"Texture_Manager.h"
+#include	"camera.h"
+#include	"Debug_Camera.h"
+#include	"Component.h"
+#include	"Light.h"
 
-#include	"common.h"
+#include	"Bounding_Aabb.h"
+#include	"Bounding_Frustum.h"
 
 extern float radius;
 
@@ -179,7 +184,7 @@ void My_imgui::Draw(void)
 
 					if (ImGui::MenuItem("Close"))
 					{
-						CManager::GameEnd();
+						CManager::Get_Instance()->GameEnd();
 					}
 
 					ImGui::EndMenu();
@@ -277,43 +282,7 @@ void My_imgui::Draw(void)
 
 					ImGui::Begin("Shadow", nullptr, window_flags);
 
-					ImTextureID image = CManager::Get_ShadowMap()->Get();
-
-					ImGui::Image(image, ImVec2(512, 512));
-
-					ImGui::End();
-				}
-
-				{
-					ImGui::SetNextWindowSize(ImVec2(512 + 17, 512 + 40), ImGuiCond_Once);
-
-					ImGui::Begin("Depth", nullptr, window_flags);
-
-					ImTextureID image = CRenderer::Get();
-
-					ImGui::Image(image, ImVec2(512, 512));
-
-					ImGui::End();
-				}
-
-				{
-					ImGui::SetNextWindowSize(ImVec2(512 + 17, 512 + 40), ImGuiCond_Once);
-
-					ImGui::Begin("Diffeuse", nullptr, window_flags);
-
-					ImTextureID image = CRenderer::Get2();
-
-					ImGui::Image(image, ImVec2(512, 512));
-
-					ImGui::End();
-				}
-
-				{
-					ImGui::SetNextWindowSize(ImVec2(512 + 17, 512 + 40), ImGuiCond_Once);
-
-					ImGui::Begin("Normal", nullptr, window_flags);
-
-					ImTextureID image = CRenderer::Get3();
+					ImTextureID image = CManager::Get_Instance()->Get_ShadowMap()->Get();
 
 					ImGui::Image(image, ImVec2(512, 512));
 
@@ -366,6 +335,66 @@ void My_imgui::Draw(void)
 			}
 		}
 
+		{
+			const weak_ptr<DEBUG_CAMERA> camera = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
+
+			ImGuiWindowFlags window_flags = ImGuiWindowFlags_NoResize;
+
+			ImGui::SetNextWindowSize(ImVec2(500, 500), ImGuiCond_Once);
+
+			ImGui::Begin("Test", nullptr, window_flags);
+
+			{
+				ImGuiIO& io = ImGui::GetIO();
+
+				if (io.WantCaptureMouse)
+				{
+					ImGui::Text((char*)u8"true");
+				}
+				else
+				{
+					ImGui::Text((char*)u8"false");
+
+				}
+			}
+
+			ImGui::End();
+		}
+
+		{
+			XMVECTOR z = XMVectorSet(0.f, 0.f, 1.0f, 1.0f);
+			XMVECTOR x = XMVectorSet(1.0f, 0.f, 0.f, 1.0f);
+
+			static XMVECTOR quat01 = XMQuaternionRotationAxis(z, 1.0f);
+			static XMVECTOR quat02 = XMQuaternionRotationAxis(x, 1.0f);
+			XMVECTOR quat;
+			static float t = 0.0f;
+
+			XMFLOAT4 v;
+
+			ImGui::Begin("Quaternion");
+
+			ImGui::SliderFloat("t", &t, 0.0f, 1.0f);
+
+			quat = XMQuaternionSlerp(quat01, quat02, t);
+
+			XMStoreFloat4(&v, quat);
+			ImGui::Text("quat  x = %f y = %f z = %f w = %f", v.x, v.y, v.z, v.w);
+
+			XMStoreFloat4(&v, quat01);
+			ImGui::Text("quat01  x = %f y = %f z = %f w = %f", v.x, v.y, v.z, v.w);
+
+			XMStoreFloat4(&v, quat02);
+			ImGui::Text("quat02  x = %f y = %f z = %f w = %f", v.x, v.y, v.z, v.w);
+
+			ImGui::End();
+		}
+
+		// ライトの設定(ディレクショナルライトではない)
+		{
+			Light_Setting();
+		}
+
 		// インスペクター
 		{
 			Draw_Inspector(s);
@@ -383,11 +412,23 @@ void My_imgui::Draw(void)
 
 		// Rendering
 		ImGui::Render();
+
+		//ImGui::IsMouseHoveringRect
 	}
 }
 
 void My_imgui::Update(void)
 {
+	{
+		if (ImGui::GetIO().WantCaptureMouse)
+		{
+			Mouse_Over_Enable = true;
+		}
+		else
+		{
+			Mouse_Over_Enable = false;
+		}
+	}
 }
 
 void My_imgui::Uninit(void)
@@ -416,7 +457,14 @@ void My_imgui::Render(void)
 	ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
 }
 
-void Draw_Inspector(const string& name)
+const bool My_imgui::Get_Mouse_Over_Enable()
+{
+	return Mouse_Over_Enable;
+}
+
+
+
+void My_imgui::Draw_Inspector(const string& name)
 {
 	bool flag = false;
 	if (old_name != name) flag = true;
@@ -436,19 +484,17 @@ void Draw_Inspector(const string& name)
 		{
 			XMMATRIX mtr;
 
-			CCamera* camera1;
-			DEBUG_CAMERA* camera2;
+			const auto camera1 = SCENE::Get_Game_Object<CCamera>("camera");
+			const auto camera2 = SCENE::Get_Game_Object<DEBUG_CAMERA>("camera");
 
 			{
-				camera1 = SCENE::Get_Game_Object<CCamera>("camera");
-				if (nullptr == camera1)
+				if (!camera1.expired() && Empty_weak_ptr<CCamera>(camera1))
 				{
-					camera2 = SCENE::Get_Game_Object<DEBUG_CAMERA>("camera");
-					mtr = camera2->Get_Camera_View();
+					mtr = camera1.lock()->Get_Camera_View();
 				}
 				else
 				{
-					mtr = camera1->Get_Camera_View();
+					mtr = camera2.lock()->Get_Camera_View();
 				}
 			}
 
@@ -462,13 +508,13 @@ void Draw_Inspector(const string& name)
 			};
 
 			{
-				if (nullptr == camera1)
+				if (!camera1.expired() && Empty_weak_ptr<CCamera>(camera1))
 				{
-					mtr = camera2->Get_Camera_Projection();
+					mtr = camera1.lock()->Get_Camera_Projection();
 				}
 				else
 				{
-					mtr = camera1->Get_Camera_Projection();
+					mtr = camera2.lock()->Get_Camera_Projection();
 				}
 			}
 
@@ -491,7 +537,8 @@ void Draw_Inspector(const string& name)
 
 			if (flag)
 			{
-				mtr = XMMatrixTranslation(object->Get_Position()->x, object->Get_Position()->y, object->Get_Position()->z);
+				mtr = XMMatrixScaling(object->Get_Scaling()->x, object->Get_Scaling()->y, object->Get_Scaling()->z);
+				mtr *= XMMatrixTranslation(object->Get_Position()->x, object->Get_Position()->y, object->Get_Position()->z);
 				XMStoreFloat4x4(&mat44, mtr);
 
 				pos[0] = mat44._11, pos[1] = mat44._12, pos[2] = mat44._13, pos[3] = mat44._14;
@@ -504,13 +551,69 @@ void Draw_Inspector(const string& name)
 			EditTransform(view, pro, pos, enable, object);
 		}
 
-		static int clicked = 0;
-		if (ImGui::Button("Add Component"))
-			clicked++;
-		if (clicked & 1)
 		{
-			ImGui::SameLine();
-			ImGui::Text("Thanks for clicking me!");
+			vector<const char*> Items;
+
+			Items.emplace_back("AAAA");
+			Items.emplace_back("BBBB");
+			Items.emplace_back("CCCC");
+			Items.emplace_back("DDDD");
+			Items.emplace_back("EEEE");
+			Items.emplace_back("FFFF");
+			Items.emplace_back("GGGG");
+			Items.emplace_back("HHHH");
+			Items.emplace_back("IIII");
+			Items.emplace_back("JJJJ");
+			Items.emplace_back("KKKK");
+			Items.emplace_back("LLLL");
+			Items.emplace_back("MMMM");
+			Items.emplace_back("NNNN");
+
+
+			//static const char* item_current = items[0];
+			static const char* item_current = Items[0];
+
+			{
+				// Expose flags as checkbox for the demo
+				static ImGuiComboFlags flags = ImGuiComboFlags_NoArrowButton;
+
+				// General BeginCombo() API, you have full control over your selection data and display type.
+				// (your selection data could be an index, a pointer to the object, an id for the object, a flag stored in the object itself, etc.)
+
+				if (ImGui::BeginCombo((char*)u8"コンポーネント", item_current, flags)) // The second parameter is the label previewed before opening the combo.
+				{
+					for (int n = 0; n <Items.size(); n++)
+					{
+						bool is_selected = (item_current == Items[n]);
+						if (ImGui::Selectable(Items[n], is_selected))
+							item_current = Items[n];
+						if (is_selected)
+							ImGui::SetItemDefaultFocus();   // Set the initial focus when opening the combo (scrolling + for keyboard navigation support in the upcoming navigation branch)
+					}
+					ImGui::EndCombo();
+				}
+			}
+
+			{
+				Draw_Components(object->Get_Component()->Get_All_Components());
+			}
+
+			static int clicked = 0;
+			if (ImGui::Button("Add Component"))
+			{
+				clicked++;
+				//if (clicked & 1)
+				//{
+				//	ImGui::SameLine();
+				//	ImGui::Text("%s", item_current);
+				//}
+			}
+
+			if (clicked & 1)
+			{
+				ImGui::SameLine();
+				ImGui::Text("%s", item_current);
+			}
 		}
 
 		ImGui::End();
@@ -566,6 +669,20 @@ void EditTransform(const float* cameraView, float* cameraProjection, float* matr
 	ImGuizmo::Manipulate(cameraView, cameraProjection, mCurrentGizmoOperation, ImGuizmo::LOCAL, matrix, NULL, &snap[0], NULL, NULL);
 }
 
+void My_imgui::Draw_Components(const vector<COMPONENT*>& components)
+{
+	ImGui::Spacing();
+	ImGui::Text((char*)u8"コンポーネント");
+	ImGui::Spacing();
+
+	for (const auto& com : components)
+	{
+		ImGui::Spacing();
+		com->Draw_Inspector();
+		ImGui::Spacing();
+	}
+}
+
 void My_imgui::Texture_Import()
 {
 	static bool flag = true;
@@ -605,7 +722,7 @@ void My_imgui::Texture_Import()
 
 				if (1 == check)
 				{
-					TEXTURE_MANEGER::Add(file_name);
+					TEXTURE_MANEGER::Get_Instance()->Add(file_name);
 
 					ImGui::Text((char*)u8"テクスチャが読み込まれました");
 				}
@@ -676,7 +793,7 @@ const char My_imgui::File_Check(const string& file_name)
 		return -1;
 	}
 
-	if (TEXTURE_MANEGER::Get_TextureFile().find(file_name) != TEXTURE_MANEGER::Get_TextureFile().end())
+	if (TEXTURE_MANEGER::Get_Instance()->Get_TextureFile().find(file_name) != TEXTURE_MANEGER::Get_Instance()->Get_TextureFile().end())
 	{
 		// 既に読み込んでいるテクスチャ
 		return -2;
@@ -735,7 +852,7 @@ void My_imgui::Texture_Delete()
 
 				if (-1 != check)
 				{
-					TEXTURE_MANEGER::Unload(file_name);
+					TEXTURE_MANEGER::Get_Instance()->Unload(file_name);
 
 					ImGui::Text((char*)u8"テクスチャが削除されました");
 				}
@@ -834,8 +951,8 @@ void My_imgui::File()
 
 		ImGui::Begin("Texture");
 
-		auto texture = TEXTURE_MANEGER::Get_TextureData_Start();
-		auto end = TEXTURE_MANEGER::Get_TextureData_End();
+		auto texture = TEXTURE_MANEGER::Get_Instance()->Get_TextureData_Start();
+		auto end = TEXTURE_MANEGER::Get_Instance()->Get_TextureData_End();
 
 		for(; texture != end; texture++)
 		{
@@ -864,6 +981,134 @@ void My_imgui::File()
 
 		ImGui::End();
 	}
+}
+
+void My_imgui::Light_Setting()
+{
+	// ライトの設定(ディレクショナルライトではない)
+
+	auto light_manager = CManager::Get_Instance()->Get_Scene()->Get_Light_Manager();
+	auto lights = light_manager->Get_Lights();
+
+	ImGuiWindowFlags window_flags = ImGuiWindowFlags_NoResize;
+
+	ImGui::SetNextWindowSize(ImVec2(500, 500), ImGuiCond_Once);
+
+	ImGui::Begin("Light", nullptr, window_flags);
+
+	if (ImGui::TreeNode("Light Tree"))
+	{
+		ImGuiTreeNodeFlags_ node_flags = ImGuiTreeNodeFlags_None;
+
+		ImGui::Unindent(ImGui::GetTreeNodeToLabelSpacing());
+
+		for (int i = 0; i < lights->size(); i++)
+		{
+			// Disable the default open on single-click behavior and pass in Selected flag according to our selection state.
+
+			//if(1 == lights->at(i).Enable)
+			{
+				bool node_open = ImGui::TreeNodeEx((void*)(intptr_t)i, node_flags, "Light %d", i);
+				if (node_open)
+				{
+					{
+						bool flag = lights->at(i).Enable;
+						float Position[3] = { lights->at(i).Position.x, lights->at(i).Position.y, lights->at(i).Position.z };
+						float Color[3] = { lights->at(i).Color.r, lights->at(i).Color.g, lights->at(i).Color.b };
+						float Radius = lights->at(i).Radius;
+
+						UINT Type = lights->at(i).Type;//
+
+						ImGui::Checkbox("Enable", &flag);
+						ImGui::DragFloat3("Position", Position, 0.01f);
+						ImGui::DragFloat3("Color", Color, 0.01f, 0.f, 1.0f);
+						ImGui::DragFloat("Radius", &Radius, 0.01f, 0.f, 1000.0f);
+
+						////
+						{
+							vector<const char*> Items;
+
+							Items.emplace_back((char*)u8"ポイントライト");
+							Items.emplace_back((char*)u8"スポットライト");
+							Items.emplace_back((char*)u8"無効");
+
+
+							const char* item_current;
+
+							switch (lights->at(i).Type)
+							{
+								case (UINT)LIGHT_TYPE::POINT:
+									item_current = Items[(UINT)LIGHT_TYPE::POINT];
+								break;
+
+								case (UINT)LIGHT_TYPE::SPOT:
+									item_current = Items[(UINT)LIGHT_TYPE::SPOT];
+									break;
+
+								case (UINT)LIGHT_TYPE::NONE:
+									item_current = Items[(UINT)LIGHT_TYPE::NONE];
+									break;
+							}
+
+							bool is_selected = false;
+
+							{
+								static ImGuiComboFlags flags = ImGuiComboFlags_NoArrowButton;
+
+								if (ImGui::BeginCombo((char*)u8"ライトの種類", item_current, flags))
+								{
+									for (int n = 0; n < Items.size(); n++)
+									{
+										//bool is_selected = (item_current == Items[n]);
+										if (ImGui::Selectable(Items[n], is_selected))
+										{
+											item_current = Items[n];
+											is_selected = true;
+										}
+										//if (is_selected)
+										//	ImGui::SetItemDefaultFocus();
+									}
+									ImGui::EndCombo();
+								}
+							}
+
+							if (is_selected)
+							{
+								if (Items[0] == item_current)
+								{
+									lights->at(i).Type = (UINT)LIGHT_TYPE::POINT;
+								}
+
+								if (Items[1] == item_current)
+								{
+									lights->at(i).Type = (UINT)LIGHT_TYPE::SPOT;
+								}
+
+								if (Items[2] == item_current)
+								{
+									lights->at(i).Type = (UINT)LIGHT_TYPE::NONE;
+								}
+							}
+						}
+						////
+
+						lights->at(i).Enable = flag;
+						lights->at(i).Position = XMFLOAT3(Position[0], Position[1], Position[2]);
+						lights->at(i).Color = COLOR(Color[0], Color[1], Color[2], 0.0f);
+						lights->at(i).Radius = Radius;
+					}
+
+					ImGui::TreePop();
+				}
+			}
+
+		}
+
+		ImGui::Indent(ImGui::GetTreeNodeToLabelSpacing());
+		ImGui::TreePop();
+	}
+
+	ImGui::End();
 }
 
 #endif // _DEBUG

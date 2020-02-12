@@ -11,6 +11,8 @@
 
 #include	"Renderer.h"
 
+#include	"camera.h"
+#include	"Debug_Camera.h"
 #include	"manager.h"
 #include	"ShadowMap.h"
 #include	"Scene.h"
@@ -22,20 +24,6 @@
 struct TEXTURE_S {
 	string path;
 	ID3D11ShaderResourceView* Texture = nullptr;
-};
-
-struct Weight {
-	UINT vertex_id;
-	float value;
-};
-
-struct Bone {
-	string name;
-	XMMATRIX matrix;
-	XMMATRIX animation;
-	XMMATRIX offset;
-
-	vector<Weight> weights;
 };
 
 //
@@ -90,8 +78,6 @@ private:
 
 	unordered_map<string, Anim> Animation;
 
-	vector<Bone> Bones;
-
 	ID3D11Buffer* VertexBuffer;
 	ID3D11Buffer* IndexBuffer;
 
@@ -116,49 +102,49 @@ private:
 			{
 				matrix = XMMatrixMultiply(Matrix, parent_matrix);
 
-				auto camera01 = CManager::Get_Scene()->Get_Game_Object<CCamera>("camera");
-				auto camera02 = CManager::Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
+				const auto camera01 = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<CCamera>("camera");
+				const auto camera02 = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
 				
 				// 普通のカメラかデバッグカメラか?
-				if (nullptr != camera01)
+				if (!camera01.expired() && Empty_weak_ptr<CCamera>(camera01))
 				{
 					// シャドウマップ用の描画か?
-					if (CManager::Get_ShadowMap()->Get_Enable())
+					if (CManager::Get_Instance()->Get_ShadowMap()->Get_Enable())
 					{
-						XMMATRIX view = CManager::Get_ShadowMap()->Get_View();
-						XMMATRIX proj = CManager::Get_ShadowMap()->Get_Plojection();
+						XMMATRIX view = CManager::Get_Instance()->Get_ShadowMap()->Get_View();
+						XMMATRIX proj = CManager::Get_Instance()->Get_ShadowMap()->Get_Plojection();
 
 						CRenderer::Set_MatrixBuffer(matrix, view, proj);
 					}
 					else
 					{
-						CRenderer::Set_MatrixBuffer(matrix, camera01->Get_Camera_View(), camera01->Get_Camera_Projection());
+						CRenderer::Set_MatrixBuffer(matrix, camera01.lock()->Get_Camera_View(), camera01.lock()->Get_Camera_Projection());
 
-						CRenderer::Set_MatrixBuffer01(*camera01->Get_Pos());
+						CRenderer::Set_MatrixBuffer01(*camera01.lock()->Get_Pos());
 					}
 				}
 				else
 				{
 					// シャドウマップ用の描画か?
-					if (CManager::Get_ShadowMap()->Get_Enable())
+					if (CManager::Get_Instance()->Get_ShadowMap()->Get_Enable())
 					{
-						XMMATRIX view = CManager::Get_ShadowMap()->Get_View();
-						XMMATRIX proj = CManager::Get_ShadowMap()->Get_Plojection();
+						XMMATRIX view = CManager::Get_Instance()->Get_ShadowMap()->Get_View();
+						XMMATRIX proj = CManager::Get_Instance()->Get_ShadowMap()->Get_Plojection();
 
 						CRenderer::Set_MatrixBuffer(matrix, view, proj);
 					}
 					else
 					{
-						CRenderer::Set_MatrixBuffer(matrix, camera02->Get_Camera_View(), camera02->Get_Camera_Projection());
+						CRenderer::Set_MatrixBuffer(matrix, camera02.lock()->Get_Camera_View(), camera02.lock()->Get_Camera_Projection());
 
-						CRenderer::Set_MatrixBuffer01(*camera02->Get_Pos());
+						CRenderer::Set_MatrixBuffer01(*camera02.lock()->Get_Pos());
 					}
 				}
 			}
 
 			CRenderer::GetDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-			CRenderer::GetDeviceContext()->DrawIndexed(Indices.size(), 0, 0);
+			CRenderer::GetDeviceContext()->DrawIndexed((UINT)Indices.size(), 0, 0);
 		}
 		else
 		{
@@ -168,6 +154,48 @@ private:
 		for (auto child : ChildMeshes)
 		{
 			child.second.Draw_Mesh(matrix);
+		}
+	}
+
+	void Draw_DPP_Mesh(XMMATRIX& parent_matrix) {
+		XMMATRIX matrix;
+
+		if (!Indices.empty())
+		{
+			// 3Dマトリックス設定
+			{
+				matrix = XMMatrixMultiply(Matrix, parent_matrix);
+
+				const auto camera01 = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<CCamera>("camera");
+				const auto camera02 = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
+
+				// 普通のカメラかデバッグカメラ
+				if (!camera01.expired() && Empty_weak_ptr<CCamera>(camera01))
+				{
+					CRenderer::Set_MatrixBuffer(matrix, camera01.lock()->Get_Camera_View(), camera01.lock()->Get_Camera_Projection());
+				}
+				else
+				{
+					CRenderer::Set_MatrixBuffer(matrix, camera02.lock()->Get_Camera_View(), camera02.lock()->Get_Camera_Projection());
+				}
+			}
+
+			CRenderer::SetVertexBuffers(VertexBuffer);
+
+			CRenderer::GetDeviceContext()->IASetIndexBuffer(IndexBuffer, DXGI_FORMAT_R32_UINT, 0);
+
+			CRenderer::GetDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+			CRenderer::GetDeviceContext()->DrawIndexed((UINT)Indices.size(), 0, 0);
+		}
+		else
+		{
+			matrix = XMMatrixMultiply(Matrix, parent_matrix);
+		}
+
+		for (auto child : ChildMeshes)
+		{
+			child.second.Draw_DPP_Mesh(matrix);
 		}
 	}
 
@@ -204,42 +232,42 @@ private:
 
 						world = XMMatrixMultiply(world, parent_matrix);
 
-						auto camera01 = CManager::Get_Scene()->Get_Game_Object<CCamera>("camera");
-						auto camera02 = CManager::Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
+						auto camera01 = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<CCamera>("camera");
+						auto camera02 = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
 
 						// 普通のカメラかデバッグカメラか?
-						if (nullptr != camera01)
+						if (!camera01.expired() && Empty_weak_ptr<CCamera>(camera01))
 						{
 							// シャドウマップ用の描画か?
-							if (CManager::Get_ShadowMap()->Get_Enable())
+							if (CManager::Get_Instance()->Get_ShadowMap()->Get_Enable())
 							{
-								XMMATRIX view = CManager::Get_ShadowMap()->Get_View();
-								XMMATRIX proj = CManager::Get_ShadowMap()->Get_Plojection();
+								XMMATRIX view = CManager::Get_Instance()->Get_ShadowMap()->Get_View();
+								XMMATRIX proj = CManager::Get_Instance()->Get_ShadowMap()->Get_Plojection();
 
 								CRenderer::Set_MatrixBuffer(world, view, proj);
 							}
 							else
 							{
-								CRenderer::Set_MatrixBuffer(world, camera01->Get_Camera_View(), camera01->Get_Camera_Projection());
+								CRenderer::Set_MatrixBuffer(world, camera01.lock()->Get_Camera_View(), camera01.lock()->Get_Camera_Projection());
 
-								CRenderer::Set_MatrixBuffer01(*camera01->Get_Pos());
+								CRenderer::Set_MatrixBuffer01(*camera01.lock()->Get_Pos());
 							}
 						}
 						else
 						{
 							// シャドウマップ用の描画か?
-							if (CManager::Get_ShadowMap()->Get_Enable())
+							if (CManager::Get_Instance()->Get_ShadowMap()->Get_Enable())
 							{
-								XMMATRIX view = CManager::Get_ShadowMap()->Get_View();
-								XMMATRIX proj = CManager::Get_ShadowMap()->Get_Plojection();
+								XMMATRIX view = CManager::Get_Instance()->Get_ShadowMap()->Get_View();
+								XMMATRIX proj = CManager::Get_Instance()->Get_ShadowMap()->Get_Plojection();
 
 								CRenderer::Set_MatrixBuffer(world, view, proj);
 							}
 							else
 							{
-								CRenderer::Set_MatrixBuffer(world, camera02->Get_Camera_View(), camera02->Get_Camera_Projection());
+								CRenderer::Set_MatrixBuffer(world, camera02.lock()->Get_Camera_View(), camera02.lock()->Get_Camera_Projection());
 
-								CRenderer::Set_MatrixBuffer01(*camera02->Get_Pos());
+								CRenderer::Set_MatrixBuffer01(*camera02.lock()->Get_Pos());
 							}
 						}
 
@@ -298,42 +326,42 @@ private:
 
 				world = XMMatrixMultiply(world, parent_matrix);
 
-				auto camera01 = CManager::Get_Scene()->Get_Game_Object<CCamera>("camera");
-				auto camera02 = CManager::Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
+				auto camera01 = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<CCamera>("camera");
+				auto camera02 = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
 
 				// 普通のカメラかデバッグカメラか?
-				if (nullptr != camera01)
+				if (!camera01.expired() && Empty_weak_ptr<CCamera>(camera01))
 				{
 					// シャドウマップ用の描画か?
-					if (CManager::Get_ShadowMap()->Get_Enable())
+					if (CManager::Get_Instance()->Get_ShadowMap()->Get_Enable())
 					{
-						XMMATRIX view = CManager::Get_ShadowMap()->Get_View();
-						XMMATRIX proj = CManager::Get_ShadowMap()->Get_Plojection();
+						XMMATRIX view = CManager::Get_Instance()->Get_ShadowMap()->Get_View();
+						XMMATRIX proj = CManager::Get_Instance()->Get_ShadowMap()->Get_Plojection();
 
 						CRenderer::Set_MatrixBuffer(world, view, proj);
 					}
 					else
 					{
-						CRenderer::Set_MatrixBuffer(world, camera01->Get_Camera_View(), camera01->Get_Camera_Projection());
+						CRenderer::Set_MatrixBuffer(world, camera01.lock()->Get_Camera_View(), camera01.lock()->Get_Camera_Projection());
 
-						CRenderer::Set_MatrixBuffer01(*camera01->Get_Pos());
+						CRenderer::Set_MatrixBuffer01(*camera01.lock()->Get_Pos());
 					}
 				}
 				else
 				{
 					// シャドウマップ用の描画か?
-					if (CManager::Get_ShadowMap()->Get_Enable())
+					if (CManager::Get_Instance()->Get_ShadowMap()->Get_Enable())
 					{
-						XMMATRIX view = CManager::Get_ShadowMap()->Get_View();
-						XMMATRIX proj = CManager::Get_ShadowMap()->Get_Plojection();
+						XMMATRIX view = CManager::Get_Instance()->Get_ShadowMap()->Get_View();
+						XMMATRIX proj = CManager::Get_Instance()->Get_ShadowMap()->Get_Plojection();
 
 						CRenderer::Set_MatrixBuffer(world, view, proj);
 					}
 					else
 					{
-						CRenderer::Set_MatrixBuffer(world, camera02->Get_Camera_View(), camera02->Get_Camera_Projection());
+						CRenderer::Set_MatrixBuffer(world, camera02.lock()->Get_Camera_View(), camera02.lock()->Get_Camera_Projection());
 
-						CRenderer::Set_MatrixBuffer01(*camera02->Get_Pos());
+						CRenderer::Set_MatrixBuffer01(*camera02.lock()->Get_Pos());
 					}
 				}
 			}
@@ -341,11 +369,134 @@ private:
 
 		CRenderer::GetDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-		CRenderer::GetDeviceContext()->DrawIndexed(Indices.size(), 0, 0);
+		CRenderer::GetDeviceContext()->DrawIndexed((UINT)Indices.size(), 0, 0);
 
 		for (auto child : ChildMeshes)
 		{
 			child.second.Draw_Mesh_Animation(world, anime, frame, name1, name2, blend);
+		}
+	}
+
+	void Draw_DPP_Mesh_Animation(XMMATRIX& parent_matrix, unordered_map<string, Anim>& anime, DWORD frame, const string& name1, const string& name2 = string("none"), float blend = 0.0f) {
+		XMMATRIX world;
+
+		// 3Dマトリックス設定
+		{
+			if ("none" == name2)
+			{
+				for (auto i : anime[name1].body)
+				{
+					if (i.node_name == Name)
+					{
+						unsigned int f = frame % i.translate.begin()->time;
+
+						XMFLOAT3 pos = i.translate[f].value;
+						XMMATRIX trans = XMMatrixTranslation(pos.x, pos.y, pos.z);
+
+						f = frame % i.rotation.begin()->time;
+
+						XMFLOAT4 rotation = i.rotation[f].value;
+						XMVECTOR quat = XMLoadFloat4(&rotation);
+
+						world = XMMatrixRotationQuaternion(quat);
+
+						world = XMMatrixMultiply(world, trans);
+
+						world = XMMatrixMultiply(world, parent_matrix);
+
+						auto camera01 = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<CCamera>("camera");
+						auto camera02 = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
+
+						// 普通のカメラかデバッグカメラか?
+						if (!camera01.expired() && Empty_weak_ptr<CCamera>(camera01))
+						{
+								CRenderer::Set_MatrixBuffer(world, camera01.lock()->Get_Camera_View(), camera01.lock()->Get_Camera_Projection());
+						}
+						else
+						{
+							CRenderer::Set_MatrixBuffer(world, camera02.lock()->Get_Camera_View(), camera02.lock()->Get_Camera_Projection());
+						}
+
+						break;
+					}
+				}
+			}
+			else
+			{
+				XMMATRIX trans1, trans2, trans;
+				XMVECTOR quat1, quat2, puat;
+
+				for (auto i : anime[name1].body)
+				{
+					if (i.node_name == Name)
+					{
+						unsigned int f = frame % i.translate.begin()->time;
+
+						XMFLOAT3 pos = i.translate[f].value;
+						trans1 = XMMatrixTranslation(pos.x, pos.y, pos.z);
+
+						f = frame % i.rotation.begin()->time;
+
+						XMFLOAT4 rotation = i.rotation[f].value;
+						quat1 = XMLoadFloat4(&rotation);
+
+						break;
+					}
+				}
+
+				for (auto i : anime[name2].body)
+				{
+					if (i.node_name == Name)
+					{
+						unsigned int f = frame % i.translate.begin()->time;
+
+						XMFLOAT3 pos = i.translate[f].value;
+						trans2 = XMMatrixTranslation(pos.x, pos.y, pos.z);
+
+						f = frame % i.rotation.begin()->time;
+
+						XMFLOAT4 rotation = i.rotation[f].value;
+						quat2 = XMLoadFloat4(&rotation);
+
+						break;
+					}
+				}
+
+				trans = trans1 * (1.0f - blend) + trans2 * blend;
+				puat = XMQuaternionSlerp(quat1, quat2, blend);
+
+				world = XMMatrixRotationQuaternion(puat);
+
+				world = XMMatrixMultiply(world, trans);
+
+				world = XMMatrixMultiply(world, parent_matrix);
+
+				auto camera01 = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<CCamera>("camera");
+				auto camera02 = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
+
+				// 普通のカメラかデバッグカメラか?
+				if (!camera01.expired() && Empty_weak_ptr<CCamera>(camera01))
+				{
+					CRenderer::Set_MatrixBuffer(world, camera01.lock()->Get_Camera_View(), camera01.lock()->Get_Camera_Projection());
+				}
+				else
+				{
+					CRenderer::Set_MatrixBuffer(world, camera02.lock()->Get_Camera_View(), camera02.lock()->Get_Camera_Projection());
+				}
+			}
+		}
+
+		CRenderer::SetVertexBuffers(VertexBuffer);
+
+		CRenderer::GetDeviceContext()->IASetIndexBuffer(IndexBuffer, DXGI_FORMAT_R32_UINT, 0);
+
+		CRenderer::GetDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+		CRenderer::GetDeviceContext()->DrawIndexed((UINT)Indices.size(), 0, 0);
+
+		for (auto child : ChildMeshes)
+		{
+			child.second.Draw_DPP_Mesh_Animation(world, anime, frame, name1, name2, blend);
 		}
 	}
 
@@ -376,7 +527,7 @@ private:
 		{
 			D3D11_BUFFER_DESC ibd;
 			ibd.Usage = D3D11_USAGE_DEFAULT;
-			ibd.ByteWidth = sizeof(UINT) * Indices.size();
+			ibd.ByteWidth = sizeof(UINT) * (UINT)Indices.size();
 			ibd.BindFlags = D3D11_BIND_INDEX_BUFFER;
 			ibd.CPUAccessFlags = 0;
 			ibd.MiscFlags = 0;
@@ -422,21 +573,25 @@ public:
 		Draw_Mesh(matrix);
 	}
 
+	void Draw_DPP(XMMATRIX& matrix) {
+		Draw_DPP_Mesh(matrix);
+	}
+
 	void Draw_Animation(XMMATRIX& matrix, unordered_map<string, Anim>& anime, DWORD frame, const string& name1, const string& name2 = string("none"), float blend = 0.0f) {
 		Draw_Mesh_Animation(matrix, anime, frame, name1, name2, blend);
 	}
 
-	void Update() {
-		
+	void Draw_DPP_Animation(XMMATRIX& matrix, unordered_map<string, Anim>& anime, DWORD frame, const string& name1, const string& name2 = string("none"), float blend = 0.0f) {
+		Draw_DPP_Mesh_Animation(matrix, anime, frame, name1, name2, blend);
 	}
+
+	void Update() {}
 
 	void Uninit() {
 		SAFE_RELEASE(VertexBuffer);
 		SAFE_RELEASE(IndexBuffer);
 
 		Indices.clear();
-
-		Bones.clear();
 
 		for (auto tex : Textures)
 		{
@@ -475,10 +630,6 @@ public:
 
 		return true;
 	}
-
-	/*vector<Bone>& Get_Bone() {
-		return Bones;
-	}*/
 };
 
 #endif

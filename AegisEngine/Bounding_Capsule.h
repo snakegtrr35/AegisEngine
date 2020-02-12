@@ -28,11 +28,12 @@ private:
 	void Init_Ring();
 
 public:
-	BOUNDING_CAPSULE() : Radius(0.f), IndexNum(0) {}
+	BOUNDING_CAPSULE() {}
 	~BOUNDING_CAPSULE() { Uninit(); }
 
 	void Init() override;
 	void Draw() override;
+	void Draw_DPP() override {}
 	void Update(float delta_time) override;
 	void Uninit() override;
 
@@ -41,6 +42,14 @@ public:
 	void Set_Radius(const float radius);
 
 	const float Get_Radius();
+
+	template<typename Archive>
+	void serialize(Archive& ar)
+	{
+		ar(cereal::base_class<BOUNDING>(this));
+		ar(Radius);
+		ar(Height);
+	}
 };
 
 CEREAL_REGISTER_TYPE(BOUNDING_CAPSULE)

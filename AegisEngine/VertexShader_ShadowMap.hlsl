@@ -1,4 +1,4 @@
-
+#include    "Commom_Hlsl.h"
 
 //*****************************************************************************
 // 定数バッファ
@@ -15,22 +15,19 @@ cbuffer ConstantBuffer : register(b0)
 //=============================================================================
 // 頂点シェーダ
 //=============================================================================
-void main( in float4 inPosition     : POSITION0,
-		   in float4 inNormal       : NORMAL0,
-		   in float4 inDiffuse      : COLOR0,
-		   in float2 inTexCoord     : TEXCOORD0,
-           
-           out float4 outPosition   : SV_POSITION,
-           out float4 outPos        : POSITION1)
+PS_IN_SHADOW main(VS_IN Input)
 {
+    PS_IN_SHADOW Output = (PS_IN_SHADOW) 0;
+    
     matrix wvp;
 
     wvp = mul(World, View);
     wvp = mul(wvp, Projection);
     
-    inPosition.w = 1.0f;
+    Input.Position.w = 1.0;
+    Output.Position = mul(Input.Position, wvp);
     
-    outPosition = mul(inPosition, wvp);
+    Output.Pos = Output.Position;
     
-    outPos = mul(inPosition, wvp);
+    return Output;
 }

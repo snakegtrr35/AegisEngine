@@ -48,7 +48,6 @@ struct BONE
 
 const constexpr UINT BONE_MAX = 256;
 
-const constexpr float ANIMETION_FRAME = 1.f / 60.0f;		// 60FPS
 
 /*** FBXmodelƒNƒ‰ƒX ***/
 class FBXmodel 
@@ -76,6 +75,7 @@ private:
 
 	//unordered_map<string, aiQuaternion> m_NodeRotation;
 	//unordered_map<string, aiVector3D> m_NodePosition;
+
 	unordered_map<string, UINT> m_BoneIndex;
 
 	unordered_map<string, UINT> m_TextureIdMap;
@@ -85,6 +85,7 @@ private:
 	unique_ptr<ID3D11Buffer, Release> MatrixBuffer;
 
 	void DrawMesh(const aiNode* Node, const XMMATRIX& Matrix);
+	void DrawMesh_DPP(const aiNode* Node, const XMMATRIX& Matrix);
 	void CreateBone(const aiNode* Node);
 	void UpdateBoneMatrix(const aiNode* Node, const XMMATRIX& Matrix);
 	void SetBoneMatrix(const vector<XMMATRIX>& matrix);
@@ -94,11 +95,14 @@ private:
 	int getTextureIndex(aiString* str);
 	ID3D11ShaderResourceView* getTextureFromModel(const aiScene* scene, int textureindex);
 
+	void set_bone(const aiNode* Node, vector<XMMATRIX>& v);
+
 public:
 	FBXmodel() {}
 	~FBXmodel() {}
 
 	void Draw(XMMATRIX &Matrix);
+	void Draw_DPP(XMMATRIX& Matrix);
 	bool Load(const string& FileName);
 	void UnLoad();
 	void Update(float delta_time);

@@ -5,12 +5,6 @@
 
 #include	"main.h"
 
-#include	<assimp/Importer.hpp>
-#include	<assimp/cimport.h>
-#include	<assimp/scene.h>
-#include	<assimp/postprocess.h>
-#include	<assimp/matrix4x4.h>
-
 //! 頂点構造体
 struct VERTEX_3D
 {
@@ -30,108 +24,6 @@ struct VERTEX_3D_NORMAL
 	XMFLOAT4 Diffuse;
 	XMFLOAT2 TexCoord;
 };
-
-
-//! 色構造体
-struct COLOR
-{
-	float r;
-	float g;
-	float b;
-	float a;
-
-	COLOR() : r(1.0f), g(1.0f), b(1.0f), a(1.0f) {}
-	COLOR( float _r, float _g, float _b, float _a )
-	{
-		r = _r;
-		g = _g;
-		b = _b;
-		a = _a;
-	}
-
-	// 代入演算( = )
-	COLOR& operator = (const COLOR& color)
-	{
-		r = color.r; g = color.g; b = color.b, a = color.a;
-		return *this;
-	}
-
-	// 和( + )
-	const COLOR operator + (const COLOR& color) const
-	{
-		return COLOR(r + color.r, g + color.g, b + color.b, a + color.a);
-	}
-
-	// 差( - )
-	const COLOR operator - (const COLOR& color) const
-	{
-		return COLOR(r - color.r, g - color.g, b - color.b, a - color.a);
-	}
-
-	// 積( * )
-	const COLOR operator * (const COLOR& color) const
-	{
-		return COLOR(r * color.r, g * color.g, b * color.b, a * color.a);
-	}
-
-	// 商( / )
-	const COLOR operator / (const COLOR& color) const
-	{
-		return COLOR(r / color.r, g / color.g, b / color.b, a / color.a);
-	}
-
-	// 自身に対する和( += ) 
-	COLOR& operator += (const COLOR& color)
-	{
-		r += color.r; g += color.g;	b += color.b; a += color.a;
-		return *this;
-	}
-
-	// 自身に対する差( -= ) 
-	COLOR& operator -= (const COLOR& color)
-	{
-		r -= color.r; g -= color.g;	b -= color.b; a -= color.a;
-		return *this;
-	}
-
-	// 自身に対する積( *= ) 
-	COLOR& operator *= (const COLOR& color)
-	{
-		r *= color.r; g *= color.g;	b *= color.b; a *= color.a;
-		return *this;
-	}
-
-	// 自身に対する商( /= ) 
-	COLOR& operator /= (const COLOR& color)
-	{
-		r /= color.r; g /= color.g;	b /= color.b; a /= color.a;
-		return *this;
-	}
-
-	bool operator !=(const COLOR& color)
-	{
-		if (r != color.r) return true;
-		if (g != color.g) return true;
-		if (b != color.b) return true;
-		if (a != color.a) return true;
-		return false;
-	}
-
-	bool operator ==(const COLOR& color)
-	{
-		if (r != color.r) return false;
-		if (g != color.g) return false;
-		if (b != color.b) return false;
-		if (a != color.a) return false;
-		return true;
-	}
-};
-
-template<typename Archive>
-void serialize(Archive& ar, COLOR& color)
-{
-	ar(color.r, color.g, color.b, color.a);
-}
 
 //! マテリアル構造体
 struct MATERIAL
@@ -186,20 +78,23 @@ typedef struct {
 	float Height;
 }TEXT_LAYOUT;
 
+enum class SHADER_INDEX_V {
+	DEFAULT,
+	ANIMATION,
+	SHADOW_MAP,
+	SHADOW_MAP_ANIMATION,
+	INSTANCING,
+	DEPTH_PRE,
+	DEPTH_PRE_ANIME,
+	MAX,
+};
+
 enum class SHADER_INDEX_P {
 	DEFAULT,
 	NO_TEXTURE,
 	NO_LIGHT,
 	SHADOW_MAP,
-	GEOMETRY,
-	LIGHT,
-};
-
-enum class SHADER_INDEX_V {
-	DEFAULT,
-	SHADOW_MAP,
-	ANIMATION,
-	GEOMETRY,
+	MAX
 };
 
 class CVertexBuffer;
@@ -215,17 +110,11 @@ struct CONSTANT_02 {
 	XMFLOAT4 Camera_Pos;	// カメラの座標
 };
 
-enum RENDERING_PASS
-{
-	GEOMETRY = 0,
-	LIGHTING,
-	REDRING,
-	MAX_PASS
-};
-
 enum INPUTLAYOUT {
 	DEFAULT = 0,
 	ANIMATION,
+	INSTANCING,
+	MAX
 };
 
 /**
@@ -236,64 +125,64 @@ class CRenderer {
 private:
 
 	//! DirectXのフューチャーレベル
-	static D3D_FEATURE_LEVEL		m_FeatureLevel;
+	static D3D_FEATURE_LEVEL									m_FeatureLevel;
 	//! DirectX11のデバイス
-	static ID3D11Device*			m_D3DDevice;
+	static ID3D11Device*										m_D3DDevice;
 	//! DirectX11のデバイスコンテキスト
-	static ID3D11DeviceContext*		m_ImmediateContext;
+	static ID3D11DeviceContext*									m_ImmediateContext;
 	//! スワップチェイン
-	static IDXGISwapChain1*			m_SwapChain;
+	static IDXGISwapChain1*										m_SwapChain;
 	//! レンダーターゲットビュー
-	static ID3D11RenderTargetView*	m_RenderTargetView;
+	static ID3D11RenderTargetView*								m_RenderTargetView;
 
 	static unique_ptr<ID3D11RenderTargetView, Release>			RenderTargetView[3];
 	static unique_ptr<ID3D11ShaderResourceView, Release>		ShaderResourceView[3];
 
 	//! デプスステンシル
-	static ID3D11DepthStencilView*	m_DepthStencilView;
+	static ID3D11DepthStencilView*								m_DepthStencilView;
 	//! Direct2Dのデバイス
-	static ID2D1Device*				m_D2DDevice;
+	static ID2D1Device*											m_D2DDevice;
 	//! Direct2Dのデバイスコンテキスト
-	static ID2D1DeviceContext*		m_D2DDeviceContext;
+	static ID2D1DeviceContext*									m_D2DDeviceContext;
 	//! Direct2Dのターゲットビットマップ
-	static ID2D1Bitmap1*			m_D2DTargetBitmap;
+	static ID2D1Bitmap1*										m_D2DTargetBitmap;
 	//! Dxgi
-	static IDXGIDevice1*			m_dxgiDev;
+	static IDXGIDevice1*										m_dxgiDev;
 
 	//! テキストフォーマット
-	static IDWriteTextFormat*		m_DwriteTextFormat;
+	static IDWriteTextFormat*									m_DwriteTextFormat;
 	//! テキストレイアウト
-	static IDWriteTextLayout*		m_TextLayout;
+	static IDWriteTextLayout*									m_TextLayout;
 	//! Direct2Dのライトファクトリー
-	static IDWriteFactory*			m_DwriteFactory;
+	static IDWriteFactory*										m_DwriteFactory;
 
-	static ID3D11VertexShader*		m_VertexShader[4];
-	static ID3D11PixelShader*		m_PixelShader[6];
+	static unordered_map<SHADER_INDEX_V, ID3D11VertexShader*>	m_VertexShader;
+	static unordered_map<SHADER_INDEX_P, ID3D11PixelShader*>	m_PixelShader;
 
-	static ID3D11DepthStencilState* m_DepthStateEnable;
-	static ID3D11DepthStencilState* m_DepthStateDisable;
-	static ID3D11RasterizerState*	m_RasterizerState;
+	static ID3D11DepthStencilState*								m_DepthStateEnable;
+	static ID3D11DepthStencilState*								m_DepthStateDisable;
+	static ID3D11RasterizerState*								m_RasterizerState;
+
+	static unique_ptr<ID3D11SamplerState, Release>				m_SamplerState;
 
 	//! 頂点レイアウト
-	static ID3D11InputLayout*		m_VertexLayout[2];
+	static ID3D11InputLayout*									m_VertexLayout[3];
 	//! マテリアルバッファ
-	static ID3D11Buffer*			m_MaterialBuffer;
+	static ID3D11Buffer*										m_MaterialBuffer;
 	//! ライトバッファ
-	static ID3D11Buffer*			m_LightBuffer;
+	static ID3D11Buffer*										m_LightBuffer;
 	//! ボーン情報バッファ
-	static ID3D11Buffer*			m_Bone_Matrix_Buffer;
+	static ID3D11Buffer*										m_Bone_Matrix_Buffer;
 	//! コンスタントバッファ
-	static ID3D11Buffer*			m_ConstantBuffer;
+	static ID3D11Buffer*										m_ConstantBuffer;
 	
-	static ID3D11Buffer*			m_ConstantBuffer_02;
+	static ID3D11Buffer*										m_ConstantBuffer_02;
 
 	//! スタンバイモードフラグ
-	static bool						Stand_By_Enable;
+	static bool													Stand_By_Enable;
 
 	// ライト
 	static LIGHT m_Light;//
-
-	static RENDERING_PASS Pass;
 
 	/**
 	* @brief Direct3Dの初期化
@@ -354,6 +243,9 @@ public:
 		cons.Camera_Pos.w = 0.0f;
 
 		CRenderer::GetDeviceContext()->UpdateSubresource(m_ConstantBuffer_02, 0, NULL, &cons, 0, 0);
+
+		m_ImmediateContext->VSSetConstantBuffers(5, 1, &m_ConstantBuffer_02);
+		m_ImmediateContext->PSSetConstantBuffers(5, 1, &m_ConstantBuffer_02);
 	}
 
 	/**
@@ -387,6 +279,12 @@ public:
 	* @details 頂点バッファ設定を設定する
 	*/
 	static void SetVertexBuffers( ID3D11Buffer* VertexBuffer );
+
+	/**
+	* @brief 頂点バッファの設定(インスタンシング用)
+	* @details インスタンシング用の頂点バッファ設定を設定する
+	*/
+	static void SetVertexBuffers(ID3D11Buffer* IndexBuffer, ID3D11Buffer* InstancingBuffer, UINT size);
 
 	/**
 	* @brief インデックスバッファの設定
@@ -472,8 +370,6 @@ public:
 	static void SetPass_Geometry();
 
 	static bool Create();
-
-	static RENDERING_PASS Get_Rendering_Pass();
 
 	static ID3D11ShaderResourceView* Get() {
 		return ShaderResourceView[0].get();

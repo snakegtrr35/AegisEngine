@@ -57,6 +57,9 @@
     <Filter Include="ソース ファイル\System\Clustered">
       <UniqueIdentifier>{b0bb7ab5-4d54-4096-896d-c4d09202ba2f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="リソース ファイル\NewFilter1">
+      <UniqueIdentifier>{f2e29b43-ef72-4b28-b0b5-b8270fcc76a2}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="imgui\imgui.cpp">
@@ -100,9 +103,6 @@
     </ClCompile>
     <ClCompile Include="imgui\imgui_stdlib.cpp">
       <Filter>Imgui</Filter>
-    </ClCompile>
-    <ClCompile Include="Ball.cpp">
-      <Filter>ソース ファイル\GameObject</Filter>
     </ClCompile>
     <ClCompile Include="Billboard.cpp">
       <Filter>ソース ファイル\GameObject</Filter>
@@ -167,9 +167,6 @@
     <ClCompile Include="Field.cpp">
       <Filter>ソース ファイル\GameObject</Filter>
     </ClCompile>
-    <ClCompile Include="model.cpp">
-      <Filter>ソース ファイル\GameObject</Filter>
-    </ClCompile>
     <ClCompile Include="Score.cpp">
       <Filter>ソース ファイル\GameObject</Filter>
     </ClCompile>
@@ -181,9 +178,6 @@
     </ClCompile>
     <ClCompile Include="Mesh_Field.cpp">
       <Filter>ソース ファイル\GameObject\Mesh</Filter>
-    </ClCompile>
-    <ClCompile Include="Circle_Shadow.cpp">
-      <Filter>ソース ファイル\GameObject</Filter>
     </ClCompile>
     <ClCompile Include="Menu_Component.cpp">
       <Filter>ソース ファイル\System</Filter>
@@ -239,14 +233,26 @@
     <ClCompile Include="Bounding_Capsule.cpp">
       <Filter>ソース ファイル\GameObject\Bounding</Filter>
     </ClCompile>
-    <ClCompile Include="Clustered.cpp">
-      <Filter>ソース ファイル\System\Clustered</Filter>
-    </ClCompile>
     <ClCompile Include="ForwardPlus.cpp">
       <Filter>ソース ファイル\System\Clustered</Filter>
     </ClCompile>
     <ClCompile Include="FBXmodel.cpp">
       <Filter>ソース ファイル\GameObject</Filter>
+    </ClCompile>
+    <ClCompile Include="Bounding_Frustum.cpp">
+      <Filter>ソース ファイル\GameObject\Bounding</Filter>
+    </ClCompile>
+    <ClCompile Include="Light.cpp">
+      <Filter>ソース ファイル\System</Filter>
+    </ClCompile>
+    <ClCompile Include="Sprite_Animation.cpp">
+      <Filter>ソース ファイル\GameObject</Filter>
+    </ClCompile>
+    <ClCompile Include="Scene_Manager.cpp">
+      <Filter>ソース ファイル\System\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Bill.cpp">
+      <Filter>ソース ファイル</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -373,9 +379,6 @@
     <ClInclude Include="ModelLoader.h">
       <Filter>ソース ファイル\GameObject</Filter>
     </ClInclude>
-    <ClInclude Include="model.h">
-      <Filter>ソース ファイル\GameObject</Filter>
-    </ClInclude>
     <ClInclude Include="Mesh.h">
       <Filter>ソース ファイル\GameObject</Filter>
     </ClInclude>
@@ -391,13 +394,7 @@
     <ClInclude Include="Enemy.h">
       <Filter>ソース ファイル\GameObject</Filter>
     </ClInclude>
-    <ClInclude Include="Circle_Shadow.h">
-      <Filter>ソース ファイル\GameObject</Filter>
-    </ClInclude>
     <ClInclude Include="Bullet.h">
-      <Filter>ソース ファイル\GameObject</Filter>
-    </ClInclude>
-    <ClInclude Include="Ball.h">
       <Filter>ソース ファイル\GameObject</Filter>
     </ClInclude>
     <ClInclude Include="Billboard.h">
@@ -442,15 +439,44 @@
     <ClInclude Include="Bounding_Capsule.h">
       <Filter>ソース ファイル\GameObject\Bounding</Filter>
     </ClInclude>
-    <ClInclude Include="Clustered.h">
-      <Filter>ソース ファイル\System\Clustered</Filter>
-    </ClInclude>
     <ClInclude Include="ForwardPlus.h">
       <Filter>ソース ファイル\System\Clustered</Filter>
     </ClInclude>
     <ClInclude Include="FBXmodel.h">
       <Filter>ソース ファイル\GameObject</Filter>
     </ClInclude>
+    <ClInclude Include="Bounding_Frustum.h">
+      <Filter>ソース ファイル\GameObject\Bounding</Filter>
+    </ClInclude>
+    <ClInclude Include="Light.h">
+      <Filter>ソース ファイル\System</Filter>
+    </ClInclude>
+    <ClInclude Include="Color.h">
+      <Filter>ソース ファイル\System</Filter>
+    </ClInclude>
+    <ClInclude Include="Commom_Hlsl.h">
+      <Filter>リソース ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Sprite_Animation.h">
+      <Filter>ソース ファイル\GameObject</Filter>
+    </ClInclude>
+    <ClInclude Include="Game.h">
+      <Filter>ソース ファイル\System\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Title.h">
+      <Filter>ソース ファイル\System\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene_Manager.h">
+      <Filter>ソース ファイル\System\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Result.h">
+      <Filter>ソース ファイル\System\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Main_Menu.h">
+      <Filter>ソース ファイル\System\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Bill.h" />
+    <ClInclude Include="Component_Manager.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="pixelShader.hlsl">
@@ -465,9 +491,6 @@
     <FxCompile Include="PixelShader_ShadowMap.hlsl">
       <Filter>リソース ファイル\PixelShader</Filter>
     </FxCompile>
-    <FxCompile Include="PixelShader1.hlsl">
-      <Filter>リソース ファイル\PixelShader</Filter>
-    </FxCompile>
     <FxCompile Include="VertexShader_ShadowMap.hlsl">
       <Filter>リソース ファイル\VertexShader</Filter>
     </FxCompile>
@@ -477,23 +500,32 @@
     <FxCompile Include="VertexShader_Animation.hlsl">
       <Filter>リソース ファイル\VertexShader</Filter>
     </FxCompile>
-    <FxCompile Include="PixelShader_Geometry.hlsl">
-      <Filter>リソース ファイル\PixelShader</Filter>
-    </FxCompile>
-    <FxCompile Include="VertexShader_Geometry.hlsl">
+    <FxCompile Include="VertexShader_ShadowMap_Anime.hlsl">
       <Filter>リソース ファイル\VertexShader</Filter>
     </FxCompile>
-    <FxCompile Include="ComputeShader_ComputeFrustums.hlsl">
-      <Filter>リソース ファイル</Filter>
+    <FxCompile Include="CommonHeader.h">
+      <Filter>リソース ファイル\NewFilter1</Filter>
     </FxCompile>
-    <FxCompile Include="CommonInclude.hlsl">
-      <Filter>リソース ファイル</Filter>
+    <FxCompile Include="ParallelReduction.hlsl">
+      <Filter>リソース ファイル\NewFilter1</Filter>
     </FxCompile>
-    <FxCompile Include="ComputeShader_LightCulling.hlsl">
-      <Filter>リソース ファイル</Filter>
+    <FxCompile Include="TilingCommonHeader.h">
+      <Filter>リソース ファイル\NewFilter1</Filter>
     </FxCompile>
-    <FxCompile Include="PixelShader_Created.hlsl">
-      <Filter>リソース ファイル\PixelShader</Filter>
+    <FxCompile Include="TilingForward.hlsl">
+      <Filter>リソース ファイル\NewFilter1</Filter>
+    </FxCompile>
+    <FxCompile Include="VertexShader_Animation_Depth_Pre_Pass.hlsl">
+      <Filter>リソース ファイル\NewFilter1</Filter>
+    </FxCompile>
+    <FxCompile Include="VertexShader_Depth_Pre_Pass.hlsl">
+      <Filter>リソース ファイル\NewFilter1</Filter>
+    </FxCompile>
+    <FxCompile Include="VertexShader_Instancing.hlsl">
+      <Filter>リソース ファイル\VertexShader</Filter>
+    </FxCompile>
+    <FxCompile Include="Light_hlsl.h">
+      <Filter>リソース ファイル</Filter>
     </FxCompile>
   </ItemGroup>
   <ItemGroup>

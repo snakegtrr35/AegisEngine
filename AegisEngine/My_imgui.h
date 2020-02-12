@@ -7,6 +7,8 @@
 
 #include	"main.h"
 
+class COMPONENT;
+
 class My_imgui{
 private:
 	bool show_demo_window;
@@ -21,6 +23,8 @@ private:
 
 	bool Setting_Enable;
 
+	bool Mouse_Over_Enable;
+
 	void Texture_Import();
 	const char File_Check(const string& file_name);
 
@@ -30,11 +34,17 @@ private:
 
 	void File();
 
+	void Light_Setting();
+
+	void Draw_Inspector(const string& name);
+
+	void Draw_Components(const vector<COMPONENT*>& components);
+
 public:
 	My_imgui() : show_demo_window(false), show_another_window(false), show_default_window(false),
 				 Texture_Import_Enable(false), Texture_Delete_Enable(false), Setting_Enable(false),
 				 clear_color(ImVec4(0.45f, 0.55f, 0.60f, 1.00f)),
-				 f(0.0f), counter(0) {}
+				 f(0.0f), counter(0), Mouse_Over_Enable(false) {}
 
 	~My_imgui() {}
 
@@ -46,9 +56,9 @@ public:
 	void Begin();
 	void End();
 	void Render(void);
-};
 
-void Draw_Inspector(const string& name);
+	const bool Get_Mouse_Over_Enable();
+};
 
 static void HelpMarker(const char* desc)
 {

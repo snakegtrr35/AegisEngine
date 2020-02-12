@@ -67,3 +67,18 @@ VECTOR3 Math::VECTOR3::Transform(const VECTOR3& v, const class Quaternion& q)
 
 	return retVal;
 }
+
+XMFLOAT3 operator+(const XMFLOAT3& left, const XMFLOAT3 right)
+{
+	return XMFLOAT3(left.x + right.x, left.y + right.y, left.z + right.z);
+}
+
+XMFLOAT3 operator*(const XMFLOAT3& left, const float s)
+{
+	return XMFLOAT3(left.x * s, left.y * s, left.z * s);
+}
+
+XMFLOAT4 operator*(const XMFLOAT4& left, const float s)
+{
+	return XMFLOAT4(left.x * s, left.y * s, left.z * s, left.w * s);
+}

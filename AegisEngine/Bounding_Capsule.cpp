@@ -1,4 +1,6 @@
 #include	"Bounding_Capsule.h"
+#include	"camera.h"
+#include	"Debug_Camera.h"
 #include	"manager.h"
 #include	"Scene.h"
 #include	"ShadowMap.h"
@@ -17,7 +19,7 @@ void BOUNDING_CAPSULE::Init()
 
 void BOUNDING_CAPSULE::Draw()
 {
-	if (false == CManager::Get_ShadowMap()->Get_Enable() && RENDERING_PASS::REDRING == CRenderer::Get_Rendering_Pass())
+	if (false == CManager::Get_Instance()->Get_ShadowMap()->Get_Enable())
 	{
 		XMFLOAT3 pos(Position.x, Position.y, Position.z);
 		XMFLOAT3 rotation(Rotation.x, Rotation.y, Rotation.z);
@@ -329,23 +331,23 @@ void BOUNDING_CAPSULE::Draw_Semicircle(const XMFLOAT3& position, const XMFLOAT3&
 	// ƒgƒ|ƒƒW‚ÌÝ’è
 	CRenderer::GetDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_LINESTRIP);
 
-	auto camera01 = CManager::Get_Scene()->Get_Game_Object<CCamera>("camera");
-	auto camera02 = CManager::Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
+	const auto camera01 = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<CCamera>("camera");
+	const auto camera02 = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
 
 	XMMATRIX world = XMMatrixRotationRollPitchYaw(XMConvertToRadians(rotation.x), XMConvertToRadians(rotation.y), XMConvertToRadians(rotation.z));
 	world *= XMMatrixTranslation(position.x, position.y, position.z);
 
-	if (nullptr != camera01)
+	if (!camera01.expired() && Empty_weak_ptr<CCamera>(camera01))
 	{
-		CRenderer::Set_MatrixBuffer(world, camera01->Get_Camera_View(), camera01->Get_Camera_Projection());
+		CRenderer::Set_MatrixBuffer(world, camera01.lock()->Get_Camera_View(), camera01.lock()->Get_Camera_Projection());
 
-		CRenderer::Set_MatrixBuffer01(*camera01->Get_Pos());
+		CRenderer::Set_MatrixBuffer01(*camera01.lock()->Get_Pos());
 	}
 	else
 	{
-		CRenderer::Set_MatrixBuffer(world, camera02->Get_Camera_View(), camera02->Get_Camera_Projection());
+		CRenderer::Set_MatrixBuffer(world, camera02.lock()->Get_Camera_View(), camera02.lock()->Get_Camera_Projection());
 
-		CRenderer::Set_MatrixBuffer01(*camera02->Get_Pos());
+		CRenderer::Set_MatrixBuffer01(*camera02.lock()->Get_Pos());
 	}
 
 	CRenderer::GetDeviceContext()->DrawIndexed(IndexNum, 0, 0);
@@ -389,21 +391,20 @@ void BOUNDING_CAPSULE::Draw_Ring(const XMFLOAT3& position, const XMFLOAT3& rotat
 		XMMATRIX world = XMMatrixRotationRollPitchYaw(XMConvertToRadians(rotation.x), XMConvertToRadians(rotation.y), XMConvertToRadians(rotation.z));
 		world *= XMMatrixTranslation(position.x, position.y, position.z);
 
-		auto camera01 = CManager::Get_Scene()->Get_Game_Object<CCamera>("camera");
-		auto camera02 = CManager::Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
+		const auto camera01 = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<CCamera>("camera");
+		const auto camera02 = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
 
-		if (nullptr != camera01)
-
+		if (!camera01.expired() && Empty_weak_ptr<CCamera>(camera01))
 		{
-			CRenderer::Set_MatrixBuffer(world, camera01->Get_Camera_View(), camera01->Get_Camera_Projection());
+			CRenderer::Set_MatrixBuffer(world, camera01.lock()->Get_Camera_View(), camera01.lock()->Get_Camera_Projection());
 
-			CRenderer::Set_MatrixBuffer01(*camera01->Get_Pos());
+			CRenderer::Set_MatrixBuffer01(*camera01.lock()->Get_Pos());
 		}
 		else
 		{
-			CRenderer::Set_MatrixBuffer(world, camera02->Get_Camera_View(), camera02->Get_Camera_Projection());
+			CRenderer::Set_MatrixBuffer(world, camera02.lock()->Get_Camera_View(), camera02.lock()->Get_Camera_Projection());
 
-			CRenderer::Set_MatrixBuffer01(*camera02->Get_Pos());
+			CRenderer::Set_MatrixBuffer01(*camera02.lock()->Get_Pos());
 		}
 	}
 

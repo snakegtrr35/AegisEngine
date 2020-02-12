@@ -12,11 +12,12 @@ private:
 	//XMFLOAT3 Radius;
 
 public:
-	BOUNDING_OBB();
+	BOUNDING_OBB() {}
 	~BOUNDING_OBB();
 
 	void Init() override;
 	void Draw() override;
+	void Draw_DPP() override {}
 	void Update(float delta_time) override;
 	void Uninit() override;
 

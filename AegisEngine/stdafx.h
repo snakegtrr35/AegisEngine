@@ -19,11 +19,12 @@
 #undef NOMINMAX
 #include	<assert.h>
 
-#include	"common.h"
-
 #include	<DirectXMath.h>
 #include	<directxcollision.h>
 using namespace DirectX;
+
+#include	"common.h"
+#include	"Color.h"
 
 #include	"Math.h"
 using namespace Math;
@@ -49,6 +50,7 @@ using namespace Math;
 #include	<cereal/types/polymorphic.hpp>
 
 #include	<cereal/types/memory.hpp>
+#include	<cereal/types/array.hpp>
 #include	<cereal/types/list.hpp>
 #include	<cereal/types/vector.hpp>
 #include	<cereal/types/map.hpp>
@@ -64,6 +66,7 @@ using namespace Math;
 #ifndef INCLUDE
 #define INCLUDE
 
+#include	<array>
 #include	<list>
 #include	<vector>
 #include	<map>
@@ -82,6 +85,8 @@ using namespace Math;
 #include	<chrono>
 #include	<filesystem>
 #include	<numeric>
+#include	<thread>
+#include	<mutex>
 
 #include	<time.h>
 

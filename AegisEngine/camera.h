@@ -41,6 +41,7 @@ public:
 	void Uninit() override;
 	void Update(float delta_time) override;
 	void Draw() override;
+	void Draw_DPP() override;
 
 	static CCamera* const Get_Camera() {
 		return pCamera;

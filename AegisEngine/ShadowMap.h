@@ -20,23 +20,21 @@ private:
 	};
 
 	//! デプスステンシルビュー
-	unique_ptr<ID3D11DepthStencilView, Release>			DepthStencilView;
+	unique_ptr <ID3D11DepthStencilView, Release>			DepthStencilView;
 
 	//! シェーダーリソースビュー
-	unique_ptr<ID3D11ShaderResourceView, Release>		ShaderResourceView;
-	unique_ptr<ID3D11ShaderResourceView, Release>		SRV;
-
-	unique_ptr < ID3D11BlendState, Release>				BlendState;
+	unique_ptr <ID3D11ShaderResourceView, Release>		ShaderResourceView;
+	unique_ptr <ID3D11ShaderResourceView, Release>		SRV;
 
 	//! ラスタライザステート
-	unique_ptr < ID3D11RasterizerState, Release>		RasterizerState;
+	unique_ptr <ID3D11RasterizerState, Release>		RasterizerState;
 	//! サンプラー
 	unique_ptr < ID3D11SamplerState, Release>			Sampler;
 	//! コンスタントバッファ
-	unique_ptr < ID3D11Buffer, Release>					ShadowBuffer;
+	unique_ptr <ID3D11Buffer, Release>					ShadowBuffer;
 	CONSTANT_SHADOW_MAP									Shadow;
 
-	unique_ptr < ID3D11Buffer, Release>					LightBuffer;
+	unique_ptr <ID3D11Buffer, Release>					LightBuffer;
 	//! 
 	XMFLOAT3											LightPos;
 	//!
@@ -52,10 +50,10 @@ private:
 
 	unique_ptr<ID3D11RenderTargetView, Release> RenderTargetView;
 
-	GAME_OBJECT* Target;
+	weak_ptr<GAME_OBJECT> Target;
 
-	static float WIDTH;
-	static float HEIGHT;
+	static UINT WIDTH;
+	static UINT HEIGHT;
 
 	void Set_LightPos(const XMFLOAT3& pos);
 
@@ -94,7 +92,7 @@ public:
 		return ShaderResourceView.get();
 	}
 
-	void Set_Target(GAME_OBJECT* object);
+	void Set_Target(const weak_ptr<GAME_OBJECT>& object);
 
 	void Set();
 };

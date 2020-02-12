@@ -1,21 +1,23 @@
 #include	"Texture_Manager.h"
 #include	"Renderer.h"
+#include	"manager.h"
 
 #include	"Library/DirectXTex/WICTextureLoader.h"
 #include	"Library/DirectXTex/DDSTextureLoader.h"
 
-unordered_map<string, string>			TEXTURE_MANEGER::Default_Texture_File;
-unordered_map<string, TEXTURE_FILE>		TEXTURE_MANEGER::TextureFile;
-unordered_map<string, TEXTURE_DATA>		TEXTURE_MANEGER::TextureData;
+unique_ptr<TEXTURE_MANEGER> TEXTURE_MANEGER::Texture_Manager;
 
 
 void TEXTURE_MANEGER::Init()
 {
+	if (nullptr == Texture_Manager.get())
+	{
+		Texture_Manager = make_unique<TEXTURE_MANEGER>();
+	}
+
 	bool flag;
 
 	{
-		TEXTURE_MANEGER t;
-
 		std::ifstream file("texture.dat", std::ios::binary);
 
 		flag = file.is_open();
@@ -23,26 +25,24 @@ void TEXTURE_MANEGER::Init()
 		if (flag)
 		{
 			cereal::BinaryInputArchive archive(file);
-			archive(t);
+			archive(*Texture_Manager.get());
 		}
 	}
 
 	// デフォルトの画像データの読み込み
-	Default_Load(flag);
+	Texture_Manager->Default_Load(flag);
 
 	// 画像データの読み込み
-	Load(flag);
+	Texture_Manager->Load(flag);
 }
 
 void TEXTURE_MANEGER::Uninit()
 {
 	{
-		TEXTURE_MANEGER t;
-
 		std::ofstream file("texture.dat", std::ios::binary);
 
 		cereal::BinaryOutputArchive archive(file);
-		archive(t);
+		archive(*Texture_Manager.get());
 	}
 
 	Default_Texture_File.clear();
@@ -445,4 +445,9 @@ unordered_map<string, TEXTURE_DATA>::iterator TEXTURE_MANEGER::Get_TextureData_S
 unordered_map<string, TEXTURE_DATA>::iterator TEXTURE_MANEGER::Get_TextureData_End()
 {
 	return TextureData.end();
+}
+
+TEXTURE_MANEGER* TEXTURE_MANEGER::Get_Instance()
+{
+	return Texture_Manager.get();
 }

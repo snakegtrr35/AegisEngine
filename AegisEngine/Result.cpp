@@ -1,10 +1,14 @@
 #include	"Scene.h"
+#include	"Result.h"
 #include	"Input.h"
 #include	"manager.h"
 #include	"Component.h"
 #include	"audio_clip.h"
 
 #include	"Fade.h"
+
+#include	"Scene_Manager.h"
+#include	"Title.h"
 
 bool RESULT::Clear_Flag;
 
@@ -42,6 +46,11 @@ void RESULT::Draw()
 	SCENE::Draw();
 }
 
+void RESULT::Draw_DPP()
+{
+	SCENE::Draw_DPP();
+}
+
 void RESULT::Update(float delta_time)
 {
 	SCENE::Update(delta_time);
@@ -53,7 +62,7 @@ void RESULT::Update(float delta_time)
 
 	if (KEYBOARD::Trigger_Keyboard(VK_SHIFT))
 	{
-		CManager::GameEnd();
+		CManager::Get_Instance()->GameEnd();
 	}
 }
 

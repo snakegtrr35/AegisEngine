@@ -24,6 +24,7 @@ public:
 
 	void Init() override;
 	void Draw() override;
+	void Draw_DPP() override {}
 	void Update(float delta_time) override;
 	void Uninit() override;
 
@@ -32,6 +33,13 @@ public:
 	void Set_Radius(const float radius);
 
 	const float Get_Radius();
+
+	template<typename Archive>
+	void serialize(Archive& ar)
+	{
+		ar(cereal::base_class<BOUNDING>(this));
+		ar(Radius);
+	}
 };
 
 CEREAL_REGISTER_TYPE(BOUNDING_SHPERE)

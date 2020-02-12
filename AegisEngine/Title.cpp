@@ -1,4 +1,5 @@
 #include	"Scene.h"
+#include	"Title.h"
 #include	"Input.h"
 #include	"manager.h"
 #include	"Component.h"
@@ -7,6 +8,9 @@
 #include	"Fade.h"
 
 #include	"Timer.h"
+
+#include	"Scene_Manager.h"
+#include	"Main_Menu.h"
 
 static bool flag = false;
 
@@ -91,6 +95,11 @@ void TITLE::Init()
 void TITLE::Draw()
 {
 	SCENE::Draw();
+}
+
+void TITLE::Draw_DPP()
+{
+	SCENE::Draw_DPP();
 }
 
 void TITLE::Update(float delta_time)
@@ -190,7 +199,7 @@ void TITLE::Update(float delta_time)
 							break;
 
 						case 2:
-							CManager::GameEnd();//
+							CManager::Get_Instance()->GameEnd();//
 							break;
 
 						/*case 3:

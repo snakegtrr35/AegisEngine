@@ -1,5 +1,6 @@
 #include	"XYZ_Axis.h"
-
+#include	"camera.h"
+#include	"Debug_Camera.h"
 #include	"manager.h"
 #include	"Scene.h"
 #include	"ShadowMap.h"
@@ -192,7 +193,7 @@ void AXIS::Init(void)
 
 void AXIS::Draw(void)
 {
-	if (false == CManager::Get_ShadowMap()->Get_Enable())
+	if (false == CManager::Get_Instance()->Get_ShadowMap()->Get_Enable())
 	{
 		XMMATRIX world;
 
@@ -219,16 +220,16 @@ void AXIS::Draw(void)
 				//world *= XMMatrixTranslation(pos.x, pos.y, pos.z);																								// ˆÚ“®
 				world *= XMMatrixTranslation(Position.x, Position.y + 0.5f, Position.z);
 
-				auto camera01 = CManager::Get_Scene()->Get_Game_Object<CCamera>("camera");
-				auto camera02 = CManager::Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
+				const auto camera01 = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<CCamera>("camera");
+				const auto camera02 = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
 
-				if (nullptr != camera01)
+				if (!camera01.expired() && Empty_weak_ptr<CCamera>(camera01))
 				{
-					CRenderer::Set_MatrixBuffer(world, camera01->Get_Camera_View(), camera01->Get_Camera_Projection());
+					CRenderer::Set_MatrixBuffer(world, camera01.lock()->Get_Camera_View(), camera01.lock()->Get_Camera_Projection());
 				}
 				else
 				{
-					CRenderer::Set_MatrixBuffer(world, camera02->Get_Camera_View(), camera02->Get_Camera_Projection());
+					CRenderer::Set_MatrixBuffer(world, camera02.lock()->Get_Camera_View(), camera02.lock()->Get_Camera_Projection());
 				}
 			}
 

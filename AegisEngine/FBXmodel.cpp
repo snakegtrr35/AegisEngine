@@ -54,7 +54,7 @@ bool FBXmodel::Load(const string& FileName)
 	HRESULT hr;
 
 	//モデルの読み込み
-	m_Scene = aiImportFile(FileName.c_str(), aiProcessPreset_TargetRealtime_MaxQuality);
+	m_Scene = aiImportFile(FileName.c_str(), aiProcess_Triangulate | aiProcess_LimitBoneWeights | aiProcess_ConvertToLeftHanded | aiProcessPreset_TargetRealtime_MaxQuality);
 	
 	if (nullptr == m_Scene)
 	{
@@ -131,7 +131,7 @@ bool FBXmodel::Load(const string& FileName)
 			D3D11_BUFFER_DESC bd;
 			ZeroMemory(&bd, sizeof(bd));
 			bd.Usage = D3D11_USAGE_DEFAULT;
-			bd.ByteWidth = sizeof(ANIME_VERTEX) * vertex.size();
+			bd.ByteWidth = sizeof(ANIME_VERTEX) * (UINT)vertex.size();
 			bd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
 			bd.CPUAccessFlags = 0;
 			bd.MiscFlags = 0;
@@ -167,12 +167,12 @@ bool FBXmodel::Load(const string& FileName)
 				}
 			}
 
-			index_Num = index.size();
+			index_Num = (UINT)index.size();
 	
 			D3D11_BUFFER_DESC bd;
 			ZeroMemory(&bd, sizeof(bd));
 			bd.Usage = D3D11_USAGE_DEFAULT;
-			bd.ByteWidth = sizeof(WORD) * index.size();
+			bd.ByteWidth = sizeof(WORD) * (UINT)index.size();
 			bd.BindFlags = D3D11_BIND_INDEX_BUFFER;
 			bd.CPUAccessFlags = 0;
 
@@ -199,16 +199,16 @@ bool FBXmodel::Load(const string& FileName)
 
 		m_Meshes.emplace_back(temp_mesh);
 
-		//// テクスチャの設定
-		//if (mesh->mMaterialIndex >= 0)
-		//{
-		//	aiMaterial* material = m_Scene->mMaterials[mesh->mMaterialIndex];
+		// テクスチャの設定
+		if (mesh->mMaterialIndex >= 0)
+		{
+			aiMaterial* material = m_Scene->mMaterials[mesh->mMaterialIndex];
 
-		//	if (textype.empty()) textype = determineTextureType(m_Scene, material);
+			if (textype.empty()) textype = determineTextureType(m_Scene, material);
 
-		//	vector<TEXTURE_S> diffuseMaps = this->loadMaterialTextures(material, aiTextureType_DIFFUSE, "texture_diffuse", m_Scene);
-		//	Textures.insert(Textures.end(), diffuseMaps.begin(), diffuseMaps.end());
-		//}
+			vector<TEXTURE_S> diffuseMaps = this->loadMaterialTextures(material, aiTextureType_DIFFUSE, "texture_diffuse", m_Scene);
+			Textures.insert(Textures.end(), diffuseMaps.begin(), diffuseMaps.end());
+		}
 
 		Bone_num.clear();
 		vertex.clear();
@@ -260,7 +260,7 @@ void FBXmodel::Update(float delta_time)
 
 	fr += delta_time;
 
-	if (ANIMETION_FRAME <= fr)
+	if (ANIMETION_FRAME_30 <= fr)
 	{
 		frame++;
 
@@ -280,6 +280,9 @@ void FBXmodel::Update(float delta_time)
 			f = frame % nodeAnim->mNumPositionKeys;
 			aiVector3D pos = nodeAnim->mPositionKeys[f].mValue;
 
+			//f = frame % nodeAnim->mNumScalingKeys;
+			//aiVector3D scale = nodeAnim->mScalingKeys[f].mValue;
+
 			bone->AnimationMatrix = aiMatrixToMatrix(aiMatrix4x4(aiVector3D(1.0f, 1.0f, 1.0f), rot, pos));
 		}
 	}
@@ -295,23 +298,57 @@ void FBXmodel::Draw(XMMATRIX &Matrix)
 		vector<XMMATRIX> bone;
 		bone.reserve(m_BoneNum);
 
-		for (UINT b = 0; b < m_BoneNum; b++)
+		/*for (UINT b = 0; b < m_BoneNum; b++)
 		{
 			bone.emplace_back(m_Bone[b].Matrix);
-		}
+		}*/
+
+		set_bone(m_Scene->mRootNode, bone);
 
 		SetBoneMatrix(bone);
 	}
 
-
-
-	CRenderer::Set_Shader(SHADER_INDEX_V::ANIMATION, SHADER_INDEX_P::DEFAULT);
+	//CRenderer::Set_Shader(SHADER_INDEX_V::ANIMATION, SHADER_INDEX_P::DEFAULT);
 	CRenderer::Set_InputLayout(INPUTLAYOUT::ANIMATION);
+
+	CRenderer::GetDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 	DrawMesh(m_Scene->mRootNode, Matrix);
 
 	CRenderer::Set_InputLayout();
 	CRenderer::Set_Shader();
+}
+
+void FBXmodel::Draw_DPP(XMMATRIX& Matrix)
+{
+	{
+		vector<XMMATRIX> bone;
+		bone.reserve(m_BoneNum);
+
+		set_bone(m_Scene->mRootNode, bone);
+
+		SetBoneMatrix(bone);
+	}
+
+	CRenderer::Set_InputLayout(INPUTLAYOUT::ANIMATION);
+	CRenderer::Set_Shader(SHADER_INDEX_V::DEPTH_PRE_ANIME, SHADER_INDEX_P::MAX);
+
+	CRenderer::GetDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+	DrawMesh_DPP(m_Scene->mRootNode, Matrix);
+
+	CRenderer::Set_InputLayout();
+	CRenderer::Set_Shader(SHADER_INDEX_V::DEPTH_PRE, SHADER_INDEX_P::MAX);
+}
+
+void FBXmodel::set_bone(const aiNode* Node, vector<XMMATRIX>& v)
+{
+	v.emplace_back( m_Bone[m_BoneIndex[Node->mName.C_Str()] ].Matrix );
+
+	for (unsigned int i = 0; i < Node->mNumChildren; i++)
+	{
+		set_bone(Node->mChildren[i], v);
+	}
 }
 
 void FBXmodel::SetBoneMatrix(const vector<XMMATRIX>& matrix)
@@ -320,7 +357,7 @@ void FBXmodel::SetBoneMatrix(const vector<XMMATRIX>& matrix)
 
 	auto buffer = MatrixBuffer.get();
 
-	CRenderer::GetDeviceContext()->VSSetConstantBuffers(5, 1, &buffer);
+	CRenderer::GetDeviceContext()->VSSetConstantBuffers(6, 1, &buffer);
 }
 
 void FBXmodel::DrawMesh(const aiNode* Node, const XMMATRIX& Matrix)
@@ -329,11 +366,11 @@ void FBXmodel::DrawMesh(const aiNode* Node, const XMMATRIX& Matrix)
 	world = XMMatrixTranspose(aiMatrixToMatrix(Node->mTransformation));
 	world *= Matrix;
 
-	auto camera01 = CManager::Get_Scene()->Get_Game_Object<CCamera>("camera");
-	auto camera02 = CManager::Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
+	const auto camera01 = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<CCamera>("camera");
+	const auto camera02 = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
 
-	XMMATRIX view = CManager::Get_ShadowMap()->Get_View();
-	XMMATRIX proj = CManager::Get_ShadowMap()->Get_Plojection();
+	XMMATRIX view = CManager::Get_Instance()->Get_ShadowMap()->Get_View();
+	XMMATRIX proj = CManager::Get_Instance()->Get_ShadowMap()->Get_Plojection();
 
 	for (UINT n = 0; n < Node->mNumMeshes; n++)
 	{
@@ -342,33 +379,96 @@ void FBXmodel::DrawMesh(const aiNode* Node, const XMMATRIX& Matrix)
 		// 3Dマトリックス設定
 		{
 			// 普通のカメラかデバッグカメラか?
-			if (nullptr != camera01)
+			if (!camera01.expired() && Empty_weak_ptr<CCamera>(camera01))
 			{
 				// シャドウマップ用の描画か?
-				if (CManager::Get_ShadowMap()->Get_Enable())
+				if (CManager::Get_Instance()->Get_ShadowMap()->Get_Enable())
 				{
 					CRenderer::Set_MatrixBuffer(world, view, proj);
+
+					CRenderer::Set_Shader(SHADER_INDEX_V::SHADOW_MAP_ANIMATION, SHADER_INDEX_P::SHADOW_MAP);
 				}
 				else
 				{
-					CRenderer::Set_MatrixBuffer(world, camera01->Get_Camera_View(), camera01->Get_Camera_Projection());
+					CRenderer::Set_MatrixBuffer(world, camera01.lock()->Get_Camera_View(), camera01.lock()->Get_Camera_Projection());
 
-					CRenderer::Set_MatrixBuffer01(*camera01->Get_Pos());
+					CRenderer::Set_MatrixBuffer01(*camera01.lock()->Get_Pos());
+
+					CRenderer::Set_Shader(SHADER_INDEX_V::ANIMATION, SHADER_INDEX_P::DEFAULT);
 				}
 			}
 			else
 			{
 				// シャドウマップ用の描画か?
-				if (CManager::Get_ShadowMap()->Get_Enable())
+				if (CManager::Get_Instance()->Get_ShadowMap()->Get_Enable())
 				{
 					CRenderer::Set_MatrixBuffer(world, view, proj);
+
+					CRenderer::Set_Shader(SHADER_INDEX_V::SHADOW_MAP_ANIMATION, SHADER_INDEX_P::SHADOW_MAP);
 				}
 				else
 				{
-					CRenderer::Set_MatrixBuffer(world, camera02->Get_Camera_View(), camera02->Get_Camera_Projection());
 
-					CRenderer::Set_MatrixBuffer01(*camera02->Get_Pos());
+					CRenderer::Set_MatrixBuffer(world, camera02.lock()->Get_Camera_View(), camera02.lock()->Get_Camera_Projection());
+
+					CRenderer::Set_MatrixBuffer01(*camera02.lock()->Get_Pos());
+
+					CRenderer::Set_Shader(SHADER_INDEX_V::ANIMATION, SHADER_INDEX_P::DEFAULT);
 				}
+			}
+		}
+
+		// テクスチャの設定
+		{
+			CRenderer::GetDeviceContext()->PSSetShaderResources(0, 1, &Textures[0].Texture);
+		}
+
+		// 頂点バッファの設定
+		{
+			const UINT stride = sizeof(ANIME_VERTEX);
+			const UINT offset = 0;
+			ID3D11Buffer* vb[1] = { m_Meshes[m].VertexBuffer };
+			CRenderer::GetDeviceContext()->IASetVertexBuffers(0, 1, vb, &stride, &offset);
+		}
+
+		// インデックスバッファの設定
+		{
+			CRenderer::SetIndexBuffer(m_Meshes[m].IndexBuffer);
+		}
+
+		CRenderer::DrawIndexed(m_Meshes[m].IndexNum, 0, 0);
+	}
+
+	for (unsigned int i = 0; i < Node->mNumChildren; i++)
+	{
+		DrawMesh(Node->mChildren[i], world);
+	}
+}
+
+void FBXmodel::DrawMesh_DPP(const aiNode* Node, const XMMATRIX& Matrix)
+{
+
+	XMMATRIX world;
+	world = XMMatrixTranspose(aiMatrixToMatrix(Node->mTransformation));
+	world *= Matrix;
+
+	const auto camera01 = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<CCamera>("camera");
+	const auto camera02 = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
+
+	for (UINT n = 0; n < Node->mNumMeshes; n++)
+	{
+		UINT m = Node->mMeshes[n];
+
+		// 3Dマトリックス設定
+		{
+			// 普通のカメラかデバッグカメラか?
+			if (!camera01.expired() && Empty_weak_ptr<CCamera>(camera01))
+			{
+				CRenderer::Set_MatrixBuffer(world, camera01.lock()->Get_Camera_View(), camera01.lock()->Get_Camera_Projection());
+			}
+			else
+			{
+				CRenderer::Set_MatrixBuffer(world, camera02.lock()->Get_Camera_View(), camera02.lock()->Get_Camera_Projection());
 			}
 		}
 
@@ -385,14 +485,12 @@ void FBXmodel::DrawMesh(const aiNode* Node, const XMMATRIX& Matrix)
 			CRenderer::SetIndexBuffer(m_Meshes[m].IndexBuffer);
 		}
 
-		CRenderer::GetDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-
 		CRenderer::DrawIndexed(m_Meshes[m].IndexNum, 0, 0);
 	}
 
 	for (unsigned int i = 0; i < Node->mNumChildren; i++)
 	{
-		DrawMesh(Node->mChildren[i], world);
+		DrawMesh_DPP(Node->mChildren[i], world);
 	}
 }
 

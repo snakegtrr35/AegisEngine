@@ -3,11 +3,14 @@
 #ifndef GAME_OBJECT_H
 #define GAME_OBJECT_H
 
-#include	"Component.h"
+//#include	"Component.h"
+#include	"Component_Manager.h"
 
 class GAME_OBJECT {
 private:
 	static unordered_set<string> Object_Name_Map;
+
+	friend COMPONENT_MANEGER;
 
 protected:
 	string Object_Name;					//! オブジェクトの名前
@@ -26,7 +29,7 @@ protected:
 	XMFLOAT3 Scaling;					//! 拡大縮小値
 
 
-	COMPONENT_MANEGER Component;		//! コンポーネント
+	unique_ptr<COMPONENT_MANEGER, Delete> Component;		//! コンポーネント
 
 #ifdef _DEBUG
 	XMFLOAT3 Edit_Position;				//! デバッグ用の座標
@@ -37,15 +40,17 @@ protected:
 #endif // _DEBUG
 
 public:
-	GAME_OBJECT() : Object_Name("none"), DestroyFlag(false), Rotation(XMFLOAT3(0.0f, 0.0f, 0.0f)), Position(XMFLOAT3(0.0f, 0.0f, 0.0f)), Scaling(XMFLOAT3(1.0f, 1.0f, 1.0f))/*, Quaternion(XMQuaternionIdentity())*/ {}
+
+	GAME_OBJECT();
 	virtual ~GAME_OBJECT() {
 		Object_Name_Map.erase(Object_Name);
 	};
 
-	virtual void Init() = 0;
-	virtual void Draw() = 0;
-	virtual void Update(float delta_time) = 0;
-	virtual void Uninit() = 0;
+	virtual void Init();
+	virtual void Draw();
+	virtual void Draw_DPP() {}
+	virtual void Update(float delta_time);
+	virtual void Uninit() {}
 
 	void Set_Destroy() {
 		DestroyFlag = true;
@@ -123,7 +128,7 @@ public:
 	};
 
 	COMPONENT_MANEGER* const Get_Component() {
-		return &Component;
+		return Component.get();
 	}
 
 	//static const unordered_map<size_t, string>& Get_Object_Name_Map() {
@@ -144,17 +149,7 @@ public:
 
 		Set_Object_Map(Object_Name);
 
-#ifdef _DEBUG
-		//ar(edit_position.x, edit_position.y, edit_position.z);
-		//ar(edit_rotation.x, edit_rotation.y, edit_rotation.z);
-		//ar(edit_scaling.x, edit_scaling.y, edit_scaling.z);
-
-		//XMFLOAT4 Q_num;					//! クオータニオン用の入れ物
-		//XMFLOAT4 Edit_Q_num;				//! デバッグ用のクオータニオン用の入れ物
-#endif // _DEBUG
-
-		//ar(Object_Name_Map);
-		//ar(component);
+		ar(Component);
 	}
 
 	//template<class Archive>

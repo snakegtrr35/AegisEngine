@@ -33,20 +33,15 @@ public:
 
 	void Init() override;
 	void Draw() override;
+	void Draw_DPP() override;
 	void Update(float delta_time) override;
 	void Uninit() override;
 
 	// 幅と高さの設定
-	void SetWH(const XMFLOAT2 wh)
-	{
-		WH = wh;
-	};								
+	void SetWH(const XMFLOAT2 wh);
 	
 	// テクスチャの設定
-	void SetTexture(const string& const file_name)
-	{
-		Texture->Set_Texture_Name(file_name);
-	};
+	void SetTexture(const string& const file_name);
 };
 
 //////////////////////////////////////////////////
@@ -70,6 +65,7 @@ private:
 	unsigned char  Pattern_Max_Y;
 
 	void Draw(float tx = -1.0f, float ty = -1.0f);
+	void Draw_DPP(float tx = -1.0f, float ty = -1.0f);
 
 protected:
 
@@ -87,6 +83,7 @@ public:
 
 	void Init() override;
 	void Draw() override;
+	void Draw_DPP() override;
 	void Update(float delta_time) override;
 	void Uninit() override;
 

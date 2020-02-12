@@ -4,7 +4,6 @@
 #define BULLET_H
 
 class CMODEL;
-class CIRCLE_SHADOW;
 class COLLISION;
 
 class GAME_OBJECT;
@@ -14,7 +13,6 @@ protected:
 	XMFLOAT3 MoveVector;
 	CMODEL* Model;
 
-	CIRCLE_SHADOW* Shadow;
 	COLLISION* Collision;
 	short HP;
 
@@ -25,6 +23,7 @@ public:
 
 	void Init() override;
 	void Draw() override;
+	void Draw_DPP() override;
 	void Update(float delta_time) override;
 	void Uninit() override;
 

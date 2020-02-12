@@ -66,7 +66,7 @@ void CCamera::Update(float delta_time)
 	bool flag = KEYBOARD::Press_Keyboard(VK_RBUTTON);
 
 	{
-		auto player = CManager::Get_Scene()->Get_Game_Object("player");
+		auto player = CManager::Get_Instance()->Get_Scene()->Get_Game_Object("player");
 		if (nullptr == player)
 		{
 			//At = XMLoadFloat3(player->Get_Position());
@@ -188,12 +188,12 @@ void CCamera::Update(float delta_time)
 			Pos -= r * 0.5f;
 		}
 
-		if ((MOUSE::Get_Mouse()->Get_Wheel_Move_Flag() == WHEEL_MOVE_ENUM::UP))
+		if ((MOUSE::Get_Mouse()->Get_Wheel_Move_Flag() == WHEEL_MOVE_ENUM::UP) && false == CManager::Get_Instance()->Get_Mouse_Over_ImGui())
 		{
 			Pos += f * 2.0f;
 		}
 
-		if ((MOUSE::Get_Mouse()->Get_Wheel_Move_Flag() == WHEEL_MOVE_ENUM::DOWN))
+		if ((MOUSE::Get_Mouse()->Get_Wheel_Move_Flag() == WHEEL_MOVE_ENUM::DOWN) && false == CManager::Get_Instance()->Get_Mouse_Over_ImGui())
 		{
 			Pos -= f * 2.0f;
 		}
@@ -219,15 +219,16 @@ void CCamera::Draw()
 	dxViewport.TopLeftX = (float)rect.left;
 	dxViewport.TopLeftY = (float)rect.top;
 
-	//CRenderer::GetDeviceContext()->RSSetViewports(1, &dxViewport);
-
 	// ビューマトリクス設定
 	m_ViewMatrix = XMMatrixLookAtLH(Pos, At, Up);
-	//CRenderer::SetViewMatrix(&m_ViewMatrix);
 
 	// プロジェクションマトリクス設定
-	m_ProjectionMatrix = XMMatrixPerspectiveFovLH(XMConvertToRadians(Viewing_Angle), dxViewport.Width / dxViewport.Height, 1.0f, 1000.0f);
-	//CRenderer::SetProjectionMatrix(&m_ProjectionMatrix);
+	m_ProjectionMatrix = XMMatrixPerspectiveFovLH(XMConvertToRadians(Viewing_Angle), dxViewport.Width / dxViewport.Height, 0.001f, 1000.0f);
+}
+
+void CCamera::Draw_DPP()
+{
+	Draw();
 }
 
 bool CCamera::Get_Visibility(const XMFLOAT3& position)

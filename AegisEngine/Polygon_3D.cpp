@@ -1,8 +1,8 @@
 #include	"Polygon_3D.h"
 #include	"texture.h"
 #include	"Input.h"
-#include	"My_imgui.h"
-
+#include	"camera.h"
+#include	"Debug_Camera.h"
 #include	"manager.h"
 #include	"ShadowMap.h"
 #include	"Scene.h"
@@ -14,12 +14,13 @@ static float yaw = 0.0f;
 POLYGON_3D::POLYGON_3D()
 {
 	pVertexBuffer = nullptr;
-	Texture = nullptr;
+	Texture.reset(nullptr);
 
 	XYZ = XMFLOAT3(0.5f, 0.5f, 0.5f);
 
 	// テクスチャの設定
-	Texture = new TEXTURE(string("field004.png"));
+	//Texture = new TEXTURE(string("field004.png"));
+	Texture = make_unique<TEXTURE>(string("field004.png"));
 }
 
 POLYGON_3D::POLYGON_3D(XMFLOAT3 position, XMFLOAT3 xyz)
@@ -35,13 +36,14 @@ POLYGON_3D::POLYGON_3D(XMFLOAT3 position, XMFLOAT3 xyz)
 	XYZ = xyz;
 
 	// テクスチャの設定
-	Texture = new TEXTURE(string("field004.png"));
+	//Texture = new TEXTURE(string("field004.png"));
+	Texture = make_unique<TEXTURE>(string("field004.png"));
 }
 
 POLYGON_3D::~POLYGON_3D()
 {
 	SAFE_RELEASE(pVertexBuffer);
-	SAFE_DELETE(Texture);
+	Texture.reset(nullptr);
 }
 
 void POLYGON_3D::Init(void)
@@ -209,30 +211,24 @@ void POLYGON_3D::Init(void)
 
 void POLYGON_3D::Draw(void)
 {
-	// 入力アセンブラに頂点バッファを設定.
-	CRenderer::SetVertexBuffers(pVertexBuffer);
-
-	// テクスチャの設定
-	Texture->Set_Texture();
-
 	// 3Dマトリックス設定
 	{
 		XMMATRIX world;
 
-		world = XMMatrixScaling(Scaling.x , Scaling.y, Scaling.z);																						// 拡大縮小
-		world *= XMMatrixRotationRollPitchYaw( XMConvertToRadians(Rotation.x), XMConvertToRadians(Rotation.y), XMConvertToRadians(Rotation.z) );		// 回転(ロールピッチヨウ)
-		world *= XMMatrixTranslation(Position.x, Position.y, Position.z);																				// 移動
-		
-		auto camera01 = CManager::Get_Scene()->Get_Game_Object<CCamera>("camera");
-		auto camera02 = CManager::Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
+		world = XMMatrixScaling(Scaling.x , Scaling.y, Scaling.z);
+		world *= XMMatrixRotationRollPitchYaw( XMConvertToRadians(Rotation.x), XMConvertToRadians(Rotation.y), XMConvertToRadians(Rotation.z) );
+		world *= XMMatrixTranslation(Position.x, Position.y, Position.z);
 
-		if (nullptr != camera01)
+		const auto camera01 = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<CCamera>("camera");
+		const auto camera02 = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
+
+		if (!camera01.expired() && Empty_weak_ptr<CCamera>(camera01))
 		{
 			// シャドウマップ用の描画か?
-			if (CManager::Get_ShadowMap()->Get_Enable())
+			if (CManager::Get_Instance()->Get_ShadowMap()->Get_Enable())
 			{
-				XMMATRIX view = CManager::Get_ShadowMap()->Get_View();
-				XMMATRIX proj = CManager::Get_ShadowMap()->Get_Plojection();
+				XMMATRIX view = CManager::Get_Instance()->Get_ShadowMap()->Get_View();
+				XMMATRIX proj = CManager::Get_Instance()->Get_ShadowMap()->Get_Plojection();
 
 				CRenderer::Set_MatrixBuffer(world, view, proj);
 
@@ -240,9 +236,9 @@ void POLYGON_3D::Draw(void)
 			}
 			else
 			{
-				CRenderer::Set_MatrixBuffer(world, camera01->Get_Camera_View(), camera01->Get_Camera_Projection());
+				CRenderer::Set_MatrixBuffer(world, camera01.lock()->Get_Camera_View(), camera01.lock()->Get_Camera_Projection());
 
-				CRenderer::Set_MatrixBuffer01(*camera01->Get_Pos());
+				CRenderer::Set_MatrixBuffer01(*camera01.lock()->Get_Pos());
 
 				CRenderer::Set_Shader();
 			}
@@ -250,10 +246,10 @@ void POLYGON_3D::Draw(void)
 		else
 		{
 			// シャドウマップ用の描画か?
-			if (CManager::Get_ShadowMap()->Get_Enable())
+			if (CManager::Get_Instance()->Get_ShadowMap()->Get_Enable())
 			{
-				XMMATRIX view = CManager::Get_ShadowMap()->Get_View();
-				XMMATRIX proj = CManager::Get_ShadowMap()->Get_Plojection();
+				XMMATRIX view = CManager::Get_Instance()->Get_ShadowMap()->Get_View();
+				XMMATRIX proj = CManager::Get_Instance()->Get_ShadowMap()->Get_Plojection();
 
 				CRenderer::Set_MatrixBuffer(world, view, proj);
 
@@ -261,14 +257,54 @@ void POLYGON_3D::Draw(void)
 			}
 			else
 			{
-				CRenderer::Set_MatrixBuffer(world, camera02->Get_Camera_View(), camera02->Get_Camera_Projection());
+				CRenderer::Set_MatrixBuffer(world, camera02.lock()->Get_Camera_View(), camera02.lock()->Get_Camera_Projection());
 
-				CRenderer::Set_MatrixBuffer01(*camera02->Get_Pos());
+				CRenderer::Set_MatrixBuffer01(*camera02.lock()->Get_Pos());
 
 				CRenderer::Set_Shader();
 			}
 		}
 	}
+
+	// 入力アセンブラに頂点バッファを設定.
+	CRenderer::SetVertexBuffers(pVertexBuffer);
+
+	// テクスチャの設定
+	Texture->Set_Texture();
+
+	// トポロジの設定
+	CRenderer::GetDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
+
+	CRenderer::GetDeviceContext()->Draw(4 * 6, 0);
+
+	GAME_OBJECT::Draw();
+}
+
+void POLYGON_3D::Draw_DPP(void)
+{
+	// 3Dマトリックス設定
+	{
+		XMMATRIX world;
+
+		world = XMMatrixScaling(Scaling.x, Scaling.y, Scaling.z);
+		world *= XMMatrixRotationRollPitchYaw(XMConvertToRadians(Rotation.x), XMConvertToRadians(Rotation.y), XMConvertToRadians(Rotation.z));
+		world *= XMMatrixTranslation(Position.x, Position.y, Position.z);
+
+		const auto camera01 = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<CCamera>("camera");
+		const auto camera02 = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
+
+		if (!camera01.expired() && Empty_weak_ptr<CCamera>(camera01))
+		{
+			CRenderer::Set_MatrixBuffer(world, camera01.lock()->Get_Camera_View(), camera01.lock()->Get_Camera_Projection());
+		}
+		else
+		{
+			CRenderer::Set_MatrixBuffer(world, camera02.lock()->Get_Camera_View(), camera02.lock()->Get_Camera_Projection());
+		}
+	}
+
+	// 入力アセンブラに頂点バッファを設定.
+	CRenderer::SetVertexBuffers(pVertexBuffer);
 
 	// トポロジの設定
 	CRenderer::GetDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
@@ -278,13 +314,14 @@ void POLYGON_3D::Draw(void)
 
 void POLYGON_3D::Update(float delta_time)
 {
+	GAME_OBJECT::Update(delta_time);
 }
 
 
 void POLYGON_3D::Uninit(void)
 {
 	SAFE_RELEASE(pVertexBuffer);
-	SAFE_DELETE(Texture);
+	Texture.reset(nullptr);
 }
 
 //==============================

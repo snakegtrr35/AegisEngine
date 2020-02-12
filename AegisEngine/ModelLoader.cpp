@@ -30,12 +30,12 @@ CMODEL::~CMODEL()
 	Uninit();
 }
 
-bool CMODEL::Load(string& filename)
+bool CMODEL::Load(const string& filename)
 {
 	Assimp::Importer importer;
 
 	const aiScene* pScene = importer.ReadFile(filename,
-		aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_LimitBoneWeights | aiProcess_ConvertToLeftHanded | aiProcessPreset_TargetRealtime_MaxQuality);
+		aiProcess_Triangulate | aiProcess_LimitBoneWeights | aiProcess_ConvertToLeftHanded | aiProcessPreset_TargetRealtime_MaxQuality);
 
 	if (pScene == NULL)
 		return false;
@@ -64,41 +64,41 @@ bool CMODEL::Load(string& filename)
 			}
 		}
 
-		//
-		pScene = importer.ReadFile("asset/model/human01_Walk.fbx",
-			aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_LimitBoneWeights | aiProcess_ConvertToLeftHanded | aiProcessPreset_TargetRealtime_MaxQuality);
+		////
+		//pScene = importer.ReadFile("asset/model/human01_Walk.fbx",
+		//	aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_LimitBoneWeights | aiProcess_ConvertToLeftHanded | aiProcessPreset_TargetRealtime_MaxQuality);
 
-		if (pScene->HasAnimations())
-		{
-			aiAnimation** anim = pScene->mAnimations;
+		//if (pScene->HasAnimations())
+		//{
+		//	aiAnimation** anim = pScene->mAnimations;
 
-			for (UINT i = 0; i < pScene->mNumAnimations; i++)
-			{
-				animation = createAnimation(anim[i]);
+		//	for (UINT i = 0; i < pScene->mNumAnimations; i++)
+		//	{
+		//		animation = createAnimation(anim[i]);
 
-				Meshes.SetAnimation(anim[i]->mName.data, animation);
+		//		Meshes.SetAnimation(anim[i]->mName.data, animation);
 
-				Anime_State_Machine.Add_Name(anim[i]->mName.data);
-			}
-		}
+		//		Anime_State_Machine.Add_Name(anim[i]->mName.data);
+		//	}
+		//}
 
-		//
-		pScene = importer.ReadFile("asset/model/human01_Jump.fbx",
-			aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_LimitBoneWeights | aiProcess_ConvertToLeftHanded | aiProcessPreset_TargetRealtime_MaxQuality);
+		////
+		//pScene = importer.ReadFile("asset/model/human01_Jump.fbx",
+		//	aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_LimitBoneWeights | aiProcess_ConvertToLeftHanded | aiProcessPreset_TargetRealtime_MaxQuality);
 
-		if (pScene->HasAnimations())
-		{
-			aiAnimation** anim = pScene->mAnimations;
+		//if (pScene->HasAnimations())
+		//{
+		//	aiAnimation** anim = pScene->mAnimations;
 
-			for (UINT i = 0; i < pScene->mNumAnimations; i++)
-			{
-				animation = createAnimation(anim[i]);
+		//	for (UINT i = 0; i < pScene->mNumAnimations; i++)
+		//	{
+		//		animation = createAnimation(anim[i]);
 
-				Meshes.SetAnimation(anim[i]->mName.data, animation);
+		//		Meshes.SetAnimation(anim[i]->mName.data, animation);
 
-				Anime_State_Machine.Add_Name(anim[i]->mName.data);
-			}
-		}
+		//		Anime_State_Machine.Add_Name(anim[i]->mName.data);
+		//	}
+		//}
 	}
 
 	Anime_State_Machine.Set_Anime_Name("Stop");
@@ -106,12 +106,12 @@ bool CMODEL::Load(string& filename)
 	return true;
 }
 
-bool CMODEL::Reload(string& filename)
+bool CMODEL::Reload(const string& filename)
 {
 	Assimp::Importer importer;
 
 	const aiScene* pScene = importer.ReadFile(filename,
-		aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_LimitBoneWeights | aiProcess_ConvertToLeftHanded | aiProcessPreset_TargetRealtime_MaxQuality);
+		aiProcess_Triangulate | aiProcess_LimitBoneWeights | aiProcess_ConvertToLeftHanded | aiProcessPreset_TargetRealtime_MaxQuality);
 
 	if (pScene == NULL)
 		return false;
@@ -119,7 +119,7 @@ bool CMODEL::Reload(string& filename)
 	this->directory = filename.substr(0, filename.find_last_of('/'));
 
 	//Meshes[pScene->mRootNode->mName.C_Str()] = MESH();
-	//processNode(pScene->mRootNode, nullptr, pScene, Meshes);
+	//processNode(pScene->mRootNode, nullptr, pScene, Meshes);if (camera
 	processNode(pScene->mRootNode, pScene, Meshes.Get());
 
 	{
@@ -145,11 +145,11 @@ bool CMODEL::Reload(string& filename)
 
 void CMODEL::Draw()
 {
-	auto camera = CManager::Get_Scene()->Get_Game_Object<CCamera>("camera");
+	const auto camera = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<CCamera>("camera");
 
-	if (nullptr != camera)
+	if (!camera.expired() && Empty_weak_ptr<CCamera>(camera))
 	{
-		if (false == camera->Get_Visibility(Position))
+		if (false == camera.lock()->Get_Visibility(Position))
 		{
 			return;
 		}
@@ -191,8 +191,8 @@ void CMODEL::Draw()
 	matrix = XMMatrixMultiply(matrix, transform);
 
 	{
-		auto camera01 = CManager::Get_Scene()->Get_Game_Object<CCamera>("camera");
-		auto camera02 = CManager::Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
+		const auto camera01 = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<CCamera>("camera");
+		const auto camera02 = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
 
 		{
 			XMVECTOR camera_pos;
@@ -202,9 +202,9 @@ void CMODEL::Draw()
 
 			light_pos = XMVectorScale(light_pos, 10.0f);
 
-			if (nullptr != camera01)
+			if (!camera01.expired() && Empty_weak_ptr<CCamera>(camera01))
 			{
-				camera_pos = *camera01->Get_Pos();
+				camera_pos = *camera01.lock()->Get_Pos();
 
 				XMFLOAT4 pos;
 				XMStoreFloat4(&pos, camera_pos);
@@ -214,7 +214,7 @@ void CMODEL::Draw()
 			}
 			else
 			{
-				camera_pos = *camera02->Get_Pos();
+				camera_pos = *camera02.lock()->Get_Pos();
 
 				XMFLOAT4 pos;
 				XMStoreFloat4(&pos, camera_pos);
@@ -225,20 +225,13 @@ void CMODEL::Draw()
 			CRenderer::Set_MatrixBuffer01(camera_pos);
 		}
 
-		if (CManager::Get_ShadowMap()->Get_Enable())
+		if (CManager::Get_Instance()->Get_ShadowMap()->Get_Enable())
 		{
 			CRenderer::Set_Shader(SHADER_INDEX_V::SHADOW_MAP, SHADER_INDEX_P::SHADOW_MAP);
 		}
 		else
 		{
-			if (RENDERING_PASS::GEOMETRY == CRenderer::Get_Rendering_Pass())
-			{
-				CRenderer::Set_Shader(SHADER_INDEX_V::GEOMETRY, SHADER_INDEX_P::GEOMETRY);
-			}
-			else
-			{
-				CRenderer::Set_Shader();
-			}
+			CRenderer::Set_Shader();
 		}
 	}
 
@@ -277,13 +270,83 @@ void CMODEL::Draw()
 	CRenderer::Set_Shader();
 }
 
+void CMODEL::Draw_DPP()
+{
+	const auto camera = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<CCamera>("camera");
+
+	if (!camera.expired() && Empty_weak_ptr<CCamera>(camera))
+	{
+		if (false == camera.lock()->Get_Visibility(Position))
+		{
+			return;
+		}
+	}
+
+	XMMATRIX matrix = XMMatrixIdentity();
+	XMMATRIX scaling = XMMatrixScaling(Scaling.x, Scaling.y, Scaling.z);
+	XMMATRIX rotation = XMMatrixRotationRollPitchYaw(XMConvertToRadians(Rotation.x), XMConvertToRadians(Rotation.y), XMConvertToRadians(Rotation.z));
+	XMMATRIX transform = XMMatrixTranslation(Position.x, Position.y, Position.z);
+
+	matrix = XMMatrixMultiply(matrix, scaling);
+	matrix = XMMatrixMultiply(matrix, rotation);
+	matrix = XMMatrixMultiply(matrix, transform);
+
+	{
+		auto camera01 = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<CCamera>("camera");
+		auto camera02 = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
+
+	}
+
+	if (Meshes.GetAnime())
+	{
+		// アニメーション
+		for (auto mesh : Meshes.Get())
+		{
+			auto anime = Meshes.Get_Anime();
+
+			for (auto i : mesh.second.Get())
+			{
+				if (Anime_State_Machine.Get_Enable())
+				{
+					i.second.Draw_DPP_Animation(matrix, anime, Frame, Anime_State_Machine.Get_Anime_Name(), Anime_State_Machine.Get_Next_Anime_Name(), Anime_State_Machine.Get_Ratio());
+				}
+				else
+				{
+					i.second.Draw_DPP_Animation(matrix, anime, Frame, Anime_State_Machine.Get_Anime_Name());
+				}
+			}
+		}
+	}
+	else
+	{
+		// 普通の描画
+		for (auto mesh : Meshes.Get())
+		{
+			for (auto i : mesh.second.Get())
+			{
+				i.second.Draw_DPP(matrix);
+			}
+		}
+	}
+
+	CRenderer::Set_Shader();
+}
+
 void CMODEL::Update(float delta_time)
 {
 	Meshes.Update();
 
 	Anime_State_Machine.Update();
 
-	Frame++;
+	static float f = 0.f;
+
+	f += delta_time;
+
+	if (0.01666f <= f)
+	{
+		Frame++;
+		f = 0.f;
+	}
 }
 
 void CMODEL::Uninit()
@@ -317,8 +380,6 @@ MESH CMODEL::processMesh(aiMesh* mesh, aiNode* node, const aiScene* scene)
 	vector<TEXTURE_S> textures;
 
 	XMMATRIX matrix;
-
-	vector<Bone> bones;
 
 	string name = node->mName.C_Str();
 
@@ -384,28 +445,6 @@ MESH CMODEL::processMesh(aiMesh* mesh, aiNode* node, const aiScene* scene)
 		vector<TEXTURE_S> diffuseMaps = this->loadMaterialTextures(material, aiTextureType_DIFFUSE, "texture_diffuse", scene);
 		textures.insert(textures.end(), diffuseMaps.begin(), diffuseMaps.end());
 	}
-
-	//// ボーン情報の設定
-	//if (mesh->HasBones())
-	//{
-	//	auto bone = Meshes.Get_Bone();
-
-	//	aiBone** b = mesh->mBones;
-	//	for (UINT i = 0; i < mesh->mNumBones; ++i)
-	//	{
-	//		bones.push_back(createBone(b[i]));
-
-	//		aiVertexWeight* w = b[i]->mWeights;
-
-	//		for (u_int j = 0; j < b[i]->mNumWeights; ++j)
-	//		{
-	//			for (auto vertex : vertices)
-	//			{
-	//				//vertex.BoneIndex = w[j].mVertexId;
-	//			}
-	//		}
-	//	}
-	//}
 
 	// マトリックスの設定
 	{

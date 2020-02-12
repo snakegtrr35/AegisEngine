@@ -6,48 +6,48 @@
 
 #include	"manager.h"
 
-D3D_FEATURE_LEVEL			CRenderer::m_FeatureLevel = D3D_FEATURE_LEVEL_11_0;
+D3D_FEATURE_LEVEL											CRenderer::m_FeatureLevel = D3D_FEATURE_LEVEL_11_0;
 
-ID3D11Device*				CRenderer::m_D3DDevice = nullptr;
-ID3D11DeviceContext*		CRenderer::m_ImmediateContext = nullptr;
-IDXGIDevice1*				CRenderer::m_dxgiDev = nullptr;
-IDXGISwapChain1*			CRenderer::m_SwapChain = nullptr;//
-ID3D11RenderTargetView*		CRenderer::m_RenderTargetView = nullptr;
-ID3D11DepthStencilView*		CRenderer::m_DepthStencilView = nullptr;
-ID2D1Device*				CRenderer::m_D2DDevice = nullptr;
-ID2D1DeviceContext*			CRenderer::m_D2DDeviceContext = nullptr;
-ID2D1Bitmap1*				CRenderer::m_D2DTargetBitmap = nullptr;
+ID3D11Device*												CRenderer::m_D3DDevice = nullptr;
+ID3D11DeviceContext*										CRenderer::m_ImmediateContext = nullptr;
+IDXGIDevice1*												CRenderer::m_dxgiDev = nullptr;
+IDXGISwapChain1*											CRenderer::m_SwapChain = nullptr;//
+ID3D11RenderTargetView*										CRenderer::m_RenderTargetView = nullptr;
+ID3D11DepthStencilView*										CRenderer::m_DepthStencilView = nullptr;
+ID2D1Device*												CRenderer::m_D2DDevice = nullptr;
+ID2D1DeviceContext*											CRenderer::m_D2DDeviceContext = nullptr;
+ID2D1Bitmap1*												CRenderer::m_D2DTargetBitmap = nullptr;
 
-IDWriteTextFormat*			CRenderer::m_DwriteTextFormat = nullptr;
-IDWriteTextLayout*			CRenderer::m_TextLayout = nullptr;
+IDWriteTextFormat*											CRenderer::m_DwriteTextFormat = nullptr;
+IDWriteTextLayout*											CRenderer::m_TextLayout = nullptr;
 
-IDWriteFactory*				CRenderer::m_DwriteFactory = nullptr;
+IDWriteFactory*												CRenderer::m_DwriteFactory = nullptr;
 
-ID3D11VertexShader*			CRenderer::m_VertexShader[4] = { nullptr };
-ID3D11PixelShader*			CRenderer::m_PixelShader[6] = { nullptr };
-ID3D11InputLayout*			CRenderer::m_VertexLayout[2] = { nullptr };
-ID3D11Buffer*				CRenderer::m_MaterialBuffer = nullptr;
-ID3D11Buffer*				CRenderer::m_LightBuffer = nullptr;
+unordered_map<SHADER_INDEX_V, ID3D11VertexShader*>			CRenderer::m_VertexShader;
+unordered_map<SHADER_INDEX_P, ID3D11PixelShader*>			CRenderer::m_PixelShader;
+ID3D11InputLayout*											CRenderer::m_VertexLayout[3] = { nullptr };
+ID3D11Buffer*												CRenderer::m_MaterialBuffer = nullptr;
+ID3D11Buffer*												CRenderer::m_LightBuffer = nullptr;
 
-ID3D11Buffer*				CRenderer::m_Bone_Matrix_Buffer = nullptr;
+unique_ptr<ID3D11SamplerState, Release>						CRenderer::m_SamplerState;
 
-ID3D11DepthStencilState*	CRenderer::m_DepthStateEnable = nullptr;
-ID3D11DepthStencilState*	CRenderer::m_DepthStateDisable = nullptr;
-ID3D11RasterizerState*		CRenderer::m_RasterizerState = nullptr;
+ID3D11Buffer*												CRenderer::m_Bone_Matrix_Buffer = nullptr;
+
+ID3D11DepthStencilState*									CRenderer::m_DepthStateEnable = nullptr;
+ID3D11DepthStencilState*									CRenderer::m_DepthStateDisable = nullptr;
+ID3D11RasterizerState*										CRenderer::m_RasterizerState = nullptr;
 
 bool CRenderer::Stand_By_Enable = false;
 
 
-ID3D11Buffer*	CRenderer::m_ConstantBuffer;//
-ID3D11Buffer* CRenderer::m_ConstantBuffer_02;
+ID3D11Buffer*												CRenderer::m_ConstantBuffer;//
+ID3D11Buffer*												CRenderer::m_ConstantBuffer_02;
 
-unique_ptr<ID3D11RenderTargetView, Release>			CRenderer::RenderTargetView[3];
-unique_ptr<ID3D11ShaderResourceView, Release>		CRenderer::ShaderResourceView[3];
+unique_ptr<ID3D11RenderTargetView, Release>					CRenderer::RenderTargetView[3];
+unique_ptr<ID3D11ShaderResourceView, Release>				CRenderer::ShaderResourceView[3];
 
 // ライト
 LIGHT CRenderer::m_Light;//
-
-RENDERING_PASS CRenderer::Pass;
 
 bool CRenderer::Init()
 {
@@ -80,6 +80,8 @@ bool CRenderer::Init()
 		};
 		UINT numElements = ARRAYSIZE(layout);
 
+
+		// 頂点シェーダ生成 デフォルト
 		{
 			FILE* file;
 			long int fsize;
@@ -90,31 +92,24 @@ bool CRenderer::Init()
 			fread(buffer, fsize, 1, file);
 			fclose(file);
 
-			m_D3DDevice->CreateVertexShader(buffer, fsize, NULL, &m_VertexShader[0]);
+			hr = m_D3DDevice->CreateVertexShader(buffer, fsize, NULL, &m_VertexShader[SHADER_INDEX_V::DEFAULT]);
+			if (FAILED(hr))
+			{
+				FAILDE_ASSERT;
+				return false;
+			}
 
-			m_D3DDevice->CreateInputLayout(layout,
-				numElements,
-				buffer,
-				fsize,
-				&m_VertexLayout[0]);
-
+			hr = m_D3DDevice->CreateInputLayout(layout, numElements, buffer, fsize, &m_VertexLayout[INPUTLAYOUT::DEFAULT]);
 			delete[] buffer;
+
+			if (FAILED(hr))
+			{
+				FAILDE_ASSERT;
+				return false;
+			}
 		}
-	}
 
-	// 頂点シェーダ生成 シャドウマップ
-	{
-		// 入力レイアウト生成
-		D3D11_INPUT_ELEMENT_DESC layout[] =
-		{
-			{ "POSITION",	0, DXGI_FORMAT_R32G32B32_FLOAT,		0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-			{ "NORMAL",		0, DXGI_FORMAT_R32G32B32_FLOAT,		0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-			{ "COLOR",		0, DXGI_FORMAT_R32G32B32A32_FLOAT,	0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-			{ "TEXCOORD",	0, DXGI_FORMAT_R32G32_FLOAT,		0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 }
-		};
-
-		UINT numElements = ARRAYSIZE(layout);
-
+		// 頂点シェーダ生成 シャドウマップ
 		{
 			FILE* file;
 			long int fsize;
@@ -125,11 +120,38 @@ bool CRenderer::Init()
 			fread(buffer, fsize, 1, file);
 			fclose(file);
 
-			m_D3DDevice->CreateVertexShader(buffer, fsize, NULL, &m_VertexShader[1]);
+			hr = m_D3DDevice->CreateVertexShader(buffer, fsize, NULL, &m_VertexShader[SHADER_INDEX_V::SHADOW_MAP]);
+			if (FAILED(hr))
+			{
+				FAILDE_ASSERT;
+				return false;
+			}
+
+			delete[] buffer;
+		}
+
+		// 頂点シェーダ生成 (Depth Pre Pass)
+		{
+			FILE* file;
+			long int fsize;
+
+			file = fopen("VertexShader_Depth_Pre_Pass.cso", "rb");
+			fsize = _filelength(_fileno(file));
+			unsigned char* buffer = new unsigned char[fsize];
+			fread(buffer, fsize, 1, file);
+			fclose(file);
+
+			hr = m_D3DDevice->CreateVertexShader(buffer, fsize, NULL, &m_VertexShader[SHADER_INDEX_V::DEPTH_PRE]);
+			if (FAILED(hr))
+			{
+				FAILDE_ASSERT;
+				return false;
+			}
 
 			delete[] buffer;
 		}
 	}
+
 
 	// 頂点シェーダ生成 アニメーション
 	{
@@ -156,44 +178,109 @@ bool CRenderer::Init()
 			fread(buffer, fsize, 1, file);
 			fclose(file);
 
-			m_D3DDevice->CreateVertexShader(buffer, fsize, NULL, &m_VertexShader[2]);
+			hr = m_D3DDevice->CreateVertexShader(buffer, fsize, NULL, &m_VertexShader[SHADER_INDEX_V::ANIMATION]);
+			if (FAILED(hr))
+			{
+				FAILDE_ASSERT;
+				return false;
+			}
 
-			m_D3DDevice->CreateInputLayout(animation_layout,
-				numElements,
-				buffer,
-				fsize,
-				&m_VertexLayout[1]);
-
+			hr = m_D3DDevice->CreateInputLayout(animation_layout, numElements, buffer, fsize, &m_VertexLayout[INPUTLAYOUT::ANIMATION]);
 			delete[] buffer;
+
+			if (FAILED(hr))
+			{
+				FAILDE_ASSERT;
+				return false;
+			}
 		}
-	}
 
-	// 頂点シェーダ生成 GBuffer生成
-	{
-		// 入力レイアウト生成
-		D3D11_INPUT_ELEMENT_DESC layout[] =
-		{
-			{ "POSITION",	0, DXGI_FORMAT_R32G32B32_FLOAT,		0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-			{ "NORMAL",		0, DXGI_FORMAT_R32G32B32_FLOAT,		0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-			{ "COLOR",		0, DXGI_FORMAT_R32G32B32A32_FLOAT,	0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-			{ "TEXCOORD",	0, DXGI_FORMAT_R32G32_FLOAT,		0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 }
-		};
-
-		UINT numElements = ARRAYSIZE(layout);
-
+		// 頂点シェーダ生成 アニメーション(シャドウマップ付き)
 		{
 			FILE* file;
 			long int fsize;
 
-			file = fopen("VertexShader_Geometry.cso", "rb");
+			file = fopen("VertexShader_ShadowMap_Anime.cso", "rb");
 			fsize = _filelength(_fileno(file));
 			unsigned char* buffer = new unsigned char[fsize];
 			fread(buffer, fsize, 1, file);
 			fclose(file);
 
-			m_D3DDevice->CreateVertexShader(buffer, fsize, NULL, &m_VertexShader[3]);
-
+			hr = m_D3DDevice->CreateVertexShader(buffer, fsize, NULL, &m_VertexShader[SHADER_INDEX_V::SHADOW_MAP_ANIMATION]);
 			delete[] buffer;
+
+			if (FAILED(hr))
+			{
+				FAILDE_ASSERT;
+				return false;
+			}
+		}
+
+		// 頂点シェーダ生成 アニメーション(Depth Pre Pass)
+		{
+			FILE* file;
+			long int fsize;
+
+			file = fopen("VertexShader_Animation_Depth_Pre_Pass.cso", "rb");
+			fsize = _filelength(_fileno(file));
+			unsigned char* buffer = new unsigned char[fsize];
+			fread(buffer, fsize, 1, file);
+			fclose(file);
+
+			hr = m_D3DDevice->CreateVertexShader(buffer, fsize, NULL, &m_VertexShader[SHADER_INDEX_V::DEPTH_PRE_ANIME]);
+			delete[] buffer;
+
+			if (FAILED(hr))
+			{
+				FAILDE_ASSERT;
+				return false;
+			}
+		}
+	}
+
+	// 頂点シェーダ生成 インスタンシング
+	{
+		// 入力レイアウト生成
+		D3D11_INPUT_ELEMENT_DESC animation_layout[] =
+		{
+			{ "POSITION",	0, DXGI_FORMAT_R32G32B32_FLOAT,		0,	D3D11_APPEND_ALIGNED_ELEMENT,	D3D11_INPUT_PER_VERTEX_DATA,	0 },
+			{ "NORMAL",		0, DXGI_FORMAT_R32G32B32_FLOAT,		0,	D3D11_APPEND_ALIGNED_ELEMENT,	D3D11_INPUT_PER_VERTEX_DATA,	0 },
+			{ "COLOR",		0, DXGI_FORMAT_R32G32B32A32_FLOAT,	0,	D3D11_APPEND_ALIGNED_ELEMENT,	D3D11_INPUT_PER_VERTEX_DATA,	0 },
+			{ "TEXCOORD",	0, DXGI_FORMAT_R32G32_FLOAT,		0,	D3D11_APPEND_ALIGNED_ELEMENT,	D3D11_INPUT_PER_VERTEX_DATA,	0 },
+
+			{ "MATRIX",		0, DXGI_FORMAT_R32G32B32A32_FLOAT,	1,	D3D11_APPEND_ALIGNED_ELEMENT,	D3D11_INPUT_PER_INSTANCE_DATA,	1 },
+			{ "MATRIX",		1, DXGI_FORMAT_R32G32B32A32_FLOAT,	1,	D3D11_APPEND_ALIGNED_ELEMENT,	D3D11_INPUT_PER_INSTANCE_DATA,	1 },
+			{ "MATRIX",		2, DXGI_FORMAT_R32G32B32A32_FLOAT,	1,	D3D11_APPEND_ALIGNED_ELEMENT,	D3D11_INPUT_PER_INSTANCE_DATA,	1 },
+			{ "MATRIX",		3, DXGI_FORMAT_R32G32B32A32_FLOAT,	1,	D3D11_APPEND_ALIGNED_ELEMENT,	D3D11_INPUT_PER_INSTANCE_DATA,	1 },
+		};
+
+		UINT numElements = ARRAYSIZE(animation_layout);
+
+		{
+			FILE* file;
+			long int fsize;
+
+			file = fopen("VertexShader_Instancing.cso", "rb");
+			fsize = _filelength(_fileno(file));
+			unsigned char* buffer = new unsigned char[fsize];
+			fread(buffer, fsize, 1, file);
+			fclose(file);
+
+			hr = m_D3DDevice->CreateVertexShader(buffer, fsize, NULL, &m_VertexShader[SHADER_INDEX_V::INSTANCING]);
+			if (FAILED(hr))
+			{
+				FAILDE_ASSERT;
+				return false;
+			}
+
+			hr = m_D3DDevice->CreateInputLayout(animation_layout, numElements, buffer, fsize, &m_VertexLayout[INPUTLAYOUT::INSTANCING]);
+			delete[] buffer;
+
+			if (FAILED(hr))
+			{
+				FAILDE_ASSERT;
+				return false;
+			}
 		}
 	}
 
@@ -210,7 +297,12 @@ bool CRenderer::Init()
 			fread(buffer, fsize, 1, file);
 			fclose(file);
 
-			m_D3DDevice->CreatePixelShader(buffer, fsize, NULL, &m_PixelShader[0]);
+			hr = m_D3DDevice->CreatePixelShader(buffer, fsize, NULL, &m_PixelShader[SHADER_INDEX_P::DEFAULT]);
+			if (FAILED(hr))
+			{
+				FAILDE_ASSERT;
+				return false;
+			}
 
 			delete[] buffer;
 		}
@@ -226,7 +318,12 @@ bool CRenderer::Init()
 			fread(buffer, fsize, 1, file);
 			fclose(file);
 
-			m_D3DDevice->CreatePixelShader(buffer, fsize, NULL, &m_PixelShader[1]);
+			hr = m_D3DDevice->CreatePixelShader(buffer, fsize, NULL, &m_PixelShader[SHADER_INDEX_P::NO_TEXTURE]);
+			if (FAILED(hr))
+			{
+				FAILDE_ASSERT;
+				return false;
+			}
 
 			delete[] buffer;
 		}
@@ -242,7 +339,12 @@ bool CRenderer::Init()
 			fread(buffer, fsize, 1, file);
 			fclose(file);
 
-			m_D3DDevice->CreatePixelShader(buffer, fsize, NULL, &m_PixelShader[2]);
+			hr = m_D3DDevice->CreatePixelShader(buffer, fsize, NULL, &m_PixelShader[SHADER_INDEX_P::NO_LIGHT]);
+			if (FAILED(hr))
+			{
+				FAILDE_ASSERT;
+				return false;
+			}
 
 			delete[] buffer;
 		}
@@ -258,42 +360,20 @@ bool CRenderer::Init()
 			fread(buffer, fsize, 1, file);
 			fclose(file);
 
-			m_D3DDevice->CreatePixelShader(buffer, fsize, NULL, &m_PixelShader[3]);
+			hr = m_D3DDevice->CreatePixelShader(buffer, fsize, NULL, &m_PixelShader[SHADER_INDEX_P::SHADOW_MAP]);
+			if (FAILED(hr))
+			{
+				FAILDE_ASSERT;
+				return false;
+			}
 
 			delete[] buffer;
 		}
+	}
 
-		// GBuffer生成
-		{
-			FILE* file;
-			long int fsize;
-
-			file = fopen("PixelShader_Geometry.cso", "rb");
-			fsize = _filelength(_fileno(file));
-			unsigned char* buffer = new unsigned char[fsize];
-			fread(buffer, fsize, 1, file);
-			fclose(file);
-
-			m_D3DDevice->CreatePixelShader(buffer, fsize, NULL, &m_PixelShader[4]);
-
-			delete[] buffer;
-		}
-
-		// クラスター
-		{
-			FILE* file;
-			long int fsize;
-
-			file = fopen("PixelShader_Created.cso", "rb");
-			fsize = _filelength(_fileno(file));
-			unsigned char* buffer = new unsigned char[fsize];
-			fread(buffer, fsize, 1, file);
-			fclose(file);
-
-			m_D3DDevice->CreatePixelShader(buffer, fsize, NULL, &m_PixelShader[5]);
-
-			delete[] buffer;
-		}
+	{
+		m_VertexShader[SHADER_INDEX_V::MAX] = nullptr;
+		m_PixelShader[SHADER_INDEX_P::MAX] = nullptr;
 	}
 
 	// 定数バッファ生成
@@ -326,28 +406,19 @@ bool CRenderer::Init()
 	m_ImmediateContext->VSSetConstantBuffers(5, 1, &m_ConstantBuffer_02);
 	m_ImmediateContext->PSSetConstantBuffers(5, 1, &m_ConstantBuffer_02);
 
-	/*{
-		// 定数バッファ生成
-		D3D11_BUFFER_DESC hBufferDesc;
-		hBufferDesc.ByteWidth = sizeof(XMMATRIX) * 128;
-		hBufferDesc.StructureByteStride = sizeof(float);
-
-		m_D3DDevice->CreateBuffer(&hBufferDesc, NULL, &m_Bone_Matrix_Buffer);
-		m_ImmediateContext->VSSetConstantBuffers(0, 1, &m_Bone_Matrix_Buffer);
-	}*/
-
 	// 入力レイアウト設定
 	m_ImmediateContext->IASetInputLayout(m_VertexLayout[0]);
 
 	// シェーダ設定
-	m_ImmediateContext->VSSetShader(m_VertexShader[0], NULL, 0);
-	m_ImmediateContext->PSSetShader(m_PixelShader[0], NULL, 0);
+	//m_ImmediateContext->VSSetShader(m_VertexShader[0], NULL, 0);
+	//m_ImmediateContext->PSSetShader(m_PixelShader[0], NULL, 0);
+	m_ImmediateContext->VSSetShader(m_VertexShader[SHADER_INDEX_V::DEFAULT], NULL, 0);
+	m_ImmediateContext->PSSetShader(m_PixelShader[SHADER_INDEX_P::DEFAULT], NULL, 0);
 
 	// ライト初期化
 	ZeroMemory(&m_Light, sizeof(m_Light));
-	m_Light.Direction = XMFLOAT4(-10.0f, -10.0f, 10.0f, 0.0f);
-
-	m_Light.Position = XMFLOAT4(10.0f, 10.0f, -10.0f, 0.0f);
+	m_Light.Position = XMFLOAT4(20.0f, 20.0f, -20.0f, 0.0f);
+	m_Light.Direction = m_Light.Position * -1.0f;
 	m_Light.Diffuse = COLOR(1.0f, 1.0f, 1.0f, 1.0f);
 	m_Light.Ambient = COLOR(1.0f, 1.0f, 1.0f, 1.0f);
 	m_Light.Specular = COLOR(1.0f, 1.0f, 1.0f, 1.0f);
@@ -387,18 +458,17 @@ void CRenderer::Uninit()
 
 	SAFE_RELEASE(m_VertexLayout[0]);
 	SAFE_RELEASE(m_VertexLayout[1]);
+	SAFE_RELEASE(m_VertexLayout[2]);
 
-	SAFE_RELEASE(m_VertexShader[0]);
-	SAFE_RELEASE(m_VertexShader[1]);
-	SAFE_RELEASE(m_VertexShader[2]);
-	SAFE_RELEASE(m_VertexShader[3]);
+	for (auto s : m_VertexShader)
+	{
+		if(nullptr != s.second) s.second->Release();
+	}
 
-	SAFE_RELEASE(m_PixelShader[0]);
-	SAFE_RELEASE(m_PixelShader[1]);
-	SAFE_RELEASE(m_PixelShader[2]);
-	SAFE_RELEASE(m_PixelShader[3]);
-	SAFE_RELEASE(m_PixelShader[4]);
-	SAFE_RELEASE(m_PixelShader[5]);
+	for (auto s : m_PixelShader)
+	{
+		if (nullptr != s.second) s.second->Release();
+	}
 
 	SAFE_RELEASE(m_RenderTargetView)
 	SAFE_RELEASE(m_SwapChain)
@@ -539,7 +609,7 @@ bool CRenderer::Init3D()
 	td.Height = sc.Height;
 	td.MipLevels = 1;
 	td.ArraySize = 1;
-	td.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
+	td.Format = DXGI_FORMAT_R32_TYPELESS;
 	td.SampleDesc = sc.SampleDesc;
 	td.Usage = D3D11_USAGE_DEFAULT;
 	td.BindFlags = D3D11_BIND_DEPTH_STENCIL;
@@ -555,9 +625,10 @@ bool CRenderer::Init3D()
 	//ステンシルターゲット作成
 	D3D11_DEPTH_STENCIL_VIEW_DESC dsvd;
 	ZeroMemory(&dsvd, sizeof(dsvd));
-	dsvd.Format = td.Format;
+	dsvd.Format = DXGI_FORMAT_D32_FLOAT;
 	dsvd.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
 	//dsvd.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2DMS;		// MSAA用
+	dsvd.Texture2D.MipSlice = 0;
 	dsvd.Flags = 0;
 	hr = m_D3DDevice->CreateDepthStencilView(depthTexture, &dsvd, &m_DepthStencilView);
 	if (FAILED(hr))
@@ -568,6 +639,25 @@ bool CRenderer::Init3D()
 
 	m_ImmediateContext->OMSetRenderTargets(1, &m_RenderTargetView, m_DepthStencilView);
 
+	//// シェーダーリソースビュー設定
+	//{
+	//	ID3D11ShaderResourceView* srv = nullptr;
+
+	//	// シェーダーリソースビューの設定
+	//	D3D11_SHADER_RESOURCE_VIEW_DESC desc;
+	//	desc.Format = DXGI_FORMAT_R32_FLOAT;
+	//	desc.ViewDimension = D3D_SRV_DIMENSION_TEXTURE2D;
+	//	desc.Texture2D.MostDetailedMip = 0;
+	//	desc.Texture2D.MipLevels = 1;
+
+	//	hr = m_D3DDevice->CreateShaderResourceView(depthTexture, &desc, &srv);
+	//	if (FAILED(hr))
+	//	{
+	//		FAILDE_ASSERT;
+	//		return false;
+	//	}
+	//	ShaderResourceView[0].reset(srv);
+	//}
 
 
 	// ビューポート設定
@@ -586,8 +676,6 @@ bool CRenderer::Init3D()
 	D3D11_RASTERIZER_DESC rd;
 	ZeroMemory(&rd, sizeof(rd));
 	rd.FillMode = D3D11_FILL_SOLID;
-	//rd.FillMode = D3D11_FILL_WIREFRAME;
-	//rd.CullMode = D3D11_CULL_NONE;
 	rd.CullMode = D3D11_CULL_BACK;
 	rd.DepthClipEnable = TRUE;
 	rd.MultisampleEnable = FALSE;
@@ -663,6 +751,8 @@ bool CRenderer::Init3D()
 	m_D3DDevice->CreateSamplerState(&samplerDesc, &samplerState);
 
 	m_ImmediateContext->PSSetSamplers(0, 1, &samplerState);
+
+	m_SamplerState.reset(samplerState);
 
 	return true;
 }
@@ -908,8 +998,6 @@ void CRenderer::Begin()
 	float ClearColor[4] = { 0.5f, 0.5f, 0.5f, 1.0f };
 	m_ImmediateContext->ClearRenderTargetView( m_RenderTargetView, ClearColor );
 	m_ImmediateContext->ClearDepthStencilView( m_DepthStencilView, D3D11_CLEAR_DEPTH, 1.0f, 0);
-
-	Pass = RENDERING_PASS::GEOMETRY;
 }
 
 void CRenderer::End()
@@ -937,7 +1025,7 @@ void CRenderer::End()
 				// リセット
 				case DXGI_ERROR_DEVICE_HUNG:
 				case DXGI_ERROR_DEVICE_RESET:
-					CManager::GameEnd();
+					CManager::Get_Instance()->GameEnd();
 					break;
 
 				// エラー 終了
@@ -945,7 +1033,7 @@ void CRenderer::End()
 				case DXGI_ERROR_DRIVER_INTERNAL_ERROR:
 				case DXGI_ERROR_INVALID_CALL:
 				default:
-					CManager::GameEnd();
+					CManager::Get_Instance()->GameEnd();
 					break;
 			}
 		}
@@ -1085,6 +1173,14 @@ void CRenderer::SetVertexBuffers( ID3D11Buffer* VertexBuffer )
 	m_ImmediateContext->IASetVertexBuffers( 0, 1, vb, &stride, &offset );
 }
 
+void CRenderer::SetVertexBuffers(ID3D11Buffer* VertexBuffer, ID3D11Buffer* InstancingBuffer, UINT size)
+{
+	UINT stride[2] = { size, sizeof(XMMATRIX) };
+	UINT offset[2] = { 0, 0 };
+	ID3D11Buffer* vb[2] = { VertexBuffer, InstancingBuffer };
+	m_ImmediateContext->IASetVertexBuffers(0, 2, vb, stride, offset);
+}
+
 void CRenderer::SetIndexBuffer( ID3D11Buffer* IndexBuffer )
 {
 	m_ImmediateContext->IASetIndexBuffer( IndexBuffer, DXGI_FORMAT_R16_UINT, 0 );
@@ -1099,57 +1195,9 @@ void CRenderer::DrawIndexed( unsigned int IndexCount, unsigned int StartIndexLoc
 // シェーダ設定
 void CRenderer::Set_Shader(const SHADER_INDEX_V v_index, const SHADER_INDEX_P p_index)
 {
-	switch ((int)v_index)
-	{
-		case (int)SHADER_INDEX_V::DEFAULT:
-			m_ImmediateContext->VSSetShader(m_VertexShader[(int)SHADER_INDEX_V::DEFAULT], NULL, 0);
-			break;
+	m_ImmediateContext->VSSetShader(m_VertexShader[v_index], nullptr, 0);
 
-		case (int)SHADER_INDEX_V::SHADOW_MAP:
-			m_ImmediateContext->VSSetShader(m_VertexShader[(int)SHADER_INDEX_V::SHADOW_MAP], NULL, 0);
-			break;
-
-		case (int)SHADER_INDEX_V::ANIMATION:
-			m_ImmediateContext->VSSetShader(m_VertexShader[(int)SHADER_INDEX_V::ANIMATION], NULL, 0);
-			break;
-
-		case (int)SHADER_INDEX_V::GEOMETRY:
-			m_ImmediateContext->VSSetShader(m_VertexShader[(int)SHADER_INDEX_V::GEOMETRY], NULL, 0);
-			break;
-
-		default:
-			break;
-	}
-
-	switch ((int)p_index)
-	{
-		case (int)SHADER_INDEX_P::DEFAULT:
-			m_ImmediateContext->PSSetShader(m_PixelShader[(int)SHADER_INDEX_P::DEFAULT], NULL, 0);
-			break;
-
-		case (int)SHADER_INDEX_P::NO_TEXTURE:
-			m_ImmediateContext->PSSetShader(m_PixelShader[(int)SHADER_INDEX_P::NO_TEXTURE], NULL, 0);
-			break;
-
-		case (int)SHADER_INDEX_P::NO_LIGHT:
-			m_ImmediateContext->PSSetShader(m_PixelShader[(int)SHADER_INDEX_P::NO_LIGHT], NULL, 0);
-			break;
-
-		case (int)SHADER_INDEX_P::SHADOW_MAP:
-			m_ImmediateContext->PSSetShader(m_PixelShader[(int)SHADER_INDEX_P::SHADOW_MAP], NULL, 0);
-			break;
-
-		case (int)SHADER_INDEX_P::GEOMETRY:
-			m_ImmediateContext->PSSetShader(m_PixelShader[(int)SHADER_INDEX_P::GEOMETRY], NULL, 0);
-			break;
-
-		case (int)SHADER_INDEX_P::LIGHT:
-			m_ImmediateContext->PSSetShader(m_PixelShader[(int)SHADER_INDEX_P::LIGHT], NULL, 0);
-			break;
-
-		default:
-			break;
-	}
+	m_ImmediateContext->PSSetShader(m_PixelShader[p_index], nullptr, 0);
 }
 
 void CRenderer::Set_InputLayout(const INPUTLAYOUT InputLayout)
@@ -1165,8 +1213,12 @@ void CRenderer::Set_InputLayout(const INPUTLAYOUT InputLayout)
 			m_ImmediateContext->IASetInputLayout(m_VertexLayout[(int)INPUTLAYOUT::ANIMATION]);
 			break;
 
-	default:
-		break;
+		case (int)INPUTLAYOUT::INSTANCING:
+			m_ImmediateContext->IASetInputLayout(m_VertexLayout[(int)INPUTLAYOUT::INSTANCING]);
+			break;
+
+		default:
+			break;
 	}
 }
 
@@ -1198,7 +1250,10 @@ void CRenderer::SetPass_Rendring()
 		Set_Shader();
 		Set_RasterizerState();
 
-		Pass = RENDERING_PASS::REDRING;
+		ID3D11SamplerState* pSS = m_SamplerState.get();
+		m_ImmediateContext->PSSetSamplers(0, 1, &pSS);
+
+		SetDepthEnable(true);
 	}
 }
 
@@ -1231,10 +1286,8 @@ void CRenderer::SetPass_Geometry()
 			m_ImmediateContext->RSSetViewports(3, viewport);
 		}
 
-		Set_Shader(SHADER_INDEX_V::GEOMETRY, SHADER_INDEX_P::GEOMETRY);
+		Set_Shader();
 		Set_RasterizerState();
-
-		Pass = RENDERING_PASS::GEOMETRY;
 	}
 }
 
@@ -1306,112 +1359,107 @@ bool CRenderer::Create()
 		}
 	}
 
-	// アルベドバッファの作成
-	{
-		ID3D11Texture2D* pTex = nullptr;
+	//// アルベドバッファの作成
+	//{
+	//	ID3D11Texture2D* pTex = nullptr;
 
-		// テクスチャの作成
-		D3D11_TEXTURE2D_DESC td;
-		td.Width = SCREEN_WIDTH;
-		td.Height = SCREEN_HEIGHT;
-		td.MipLevels = 1;
-		td.ArraySize = 1;
-		td.Format = DXGI_FORMAT_R16G16B16A16_FLOAT;
-		td.SampleDesc.Count = 1;
-		td.SampleDesc.Quality = 0;
-		td.Usage = D3D11_USAGE_DEFAULT;
-		td.BindFlags = D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE;
-		td.CPUAccessFlags = 0;
-		td.MiscFlags = 0;
+	//	// テクスチャの作成
+	//	D3D11_TEXTURE2D_DESC td;
+	//	td.Width = SCREEN_WIDTH;
+	//	td.Height = SCREEN_HEIGHT;
+	//	td.MipLevels = 1;
+	//	td.ArraySize = 1;
+	//	td.Format = DXGI_FORMAT_R16G16B16A16_FLOAT;
+	//	td.SampleDesc.Count = 1;
+	//	td.SampleDesc.Quality = 0;
+	//	td.Usage = D3D11_USAGE_DEFAULT;
+	//	td.BindFlags = D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE;
+	//	td.CPUAccessFlags = 0;
+	//	td.MiscFlags = 0;
 
-		hr = m_D3DDevice->CreateTexture2D(&td, nullptr, &pTex);
-		if (FAILED(hr))
-		{
-			FAILDE_ASSERT;
-			return false;
-		}
+	//	hr = m_D3DDevice->CreateTexture2D(&td, nullptr, &pTex);
+	//	if (FAILED(hr))
+	//	{
+	//		FAILDE_ASSERT;
+	//		return false;
+	//	}
 
-		// レンダーターゲットビュー設定
-		{
-			ID3D11RenderTargetView* pRtv;
+	//	// レンダーターゲットビュー設定
+	//	{
+	//		ID3D11RenderTargetView* pRtv;
 
-			hr = m_D3DDevice->CreateRenderTargetView(pTex, nullptr, &pRtv);
-			if (FAILED(hr))
-			{
-				return false;
-			}
+	//		hr = m_D3DDevice->CreateRenderTargetView(pTex, nullptr, &pRtv);
+	//		if (FAILED(hr))
+	//		{
+	//			return false;
+	//		}
 
-			RenderTargetView[1].reset(pRtv);
-		}
+	//		RenderTargetView[1].reset(pRtv);
+	//	}
 
-		// シェーダーリソースビュー設定
-		{
-			ID3D11ShaderResourceView* srv = nullptr;
+	//	// シェーダーリソースビュー設定
+	//	{
+	//		ID3D11ShaderResourceView* srv = nullptr;
 
-			hr = m_D3DDevice->CreateShaderResourceView(pTex, nullptr, &srv);
-			if (FAILED(hr))
-			{
-				FAILDE_ASSERT;
-				return false;
-			}
-			ShaderResourceView[1].reset(srv);
-		}
-	}
+	//		hr = m_D3DDevice->CreateShaderResourceView(pTex, nullptr, &srv);
+	//		if (FAILED(hr))
+	//		{
+	//			FAILDE_ASSERT;
+	//			return false;
+	//		}
+	//		ShaderResourceView[1].reset(srv);
+	//	}
+	//}
 
-	// 法線バッファの作成
-	{
-		ID3D11Texture2D* pTex = nullptr;
+	//// 法線バッファの作成
+	//{
+	//	ID3D11Texture2D* pTex = nullptr;
 
-		// テクスチャの作成
-		D3D11_TEXTURE2D_DESC td;
-		td.Width = SCREEN_WIDTH;
-		td.Height = SCREEN_HEIGHT;
-		td.MipLevels = 1;
-		td.ArraySize = 1;
-		td.Format = DXGI_FORMAT_R11G11B10_FLOAT;
-		td.SampleDesc.Count = 1;
-		td.SampleDesc.Quality = 0;
-		td.Usage = D3D11_USAGE_DEFAULT;
-		td.BindFlags = D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE;
-		td.CPUAccessFlags = 0;
-		td.MiscFlags = 0;
+	//	// テクスチャの作成
+	//	D3D11_TEXTURE2D_DESC td;
+	//	td.Width = SCREEN_WIDTH;
+	//	td.Height = SCREEN_HEIGHT;
+	//	td.MipLevels = 1;
+	//	td.ArraySize = 1;
+	//	td.Format = DXGI_FORMAT_R11G11B10_FLOAT;
+	//	td.SampleDesc.Count = 1;
+	//	td.SampleDesc.Quality = 0;
+	//	td.Usage = D3D11_USAGE_DEFAULT;
+	//	td.BindFlags = D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE;
+	//	td.CPUAccessFlags = 0;
+	//	td.MiscFlags = 0;
 
-		hr = m_D3DDevice->CreateTexture2D(&td, nullptr, &pTex);
-		if (FAILED(hr))
-		{
-			FAILDE_ASSERT;
-			return false;
-		}
+	//	hr = m_D3DDevice->CreateTexture2D(&td, nullptr, &pTex);
+	//	if (FAILED(hr))
+	//	{
+	//		FAILDE_ASSERT;
+	//		return false;
+	//	}
 
-		// レンダーターゲットビュー設定
-		{
-			ID3D11RenderTargetView* pRtv;
+	//	// レンダーターゲットビュー設定
+	//	{
+	//		ID3D11RenderTargetView* pRtv;
 
-			hr = m_D3DDevice->CreateRenderTargetView(pTex, nullptr, &pRtv);
-			if (FAILED(hr))
-			{
-				return false;
-			}
+	//		hr = m_D3DDevice->CreateRenderTargetView(pTex, nullptr, &pRtv);
+	//		if (FAILED(hr))
+	//		{
+	//			return false;
+	//		}
 
-			RenderTargetView[2].reset(pRtv);
-		}
+	//		RenderTargetView[2].reset(pRtv);
+	//	}
 
-		// シェーダーリソースビュー設定
-		{
-			ID3D11ShaderResourceView* srv = nullptr;
+	//	// シェーダーリソースビュー設定
+	//	{
+	//		ID3D11ShaderResourceView* srv = nullptr;
 
-			hr = m_D3DDevice->CreateShaderResourceView(pTex, nullptr, &srv);
-			if (FAILED(hr))
-			{
-				FAILDE_ASSERT;
-				return false;
-			}
-			ShaderResourceView[2].reset(srv);
-		}
-	}
-}
-
-RENDERING_PASS CRenderer::Get_Rendering_Pass()
-{
-	return Pass;
+	//		hr = m_D3DDevice->CreateShaderResourceView(pTex, nullptr, &srv);
+	//		if (FAILED(hr))
+	//		{
+	//			FAILDE_ASSERT;
+	//			return false;
+	//		}
+	//		ShaderResourceView[2].reset(srv);
+	//	}
+	//}
 }

@@ -1,6 +1,7 @@
-#include "renderer.h"
-#include "Mesh_Cylinder.h"
-
+#include	"renderer.h"
+#include	"Mesh_Cylinder.h"
+#include	"camera.h"
+#include	"Debug_Camera.h"
 #include	"manager.h"
 #include	"Scene.h"
 #include	"ShadowMap.h"
@@ -120,7 +121,7 @@ void MESH_CYlLINDER::Uninit()
 
 void MESH_CYlLINDER::Draw()
 {
-	if (false == CManager::Get_ShadowMap()->Get_Enable())
+	if (false == CManager::Get_Instance()->Get_ShadowMap()->Get_Enable())
 	{
 		{
 			XMMATRIX world;
@@ -129,21 +130,21 @@ void MESH_CYlLINDER::Draw()
 			world *= XMMatrixRotationRollPitchYaw(Rotation.x, Rotation.y, Rotation.z);
 			world *= XMMatrixTranslation(Position.x, Position.y, Position.z);
 
-			auto camera01 = CManager::Get_Scene()->Get_Game_Object<CCamera>("camera");
-			auto camera02 = CManager::Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
+			const auto camera01 = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<CCamera>("camera");
+			const auto camera02 = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
 
-			if (nullptr != camera01)
+			if (!camera01.expired() && Empty_weak_ptr<CCamera>(camera01))
 
 			{
-				CRenderer::Set_MatrixBuffer(world, camera01->Get_Camera_View(), camera01->Get_Camera_Projection());
+				CRenderer::Set_MatrixBuffer(world, camera01.lock()->Get_Camera_View(), camera01.lock()->Get_Camera_Projection());
 
-				CRenderer::Set_MatrixBuffer01(*camera01->Get_Pos());
+				CRenderer::Set_MatrixBuffer01(*camera01.lock()->Get_Pos());
 			}
 			else
 			{
-				CRenderer::Set_MatrixBuffer(world, camera02->Get_Camera_View(), camera02->Get_Camera_Projection());
+				CRenderer::Set_MatrixBuffer(world, camera02.lock()->Get_Camera_View(), camera02.lock()->Get_Camera_Projection());
 
-				CRenderer::Set_MatrixBuffer01(*camera02->Get_Pos());
+				CRenderer::Set_MatrixBuffer01(*camera02.lock()->Get_Pos());
 			}
 		}
 
@@ -157,8 +158,42 @@ void MESH_CYlLINDER::Draw()
 		// ポリゴン描画
 		CRenderer::GetDeviceContext()->DrawIndexed(IndexNum, 0, 0);
 	}
+
+	GAME_OBJECT::Draw();
+}
+
+void MESH_CYlLINDER::Draw_DPP()
+{
+	{
+		XMMATRIX world;
+
+		world = XMMatrixScaling(Scaling.x, Scaling.y, Scaling.z);
+		world *= XMMatrixRotationRollPitchYaw(Rotation.x, Rotation.y, Rotation.z);
+		world *= XMMatrixTranslation(Position.x, Position.y, Position.z);
+
+		const auto camera01 = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<CCamera>("camera");
+		const auto camera02 = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
+
+		if (!camera01.expired() && Empty_weak_ptr<CCamera>(camera01))
+		{
+			CRenderer::Set_MatrixBuffer(world, camera01.lock()->Get_Camera_View(), camera01.lock()->Get_Camera_Projection());
+		}
+		else
+		{
+			CRenderer::Set_MatrixBuffer(world, camera02.lock()->Get_Camera_View(), camera02.lock()->Get_Camera_Projection());
+		}
+	}
+
+	CRenderer::SetVertexBuffers(VertexBuffer.get());	// 頂点バッファ設定
+	CRenderer::SetIndexBuffer(IndexBuffer.get());		// インデックスバッファ設定
+
+	CRenderer::GetDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);	// トポロジ設定
+
+	// ポリゴン描画
+	CRenderer::GetDeviceContext()->DrawIndexed(IndexNum, 0, 0);
 }
 
 void MESH_CYlLINDER::Update(float delta_time)
 {
+	GAME_OBJECT::Update(delta_time);
 }

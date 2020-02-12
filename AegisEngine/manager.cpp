@@ -2,32 +2,42 @@
 #include	"manager.h"
 #include	"Renderer.h"
 #include	"Input.h"
+
 #include	"Scene.h"
+#include	"Scene_Manager.h"
+#include	"Main_Menu.h"
+
+#include	"texture.h"
 #include	"Texture_Manager.h"
 #include	"Timer.h"
 #include	"audio_clip.h"
 #include	"ShadowMap.h"
 #include	"Effekseer.h"
 
-//#include	"Clustered.h"
-//unique_ptr<CLUSTERED> Clustered;
+#include	"Player.h"
 
 #ifdef _DEBUG
 #include	"My_imgui.h"
 #endif // _DEBUG
 
-SCENE_MANAGER* CManager::pSceneManager = nullptr;		// シーンマネージャー
-bool CManager::GameEnable = true;			// プログラム自体の終了のためのフラグ
-
-SHADOW_MAP* CManager::pShadowMap = nullptr;
-
-#ifdef _DEBUG
-My_imgui* g_MyImgui;		// Imguiのクラス
-#endif // _DEBUG
+unique_ptr<CManager> CManager::Manager;
 
 bool CManager::Init()
 {
+	if (nullptr == Manager.get())
+	{
+		Manager = make_unique<CManager>();
+	}
+
 	HRESULT hr;
+
+	UINT count = thread::hardware_concurrency();
+	if (0 == count)
+	{
+		FAILDE_ASSERT;
+		return false;
+	}
+	Manager->Set_ThreadCount(count);
 
 	// COMの初期化
 	hr = CoInitializeEx(0, COINITBASE_MULTITHREADED);
@@ -45,10 +55,6 @@ bool CManager::Init()
 
 	CRenderer::CreateRenderTexture();
 
-#ifdef _DEBUG
-	g_MyImgui = new My_imgui();
-	g_MyImgui->Init(GetWindow());
-#endif // _DEBUG
 	AUDIO_MANAGER::Init();
 
 	TEXTURE_MANEGER::Init();
@@ -59,22 +65,26 @@ bool CManager::Init()
 	TIMER::Init();
 	CLOCK_TIMER::Init();
 
-	pSceneManager = new SCENE_MANAGER();
-
-	pSceneManager->Init();
-	//pSceneManager->Set_Scene<TITLE>();
-	pSceneManager->Set_Scene<MAIN_MENU>();
-
 	EFFEKSEER_MANAGER::Init();
 
 	//CRenderer::Change_Window_Mode();
 
-	pShadowMap = new SHADOW_MAP();//
-	pShadowMap->Init();
-	pShadowMap->Set_Target(pSceneManager->Get_Scene()->Get_Game_Object<PLAYER>("player"));
+#ifdef _DEBUG
+	Manager->imgui.reset(new My_imgui());
+	Manager->imgui->Init(GetWindow());
+#endif // _DEBUG
 
-	//Clustered.reset(new CLUSTERED());///
-	//Clustered->Init();///
+	Manager->pSceneManager.reset(new SCENE_MANAGER());
+
+	Manager->pSceneManager->Init();
+	//pSceneManager->Set_Scene<TITLE>();
+	Manager->pSceneManager->Set_Scene<MAIN_MENU>();
+
+	Manager->pShadowMap.reset(new SHADOW_MAP());//
+	Manager->pShadowMap->Init();
+	Manager->pShadowMap->Set_Target(Manager->pSceneManager->Get_Scene()->Get_Game_Object<PLAYER>("player"));
+
+	Manager->pSceneManager->Get_Scene()->Get_Light_Manager()->Init();
 
 	return true;
 }
@@ -88,11 +98,10 @@ void CManager::Update()
 	CINPUT::Update();
 
 #ifdef _DEBUG
-	TEXTURE_MANEGER::Update();
+	TEXTURE_MANEGER::Get_Instance()->Update();
 #endif // _DEBUG
 
 	pSceneManager->Update(TIMER::Get_DeltaTime());
-
 	// シャドウマップの更新
 	{
 		pShadowMap->Update();//
@@ -104,6 +113,8 @@ void CManager::Update()
 	}
 
 	MOUSE::Get_Mouse()->Reset_Wheel_Moveset();
+
+	Manager->pSceneManager->Get_Scene()->Get_Light_Manager()->Update();
 
 	/*if (KEYBOARD::Trigger_Keyboard(VK_F1))
 	{
@@ -119,37 +130,32 @@ void CManager::Update()
 	{
 		EFFEKSEER_MANAGER::Play("test");
 	}
+
+#ifdef _DEBUG
+	imgui->Update();
+#endif // _DEBUG
 }
 
 void CManager::Draw()
 {
 #ifdef _DEBUG
-	g_MyImgui->Begin();
+	imgui->Begin();
 #endif // _DEBUG
 
 	CRenderer::Begin();
-
-	//{
-	//	if (nullptr != Clustered.get()) Clustered->Draw();///
-	//}
 
 	// シャドウマップの描画
 	{
 		//pShadowMap->Begin();
 		//pSceneManager->Draw();
-		//pShadowMap->End();//
-	}
-
-	// 1パス目
-	{
-		//CRenderer::SetPass_Geometry();
-		//pSceneManager->Draw();
+		pShadowMap->End();//
 	}
 
 	// 最終レンダリング
 	{
 		CRenderer::SetPass_Rendring();
 		pShadowMap->Set();
+		Manager->pSceneManager->Get_Scene()->Get_Light_Manager()->Draw();
 		pSceneManager->Draw();
 	}
 
@@ -206,9 +212,9 @@ void CManager::Draw()
 	//}
 
 #ifdef _DEBUG
-	g_MyImgui->Draw();//
-	g_MyImgui->End();
-	g_MyImgui->Render();//
+	imgui->Draw();//
+	imgui->End();
+	imgui->Render();//
 #endif // _DEBUG
 
 	CRenderer::End();
@@ -216,25 +222,23 @@ void CManager::Draw()
 
 void CManager::Uninit()
 {
-	//Clustered.reset(nullptr);///
+	//Manager->pSceneManager->Get_Scene()->Get_Light_Manager()->Uninit();
 
-	SAFE_DELETE(pSceneManager);
+	pSceneManager.reset(nullptr);
+
+	pShadowMap.reset(nullptr);//
+
+#ifdef _DEBUG
+	imgui->Uninit();
+	imgui.reset(nullptr);
+#endif // _DEBUG
 
 	// Effekseer
 	EFFEKSEER_MANAGER::Uninit();
 
 	FONT::Uninit();
 
-	TEXTURE_MANEGER::Uninit();
-
 	AUDIO_MANAGER::Uninit();
-
-	SAFE_DELETE(pShadowMap);//
-
-#ifdef _DEBUG
-	g_MyImgui->Uninit();
-	delete g_MyImgui;
-#endif // _DEBUG
 
 	CRenderer::Uninit();
 
@@ -254,7 +258,15 @@ SCENE* const CManager::Get_Scene()
 
 SHADOW_MAP* const CManager::Get_ShadowMap()
 {
-	return pShadowMap;
+	return pShadowMap.get();
+}
+
+const bool CManager::Get_Mouse_Over_ImGui()
+{
+#ifdef _DEBUG
+	return imgui->Get_Mouse_Over_Enable();
+#endif // _DEBUG
+	return false;
 }
 
 bool CManager::Get_GameEnd()
@@ -265,4 +277,24 @@ bool CManager::Get_GameEnd()
 void CManager::GameEnd()
 {
 	GameEnable = false;
+}
+
+CManager* CManager::Get_Instance()
+{
+	return Manager.get();
+}
+
+void CManager::Delete()
+{
+	Manager.reset(nullptr);
+}
+
+void CManager::Set_ThreadCount(const UINT count)
+{
+	ThreadCount = count;
+}
+
+const UINT CManager::Get_ThreadCount()
+{
+	return ThreadCount;
 }

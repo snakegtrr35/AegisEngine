@@ -1,10 +1,12 @@
 #include	"manager.h"
 #include	"Scene.h"
 #include	"ModelLoader.h"
-#include	"Circle_Shadow.h"
 #include	"Collision.h"
 #include	"Score.h"
 #include	"Bullet.h"
+#include	"Player.h"
+#include	"Enemy.h"
+#include	"Billboard.h"
 
 #include	"audio_clip.h"
 
@@ -29,11 +31,6 @@ BULLET::BULLET()
 	dynamic_cast<COLLISIION_AABB*>(Collision)->Set_Position(Position);
 
 	dynamic_cast<COLLISIION_AABB*>(Collision)->Set_Radius(XMFLOAT3(0.5f, 0.5f, 0.5f));
-
-	Shadow = new CIRCLE_SHADOW();
-	Shadow->Set_Position(&Position);
-
-	Shadow->SetWH(XMFLOAT2(0.3f, 0.3f));
 }
 
 BULLET::BULLET(XMFLOAT3& position, XMFLOAT3& move_vector)
@@ -79,7 +76,13 @@ void BULLET::Init()
 void BULLET::Draw()
 {
 	Model->Draw();
-	Shadow->Draw();
+
+	GAME_OBJECT::Draw();
+}
+
+void BULLET::Draw_DPP()
+{
+	Model->Draw_DPP();
 }
 
 void BULLET::Update(float delta_time)
@@ -87,15 +90,6 @@ void BULLET::Update(float delta_time)
 	Position.x += MoveVector.x * 0.2f;
 	Position.y += MoveVector.y * 0.2f;
 	Position.z += MoveVector.z * 0.2f;
-
-	// 影の更新
-	{
-		XMFLOAT3 pos = Position;
-
-		pos.y = 0.01f;
-
-		Shadow->Set_Position(&pos);
-	}
 
 	Model->Set_Position(Position);
 	Model->Set_Rotation(Rotation);
@@ -106,15 +100,14 @@ void BULLET::Update(float delta_time)
 
 	HP--;
 
-
 	if (HP <= 0)
 	{
-		CManager::Get_Scene()->Destroy_Game_Object(this);
+		CManager::Get_Instance()->Get_Scene()->Destroy_Game_Object(this);
 	}
 
 	// 敵と弾の当たり判定
 	{
-		vector<ENEMY*> enemys = CManager::Get_Scene()->Get_Game_Objects<ENEMY>();
+		vector<ENEMY*> enemys = CManager::Get_Instance()->Get_Scene()->Get_Game_Objects<ENEMY>();
 
 		for (ENEMY* enemy : enemys)
 		{
@@ -123,7 +116,7 @@ void BULLET::Update(float delta_time)
 			{
 				// ビルボード
 				{
-					BILL_BOARD_ANIMATION* bba = CManager::Get_Scene()->Add_Game_Object<BILL_BOARD_ANIMATION>(LAYER_NAME::EFFECT);
+					BILL_BOARD_ANIMATION* bba = CManager::Get_Instance()->Get_Scene()->Add_Game_Object<BILL_BOARD_ANIMATION>(LAYER_NAME::EFFECT);
 					bba->Set_Position(&Position);
 					bba->SetWH(XMFLOAT2(1.0f, 1.0f));
 					bba->SetParam(3.0f, 4, 4);
@@ -133,8 +126,8 @@ void BULLET::Update(float delta_time)
 
 				//score->Add(100);
 
-				CManager::Get_Scene()->Destroy_Game_Object(this);
-				CManager::Get_Scene()->Destroy_Game_Object(enemy);
+				CManager::Get_Instance()->Get_Scene()->Destroy_Game_Object(this);
+				CManager::Get_Instance()->Get_Scene()->Destroy_Game_Object(enemy);
 
 				AUDIO_MANAGER::Play_Sound_Object(SOUND_INDEX::SOUND_INDEX_EXPLOSION);
 			}
@@ -143,7 +136,7 @@ void BULLET::Update(float delta_time)
 
 	// プレイヤーと弾の当たり判定
 	{
-		PLAYER* player = CManager::Get_Scene()->Get_Game_Object<PLAYER>("player");
+		const auto player = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<PLAYER>("player");
 
 		//if (Collision_HitAABB(this->Get_Collison(), player->Get_Collision()))
 		//{
@@ -160,12 +153,13 @@ void BULLET::Update(float delta_time)
 		//	AUDIO_MANAGER::Play_Sound_Object(SOUND_INDEX::SOUND_INDEX_EXPLOSION);
 		//}
 	}
+
+	GAME_OBJECT::Update(delta_time);
 }
 
 void BULLET::Uninit()
 {
 	SAFE_DELETE(Model);
-	SAFE_DELETE(Shadow);
 }
 
 void BULLET::Set_Move_Vector(const XMFLOAT3 move_vector)

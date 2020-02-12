@@ -57,7 +57,7 @@ public:
 	*/
 	static DWORD Get_Time() {
 		QueryPerformanceCounter(&end);
-		return (end.QuadPart - start.QuadPart);
+		return (DWORD)(end.QuadPart - start.QuadPart);
 	}
 
 	/**
@@ -66,7 +66,7 @@ public:
 	*/
 	static DWORD Get_Time_Sec() {
 		QueryPerformanceCounter(&end);
-		return (end.QuadPart - start.QuadPart) / frep.QuadPart;
+		return (DWORD)(end.QuadPart - start.QuadPart) / frep.QuadPart;
 	}
 
 	/**
@@ -77,7 +77,7 @@ public:
 	static DWORD Get_Time_Mili(const unsigned char digit = 1) {
 		QueryPerformanceCounter(&end);
 
-		return (end.QuadPart - start.QuadPart) * std::pow(10, digit) / frep.QuadPart;
+		return (DWORD)(end.QuadPart - start.QuadPart) * std::pow(10, digit) / frep.QuadPart;
 	}
 
 	static void Update() {

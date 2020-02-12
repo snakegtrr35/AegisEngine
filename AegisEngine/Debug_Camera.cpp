@@ -1,6 +1,7 @@
 #include	"Renderer.h"
 #include	"Input.h"
 #include	"Debug_Camera.h"
+#include	"manager.h"
 
 DEBUG_CAMERA* DEBUG_CAMERA::pDebugCamera = nullptr;
 XMMATRIX DEBUG_CAMERA::m_ViewMatrix;
@@ -8,19 +9,18 @@ XMMATRIX DEBUG_CAMERA::m_ProjectionMatrix;
 
 float DEBUG_CAMERA::Lenght = 15.0f;
 
-
-void DEBUG_CAMERA::Init()
+DEBUG_CAMERA::DEBUG_CAMERA()
 {
-	XMFLOAT4 at = XMFLOAT4(0.0f, 0.0f, 0.0f, 0.0f);
+	XMFLOAT4 at = XMFLOAT4(0.f, 0.f, 0.f, 0.f);
 
 	Viewing_Angle = 80.0f;
 
-	Front = XMVectorSet(0.0f, -0.4f, 1.0f, 0.0f);
+	Front = XMVectorSet(0.f, 0.f, 1.0f, 0.f);
 	Front = XMVector3Normalize(Front);
 
-	Up = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
+	Up = XMVectorSet(0.f, 1.0f, 0.f, 0.f);
 
-	Right = XMVectorSet(1.0f, 0.0f, 0.0f, 0.0f);
+	Right = XMVectorSet(1.0f, 0.f, 0.f, 0.f);
 
 
 	// 三つのベクトルを垂直にする
@@ -43,6 +43,12 @@ void DEBUG_CAMERA::Init()
 	Rotate = 90.0f;
 
 	RotateEnable = MoveEnable = true;
+
+	Rotation = XMFLOAT3(0, 0, 0);
+}
+
+void DEBUG_CAMERA::Init()
+{
 }
 
 void DEBUG_CAMERA::Uninit()
@@ -81,20 +87,22 @@ void DEBUG_CAMERA::Update(float delta_time)
 	{
 		XMMATRIX mtxRotation;
 
-		mtxRotation = XMMatrixRotationAxis(Right, XMConvertToRadians(point.y * delta_time * 20.0));
+		mtxRotation = XMMatrixRotationAxis(Right, XMConvertToRadians(point.y * delta_time * 20.0f));
 
 		Front = XMVector3TransformNormal(Front, mtxRotation);
 		Front = XMVector3Normalize(Front);
 
 		Up = XMVector3TransformNormal(Up, mtxRotation);
 		Up = XMVector3Normalize(Up);
+
+		Rotation.x += (point.y * delta_time * 20.0f);
 	}
 
 	if (flag2 && MOUSE::Get_Mouse()->Get_Move_Flag())
 	{
 		XMMATRIX mtxRotation;
 
-		mtxRotation = XMMatrixRotationY(XMConvertToRadians(point.x * delta_time * 20.0));
+		mtxRotation = XMMatrixRotationY(XMConvertToRadians(point.x * delta_time * 20.0f));
 
 
 		Front = XMVector3TransformNormal(Front, mtxRotation);
@@ -105,6 +113,8 @@ void DEBUG_CAMERA::Update(float delta_time)
 
 		Right = XMVector3TransformNormal(Right, mtxRotation);
 		Right = XMVector3Normalize(Right);
+
+		Rotation.y += (point.x * delta_time * 20.0f);
 	}
 
 	if (flag)
@@ -133,12 +143,12 @@ void DEBUG_CAMERA::Update(float delta_time)
 			Pos -= r * delta_time * 15.0f;
 		}
 
-		if ((MOUSE::Get_Mouse()->Get_Wheel_Move_Flag() == WHEEL_MOVE_ENUM::UP))
+		if ((MOUSE::Get_Mouse()->Get_Wheel_Move_Flag() == WHEEL_MOVE_ENUM::UP) && false == CManager::Get_Instance()->Get_Mouse_Over_ImGui())
 		{
 			Pos += f * delta_time * 150.0f;
 		}
 
-		if ((MOUSE::Get_Mouse()->Get_Wheel_Move_Flag() == WHEEL_MOVE_ENUM::DOWN))
+		if ((MOUSE::Get_Mouse()->Get_Wheel_Move_Flag() == WHEEL_MOVE_ENUM::DOWN) && false == CManager::Get_Instance()->Get_Mouse_Over_ImGui())
 		{
 			Pos -= f * delta_time * 150.0f;
 		}
@@ -146,8 +156,14 @@ void DEBUG_CAMERA::Update(float delta_time)
 
 	if (false == flag)
 	{
+		//XMVECTOR f = XMVector3Normalize(Front);
+		//XMVECTOR u = XMVector3Normalize(Up);
+
 		At = Front * Lenght + Pos;
+		//At = Pos + (f * Lenght) - ( u * 2.0 );
+
 		Pos = At - Front * Lenght;
+		//Pos = At - (f * Lenght) + (u * 2.0);
 	}
 
 	XMStoreFloat3(&Position, Pos);
@@ -170,13 +186,14 @@ void DEBUG_CAMERA::Draw()
 	dxViewport.TopLeftX = (float)Viewport.left;
 	dxViewport.TopLeftY = (float)Viewport.top;
 
-	//CRenderer::GetDeviceContext()->RSSetViewports(1, &dxViewport);
-
 	// ビューマトリクス設定
 	m_ViewMatrix = XMMatrixLookAtLH(Pos, At, Up);
-	//CRenderer::SetViewMatrix(&m_ViewMatrix);
 
 	// プロジェクションマトリクス設定
-	m_ProjectionMatrix = XMMatrixPerspectiveFovLH(XMConvertToRadians(Viewing_Angle), dxViewport.Width / dxViewport.Height, 1.0f, 1000.0f);
-	//CRenderer::SetProjectionMatrix(&m_ProjectionMatrix);
+	m_ProjectionMatrix = XMMatrixPerspectiveFovLH(XMConvertToRadians(Viewing_Angle), dxViewport.Width / dxViewport.Height, 0.001f, 1000.0f);
+}
+
+void DEBUG_CAMERA::Draw_DPP()
+{
+	Draw();
 }
