@@ -1,5 +1,44 @@
 #include	"Component.h"
 
+#include	"imgui/imgui.h"
+
+void COMPONENT::Draw_Inspector()
+{
+	if (ImGui::IsMouseClicked(1))
+	{
+		if (ImGui::IsItemClicked(1))
+		{
+			ImGui::OpenPopup("popupID");
+		}
+	}
+
+	auto id = ImGui::GetID((char*)u8"ƒRƒŠƒWƒ‡ƒ“(AABB)");
+
+	{
+		const char* names[] = { (char*)u8"íœ", (char*)u8"BBB" };
+		static int selected = -1;
+
+		if (ImGui::BeginPopup("popupID"))
+		{
+			ImGui::Text("‘I‘ğ€–Ú");
+			ImGui::Separator();
+			for (int i = 0; i < IM_ARRAYSIZE(names); i++)
+			{
+				if (ImGui::Selectable(names[i]))
+				{
+					selected = i;
+
+					if (0 == selected)
+					{
+						SetDestroy();
+					}
+				}
+			}
+			ImGui::EndPopup();
+		}
+	}
+}
+
 void COMPONENT::Set_Owner(const weak_ptr<GAME_OBJECT>& owner)
 {
 	Owner = owner;

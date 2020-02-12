@@ -105,6 +105,7 @@ void CManager::Update()
 #endif // _DEBUG
 
 		pSceneManager->Update(TIMER::Get_DeltaTime());
+
 		// シャドウマップの更新
 		{
 			pShadowMap->Update();//
@@ -133,11 +134,6 @@ void CManager::Update()
 		{
 			EFFEKSEER_MANAGER::Play("test");
 		}
-	}
-
-	if (false == Manager->pShadowMap->Target_Enable())
-	{
-		Manager->pShadowMap->Set_Target(Manager->pSceneManager->Get_Scene()->Get_Game_Object<PLAYER>("player"));
 	}
 
 #ifdef _DEBUG

@@ -13,6 +13,17 @@ BOUNDING_OBB::~BOUNDING_OBB()
 
 void BOUNDING_OBB::Init()
 {
+	{
+		XMFLOAT3 pos = *Owner.lock()->Get_Position();
+
+		Obb = BoundingOrientedBox(XMFLOAT3(0.f, 0.f, 0.f), Radius, Quaternion);
+
+		XMMATRIX matrix = XMMatrixScaling(Scaling.x, Scaling.y, Scaling.z);
+		matrix *= XMMatrixTranslation(Position.x + pos.x, Position.y + pos.y, Position.z + pos.z);
+
+		Obb.Transform(Obb, matrix);
+	}
+
 	// 頂点バッファの設定
 	if (nullptr == pVertexBuffer.get())
 	{
@@ -166,41 +177,46 @@ void BOUNDING_OBB::Uninit()
 
 void BOUNDING_OBB::OverWrite()
 {
-	if (Color != Default_Color && nullptr != pVertexBuffer.get())
+	{
+		XMFLOAT3 pos = *Owner.lock()->Get_Position();
+
+		Obb = BoundingOrientedBox(XMFLOAT3(0.f, 0.f, 0.f), Radius, Quaternion);
+
+		XMMATRIX matrix = XMMatrixScaling(Scaling.x, Scaling.y, Scaling.z);
+		matrix *= XMMatrixTranslation(Position.x + pos.x, Position.y + pos.y, Position.z + pos.z);
+
+		Obb.Transform(Obb, matrix);
+	}
+
+	if (nullptr != pVertexBuffer.get())
 	{
 		Color = Default_Color;
 
-		const char VertexNum = 8;
+		VERTEX_3D Vertex[BoundingBox::CORNER_COUNT];
+		XMFLOAT3 corners[BoundingBox::CORNER_COUNT];
 
-		VERTEX_3D Vertex[VertexNum];
+		Obb.GetCorners(corners);
 
-		Vertex[0].Position = XMFLOAT3(-0.5f, 0.5f, -0.5f);
-		Vertex[0].Diffuse = XMFLOAT4(Color.r, Color.g, Color.b, Color.a);
+		Vertex[0].Position = corners[7];
 
-		Vertex[1].Position = XMFLOAT3(0.5f, 0.5f, -0.5f);
-		Vertex[1].Diffuse = XMFLOAT4(Color.r, Color.g, Color.b, Color.a);
+		Vertex[1].Position = corners[6];
 
-		Vertex[2].Position = XMFLOAT3(-0.5f, -0.5f, -0.5f);
-		Vertex[2].Diffuse = XMFLOAT4(Color.r, Color.g, Color.b, Color.a);
+		Vertex[2].Position = corners[4];
 
-		Vertex[3].Position = XMFLOAT3(0.5f, -0.5f, -0.5f);
-		Vertex[3].Diffuse = XMFLOAT4(Color.r, Color.g, Color.b, Color.a);
+		Vertex[3].Position = corners[5];
 
 
-		Vertex[4].Position = XMFLOAT3(-0.5f, 0.5f, 0.5f);
-		Vertex[4].Diffuse = XMFLOAT4(Color.r, Color.g, Color.b, Color.a);
+		Vertex[4].Position = corners[3];
 
-		Vertex[5].Position = XMFLOAT3(0.5f, 0.5f, 0.5f);
-		Vertex[5].Diffuse = XMFLOAT4(Color.r, Color.g, Color.b, Color.a);
+		Vertex[5].Position = corners[2];
 
-		Vertex[6].Position = XMFLOAT3(-0.5f, -0.5f, 0.5f);
-		Vertex[6].Diffuse = XMFLOAT4(Color.r, Color.g, Color.b, Color.a);
+		Vertex[6].Position = corners[0];
 
-		Vertex[7].Position = XMFLOAT3(0.5f, -0.5f, 0.5f);
-		Vertex[7].Diffuse = XMFLOAT4(Color.r, Color.g, Color.b, Color.a);
+		Vertex[7].Position = corners[1];
 
-		for (char i = 0; i < VertexNum; i++)
+		for (char i = 0; i < BoundingBox::CORNER_COUNT; i++)
 		{
+			Vertex[i].Diffuse = XMFLOAT4(Color.r, Color.g, Color.b, Color.a);
 			Vertex[i].Normal = XMFLOAT3(1.0f, 0.0f, 0.0f);
 			Vertex[i].TexCoord = XMFLOAT2(0.0f, 0.0f);
 		}
@@ -209,8 +225,40 @@ void BOUNDING_OBB::OverWrite()
 		{
 			D3D11_MAPPED_SUBRESOURCE msr;
 			CRenderer::GetDeviceContext()->Map(pVertexBuffer.get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &msr);
-			memcpy(msr.pData, Vertex, sizeof(VERTEX_3D) * VertexNum);
+			memcpy(msr.pData, Vertex, sizeof(VERTEX_3D) * BoundingBox::CORNER_COUNT);
 			CRenderer::GetDeviceContext()->Unmap(pVertexBuffer.get(), 0);
 		}
 	}
+}
+
+#include	"imgui/imgui.h"
+
+void BOUNDING_OBB::Draw_Inspector()
+{
+	ImGui::Text((char*)u8"コリジョン(OBB)");
+
+	COMPONENT::Draw_Inspector();
+
+	float position[3] = { Position.x, Position.y, Position.z };
+	float rotation[3] = { Rotation.x, Rotation.y, Rotation.z };
+	float scale[3] = { Scaling.x, Scaling.y, Scaling.z };
+	float radius[3] = { Radius.x, Radius.y, Radius.z };
+
+	ImGui::DragFloat3("Position##OBB", position, 0.01f);
+	ImGui::DragFloat3("Rotate", rotation, 0.1f);
+	ImGui::DragFloat3("Scaling", scale, 0.01f);
+	ImGui::DragFloat3("Radius", radius, 0.01f, 0.01f, 1000.0f);
+
+	Position = XMFLOAT3(position[0], position[1], position[2]);
+	Rotation = XMFLOAT3(rotation[0], rotation[1], rotation[2]);
+	Scaling = XMFLOAT3(scale[0], scale[1], scale[2]);
+	Radius = XMFLOAT3(radius[0], radius[1], radius[2]);
+
+	{
+		XMVECTOR quat = XMQuaternionRotationRollPitchYaw(XMConvertToRadians(Rotation.x), XMConvertToRadians(Rotation.y), XMConvertToRadians(Rotation.z));
+
+		XMStoreFloat4(&Quaternion, quat);
+	}
+
+	OverWrite();
 }

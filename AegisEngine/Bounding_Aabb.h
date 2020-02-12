@@ -11,10 +11,10 @@ private:
 
 	unique_ptr<ID3D11Buffer, Release> pVertexBuffer;		//! BOXの頂点バッファ
 
-	XMFLOAT3 Radius = XMFLOAT3(0.5f, 0.5f, 0.5f);
+	XMFLOAT3 Radius;
 
 public:
-	BOUNDING_AABB() {};
+	BOUNDING_AABB() : Radius(XMFLOAT3(0.5f, 0.5f, 0.5f)) {};
 	~BOUNDING_AABB();
 
 	void Init() override;

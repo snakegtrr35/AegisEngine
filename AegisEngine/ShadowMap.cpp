@@ -1,6 +1,9 @@
 ﻿#include	"ShadowMap.h"
 #include	"Game_Object.h"
-#include	"Renderer.h"
+
+#include	"manager.h"
+#include	"Scene.h"
+#include	"Player.h"
 
 UINT SHADOW_MAP::WIDTH = 2048;
 UINT SHADOW_MAP::HEIGHT = 2048;
@@ -325,6 +328,13 @@ void SHADOW_MAP::Update()
 	LightPos.x = light->Position.x;
 	LightPos.y = light->Position.y;
 	LightPos.z = light->Position.z;
+
+	if (Target.expired())
+	{
+		auto scene = CManager::Get_Instance()->Get_Scene();
+
+		Target = scene->Get_Game_Object<PLAYER>("player");
+	}
 
 	if (!Target.expired())
 	{

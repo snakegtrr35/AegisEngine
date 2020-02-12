@@ -11,10 +11,14 @@ private:
 
 	unique_ptr<ID3D11Buffer, Release> pVertexBuffer;		//! BOXの頂点バッファ
 
-	//XMFLOAT3 Radius;
+	BoundingOrientedBox Obb;
+
+	XMFLOAT3 Radius;
+
+	XMFLOAT4 Quaternion;
 
 public:
-	BOUNDING_OBB() {}
+	BOUNDING_OBB() : Radius(XMFLOAT3(0.5f, 0.5f, 0.5f)), Quaternion(XMFLOAT4(0.f, 0.f, 0.f, 1.0f)) {}
 	~BOUNDING_OBB();
 
 	void Init() override;
@@ -22,6 +26,8 @@ public:
 	void Draw_DPP() override {}
 	void Update(float delta_time) override;
 	void Uninit() override;
+
+	void Draw_Inspector() override;
 
 	void OverWrite() override;
 
@@ -33,6 +39,8 @@ public:
 	void serialize(Archive& ar)
 	{
 		ar(cereal::base_class<BOUNDING>(this));
+		ar(Radius);
+		ar(Quaternion);
 	}
 
 	//template<class Archive>

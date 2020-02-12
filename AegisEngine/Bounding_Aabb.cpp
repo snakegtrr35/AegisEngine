@@ -175,6 +175,7 @@ void BOUNDING_AABB::Uninit()
 
 void BOUNDING_AABB::OverWrite()
 {
+	if (nullptr != pVertexBuffer.get())
 	{
 		Color = Default_Color;
 
@@ -242,47 +243,22 @@ void BOUNDING_AABB::Set_Radius(const XMFLOAT3* radius)
 
 void BOUNDING_AABB::Draw_Inspector()
 {
-	ImGui::Text((char*)u8"コリジョン(AABB)");
+	auto str = (char*)u8"コリジョン(AABB)";
 
-	if (ImGui::IsMouseClicked(1))
-	{
-		if (ImGui::IsItemClicked(1))
-		{
-			ImGui::OpenPopup("popupID");
-		}
-	}
+	ImGui::Text(str);
 
-	{
-		const char* names[] = { (char*)u8"削除", (char*)u8"BBB" };
-		static int selected = -1;
-
-		if (ImGui::BeginPopup("popupID"))
-		{
-			ImGui::Text("選択項目");
-			ImGui::Separator();
-			for (int i = 0; i < IM_ARRAYSIZE(names); i++)
-			{
-				if (ImGui::Selectable(names[i]))
-				{
-					selected = i;
-
-					if (0 == selected)
-					{
-						SetDestroy();
-					}
-				}
-			}
-			ImGui::EndPopup();
-		}
-	}
+	COMPONENT::Draw_Inspector();
 
 	float position[3] = { Position.x, Position.y, Position.z };
+	float scale[3] = { Scaling.x, Scaling.y, Scaling.z };
 	float radius[3] = { Radius.x, Radius.y, Radius.z };
 
-	ImGui::DragFloat3("Position", position, 0.01f);
+	ImGui::DragFloat3("Position##AABB", position, 0.01f);
+	ImGui::DragFloat3("Scaling", scale, 0.01f);
 	ImGui::DragFloat3("Radius", radius, 0.01f, 0.01f, 1000.0f);
 
 	Position = XMFLOAT3(position[0], position[1], position[2]);
+	Scaling = XMFLOAT3(scale[0], scale[1], scale[2]);
 	Radius = XMFLOAT3(radius[0], radius[1], radius[2]);
 
 	OverWrite();

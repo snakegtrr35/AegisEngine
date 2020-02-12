@@ -573,25 +573,21 @@ void My_imgui::Draw_Inspector(const string& name)
 			Items.emplace_back((char*)u8"コリジョン カプセル");
 			Items.emplace_back((char*)u8"EEEE");
 			Items.emplace_back((char*)u8"FFFF");
-			Items.emplace_back((char*)u8"GGGG");
-			Items.emplace_back((char*)u8"HHHH");
-			Items.emplace_back((char*)u8"IIII");
-			Items.emplace_back((char*)u8"JJJJ");
-			Items.emplace_back((char*)u8"KKKK");
-			Items.emplace_back((char*)u8"LLLL");
-			Items.emplace_back((char*)u8"MMMM");
-			Items.emplace_back((char*)u8"NNNN");
 
+			vector<const char*> Temp_Items;
 
-			//static const char* item_current = items[0];
-			static const char* item_current = Items[0];
+			Temp_Items.emplace_back("コリジョン AABB");
+			Temp_Items.emplace_back("コリジョン OBB");
+			Temp_Items.emplace_back("コリジョン 球");
+			Temp_Items.emplace_back("コリジョン カプセル");
+			Temp_Items.emplace_back("EEEE");
+			Temp_Items.emplace_back("FFFF");
+
+			static const char* item_current = nullptr;
+			static const char* temp_current;
 
 			{
-				// Expose flags as checkbox for the demo
 				static ImGuiComboFlags flags = ImGuiComboFlags_NoArrowButton;
-
-				// General BeginCombo() API, you have full control over your selection data and display type.
-				// (your selection data could be an index, a pointer to the object, an id for the object, a flag stored in the object itself, etc.)
 
 				if (ImGui::BeginCombo((char*)u8"コンポーネント", item_current, flags)) // The second parameter is the label previewed before opening the combo.
 				{
@@ -599,9 +595,12 @@ void My_imgui::Draw_Inspector(const string& name)
 					{
 						bool is_selected = (item_current == Items[n]);
 						if (ImGui::Selectable(Items[n], is_selected))
+						{
 							item_current = Items[n];
-						if (is_selected)
-							ImGui::SetItemDefaultFocus();   // Set the initial focus when opening the combo (scrolling + for keyboard navigation support in the upcoming navigation branch)
+							temp_current = Temp_Items[n];
+						}
+						//if (is_selected)
+						//	ImGui::SetItemDefaultFocus();   // Set the initial focus when opening the combo (scrolling + for keyboard navigation support in the upcoming navigation branch)
 					}
 					ImGui::EndCombo();
 				}
@@ -611,10 +610,10 @@ void My_imgui::Draw_Inspector(const string& name)
 				Draw_Components(object->Get_Component()->Get_All_Components());
 			}
 
-			string s(item_current);
-
 			if (ImGui::Button("Add Component"))
 			{
+				string s(temp_current);
+
 				Add_Component(object, s);
 			}
 		}
@@ -645,9 +644,9 @@ void EditTransform(const float* cameraView, float* cameraProjection, float* matr
 
 		ImGuizmo::DecomposeMatrixToComponents(matrix, Translation, Rotation, Scale);
 
-		ImGui::DragFloat3("Translation", Translation, 0.01f);
-		ImGui::DragFloat3("Rotate", Rotation, 0.1f);
-		ImGui::DragFloat3("Scale", Scale, 0.01f);
+		ImGui::DragFloat3((char*)u8"トランスフォーム", Translation, 0.01f);
+		ImGui::DragFloat3((char*)u8"回転", Rotation, 0.1f);
+		ImGui::DragFloat3((char*)u8"スケール", Scale, 0.01f);
 
 		ImGuizmo::RecomposeMatrixFromComponents(Translation, Rotation, Scale, matrix);
 
@@ -1121,19 +1120,21 @@ void My_imgui::Add_Component(GAME_OBJECT* object, const string s)
 	auto scene = CManager::Get_Instance()->Get_Scene();
 	auto comp = object->Get_Component();
 
-	if ((char*)u8"コリジョン AABB")
+	wstring str = stringTowstring(s);
+
+	if (string::npos != s.find("AABB"))
 	{
 		comp->Add_Component<BOUNDING_AABB>(scene->Get_Game_Object(object));
 		return;
 	}
 
-	if ((char*)u8"コリジョン OBB")
+	if (string::npos != s.find("OBB"))
 	{
 		comp->Add_Component<BOUNDING_OBB>(scene->Get_Game_Object(object));
 		return;
 	}
 
-	if ((char*)u8"コリジョン 球")
+	if (string::npos != s.find("球"))
 	{
 		comp->Add_Component<BOUNDING_SHPERE>(scene->Get_Game_Object(object));
 		return;

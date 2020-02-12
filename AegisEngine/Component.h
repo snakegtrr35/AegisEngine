@@ -35,7 +35,7 @@ public:
 	virtual void Update(float delta_time) {}
 	virtual void Uninit() {}
 
-	virtual void Draw_Inspector() = 0;
+	virtual void Draw_Inspector();
 
 	void Set_Owner(const weak_ptr<GAME_OBJECT>& owner);
 
