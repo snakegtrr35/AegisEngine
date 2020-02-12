@@ -2,6 +2,6 @@
 
 これは自作のゲームエンジンです。
 
-# ライセンス License
+## ライセンス License
 
 MIT License
