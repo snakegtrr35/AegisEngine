@@ -161,7 +161,7 @@ void EFFEKSEER_MANAGER::Set()
 	weak_ptr<DEBUG_CAMERA> D_camera;
 	auto camera = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<CCamera>("camera");
 
-	if (camera.expired() && Empty_weak_ptr<CCamera>(camera))
+	if (!camera.expired() && Empty_weak_ptr<CCamera>(camera))
 	{
 		D_camera = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
 	}
@@ -173,28 +173,7 @@ void EFFEKSEER_MANAGER::Set()
 		static ::Effekseer::Vector3D at;
 		static ::Effekseer::Vector3D up;
 
-		if (camera.expired() && Empty_weak_ptr<CCamera>(camera))
-		{
-			position.X = D_camera.lock()->Get_Position()->x;
-			position.Y = D_camera.lock()->Get_Position()->y;
-			position.Z = D_camera.lock()->Get_Position()->z;
-
-			XMFLOAT3 vec;
-			XMStoreFloat3(&vec, *D_camera.lock()->Get_At());
-
-			at.X = vec.x;
-			at.Y = vec.y;
-			at.Z = vec.z;
-
-			XMStoreFloat3(&vec, *D_camera.lock()->Get_Up());
-
-			up.X = vec.x;
-			up.Y = vec.y;
-			up.Z = vec.z;
-
-			angle = D_camera.lock()->Get_Viewing_Angle();
-		}
-		else
+		if (!camera.expired() && Empty_weak_ptr<CCamera>(camera))
 		{
 			position.X = camera.lock()->Get_Position()->x;
 			position.Y = camera.lock()->Get_Position()->y;
@@ -215,10 +194,31 @@ void EFFEKSEER_MANAGER::Set()
 
 			angle = camera.lock()->Get_Viewing_Angle();
 		}
+		else
+		{
+			position.X = D_camera.lock()->Get_Position()->x;
+			position.Y = D_camera.lock()->Get_Position()->y;
+			position.Z = D_camera.lock()->Get_Position()->z;
+
+			XMFLOAT3 vec;
+			XMStoreFloat3(&vec, *D_camera.lock()->Get_At());
+
+			at.X = vec.x;
+			at.Y = vec.y;
+			at.Z = vec.z;
+
+			XMStoreFloat3(&vec, *D_camera.lock()->Get_Up());
+
+			up.X = vec.x;
+			up.Y = vec.y;
+			up.Z = vec.z;
+
+			angle = D_camera.lock()->Get_Viewing_Angle();
+		}
 
 		{
 			XMMATRIX mtr;
-			if (camera.expired() && Empty_weak_ptr<CCamera>(camera))
+			if (!camera.expired() && Empty_weak_ptr<CCamera>(camera))
 			{
 				mtr = camera.lock()->Get_Camera_Projection();
 			}
@@ -236,7 +236,7 @@ void EFFEKSEER_MANAGER::Set()
 		{
 			XMMATRIX mtr;
 
-			if (camera.expired() && Empty_weak_ptr<CCamera>(camera))
+			if (!camera.expired() && Empty_weak_ptr<CCamera>(camera))
 			{
 				mtr = camera.lock()->Get_Camera_View();
 			}

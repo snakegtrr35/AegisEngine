@@ -241,8 +241,7 @@ void BOUNDING_AABB::Set_Radius(const XMFLOAT3* radius)
 
 void BOUNDING_AABB::Draw_Inspector()
 {
-	//ImGui::Text("Position  x %.5f  y %.5f  z %.5f", Position.x, Position.y, Position.z);
-	//ImGui::Text("Radius  x %.5f y %.5f  z %.5f", Radius.x, Radius.y, Radius.z);
+	ImGui::Text((char*)u8"ƒRƒŠƒWƒ‡ƒ“(AABB)");
 
 	float position[3] = { Position.x, Position.y, Position.z };
 	float radius[3] = { Radius.x, Radius.y, Radius.z };

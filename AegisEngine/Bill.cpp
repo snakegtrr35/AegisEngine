@@ -28,7 +28,6 @@ void BILL::Init()
 	auto aabb = Get_Component()->Add_Component<BOUNDING_AABB>(scene->Get_Game_Object(this));
 
 	//aabb->Set_Position(Position);
-	//
 	//aabb->Set_Radius(XMFLOAT3(10, 10, 10));
 
 	GAME_OBJECT::Init();

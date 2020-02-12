@@ -274,7 +274,7 @@ void CMODEL::Draw_DPP()
 {
 	const auto camera = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<CCamera>("camera");
 
-	if (camera.expired() && Empty_weak_ptr<CCamera>(camera))
+	if (!camera.expired() && Empty_weak_ptr<CCamera>(camera))
 	{
 		if (false == camera.lock()->Get_Visibility(Position))
 		{

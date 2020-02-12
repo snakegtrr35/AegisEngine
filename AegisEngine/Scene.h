@@ -44,14 +44,16 @@ enum class SCENE_INDEX {
 class SCENE {
 private:
 
-	//friend class GAME_OBJECT;
-
 protected:
 	static list<shared_ptr<GAME_OBJECT>> GameObjects[(int)LAYER_NAME::MAX_LAYER];
 
 	static bool PauseEnable;
 
 	static LIGHTS Light_Manager;
+
+	static std::mutex Load_Mutex;
+
+	static bool Load_Enable;
 
 public:
 
@@ -174,7 +176,7 @@ public:
 		return objects;
 	}
 
-	SCENE() {}
+	SCENE();
 	virtual ~SCENE() {
 		Uninit();
 	}
@@ -288,6 +290,19 @@ public:
 		}
 		Light_Manager.Uninit();
 	};
+
+	/**
+	* @brief ロード終了を知らせる関数
+	* @details ロード終了を知らせるフラグを終了する
+	*/
+	static void SetLockLoad();
+
+	/**
+	* @brief ロード中かを判定する関数
+	* @return bool ロード中かを判定するフラグ( ロード中なら true )
+	* @details ロード中かを判定するフラグを取得する関数
+	*/
+	static bool GetLockLoad();
 
 	/**
 	* @brief 簡単な説明（～する関数）

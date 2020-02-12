@@ -677,6 +677,7 @@ void My_imgui::Draw_Components(const vector<COMPONENT*>& components)
 
 	for (const auto& com : components)
 	{
+		ImGui::Spacing();
 		com->Draw_Inspector();
 		ImGui::Spacing();
 	}
