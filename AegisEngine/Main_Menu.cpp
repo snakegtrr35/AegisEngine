@@ -19,23 +19,7 @@
 #include	"Sprite_Animation.h"
 
 
-static bool isLoaded = false;
-static std::mutex isLoadedMutex;
-
-
 unique_ptr<SPRITE_ANIMATION> sprite_anime = nullptr;
-
-void SetLockFlag()
-{
-	std::lock_guard<std::mutex>  lock(isLoadedMutex);
-	isLoaded = true;
-}
-
-bool GetLockFlag()
-{
-	std::lock_guard<std::mutex>  lock(isLoadedMutex);
-	return isLoaded;
-}
 
 string Replace_String(string& replacedStr, const string& from, const string& to)
 {
@@ -190,9 +174,9 @@ void Load(MAIN_MENU* scene)
 
 	scene->Init(true);
 
-	//Sleep(5000);
+	Sleep(1000);
 
-	SetLockFlag();
+	scene->SetLockLoad();
 }
 
 void MAIN_MENU::Init(bool)
@@ -226,7 +210,7 @@ void MAIN_MENU::Init()
 
 void MAIN_MENU::Draw()
 {
-	if (GetLockFlag())
+	if (false == GetLockLoad())
 	{
 		sprite_anime.reset(nullptr);
 
@@ -244,7 +228,7 @@ void MAIN_MENU::Draw()
 
 void MAIN_MENU::Draw_DPP()
 {
-	if (GetLockFlag())
+	if (false == GetLockLoad())
 	{
 		sprite_anime.reset(nullptr);
 
@@ -258,7 +242,7 @@ void MAIN_MENU::Draw_DPP()
 
 void MAIN_MENU::Update(float delta_time)
 {
-	if (GetLockFlag())
+	if (false == GetLockLoad())
 	{
 		SCENE::Update(delta_time);
 

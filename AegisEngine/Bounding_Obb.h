@@ -9,6 +9,8 @@
 class BOUNDING_OBB : public BOUNDING {
 private:
 
+	unique_ptr<ID3D11Buffer, Release> pVertexBuffer;		//! BOXの頂点バッファ
+
 	//XMFLOAT3 Radius;
 
 public:

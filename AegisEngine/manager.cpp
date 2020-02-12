@@ -51,7 +51,10 @@ bool CManager::Init()
 
 	CINPUT::Init();
 
-	CRenderer::Init();
+	if (false == CRenderer::Init())
+	{
+		return false;
+	}
 
 	CRenderer::CreateRenderTexture();
 
@@ -76,13 +79,11 @@ bool CManager::Init()
 
 	Manager->pSceneManager.reset(new SCENE_MANAGER());
 
-	Manager->pSceneManager->Init();
 	//pSceneManager->Set_Scene<TITLE>();
 	Manager->pSceneManager->Set_Scene<MAIN_MENU>();
 
 	Manager->pShadowMap.reset(new SHADOW_MAP());//
 	Manager->pShadowMap->Init();
-	Manager->pShadowMap->Set_Target(Manager->pSceneManager->Get_Scene()->Get_Game_Object<PLAYER>("player"));
 
 	Manager->pSceneManager->Get_Scene()->Get_Light_Manager()->Init();
 
@@ -97,38 +98,46 @@ void CManager::Update()
 	// インプットの更新
 	CINPUT::Update();
 
+	if (false == this->Get_Scene()->GetLockLoad())
+	{
 #ifdef _DEBUG
-	TEXTURE_MANEGER::Get_Instance()->Update();
+		TEXTURE_MANEGER::Get_Instance()->Update();
 #endif // _DEBUG
 
-	pSceneManager->Update(TIMER::Get_DeltaTime());
-	// シャドウマップの更新
-	{
-		pShadowMap->Update();//
+		pSceneManager->Update(TIMER::Get_DeltaTime());
+		// シャドウマップの更新
+		{
+			pShadowMap->Update();//
+		}
+
+		// Effekseer
+		{
+			EFFEKSEER_MANAGER::Update(TIMER::Get_DeltaTime());
+		}
+
+		MOUSE::Get_Mouse()->Reset_Wheel_Moveset();
+
+		Manager->pSceneManager->Get_Scene()->Get_Light_Manager()->Update();
+
+		/*if (KEYBOARD::Trigger_Keyboard(VK_F1))
+		{
+			CRenderer::Change_Window_Mode();
+		}*/
+
+		if (KEYBOARD::Press_Keyboard(VK_ESCAPE))
+		{
+			CManager::GameEnd();
+		}
+
+		if (KEYBOARD::Trigger_Keyboard(VK_F2))
+		{
+			EFFEKSEER_MANAGER::Play("test");
+		}
 	}
 
-	// Effekseer
+	if (false == Manager->pShadowMap->Target_Enable())
 	{
-		EFFEKSEER_MANAGER::Update(TIMER::Get_DeltaTime());
-	}
-
-	MOUSE::Get_Mouse()->Reset_Wheel_Moveset();
-
-	Manager->pSceneManager->Get_Scene()->Get_Light_Manager()->Update();
-
-	/*if (KEYBOARD::Trigger_Keyboard(VK_F1))
-	{
-		CRenderer::Change_Window_Mode();
-	}*/
-
-	if (KEYBOARD::Press_Keyboard(VK_ESCAPE))
-	{
-		CManager::GameEnd();
-	}
-
-	if (KEYBOARD::Trigger_Keyboard(VK_F2))
-	{
-		EFFEKSEER_MANAGER::Play("test");
+		Manager->pShadowMap->Set_Target(Manager->pSceneManager->Get_Scene()->Get_Game_Object<PLAYER>("player"));
 	}
 
 #ifdef _DEBUG
@@ -144,73 +153,76 @@ void CManager::Draw()
 
 	CRenderer::Begin();
 
-	// シャドウマップの描画
+	//if (false == this->Get_Scene()->GetLockLoad())
 	{
-		//pShadowMap->Begin();
-		//pSceneManager->Draw();
-		pShadowMap->End();//
+
+		// シャドウマップの描画
+		{
+			pShadowMap->Begin();
+			pSceneManager->Draw();
+			pShadowMap->End();//
+		}
+
+		// 最終レンダリング
+		{
+			CRenderer::SetPass_Rendring();
+			pShadowMap->Set();
+			Manager->pSceneManager->Get_Scene()->Get_Light_Manager()->Draw();
+			pSceneManager->Draw();
+		}
+
+		// Effekseer
+		{
+			EFFEKSEER_MANAGER::Draw();
+		}
+
+		//// Direct2D
+		//{
+		//	D2D1_COLOR_F color;
+		//	color.r = 1.0f;
+		//	color.g = 1.0f;
+		//	color.b = 1.0f;
+		//	color.a = 1.0f;
+
+		//	ID2D1SolidColorBrush* brush;
+		//	CRenderer::Get2DDeviceContext()->CreateSolidColorBrush(color, &brush);
+
+		//	D2D1_RECT_F rect;
+		//	rect = D2D1::RectF(100, 100, 200, 200);
+
+		//	CRenderer::Get2DDeviceContext()->BeginDraw();
+		//	//CRenderer::Get2DDeviceContext()->FillRectangle(&rect, brush);
+
+		//	// DirectWrite
+
+		//	color.r = 1.0f;
+		//	color.g = 0.0f;
+		//	color.b = 0.0f;
+		//	color.a = 1.0f;
+
+		//	brush->SetColor(color);
+
+		//	{
+		//		rect = D2D1::RectF(500, 100, 900, 200);
+		//		const wstring drawText = L"Hello HELL World!!!\n地球の未来にご奉仕するにゃん！";
+
+		//		CRenderer::Get2DDeviceContext()->DrawText(
+		//			drawText.c_str(), drawText.size(), CRenderer::GetTextFormat(), &rect, brush);
+		//	}
+
+		//	{
+		//		D2D1_POINT_2F points;
+		//		points.x = 100.0f;
+		//		points.y = 100.0f;
+
+		//		CRenderer::Get2DDeviceContext()->DrawTextLayout(
+		//			points, CRenderer::GetTextLayout(), brush);
+		//	}
+
+		//	CRenderer::Get2DDeviceContext()->EndDraw();
+		//	brush->Release();
+		//}
 	}
-
-	// 最終レンダリング
-	{
-		CRenderer::SetPass_Rendring();
-		pShadowMap->Set();
-		Manager->pSceneManager->Get_Scene()->Get_Light_Manager()->Draw();
-		pSceneManager->Draw();
-	}
-
-	// Effekseer
-	{
-		EFFEKSEER_MANAGER::Draw();
-	}
-
-	//// Direct2D
-	//{
-	//	D2D1_COLOR_F color;
-	//	color.r = 1.0f;
-	//	color.g = 1.0f;
-	//	color.b = 1.0f;
-	//	color.a = 1.0f;
-
-	//	ID2D1SolidColorBrush* brush;
-	//	CRenderer::Get2DDeviceContext()->CreateSolidColorBrush(color, &brush);
-
-	//	D2D1_RECT_F rect;
-	//	rect = D2D1::RectF(100, 100, 200, 200);
-
-	//	CRenderer::Get2DDeviceContext()->BeginDraw();
-	//	//CRenderer::Get2DDeviceContext()->FillRectangle(&rect, brush);
-
-	//	// DirectWrite
-
-	//	color.r = 1.0f;
-	//	color.g = 0.0f;
-	//	color.b = 0.0f;
-	//	color.a = 1.0f;
-
-	//	brush->SetColor(color);
-
-	//	{
-	//		rect = D2D1::RectF(500, 100, 900, 200);
-	//		const wstring drawText = L"Hello HELL World!!!\n地球の未来にご奉仕するにゃん！";
-
-	//		CRenderer::Get2DDeviceContext()->DrawText(
-	//			drawText.c_str(), drawText.size(), CRenderer::GetTextFormat(), &rect, brush);
-	//	}
-
-	//	{
-	//		D2D1_POINT_2F points;
-	//		points.x = 100.0f;
-	//		points.y = 100.0f;
-
-	//		CRenderer::Get2DDeviceContext()->DrawTextLayout(
-	//			points, CRenderer::GetTextLayout(), brush);
-	//	}
-
-	//	CRenderer::Get2DDeviceContext()->EndDraw();
-	//	brush->Release();
-	//}
-
 #ifdef _DEBUG
 	imgui->Draw();//
 	imgui->End();

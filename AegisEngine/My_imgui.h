@@ -8,6 +8,7 @@
 #include	"main.h"
 
 class COMPONENT;
+class GAME_OBJECT;
 
 class My_imgui{
 private:
@@ -25,6 +26,8 @@ private:
 
 	bool Mouse_Over_Enable;
 
+	bool Debug_Draw_Enable;
+
 	void Texture_Import();
 	const char File_Check(const string& file_name);
 
@@ -40,11 +43,20 @@ private:
 
 	void Draw_Components(const vector<COMPONENT*>& components);
 
+	void Add_Component(GAME_OBJECT* object, const string s);
+
 public:
 	My_imgui() : show_demo_window(false), show_another_window(false), show_default_window(false),
 				 Texture_Import_Enable(false), Texture_Delete_Enable(false), Setting_Enable(false),
 				 clear_color(ImVec4(0.45f, 0.55f, 0.60f, 1.00f)),
-				 f(0.0f), counter(0), Mouse_Over_Enable(false) {}
+				 f(0.0f), counter(0), Mouse_Over_Enable(false){
+
+#ifdef _DEBUG
+		Debug_Draw_Enable = true;
+#else
+		Debug_Draw_Enable = false;
+#endif // _DEBUG
+	}
 
 	~My_imgui() {}
 

@@ -5,12 +5,11 @@
 
 class GAME_OBJECT;
 //#include	"Game_Object.h"
-#include	"manager.h"
+//#include	"manager.h"
 
 // コンポーネントクラス
 class COMPONENT /*: public GAME_OBJECT*/ {
 protected:
-
 	weak_ptr<GAME_OBJECT> Owner;
 
 	bool Enable;
@@ -25,6 +24,7 @@ public:
 
 	COMPONENT() : Enable(true), DestroyFlag(false), Position(XMFLOAT3(0.0f, 0.0f, 0.0f)), Rotation(XMFLOAT3(0.0f, 0.0f, 0.0f)), Scaling(XMFLOAT3(1.0f, 1.0f, 1.0f)) {
 		Owner.reset();
+
 	}
 
 	virtual ~COMPONENT() {}
@@ -37,76 +37,37 @@ public:
 
 	virtual void Draw_Inspector() = 0;
 
-	void Set_Owner(const weak_ptr<GAME_OBJECT>& owner) {
-		Owner = owner;
-	}
+	void Set_Owner(const weak_ptr<GAME_OBJECT>& owner);
 
-	void SetEnable(const bool flag) {
-		Enable = flag;
-	}
+	void SetEnable(const bool flag);
 
-	const bool GetEnable() {
-		return Enable;
-	}
+	const bool GetEnable();
 
-	void SetDestroy() {
-		DestroyFlag = true;
-	}
+	void SetDestroy();
 
-	void Set_Draw_Enable(const bool flag) {
-		Draw_Enable = flag;
-	}
+	void Set_Draw_Enable(const bool flag);
 
-	bool Get_Draw_Enable() {
-		return Draw_Enable;
-	}
+	bool Get_Draw_Enable();
 
-	XMFLOAT3* const Get_Position() {
-		return &Position;
-	};
+	XMFLOAT3* const Get_Position();
 
-	XMFLOAT3* const Get_Rotation() {
-		return &Rotation;
-	};
+	XMFLOAT3* const Get_Rotation();
 
-	XMFLOAT3* const Get_Scaling() {
-		return &Scaling;
-	};
+	XMFLOAT3* const Get_Scaling();
 
 
 
-	void Set_Position(XMFLOAT3* position) {
-		Position = *position;
-	}
+	void Set_Position(XMFLOAT3* position);
+	void Set_Position(XMFLOAT3& position);
 
-	void Set_Position(XMFLOAT3& position) {
-		Position = position;
-	};
+	void Set_Rotation(XMFLOAT3* rotation);
+	void Set_Rotation(XMFLOAT3& rotation);
 
-	void Set_Rotation(XMFLOAT3* rotation) {
-		Rotation = *rotation;
-	};
-
-	void Set_Rotation(XMFLOAT3& rotation) {
-		Rotation = rotation;
-	};
-
-	void Set_Scaling(XMFLOAT3* scaling) {
-		Scaling = *scaling;
-	};
-
-	void Set_Scaling(XMFLOAT3& scaling) {
-		Scaling = scaling;
-	};
+	void Set_Scaling(XMFLOAT3* scaling);
+	void Set_Scaling(XMFLOAT3& scaling);
 
 	// メモリ上からの削除
-	bool Destroy() {
-		if (DestroyFlag)
-		{
-			return true;
-		}
-		return false;
-	}
+	bool Destroy();
 
 	template<class Archive>
 	void serialize(Archive& ar)

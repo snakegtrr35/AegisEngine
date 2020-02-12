@@ -94,6 +94,8 @@ public:
 
 	void Set_Target(const weak_ptr<GAME_OBJECT>& object);
 
+	const bool Target_Enable();
+
 	void Set();
 };
 

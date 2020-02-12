@@ -373,6 +373,11 @@ void SHADOW_MAP::Set_Target(const weak_ptr<GAME_OBJECT>& object)
 	Target = object;
 }
 
+const bool SHADOW_MAP::Target_Enable()
+{
+	return !Target.expired();
+}
+
 void SHADOW_MAP::Set_Light(const XMFLOAT3& pos)
 {
 	Light.Direction.x = -pos.x;

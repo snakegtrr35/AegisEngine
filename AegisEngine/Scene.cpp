@@ -5,17 +5,17 @@ list<shared_ptr<GAME_OBJECT>>	SCENE::GameObjects[(int)LAYER_NAME::MAX_LAYER];
 bool							SCENE::PauseEnable = false;
 LIGHTS							SCENE::Light_Manager;
 std::mutex						SCENE::Load_Mutex;
-bool							SCENE::Load_Enable = false;
+bool							SCENE::Load_Enable = true;
 
 SCENE::SCENE()
 {
-	Load_Enable = false;
+	Load_Enable = true;
 }
 
 void SCENE::SetLockLoad()
 {
 	std::lock_guard<std::mutex>  lock(Load_Mutex);
-	Load_Enable = true;
+	Load_Enable = false;
 }
 
 bool SCENE::GetLockLoad()

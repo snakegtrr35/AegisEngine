@@ -24,7 +24,7 @@ void BOUNDING_AABB::Init()
 	}
 
 	// 頂点バッファの設定
-	if (nullptr == pVertexBuffer_BOX.get())
+	if (nullptr == pVertexBuffer.get())
 	{
 		XMFLOAT3 corners[BoundingBox::CORNER_COUNT];
 
@@ -77,7 +77,7 @@ void BOUNDING_AABB::Init()
 
 			CRenderer::GetDevice()->CreateBuffer(&bd, &sd, &buffer);
 
-			pVertexBuffer_BOX.reset(buffer);
+			pVertexBuffer.reset(buffer);
 		}
 	}
 
@@ -148,7 +148,7 @@ void BOUNDING_AABB::Draw()
 		}
 
 		// 入力アセンブラに頂点バッファを設定
-		CRenderer::SetVertexBuffers(pVertexBuffer_BOX.get());
+		CRenderer::SetVertexBuffers(pVertexBuffer.get());
 
 		CRenderer::SetIndexBuffer(pIndexBuffer_BOX.get());
 
@@ -170,12 +170,13 @@ void BOUNDING_AABB::Update(float delta_time)
 
 void BOUNDING_AABB::Uninit()
 {
+	pVertexBuffer.reset(nullptr);
 }
 
 void BOUNDING_AABB::OverWrite()
 {
 	{
-		//Color = Default_Color;
+		Color = Default_Color;
 
 		XMFLOAT3 pos = *Owner.lock()->Get_Position();
 
@@ -218,9 +219,9 @@ void BOUNDING_AABB::OverWrite()
 		// 頂点バッファの書き換え
 		{
 			D3D11_MAPPED_SUBRESOURCE msr;
-			CRenderer::GetDeviceContext()->Map(pVertexBuffer_BOX.get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &msr);
+			CRenderer::GetDeviceContext()->Map(pVertexBuffer.get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &msr);
 			memcpy(msr.pData, Vertex, sizeof(VERTEX_3D) * BoundingBox::CORNER_COUNT);
-			CRenderer::GetDeviceContext()->Unmap(pVertexBuffer_BOX.get(), 0);
+			CRenderer::GetDeviceContext()->Unmap(pVertexBuffer.get(), 0);
 		}
 	}
 }
@@ -242,6 +243,38 @@ void BOUNDING_AABB::Set_Radius(const XMFLOAT3* radius)
 void BOUNDING_AABB::Draw_Inspector()
 {
 	ImGui::Text((char*)u8"コリジョン(AABB)");
+
+	if (ImGui::IsMouseClicked(1))
+	{
+		if (ImGui::IsItemClicked(1))
+		{
+			ImGui::OpenPopup("popupID");
+		}
+	}
+
+	{
+		const char* names[] = { (char*)u8"削除", (char*)u8"BBB" };
+		static int selected = -1;
+
+		if (ImGui::BeginPopup("popupID"))
+		{
+			ImGui::Text("選択項目");
+			ImGui::Separator();
+			for (int i = 0; i < IM_ARRAYSIZE(names); i++)
+			{
+				if (ImGui::Selectable(names[i]))
+				{
+					selected = i;
+
+					if (0 == selected)
+					{
+						SetDestroy();
+					}
+				}
+			}
+			ImGui::EndPopup();
+		}
+	}
 
 	float position[3] = { Position.x, Position.y, Position.z };
 	float radius[3] = { Radius.x, Radius.y, Radius.z };

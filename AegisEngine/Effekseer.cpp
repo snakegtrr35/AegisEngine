@@ -161,7 +161,7 @@ void EFFEKSEER_MANAGER::Set()
 	weak_ptr<DEBUG_CAMERA> D_camera;
 	auto camera = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<CCamera>("camera");
 
-	if (!camera.expired() && Empty_weak_ptr<CCamera>(camera))
+	if (camera.expired() && Empty_weak_ptr<CCamera>(camera))
 	{
 		D_camera = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
 	}

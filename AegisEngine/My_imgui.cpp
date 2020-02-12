@@ -16,10 +16,17 @@
 #include	"camera.h"
 #include	"Debug_Camera.h"
 #include	"Component.h"
+#include	"Component_Manager.h"
 #include	"Light.h"
 
+#include	"Bounding.h"
+//class BOUNDING_AABB;
+//class BOUNDING_OBB;
+//class BOUNDING_SHPERE;
 #include	"Bounding_Aabb.h"
-#include	"Bounding_Frustum.h"
+#include	"Bounding_Obb.h"
+#include	"Bounding_Shpere.h"
+
 
 extern float radius;
 
@@ -204,7 +211,11 @@ void My_imgui::Draw(void)
 				if (ImGui::BeginMenu("Setting"))
 				{
 					ImGui::MenuItem("Style Editor", NULL, &show_app_style_editor);
-					ImGui::Checkbox("Default Window", &show_default_window);      // Edit bools storing our window open/close state
+
+					ImGui::Checkbox("Default Window", &show_default_window);
+
+					ImGui::Checkbox("Debug Draw Enable", &Debug_Draw_Enable);
+					ImGui::SameLine(); HelpMarker((char*)u8"デバッグ表示　有効無効\n");
 
 					ImGui::MenuItem("Setting", NULL, &Setting_Enable);
 
@@ -428,6 +439,8 @@ void My_imgui::Update(void)
 		{
 			Mouse_Over_Enable = false;
 		}
+
+		COMPONENT_MANEGER::Set_Draw_Enable_All(Debug_Draw_Enable);
 	}
 }
 
@@ -554,20 +567,20 @@ void My_imgui::Draw_Inspector(const string& name)
 		{
 			vector<const char*> Items;
 
-			Items.emplace_back("AAAA");
-			Items.emplace_back("BBBB");
-			Items.emplace_back("CCCC");
-			Items.emplace_back("DDDD");
-			Items.emplace_back("EEEE");
-			Items.emplace_back("FFFF");
-			Items.emplace_back("GGGG");
-			Items.emplace_back("HHHH");
-			Items.emplace_back("IIII");
-			Items.emplace_back("JJJJ");
-			Items.emplace_back("KKKK");
-			Items.emplace_back("LLLL");
-			Items.emplace_back("MMMM");
-			Items.emplace_back("NNNN");
+			Items.emplace_back((char*)u8"コリジョン AABB");
+			Items.emplace_back((char*)u8"コリジョン OBB");
+			Items.emplace_back((char*)u8"コリジョン 球");
+			Items.emplace_back((char*)u8"コリジョン カプセル");
+			Items.emplace_back((char*)u8"EEEE");
+			Items.emplace_back((char*)u8"FFFF");
+			Items.emplace_back((char*)u8"GGGG");
+			Items.emplace_back((char*)u8"HHHH");
+			Items.emplace_back((char*)u8"IIII");
+			Items.emplace_back((char*)u8"JJJJ");
+			Items.emplace_back((char*)u8"KKKK");
+			Items.emplace_back((char*)u8"LLLL");
+			Items.emplace_back((char*)u8"MMMM");
+			Items.emplace_back((char*)u8"NNNN");
 
 
 			//static const char* item_current = items[0];
@@ -582,7 +595,7 @@ void My_imgui::Draw_Inspector(const string& name)
 
 				if (ImGui::BeginCombo((char*)u8"コンポーネント", item_current, flags)) // The second parameter is the label previewed before opening the combo.
 				{
-					for (int n = 0; n <Items.size(); n++)
+					for (int n = 0; n < Items.size(); n++)
 					{
 						bool is_selected = (item_current == Items[n]);
 						if (ImGui::Selectable(Items[n], is_selected))
@@ -598,21 +611,11 @@ void My_imgui::Draw_Inspector(const string& name)
 				Draw_Components(object->Get_Component()->Get_All_Components());
 			}
 
-			static int clicked = 0;
+			string s(item_current);
+
 			if (ImGui::Button("Add Component"))
 			{
-				clicked++;
-				//if (clicked & 1)
-				//{
-				//	ImGui::SameLine();
-				//	ImGui::Text("%s", item_current);
-				//}
-			}
-
-			if (clicked & 1)
-			{
-				ImGui::SameLine();
-				ImGui::Text("%s", item_current);
+				Add_Component(object, s);
 			}
 		}
 
@@ -1109,6 +1112,32 @@ void My_imgui::Light_Setting()
 	}
 
 	ImGui::End();
+}
+
+void My_imgui::Add_Component(GAME_OBJECT* object, const string s)
+{
+	ImGui::Text("%s", s.c_str());
+
+	auto scene = CManager::Get_Instance()->Get_Scene();
+	auto comp = object->Get_Component();
+
+	if ((char*)u8"コリジョン AABB")
+	{
+		comp->Add_Component<BOUNDING_AABB>(scene->Get_Game_Object(object));
+		return;
+	}
+
+	if ((char*)u8"コリジョン OBB")
+	{
+		comp->Add_Component<BOUNDING_OBB>(scene->Get_Game_Object(object));
+		return;
+	}
+
+	if ((char*)u8"コリジョン 球")
+	{
+		comp->Add_Component<BOUNDING_SHPERE>(scene->Get_Game_Object(object));
+		return;
+	}
 }
 
 #endif // _DEBUG

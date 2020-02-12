@@ -54,6 +54,10 @@ void PLAYER::Init(void)
 
 		//aabb->Set_Radius(XMFLOAT3(10, 10, 10));
 
+		auto scene = CManager::Get_Instance()->Get_Scene();
+
+		auto aabb = Get_Component()->Add_Component<BOUNDING_AABB>(scene->Get_Game_Object(this));
+
 		GAME_OBJECT::Init();
 	}
 

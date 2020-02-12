@@ -63,10 +63,10 @@ bool CRenderer::Init()
 		return false;
 	}
 
-	if (false == Create())
-	{
-		return false;
-	}
+	//if (false == Create())
+	//{
+	//	return false;
+	//}
 
 	// 頂点シェーダ生成
 	{
@@ -386,23 +386,47 @@ bool CRenderer::Init()
 
 	hBufferDesc.ByteWidth = sizeof(MATERIAL);
 
-	m_D3DDevice->CreateBuffer(&hBufferDesc, NULL, &m_MaterialBuffer);
+	hr = m_D3DDevice->CreateBuffer(&hBufferDesc, NULL, &m_MaterialBuffer);
+	if (FAILED(hr))
+	{
+		FAILDE_ASSERT;
+		return false;
+	}
+
 	m_ImmediateContext->VSSetConstantBuffers(3, 1, &m_MaterialBuffer);
 	m_ImmediateContext->PSSetConstantBuffers(3, 1, &m_MaterialBuffer);
 
 	hBufferDesc.ByteWidth = sizeof(LIGHT);
 
-	m_D3DDevice->CreateBuffer(&hBufferDesc, NULL, &m_LightBuffer);
+	hr = m_D3DDevice->CreateBuffer(&hBufferDesc, NULL, &m_LightBuffer);
+	if (FAILED(hr))
+	{
+		FAILDE_ASSERT;
+		return false;
+	}
+
 	m_ImmediateContext->VSSetConstantBuffers(4, 1, &m_LightBuffer);
 	m_ImmediateContext->PSSetConstantBuffers(4, 1, &m_LightBuffer);
 
 	hBufferDesc.ByteWidth = sizeof(CONSTANT);
-	m_D3DDevice->CreateBuffer(&hBufferDesc, NULL, &m_ConstantBuffer);
+	hr = m_D3DDevice->CreateBuffer(&hBufferDesc, NULL, &m_ConstantBuffer);
+	if (FAILED(hr))
+	{
+		FAILDE_ASSERT;
+		return false;
+	}
+
 	m_ImmediateContext->VSSetConstantBuffers(0, 1, &m_ConstantBuffer);
 	m_ImmediateContext->PSSetConstantBuffers(0, 1, &m_ConstantBuffer);
 
 	hBufferDesc.ByteWidth = sizeof(CONSTANT_02);
-	m_D3DDevice->CreateBuffer(&hBufferDesc, NULL, &m_ConstantBuffer_02);
+	hr = m_D3DDevice->CreateBuffer(&hBufferDesc, NULL, &m_ConstantBuffer_02);
+	if (FAILED(hr))
+	{
+		FAILDE_ASSERT;
+		return false;
+	}
+
 	m_ImmediateContext->VSSetConstantBuffers(5, 1, &m_ConstantBuffer_02);
 	m_ImmediateContext->PSSetConstantBuffers(5, 1, &m_ConstantBuffer_02);
 
@@ -996,6 +1020,7 @@ void CRenderer::Begin()
 {
 	// バックバッファクリア
 	float ClearColor[4] = { 0.5f, 0.5f, 0.5f, 1.0f };
+	m_ImmediateContext->OMSetRenderTargets(1, &m_RenderTargetView, m_DepthStencilView);
 	m_ImmediateContext->ClearRenderTargetView( m_RenderTargetView, ClearColor );
 	m_ImmediateContext->ClearDepthStencilView( m_DepthStencilView, D3D11_CLEAR_DEPTH, 1.0f, 0);
 }

@@ -14,7 +14,7 @@ BOUNDING_OBB::~BOUNDING_OBB()
 void BOUNDING_OBB::Init()
 {
 	// 頂点バッファの設定
-	if (nullptr == pVertexBuffer_BOX.get())
+	if (nullptr == pVertexBuffer.get())
 	{
 		const char VertexNum = 8;
 
@@ -65,7 +65,7 @@ void BOUNDING_OBB::Init()
 
 			CRenderer::GetDevice()->CreateBuffer(&bd, &sd, &buffer);
 
-			pVertexBuffer_BOX.reset(buffer);
+			pVertexBuffer.reset(buffer);
 		}
 	}
 
@@ -117,7 +117,7 @@ void BOUNDING_OBB::Draw()
 	if (false == CManager::Get_Instance()->Get_ShadowMap()->Get_Enable())
 	{
 		// 入力アセンブラに頂点バッファを設定.
-		CRenderer::SetVertexBuffers(pVertexBuffer_BOX.get());
+		CRenderer::SetVertexBuffers(pVertexBuffer.get());
 
 		CRenderer::SetIndexBuffer(pIndexBuffer_BOX.get());
 
@@ -166,7 +166,7 @@ void BOUNDING_OBB::Uninit()
 
 void BOUNDING_OBB::OverWrite()
 {
-	if (Color != Default_Color && nullptr != pVertexBuffer_BOX.get())
+	if (Color != Default_Color && nullptr != pVertexBuffer.get())
 	{
 		Color = Default_Color;
 
@@ -208,9 +208,9 @@ void BOUNDING_OBB::OverWrite()
 		// 頂点バッファの書き換え
 		{
 			D3D11_MAPPED_SUBRESOURCE msr;
-			CRenderer::GetDeviceContext()->Map(pVertexBuffer_BOX.get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &msr);
+			CRenderer::GetDeviceContext()->Map(pVertexBuffer.get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &msr);
 			memcpy(msr.pData, Vertex, sizeof(VERTEX_3D) * VertexNum);
-			CRenderer::GetDeviceContext()->Unmap(pVertexBuffer_BOX.get(), 0);
+			CRenderer::GetDeviceContext()->Unmap(pVertexBuffer.get(), 0);
 		}
 	}
 }

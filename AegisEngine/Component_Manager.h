@@ -5,12 +5,21 @@
 
 #include	"Component.h"
 
+//#include	"Bounding_Aabb.h"
+//#include	"Bounding_Obb.h"
+//#include	"Bounding_Shpere.h"
+class BOUNDING_AABB;
+class BOUNDING_OBB;
+class BOUNDING_SHPERE;
+
 class GAME_OBJECT;
 
 class COMPONENT_MANEGER {
 private:
 
-	vector< unique_ptr<COMPONENT> > Conponents;
+	static bool Draw_Enable_All;
+
+	vector< unique_ptr<COMPONENT, Delete> > Conponents;
 
 public:
 
@@ -30,6 +39,8 @@ public:
 		T* object = new T();
 
 		object->Set_Owner(owner);
+
+		object->Init();
 
 		Conponents.emplace_back(object);
 
@@ -53,6 +64,8 @@ public:
 
 		object->Set_Owner(owner);
 
+		object->Init();
+
 		Conponents.emplace_back(object);
 
 		return object;
@@ -73,17 +86,7 @@ public:
 	}
 
 	// リストから全てのコンポーネントの取得
-	vector<COMPONENT*> Get_All_Components() {
-		vector<COMPONENT*> objects;
-		objects.reserve(Conponents.size());
-
-		//for (auto object = Conponent_List.begin(); object != Conponent_List.end(); object++)
-		for (const auto& object : Conponents)
-		{
-			objects.emplace_back(object.get());
-		}
-		return objects;
-	}
+	vector<COMPONENT*> Get_All_Components();
 
 	COMPONENT_MANEGER() {}
 
@@ -91,58 +94,14 @@ public:
 		Uninit();
 	}
 
-	void Init() {
-		//for (auto object = Conponent_List.begin(); object != Conponent_List.end(); object++)
-		for (const auto& object : Conponents)
-		{
-			object->Init();
-		}
-	}
+	void Init();
+	void Update(float delta_time);
+	void Draw();
+	void Draw_DPP();
+	void Uninit();
 
-	void Update(float delta_time) {
-		//for (auto object = Conponent_List.begin(); object != Conponent_List.end(); object++)
-		for (const auto& object : Conponents)
-		{
-			if (object->GetEnable())
-			{
-				object->Update(delta_time);
-			}
-		}
-
-		//Conponent_List.remove_if([](auto& object) { return object->Destroy(); }); // リストから削除
-		Conponents.erase(std::remove_if(Conponents.begin(), Conponents.end(), [](auto& object) { return object->Destroy(); }), Conponents.end());
-	}
-
-	void Draw() {
-		//for (auto object = Conponent_List.begin(); object != Conponent_List.end(); object++)
-		for (const auto& object : Conponents)
-		{
-			if (object->Get_Draw_Enable())
-			{
-				object->Draw();
-			}
-		}
-	}
-
-	void Draw_DPP() {
-		//for (auto object = Conponent_List.begin(); object != Conponent_List.end(); object++)
-		for (const auto& object : Conponents)
-		{
-			if (object->Get_Draw_Enable())
-			{
-				object->Draw_DPP();
-			}
-		}
-	}
-
-	void Uninit() {
-		//for (auto object = Conponent_List.begin(); object != Conponent_List.end(); object++)
-		for (auto& object : Conponents)
-		{
-			object.reset(nullptr);
-		}
-		Conponents.clear();
-	}
+	static void Set_Draw_Enable_All(const bool flag);
+	static const bool Get_Draw_Enable_All();
 
 	template<class Archive>
 	void serialize(Archive& ar)

@@ -31,6 +31,8 @@
     <ClCompile Include="camera.cpp" />
     <ClCompile Include="Collision.cpp" />
     <ClCompile Include="common.cpp" />
+    <ClCompile Include="Component.cpp" />
+    <ClCompile Include="Component_Manager.cpp" />
     <ClCompile Include="Debug_Camera.cpp" />
     <ClCompile Include="Effekseer.cpp" />
     <ClCompile Include="Enemy.cpp" />
