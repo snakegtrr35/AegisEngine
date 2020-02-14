@@ -9,6 +9,7 @@ bool							SCENE::Load_Enable = true;
 
 SCENE::SCENE()
 {
+	std::lock_guard<std::mutex>  lock(Load_Mutex);
 	Load_Enable = true;
 }
 

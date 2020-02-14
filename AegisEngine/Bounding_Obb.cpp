@@ -231,6 +231,11 @@ void BOUNDING_OBB::OverWrite()
 	}
 }
 
+const BoundingOrientedBox& BOUNDING_OBB::Get_Collition()
+{
+	return Obb;
+}
+
 #include	"imgui/imgui.h"
 
 void BOUNDING_OBB::Draw_Inspector()

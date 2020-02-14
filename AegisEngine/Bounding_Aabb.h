@@ -31,9 +31,9 @@ public:
 	void Set_Radius(const XMFLOAT3& radius);
 	void Set_Radius(const XMFLOAT3* radius);
 
-	XMFLOAT3* Get_Radius() {
-		return &Radius;
-	}
+	XMFLOAT3* Get_Radius();
+
+	const BoundingBox& Get_Collition();
 
 	BoundingBox Aabb;
 

@@ -14,12 +14,12 @@ private:
 	float Radius;
 	UINT IndexNum;
 
+	BoundingSphere Sphere;
+
 	void Draw_Ring(const XMFLOAT3& rotation);
 
-	void Create_Buffer();
-
 public:
-	BOUNDING_SHPERE() : Radius(0.f), IndexNum(0) {}
+	BOUNDING_SHPERE() : Radius(1.0f), IndexNum(0) {}
 	~BOUNDING_SHPERE() { Uninit(); }
 
 	void Init() override;
@@ -28,11 +28,15 @@ public:
 	void Update(float delta_time) override;
 	void Uninit() override;
 
+	void Draw_Inspector() override;
+
 	void OverWrite() override;
 
 	void Set_Radius(const float radius);
 
 	const float Get_Radius();
+
+	const BoundingSphere& Get_Collition();
 
 	template<typename Archive>
 	void serialize(Archive& ar)

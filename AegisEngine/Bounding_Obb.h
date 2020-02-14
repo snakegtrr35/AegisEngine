@@ -31,9 +31,7 @@ public:
 
 	void OverWrite() override;
 
-	//void Set_Radius(const XMFLOAT3& radius);
-
-	//XMFLOAT3& const Get_Radius();
+	const BoundingOrientedBox& Get_Collition();
 
 	template<typename Archive>
 	void serialize(Archive& ar)

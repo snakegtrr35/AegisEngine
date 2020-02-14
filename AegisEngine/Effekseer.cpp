@@ -166,6 +166,14 @@ void EFFEKSEER_MANAGER::Set()
 		D_camera = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
 	}
 
+	if (camera.expired() && Empty_weak_ptr<CCamera>(camera))
+	{
+		if (D_camera.expired() && Empty_weak_ptr<DEBUG_CAMERA>(D_camera))
+		{
+			return;
+		}
+	}
+
 	{
 		XMFLOAT3* pos;
 		static float angle;

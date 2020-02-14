@@ -5,6 +5,7 @@
 
 #include	"main.h"
 #include	<xstring>
+#include	<string>
 
 // メモリ開放
 #define SAFE_RELEASE(x)			if( nullptr != x ){ x->Release(); x = nullptr; }
@@ -52,6 +53,8 @@ struct Delete {
 };
 
 std::wstring stringTowstring(const std::string& font);
+
+std::string Replace_String(std::string& replacedStr, const std::string& from, const std::string& to);
 
 #ifdef UNICODE
 void Erroer_Message(const std::wstring& str1, const std::wstring& str2 = std::wstring(L"エラーメッセージ"));

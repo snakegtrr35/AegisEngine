@@ -26,7 +26,7 @@
     <ClCompile Include="Bounding_Aabb.cpp" />
     <ClCompile Include="Bounding_Capsule.cpp" />
     <ClCompile Include="Bounding_Frustum.cpp" />
-    <ClCompile Include="Bounding_Shpere.cpp" />
+    <ClCompile Include="Bounding_Sphere.cpp" />
     <ClCompile Include="Bullet.cpp" />
     <ClCompile Include="camera.cpp" />
     <ClCompile Include="Collision.cpp" />
@@ -89,6 +89,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="Text.cpp" />
     <ClCompile Include="texture.cpp" />
     <ClCompile Include="Texture_Manager.cpp" />
     <ClCompile Include="Time.cpp" />
@@ -107,7 +108,7 @@
     <ClInclude Include="Bounding_Capsule.h" />
     <ClInclude Include="Bounding_Frustum.h" />
     <ClInclude Include="Bounding_Obb.h" />
-    <ClInclude Include="Bounding_Shpere.h" />
+    <ClInclude Include="Bounding_Sphere.h" />
     <ClInclude Include="Bullet.h" />
     <ClInclude Include="camera.h" />
     <ClInclude Include="Cereal.h" />
@@ -184,6 +185,7 @@
     <ClInclude Include="Sprite.h" />
     <ClInclude Include="Sprite_Animation.h" />
     <ClInclude Include="stdafx.h" />
+    <ClInclude Include="Text.h" />
     <ClInclude Include="texture.h" />
     <ClInclude Include="Texture_Manager.h" />
     <FxCompile Include="TilingCommonHeader.h">

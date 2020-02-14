@@ -116,7 +116,7 @@ void BULLET::Update(float delta_time)
 			{
 				// ビルボード
 				{
-					BILL_BOARD_ANIMATION* bba = CManager::Get_Instance()->Get_Scene()->Add_Game_Object<BILL_BOARD_ANIMATION>(LAYER_NAME::EFFECT);
+					BILL_BOARD_ANIMATION* bba = CManager::Get_Instance()->Get_Scene()->Add_Game_Object<BILL_BOARD_ANIMATION>(LAYER_NAME::EFFECT, "test");
 					bba->Set_Position(&Position);
 					bba->SetWH(XMFLOAT2(1.0f, 1.0f));
 					bba->SetParam(3.0f, 4, 4);

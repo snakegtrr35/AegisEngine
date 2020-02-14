@@ -20,12 +20,9 @@
 #include	"Light.h"
 
 #include	"Bounding.h"
-//class BOUNDING_AABB;
-//class BOUNDING_OBB;
-//class BOUNDING_SHPERE;
 #include	"Bounding_Aabb.h"
 #include	"Bounding_Obb.h"
-#include	"Bounding_Shpere.h"
+#include	"Bounding_Sphere.h"
 
 
 extern float radius;
@@ -70,6 +67,26 @@ void My_imgui::Init(HWND hWnd)
 	ImGuiStyle& style = ImGui::GetStyle();
 
 	style.Colors[ImGuiCol_WindowBg] = color;
+
+	{
+		Component_Items.first.emplace_back((char*)u8"コリジョン AABB");
+		Component_Items.second.emplace_back("コリジョン AABB");
+
+		Component_Items.first.emplace_back((char*)u8"コリジョン OBB");
+		Component_Items.second.emplace_back("コリジョン OBB");
+
+		Component_Items.first.emplace_back((char*)u8"コリジョン 球");
+		Component_Items.second.emplace_back("コリジョン 球");
+
+		Component_Items.first.emplace_back((char*)u8"コリジョン カプセル");
+		Component_Items.second.emplace_back("コリジョン カプセル");
+
+		Component_Items.first.emplace_back((char*)u8"EEEE");
+		Component_Items.second.emplace_back("EEEE");
+
+		Component_Items.first.emplace_back((char*)u8"FFFF");
+		Component_Items.second.emplace_back("FFFF");
+	}
 }
 
 void My_imgui::Draw(void)
@@ -401,6 +418,16 @@ void My_imgui::Draw(void)
 			ImGui::End();
 		}
 
+		{
+			ImGui::Begin("PLAY");
+
+			ImGui::Checkbox("Play", &is_open);
+
+			ImGui::Checkbox("Stop", &is_open);
+
+			ImGui::End();
+		}
+
 		// ライトの設定(ディレクショナルライトではない)
 		{
 			Light_Setting();
@@ -420,11 +447,6 @@ void My_imgui::Draw(void)
 		Setting();
 
 		File();
-
-		// Rendering
-		ImGui::Render();
-
-		//ImGui::IsMouseHoveringRect
 	}
 }
 
@@ -462,6 +484,8 @@ void My_imgui::Begin()
 
 void My_imgui::End()
 {
+	// Rendering
+	ImGui::Render();
 	ImGui::EndFrame();
 }
 
@@ -479,8 +503,17 @@ const bool My_imgui::Get_Mouse_Over_Enable()
 
 void My_imgui::Draw_Inspector(const string& name)
 {
+	static const char* item_current = nullptr;
+	static const char* temp_current = nullptr;
+
 	bool flag = false;
-	if (old_name != name) flag = true;
+	if (old_name != name)
+	{
+		flag = true;
+
+		item_current = nullptr;
+		temp_current = nullptr;
+	}
 
 	auto object = SCENE::Get_Game_Object(name);
 
@@ -565,42 +598,22 @@ void My_imgui::Draw_Inspector(const string& name)
 		}
 
 		{
-			vector<const char*> Items;
-
-			Items.emplace_back((char*)u8"コリジョン AABB");
-			Items.emplace_back((char*)u8"コリジョン OBB");
-			Items.emplace_back((char*)u8"コリジョン 球");
-			Items.emplace_back((char*)u8"コリジョン カプセル");
-			Items.emplace_back((char*)u8"EEEE");
-			Items.emplace_back((char*)u8"FFFF");
-
-			vector<const char*> Temp_Items;
-
-			Temp_Items.emplace_back("コリジョン AABB");
-			Temp_Items.emplace_back("コリジョン OBB");
-			Temp_Items.emplace_back("コリジョン 球");
-			Temp_Items.emplace_back("コリジョン カプセル");
-			Temp_Items.emplace_back("EEEE");
-			Temp_Items.emplace_back("FFFF");
-
-			static const char* item_current = nullptr;
-			static const char* temp_current;
+			/*static const char* item_current = nullptr;
+			static const char* temp_current = nullptr;*/
 
 			{
 				static ImGuiComboFlags flags = ImGuiComboFlags_NoArrowButton;
 
 				if (ImGui::BeginCombo((char*)u8"コンポーネント", item_current, flags)) // The second parameter is the label previewed before opening the combo.
 				{
-					for (int n = 0; n < Items.size(); n++)
+					for (int n = 0; n < Component_Items.first.size(); n++)
 					{
-						bool is_selected = (item_current == Items[n]);
-						if (ImGui::Selectable(Items[n], is_selected))
+						bool is_selected = (item_current == Component_Items.first.at(n));
+						if (ImGui::Selectable(Component_Items.first.at(n), is_selected))
 						{
-							item_current = Items[n];
-							temp_current = Temp_Items[n];
+							item_current = Component_Items.first.at(n);
+							temp_current = Component_Items.second.at(n);
 						}
-						//if (is_selected)
-						//	ImGui::SetItemDefaultFocus();   // Set the initial focus when opening the combo (scrolling + for keyboard navigation support in the upcoming navigation branch)
 					}
 					ImGui::EndCombo();
 				}
@@ -612,9 +625,22 @@ void My_imgui::Draw_Inspector(const string& name)
 
 			if (ImGui::Button("Add Component"))
 			{
-				string s(temp_current);
+				if (nullptr != temp_current)
+				{
+					string s(temp_current);
 
-				Add_Component(object, s);
+					Add_Component(object, s);
+				}
+			}
+
+			if (ImGui::Button("Delete Component"))
+			{
+				if (nullptr != temp_current)
+				{
+					string s(temp_current);
+
+					Delete_Component(object, s);
+				}
 			}
 		}
 
@@ -1120,8 +1146,6 @@ void My_imgui::Add_Component(GAME_OBJECT* object, const string s)
 	auto scene = CManager::Get_Instance()->Get_Scene();
 	auto comp = object->Get_Component();
 
-	wstring str = stringTowstring(s);
-
 	if (string::npos != s.find("AABB"))
 	{
 		comp->Add_Component<BOUNDING_AABB>(scene->Get_Game_Object(object));
@@ -1139,6 +1163,35 @@ void My_imgui::Add_Component(GAME_OBJECT* object, const string s)
 		comp->Add_Component<BOUNDING_SHPERE>(scene->Get_Game_Object(object));
 		return;
 	}
+}
+
+void My_imgui::Delete_Component(GAME_OBJECT* object, const string s)
+{
+	ImGui::Text("%s", s.c_str());
+
+	auto scene = CManager::Get_Instance()->Get_Scene();
+	auto comp = object->Get_Component();
+
+	COMPONENT* component = nullptr;
+
+	if (string::npos != s.find("AABB"))
+	{
+		component = comp->Get_Component<BOUNDING_AABB>();
+	}
+
+	if (string::npos != s.find("OBB"))
+	{
+		component = comp->Get_Component<BOUNDING_OBB>();
+	}
+
+	if (string::npos != s.find("球"))
+	{
+		component = comp->Get_Component<BOUNDING_SHPERE>();
+	}
+
+	assert(nullptr != component);
+
+	component->SetDestroy();
 }
 
 #endif // _DEBUG

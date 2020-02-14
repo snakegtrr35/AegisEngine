@@ -11,6 +11,8 @@ private:
 	unique_ptr<ID3D11Buffer, Release> pVertexBuffer;		// 頂点バッファ
 	unique_ptr<ID3D11Buffer, Release> pIndexBuffer;			// インデックスバッファ
 
+	BoundingFrustum Frustum;
+
 public:
 	BOUNDING_FRUSTUM() {}
 	~BOUNDING_FRUSTUM() { Uninit(); }
@@ -23,7 +25,7 @@ public:
 
 	void OverWrite() override;
 
-	BoundingFrustum Frustum;
+	const BoundingFrustum& Get_Collition();
 
 	template<typename Archive>
 	void serialize(Archive& ar)

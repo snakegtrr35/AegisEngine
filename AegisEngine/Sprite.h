@@ -17,17 +17,29 @@
 /**
  * 子スプライト情報
  */
-typedef struct {
+struct CHILD_DATE {
 	//! 子スプライトのポインタ
-	SPRITE* Child = nullptr;
+	unique_ptr<SPRITE> Child;
 
-	//! 親スプライトのポインタ
-	SPRITE* Parent = nullptr;
+	////! オフセット位置
+	//XMFLOAT3 Offset;
 
 	//! 子スプライトの名前
 	string Name;
 
-}CHILD_DATE;
+	CHILD_DATE() : /*Offset(XMFLOAT3(0.f, 0.f, 0.f)),*/ Name("") {
+		Child.reset(nullptr);
+	}
+
+	template<typename Archive>
+	void serialize(Archive& ar)
+	{
+		ar(Child);
+		//ar(Offset);
+		ar(Name);
+	}
+
+};
 
 /**
 * @brief スプライトクラス
@@ -37,14 +49,14 @@ class SPRITE : public GAME_OBJECT {
 private:
 
 protected:
-	unique_ptr<ID3D11Buffer, Release> pVertexBuffer;		//!< 頂点バッファ
+	unique_ptr<ID3D11Buffer, Release> pVertexBuffer;			//!< 頂点バッファ
 	static unique_ptr<ID3D11Buffer, Release> pIndexBuffer;		//!< インデックスバッファ
 
-	VERTEX_3D Vertex[4];		//!< 頂点データ
+	VERTEX_3D Vertex[4];										//!< 頂点データ
 
-	unique_ptr<TEXTURE> Texture;		//!< テクスチャ
+	unique_ptr<TEXTURE> Texture;								//!< テクスチャ
 
-	XMFLOAT2 Position;		//!< ポジション
+	XMFLOAT2 Position;											//!< ポジション
 
 	/**
 	* サイズ
@@ -53,15 +65,15 @@ protected:
 	* z : 下
 	* w : 左
 	*/
-	XMFLOAT4 Size;
+	XMFLOAT4 Size;												//! サイズ
 
-	COLOR Color;		//!< カラー
+	COLOR Color;												//!< カラー
 
-	list<CHILD_DATE> Children;		//!< 子スプライトのリスト
+	vector< unique_ptr<CHILD_DATE> > Children;					//!< 子スプライトのリスト
 
-	list<MENU_COMPONENT*> MenuEvents;		//!< メニューイベント(リスト)
+	list<MENU_COMPONENT*> MenuEvents;							//!< メニューイベント(リスト)
 
-	bool Enable = true;		//!< スプライトの有効無効フラグ(デフォルトは有効)
+	bool Enable;												//!< スプライトの有効無効フラグ(デフォルトは有効)
 
 	ID3D11ShaderResourceView* ShaderResourceView = nullptr;
 
@@ -71,13 +83,13 @@ protected:
 	*/
 	void Draw_Child() {
 
-		for (CHILD_DATE child : Children)
+		for (const auto& child : Children)
 		{
-			if (child.Child->Enable)
+			if (child->Child->Enable)
 			{
-				child.Child->Draw();
+				child->Child->Draw();
 
-				child.Child->Draw_Child();
+				child->Child->Draw_Child();
 			}
 		}
 	};
@@ -88,13 +100,13 @@ protected:
 	*/
 	void Draw_DPP_Child() {
 
-		for (CHILD_DATE child : Children)
+		for (const auto& child : Children)
 		{
-			if (child.Child->Enable)
+			if (child->Child->Enable)
 			{
-				child.Child->Draw_DPP();
+				child->Child->Draw_DPP();
 
-				child.Child->Draw_DPP_Child();
+				child->Child->Draw_DPP_Child();
 			}
 		}
 	};
@@ -227,35 +239,21 @@ public:
 	* @return SPRITE 子スプライトのポインタ
 	* @details 子スプライトを一つ追加する関数
 	*/
-	SPRITE* Add_Child_Sptite(const string& name, SPRITE* const parent)
-	{
-		SPRITE* sprite = new SPRITE();
-
-		sprite->Enable = parent->GetEnable();
-
-
-		CHILD_DATE child;
-
-		child.Child = sprite;
-
-		child.Name = name;
-
-		child.Parent = parent;
-
-		Children.push_back(child);
-
-		return child.Child;
-	}
+	SPRITE* Add_Child_Sptite(const string& name);
 
 	/**
 	* @brief 子スプライトを取得する関数
 	* @return list<CHILD_DATE> 子スプライトのリスト
 	* @details 子スプライトのリストを取得する関数
 	*/
-	list<CHILD_DATE> const Get_Child_Sptite()
-	{
-		return Children;
-	}
+	vector< unique_ptr<CHILD_DATE> >* const Get_Child_Sptite();
+
+	/**
+	* @brief 子スプライトを取得する関数
+	* @return list<CHILD_DATE> 子スプライトのリスト
+	* @details 子スプライトのリストを取得する関数
+	*/
+	CHILD_DATE* const Get_Child_Sptite(const string& name);
 
 	/**
 	* @brief メニューイベントを追加する関数
@@ -282,6 +280,42 @@ public:
 			return component;
 		}
 	}
+
+	/**
+	* @brief 子スプライトの座標を設定する関数
+	* @param name 設定する子スプライトの名前
+	* @param position 親の座標(二次元座標)
+	* @param offset オフセット位置(二次元座標)
+	* @details 特定の子スプライトの座標(二次元座標、親スプライトからオフセットされる)を設定する関数
+	*/
+	void Set_Position_Child(const string& const name, const XMFLOAT2& position, const XMFLOAT2& offset);
+
+	/**
+	* @brief 子スプライトの描画の有効無効を設定する関数
+	* @param flag 描画の有効無効のフラグ
+	* @details 全ての子スプライトの描画の有効無効を設定する関数
+	*/
+	void Set_Enable_Child(const bool flag);
+
+	/**
+	* @brief 子スプライトの描画の有効無効を設定する関数
+	* @param name 設定する子スプライトの名前
+	* @param flag 描画の有効無効のフラグ
+	* @details 特定の子スプライトの描画の有効無効を設定する関数
+	*/
+	void Set_Enable_Child(const string& const name, const bool flag);
+
+	/**
+	* @brief 子スプライトの描画の有効無効を取得する関数
+	* @param name 子スプライトの名前
+	* @return bool 描画の有効無効のフラグ
+	* @details 特定の子スプライトの描画の有効無効を取得する関数
+	*/
+	const bool Get_Enable_Child(const string& const name, vector< unique_ptr<CHILD_DATE> >* const children);
+	
+	void Set(ID3D11ShaderResourceView* shader_resource_view) {
+		ShaderResourceView = shader_resource_view;
+	};
 
 	/**
 	* @brief メニューイベントを取得する関数
@@ -320,82 +354,11 @@ public:
 		}
 	}
 
-	/**
-	* @brief 子スプライトの座標を設定する関数
-	* @param name 設定する子スプライトの名前
-	* @param position 座標(二次元座標)
-	* @details 特定の子スプライトの座標(二次元座標、親スプライトからオフセットされる)を設定する関数
-	*/
-	void Set_Position_Child(const string& const name, const XMFLOAT2 position) {
-
-		for (CHILD_DATE child : Children)
-		{
-			if (name == child.Name)
-			{
-				XMFLOAT2 pos( child.Parent->GetPosition()->x + position.x, child.Parent->GetPosition()->y + position.y );
-
-				child.Child->SetPosition(pos);
-				return;
-			}
-		}
-	};
-
-	/**
-	* @brief 子スプライトの描画の有効無効を設定する関数
-	* @param flag 描画の有効無効のフラグ
-	* @details 全ての子スプライトの描画の有効無効を設定する関数
-	*/
-	void Set_Enable_Child(const bool flag) {
-
-		for (CHILD_DATE child : Children)
-		{
-			child.Child->Enable = flag;
-		}
-	};
-
-	/**
-	* @brief 子スプライトの描画の有効無効を設定する関数
-	* @param name 設定する子スプライトの名前
-	* @param flag 描画の有効無効のフラグ
-	* @details 特定の子スプライトの描画の有効無効を設定する関数
-	*/
-	void Set_Enable_Child(const string& const name, const bool flag) {
-
-		for (CHILD_DATE child : Children)
-		{
-			if (name == child.Name)
-			{
-				child.Child->Enable = flag;
-				return;
-			}
-		}
-	};
-
-	/**
-	* @brief 子スプライトの描画の有効無効を取得する関数
-	* @param name 子スプライトの名前
-	* @return bool 描画の有効無効のフラグ
-	* @details 特定の子スプライトの描画の有効無効を取得する関数
-	*/
-	const bool Get_Enable_Child(const string& const name) {
-
-		for (CHILD_DATE child : Children)
-		{
-			if (name == child.Name)
-			{
-				return child.Child->Enable;
-			}
-		}
-	};
-	
-	void Set(ID3D11ShaderResourceView* shader_resource_view) {
-		ShaderResourceView = shader_resource_view;
-	};
-
 	template<typename Archive>
 	void serialize(Archive& ar)
 	{
 		ar(cereal::base_class<GAME_OBJECT>(this));
+		ar(Children);
 		ar(Texture);
 		ar(SPRITE::Position);
 		ar(Size);
@@ -425,104 +388,5 @@ public:
 
 CEREAL_REGISTER_TYPE(SPRITE)
 CEREAL_REGISTER_POLYMORPHIC_RELATION(GAME_OBJECT, SPRITE)
-
-////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
-/**
-* @brief テキストクラス
-* @details 文字列を扱うためのクラス
-* @details スプライトクラスの派生クラス
-*/
-class TEXTS :public  SPRITE {
-private:
-	string Text;	//!< 表示する文字列
-
-	/**
-	* @brief 描画関数
-	* @details 実際に描画する関数
-	*/
-	void Text_Draw(const string& text);
-
-	/**
-	* @brief 描画(Depth pre-pass)関数
-	* @details Depth pre-passを行う関数
-	*/
-	void Text_Draw_DPP(const string& text);
-
-public:
-	/**
-	* @brief コンストラクタ
-	* @details 引数無しコンストラクタ
-	*/
-	TEXTS();
-
-	/**
-	* @brief デストラクタ
-	* @details デストラクタ
-	*/
-	~TEXTS();
-
-	/**
-	* @brief 初期化関数
-	* @details 初期化する関数
-	*/
-	void Init() override;
-
-	/**
-	* @brief 描画関数
-	* @details 描画する関数
-	*/
-	void Draw() override;
-
-	/**
-	* @brief 描画(Depth pre-pass)関数
-	* @details Depth pre-passを行う関数
-	*/
-	void Draw_DPP() override;
-
-	/**
-	* @brief 更新関数
-	* @details 更新する関数
-	*/
-	void Update(float delta_time) override;
-
-	/**
-	* @brief 終了処理関数
-	* @details 終了処理をする関数
-	*/
-	void Uninit() override;
-
-	/**
-	* @brief 表示する文字列を設定する関数
-	* @param text 設定する文字列
-	* @details 表示する文字列を設定する関数
-	*/
-	void Edit(const string& text);
-
-	template<typename Archive>
-	void serialize(Archive& ar)
-	{
-		ar(cereal::base_class<SPRITE>(this));
-		ar(Text);
-	}
-
-	//template<class Archive>
-	//void save(Archive& ar) const
-	//{
-	//	ar(cereal::base_class<SPRITE>(this));
-	//	ar(Text);
-	//}
-
-	//template<class Archive>
-	//void load(Archive& ar)
-	//{
-	//	ar(cereal::base_class<SPRITE>(this));
-	//	ar(Text);
-	//}
-};
-
-CEREAL_REGISTER_TYPE(TEXTS)
-CEREAL_REGISTER_POLYMORPHIC_RELATION(SPRITE, TEXTS)
 
 #endif // ! SPRITE_H

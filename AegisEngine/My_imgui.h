@@ -28,6 +28,8 @@ private:
 
 	bool Debug_Draw_Enable;
 
+	pair< vector<const char*>, vector<const char*> > Component_Items;
+
 	void Texture_Import();
 	const char File_Check(const string& file_name);
 
@@ -44,6 +46,8 @@ private:
 	void Draw_Components(const vector<COMPONENT*>& components);
 
 	void Add_Component(GAME_OBJECT* object, const string s);
+
+	void Delete_Component(GAME_OBJECT* object, const string s);
 
 public:
 	My_imgui() : show_demo_window(false), show_another_window(false), show_default_window(false),

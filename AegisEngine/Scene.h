@@ -59,7 +59,7 @@ public:
 
 	//// ƒŠƒXƒg‚Ö‚Ì’Ç‰Á
 	template <typename T>
-	static T* Add_Game_Object(LAYER_NAME layer, const string& name = "none")
+	static T* Add_Game_Object(LAYER_NAME layer, const string& name)
 	{
 		//T* object = new T();
 		shared_ptr<T> object(new T());
@@ -77,27 +77,23 @@ public:
 	{
 		for (int i = 0; i < (int)LAYER_NAME::MAX_LAYER; i++)
 		{
-			/*for (auto object = GameObjects[i].begin(); object != GameObjects[i].end(); object++)
-			{
-				if (typeid(T) == typeid(*object->get()))
-				{
-					if (name == object->get()->Get_Object_Name())
-					{
-						return object->get();
-					}
-				}
-			}*/
-
 			for (auto object : GameObjects[i])
 			{
-				if ( typeid(T) == typeid( *object.get() ) )
+				if (!GameObjects[i].empty())
 				{
-					if (name == object.get()->Get_Object_Name())
+					if (typeid(T) == typeid(*object.get()))
 					{
-						weak_ptr<T> obj( static_pointer_cast<T>(object) );
+						if (name == object.get()->Get_Object_Name())
+						{
+							weak_ptr<T> obj(static_pointer_cast<T>(object));
 
-						return  obj;
+							return  obj;
+						}
 					}
+				}
+				else
+				{
+					continue;
 				}
 			}
 		}
@@ -114,9 +110,16 @@ public:
 		{
 			for (auto object = GameObjects[i].begin(); object != GameObjects[i].end(); object++)
 			{
-				if (name == object->get()->Get_Object_Name())
+				if (!GameObjects[i].empty())
 				{
-					return object->get();
+					if (name == object->get()->Get_Object_Name())
+					{
+						return object->get();
+					}
+				}
+				else
+				{
+					continue;
 				}
 			}
 		}
@@ -132,11 +135,18 @@ public:
 		{
 			for (auto object = GameObjects[i].begin(); object != GameObjects[i].end(); object++)
 			{
-				if (me == object->get())
+				if (!GameObjects[i].empty())
 				{
-					weak_ptr<GAME_OBJECT> obj( *object );
+					if (me == object->get())
+					{
+						weak_ptr<GAME_OBJECT> obj(*object);
 
-					return  obj;
+						return  obj;
+					}
+				}
+				else
+				{
+					continue;
 				}
 			}
 		}
@@ -153,9 +163,16 @@ public:
 		{
 			for (auto object = GameObjects[i].begin(); object != GameObjects[i].end(); object++)
 			{
-				if (typeid(T) == typeid( *object->get()) )
+				if (!GameObjects[i].empty())
 				{
-					objects.emplace_back( (T*)object->get() );
+					if (typeid(T) == typeid(*object->get()))
+					{
+						objects.emplace_back((T*)object->get());
+					}
+				}
+				else
+				{
+					continue;
 				}
 			}
 		}
@@ -170,7 +187,14 @@ public:
 		{
 			for (auto object = GameObjects[i].begin(); object != GameObjects[i].end(); object++)
 			{
-				objects.push_back(object->get());
+				if (!GameObjects[i].empty())
+				{
+					objects.push_back(object->get());
+				}
+				else
+				{
+					continue;
+				}
 			}
 		}
 		return objects;
@@ -195,6 +219,7 @@ public:
 			{
 				object->get()->Init();
 			}
+			Light_Manager.Init();
 		}
 	};
 

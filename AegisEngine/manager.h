@@ -19,6 +19,9 @@ private:
 
 	unique_ptr<SHADOW_MAP, Delete> pShadowMap;
 
+	bool Play_Enable;
+	bool Stop_Enable;
+
 #ifdef _DEBUG
 	unique_ptr<My_imgui, Delete> imgui;		// Imgui‚ÌƒNƒ‰ƒX
 #endif // _DEBUG

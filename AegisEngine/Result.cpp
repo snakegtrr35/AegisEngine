@@ -1,16 +1,20 @@
 #include	"Scene.h"
 #include	"Result.h"
 #include	"Input.h"
+
 #include	"manager.h"
 #include	"Component.h"
 #include	"audio_clip.h"
 
 #include	"Fade.h"
+#include	"Sprite_Animation.h"
 
 #include	"Scene_Manager.h"
 #include	"Title.h"
 
 bool RESULT::Clear_Flag;
+
+static unique_ptr<SPRITE_ANIMATION> sprite_anime = nullptr;
 
 void RESULT::Init()
 {
@@ -18,7 +22,7 @@ void RESULT::Init()
 	{
 		XMFLOAT2 pos(SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.5f);
 
-		SPRITE* result = Add_Game_Object<SPRITE>(LAYER_NAME::UI);
+		SPRITE* result = Add_Game_Object<SPRITE>(LAYER_NAME::UI, "result");
 
 		result->SetPosition(pos);
 
@@ -68,5 +72,30 @@ void RESULT::Update(float delta_time)
 
 void RESULT::Uninit()
 {
+	static bool flag = true;
+
+	if (flag)
+	{
+		const type_info& id = typeid(*this);
+
+		string name(id.name());
+
+		// íuä∑
+		Replace_String(name, "class ", "      ");
+		Replace_String(name, "*", " ");
+		name.erase(remove_if(name.begin(), name.end(), isspace), name.end());
+
+		std::ofstream file(name + ".dat", std::ios::binary);
+
+		bool f = file.is_open();
+
+		cereal::BinaryOutputArchive archive(file);
+		archive(*this);
+
+		flag = false;
+	}
+
 	SCENE::Uninit();
+
+	AUDIO_MANAGER::Stop_Sound_Object();
 }

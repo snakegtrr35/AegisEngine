@@ -1,7 +1,5 @@
 #pragma once
 
-//Bounding Box
-
 #ifndef BOUNDING_H
 #define BOUNDING_H
 
@@ -52,22 +50,6 @@ public:
 		ar(Default_Color);
 		ar(Color);
 	}
-
-	//template<class Archive>
-	//void save(Archive& ar) const
-	//{
-	//	ar(cereal::base_class<GAME_OBJECT>(this));
-	//	ar(Default_Color);
-	//	ar(Color);
-	//}
-
-	//template<class Archive>
-	//void load(Archive& ar)
-	//{
-	//	ar(cereal::base_class<GAME_OBJECT>(this));
-	//	ar(Default_Color);
-	//	ar(Color);
-	//}
 };
 
 CEREAL_REGISTER_TYPE(BOUNDING)

@@ -4,192 +4,129 @@
 #include	"manager.h"
 #include	"Component.h"
 #include	"audio_clip.h"
-
 #include	"Fade.h"
-
 #include	"Timer.h"
+
+#include	"Sprite_Animation.h"
 
 #include	"Scene_Manager.h"
 #include	"Main_Menu.h"
 
 static bool flag = false;
 
+static unique_ptr<SPRITE_ANIMATION> sprite_anime = nullptr;
+
 void TITLE::Init()
 {
-	// タイトル画面
 	{
-		XMFLOAT2 pos(SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.5f);
+		sprite_anime = make_unique<SPRITE_ANIMATION>();
 
-		SPRITE* title = Add_Game_Object<SPRITE>(LAYER_NAME::UI);
+		sprite_anime->SetPosition(XMFLOAT2(SCREEN_WIDTH * 0.5, SCREEN_HEIGHT * 0.5));
+		sprite_anime->SetSize(XMFLOAT4(SCREEN_HEIGHT * 0.5, SCREEN_WIDTH * 0.5, SCREEN_HEIGHT * 0.5, SCREEN_WIDTH * 0.5));
 
-		title->SetPosition(pos);
+		sprite_anime->SetTexture("Load.png");
 
-		title->SetSize(XMFLOAT4(SCREEN_HEIGHT * 0.5f, SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.5f, SCREEN_WIDTH * 0.5f));
+		sprite_anime->SetParam(10, 3, 1);
 
-		title->SetTexture(string("title.png"));
-
-		title->Set_Object_Name("title");
-
-		SPRITE* arrow = title->Add_Child_Sptite(string("arrow"), title);
-
-		arrow->SetTexture(string("arrow.png"));
-
-		pos = XMFLOAT2(0.0f, 65.0f + 140.0f);
-
-		title->Set_Position_Child(string("arrow"), pos);
-
-		arrow->SetSize(XMFLOAT4(40.0f, 330.0f, 40.0f, 330.0f));
-
-		arrow->Set_Object_Name("arrow");
+		sprite_anime->Init();
 	}
 
-#ifdef _DEBUG
-	// テキスト画像
-	{
-		XMFLOAT2 pos(10.0f, 50.0f);
-		TEXTS* text = Add_Game_Object<TEXTS>(LAYER_NAME::UI);
+	std::thread th(&Load, this);
 
-		text->SetPosition(pos);
+	th.detach();
 
-		text->SetSize(XMFLOAT4(10, 10, 10, 10));
+	//cnt = 0;
 
-		text->Set_Object_Name(string("pos"));
-
-		//COLOR color = COLOR(0.0f, 0.0f, 0.0f, 1.0f);
-
-		//text->SetColor(color);
-
-		string num = to_string(TIMER::Get_Time_Mili(2));
-
-		if(2 < num.size())
-			num.insert(num.size() - 2, ".");
-
-		text->Edit(num);
-	}
-#endif // _DEBUG
-
-#ifdef _DEBUG
-	// テキスト画像
-	{
-		XMFLOAT2 pos(10.0f, 80.0f);
-		TEXTS* text = Add_Game_Object<TEXTS>(LAYER_NAME::UI);
-
-		text->SetPosition(pos);
-
-		text->SetSize(XMFLOAT4(10, 10, 10, 10));
-
-		text->Set_Object_Name(string("clock"));
-
-		//string num = to_string(CLOCK_TIMER::Get_Time());
-		string num = to_string(TIMER::Get_Time_Sec());
-
-		text->Edit(num);
-	}
-#endif // _DEBUG
-
-	FADE::Start_FadeIn(5);
-	flag = false;
-	FADE::Set_Enable(false);
+	//FADE::Start_FadeIn(60);
 }
 
 void TITLE::Draw()
 {
-	SCENE::Draw();
+	if (false == GetLockLoad())
+	{
+		sprite_anime.reset(nullptr);
+
+		SCENE::Draw();
+
+		auto m = XMMatrixIdentity();
+
+		m = XMMatrixScaling(2.5, 2.5, 2.5);
+	}
+	else
+	{
+		sprite_anime->Draw();
+	}
 }
 
 void TITLE::Draw_DPP()
 {
-	SCENE::Draw_DPP();
+	if (false == GetLockLoad())
+	{
+		sprite_anime.reset(nullptr);
+
+		SCENE::Draw_DPP();
+
+		auto m = XMMatrixIdentity();
+
+		m = XMMatrixScaling(2.5, 2.5, 2.5);
+	}
 }
 
 void TITLE::Update(float delta_time)
 {
-	SCENE::Update(delta_time);
-
-#ifdef _DEBUG
+	if (false == GetLockLoad())
 	{
-		vector<TEXTS*> texts = Get_Game_Objects<TEXTS>();
+		SCENE::Update(delta_time);
 
-		for (auto sprite : texts)
+		// メニューの選択操作
 		{
-			if (string("pos") == sprite->Get_Object_Name())
+			static short cnt = 0;
+
+			if (KEYBOARD::Trigger_Keyboard(VK_UP))
 			{
-				string space("   ");
-				string text;
-				string num;
+				cnt--;
+				cnt = Loop_Minus(cnt, 3);
 
-				num = to_string(TIMER::Get_Time_Mili(2));
-
-				text = num;
-
-				if (2 < text.size())
-					text.insert(text.size() - 2, ".");
-
-				sprite->Edit(text);
+				AUDIO_MANAGER::Play_Sound_Object(SOUND_INDEX::SOUND_INDEX_SENTAKU, false);
 			}
 
-			if (string("clock") == sprite->Get_Object_Name())
+			if (KEYBOARD::Trigger_Keyboard(VK_DOWN))
 			{
-				string text;
+				cnt++;
+				cnt = Loop_Plus(cnt, 3);
 
-				//text = to_string(CLOCK_TIMER::Get_Time());
-				text = to_string(TIMER::Get_Time_Sec());
-
-				sprite->Edit(text);
+				AUDIO_MANAGER::Play_Sound_Object(SOUND_INDEX::SOUND_INDEX_SENTAKU, false);
 			}
-		}
-	}
-#endif // _DEBUG
 
-	// メニューの選択操作
-	{
-		static short cnt = 0;
+			vector<SPRITE*> sprites = Get_Game_Objects<SPRITE>();
 
-		if (KEYBOARD::Trigger_Keyboard(VK_UP))
-		{
-			cnt--;
-			cnt = Loop_Minus(cnt, 3);
-
-			AUDIO_MANAGER::Play_Sound_Object(SOUND_INDEX::SOUND_INDEX_SENTAKU, false);
-		}
-
-		if (KEYBOARD::Trigger_Keyboard(VK_DOWN))
-		{
-			cnt++;
-			cnt = Loop_Plus(cnt, 3);
-
-			AUDIO_MANAGER::Play_Sound_Object(SOUND_INDEX::SOUND_INDEX_SENTAKU, false);
-		}
-
-		vector<SPRITE*> sprites = Get_Game_Objects<SPRITE>();
-
-		for (auto sprite : sprites)
-		{
-			if ("title" == sprite->Get_Object_Name())
+			for (auto sprite : sprites)
 			{
-				switch (cnt)
-				{
-					case 0:
-						sprite->Set_Position_Child("arrow", XMFLOAT2(0.0f, 65.0f + 0.0f));		// 1番目
-						break;
-
-					case 1:
-						sprite->Set_Position_Child("arrow", XMFLOAT2(0.0f, 65.0f + 140.0f));	// 2番目
-						break;
-
-					case 2:
-						sprite->Set_Position_Child("arrow", XMFLOAT2(0.0f, 65.0f + 270.0f));	// 3番目
-						break;
-
-					//case 3:
-					//	sprite->Set_Position_Child("arrow", XMFLOAT2(0.0f, 65.0f + 410.0f));	// 4番目
-					//	break;
-				}
-
-				if (KEYBOARD::Trigger_Keyboard(VK_RETURN))
+				if ("title" == sprite->Get_Object_Name())
 				{
 					switch (cnt)
 					{
+					case 0:
+						sprite->Set_Position_Child("arrow", *sprite->GetPosition(), XMFLOAT2(0.0f, 65.0f + 0.0f));		// 1番目
+						break;
+
+					case 1:
+						sprite->Set_Position_Child("arrow", *sprite->GetPosition(), XMFLOAT2(0.0f, 65.0f + 140.0f));	// 2番目
+						break;
+
+					case 2:
+						sprite->Set_Position_Child("arrow", *sprite->GetPosition(), XMFLOAT2(0.0f, 65.0f + 270.0f));	// 3番目
+						break;
+
+						//case 3:
+						//	sprite->Set_Position_Child("arrow", XMFLOAT2(0.0f, 65.0f + 410.0f));	// 4番目
+						//	break;
+					}
+
+					if (KEYBOARD::Trigger_Keyboard(VK_RETURN))
+					{
+						switch (cnt)
+						{
 						case 0:
 							FADE::Start_FadeOut(60);
 							break;
@@ -202,31 +139,114 @@ void TITLE::Update(float delta_time)
 							CManager::Get_Instance()->GameEnd();//
 							break;
 
-						/*case 3:
-							CManager::GameEnd();
-							break;*/
+							/*case 3:
+								CManager::GameEnd();
+								break;*/
+						}
+
+						AUDIO_MANAGER::Play_Sound_Object(SOUND_INDEX::SOUND_INDEX_KETTEI, false);
 					}
 
-					AUDIO_MANAGER::Play_Sound_Object(SOUND_INDEX::SOUND_INDEX_KETTEI, false);
+					break;
 				}
+			}
+		}
 
-				break;
+		{
+			if (FADE::End_Fade())
+			{
+				SCENE_MANAGER::Set_Scene<MAIN_MENU>();
 			}
 		}
 	}
-
-	if (FADE::End_Fade())
+	else
 	{
-		if (flag)
-			SCENE_MANAGER::Set_Scene<MAIN_MENU>();
-
-		flag = true;
+		sprite_anime->Update(delta_time);
 	}
 }
 
 void TITLE::Uninit()
 {
+	static bool flag = true;
+
+	if (flag)
+	{
+		const type_info& id = typeid(*this);
+
+		string name(id.name());
+
+		// 置換
+		Replace_String(name, "class ", "      ");
+		Replace_String(name, "*", " ");
+		name.erase(remove_if(name.begin(), name.end(), isspace), name.end());
+
+		std::ofstream file(name + ".dat", std::ios::binary);
+
+		bool f = file.is_open();
+
+		cereal::BinaryOutputArchive archive(file);
+		archive(*this);
+
+		flag = false;
+	}
+
 	SCENE::Uninit();
 
 	AUDIO_MANAGER::Stop_Sound_Object();
+}
+
+void TITLE::Load(SCENE* scene)
+{
+	bool flag;
+
+	{
+		const type_info& id = typeid(*scene);
+
+		string name(id.name());
+
+		// 置換
+		Replace_String(name, "class ", "      ");
+		Replace_String(name, "*", " ");
+		name.erase(remove_if(name.begin(), name.end(), isspace), name.end());
+
+		std::ifstream file(name + ".dat", std::ios::binary);
+
+		flag = file.is_open();
+
+		if (flag)
+		{
+			cereal::BinaryInputArchive archive(file);
+			archive(*scene);
+		}
+	}
+
+	if (false == flag)
+	{
+		// タイトル画面
+		{
+			XMFLOAT2 pos(SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.5f);
+
+			SPRITE* title = scene->Add_Game_Object<SPRITE>(LAYER_NAME::UI, "title");
+
+			title->SetPosition(pos);
+
+			title->SetSize(XMFLOAT4(SCREEN_HEIGHT * 0.5f, SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.5f, SCREEN_WIDTH * 0.5f));
+
+			title->SetTexture(string("title.png"));
+
+			SPRITE* arrow = title->Add_Child_Sptite("arrow");
+
+			arrow->SetTexture(string("arrow.png"));
+
+			title->Set_Position_Child("arrow", *title->GetPosition(), XMFLOAT2(0.0f, 65.0f + 140.0f));
+
+			arrow->SetSize(XMFLOAT4(40.0f, 330.0f, 40.0f, 330.0f));
+
+			arrow->Set_Object_Name("arrow");
+		}
+	}
+
+	scene->SCENE::Init();
+
+	scene->SetLockLoad();
 }

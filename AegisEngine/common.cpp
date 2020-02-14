@@ -39,4 +39,27 @@ void Erroer_Message(const std::string& str1, const std::string& str2)
 {
 	MessageBox(GetWindow(), str1.c_str(), str2.c_str(), MB_OK | MB_ICONWARNING);
 }
+
+string Replace_String(string& replacedStr, const string& from, const string& to)
+{
+	if (replacedStr.empty() || from.empty() || to.empty())
+	{
+		return replacedStr;
+	}
+
+	if (from.size() != to.size())
+	{
+		return replacedStr;
+	}
+
+	const UINT pos = (UINT)replacedStr.find(from);
+	const UINT len = (UINT)from.length();
+
+	if (replacedStr.size() < pos)
+	{
+		return replacedStr;
+	}
+
+	return replacedStr.replace(pos, len, to);
+}
 #endif // !UNICODE

@@ -48,14 +48,14 @@ bool MOUSE_EVENT_COMPONENT::Mouse_Click_Left(const string& const name, SPRITE* m
 			}
 		}
 
-		list<CHILD_DATE> children = me->Get_Child_Sptite();
+		auto children = me->Get_Child_Sptite();
 
-		for (auto child : children)
+		for (const auto& child : *children)
 		{
-			if (name == child.Child->Get_Object_Name() && child.Child->GetEnable())
+			if (name == child->Child->Get_Object_Name() && child->Child->GetEnable())
 			{
-				pos = child.Child->GetPosition();
-				size = child.Child->GetSize();
+				pos = child->Child->GetPosition();
+				size = child->Child->GetSize();
 
 				position.x = pos->x;
 				position.y = pos->y;
@@ -101,14 +101,14 @@ bool MOUSE_EVENT_COMPONENT::Mouse_Click_Right(const string& const name, SPRITE* 
 			}
 		}
 
-		list<CHILD_DATE> children = me->Get_Child_Sptite();
+		auto children = me->Get_Child_Sptite();
 
-		for (auto child : children)
+		for (const auto& child : *children)
 		{
-			if (name == child.Child->Get_Object_Name() && child.Child->GetEnable())
+			if (name == child->Child->Get_Object_Name() && child->Child->GetEnable())
 			{
-				pos = child.Child->GetPosition();
-				size = child.Child->GetSize();
+				pos = child->Child->GetPosition();
+				size = child->Child->GetSize();
 
 				position.x = pos->x;
 				position.y = pos->y;
@@ -154,14 +154,14 @@ bool MOUSE_EVENT_COMPONENT::Mouse_Over(const string& const name, SPRITE* me)
 		}
 	}
 
-	list<CHILD_DATE> children = me->Get_Child_Sptite();
+	auto children = me->Get_Child_Sptite();
 
-	for (auto child : children)
+	for (const auto& child : *children)
 	{
-		if (name == child.Child->Get_Object_Name() && child.Child->GetEnable())
+		if (name == child->Child->Get_Object_Name() && child->Child->GetEnable())
 		{
-			pos = child.Child->GetPosition();
-			size = child.Child->GetSize();
+			pos = child->Child->GetPosition();
+			size = child->Child->GetSize();
 
 			position.x = pos->x;
 			position.y = pos->y;

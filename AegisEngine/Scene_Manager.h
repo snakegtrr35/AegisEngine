@@ -13,6 +13,8 @@ class SCENE_MANAGER {
 private:
 	static unique_ptr<SCENE> pScene;
 
+	static bool Scene_Change_Enable;
+
 protected:
 
 public:
@@ -30,12 +32,15 @@ public:
 
 	void Uninit();
 
-	static SCENE* const Get_Scene() {
-		return pScene.get();
-	};
+	const bool Get_Scene_Change_Enable();
+
+	static SCENE* const Get_Scene();
 
 	template <typename T>
 	static void Set_Scene() {
+
+		Scene_Change_Enable = true;
+
 		T* scene = new T();
 
 		pScene.reset(scene);

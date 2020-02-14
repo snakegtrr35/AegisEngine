@@ -17,6 +17,8 @@ SPRITE::SPRITE()
 
 	Color = COLOR(1.0f, 1.0f, 1.0f, 1.0f);
 
+	Enable = true;
+
 	// テクスチャの設定
 	Texture.reset(new TEXTURE(string("number.png")));
 }
@@ -32,6 +34,8 @@ SPRITE::SPRITE(XMFLOAT2 position, XMFLOAT4 size)
 	Size = size;
 
 	Color = COLOR(1.0f, 1.0f, 1.0f, 1.0f);
+
+	Enable = true;
 
 	// テクスチャの設定
 	Texture.reset(new TEXTURE(string("number.png")));
@@ -110,6 +114,11 @@ void SPRITE::Init(void)
 		}
 
 		pIndexBuffer.reset(pIB);
+	}
+
+	for (const auto& child : Children)
+	{
+		child->Child->Init();
 	}
 }
 
@@ -237,10 +246,10 @@ void SPRITE::Uninit(void)
 
 	pVertexBuffer.reset(nullptr);
 
-	for (CHILD_DATE child : Children)	
+	for (auto& child : Children)
 	{
-		child.Child->Uninit();
-		SAFE_DELETE(child.Child);
+		child->Child->Uninit();
+		child->Child.reset(nullptr);
 	}
 	Children.clear();
 }
@@ -299,119 +308,104 @@ TEXTURE* const SPRITE::GetTexture()
 }
 
 
-////////////////////////////////////////////////////////////////////////////////////////////////////
 
-
-TEXTS::TEXTS()
+SPRITE* SPRITE::Add_Child_Sptite(const string& name)
 {
-	Text = "";
+	unique_ptr<CHILD_DATE> child = make_unique<CHILD_DATE>();
+
+	child->Child = make_unique<SPRITE>();
+
+	child->Name = name;
+
+	Children.emplace_back(std::move(child));
+
+	return (Children.end() - 1)->get()->Child.get();
 }
 
-TEXTS::~TEXTS()
+vector< unique_ptr<CHILD_DATE> >* const SPRITE::Get_Child_Sptite()
 {
-	Uninit();
+	return &Children;
 }
 
-void TEXTS::Init(void)
+CHILD_DATE* const SPRITE::Get_Child_Sptite(const string& name)
 {
-	SPRITE::Init();
-}
-
-void TEXTS::Draw(void)
-{
-	if (false == CManager::Get_Instance()->Get_ShadowMap()->Get_Enable())
+	for (const auto& child : Children)
 	{
-		Text_Draw(Text);
-
-		Draw_Child();
-	}
-}
-
-void TEXTS::Draw_DPP(void)
-{
-	Text_Draw(Text);
-
-	Draw_DPP_Child();
-}
-
-void TEXTS::Update(float delta_time)
-{
-}
-
-void TEXTS::Uninit(void)
-{
-}
-
-void TEXTS::Edit(const string& text)
-{
-	Text = text;
-}
-
-void TEXTS::Text_Draw(const string& text)
-{
-	if (Enable)
-	{
-		SPRITE sprite;
-		ID3D11ShaderResourceView* shader_resource_view = nullptr;
-		wstring font;
-		short i = 0;
-
-		sprite.Init();
-
-		sprite.SetSize(Size);
-
-		sprite.SetColor(Color);
-
-		string ctext = text;
-		wstring wtext = stringTowstring(ctext);
-
-		for (auto itr : wtext)
+		if (name == child->Name)
 		{
-			font.push_back(itr);
-			shader_resource_view = FONT::Get_Font_Resource(font);
+			return child.get();
+		}
 
-			sprite.Set(shader_resource_view);
-
-			sprite.SetPosition(XMFLOAT2(Position.x + (Size.w * i * 2), Position.y));
-
-			sprite.Draw();
-
-			i++;
-
-			font.pop_back();
+		for (const auto& grandchild : *child->Child->Get_Child_Sptite())
+		{
+			if (name == grandchild->Name)
+			{
+				return grandchild.get();
+			}
 		}
 	}
+
+	return nullptr;
 }
 
-void TEXTS::Text_Draw_DPP(const string& text)
+void SPRITE::Set_Position_Child(const string& const name, const XMFLOAT2& position, const XMFLOAT2& offset)
 {
-	SPRITE sprite;
-	ID3D11ShaderResourceView* shader_resource_view = nullptr;
-	wstring font;
-	short i = 0;
-
-	sprite.Init();
-
-	sprite.SetSize(Size);
-
-	sprite.SetColor(Color);
-
-	string ctext = text;
-	wstring wtext = stringTowstring(ctext);
-
-	for (auto itr : wtext)
+	for (const auto& child : Children)
 	{
-		font.push_back(itr);
-		shader_resource_view = FONT::Get_Font_Resource(font);
+		if (name == child->Name)
+		{
+			XMFLOAT2 pos(position.x + offset.x, position.y + offset.y);
 
-		sprite.Set(shader_resource_view);
-
-		sprite.SetPosition(XMFLOAT2(Position.x + (Size.w * i * 2), Position.y));
-
-		sprite.Draw_DPP();
-
-		i++;
-
-		font.pop_back();
+			child->Child->SetPosition(pos);
+			return;
+		}
 	}
-}
+};
+
+void SPRITE::Set_Enable_Child(const bool flag)
+{
+	for (const auto& child : Children)
+	{
+		child->Child->Enable = flag;
+
+		for (auto& grandchild : *child->Child->Get_Child_Sptite())
+		{
+			grandchild->Child->Set_Enable_Child(flag);
+		}
+	}
+};
+
+void SPRITE::Set_Enable_Child(const string& const name, const bool flag)
+{
+	for (const auto& child : Children)
+	{
+		if (name == child->Name)
+		{
+			child->Child->Enable = flag;
+			return;
+		}
+
+		for (auto& grandchild : *child->Child->Get_Child_Sptite())
+		{
+			grandchild->Child->Set_Enable_Child(flag);
+		}
+	}
+};
+
+const bool SPRITE::Get_Enable_Child(const string& const name, vector< unique_ptr<CHILD_DATE> >* const children)
+{
+	for (const auto& child : *children)
+	{
+		if (name == child->Name)
+		{
+			return child->Child->Enable;
+		}
+
+		for (auto& grandchild : *child->Child->Get_Child_Sptite())
+		{
+			return Get_Enable_Child( name, grandchild->Child->Get_Child_Sptite());
+		}
+	}
+
+	return false;
+};

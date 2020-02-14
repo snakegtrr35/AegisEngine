@@ -193,7 +193,7 @@ void Create_Bullet(XMFLOAT3& position, XMFLOAT3& front)
 {
 	SCENE* scene = CManager::Get_Instance()->Get_Scene();
 
-	BULLET* bullet = scene->Add_Game_Object<BULLET>(LAYER_NAME::GAMEOBJECT);
+	BULLET* bullet = scene->Add_Game_Object<BULLET>(LAYER_NAME::GAMEOBJECT, "enemy");
 
 	
 

@@ -230,9 +230,6 @@
     <ClCompile Include="Bounding_Obb.cpp">
       <Filter>ソース ファイル\GameObject\Bounding</Filter>
     </ClCompile>
-    <ClCompile Include="Bounding_Shpere.cpp">
-      <Filter>ソース ファイル\GameObject\Bounding</Filter>
-    </ClCompile>
     <ClCompile Include="Bounding_Capsule.cpp">
       <Filter>ソース ファイル\GameObject\Bounding</Filter>
     </ClCompile>
@@ -262,6 +259,12 @@
     </ClCompile>
     <ClCompile Include="Component_Manager.cpp">
       <Filter>ソース ファイル\System\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Bounding_Sphere.cpp">
+      <Filter>ソース ファイル\GameObject\Bounding</Filter>
+    </ClCompile>
+    <ClCompile Include="Text.cpp">
+      <Filter>ソース ファイル\GameObject</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -439,9 +442,6 @@
     <ClInclude Include="Bounding_Obb.h">
       <Filter>ソース ファイル\GameObject\Bounding</Filter>
     </ClInclude>
-    <ClInclude Include="Bounding_Shpere.h">
-      <Filter>ソース ファイル\GameObject\Bounding</Filter>
-    </ClInclude>
     <ClInclude Include="Bounding_Capsule.h">
       <Filter>ソース ファイル\GameObject\Bounding</Filter>
     </ClInclude>
@@ -488,6 +488,12 @@
       <Filter>ソース ファイル\System\Component</Filter>
     </ClInclude>
     <ClInclude Include="Bill.h">
+      <Filter>ソース ファイル\GameObject</Filter>
+    </ClInclude>
+    <ClInclude Include="Bounding_Sphere.h">
+      <Filter>ソース ファイル\GameObject\Bounding</Filter>
+    </ClInclude>
+    <ClInclude Include="Text.h">
       <Filter>ソース ファイル\GameObject</Filter>
     </ClInclude>
   </ItemGroup>

@@ -318,3 +318,8 @@ void BOUNDING_FRUSTUM::OverWrite()
 		pIndexBuffer.reset(buffer);
 	}
 }
+
+const BoundingFrustum& BOUNDING_FRUSTUM::Get_Collition()
+{
+	return Frustum;
+}

@@ -15,6 +15,8 @@ private:
 protected:
 
 public:
+	static bool Clear_Flag;
+
 	RESULT() {}
 	~RESULT() {
 		Uninit();
@@ -26,7 +28,7 @@ public:
 	void Update(float delta_time) override;
 	void Uninit() override;
 
-	static bool Clear_Flag;
+	void Load(SCENE* scene) {}
 
 	template<typename Archive>
 	void serialize(Archive& ar)

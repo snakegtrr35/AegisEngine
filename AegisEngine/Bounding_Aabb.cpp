@@ -237,6 +237,15 @@ void BOUNDING_AABB::Set_Radius(const XMFLOAT3* radius)
 	Radius = *radius;
 }
 
+XMFLOAT3* BOUNDING_AABB::Get_Radius()
+{
+	return &Radius;
+}
+
+const BoundingBox& BOUNDING_AABB::Get_Collition()
+{
+	return Aabb;
+}
 
 
 #include	"imgui/imgui.h"

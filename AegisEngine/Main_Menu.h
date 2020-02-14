@@ -27,7 +27,7 @@ public:
 	void Update(float delta_time) override;
 	void Uninit() override;
 
-	void Init(bool);
+	static void Load(SCENE* scene);
 
 	template<typename Archive>
 	void serialize(Archive& ar)
