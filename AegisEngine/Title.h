@@ -16,9 +16,7 @@ protected:
 
 public:
 	TITLE() {}
-	~TITLE() {
-		Uninit();
-	}
+	~TITLE() { Uninit(); }
 
 	void Init() override;
 	void Draw() override;

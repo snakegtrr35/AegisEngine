@@ -34,16 +34,6 @@ struct Release {
 };
 
 //! スマートポインタ用のカスタムデリーター
-/*! Destroy() がある */
-struct Destroy {
-	template<class T>
-	void operator()(T* p) const {
-		p->Destroy();
-		p = nullptr;
-	}
-};
-
-//! スマートポインタ用のカスタムデリーター
 /*! Uninit() がある */
 struct Delete {
 	template<class T>

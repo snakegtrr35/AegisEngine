@@ -6,7 +6,19 @@ bool SCENE_MANAGER::Scene_Change_Enable = false;
 
 void SCENE_MANAGER::Init()
 {
-	if (nullptr != pScene) pScene->Init();
+	{
+		string name("GameInstance");
+
+		ifstream file(name + ".dat", std::ios::binary);
+
+		bool flag = file.is_open();
+
+		if (flag)
+		{
+			cereal::BinaryInputArchive archive(file);
+			archive(*this);
+		}
+	}
 }
 
 void SCENE_MANAGER::Draw()
@@ -29,6 +41,20 @@ void SCENE_MANAGER::Update(float delta_time)
 void SCENE_MANAGER::Uninit()
 {
 	pScene.reset(nullptr);
+
+	{
+		string name("GameInstance");
+
+		ofstream file(name + ".dat", std::ios::binary);
+
+		cereal::BinaryOutputArchive archive(file);
+		archive(*this);
+	}
+}
+
+void SCENE_MANAGER::Delete_GameInstance(const string& name)
+{
+	GamaInstance.erase(name);
 }
 
 const bool SCENE_MANAGER::Get_Scene_Change_Enable()

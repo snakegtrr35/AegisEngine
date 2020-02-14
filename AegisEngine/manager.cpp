@@ -79,14 +79,19 @@ bool CManager::Init()
 #endif // _DEBUG
 
 	Manager->pSceneManager.reset(new SCENE_MANAGER());
+	Manager->pSceneManager->Init();
+
+	Manager->pSceneManager->Set_GameInstance<int>("test", 100);
+
+	auto i = Manager->pSceneManager->Get_GameInstance<int>("test");
+
+	//Manager->pSceneManager->Delete_GameInstance("test");
 
 	Manager->pSceneManager->Set_Scene<TITLE>();
 	//Manager->pSceneManager->Set_Scene<MAIN_MENU>();
 
 	Manager->pShadowMap.reset(new SHADOW_MAP());//
 	Manager->pShadowMap->Init();
-
-	//Manager->pSceneManager->Get_Scene()->Get_Light_Manager()->Init();
 
 	return true;
 }
@@ -243,8 +248,7 @@ void CManager::Draw()
 
 void CManager::Uninit()
 {
-	//Manager->pSceneManager->Get_Scene()->Get_Light_Manager()->Uninit();
-
+	//pSceneManager->Uninit();
 	pSceneManager.reset(nullptr);
 
 	pShadowMap.reset(nullptr);//

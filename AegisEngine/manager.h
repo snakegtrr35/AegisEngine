@@ -3,7 +3,8 @@
 #ifndef MANAGER_H
 #define MANAGER_H
 
-class SCENE_MANAGER;
+#include	"Scene_Manager.h"
+//class SCENE_MANAGER;
 class SCENE;
 
 class SHADOW_MAP;
@@ -12,9 +13,19 @@ class My_imgui;
 class CManager {
 private:
 
+	//! スマートポインタ用のカスタムデリーター
+	/*! Uninit() がある */
+	struct Uninit {
+		template<class T>
+		void operator()(T* p) const {
+			p->Uninit();
+			p = nullptr;
+		}
+	};
+
 	static unique_ptr<CManager> Manager;
 
-	unique_ptr<SCENE_MANAGER, Delete> pSceneManager;
+	unique_ptr<SCENE_MANAGER, Uninit> pSceneManager;
 	bool GameEnable;
 
 	unique_ptr<SHADOW_MAP, Delete> pShadowMap;

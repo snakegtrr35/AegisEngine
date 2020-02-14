@@ -12,7 +12,7 @@ class SCENE;
 class SCENE_MANAGER {
 private:
 
-	typedef std::variant<bool, char, unsigned char, short, unsigned short, int, unsigned int, long, unsigned long, long long, unsigned long long, float, double> VARIANT;
+	typedef std::variant<bool, char, BYTE, short, WORD, int, UINT, long, DWORD, long long, unsigned long long, float, double, string> VARIANT;
 
 	static unique_ptr<SCENE> pScene;
 
@@ -41,7 +41,7 @@ public:
 
 	template <typename T>
 	void Set_GameInstance(const string& name, T object) {
-		GamaInstance[name] = object;
+		GamaInstance.emplace(name, object);
 	}
 
 	template <typename T>
@@ -51,6 +51,8 @@ public:
 
 		return std::get_if<T>(&GamaInstance[name]);
 	}
+
+	void Delete_GameInstance(const string& name);
 
 	static SCENE* const Get_Scene();
 
@@ -65,6 +67,12 @@ public:
 
 		pScene->Init();
 	};
+
+	template<typename Archive>
+	void serialize(Archive& ar)
+	{
+		ar(GamaInstance);
+	}
 };
 
 #endif // ! SCENE_MANAGER_H
