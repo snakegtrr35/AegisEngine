@@ -14,6 +14,40 @@ namespace DirectX
 	}
 
 	template<class Archive>
+	void serialize(Archive& archive, XMINT3& vector)
+	{
+		archive(vector.x, vector.y, vector.z);
+	}
+
+	template<class Archive>
+	void serialize(Archive& archive, XMINT4& vector)
+	{
+		archive(vector.x, vector.y, vector.z, vector.w);
+	}
+	
+
+
+	template<class Archive>
+	void serialize(Archive& archive, XMUINT2& vector)
+	{
+		archive(vector.x, vector.y);
+	}
+
+	template<class Archive>
+	void serialize(Archive& archive, XMUINT3& vector)
+	{
+		archive(vector.x, vector.y, vector.z);
+	}
+
+	template<class Archive>
+	void serialize(Archive& archive, XMUINT4& vector)
+	{
+		archive(vector.x, vector.y, vector.z, vector.w);
+	}
+
+
+
+	template<class Archive>
 	void serialize(Archive& archive, XMFLOAT2& vector)
 	{
 		archive(vector.x, vector.y);

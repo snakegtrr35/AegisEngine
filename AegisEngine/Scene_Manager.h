@@ -12,7 +12,11 @@ class SCENE;
 class SCENE_MANAGER {
 private:
 
-	typedef std::variant<bool, char, BYTE, short, WORD, int, UINT, long, DWORD, long long, unsigned long long, float, double, string> VARIANT;
+#define INTEGER		bool, char, BYTE, short, WORD, int, UINT, long, DWORD, long long, unsigned long long
+#define DECIAL		float, double
+#define DX_MATH		XMINT2, XMINT3, XMINT4, XMUINT2, XMUINT3, XMUINT4, XMFLOAT2, XMFLOAT3, XMFLOAT4
+
+	typedef std::variant<INTEGER, DECIAL, DX_MATH, string> VARIANT;
 
 	static unique_ptr<SCENE> pScene;
 
