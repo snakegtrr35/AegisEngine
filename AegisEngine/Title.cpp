@@ -138,10 +138,6 @@ void TITLE::Update(float delta_time)
 						case 2:
 							CManager::Get_Instance()->GameEnd();//
 							break;
-
-							/*case 3:
-								CManager::GameEnd();
-								break;*/
 						}
 
 						AUDIO_MANAGER::Play_Sound_Object(SOUND_INDEX::SOUND_INDEX_KETTEI, false);
@@ -167,6 +163,8 @@ void TITLE::Update(float delta_time)
 
 void TITLE::Uninit()
 {
+
+#ifdef _DEBUG
 	static bool flag = true;
 
 	if (flag)
@@ -189,6 +187,7 @@ void TITLE::Uninit()
 
 		flag = false;
 	}
+#endif // _DEBUG
 
 	SCENE::Uninit();
 

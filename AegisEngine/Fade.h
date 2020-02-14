@@ -40,6 +40,12 @@ public:
 	static bool End_Fade();
 
 	static void Set_Enable(const bool flag);
+
+	template<typename Archive>
+	void serialize(Archive& ar) {}
 };
+
+CEREAL_REGISTER_TYPE(FADE)
+CEREAL_REGISTER_POLYMORPHIC_RELATION(SPRITE, FADE)
 
 #endif // !FADE_H

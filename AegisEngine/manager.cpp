@@ -103,9 +103,19 @@ void CManager::Update()
 	{
 #ifdef _DEBUG
 		TEXTURE_MANEGER::Get_Instance()->Update();
-#endif // _DEBUG
 
+		if (Play_Enable)
+		{
+			pSceneManager->Update(TIMER::Get_DeltaTime());
+		}
+		else
+		{
+			auto camera = pSceneManager->Get_Scene()->Get_Game_Object("camera");
+			if(nullptr != camera) camera->Update(TIMER::Get_DeltaTime());
+		}
+#else
 		pSceneManager->Update(TIMER::Get_DeltaTime());
+#endif // _DEBUG
 
 		if (pSceneManager->Get_Scene_Change_Enable()) return;
 
@@ -224,8 +234,8 @@ void CManager::Draw()
 	{
 		imgui->Draw();//
 	}
-		imgui->End();
-		imgui->Render();//
+	imgui->End();
+	imgui->Render();//
 #endif // _DEBUG
 
 	CRenderer::End();
@@ -309,3 +319,10 @@ const UINT CManager::Get_ThreadCount()
 {
 	return ThreadCount;
 }
+
+#ifdef _DEBUG
+void CManager::Set_Play_Enable(const bool flag)
+{
+	Play_Enable = flag;
+}
+#endif // _DEBUG

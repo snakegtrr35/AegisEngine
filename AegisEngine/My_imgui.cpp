@@ -91,28 +91,21 @@ void My_imgui::Init(HWND hWnd)
 
 void My_imgui::Draw(void)
 {
-	//fps = ImGui::GetIO().Framerate;
-
-	//Start the Dear ImGui frame
 	{
-		// 1. Show the big demo window (Most of the sample code is in ImGui::ShowDemoWindow()! You can browse its code to learn more about Dear ImGui!).
 		if (show_demo_window)
 			ImGui::ShowDemoWindow(&show_demo_window);
 
-		// 2. Show a simple window that we create ourselves. We use a Begin/End pair to created a named window.
 		if(show_default_window)
 		{
-			// Create a window called "Hello, world!" and append into it.
 			ImGui::Begin("Hello, world!");
 
-			ImGui::Text("This is some useful text.");               // Display some text (you can use a format strings too)
-			ImGui::Checkbox("Demo Window", &show_demo_window);      // Edit bools storing our window open/close state
+			ImGui::Text("This is some useful text.");
+			ImGui::Checkbox("Demo Window", &show_demo_window);
 			ImGui::Checkbox("Another Window", &show_another_window);
 
-			ImGui::SliderFloat("float", &f, 0.0f, 10.0f);            // Edit 1 float using a slider from 0.0f to 1.0f    
-			ImGui::ColorEdit3("clear color", (float*)& clear_color); // Edit 3 floats representing a color
+			ImGui::SliderFloat("float", &f, 0.0f, 10.0f);    
+			ImGui::ColorEdit3("clear color", (float*)& clear_color);
 
-			// Buttons return true when clicked (most widgets return true when edited/activated)
 			if (ImGui::Button("Button"))
 				counter++;
 
@@ -127,10 +120,8 @@ void My_imgui::Draw(void)
 			ImGui::End();
 		}
 
-		// 3. Show another simple window.
 		if (show_another_window)
 		{
-			// Pass a pointer to our bool variable (the window will have a closing button that will clear the bool when clicked)
 			ImGui::Begin("Another Window", &show_another_window);
 			ImGui::Text("Hello from another window!");
 			if (ImGui::Button("Close Me"))
@@ -288,8 +279,7 @@ void My_imgui::Draw(void)
 
 				ImGui::End();
 
-				//// ライトの設定
-				//LIGHT light;
+				// ライトの設定
 				light->Direction = XMFLOAT4(vec4_Direction[0], vec4_Direction[1], vec4_Direction[2], vec4_Direction[3]);
 				light->Position = XMFLOAT4(vec4_Position[0], vec4_Position[1], vec4_Position[2], vec4_Position[3]);
 				light->Diffuse = COLOR(vec4_Diffuse[0], vec4_Diffuse[1], vec4_Diffuse[2], vec4_Diffuse[3]);
@@ -390,40 +380,21 @@ void My_imgui::Draw(void)
 		}
 
 		{
-			XMVECTOR z = XMVectorSet(0.f, 0.f, 1.0f, 1.0f);
-			XMVECTOR x = XMVectorSet(1.0f, 0.f, 0.f, 1.0f);
+			ImGuiWindowFlags flag = ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize;
 
-			static XMVECTOR quat01 = XMQuaternionRotationAxis(z, 1.0f);
-			static XMVECTOR quat02 = XMQuaternionRotationAxis(x, 1.0f);
-			XMVECTOR quat;
-			static float t = 0.0f;
+			ImVec2 size(150.0f, 50.f);
+			ImVec2 pos(SCREEN_WIDTH * 0.5f - size.x * 0.5f, 20.0f);
 
-			XMFLOAT4 v;
+			ImGui::SetNextWindowSize(size);
+			ImGui::SetNextWindowPos(pos);
 
-			ImGui::Begin("Quaternion");
+			ImGui::Begin("PLAY", nullptr, flag);
 
-			ImGui::SliderFloat("t", &t, 0.0f, 1.0f);
+			static int radio = 1;
+			ImGui::RadioButton("PLAT", &radio, 1); ImGui::SameLine();
+			ImGui::RadioButton("STOP", &radio, 0);
 
-			quat = XMQuaternionSlerp(quat01, quat02, t);
-
-			XMStoreFloat4(&v, quat);
-			ImGui::Text("quat  x = %f y = %f z = %f w = %f", v.x, v.y, v.z, v.w);
-
-			XMStoreFloat4(&v, quat01);
-			ImGui::Text("quat01  x = %f y = %f z = %f w = %f", v.x, v.y, v.z, v.w);
-
-			XMStoreFloat4(&v, quat02);
-			ImGui::Text("quat02  x = %f y = %f z = %f w = %f", v.x, v.y, v.z, v.w);
-
-			ImGui::End();
-		}
-
-		{
-			ImGui::Begin("PLAY");
-
-			ImGui::Checkbox("Play", &is_open);
-
-			ImGui::Checkbox("Stop", &is_open);
+			radio ? CManager::Get_Instance()->Set_Play_Enable(true) : CManager::Get_Instance()->Set_Play_Enable(false);
 
 			ImGui::End();
 		}
@@ -1189,7 +1160,7 @@ void My_imgui::Delete_Component(GAME_OBJECT* object, const string s)
 		component = comp->Get_Component<BOUNDING_SHPERE>();
 	}
 
-	assert(nullptr != component);
+	if(nullptr == component) return;
 
 	component->SetDestroy();
 }

@@ -11,7 +11,12 @@ class SCENE;
 */
 class SCENE_MANAGER {
 private:
+
+	typedef std::variant<bool, char, unsigned char, short, unsigned short, int, unsigned int, long, unsigned long, long long, unsigned long long, float, double> VARIANT;
+
 	static unique_ptr<SCENE> pScene;
+
+	unordered_map<string, VARIANT > GamaInstance;
 
 	static bool Scene_Change_Enable;
 
@@ -33,6 +38,19 @@ public:
 	void Uninit();
 
 	const bool Get_Scene_Change_Enable();
+
+	template <typename T>
+	void Set_GameInstance(const string& name, T object) {
+		GamaInstance[name] = object;
+	}
+
+	template <typename T>
+	const T* Get_GameInstance(const string& name) {
+
+		if (GamaInstance.end() == GamaInstance.find(name)) return nullptr;
+
+		return std::get_if<T>(&GamaInstance[name]);
+	}
 
 	static SCENE* const Get_Scene();
 

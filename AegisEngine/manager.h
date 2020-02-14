@@ -18,12 +18,9 @@ private:
 	bool GameEnable;
 
 	unique_ptr<SHADOW_MAP, Delete> pShadowMap;
-
-	bool Play_Enable;
-	bool Stop_Enable;
-
 #ifdef _DEBUG
 	unique_ptr<My_imgui, Delete> imgui;		// Imgui‚ÌƒNƒ‰ƒX
+	bool Play_Enable;
 #endif // _DEBUG
 
 	UINT ThreadCount;
@@ -50,6 +47,12 @@ public:
 	void GameEnd();
 	void Set_ThreadCount(const UINT count);
 	const UINT Get_ThreadCount();
+
+#ifdef _DEBUG
+	void Set_Play_Enable(const bool flag);
+#endif // _DEBUG
+
+
 };
 
 #endif // !MANAGER_H

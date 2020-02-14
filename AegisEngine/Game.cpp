@@ -225,6 +225,8 @@ void GAME::Update(float delta_time)
 
 void GAME::Uninit()
 {
+
+#ifdef _DEBUG
 	static bool flag = true;
 
 	if (flag)
@@ -247,6 +249,7 @@ void GAME::Uninit()
 
 		flag = false;
 	}
+#endif // _DEBUG
 
 	SCENE::Uninit();
 

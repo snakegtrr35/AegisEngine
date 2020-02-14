@@ -72,6 +72,8 @@ void RESULT::Update(float delta_time)
 
 void RESULT::Uninit()
 {
+
+#ifdef _DEBUG
 	static bool flag = true;
 
 	if (flag)
@@ -94,6 +96,7 @@ void RESULT::Uninit()
 
 		flag = false;
 	}
+#endif // _DEBUG
 
 	SCENE::Uninit();
 

@@ -126,6 +126,8 @@ void MAIN_MENU::Update(float delta_time)
 
 void MAIN_MENU::Uninit()
 {
+
+#ifdef _DEBUG
 	static bool flag = true;
 
 	if(flag)
@@ -148,6 +150,7 @@ void MAIN_MENU::Uninit()
 
 		flag = false;
 	}
+#endif // _DEBUG
 
 	SCENE::Uninit();
 

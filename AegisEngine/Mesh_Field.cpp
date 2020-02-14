@@ -137,6 +137,8 @@ void MESH_FIELD::Init()
 	// テクスチャの設定
 	Texture.reset(new TEXTURE());
 	Texture->Set_Texture_Name("field004.png");
+
+	GAME_OBJECT::Init();
 }
 
 void MESH_FIELD::Uninit()

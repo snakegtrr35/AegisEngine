@@ -58,6 +58,7 @@ using namespace Math;
 #include	<cereal/types/set.hpp>
 #include	<cereal/types/unordered_set.hpp>
 #include	<cereal/types/string.hpp>
+#include	<cereal/types/variant.hpp>
 
 #include	"Cereal.h"
 
@@ -76,6 +77,7 @@ using namespace Math;
 #include	<deque>
 #include	<memory>
 #include	<string>
+#include	<variant>
 #include	<functional>
 #include	<random>
 #include	<fstream>

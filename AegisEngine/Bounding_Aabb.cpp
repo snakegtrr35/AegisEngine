@@ -130,20 +130,17 @@ void BOUNDING_AABB::Draw()
 	{
 		// 3Dマトリックス設定
 		{
-			XMMATRIX world = XMMatrixIdentity();
-			//world *= XMMatrixScaling(Scaling.x, Scaling.y, Scaling.z);
-			//world *= XMMatrixTranslation(Position.x, Position.y, Position.z);
 
 			const auto camera01 = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<CCamera>("camera");
 			const auto camera02 = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
 
 			if (!camera01.expired() && Empty_weak_ptr<CCamera>(camera01))
 			{
-				CRenderer::Set_MatrixBuffer(world, camera01.lock()->Get_Camera_View(), camera01.lock()->Get_Camera_Projection());
+				CRenderer::Set_MatrixBuffer(XMMatrixIdentity(), camera01.lock()->Get_Camera_View(), camera01.lock()->Get_Camera_Projection());
 			}
 			else
 			{
-				CRenderer::Set_MatrixBuffer(world, camera02.lock()->Get_Camera_View(), camera02.lock()->Get_Camera_Projection());
+				CRenderer::Set_MatrixBuffer(XMMatrixIdentity(), camera02.lock()->Get_Camera_View(), camera02.lock()->Get_Camera_Projection());
 			}
 		}
 

@@ -27,28 +27,29 @@ void BOUNDING_OBB::Init()
 	// 頂点バッファの設定
 	if (nullptr == pVertexBuffer.get())
 	{
-		const char VertexNum = 8;
+		VERTEX_3D Vertex[BoundingBox::CORNER_COUNT];
+		XMFLOAT3 corners[BoundingBox::CORNER_COUNT];
 
-		VERTEX_3D Vertex[VertexNum];
+		Obb.GetCorners(corners);
 
-		Vertex[0].Position = XMFLOAT3(-0.5f, 0.5f, -0.5f);
+		Vertex[0].Position = corners[7];
 
-		Vertex[1].Position = XMFLOAT3(0.5f, 0.5f, -0.5f);
+		Vertex[1].Position = corners[6];
 
-		Vertex[2].Position = XMFLOAT3(-0.5f, -0.5f, -0.5f);
+		Vertex[2].Position = corners[4];
 
-		Vertex[3].Position = XMFLOAT3(0.5f, -0.5f, -0.5f);
+		Vertex[3].Position = corners[5];
 
 
-		Vertex[4].Position = XMFLOAT3(-0.5f, 0.5f, 0.5f);
+		Vertex[4].Position = corners[3];
 
-		Vertex[5].Position = XMFLOAT3(0.5f, 0.5f, 0.5f);
+		Vertex[5].Position = corners[2];
 
-		Vertex[6].Position = XMFLOAT3(-0.5f, -0.5f, 0.5f);
+		Vertex[6].Position = corners[0];
 
-		Vertex[7].Position = XMFLOAT3(0.5f, -0.5f, 0.5f);
+		Vertex[7].Position = corners[1];
 
-		for (char i = 0; i < VertexNum; i++)
+		for (char i = 0; i < BoundingBox::CORNER_COUNT; i++)
 		{
 			Vertex[i].Normal = XMFLOAT3(1.0f, 0.0f, 0.0f);
 			Vertex[i].Diffuse = XMFLOAT4(Color.r, Color.g, Color.b, Color.a);
@@ -62,7 +63,7 @@ void BOUNDING_OBB::Init()
 			D3D11_BUFFER_DESC bd;
 			ZeroMemory(&bd, sizeof(bd));
 
-			bd.ByteWidth = sizeof(VERTEX_3D) * VertexNum;
+			bd.ByteWidth = sizeof(VERTEX_3D) * BoundingBox::CORNER_COUNT;
 			bd.Usage = D3D11_USAGE_DYNAMIC;
 			bd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
 			bd.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
@@ -134,22 +135,20 @@ void BOUNDING_OBB::Draw()
 
 		// 3Dマトリックス設定
 		{
-			XMMATRIX world = XMMatrixScaling(Scaling.x, Scaling.y, Scaling.z);
-			world *= XMMatrixRotationRollPitchYaw(XMConvertToRadians(Rotation.x), XMConvertToRadians(Rotation.y), XMConvertToRadians(Rotation.z));
-			world *= XMMatrixTranslation(Position.x, Position.y, Position.z);
+			XMFLOAT3 pos = *Owner.lock()->Get_Position();
 
 			const auto camera01 = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<CCamera>("camera");
 			const auto camera02 = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
 
 			if (!camera01.expired() && Empty_weak_ptr<CCamera>(camera01))
 			{
-				CRenderer::Set_MatrixBuffer(world, camera01.lock()->Get_Camera_View(), camera01.lock()->Get_Camera_Projection());
+				CRenderer::Set_MatrixBuffer(XMMatrixIdentity(), camera01.lock()->Get_Camera_View(), camera01.lock()->Get_Camera_Projection());
 
 				CRenderer::Set_Shader();
 			}
 			else
 			{
-				CRenderer::Set_MatrixBuffer(world, camera02.lock()->Get_Camera_View(), camera02.lock()->Get_Camera_Projection());
+				CRenderer::Set_MatrixBuffer(XMMatrixIdentity(), camera02.lock()->Get_Camera_View(), camera02.lock()->Get_Camera_Projection());
 
 				CRenderer::Set_Shader();
 			}
