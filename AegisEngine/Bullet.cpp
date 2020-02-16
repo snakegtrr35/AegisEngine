@@ -22,7 +22,7 @@ BULLET::BULLET() : MoveVector(XMFLOAT3(0.0f, 0.0f, 0.0f))
 
 	Model = new CMODEL();
 
-	HP = 6000;
+	HP = 5000;
 }
 
 BULLET::BULLET(XMFLOAT3& position, XMFLOAT3& move_vector) : MoveVector(move_vector)
@@ -33,7 +33,7 @@ BULLET::BULLET(XMFLOAT3& position, XMFLOAT3& move_vector) : MoveVector(move_vect
 
 	Model = new CMODEL();
 
-	HP = 6000;
+	HP = 5000;
 }
 
 BULLET::~BULLET()
@@ -50,10 +50,9 @@ void BULLET::Init()
 	auto scene = CManager::Get_Instance()->Get_Scene();
 	auto sphere = Get_Component()->Add_Component<BOUNDING_SHPERE>(scene->Get_Game_Object(this));
 
-	//sphere->Set_Radius(3.0f);
 	sphere->Set_Radius(1.0f);
 
-	//sphere->Set_Scaling(XMFLOAT3(0.04f, 0.04f, 0.04f));
+	sphere->Set_Scaling(XMFLOAT3(0.11f, 0.11f, 0.11f));
 
 	GAME_OBJECT::Init();
 }

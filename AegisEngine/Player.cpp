@@ -1,8 +1,8 @@
 #include	"manager.h"
 #include	"Scene.h"
 
-//#include	"ModelLoader.h"
-#include	"FBXmodel.h"
+#include	"ModelLoader.h"
+//#include	"FBXmodel.h"
 
 #include	"Input.h"
 #include	"Collision.h"
@@ -17,6 +17,7 @@
 
 PLAYER::PLAYER(void)
 {
+	Model = new CMODEL();
 }
 
 PLAYER::~PLAYER()
@@ -31,17 +32,11 @@ void PLAYER::Init(void)
 		Blend = 1.0f;
 
 		//string name = "asset/model/Player.fbx";
-		string name = "asset/model/kakunin_joint.fbx";
+		string name = "asset/model/heroRoket.fbx";
+		//string name = "asset/model/kakunin_joint.fbx";
 
-		/*Model = new CMODEL();
-
-		Model->Load(name);
-
-		Model->Set_Position(Position);
-		Model->Set_Rotation(Rotation);
-		Model->Set_Scaling(Scaling);*/
-
-		Model = new FBXmodel();
+		Model = new CMODEL();
+		//Model = new FBXmodel();
 
 		Model->Load(name);
 	}
@@ -61,55 +56,32 @@ void PLAYER::Init(void)
 
 		GAME_OBJECT::Init();
 	}
-
-	//Collision = new COLLISIION_SPHERE();
-
-	//dynamic_cast<COLLISIION_SPHERE*>(Collision)->Set_Position(Position);
-
-	//dynamic_cast<COLLISIION_SPHERE*>(Collision)->Set_Radius(3.0f);
-
-	{
-		//COLOR color(1.0f, 0.f, 0.f, 1.0f);
-
-		//Shpere = new BOUNDING_SHPERE();
-		//Shpere = new BOUNDING_AABB();
-
-		//Shpere->Set_Position(Position);
-		//Shpere->Set_Radius(radius);
-		//Shpere->Set_Color(color);
-		//Shpere->Init();
-	}
 }
 
 void PLAYER::Draw(void)
 {
-	//Model->Draw();
-
 	{
 		XMMATRIX matrix= XMMatrixScaling(Scaling.x, Scaling.y, Scaling.z);
 		matrix *= XMMatrixRotationRollPitchYaw(XMConvertToRadians(Rotation.x), XMConvertToRadians(Rotation.y), XMConvertToRadians(Rotation.z));
 		matrix *= XMMatrixTranslation(Position.x, Position.y, Position.z);
 
-		Model->Draw(matrix);
+		Model->Draw();
+		//Model->Draw(matrix);
 	}
 
 	GAME_OBJECT::Draw();
-	//Shpere->Draw();
 }
 
 void PLAYER::Draw_DPP(void)
 {
-	//Model->Draw_DPP();
-
 	{
 		XMMATRIX matrix = XMMatrixScaling(Scaling.x, Scaling.y, Scaling.z);
 		matrix *= XMMatrixRotationRollPitchYaw(XMConvertToRadians(Rotation.x), XMConvertToRadians(Rotation.y), XMConvertToRadians(Rotation.z));
 		matrix *= XMMatrixTranslation(Position.x, Position.y, Position.z);
 
-		Model->Draw_DPP(matrix);
+		Model->Draw_DPP();
+		//Model->Draw_DPP(matrix);
 	}
-
-	//Shpere->Draw();
 }
 
 void PLAYER::Update(float delta_time)
@@ -203,12 +175,6 @@ void PLAYER::Update(float delta_time)
 		//Blend = Model->Get().Get_Ratio();
 	}
 
-	//dynamic_cast<COLLISIION_SPHERE*>(Collision)->Set_Position(Position);
-	//Shpere->Set_Position(Position);
-	//Shpere->Set_Scaling(Scaling);
-	//Shpere->Set_Radius(radius);
-	//Shpere->Update(delta_time);
-
 	if (KEYBOARD::Trigger_Keyboard(VK_1))
 	{
 		//AUDIO_MANAGER::Play_Sound_Object(SOUND_INDEX::SOUND_INDEX_EXPLOSION);
@@ -251,9 +217,6 @@ void PLAYER::Update(float delta_time)
 void PLAYER::Uninit(void)
 {
 	SAFE_DELETE(Model);
-
-	//SAFE_DELETE(Collision);
-	//SAFE_DELETE(Shpere);
 }
 
 // É|ÉWÉVÉáÉìÇÃê›íË
