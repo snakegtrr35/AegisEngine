@@ -19,11 +19,13 @@
 #include	"Component_Manager.h"
 #include	"Light.h"
 
+#include	"Enemy.h"
+#include	"Bullet.h"
+
 #include	"Bounding.h"
 #include	"Bounding_Aabb.h"
 #include	"Bounding_Obb.h"
 #include	"Bounding_Sphere.h"
-
 
 extern float radius;
 
@@ -95,7 +97,7 @@ void My_imgui::Draw(void)
 		if (show_demo_window)
 			ImGui::ShowDemoWindow(&show_demo_window);
 
-		if(show_default_window)
+		if (show_default_window)
 		{
 			ImGui::Begin("Hello, world!");
 
@@ -103,8 +105,8 @@ void My_imgui::Draw(void)
 			ImGui::Checkbox("Demo Window", &show_demo_window);
 			ImGui::Checkbox("Another Window", &show_another_window);
 
-			ImGui::SliderFloat("float", &f, 0.0f, 10.0f);    
-			ImGui::ColorEdit3("clear color", (float*)& clear_color);
+			ImGui::SliderFloat("float", &f, 0.0f, 10.0f);
+			ImGui::ColorEdit3("clear color", (float*)&clear_color);
 
 			if (ImGui::Button("Button"))
 				counter++;
@@ -154,7 +156,7 @@ void My_imgui::Draw(void)
 							ImGui::MenuItem("Sailor");
 							if (ImGui::BeginMenu("Recurse.."))
 							{
-								
+
 								ImGui::EndMenu();
 							}
 							ImGui::EndMenu();
@@ -383,6 +385,49 @@ void My_imgui::Draw(void)
 				{
 					ImGui::Text((char*)u8"false");
 
+				}
+			}
+
+			{
+				auto enemys = CManager::Get_Instance()->Get_Scene()->Get_Game_Objects<ENEMY>();
+
+				auto bullet = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<BULLET>("bullet");
+
+				if (!bullet.expired())
+				{
+					auto bullet_sphere = bullet.lock()->Get_Component()->Get_Component<BOUNDING_SHPERE>();
+
+					int i = 0;
+
+					for (auto enemy : enemys)
+					{
+						//if (nullptr == enemy) continue;
+
+						auto enemy_sphere = enemy->Get_Component()->Get_Component<BOUNDING_AABB>();
+
+						ImGui::Text("Enemy %d", i);
+
+						switch (bullet_sphere->Get_Collition().Contains(enemy_sphere->Get_Collition()))
+						{
+						case ContainmentType::CONTAINS:
+							ImGui::Text("CONTAINS");
+							break;
+
+						case ContainmentType::DISJOINT:
+							ImGui::Text("DISJOINT");
+							break;
+
+						case ContainmentType::INTERSECTS:
+							ImGui::Text("INTERSECTS");
+							break;
+
+						default:
+							break;
+						}
+						i++;
+
+						ImGui::Spacing();
+					}
 				}
 			}
 

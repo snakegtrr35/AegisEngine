@@ -21,6 +21,8 @@
 
 #include	"Scene_Manager.h"
 
+#include	"Bullet.h"
+
 static bool flag = false;
 static bool flag1 = true;
 
@@ -342,13 +344,13 @@ void GAME::Load(SCENE* scene)
 			}
 		}
 
-		// スコア
+// スコア
 		{
-			XMFLOAT3 pos = XMFLOAT3(500.0f, 37.0f, 0.0f);
+		XMFLOAT3 pos = XMFLOAT3(500.0f, 37.0f, 0.0f);
 
-			SCORE* score = Add_Game_Object<SCORE>(LAYER_NAME::UI, "score");
-			score->Set_Position(&pos);
-			score->Set_Additional(1);
+		SCORE* score = Add_Game_Object<SCORE>(LAYER_NAME::UI, "score");
+		score->Set_Position(&pos);
+		score->Set_Additional(1);
 		}
 
 		// HPのUI
@@ -439,6 +441,10 @@ void GAME::Load(SCENE* scene)
 
 			//sprite->Set_Position_Child("select", XMFLOAT2(-165.0f, 105.0f));		// 3番目
 		}
+	}
+
+	{
+		BULLET* bullet = Add_Game_Object<BULLET>(LAYER_NAME::GAMEOBJECT, "bullet");
 	}
 
 	scene->SCENE::Init();

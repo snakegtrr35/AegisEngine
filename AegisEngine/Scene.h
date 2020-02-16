@@ -387,6 +387,11 @@ public:
 	template<typename Archive>
 	void serialize(Archive& ar)
 	{
+		for (int i = 0; i < (int)LAYER_NAME::MAX_LAYER; i++)
+		{
+			if(!GameObjects[i].empty()) GameObjects[i].remove_if([](auto& object) { return object->Destroy(); }); // ƒŠƒXƒg‚©‚çíœ
+		}
+
 		ar(GameObjects);
 		ar(Light_Manager);
 	}

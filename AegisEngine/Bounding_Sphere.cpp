@@ -23,7 +23,7 @@ void BOUNDING_SHPERE::Init()
 	// 頂点バッファの設定
 	if (nullptr == pVertexBuffer.get())
 	{
-		const UINT cnt = 10 * (UINT)Radius;
+		const UINT cnt = 20 * max((UINT)1, (UINT)Radius);
 
 		vector<VERTEX_3D> vertex;
 		vertex.reserve(cnt);
@@ -71,7 +71,7 @@ void BOUNDING_SHPERE::Init()
 	// インデックスバッファの設定
 	if (nullptr == pIndexBuffer.get())
 	{
-		const UINT cnt = 10 * (UINT)Radius;
+		const UINT cnt = 20 * max((UINT)1, (UINT)Radius);
 
 		IndexNum = cnt * 2;
 		vector<WORD> index_array;
@@ -217,7 +217,7 @@ void BOUNDING_SHPERE::OverWrite()
 
 	// 頂点バッファの設定
 	{
-		const UINT cnt = 10 * (UINT)Radius;
+		const UINT cnt = 20 * max((UINT)1, (UINT)Radius);
 
 		vector<VERTEX_3D> vertex;
 		vertex.reserve(cnt);
@@ -264,7 +264,7 @@ void BOUNDING_SHPERE::OverWrite()
 
 	// インデックスバッファの設定
 	{
-		const UINT cnt = 10 * (UINT)Radius;
+		const UINT cnt = 20 * max((UINT)1, (UINT)Radius);
 
 		IndexNum = cnt * 2;
 		vector<WORD> index_array;

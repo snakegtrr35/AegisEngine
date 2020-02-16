@@ -57,14 +57,14 @@ public:
 
 
 
-	void Set_Position(XMFLOAT3* position);
-	void Set_Position(XMFLOAT3& position);
+	void Set_Position(XMFLOAT3* const  position);
+	void Set_Position(const XMFLOAT3& position);
 
-	void Set_Rotation(XMFLOAT3* rotation);
-	void Set_Rotation(XMFLOAT3& rotation);
+	void Set_Rotation(XMFLOAT3* const  rotation);
+	void Set_Rotation(const XMFLOAT3& rotation);
 
-	void Set_Scaling(XMFLOAT3* scaling);
-	void Set_Scaling(XMFLOAT3& scaling);
+	void Set_Scaling(XMFLOAT3* const  scaling);
+	void Set_Scaling(const XMFLOAT3& scaling);
 
 	// ÉÅÉÇÉäè„Ç©ÇÁÇÃçÌèú
 	bool Destroy();

@@ -4,8 +4,6 @@
 #define BULLET_H
 
 class CMODEL;
-class COLLISION;
-
 class GAME_OBJECT;
 
 class BULLET : public GAME_OBJECT {
@@ -13,7 +11,7 @@ protected:
 	XMFLOAT3 MoveVector;
 	CMODEL* Model;
 
-	COLLISION* Collision;
+
 	short HP;
 
 public:
@@ -29,9 +27,11 @@ public:
 
 	void Set_Move_Vector(const XMFLOAT3 move_vector);			// 
 
-	COLLISION* const Get_Collison() {
-		return Collision;
-	}
+	template<typename Archive>
+	void serialize(Archive& ar) {}
 };
+
+CEREAL_REGISTER_TYPE(BULLET)
+CEREAL_REGISTER_POLYMORPHIC_RELATION(GAME_OBJECT, BULLET)
 
 #endif // !ENEMY_H

@@ -86,22 +86,22 @@ XMFLOAT3* const COMPONENT::Get_Scaling()
 
 
 
-void COMPONENT::Set_Position(XMFLOAT3* position)
+void COMPONENT::Set_Position(XMFLOAT3* const position)
 {
 	Position = *position;
 }
 
-void COMPONENT::Set_Position(XMFLOAT3& position)
+void COMPONENT::Set_Position(const XMFLOAT3& position)
 {
 	Position = position;
 };
 
-void COMPONENT::Set_Rotation(XMFLOAT3* rotation)
+void COMPONENT::Set_Rotation(XMFLOAT3* const rotation)
 {
 	Rotation = *rotation;
 };
 
-void COMPONENT::Set_Rotation(XMFLOAT3& rotation)
+void COMPONENT::Set_Rotation(const XMFLOAT3& rotation)
 {
 	Rotation = rotation;
 };
@@ -111,7 +111,7 @@ void COMPONENT::Set_Scaling(XMFLOAT3* scaling)
 	Scaling = *scaling;
 };
 
-void COMPONENT::Set_Scaling(XMFLOAT3& scaling)
+void COMPONENT::Set_Scaling(const XMFLOAT3& scaling)
 {
 	Scaling = scaling;
 };

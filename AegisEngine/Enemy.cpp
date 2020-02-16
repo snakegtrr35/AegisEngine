@@ -48,7 +48,7 @@ void ENEMY::Init()
 
 		//aabb->Set_Position(Position);
 
-		//aabb->Set_Radius(XMFLOAT3(10, 10, 10));
+		aabb->Set_Radius(XMFLOAT3(2, 2, 2));
 
 		/*auto scene = CManager::Get_Instance()->Get_Scene();
 
