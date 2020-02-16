@@ -311,7 +311,7 @@ void GAME::Load(SCENE* scene)
 		{
 			MESH_FIELD* mf = Add_Game_Object<MESH_FIELD>(LAYER_NAME::BACKGROUND, "feild");
 
-			mf->SetTexture("asphalt01-pattern.jpg");
+			//mf->SetTexture("asphalt01-pattern.jpg");
 		}
 
 
@@ -344,7 +344,7 @@ void GAME::Load(SCENE* scene)
 			}
 		}
 
-// スコア
+		// スコア
 		{
 		XMFLOAT3 pos = XMFLOAT3(500.0f, 37.0f, 0.0f);
 

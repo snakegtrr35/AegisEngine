@@ -32,7 +32,7 @@ void PLAYER::Init(void)
 		Blend = 1.0f;
 
 		//string name = "asset/model/Player.fbx";
-		string name = "asset/model/heroRoket.fbx";
+		string name = "asset/model/viranrifle.fbx";
 		//string name = "asset/model/kakunin_joint.fbx";
 
 		Model = new CMODEL();
@@ -156,23 +156,11 @@ void PLAYER::Update(float delta_time)
 
 	// モデルの更新
 	{
-		// 待機
-		if (AnimType)
-		{
-			Blend = min(1.0f, Blend + (1.0f / 60.0f));
-		}
-		else  // 歩く
-		{
-			Blend = max(0.0f, Blend - (1.0f / 60.0f));
-		}
-
-		//Model->Set_Position(Position);
-		//Model->Set_Rotation(Rotation);
-		//Model->Set_Scaling(Scaling);
+		Model->Set_Position(Position);
+		Model->Set_Rotation(Rotation);
+		Model->Set_Scaling(Scaling);
 
 		Model->Update(delta_time);
-
-		//Blend = Model->Get().Get_Ratio();
 	}
 
 	if (KEYBOARD::Trigger_Keyboard(VK_1))

@@ -22,7 +22,7 @@ BULLET::BULLET() : MoveVector(XMFLOAT3(0.0f, 0.0f, 0.0f))
 
 	Model = new CMODEL();
 
-	HP = 5000;
+	HP = 3000;
 }
 
 BULLET::BULLET(XMFLOAT3& position, XMFLOAT3& move_vector) : MoveVector(move_vector)
@@ -33,7 +33,7 @@ BULLET::BULLET(XMFLOAT3& position, XMFLOAT3& move_vector) : MoveVector(move_vect
 
 	Model = new CMODEL();
 
-	HP = 5000;
+	HP = 3000;
 }
 
 BULLET::~BULLET()
