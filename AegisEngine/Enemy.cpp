@@ -12,16 +12,23 @@
 
 static void Create_Bullet(XMFLOAT3& position, XMFLOAT3& front);
 
-ENEMY::ENEMY()
+ENEMY::ENEMY() {}
+
+ENEMY::~ENEMY()
 {
-	Position = XMFLOAT3(3.0f, 1.0f, 3.0f);
+	Uninit();
+}
+
+void ENEMY::Init()
+{
+	/*Position = XMFLOAT3(3.0f, 1.0f, 3.0f);
 
 	Rotation = XMFLOAT3(0.0f, 0.0f, 0.0f);
 
-	Scaling = XMFLOAT3(1.0f, 1.0f, 1.0f);
+	Scaling = XMFLOAT3(1.0f, 1.0f, 1.0f);*/
 
 	{
-		//string name("asset/model/miku_01.obj");
+		//string name = "asset/model/Player.fbx";
 		string name("asset/model/viranrifle.fbx");
 
 		Model = new CMODEL();
@@ -33,20 +40,22 @@ ENEMY::ENEMY()
 		Model->Set_Scaling(Scaling);
 	}
 
-	Collision = new COLLISIION_AABB();
+	// コンポーネント
+	{
+		auto scene = CManager::Get_Instance()->Get_Scene();
 
-	dynamic_cast<COLLISIION_AABB*>(Collision)->Set_Position(Position);
+		auto aabb = Get_Component()->Add_Component<BOUNDING_AABB>(scene->Get_Game_Object(this));
 
-	dynamic_cast<COLLISIION_AABB*>(Collision)->Set_Radius(XMFLOAT3(0.5f, 0.5f, 0.5f));
-}
+		//aabb->Set_Position(Position);
 
-ENEMY::~ENEMY()
-{
-	Uninit();
-}
+		//aabb->Set_Radius(XMFLOAT3(10, 10, 10));
 
-void ENEMY::Init()
-{
+		/*auto scene = CManager::Get_Instance()->Get_Scene();
+
+		auto aabb = Get_Component()->Add_Component<BOUNDING_AABB>(scene->Get_Game_Object(this));*/
+	}
+
+	GAME_OBJECT::Init();
 }
 
 void ENEMY::Draw()
@@ -63,29 +72,8 @@ void ENEMY::Draw_DPP()
 
 void ENEMY::Update(float delta_time)
 {
-	// Axisの更新
-	{
-		XMFLOAT3 pos = Position;
-		XMVECTOR vec;
-
-		const auto player = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<PLAYER>("player");
-
-		pos.x = player.lock()->Get_Position()->x - pos.x;
-		pos.z = player.lock()->Get_Position()->z - pos.z;
-
-		vec = XMLoadFloat3(&pos);
-
-		XMVector3Normalize(vec);
-
-		//auto axis = Component.Get_Component<AXIS_COMPONENT>();
-
-		//axis->Set_Front(vec);
-
-		//axis->Init();
-	}
-
 	// 移動
-	{
+	//{
 	//	static int i = 0;
 	//	XMFLOAT3 move;
 	//	XMVECTOR vec = Component.Get_Component<AXIS_COMPONENT>()->Get_Right();
@@ -138,30 +126,29 @@ void ENEMY::Update(float delta_time)
 
 	//	Position.x += move.x;
 	//	Position.z += move.z;
-	}
+	//}
 
-	// 弾を撃つ
-	if (Random_Bool(Date.Attack_Probability))
-	{
-		XMFLOAT3 f;
-		XMFLOAT3 pos = Position;
+	//// 弾を撃つ
+	//if (Random_Bool(Date.Attack_Probability))
+	//{
+	//	XMFLOAT3 f;
+	//	XMFLOAT3 pos = Position;
 
-		//XMStoreFloat3(&f, Component.Get_Component<AXIS_COMPONENT>()->Get_Front());
+	//	//XMStoreFloat3(&f, Component.Get_Component<AXIS_COMPONENT>()->Get_Front());
 
-		pos.x += f.x * 2;
-		pos.y += f.y;
-		pos.z += f.z * 2;
+	//	pos.x += f.x * 2;
+	//	pos.y += f.y;
+	//	pos.z += f.z * 2;
 
-		Create_Bullet(pos, f);
+	//	Create_Bullet(pos, f);
 
-		AUDIO_MANAGER::Play_Sound_Object(SOUND_INDEX::SOUND_INDEX_SHOT, false);
-	}
+	//	AUDIO_MANAGER::Play_Sound_Object(SOUND_INDEX::SOUND_INDEX_SHOT, false);
+	//}
 
 	Model->Set_Position(Position);
 	Model->Set_Rotation(Rotation);
+	Model->Set_Scaling(Scaling);
 
-	//dynamic_cast<COLLISIION_SPHERE*>(Collision)->Set_Position(Position);
-	dynamic_cast<COLLISIION_AABB*>(Collision)->Set_Position(Position);
 
 	GAME_OBJECT::Update(delta_time);
 }

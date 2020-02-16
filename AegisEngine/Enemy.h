@@ -20,9 +20,6 @@ typedef struct
 class ENEMY : public GAME_OBJECT {
 private:
 	CMODEL* Model;
-	COLLISION* Collision;
-
-	BOUNDING_AABB* Aabb;
 
 	PROBABILITY_DATE Date;
 
@@ -40,13 +37,18 @@ public:
 	void SetRotation(const XMFLOAT3& position);					// âÒì]ÇÃê›íË
 	void SetScaling(const XMFLOAT3& scaling);					// ägëÂèkè¨ÇÃílÇÃê›íË
 
-	COLLISION* const Get_Collision() {
-		return Collision;
-	}
-
 	void Set_Date(const PROBABILITY_DATE& date) {
 		Date = date;
 	}
+
+	template<typename Archive>
+	void serialize(Archive& ar)
+	{
+		ar(cereal::base_class<GAME_OBJECT>(this));
+	}
 };
+
+CEREAL_REGISTER_TYPE(ENEMY)
+CEREAL_REGISTER_POLYMORPHIC_RELATION(GAME_OBJECT, ENEMY)
 
 #endif // !ENEMY_H

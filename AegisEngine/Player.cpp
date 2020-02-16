@@ -30,7 +30,8 @@ void PLAYER::Init(void)
 		AnimType = true;
 		Blend = 1.0f;
 
-		string name = "asset/model/human01_Stop.fbx";
+		//string name = "asset/model/Player.fbx";
+		string name = "asset/model/kakunin_joint.fbx";
 
 		/*Model = new CMODEL();
 
@@ -42,7 +43,7 @@ void PLAYER::Init(void)
 
 		Model = new FBXmodel();
 
-		Model->Load("asset/model/kakunin_joint.fbx");
+		Model->Load(name);
 	}
 
 	{

@@ -9,7 +9,7 @@
 
 void MESH_DOOM::Init()
 {
-	int cornerNum = 256;
+	int cornerNum = 16;
 
 	// 頂点バッファの確保
 	VertexNum = (cornerNum + 1) * (cornerNum / 2 + 1);

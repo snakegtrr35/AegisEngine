@@ -208,9 +208,7 @@ void CMODEL::Draw()
 
 				XMFLOAT4 pos;
 				XMStoreFloat4(&pos, camera_pos);
-				//pos.w = 1.0f;
 				camera_pos = XMLoadFloat4(&pos);
-				
 			}
 			else
 			{
@@ -218,7 +216,6 @@ void CMODEL::Draw()
 
 				XMFLOAT4 pos;
 				XMStoreFloat4(&pos, camera_pos);
-				//pos.w = 1.0f;
 				camera_pos = XMLoadFloat4(&pos);
 			}
 
@@ -292,9 +289,48 @@ void CMODEL::Draw_DPP()
 	matrix = XMMatrixMultiply(matrix, transform);
 
 	{
-		auto camera01 = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<CCamera>("camera");
-		auto camera02 = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
+		const auto camera01 = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<CCamera>("camera");
+		const auto camera02 = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
 
+		{
+			XMVECTOR camera_pos;
+			LIGHT light = *CRenderer::Get_Light();
+
+			XMVECTOR light_pos = XMVectorSet(light.Direction.x, light.Direction.y, light.Direction.z, light.Direction.w);
+
+			light_pos = XMVectorScale(light_pos, 10.0f);
+
+			if (!camera01.expired() && Empty_weak_ptr<CCamera>(camera01))
+			{
+				camera_pos = *camera01.lock()->Get_Pos();
+
+				XMFLOAT4 pos;
+				XMStoreFloat4(&pos, camera_pos);
+				//pos.w = 1.0f;
+				camera_pos = XMLoadFloat4(&pos);
+
+			}
+			else
+			{
+				camera_pos = *camera02.lock()->Get_Pos();
+
+				XMFLOAT4 pos;
+				XMStoreFloat4(&pos, camera_pos);
+				//pos.w = 1.0f;
+				camera_pos = XMLoadFloat4(&pos);
+			}
+
+			CRenderer::Set_MatrixBuffer01(camera_pos);
+		}
+
+		if (CManager::Get_Instance()->Get_ShadowMap()->Get_Enable())
+		{
+			CRenderer::Set_Shader(SHADER_INDEX_V::SHADOW_MAP, SHADER_INDEX_P::SHADOW_MAP);
+		}
+		else
+		{
+			CRenderer::Set_Shader();
+		}
 	}
 
 	if (Meshes.GetAnime())

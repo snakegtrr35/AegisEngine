@@ -16,6 +16,7 @@ SCORE::SCORE()
 	Number->SetTexture(string("number02.png"));
 	Number->SetParam(0, 10, 1);
 	Number->SetSize(XMFLOAT4(32.0f, 32.0f, 32.0f, 32.0f));
+	Number->Init();
 }
 
 SCORE::~SCORE()

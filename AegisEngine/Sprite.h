@@ -363,6 +363,7 @@ public:
 		ar(SPRITE::Position);
 		ar(Size);
 		ar(Color);
+		ar(Enable);
 	}
 
 	//template<class Archive>

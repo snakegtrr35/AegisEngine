@@ -40,7 +40,16 @@ public:
 	void Set_WaitFrame(const unsigned short wait_frame);
 	void Add(const int score);
 	void Reset(void);
+
+	template<typename Archive>
+	void serialize(Archive& ar)
+	{
+		ar(cereal::base_class<GAME_OBJECT>(this));
+	}
 };
 
+
+CEREAL_REGISTER_TYPE(SCORE)
+CEREAL_REGISTER_POLYMORPHIC_RELATION(GAME_OBJECT, SCORE)
 
 #endif // !SCORE_H

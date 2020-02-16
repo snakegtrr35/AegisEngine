@@ -70,7 +70,7 @@ void GAME::Draw_DPP()
 	}
 	else
 	{
-		sprite_anime->Draw();
+		sprite_anime->Draw_DPP();
 	}
 }
 
@@ -78,6 +78,8 @@ void GAME::Update(float delta_time)
 {
 	if (false == GetLockLoad())
 	{
+		sprite_anime.reset(nullptr);
+
 		SCENE::Update(delta_time);
 
 		// ポーズ画面の切り替え
@@ -219,7 +221,7 @@ void GAME::Update(float delta_time)
 	}
 	else
 	{
-		sprite_anime->Draw();
+		sprite_anime->Update(delta_time);
 	}
 }
 
@@ -284,7 +286,7 @@ void GAME::Load(SCENE* scene)
 	if (false == flag)
 	{
 		// カメラ
-		Add_Game_Object<CCamera>(LAYER_NAME::BACKGROUND, "camera");
+		Add_Game_Object<DEBUG_CAMERA>(LAYER_NAME::BACKGROUND, "camera");
 
 		// プレイヤー
 		{
@@ -323,60 +325,21 @@ void GAME::Load(SCENE* scene)
 
 		// 敵
 		{
-			/*PROBABILITY_DATE date;
-
-			date.Attack_Probability = 0.01f;
-			date.Lenght = 3.0f;
-			date.Move_Lenght = 1.0f;
-			date.RL_Probability = 0.01f;
-			date.RL = true;*/
-
 			string name("enemy");
 			string number;
 
-			for (int i = 0; i < 2; i++)
+			for (int i = 0; i < 5; i++)
 			{
 				number = to_string(i);
 
-				ENEMY* enemy = Add_Game_Object<ENEMY>(LAYER_NAME::GAMEOBJECT, "enemy");
+				ENEMY* enemy = Add_Game_Object<ENEMY>(LAYER_NAME::GAMEOBJECT, name + number);
 				enemy->SetPosition(XMFLOAT3((float)(-10.0f + i * 5.0f), 0.0f, 0.0f));
 				enemy->SetRotation(XMFLOAT3(0.0f, 0.0f, 0.0f));
 
-				//enemy->Set_Date(date);
-
-				name = name + number;
-
-				enemy->Set_Object_Name(name);
-
 				auto component = enemy->Get_Component();
 
-				//component->Add_Component<AXIS_COMPONENT>();
-
-				name.pop_back();
 				number.clear();
 			}
-
-			/*for (int i = 0 + 2; i < 2 + 2; i++)
-			{
-				number = to_string(i);
-
-				ENEMY* enemy = Add_Game_Object<ENEMY>(LAYER_NAME::GAMEOBJECT);
-				enemy->SetPosition(XMFLOAT3((float)(-10.0f + i * 5.0f), 0.0f, 0.0f));
-				enemy->SetRotation(XMFLOAT3(0.0f, 0.0f, 0.0f));
-
-				enemy->Set_Date(date);
-
-				name = name + number;
-
-				enemy->Set_Object_Name(name);
-
-				auto component = enemy->Get_Component();
-
-				component->Add_Component<AXIS_COMPONENT>();
-
-				name.pop_back();
-				number.clear();
-			}*/
 		}
 
 		// スコア
@@ -424,7 +387,7 @@ void GAME::Load(SCENE* scene)
 
 			COLOR color = COLOR(0.0f, 1.0f, 1.0f, 1.0f);
 
-			TEXTS* sprite = Add_Game_Object<TEXTS>(LAYER_NAME::UI, "bullet");
+			TEXTS* sprite = Add_Game_Object<TEXTS>(LAYER_NAME::UI, "bullet_ui");
 
 			sprite->SetPosition(pos);
 
@@ -434,8 +397,6 @@ void GAME::Load(SCENE* scene)
 
 			//sprite->Edit(string("30 / 30"));
 			sprite->Edit(string("infinite / 30"));
-
-			sprite->Set_Object_Name("bullet_ui");
 
 			// 弾のアイコン
 			SPRITE* bullet_icon = sprite->Add_Child_Sptite("bullet_icon");
@@ -454,7 +415,7 @@ void GAME::Load(SCENE* scene)
 			XMFLOAT2 pos(SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.5f);
 			COLOR color = COLOR(1.0f, 1.0f, 1.0f, 0.85f);
 
-			SPRITE* sprite = Add_Game_Object<SPRITE>(LAYER_NAME::UI, "pouse");
+			SPRITE* sprite = Add_Game_Object<SPRITE>(LAYER_NAME::UI, "pause");
 
 			sprite->SetPosition(pos);
 
@@ -463,8 +424,6 @@ void GAME::Load(SCENE* scene)
 			sprite->SetSize(XMFLOAT4(200, 200, 200, 200));
 
 			sprite->SetColor(color);
-
-			sprite->Set_Object_Name("pause");
 
 			sprite->SetEnable(false);
 

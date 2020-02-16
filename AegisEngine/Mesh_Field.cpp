@@ -11,7 +11,10 @@ MESH_FIELD::MESH_FIELD()
 {
 	VertexArray = nullptr;
 	IndexBuffer = VertexBuffer = nullptr;
-	Texture.reset(nullptr);
+
+	// テクスチャの生成
+	Texture = make_unique<TEXTURE>();
+	Texture->Set_Texture_Name("field004.png");
 
 	GridSize = XMFLOAT3(1.0f, 0.0f, 1.0f);
 	GridNum = XMINT2(10, 10);
@@ -134,10 +137,6 @@ void MESH_FIELD::Init()
 	// メモリ解放
 	SAFE_DELETE_ARRAY(indexArray);
 
-	// テクスチャの設定
-	Texture.reset(new TEXTURE());
-	Texture->Set_Texture_Name("field004.png");
-
 	GAME_OBJECT::Init();
 }
 
@@ -174,7 +173,7 @@ void MESH_FIELD::Draw()
 		const auto camera01 = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<CCamera>("camera");
 		const auto camera02 = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
 
-		if (!camera01.expired() && Empty_weak_ptr<CCamera>(camera01))
+		if (!camera01.expired() /*&& Empty_weak_ptr<CCamera>(camera01)*/)
 		{
 			// シャドウマップ用の描画か?
 			if (CManager::Get_Instance()->Get_ShadowMap()->Get_Enable())

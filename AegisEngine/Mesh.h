@@ -106,7 +106,7 @@ private:
 				const auto camera02 = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
 				
 				// 普通のカメラかデバッグカメラか?
-				if (!camera01.expired() && Empty_weak_ptr<CCamera>(camera01))
+				if (!camera01.expired() /*&& Empty_weak_ptr<CCamera>(camera01)*/)
 				{
 					// シャドウマップ用の描画か?
 					if (CManager::Get_Instance()->Get_ShadowMap()->Get_Enable())

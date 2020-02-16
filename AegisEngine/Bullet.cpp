@@ -112,7 +112,7 @@ void BULLET::Update(float delta_time)
 		for (ENEMY* enemy : enemys)
 		{
 			//if (Collision_HitSphere(this->Get_Collison(), enemy->Get_Collision()))
-			if (Collision_HitAABB(this->Get_Collison(), enemy->Get_Collision()))
+			//if (Collision_HitAABB(this->Get_Collison(), enemy->Get_Collision()))
 			{
 				// ビルボード
 				{

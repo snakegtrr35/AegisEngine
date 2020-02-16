@@ -3,18 +3,20 @@
 
 std::wstring stringTowstring(const std::string& font)
 {
-	wchar_t* wStrW = new wchar_t[font.size() * 2];
+	//wchar_t* wStrW = new wchar_t[font.size() * 2];
+
+	unique_ptr<wchar_t[]>  wStrW = make_unique<wchar_t[]>(font.size() * 2);
 
 	size_t wLen = 0;
 
 	//ÉçÉPÅ[ÉãéwíË
 	setlocale(LC_ALL, "japanese");
 
-	mbstowcs_s(&wLen, wStrW, font.size() * 2, font.c_str(), _TRUNCATE);
+	mbstowcs_s(&wLen, wStrW.get(), font.size() * 2, font.c_str(), _TRUNCATE);
 
-	std::wstring f(wStrW);
+	std::wstring f(wStrW.get());
 
-	delete wStrW;
+	//delete wStrW;
 
 	return f;
 }
