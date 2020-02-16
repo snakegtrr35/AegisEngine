@@ -314,13 +314,23 @@ void My_imgui::Draw(void)
 				ImGuiTreeNodeFlags node_flags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_OpenOnDoubleClick;
 				auto map = GAME_OBJECT::Get_Object_Name_Map();
 
+				vector<string> Object_Name_List;
+				Object_Name_List.reserve(map.size());
+
+				for (auto object : map)
+				{
+					Object_Name_List.emplace_back(object);
+				}
+
+				sort(Object_Name_List.begin(), Object_Name_List.end());
+
 				ImGui::Begin("World", nullptr, window_flag);
 
 				ImGui::Unindent(ImGui::GetTreeNodeToLabelSpacing());
 
 				{
 					int i = 0;
-					for (auto object : map)
+					for (auto object : Object_Name_List)
 					{
 						// マウスボタン : 0 = left, 1 = right, 2 = middle + extras
 						string str = object.c_str();
