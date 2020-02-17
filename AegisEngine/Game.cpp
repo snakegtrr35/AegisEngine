@@ -220,6 +220,24 @@ void GAME::Update(float delta_time)
 				}
 			}
 		}
+
+		{
+			vector<SPRITE*> sprits = Get_Game_Objects<SPRITE>();
+			vector<TEXTS*> texts = Get_Game_Objects<TEXTS>();
+
+			for (auto s : sprits)
+			{
+				s->SetEnable(false);
+			}
+
+			for (auto t : texts)
+			{
+				t->SetEnable(false);
+			}
+
+			auto field = Get_Game_Object<MESH_FIELD>("feild");
+			field.lock()->SetTexture("field004.png");
+		}
 	}
 	else
 	{
