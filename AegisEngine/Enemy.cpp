@@ -2,17 +2,28 @@
 #include	"Collision.h"
 #include	"Player.h"
 #include	"Enemy.h"
-#include	"Scene.h"
-#include	"manager.h"
+#include	"Bullet.h"
+
+
 #include	"Bounding_Aabb.h"
 #include	"Bullet.h"
 #include	"Axis.h"
+
 #include	"audio_clip.h"
 #include	"Math.h"
 
+#include	"Scene.h"
+#include	"manager.h"
+
 static void Create_Bullet(XMFLOAT3& position, XMFLOAT3& front);
 
-ENEMY::ENEMY() {}
+XMFLOAT3 position = XMFLOAT3(0.f, 0.f, 0.f);
+float t = 0.f;
+
+ENEMY::ENEMY()
+{
+	Model = new CMODEL();
+}
 
 ENEMY::~ENEMY()
 {
@@ -30,8 +41,6 @@ void ENEMY::Init()
 	{
 		//string name = "asset/model/Player.fbx";
 		string name("asset/model/viranrifle.fbx");
-
-		Model = new CMODEL();
 
 		Model->Load(name);
 
@@ -70,8 +79,43 @@ void ENEMY::Draw_DPP()
 	Model->Draw_DPP();
 }
 
+XMFLOAT3 operator-(const XMFLOAT3& vec1, const XMFLOAT3& vec2)
+{
+	return XMFLOAT3(vec1.x - vec2.x, vec1.y - vec2.y, vec1.z - vec2.z);
+}
+
 void ENEMY::Update(float delta_time)
 {
+	{
+		//static float rotate = 0.f;
+
+		auto front = XMVectorSet(0.f, 0.0f, 1.0f, 0.f);
+		front = XMVector4Normalize(front);
+
+		auto pos = XMLoadFloat3(&(position - Position));
+		pos = XMVector4Normalize(pos);
+
+		auto angle = XMVector3Dot(front, pos);
+
+		auto axis = Get_Component()->Get_Component<AXIS_COMPONENT>();
+
+		Model->Set_Quaternion(pos);
+
+		/*XMFLOAT3 vec = (position - Position);
+		XMFLOAT3 r;
+
+		if (vec.z >= 0.0f)
+		{
+			r.y = atan(vec.x / vec.z);
+		}
+		else
+		{
+			r.y = atan(vec.x / vec.z) + XM_PI;
+		}
+
+		Rotation.y = XMConvertToDegrees(r.y);*/
+	}
+
 	// ˆÚ“®
 	//{
 	//	static int i = 0;

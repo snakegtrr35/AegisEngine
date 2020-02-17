@@ -33,6 +33,9 @@ static string old_name;
 
 void EditTransform(const float* cameraView, float* cameraProjection, float* matrix, bool enable, GAME_OBJECT* object);
 
+extern XMFLOAT3 position;
+extern float t;
+
 void My_imgui::Init(HWND hWnd)
 {
 	// Setup Dear ImGui context
@@ -389,46 +392,13 @@ void My_imgui::Draw(void)
 			}
 
 			{
-				auto enemys = CManager::Get_Instance()->Get_Scene()->Get_Game_Objects<ENEMY>();
+				float Pos[3] = { position.x, position.y, position.z };
 
-				auto bullet = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<BULLET>("bullet");
 
-				if (!bullet.expired())
-				{
-					auto bullet_sphere = bullet.lock()->Get_Component()->Get_Component<BOUNDING_SHPERE>();
+				ImGui::DragFloat3("Position", Pos, 0.01f);
+				ImGui::DragFloat("time", &t, 0.001f, 0.f, 1.0f);
 
-					int i = 0;
-
-					for (auto enemy : enemys)
-					{
-						//if (nullptr == enemy) continue;
-
-						auto enemy_sphere = enemy->Get_Component()->Get_Component<BOUNDING_AABB>();
-
-						ImGui::Text("Enemy %d", i);
-
-						switch (bullet_sphere->Get_Collition().Contains(enemy_sphere->Get_Collition()))
-						{
-						case ContainmentType::CONTAINS:
-							ImGui::Text("CONTAINS");
-							break;
-
-						case ContainmentType::DISJOINT:
-							ImGui::Text("DISJOINT");
-							break;
-
-						case ContainmentType::INTERSECTS:
-							ImGui::Text("INTERSECTS");
-							break;
-
-						default:
-							break;
-						}
-						i++;
-
-						ImGui::Spacing();
-					}
-				}
+				position = XMFLOAT3(Pos[0], Pos[1], Pos[2]);
 			}
 
 			ImGui::End();
