@@ -38,8 +38,16 @@ void SCENE_MANAGER::Update(float delta_time)
 	pScene->Update(delta_time);
 }
 
+#include	"Bullet.h"
+#include	"Billboard.h"
+
 void SCENE_MANAGER::Uninit()
 {
+	{
+		pScene->Delete_Game_Objects<BULLET>();
+		pScene->Delete_Game_Objects<BILL_BOARD_ANIMATION>();
+	}
+
 	pScene.reset(nullptr);
 
 	{

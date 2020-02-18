@@ -79,7 +79,7 @@ public:
 #ifdef _DEBUG
 		else
 		{
-			Erroer_Message("既に使われている名前です");
+			//Erroer_Message("既に使われている名前です");
 		}
 #endif // _DEBUG
 	};

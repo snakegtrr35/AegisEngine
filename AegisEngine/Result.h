@@ -28,7 +28,7 @@ public:
 	void Update(float delta_time) override;
 	void Uninit() override;
 
-	void Load(SCENE* scene) {}
+	static void Load(SCENE* scene);
 
 	template<typename Archive>
 	void serialize(Archive& ar)
@@ -47,6 +47,10 @@ public:
 	{
 		ar(cereal::base_class<SCENE>(this));
 	}*/
+
+	static void Set(const bool flag) {
+		Clear_Flag = flag;
+	}
 };
 
 CEREAL_REGISTER_TYPE(RESULT)

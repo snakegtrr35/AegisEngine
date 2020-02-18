@@ -160,9 +160,9 @@ void CMODEL::Draw()
 	XMMATRIX matrix = XMMatrixIdentity();
 	XMMATRIX scaling = XMMatrixScaling(Scaling.x, Scaling.y, Scaling.z);
 	XMMATRIX rotation  = XMMatrixRotationRollPitchYaw(XMConvertToRadians(Rotation.x), XMConvertToRadians(Rotation.y), XMConvertToRadians(Rotation.z));
-	
+
 	{
-		if ( false == XMQuaternionEqual(XMVectorSet(0.f, 0.f, 0.f, 0.f), Quaternion) ) rotation = XMMatrixRotationQuaternion(Quaternion);
+		if( false == XMQuaternionEqual(XMVectorSet(0.f, 0.f, 0.f, 0.f), Quaternion) ) rotation = XMMatrixRotationQuaternion(Quaternion);
 	}
 
 	XMMATRIX transform = XMMatrixTranslation(Position.x, Position.y, Position.z);

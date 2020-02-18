@@ -24,7 +24,6 @@
 #include	"Bullet.h"
 
 static bool flag = false;
-static bool flag1 = true;
 
 static float hp;
 
@@ -46,6 +45,8 @@ void GAME::Init()
 
 		sprite_anime->Init();
 	}
+
+	flag = true;
 
 	std::thread th(Load, this);
 
@@ -204,6 +205,10 @@ void GAME::Update(float delta_time)
 					{
 						if (string("hp") == child->Name)
 						{
+							auto player = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<PLAYER>("player");
+
+							hp = player.lock()->Get_HP();
+
 							child->Child->SetSize(XMFLOAT4(LerpEx(-485.0f, 170.0f, hp, 0.0f, 100.0f), 25, 485, 25));
 
 							if (hp <= 50.0f)
@@ -222,21 +227,40 @@ void GAME::Update(float delta_time)
 		}
 
 		{
-			vector<SPRITE*> sprits = Get_Game_Objects<SPRITE>();
-			vector<TEXTS*> texts = Get_Game_Objects<TEXTS>();
+			auto player = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<PLAYER>("player");
 
-			for (auto s : sprits)
+			if ( player.lock()->Get_HP() <= 0.f)
 			{
-				s->SetEnable(false);
+				if (flag)
+				{
+					FADE::Start_FadeOut(60);
+
+					flag = false;
+
+					RESULT::Set(false);
+				}
 			}
 
-			for (auto t : texts)
 			{
-				t->SetEnable(false);
-			}
+				auto enemys = Get_Game_Objects<ENEMY>();
 
-			auto field = Get_Game_Object<MESH_FIELD>("feild");
-			field.lock()->SetTexture("field004.png");
+				if (enemys.empty())
+				{
+					if (flag)
+					{
+						FADE::Start_FadeOut(60);
+
+						flag = false;
+
+						RESULT::Set(true);
+					}
+				}
+			}
+		}
+
+		if (FADE::End_Fade())
+		{
+			SCENE_MANAGER::Set_Scene<RESULT>();
 		}
 	}
 	else
@@ -247,7 +271,6 @@ void GAME::Update(float delta_time)
 
 void GAME::Uninit()
 {
-
 #ifdef _DEBUG
 	static bool flag = true;
 
@@ -374,9 +397,7 @@ void GAME::Load(SCENE* scene)
 		// HP‚ÌUI
 		{
 			XMFLOAT2 pos(50.0f, SCREEN_HEIGHT * 0.5f);
-			SPRITE* sprite = Add_Game_Object<SPRITE>(LAYER_NAME::UI, "hp");
-
-			sprite->Set_Object_Name("hp_ui");
+			SPRITE* sprite = Add_Game_Object<SPRITE>(LAYER_NAME::UI, "hp_ui");
 
 			sprite->SetPosition(pos);
 

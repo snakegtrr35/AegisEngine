@@ -33,9 +33,6 @@ static string old_name;
 
 void EditTransform(const float* cameraView, float* cameraProjection, float* matrix, bool enable, GAME_OBJECT* object);
 
-extern XMFLOAT3 position;
-extern float t;
-
 void My_imgui::Init(HWND hWnd)
 {
 	// Setup Dear ImGui context
@@ -389,16 +386,6 @@ void My_imgui::Draw(void)
 					ImGui::Text((char*)u8"false");
 
 				}
-			}
-
-			{
-				float Pos[3] = { position.x, position.y, position.z };
-
-
-				ImGui::DragFloat3("Position", Pos, 0.01f);
-				ImGui::DragFloat("time", &t, 0.001f, 0.f, 1.0f);
-
-				position = XMFLOAT3(Pos[0], Pos[1], Pos[2]);
 			}
 
 			ImGui::End();

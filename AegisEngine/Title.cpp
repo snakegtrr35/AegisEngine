@@ -10,6 +10,7 @@
 #include	"Sprite_Animation.h"
 
 #include	"Scene_Manager.h"
+#include	"Main_Menu.h"
 #include	"Game.h"
 
 static bool flag = false;
@@ -151,6 +152,7 @@ void TITLE::Update(float delta_time)
 		{
 			if (FADE::End_Fade())
 			{
+				//SCENE_MANAGER::Set_Scene<MAIN_MENU>();
 				SCENE_MANAGER::Set_Scene<GAME>();
 			}
 		}

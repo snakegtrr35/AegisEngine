@@ -3,16 +3,17 @@
 #ifndef BULLET_H
 #define BULLET_H
 
+#include	"Game_Object.h"
+
 class CMODEL;
-class GAME_OBJECT;
 
 class BULLET : public GAME_OBJECT {
 protected:
 	XMFLOAT3 MoveVector;
 	CMODEL* Model;
 
-
 	short HP;
+	float fps = 0.f;
 
 public:
 	BULLET();

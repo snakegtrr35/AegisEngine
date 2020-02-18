@@ -5,6 +5,8 @@
 
 #include	"Game_Object.h"
 
+#include	"Renderer.h"
+
 class GAME_OBJECT;
 class TEXTURE;
 
@@ -42,7 +44,13 @@ public:
 	
 	// テクスチャの設定
 	void SetTexture(const string& const file_name);
+
+	template<typename Archive>
+	void serialize(Archive& ar) {}
 };
+
+CEREAL_REGISTER_TYPE(BILL_BOARD)
+CEREAL_REGISTER_POLYMORPHIC_RELATION(GAME_OBJECT, BILL_BOARD)
 
 //////////////////////////////////////////////////
 
@@ -99,6 +107,12 @@ public:
 	// 引数:tx_param ... テクスチャ切り取り幅（手動）
 	//      ty_param ... テクスチャ切り取り高さ（手動）
 	void Set_Param_Txy(const float& tx_param = -1.0f, const float& ty_param = -1.0f);
+
+	template<typename Archive>
+	void serialize(Archive& ar) {}
 };
+
+CEREAL_REGISTER_TYPE(BILL_BOARD_ANIMATION)
+CEREAL_REGISTER_POLYMORPHIC_RELATION(BILL_BOARD, BILL_BOARD_ANIMATION)
 
 #endif // ! BILL_BOARD_H

@@ -38,7 +38,7 @@ private:
 
 	ANIMETION_STATE Anime_State_Machine;
 
-	XMVECTOR Quaternion;				//! クオータニオン
+	XMVECTOR Quaternion;
 
 public:
 	CMODEL();
@@ -61,8 +61,8 @@ public:
 		return Anime_State_Machine;
 	}
 
-	void Set_Quaternion(const XMVECTOR& vector) {
-		Quaternion = vector;
+	void Set_Quaternion(const XMVECTOR& vec) {
+		Quaternion = vec;
 	}
 
 	template<typename Archive>
