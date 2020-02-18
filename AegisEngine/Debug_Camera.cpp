@@ -69,7 +69,6 @@ void DEBUG_CAMERA::Update(float delta_time)
 	XMVECTOR f(Front);
 	XMFLOAT4 front_vec;
 	XMStoreFloat4(&front_vec, f);
-	//front_vec.y = 0.0f;
 	f = XMLoadFloat4(&front_vec);
 
 	f = DirectX::XMVector3Normalize(f);
@@ -77,7 +76,6 @@ void DEBUG_CAMERA::Update(float delta_time)
 	XMVECTOR r(Right);
 	XMFLOAT4 right_vec;
 	XMStoreFloat4(&right_vec, r);
-	//right_vec.y = 0.0f;
 	r = XMLoadFloat4(&right_vec);
 
 	r = DirectX::XMVector3Normalize(r);
