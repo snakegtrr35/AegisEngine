@@ -169,6 +169,8 @@ void PLAYER::Update(float delta_time)
 
 	//HP = clamp(HP -= 0.1f, 0.f, 100.0f);
 
+	//int a = 0;
+
 	GAME_OBJECT::Update(delta_time);
 }
 
