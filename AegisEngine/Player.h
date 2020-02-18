@@ -13,8 +13,8 @@ class BULLET;
 
 class PLAYER : public GAME_OBJECT {
 private:
-	//CMODEL* Model = nullptr;
-	FBXmodel* Model = nullptr;
+	CMODEL* Model = nullptr;
+	//FBXmodel* Model = nullptr;
 
 	// true = Stop false = Walk
 	bool AnimType;

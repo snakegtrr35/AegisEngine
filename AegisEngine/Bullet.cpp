@@ -22,7 +22,7 @@ BULLET::BULLET() : MoveVector(XMFLOAT3(0.0f, 0.0f, 0.0f))
 
 	Model = new CMODEL();
 
-	HP = 3000;
+	HP = 500;
 }
 
 BULLET::BULLET(XMFLOAT3& position, XMFLOAT3& move_vector) : MoveVector(move_vector)
@@ -33,7 +33,7 @@ BULLET::BULLET(XMFLOAT3& position, XMFLOAT3& move_vector) : MoveVector(move_vect
 
 	Model = new CMODEL();
 
-	HP = 3000;
+	HP = 500;
 }
 
 BULLET::~BULLET()
@@ -80,15 +80,11 @@ void BULLET::Update(float delta_time)
 		CManager::Get_Instance()->Get_Scene()->Destroy_Game_Object(this);
 	}
 
-	static float fr = 0.0f;
+	fps += delta_time;
 
-	fr += delta_time;
-
-	if (ANIMETION_FRAME_60 <= fr)
+	if (ANIMETION_FRAME_60 <= fps)
 	{
 		HP--;
-
-		fr = 0.0f;
 	}
 	
 

@@ -178,9 +178,9 @@ void SPRITE::Draw(void)
 			CRenderer::Set_Shader(SHADER_INDEX_V::DEFAULT, SHADER_INDEX_P::NO_LIGHT);
 
 			CRenderer::DrawIndexed(6, 0, 0);
-		}
 
-		Draw_Child();
+			Draw_Child();
+		}
 
 		CRenderer::Set_Shader();
 	}

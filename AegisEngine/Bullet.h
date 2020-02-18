@@ -11,8 +11,8 @@ protected:
 	XMFLOAT3 MoveVector;
 	CMODEL* Model;
 
-
 	short HP;
+	float fps = 0.f;
 
 public:
 	BULLET();

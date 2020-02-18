@@ -74,6 +74,15 @@ public:
 	*/
 	void Set_Front(const XMVECTOR& vector) {
 		Front = XMQuaternionNormalize(vector);
+
+		//
+		Right = XMVector3Cross(Up, Front);
+		Right = XMVector3Normalize(Right);
+
+		Up = XMVector3Cross(Front, Right);
+		Up = XMVector3Normalize(Up);
+
+		Set(Front, Up, Right);
 	};
 
 	/**
@@ -135,6 +144,9 @@ public:
 		//Right = XMVector3TransformNormal(Right, mtxRotation);
 		//Right = XMVector3Normalize(Right);
 
+		Right = XMVector3Cross(Up, Front);//
+		Right = XMVector3Normalize(Right);//
+
 		Set(Front, Up, Right);
 	}
 
@@ -155,6 +167,9 @@ public:
 		Right = XMVector3TransformNormal(Right, mtxRotation);
 		Right = XMVector3Normalize(Right);
 
+		Up = XMVector3Cross(Front, Right);//
+		Up = XMVector3Normalize(Up);//
+
 		Set(Front, Up, Right);
 	}
 
@@ -174,6 +189,9 @@ public:
 
 		Right = XMVector3TransformNormal(Right, mtxRotation);
 		Right = XMVector3Normalize(Right);
+
+		Front = XMVector3Cross(Up, Right);//
+		Front = XMVector3Normalize(Up);//
 
 		Set(Front, Up, Right);
 	}

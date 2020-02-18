@@ -374,9 +374,7 @@ void GAME::Load(SCENE* scene)
 		// HP‚ÌUI
 		{
 			XMFLOAT2 pos(50.0f, SCREEN_HEIGHT * 0.5f);
-			SPRITE* sprite = Add_Game_Object<SPRITE>(LAYER_NAME::UI, "hp");
-
-			sprite->Set_Object_Name("hp_ui");
+			SPRITE* sprite = Add_Game_Object<SPRITE>(LAYER_NAME::UI, "hp_ui");
 
 			sprite->SetPosition(pos);
 

@@ -13,8 +13,7 @@ BOUNDING_AABB::~BOUNDING_AABB()
 void BOUNDING_AABB::Init()
 {
 	{
-		XMFLOAT3 pos /*= *Owner.lock()->Get_Position()*/;
-		pos = XMFLOAT3(0.f, 0.f, 0.f);
+		XMFLOAT3 pos = *Owner.lock()->Get_Position();
 
 		Aabb = BoundingBox(XMFLOAT3(0.f, 0.f, 0.f), Radius);
 
@@ -177,8 +176,7 @@ void BOUNDING_AABB::OverWrite()
 	{
 		Color = Default_Color;
 
-		XMFLOAT3 pos /*= *Owner.lock()->Get_Position()*/;
-		pos = XMFLOAT3(0.f, 0.f, 0.f);
+		XMFLOAT3 pos = *Owner.lock()->Get_Position();
 
 		Aabb = BoundingBox(XMFLOAT3(0.f, 0.f, 0.f), Radius);
 

@@ -1,18 +1,27 @@
-#include	"ModelLoader.h"
-#include	"Collision.h"
-#include	"Player.h"
-#include	"Enemy.h"
 #include	"Scene.h"
 #include	"manager.h"
+#include	"Scene_Manager.h"
+
+#include	"Player.h"
+#include	"Enemy.h"
+#include	"Debug_Camera.h"
 #include	"Bounding_Aabb.h"
+
 #include	"Bullet.h"
 #include	"Axis.h"
+
+#include	"ModelLoader.h"
+#include	"Collision.h"
+
 #include	"audio_clip.h"
 #include	"Math.h"
 
 static void Create_Bullet(XMFLOAT3& position, XMFLOAT3& front);
 
-ENEMY::ENEMY() {}
+ENEMY::ENEMY()
+{
+	Fire_Flag = true;
+}
 
 ENEMY::~ENEMY()
 {
@@ -45,14 +54,6 @@ void ENEMY::Init()
 		auto scene = CManager::Get_Instance()->Get_Scene();
 
 		auto aabb = Get_Component()->Add_Component<BOUNDING_AABB>(scene->Get_Game_Object(this));
-
-		//aabb->Set_Position(Position);
-
-		//aabb->Set_Radius(XMFLOAT3(10, 10, 10));
-
-		/*auto scene = CManager::Get_Instance()->Get_Scene();
-
-		auto aabb = Get_Component()->Add_Component<BOUNDING_AABB>(scene->Get_Game_Object(this));*/
 	}
 
 	GAME_OBJECT::Init();
@@ -70,80 +71,106 @@ void ENEMY::Draw_DPP()
 	Model->Draw_DPP();
 }
 
+XMFLOAT3 operator-(const XMFLOAT3& vec1, const XMFLOAT3& vec2) {
+	return XMFLOAT3(vec1.x - vec2.x, vec1.y - vec2.y, vec1.z - vec2.z);
+}
+
 void ENEMY::Update(float delta_time)
 {
+	XMFLOAT3 vec;
+	{
+		auto scene = CManager::Get_Instance()->Get_Scene();
+
+		auto player = scene->Get_Game_Object<PLAYER>("player");
+
+		XMFLOAT3 position(0.f, 0.f, 0.f);
+		if (!player.expired())
+		{
+			position = *player.lock()->Get_Position();
+		}
+
+		vec = (position - Position);
+		{
+
+			XMFLOAT3 rotate(0.f, 0.f, 0.f);
+			{
+				if (vec.z >= 0.0f)
+				{
+					rotate.y = atan(vec.x / vec.z);
+				}
+				else
+				{
+					rotate.y = atan(vec.x / vec.z) + XM_PI;
+				}
+			}
+			XMVECTOR vector = XMQuaternionRotationRollPitchYaw(rotate.x, rotate.y, rotate.z);
+
+			Model->Set_Quaternion(vector);
+		}
+	}
+
 	// 移動
-	//{
-	//	static int i = 0;
-	//	XMFLOAT3 move;
-	//	XMVECTOR vec = Component.Get_Component<AXIS_COMPONENT>()->Get_Right();
-	//	vec = XMVectorScale(vec, 0.2f);
-	//	XMStoreFloat3(&move, vec);
+	{
+		static int i = 0;
 
-	//	if (Random_Bool(Date.RL_Probability))
-	//	{
-	//		Date.RL = !Date.RL;
-	//	}
 
-	//	if (Date.RL)
-	//	{
-	//		XMStoreFloat3(&move, XMVectorScale(vec, -1.0f));
-	//	}
+		//// プレイヤーとの距離を一定にする
+		//{
+		//	XMFLOAT3 pos;
+		//	XMStoreFloat3(&pos, vec);
 
-	//	// プレイヤーとの距離を一定にする
-	//	{
-	//		XMVECTOR vec = Component.Get_Component<AXIS_COMPONENT>()->Get_Front();
-	//		vec = XMVectorScale(vec, -0.2f);
+		//	const auto player = CManager::Get_Scene()->Get_Game_Object<PLAYER>("player");
 
-	//		XMFLOAT3 pos;
-	//		XMStoreFloat3(&pos, vec);
+		//	float r = (Position.x - player.lock()->Get_Position()->x) * (Position.x - player.lock()->Get_Position()->x) + (Position.z - player.lock()->Get_Position()->z) * (Position.z - player.lock()->Get_Position()->z);
+		//	float abr = Date.Lenght * Date.Lenght;
 
-	//		const auto player = CManager::Get_Scene()->Get_Game_Object<PLAYER>("player");
+		//	// 離す
+		//	if (r <= abr * abr)
+		//	{
+		//		move.x += pos.x;
+		//		move.z += pos.z;
+		//	}
 
-	//		float r = (Position.x - player.lock()->Get_Position()->x) * (Position.x - player.lock()->Get_Position()->x) + (Position.z - player.lock()->Get_Position()->z) * (Position.z - player.lock()->Get_Position()->z);
-	//		float abr = Date.Lenght * Date.Lenght;
+		//	// 引く
+		//	abr = (Date.Lenght* 1.5f) * (Date.Lenght* 1.5f);
 
-	//		// 離す
-	//		if (r <= abr * abr)
-	//		{
-	//			move.x += pos.x;
-	//			move.z += pos.z;
-	//		}
+		//	if (r >= abr * abr)
+		//	{
+		//		vec = XMVectorScale(vec, -1.0f);
+		//		XMStoreFloat3(&pos, vec);
 
-	//		// 引く
-	//		abr = (Date.Lenght* 1.5f) * (Date.Lenght* 1.5f);
+		//		move.x += pos.x;
+		//		move.z += pos.z;
+		//	}
 
-	//		if (r >= abr * abr)
-	//		{
-	//			vec = XMVectorScale(vec, -1.0f);
-	//			XMStoreFloat3(&pos, vec);
+		//}
 
-	//			move.x += pos.x;
-	//			move.z += pos.z;
-	//		}
+		//Position.x += move.x;
+		//Position.z += move.z;
+	}
 
-	//	}
+	//if (flag)
+	{
+		// 弾を撃つ
+		if ( Math::Random_Bool(0.01))
+		{
+			XMVECTOR vector = XMLoadFloat3(&vec);
+			vector = XMVector3Normalize(vector);
 
-	//	Position.x += move.x;
-	//	Position.z += move.z;
-	//}
+			XMFLOAT3 rotate;
+			XMStoreFloat3(&rotate, vector * 2.0f);
 
-	//// 弾を撃つ
-	//if (Random_Bool(Date.Attack_Probability))
-	//{
-	//	XMFLOAT3 f;
-	//	XMFLOAT3 pos = Position;
+			XMFLOAT3 position = Position;
 
-	//	//XMStoreFloat3(&f, Component.Get_Component<AXIS_COMPONENT>()->Get_Front());
+			position.x += rotate.x * 2;
+			position.z += rotate.z * 2;
 
-	//	pos.x += f.x * 2;
-	//	pos.y += f.y;
-	//	pos.z += f.z * 2;
 
-	//	Create_Bullet(pos, f);
+			Create_Bullet(position, rotate);
 
-	//	AUDIO_MANAGER::Play_Sound_Object(SOUND_INDEX::SOUND_INDEX_SHOT, false);
-	//}
+			AUDIO_MANAGER::Play_Sound_Object(SOUND_INDEX::SOUND_INDEX_SHOT, false);
+		}
+	}
 
 	Model->Set_Position(Position);
 	Model->Set_Rotation(Rotation);
@@ -178,18 +205,20 @@ void ENEMY::SetScaling(const XMFLOAT3& scaling)
 
 void Create_Bullet(XMFLOAT3& position, XMFLOAT3& front)
 {
-	SCENE* scene = CManager::Get_Instance()->Get_Scene();
+	auto scene = CManager::Get_Instance()->Get_Scene();
 
-	BULLET* bullet = scene->Add_Game_Object<BULLET>(LAYER_NAME::GAMEOBJECT, "enemy");
+	auto bullets = scene->Get_Game_Objects<BULLET>();
 
-	
+	auto bullet = scene->Add_Game_Object<BULLET>( LAYER_NAME::GAMEOBJECT, "bullet" + to_string(bullets.size() + 1) );
 
-	XMFLOAT3 Position = position;
-	Position.y += 0.5f;
+	bullet->Init();
 
-	XMFLOAT3 scaling = XMFLOAT3(0.1f, 0.1f, 0.1f);
+	//XMFLOAT3 Position = position;
+	//Position.y += 0.5f;
 
-	bullet->Set_Position(&Position);
+	//XMFLOAT3 scaling = XMFLOAT3(1.0f, 1.0f, 1.0f);
+
+	bullet->Set_Position(position);
 	bullet->Set_Move_Vector(front);
-	bullet->Set_Scaling(scaling);
+	//bullet->Set_Scaling(scaling);
 }

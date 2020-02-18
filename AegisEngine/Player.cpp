@@ -1,8 +1,8 @@
 #include	"manager.h"
 #include	"Scene.h"
 
-//#include	"ModelLoader.h"
-#include	"FBXmodel.h"
+#include	"ModelLoader.h"
+//#include	"FBXmodel.h"
 
 #include	"Input.h"
 #include	"Collision.h"
@@ -17,8 +17,8 @@
 
 PLAYER::PLAYER(void)
 {
-	//Model = new CMODEL();
-	Model = new FBXmodel();
+	Model = new CMODEL();
+	//Model = new FBXmodel();
 }
 
 PLAYER::~PLAYER()
@@ -33,8 +33,8 @@ void PLAYER::Init(void)
 		Blend = 1.0f;
 
 		//string name = "asset/model/Player.fbx";
-		//string name = "asset/model/viranrifle.fbx";
-		string name = "asset/model/kakunin_joint.fbx";
+		string name = "asset/model/viranrifle.fbx";
+		//string name = "asset/model/kakunin_joint.fbx";
 
 		Model->Load(name);
 	}
@@ -48,10 +48,6 @@ void PLAYER::Init(void)
 
 		//aabb->Set_Radius(XMFLOAT3(10, 10, 10));
 
-		/*auto scene = CManager::Get_Instance()->Get_Scene();
-
-		auto aabb = Get_Component()->Add_Component<BOUNDING_AABB>(scene->Get_Game_Object(this));*/
-
 		GAME_OBJECT::Init();
 	}
 }
@@ -63,8 +59,8 @@ void PLAYER::Draw(void)
 		matrix *= XMMatrixRotationRollPitchYaw(XMConvertToRadians(Rotation.x), XMConvertToRadians(Rotation.y), XMConvertToRadians(Rotation.z));
 		matrix *= XMMatrixTranslation(Position.x, Position.y, Position.z);
 
-		//Model->Draw();
-		Model->Draw(matrix);
+		Model->Draw();
+		//Model->Draw(matrix);
 	}
 
 	GAME_OBJECT::Draw();
@@ -77,8 +73,8 @@ void PLAYER::Draw_DPP(void)
 		matrix *= XMMatrixRotationRollPitchYaw(XMConvertToRadians(Rotation.x), XMConvertToRadians(Rotation.y), XMConvertToRadians(Rotation.z));
 		matrix *= XMMatrixTranslation(Position.x, Position.y, Position.z);
 
-		//Model->Draw_DPP();
-		Model->Draw_DPP(matrix);
+		Model->Draw_DPP();
+		//Model->Draw_DPP(matrix);
 	}
 }
 
@@ -154,9 +150,9 @@ void PLAYER::Update(float delta_time)
 
 	// ƒ‚ƒfƒ‹‚ÌXV
 	{
-		//Model->Set_Position(Position);
-		//Model->Set_Rotation(Rotation);
-		//Model->Set_Scaling(Scaling);
+		Model->Set_Position(Position);
+		Model->Set_Rotation(Rotation);
+		Model->Set_Scaling(Scaling);
 
 		Model->Update(delta_time);
 	}

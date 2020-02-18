@@ -23,6 +23,8 @@ CMODEL::CMODEL()
 {
 	Enable = true;
 	Frame = 0;
+
+	Quaternion = XMVectorSet(0.f, 0.f, 0.f, 0.f);
 }
 
 CMODEL::~CMODEL()
@@ -157,7 +159,12 @@ void CMODEL::Draw()
 
 	XMMATRIX matrix = XMMatrixIdentity();
 	XMMATRIX scaling = XMMatrixScaling(Scaling.x, Scaling.y, Scaling.z);
-	XMMATRIX rotation  = /*XMMatrixIdentity();=*/ XMMatrixRotationRollPitchYaw(XMConvertToRadians(Rotation.x), XMConvertToRadians(Rotation.y), XMConvertToRadians(Rotation.z));
+	XMMATRIX rotation  = XMMatrixRotationRollPitchYaw(XMConvertToRadians(Rotation.x), XMConvertToRadians(Rotation.y), XMConvertToRadians(Rotation.z));
+
+	{
+		if( false == XMQuaternionEqual(XMVectorSet(0.f, 0.f, 0.f, 0.f), Quaternion) ) rotation = XMMatrixRotationQuaternion(Quaternion);
+	}
+
 	XMMATRIX transform = XMMatrixTranslation(Position.x, Position.y, Position.z);
 
 	// クォータニオン

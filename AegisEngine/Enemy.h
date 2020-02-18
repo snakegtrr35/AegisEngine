@@ -23,6 +23,8 @@ private:
 
 	PROBABILITY_DATE Date;
 
+	bool Fire_Flag;
+
 public:
 	ENEMY();
 	~ENEMY();
