@@ -200,6 +200,30 @@ public:
 		return objects;
 	}
 
+	// 全オブジェクトの取得
+	template <typename T>
+	static void Delete_Game_Objects()
+	{
+		for (int i = 0; i < (int)LAYER_NAME::MAX_LAYER; i++)
+		{
+			if (!GameObjects[i].empty())
+			{
+				for (auto object = GameObjects[i].begin(); object != GameObjects[i].end(); object++)
+				{
+					if (typeid(T) == typeid(*object->get()))
+					{
+						object->get()->Set_Destroy();
+					}
+				}
+			}
+		}
+
+		for (int i = 0; i < (int)LAYER_NAME::MAX_LAYER; i++)
+		{
+			GameObjects[i].remove_if([](auto& object) { return object->Destroy(); }); // リストから削除
+		}
+	}
+
 	SCENE();
 	virtual ~SCENE() {
 		Uninit();
@@ -221,6 +245,8 @@ public:
 			}
 			Light_Manager.Init();
 		}
+
+		End_Pause();
 	};
 
 	/**

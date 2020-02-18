@@ -16,9 +16,7 @@ private:
 	CMODEL* Model = nullptr;
 	//FBXmodel* Model = nullptr;
 
-	// true = Stop false = Walk
-	bool AnimType;
-	float Blend;
+	float HP;
 
 public:
 	PLAYER();
@@ -33,12 +31,13 @@ public:
 	void SetPosition(const XMFLOAT3 position);					// ポジションの設定
 	void SetScaling(const XMFLOAT3 scaling);					// 拡大縮小の値の設定
 
-	//COLLISION* const Get_Collision() {
-	//	return Collision;
-	//}
 
-	float* Get() {
-		return &Blend;
+	void Add_HP(float hp) {
+		 HP += hp;
+	}
+
+	float Get_HP() {
+		return HP;
 	}
 
 	template<typename Archive>

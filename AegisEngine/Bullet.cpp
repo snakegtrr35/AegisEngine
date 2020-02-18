@@ -87,8 +87,7 @@ void BULLET::Update(float delta_time)
 		HP--;
 	}
 	
-
-	/*auto scene = CManager::Get_Instance()->Get_Scene();
+	auto scene = CManager::Get_Instance()->Get_Scene();
 
 	// 敵と弾の当たり判定
 	{
@@ -96,53 +95,56 @@ void BULLET::Update(float delta_time)
 
 		for (ENEMY* enemy : enemys)
 		{
-			//if (Collision_HitSphere(this->Get_Collison(), enemy->Get_Collision()))
-			//if (Collision_HitAABB(this->Get_Collison(), enemy->Get_Collision()))
-
-
 			auto bullet_collision = this->Get_Component()->Get_Component<BOUNDING_SHPERE>();
 			auto enemy_collision = enemy->Get_Component()->Get_Component<BOUNDING_AABB>();
 
+			if (ContainmentType::DISJOINT != bullet_collision->Get_Collition().Contains(enemy_collision->Get_Collition()))
 			{
-				// ビルボード
-				{
-					BILL_BOARD_ANIMATION* bba = CManager::Get_Instance()->Get_Scene()->Add_Game_Object<BILL_BOARD_ANIMATION>(LAYER_NAME::EFFECT, "test");
-					bba->Set_Position(&Position);
-					bba->SetWH(XMFLOAT2(1.0f, 1.0f));
-					bba->SetParam(3.0f, 4, 4);
-				}
+				//// ビルボード
+				//{
+				//	BILL_BOARD_ANIMATION* bba = CManager::Get_Instance()->Get_Scene()->Add_Game_Object<BILL_BOARD_ANIMATION>(LAYER_NAME::EFFECT, "test");
+				//	bba->Set_Position(&Position);
+				//	bba->SetWH(XMFLOAT2(1.0f, 1.0f));
+				//	bba->SetParam(3.0f, 4, 4);
+				//}
 
 				//SCORE* score = CManager::Get_Scene()->Get_Game_Object<SCORE>();
 
 				//score->Add(100);
 
 				CManager::Get_Instance()->Get_Scene()->Destroy_Game_Object(this);
-				CManager::Get_Instance()->Get_Scene()->Destroy_Game_Object(enemy);
+				//CManager::Get_Instance()->Get_Scene()->Destroy_Game_Object(enemy);
 
 				AUDIO_MANAGER::Play_Sound_Object(SOUND_INDEX::SOUND_INDEX_EXPLOSION);
 			}
+
+			// プレイヤーと弾の当たり判定
+			{
+				auto player = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<PLAYER>("player");
+
+				if (ContainmentType::DISJOINT != bullet_collision->Get_Collition().Contains(player.lock()->Get_Component()->Get_Component<BOUNDING_AABB>()->Get_Collition()))
+				{
+					auto billboards = scene->Get_Game_Objects<BILL_BOARD_ANIMATION>();
+
+					//// ビルボード
+					//{
+					//	BILL_BOARD_ANIMATION* bba = CManager::Get_Instance()->Get_Scene()->Add_Game_Object<BILL_BOARD_ANIMATION>(LAYER_NAME::EFFECT, "billboard" + to_string(billboards.size() + 1));
+					//	bba->Set_Position(&Position);
+					//	bba->SetWH(XMFLOAT2(10.0f, 10.0f));
+					//	bba->SetParam(3.0f, 4, 4);
+
+					//	bba->Init();
+					//}
+
+					player.lock()->Add_HP(-1.0f);
+
+					CManager::Get_Instance()->Get_Scene()->Destroy_Game_Object(this);
+
+					AUDIO_MANAGER::Play_Sound_Object(SOUND_INDEX::SOUND_INDEX_EXPLOSION);
+				}
+			}
 		}
 	}
-
-	// プレイヤーと弾の当たり判定
-	{
-		auto player = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<PLAYER>("player");
-
-		//if (Collision_HitAABB(this->Get_Collison(), player->Get_Collision()))
-		//{
-		//	// ビルボード
-		//	{
-		//		BILL_BOARD_ANIMATION* bba = CManager::Get_Scene()->Add_Game_Object<BILL_BOARD_ANIMATION>(LAYER_NAME::EFFECT);
-		//		bba->Set_Position(&Position);
-		//		bba->SetWH(XMFLOAT2(1.0f, 1.0f));
-		//		bba->SetParam(3.0f, 4, 4);
-		//	}
-
-		//	CManager::Get_Scene()->Destroy_Game_Object(this);
-
-		//	AUDIO_MANAGER::Play_Sound_Object(SOUND_INDEX::SOUND_INDEX_EXPLOSION);
-		//}
-	}*/
 
 	Model->Set_Position(Position);
 	Model->Set_Rotation(Rotation);

@@ -3,8 +3,9 @@
 #ifndef BULLET_H
 #define BULLET_H
 
+#include	"Game_Object.h"
+
 class CMODEL;
-class GAME_OBJECT;
 
 class BULLET : public GAME_OBJECT {
 protected:

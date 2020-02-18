@@ -111,65 +111,55 @@ void ENEMY::Update(float delta_time)
 
 	// 移動
 	{
-		static int i = 0;
+		XMFLOAT3 move(0.f, 0.f, 0.f);
+
+		// プレイヤーとの距離を一定にする
+		{
+			const auto player = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<PLAYER>("player");
+
+			float r = (Position.x - player.lock()->Get_Position()->x) * (Position.x - player.lock()->Get_Position()->x) + (Position.z - player.lock()->Get_Position()->z) * (Position.z - player.lock()->Get_Position()->z);
+			float abr = 8.0f;
+
+			// 離す
+			if (r <= (abr * 1.2f) * (abr * 1.2f))
+			{
+				move.x -= vec.x * delta_time * 2.0f;
+				move.z -= vec.z * delta_time * 2.0f;
+			}
+
+			// 引き寄せる
+			if (r >= (abr * 2.0f) * (abr * 2.0f))
+			{
+				move.x += vec.x * delta_time * 2.0f;
+				move.z += vec.z * delta_time * 2.0f;
+			}
+		}
+
+		Position.x += move.x;
+		Position.z += move.z;
 
 
-		//// プレイヤーとの距離を一定にする
-		//{
-		//	XMFLOAT3 pos;
-		//	XMStoreFloat3(&pos, vec);
-
-		//	const auto player = CManager::Get_Scene()->Get_Game_Object<PLAYER>("player");
-
-		//	float r = (Position.x - player.lock()->Get_Position()->x) * (Position.x - player.lock()->Get_Position()->x) + (Position.z - player.lock()->Get_Position()->z) * (Position.z - player.lock()->Get_Position()->z);
-		//	float abr = Date.Lenght * Date.Lenght;
-
-		//	// 離す
-		//	if (r <= abr * abr)
-		//	{
-		//		move.x += pos.x;
-		//		move.z += pos.z;
-		//	}
-
-		//	// 引く
-		//	abr = (Date.Lenght* 1.5f) * (Date.Lenght* 1.5f);
-
-		//	if (r >= abr * abr)
-		//	{
-		//		vec = XMVectorScale(vec, -1.0f);
-		//		XMStoreFloat3(&pos, vec);
-
-		//		move.x += pos.x;
-		//		move.z += pos.z;
-		//	}
-
-		//}
-
-		//Position.x += move.x;
-		//Position.z += move.z;
 	}
 
-	//if (flag)
+
+	// 弾を撃つ
+	if ( Math::Random_Bool(0.01))
 	{
-		// 弾を撃つ
-		if ( Math::Random_Bool(0.01))
-		{
-			XMVECTOR vector = XMLoadFloat3(&vec);
-			vector = XMVector3Normalize(vector);
+		XMVECTOR vector = XMLoadFloat3(&vec);
+		vector = XMVector3Normalize(vector);
 
-			XMFLOAT3 rotate;
-			XMStoreFloat3(&rotate, vector * 2.0f);
+		XMFLOAT3 rotate;
+		XMStoreFloat3(&rotate, vector * 2.0f);
 
-			XMFLOAT3 position = Position;
+		XMFLOAT3 position = Position;
 
-			position.x += rotate.x * 2;
-			position.z += rotate.z * 2;
+		position.x += rotate.x * 2;
+		position.z += rotate.z * 2;
 
 
-			Create_Bullet(position, rotate);
+		Create_Bullet(position, rotate);
 
-			AUDIO_MANAGER::Play_Sound_Object(SOUND_INDEX::SOUND_INDEX_SHOT, false);
-		}
+		AUDIO_MANAGER::Play_Sound_Object(SOUND_INDEX::SOUND_INDEX_SHOT, false);
 	}
 
 	Model->Set_Position(Position);

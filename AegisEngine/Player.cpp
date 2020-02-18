@@ -19,6 +19,8 @@ PLAYER::PLAYER(void)
 {
 	Model = new CMODEL();
 	//Model = new FBXmodel();
+
+	HP = 100.0f;
 }
 
 PLAYER::~PLAYER()
@@ -29,9 +31,6 @@ PLAYER::~PLAYER()
 void PLAYER::Init(void)
 {
 	{
-		AnimType = true;
-		Blend = 1.0f;
-
 		//string name = "asset/model/Player.fbx";
 		string name = "asset/model/viranrifle.fbx";
 		//string name = "asset/model/kakunin_joint.fbx";
@@ -40,9 +39,9 @@ void PLAYER::Init(void)
 	}
 
 	{
-		//auto scene = CManager::Get_Instance()->Get_Scene();
+		auto scene = CManager::Get_Instance()->Get_Scene();
 
-		//auto aabb = Get_Component()->Add_Component<BOUNDING_AABB>(scene->Get_Game_Object(this));
+		auto aabb = Get_Component()->Add_Component<BOUNDING_AABB>(scene->Get_Game_Object(this));
 
 		//aabb->Set_Position(Position);
 
@@ -106,38 +105,28 @@ void PLAYER::Update(float delta_time)
 	right_vec.y = 0.0f;
 	r = XMLoadFloat3(&right_vec);
 
-	AnimType = true;
-
 	if (KEYBOARD::Press_Keyboard(VK_W))
 	{
 		Position.x += front_vec.x * delta_time * 10.0f;
 		Position.z += front_vec.z * delta_time * 10.0f;
-
-		AnimType = false;
 	}
 
 	if (KEYBOARD::Press_Keyboard(VK_S))
 	{
 		Position.x -= front_vec.x * delta_time * 10.0f;
 		Position.z -= front_vec.z * delta_time * 10.0f;
-
-		AnimType = false;
 	}
 
 	if (KEYBOARD::Press_Keyboard(VK_A))
 	{
 		Position.x -= right_vec.x * delta_time * 10.0f;
 		Position.z -= right_vec.z * delta_time * 10.0f;
-
-		AnimType = false;
 	}
 
 	if (KEYBOARD::Press_Keyboard(VK_D))
 	{
 		Position.x += right_vec.x * delta_time * 10.0f;
 		Position.z += right_vec.z * delta_time * 10.0f;
-
-		AnimType = false;
 	}
 
 	// メッシュフィールドとの当たり判定
@@ -178,20 +167,7 @@ void PLAYER::Update(float delta_time)
 		//	score->Add(-10);
 	}
 
-	//if (KEYBOARD::Trigger_Keyboard(VK_F1))
-	//{
-	//	Model->Get().Change_Anime("Stop", 60);
-	//}
-
-	//if (KEYBOARD::Trigger_Keyboard(VK_F2))
-	//{
-	//	Model->Get().Change_Anime("Walk", 60);
-	//}
-
-	//if (KEYBOARD::Trigger_Keyboard(VK_F3))
-	//{
-	//	Model->Get().Change_Anime("Jump", 60);
-	//}
+	//HP = clamp(HP -= 0.1f, 0.f, 100.0f);
 
 	GAME_OBJECT::Update(delta_time);
 }

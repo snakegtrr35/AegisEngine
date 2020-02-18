@@ -362,7 +362,7 @@ public:
 		ar(Texture);
 		ar(SPRITE::Position);
 		ar(Size);
-		ar(Color);
+		//ar(Color);
 		ar(Enable);
 	}
 
