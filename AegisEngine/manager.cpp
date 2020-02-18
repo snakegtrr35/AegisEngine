@@ -87,9 +87,9 @@ bool CManager::Init()
 
 	//Manager->pSceneManager->Delete_GameInstance("test");
 
-	//Manager->pSceneManager->Set_Scene<TITLE>();
+	Manager->pSceneManager->Set_Scene<TITLE>();
 	//Manager->pSceneManager->Set_Scene<MAIN_MENU>();
-	Manager->pSceneManager->Set_Scene<GAME>();
+	//Manager->pSceneManager->Set_Scene<GAME>();
 
 	Manager->pShadowMap.reset(new SHADOW_MAP());//
 	Manager->pShadowMap->Init();

@@ -18,7 +18,9 @@
 #include	"FBXmodel.h"
 #include	"Sprite_Animation.h"
 
-static unique_ptr<SPRITE_ANIMATION> sprite_anime = nullptr;
+static unique_ptr<SPRITE_ANIMATION> sprite_anime;
+
+static unique_ptr<FIELD> field;
 
 void MAIN_MENU::Init()
 {
@@ -34,6 +36,9 @@ void MAIN_MENU::Init()
 
 		sprite_anime->Init();
 	}
+
+	field = make_unique<FIELD>();
+	field->Init();
 
 	std::thread th(Load, this);
 
@@ -61,6 +66,8 @@ void MAIN_MENU::Draw()
 		auto m = XMMatrixIdentity();
 
 		m = XMMatrixScaling(2.5, 2.5, 2.5);
+
+		field->Draw();
 	}
 	else
 	{
@@ -126,6 +133,7 @@ void MAIN_MENU::Update(float delta_time)
 
 void MAIN_MENU::Uninit()
 {
+	field.reset(nullptr);
 
 #ifdef _DEBUG
 	static bool flag = true;
