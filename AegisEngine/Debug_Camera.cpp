@@ -32,7 +32,8 @@ DEBUG_CAMERA::DEBUG_CAMERA()
 
 	At = XMLoadFloat4(&at);
 
-	Pos = At - Front * Lenght;
+	//Pos = At - Front * Lenght;
+	Pos = At - (Front * Lenght - Up * 4.0f);
 
 	// ビューポートの設定設定
 	Viewport.left = 0;
@@ -59,16 +60,20 @@ void DEBUG_CAMERA::Update(float delta_time)
 {
 	XMFLOAT2 point = MOUSE::Get_Mouse()->Get_Position();
 
-	bool flag = KEYBOARD::Press_Keyboard(VK_SHIFT);
+	bool flag = !KEYBOARD::Press_Keyboard(VK_SHIFT);
 
 	bool flag2 = KEYBOARD::Press_Keyboard(VK_RBUTTON);
 
 	if (flag)
-		At = Front * Lenght + Pos;
+	{
+		//At = Front * Lenght + Pos;
+		At = (Front * Lenght - Up * 4.0f) + Pos;
+	}
 
 	XMVECTOR f(Front);
 	XMFLOAT4 front_vec;
 	XMStoreFloat4(&front_vec, f);
+	front_vec.y = 0.0f;
 	f = XMLoadFloat4(&front_vec);
 
 	f = DirectX::XMVector3Normalize(f);
@@ -116,27 +121,30 @@ void DEBUG_CAMERA::Update(float delta_time)
 	}
 
 	if (flag)
-		Pos = At - Front * Lenght;
+	{
+		//Pos = At - Front * Lenght;
+		Pos = At - (Front * Lenght - Up * 4.0f);
+	}
 
 	// 移動
 	if (MoveEnable)
 	{
-		if (KEYBOARD::Press_Keyboard(VK_UP))
+		if (KEYBOARD::Press_Keyboard(VK_W))
 		{
 			Pos += f * delta_time * 15.0f;
 		}
 
-		if (KEYBOARD::Press_Keyboard(VK_DOWN))
+		if (KEYBOARD::Press_Keyboard(VK_S))
 		{
 			Pos -= f * delta_time * 15.0f;
 		}
 
-		if (KEYBOARD::Press_Keyboard(VK_RIGHT))
+		if (KEYBOARD::Press_Keyboard(VK_D))
 		{
 			Pos += r * delta_time * 15.0f;
 		}
 
-		if (KEYBOARD::Press_Keyboard(VK_LEFT))
+		if (KEYBOARD::Press_Keyboard(VK_A))
 		{
 			Pos -= r * delta_time * 15.0f;
 		}
@@ -157,11 +165,11 @@ void DEBUG_CAMERA::Update(float delta_time)
 		//XMVECTOR f = XMVector3Normalize(Front);
 		//XMVECTOR u = XMVector3Normalize(Up);
 
-		At = Front * Lenght + Pos;
-		//At = Pos + (f * Lenght) - ( u * 2.0 );
+		//At = Front * Lenght + Pos;
+		At = (Front * Lenght - Up * 4.0f) + Pos;
 
-		Pos = At - Front * Lenght;
-		//Pos = At - (f * Lenght) + (u * 2.0);
+		//Pos = At - Front * Lenght;
+		Pos = At - (Front * Lenght - Up * 4.0f);
 	}
 
 	XMStoreFloat3(&Position, Pos);

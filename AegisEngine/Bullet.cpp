@@ -93,7 +93,7 @@ void BULLET::Update(float delta_time)
 	{
 		vector<ENEMY*> enemys = scene->Get_Game_Objects<ENEMY>();
 
-		for (ENEMY* enemy : enemys)
+		for (auto enemy : enemys)
 		{
 			auto bullet_collision = this->Get_Component()->Get_Component<BOUNDING_SHPERE>();
 			auto enemy_collision = enemy->Get_Component()->Get_Component<BOUNDING_AABB>();
@@ -108,12 +108,8 @@ void BULLET::Update(float delta_time)
 				//	bba->SetParam(3.0f, 4, 4);
 				//}
 
-				//SCORE* score = CManager::Get_Scene()->Get_Game_Object<SCORE>();
-
-				//score->Add(100);
-
 				CManager::Get_Instance()->Get_Scene()->Destroy_Game_Object(this);
-				//CManager::Get_Instance()->Get_Scene()->Destroy_Game_Object(enemy);
+				CManager::Get_Instance()->Get_Scene()->Destroy_Game_Object(enemy);
 
 				AUDIO_MANAGER::Play_Sound_Object(SOUND_INDEX::SOUND_INDEX_EXPLOSION);
 			}

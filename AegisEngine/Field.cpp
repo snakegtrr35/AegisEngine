@@ -6,12 +6,15 @@
 #include	"Scene.h"
 #include	"ShadowMap.h"
 
-static const UINT g_InstanceNum = 30 * 30 * 30;
+static const UINT g_InstanceNum = 40 * 40 * 40;
 
 FIELD::FIELD()
 {
 	pVertexBuffer.reset(nullptr);
 	pIndexBuffer.reset(nullptr);
+
+	// テクスチャの設定
+	Texture.reset(new TEXTURE(string("UVCheckerMap01-512.png")));
 }
 
 FIELD::FIELD(XMFLOAT3 position, XMFLOAT2 wh)
@@ -168,7 +171,7 @@ FIELD::FIELD(XMFLOAT3 position, XMFLOAT2 wh)
 	}
 
 	// テクスチャの設定
-	Texture.reset(new TEXTURE(string("field004.png")));
+	Texture.reset(new TEXTURE(string("UVCheckerMap01-512.png")));
 }
 
 FIELD::~FIELD()
@@ -244,11 +247,11 @@ void FIELD::Init()
 		XMFLOAT3 position[g_InstanceNum], rotation, scale;
 
 		int i = 0;
-		for (int y = 0; y < 30; y++)
+		for (int y = 0; y < 40; y++)
 		{
-			for (int x = 0; x < 30; x++)
+			for (int x = 0; x < 40; x++)
 			{
-				for (int z = 0; z < 30; z++, i++)
+				for (int z = 0; z < 40; z++, i++)
 				{
 					position[i] = XMFLOAT3(x * 3.0f + 10.0f, (y * 1) - 20.0f, (z * 3.0f) - 20.0f);
 				}
@@ -331,10 +334,6 @@ void FIELD::Init()
 
 		pIndexBuffer.reset(buffer);
 	}
-
-	// テクスチャの設定
-	Texture.reset(new TEXTURE(string("field004.png")));
-
 }
 
 void FIELD::Draw()

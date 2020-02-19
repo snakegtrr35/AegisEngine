@@ -229,15 +229,18 @@ void GAME::Update(float delta_time)
 		{
 			auto player = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<PLAYER>("player");
 
-			if ( player.lock()->Get_HP() <= 0.f)
+			if (!player.expired())
 			{
-				if (flag)
+				if (player.lock()->Get_HP() <= 0.f)
 				{
-					FADE::Start_FadeOut(60);
+					if (flag)
+					{
+						FADE::Start_FadeOut(60);
 
-					flag = false;
+						flag = false;
 
-					RESULT::Set(false);
+						RESULT::Set(false);
+					}
 				}
 			}
 
@@ -376,7 +379,7 @@ void GAME::Load(SCENE* scene)
 				number = to_string(i);
 
 				ENEMY* enemy = Add_Game_Object<ENEMY>(LAYER_NAME::GAMEOBJECT, name + number);
-				enemy->SetPosition(XMFLOAT3((float)(-10.0f + i * 5.0f), 0.0f, 0.0f));
+				enemy->SetPosition(XMFLOAT3((float)(-10.0f + i * 5.0f), 0.0f, 10.0f));
 				enemy->SetRotation(XMFLOAT3(0.0f, 0.0f, 0.0f));
 
 				auto component = enemy->Get_Component();
@@ -387,11 +390,11 @@ void GAME::Load(SCENE* scene)
 
 		// ÉXÉRÉA
 		{
-		XMFLOAT3 pos = XMFLOAT3(500.0f, 37.0f, 0.0f);
+			XMFLOAT3 pos = XMFLOAT3(500.0f, 37.0f, 0.0f);
 
-		SCORE* score = Add_Game_Object<SCORE>(LAYER_NAME::UI, "score");
-		score->Set_Position(&pos);
-		score->Set_Additional(1);
+			SCORE* score = Add_Game_Object<SCORE>(LAYER_NAME::UI, "score");
+			score->Set_Position(&pos);
+			score->Set_Additional(1);
 		}
 
 		// HPÇÃUI
@@ -483,7 +486,21 @@ void GAME::Load(SCENE* scene)
 	}
 
 	{
-		BULLET* bullet = Add_Game_Object<BULLET>(LAYER_NAME::GAMEOBJECT, "bullet");
+		COLOR color = COLOR(0.0f, 1.0f, 1.0f, 1.0f);
+
+		auto hp = scene->Get_Game_Object<SPRITE>("hp_ui");
+
+		hp.lock()->SetColor(color);
+
+		auto children = hp.lock()->Get_Child_Sptite();
+
+		for (const auto& child : *children)
+		{
+			if (string("hp") == child->Name)
+			{
+				child->Child->SetColor(color);
+			}
+		}
 	}
 
 	scene->SCENE::Init();

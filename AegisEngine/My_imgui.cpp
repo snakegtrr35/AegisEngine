@@ -243,7 +243,7 @@ void My_imgui::Draw(void)
 			ImGui::End();
 		}
 
-		static string s = GAME_OBJECT::Get_Object_Name_Map().begin()->/*second.*/c_str();
+		static string s = GAME_OBJECT::Get_Object_Name_Map().begin()->c_str();
 
 		old_name = s;
 

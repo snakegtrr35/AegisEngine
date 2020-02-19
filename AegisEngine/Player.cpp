@@ -8,12 +8,12 @@
 #include	"Collision.h"
 #include	"Player.h"
 #include	"Bounding_Aabb.h"
-#include	"Score.h"
-#include	"Fade.h"
+#include	"Bullet.h"
+#include	"Debug_Camera.h"
 
 #include	"audio_clip.h"
 
-#include	"Timer.h"
+static void Create_Bullet(XMFLOAT3& position, const XMFLOAT3& front);
 
 PLAYER::PLAYER(void)
 {
@@ -83,59 +83,25 @@ void PLAYER::Update(float delta_time)
 	const auto camera = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
 
 	XMVECTOR* vec = camera.lock()->Get_At();
-	XMVECTOR* front = camera.lock()->Get_Front();
-	*front = XMVector4Normalize(*front);
-	XMVECTOR* right = camera.lock()->Get_Right();
-	*right = XMVector4Normalize(*right);
+	XMFLOAT3 rotate = *camera.lock()->Get_Rotation();
+
+	XMVECTOR front_vec = *camera.lock()->Get_Front();
+	XMFLOAT3 front;
+	front_vec = XMVector3Normalize(front_vec);
+	XMStoreFloat3(&front, front_vec);
+
 	XMFLOAT3 pos;
 
 	XMStoreFloat3(&pos, *vec);
 
-	//Position = pos;
-
-	XMVECTOR f(*front);
-	XMFLOAT3 front_vec;
-	XMStoreFloat3(&front_vec, f);
-	front_vec.y = 0.0f;
-	f = XMLoadFloat3(&front_vec);
-
-	XMVECTOR r(*right);
-	XMFLOAT3 right_vec;
-	XMStoreFloat3(&right_vec, r);
-	right_vec.y = 0.0f;
-	r = XMLoadFloat3(&right_vec);
-
-	if (KEYBOARD::Press_Keyboard(VK_W))
-	{
-		Position.x += front_vec.x * delta_time * 10.0f;
-		Position.z += front_vec.z * delta_time * 10.0f;
-	}
-
-	if (KEYBOARD::Press_Keyboard(VK_S))
-	{
-		Position.x -= front_vec.x * delta_time * 10.0f;
-		Position.z -= front_vec.z * delta_time * 10.0f;
-	}
-
-	if (KEYBOARD::Press_Keyboard(VK_A))
-	{
-		Position.x -= right_vec.x * delta_time * 10.0f;
-		Position.z -= right_vec.z * delta_time * 10.0f;
-	}
-
-	if (KEYBOARD::Press_Keyboard(VK_D))
-	{
-		Position.x += right_vec.x * delta_time * 10.0f;
-		Position.z += right_vec.z * delta_time * 10.0f;
-	}
-
+	Position = pos;
 	// メッシュフィールドとの当たり判定
 	//MESH_FIELD* pfield = CManager::Get_Scene()->Get_Game_Object<MESH_FIELD>();
 	//if (nullptr != pfield)
 	//	Position.y = pfield->Get_Height(Position);
 
 	// カメラに合わせた回転
-	//Rotation.y = rotate + 90.0f;
+	Rotation.y = rotate.y + 0.0f;
 
 	// モデルの更新
 	{
@@ -146,30 +112,14 @@ void PLAYER::Update(float delta_time)
 		Model->Update(delta_time);
 	}
 
-	if (KEYBOARD::Trigger_Keyboard(VK_1))
+	if (KEYBOARD::Trigger_Keyboard(VK_SPACE))
 	{
-		//AUDIO_MANAGER::Play_Sound_Object(SOUND_INDEX::SOUND_INDEX_EXPLOSION);
-	}
+		XMFLOAT3 pos = Position + front * 2.0f;
 
-	if (KEYBOARD::Trigger_Keyboard(VK_LBUTTON))
-	{
-		//SCORE* score = CManager::Get_Scene()->Get_Game_Object<SCORE>();
-
-		//if (nullptr != score)
-		//	score->Add(10);
-	}
-
-	if (KEYBOARD::Trigger_Keyboard(VK_RBUTTON))
-	{
-		//SCORE* score = CManager::Get_Scene()->Get_Game_Object<SCORE>();
-
-		//if(nullptr != score)
-		//	score->Add(-10);
+		Create_Bullet(pos, front * 2.0f);
 	}
 
 	//HP = clamp(HP -= 0.1f, 0.f, 100.0f);
-
-	//int a = 0;
 
 	GAME_OBJECT::Update(delta_time);
 }
@@ -189,4 +139,18 @@ void PLAYER::SetPosition(const XMFLOAT3 position)
 void PLAYER::SetScaling(const XMFLOAT3 scaling)
 {
 	Scaling = scaling;
+}
+
+void Create_Bullet(XMFLOAT3& position, const XMFLOAT3& front)
+{
+	auto scene = CManager::Get_Instance()->Get_Scene();
+
+	auto bullets = scene->Get_Game_Objects<BULLET>();
+
+	auto bullet = scene->Add_Game_Object<BULLET>(LAYER_NAME::GAMEOBJECT, "bullet" + to_string(bullets.size() + 1));
+
+	bullet->Init();
+
+	bullet->Set_Position(position);
+	bullet->Set_Move_Vector(front);
 }

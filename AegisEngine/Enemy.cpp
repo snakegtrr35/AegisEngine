@@ -16,7 +16,7 @@
 #include	"audio_clip.h"
 #include	"Math.h"
 
-static void Create_Bullet(XMFLOAT3& position, XMFLOAT3& front);
+static void Create_Bullet(XMFLOAT3& position, const XMFLOAT3& front);
 
 ENEMY::ENEMY()
 {
@@ -193,7 +193,7 @@ void ENEMY::SetScaling(const XMFLOAT3& scaling)
 	Scaling = scaling;
 }
 
-void Create_Bullet(XMFLOAT3& position, XMFLOAT3& front)
+void Create_Bullet(XMFLOAT3& position, const XMFLOAT3& front)
 {
 	auto scene = CManager::Get_Instance()->Get_Scene();
 
@@ -203,12 +203,6 @@ void Create_Bullet(XMFLOAT3& position, XMFLOAT3& front)
 
 	bullet->Init();
 
-	//XMFLOAT3 Position = position;
-	//Position.y += 0.5f;
-
-	//XMFLOAT3 scaling = XMFLOAT3(1.0f, 1.0f, 1.0f);
-
 	bullet->Set_Position(position);
 	bullet->Set_Move_Vector(front);
-	//bullet->Set_Scaling(scaling);
 }
