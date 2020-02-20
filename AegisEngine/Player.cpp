@@ -31,7 +31,7 @@ PLAYER::~PLAYER()
 void PLAYER::Init(void)
 {
 	{
-		//string name = "asset/model/Player.fbx";
+		//string name = "asset/model/herorifle.fbx";
 		string name = "asset/model/viranrifle.fbx";
 		//string name = "asset/model/kakunin_joint.fbx";
 
