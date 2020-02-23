@@ -20,7 +20,11 @@
 
 static unique_ptr<SPRITE_ANIMATION> sprite_anime;
 
-static unique_ptr<FIELD> field;
+#include	"Bounding_Aabb.h"
+#include	"Bounding_Frustum.h"
+
+unique_ptr<BOUNDING_AABB> Aabb;
+unique_ptr<BOUNDING_FRUSTUM> Frustum;
 
 void MAIN_MENU::Init()
 {
@@ -37,14 +41,17 @@ void MAIN_MENU::Init()
 		sprite_anime->Init();
 	}
 
-	field = make_unique<FIELD>();
-	field->Init();
+	{
+		Aabb = make_unique<BOUNDING_AABB>();
+		Frustum = make_unique<BOUNDING_FRUSTUM>();
+
+		Aabb->Init();
+		Frustum->Init();
+	}
 
 	std::thread th(Load, this);
 
 	th.detach();
-
-	//cnt = 0;
 }
 
 void MAIN_MENU::Draw()
@@ -53,6 +60,11 @@ void MAIN_MENU::Draw()
 
 	if (false == GetLockLoad())
 	{
+		{
+			Aabb->Draw();
+			Frustum->Draw();
+		}
+
 		if (f)
 		{
 			FADE::Start_FadeIn(60);
@@ -66,8 +78,6 @@ void MAIN_MENU::Draw()
 		auto m = XMMatrixIdentity();
 
 		m = XMMatrixScaling(2.5, 2.5, 2.5);
-
-		field->Draw();
 	}
 	else
 	{
@@ -93,6 +103,11 @@ void MAIN_MENU::Update(float delta_time)
 {
 	if (false == GetLockLoad())
 	{
+		{
+			Aabb->Update(delta_time);
+			Frustum->Update(delta_time);
+		}
+
 		SCENE::Update(delta_time);
 
 		{
@@ -133,7 +148,10 @@ void MAIN_MENU::Update(float delta_time)
 
 void MAIN_MENU::Uninit()
 {
-	field.reset(nullptr);
+	{
+		Aabb.reset(nullptr);
+		Frustum.reset(nullptr);
+	}
 
 #ifdef _DEBUG
 	static bool flag = true;

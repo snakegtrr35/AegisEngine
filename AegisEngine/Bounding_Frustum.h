@@ -25,6 +25,8 @@ public:
 
 	void OverWrite() override;
 
+	void Draw_Inspector() override;
+
 	const BoundingFrustum& Get_Collition();
 
 	template<typename Archive>

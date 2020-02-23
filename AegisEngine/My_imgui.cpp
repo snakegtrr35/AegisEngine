@@ -27,9 +27,10 @@
 #include	"Bounding_Obb.h"
 #include	"Bounding_Sphere.h"
 
-extern float radius;
-
 static string old_name;
+
+#include	"Bounding_Frustum.h"
+extern unique_ptr<BOUNDING_FRUSTUM> Frustum;
 
 void EditTransform(const float* cameraView, float* cameraProjection, float* matrix, bool enable, GAME_OBJECT* object);
 
@@ -386,6 +387,17 @@ void My_imgui::Draw(void)
 					ImGui::Text((char*)u8"false");
 
 				}
+			}
+
+			{
+				float	Translation[3] = { Frustum->Get_Position()->x, Frustum->Get_Position()->y, Frustum->Get_Position()->z };
+				float	Rotation[3] = { Frustum->Get_Rotation()->x, Frustum->Get_Rotation()->y, Frustum->Get_Rotation()->z };
+
+				ImGui::DragFloat3("Position", Translation, 0.01f);
+				ImGui::DragFloat3("Rotate", Rotation, 0.1f);
+
+				Frustum->Set_Position(XMFLOAT3(Translation[0], Translation[1], Translation[2]));
+				Frustum->Set_Rotation(XMFLOAT3(Rotation[0], Rotation[1], Rotation[2]));
 			}
 
 			ImGui::End();

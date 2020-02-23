@@ -8,7 +8,7 @@
 void BOUNDING_FRUSTUM::Init()
 {
 	{
-		BoundingFrustum::CreateFromMatrix(Frustum, XMMatrixPerspectiveFovLH(XMConvertToRadians(80.0f + 35.0f), float(SCREEN_WIDTH / SCREEN_HEIGHT), 0.1f, 10.0f));
+		BoundingFrustum::CreateFromMatrix(Frustum, XMMatrixPerspectiveFovLH(XMConvertToRadians(80.0f + 35.0f), float(SCREEN_WIDTH / SCREEN_HEIGHT), 0.1f, 30.0f));
 		Frustum.Origin.z = 0.0f;
 		{
 			XMMATRIX matrix = XMMatrixRotationRollPitchYaw(XMConvertToRadians(Rotation.x), XMConvertToRadians(Rotation.y), XMConvertToRadians(Rotation.z));
@@ -171,7 +171,7 @@ void BOUNDING_FRUSTUM::Draw()
 
 void BOUNDING_FRUSTUM::Update(float delta_time)
 {
-	BoundingFrustum::CreateFromMatrix(Frustum, XMMatrixPerspectiveFovLH(XMConvertToRadians(80.0f + 35.0f), float(SCREEN_WIDTH / SCREEN_HEIGHT), 0.1f, 10.0f));
+	BoundingFrustum::CreateFromMatrix(Frustum, XMMatrixPerspectiveFovLH(XMConvertToRadians(80.0f + 35.0f), float(SCREEN_WIDTH / SCREEN_HEIGHT), 0.1f, 100.0f));
 	Frustum.Origin.z = 0.0f;
 
 	XMFLOAT3 r;
@@ -182,9 +182,9 @@ void BOUNDING_FRUSTUM::Update(float delta_time)
 	{
 		//XMStoreFloat3(&r, XMLoadFloat3(camera->Get_Rotation()) );
 
-		Position.x = camera.lock()->Get_Position()->x;
-		Position.y = camera.lock()->Get_Position()->y;
-		Position.z = camera.lock()->Get_Position()->z;
+		//Position.x = camera.lock()->Get_Position()->x;
+		//Position.y = camera.lock()->Get_Position()->y;
+		//Position.z = camera.lock()->Get_Position()->z;
 
 		XMFLOAT3 vec;
 		XMStoreFloat3(&vec, *camera.lock()->Get_Front());
@@ -207,7 +207,7 @@ void BOUNDING_FRUSTUM::Update(float delta_time)
 			r.y = atan(vec.x / vec.z) + XM_PI;
 		}*/
 
-		Rotation = *camera.lock()->Get_Rotation();
+		//Rotation = *camera.lock()->Get_Rotation();
 	}
 
 	XMMATRIX matrix = XMMatrixRotationRollPitchYaw(XMConvertToRadians(Rotation.x), XMConvertToRadians(Rotation.y), XMConvertToRadians(Rotation.z));
@@ -240,6 +240,7 @@ void BOUNDING_FRUSTUM::OverWrite()
 		Vertex[1].Position = corners[0];
 		Vertex[2].Position = corners[2];
 		Vertex[3].Position = corners[3];
+
 		Vertex[4].Position = corners[5];
 		Vertex[5].Position = corners[4];
 		Vertex[6].Position = corners[6];
@@ -322,4 +323,26 @@ void BOUNDING_FRUSTUM::OverWrite()
 const BoundingFrustum& BOUNDING_FRUSTUM::Get_Collition()
 {
 	return Frustum;
+}
+
+#include	"imgui/imgui.h"
+
+void BOUNDING_FRUSTUM::Draw_Inspector()
+{
+	auto str = (char*)u8"ƒRƒŠƒWƒ‡ƒ“(AABB)";
+
+	ImGui::Text(str);
+
+	COMPONENT::Draw_Inspector();
+
+	float position[3] = { Position.x, Position.y, Position.z };
+	float scale[3] = { Scaling.x, Scaling.y, Scaling.z };
+
+	ImGui::DragFloat3("Position##FRUSTUM", position, 0.01f);
+	ImGui::DragFloat3("Scaling", scale, 0.01f);
+
+	Position = XMFLOAT3(position[0], position[1], position[2]);
+	Scaling = XMFLOAT3(scale[0], scale[1], scale[2]);
+
+	OverWrite();
 }

@@ -5,6 +5,9 @@
 #include	"Scene.h"
 #include	"ShadowMap.h"
 
+#include	"Bounding_Frustum.h"
+extern unique_ptr<BOUNDING_FRUSTUM> Frustum;
+
 BOUNDING_AABB::~BOUNDING_AABB()
 {
 	Uninit();
@@ -13,12 +16,13 @@ BOUNDING_AABB::~BOUNDING_AABB()
 void BOUNDING_AABB::Init()
 {
 	{
-		XMFLOAT3 pos = *Owner.lock()->Get_Position();
+		//XMFLOAT3 pos = *Owner.lock()->Get_Position();
 
 		Aabb = BoundingBox(XMFLOAT3(0.f, 0.f, 0.f), Radius);
 
 		XMMATRIX matrix = XMMatrixScaling(Scaling.x, Scaling.y, Scaling.z);
-		matrix *= XMMatrixTranslation(Position.x + pos.x, Position.y + pos.y, Position.z + pos.z);
+		//matrix *= XMMatrixTranslation(Position.x + pos.x, Position.y + pos.y, Position.z + pos.z);
+		matrix *= XMMatrixTranslation(Position.x, Position.y, Position.z);
 
 		Aabb.Transform(Aabb, matrix);
 	}
@@ -27,27 +31,94 @@ void BOUNDING_AABB::Init()
 	if (nullptr == pVertexBuffer.get())
 	{
 		XMFLOAT3 corners[BoundingBox::CORNER_COUNT];
+		VERTEX_3D Vertex[BoundingFrustum::CORNER_COUNT] = {};
 
-		Aabb.GetCorners(corners);
+		/*{
+			Aabb.GetCorners(corners);
 
-		VERTEX_3D Vertex[BoundingBox::CORNER_COUNT];
+			VERTEX_3D Vertex[BoundingBox::CORNER_COUNT];
 
-		Vertex[0].Position = corners[7];
-
-		Vertex[1].Position = corners[6];
-
-		Vertex[2].Position = corners[4];
-
-		Vertex[3].Position = corners[5];
+			Vertex[0].Position = corners[7];
+			Vertex[1].Position = corners[6];
+			Vertex[2].Position = corners[4];
+			Vertex[3].Position = corners[5];
 
 
-		Vertex[4].Position = corners[3];
+			Vertex[4].Position = corners[3];
+			Vertex[5].Position = corners[2];
+			Vertex[6].Position = corners[0];
+			Vertex[7].Position = corners[1];
+		}*/
 
-		Vertex[5].Position = corners[2];
+		{
+			auto frustum = Frustum->Get_Collition();
 
-		Vertex[6].Position = corners[0];
+			frustum.GetCorners(corners);
 
-		Vertex[7].Position = corners[1];
+			XMFLOAT3 pos[BoundingFrustum::CORNER_COUNT] = { corners[0] };
+
+			XMFLOAT3 min, max;
+
+			max.x = std::max({ corners[0].x, corners[1].x, corners[2].x, corners[3].x, corners[4].x, corners[5].x, corners[6].x, corners[7].x });
+			max.y = std::max({ corners[0].y, corners[1].y, corners[2].y, corners[3].y, corners[4].y, corners[5].y, corners[6].y, corners[7].y });
+			max.z = std::max({ corners[0].z, corners[1].z, corners[2].z, corners[3].z, corners[4].z, corners[5].z, corners[6].z, corners[7].z });
+
+			min.x = std::min({ corners[0].x, corners[1].x, corners[2].x, corners[3].x, corners[4].x, corners[5].x, corners[6].x, corners[7].x });
+			min.y = std::min({ corners[0].y, corners[1].y, corners[2].y, corners[3].y, corners[4].y, corners[5].y, corners[6].y, corners[7].y });
+			min.z = std::min({ corners[0].z, corners[1].z, corners[2].z, corners[3].z, corners[4].z, corners[5].z, corners[6].z, corners[7].z });
+
+			{
+				{
+					pos[0].z = min.z;
+					pos[1].z = min.z;
+					pos[2].z = min.z;
+					pos[3].z = min.z;
+
+					pos[4].z = max.z;
+					pos[5].z = max.z;
+					pos[6].z = max.z;
+					pos[7].z = max.z;
+				}
+				{
+					pos[0].x = min.x;
+					pos[1].x = max.x;
+					pos[2].x = min.x;
+					pos[3].x = max.x;
+
+					pos[4].x = min.x;
+					pos[5].x = max.x;
+					pos[6].x = min.x;
+					pos[7].x = max.x;
+				}
+				{
+					pos[0].y = min.y;
+					pos[1].y = min.y;
+					pos[2].y = max.y;
+					pos[3].y = max.y;
+
+					pos[4].y = min.y;
+					pos[5].y = min.y;
+					pos[6].y = max.y;
+					pos[7].y = max.y;
+				}
+			}
+
+			/*Vertex[0].Position = corners[7];
+			Vertex[1].Position = corners[6];
+			Vertex[2].Position = corners[4];
+			Vertex[3].Position = corners[5];
+
+
+			Vertex[4].Position = corners[3];
+			Vertex[5].Position = corners[2];
+			Vertex[6].Position = corners[0];
+			Vertex[7].Position = corners[1];*/
+
+			for (int i = 0; i < BoundingFrustum::CORNER_COUNT; i++)
+			{
+				Vertex[i].Position = pos[i];
+			}
+		}
 
 		for (char i = 0; i < BoundingBox::CORNER_COUNT; i++)
 		{
@@ -126,7 +197,7 @@ void BOUNDING_AABB::Init()
 
 void BOUNDING_AABB::Draw()
 {
-	//if (false == CManager::Get_Instance()->Get_ShadowMap()->Get_Enable())
+	if (false == CManager::Get_Instance()->Get_ShadowMap()->Get_Enable())
 	{
 		// 3Dマトリックス設定
 		{
@@ -174,43 +245,112 @@ void BOUNDING_AABB::OverWrite()
 {
 	if (nullptr != pVertexBuffer.get())
 	{
-		Color = Default_Color;
+		Color = COLOR(0.f, 0.f, 1.0f, 1.0f);
 
-		XMFLOAT3 pos = *Owner.lock()->Get_Position();
+		//MFLOAT3 pos = *Owner.lock()->Get_Position();
 
 		Aabb = BoundingBox(XMFLOAT3(0.f, 0.f, 0.f), Radius);
 
 		XMMATRIX matrix = XMMatrixScaling(Scaling.x, Scaling.y, Scaling.z);
-		matrix *= XMMatrixTranslation(Position.x + pos.x, Position.y + pos.y, Position.z + pos.z);
+		//matrix *= XMMatrixTranslation(Position.x + pos.x, Position.y + pos.y, Position.z + pos.z);
+		matrix *= XMMatrixTranslation(Position.x, Position.y, Position.z);
 
 		Aabb.Transform(Aabb, matrix);
 
-		VERTEX_3D Vertex[BoundingBox::CORNER_COUNT];
 		XMFLOAT3 corners[BoundingBox::CORNER_COUNT];
+		VERTEX_3D Vertex[BoundingBox::CORNER_COUNT] = {};
 
-		Aabb.GetCorners(corners);
+		/*{
+			Aabb.GetCorners(corners);
 
-		Vertex[0].Position = corners[7];
+			VERTEX_3D Vertex[BoundingBox::CORNER_COUNT];
 
-		Vertex[1].Position = corners[6];
+			Vertex[0].Position = corners[7];
+			Vertex[1].Position = corners[6];
+			Vertex[2].Position = corners[4];
+			Vertex[3].Position = corners[5];
 
-		Vertex[2].Position = corners[4];
 
-		Vertex[3].Position = corners[5];
+			Vertex[4].Position = corners[3];
+			Vertex[5].Position = corners[2];
+			Vertex[6].Position = corners[0];
+			Vertex[7].Position = corners[1];
+		}*/
+
+		{
+			auto frustum = Frustum->Get_Collition();
+
+			frustum.GetCorners(corners);
+
+			XMFLOAT3 pos[BoundingFrustum::CORNER_COUNT];
+
+			XMFLOAT3 min, max;
+
+			max.x = std::max( { corners[0].x, corners[1].x, corners[2].x, corners[3].x, corners[4].x, corners[5].x, corners[6].x, corners[7].x } );
+			max.y = std::max( { corners[0].y, corners[1].y, corners[2].y, corners[3].y, corners[4].y, corners[5].y, corners[6].y, corners[7].y } );
+			max.z = std::max( { corners[0].z, corners[1].z, corners[2].z, corners[3].z, corners[4].z, corners[5].z, corners[6].z, corners[7].z } );
+
+			min.x = std::min( { corners[0].x, corners[1].x, corners[2].x, corners[3].x, corners[4].x, corners[5].x, corners[6].x, corners[7].x } );
+			min.y = std::min( { corners[0].y, corners[1].y, corners[2].y, corners[3].y, corners[4].y, corners[5].y, corners[6].y, corners[7].y } );
+			min.z = std::min( { corners[0].z, corners[1].z, corners[2].z, corners[3].z, corners[4].z, corners[5].z, corners[6].z, corners[7].z } );
+
+			{
+				{
+					pos[0].z = min.z;
+					pos[1].z = min.z;
+					pos[2].z = min.z;
+					pos[3].z = min.z;
+
+					pos[4].z = max.z;
+					pos[5].z = max.z;
+					pos[6].z = max.z;
+					pos[7].z = max.z;
+				}
+				{
+					pos[0].x = min.x;
+					pos[1].x = max.x;
+					pos[2].x = min.x;
+					pos[3].x = max.x;
+
+					pos[4].x = min.x;
+					pos[5].x = max.x;
+					pos[6].x = min.x;
+					pos[7].x = max.x;
+				}
+				{
+					pos[0].y = min.y;
+					pos[1].y = min.y;
+					pos[2].y = max.y;
+					pos[3].y = max.y;
+
+					pos[4].y = min.y;
+					pos[5].y = min.y;
+					pos[6].y = max.y;
+					pos[7].y = max.y;
+				}
+			}
+
+			/*Vertex[0].Position = corners[7];
+			Vertex[1].Position = corners[6];
+			Vertex[2].Position = corners[4];
+			Vertex[3].Position = corners[5];
 
 
-		Vertex[4].Position = corners[3];
+			Vertex[4].Position = corners[3];
+			Vertex[5].Position = corners[2];
+			Vertex[6].Position = corners[0];
+			Vertex[7].Position = corners[1];*/
 
-		Vertex[5].Position = corners[2];
-
-		Vertex[6].Position = corners[0];
-
-		Vertex[7].Position = corners[1];
+			for (int i = 0; i < BoundingBox::CORNER_COUNT; i++)
+			{
+				Vertex[i].Position = pos[i];
+			}
+		}
 
 		for (char i = 0; i < BoundingBox::CORNER_COUNT; i++)
 		{
-			Vertex[i].Diffuse = XMFLOAT4(Color.r, Color.g, Color.b, Color.a);
 			Vertex[i].Normal = XMFLOAT3(1.0f, 0.0f, 0.0f);
+			Vertex[i].Diffuse = XMFLOAT4(Color.r, Color.g, Color.b, Color.a);
 			Vertex[i].TexCoord = XMFLOAT2(0.0f, 0.0f);
 		}
 
