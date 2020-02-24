@@ -17,6 +17,8 @@
 #include	"ShadowMap.h"
 #include	"Effekseer.h"
 
+#include	"Clustered.h"
+
 #ifdef _DEBUG
 #include	"My_imgui.h"
 #endif // _DEBUG
@@ -93,6 +95,12 @@ bool CManager::Init()
 
 	Manager->pShadowMap.reset(new SHADOW_MAP());//
 	Manager->pShadowMap->Init();
+
+	{
+		CLUSTERED clustered;
+		clustered.Init();
+		clustered.Uninit();
+	}
 
 	return true;
 }

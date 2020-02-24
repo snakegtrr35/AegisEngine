@@ -249,33 +249,18 @@ void BOUNDING_AABB::OverWrite()
 
 		//MFLOAT3 pos = *Owner.lock()->Get_Position();
 
-		Aabb = BoundingBox(XMFLOAT3(0.f, 0.f, 0.f), Radius);
+		{
+			Aabb = BoundingBox(XMFLOAT3(0.f, 0.f, 0.f), Radius);
 
-		XMMATRIX matrix = XMMatrixScaling(Scaling.x, Scaling.y, Scaling.z);
-		//matrix *= XMMatrixTranslation(Position.x + pos.x, Position.y + pos.y, Position.z + pos.z);
-		matrix *= XMMatrixTranslation(Position.x, Position.y, Position.z);
+			XMMATRIX matrix = XMMatrixScaling(Scaling.x, Scaling.y, Scaling.z);
+			//matrix *= XMMatrixTranslation(Position.x + pos.x, Position.y + pos.y, Position.z + pos.z);
+			matrix *= XMMatrixTranslation(Position.x, Position.y, Position.z);
 
-		Aabb.Transform(Aabb, matrix);
+			Aabb.Transform(Aabb, matrix);
+		}
 
 		XMFLOAT3 corners[BoundingBox::CORNER_COUNT];
 		VERTEX_3D Vertex[BoundingBox::CORNER_COUNT] = {};
-
-		/*{
-			Aabb.GetCorners(corners);
-
-			VERTEX_3D Vertex[BoundingBox::CORNER_COUNT];
-
-			Vertex[0].Position = corners[7];
-			Vertex[1].Position = corners[6];
-			Vertex[2].Position = corners[4];
-			Vertex[3].Position = corners[5];
-
-
-			Vertex[4].Position = corners[3];
-			Vertex[5].Position = corners[2];
-			Vertex[6].Position = corners[0];
-			Vertex[7].Position = corners[1];
-		}*/
 
 		{
 			auto frustum = Frustum->Get_Collition();
@@ -295,6 +280,21 @@ void BOUNDING_AABB::OverWrite()
 			min.z = std::min( { corners[0].z, corners[1].z, corners[2].z, corners[3].z, corners[4].z, corners[5].z, corners[6].z, corners[7].z } );
 
 			{
+				Aabb = BoundingBox(XMFLOAT3(0.f, 0.f, 0.f), XMFLOAT3((max.x - min.x) * 0.5f, (max.y - min.y) * 0.5f, (max.z - min.z) * 0.5f));
+
+				XMMATRIX matrix = XMMatrixScaling(1.0f, 1.0f, 1.0f);
+				matrix *= XMMatrixTranslation((max.x + min.x) * 0.5f, (max.y + min.y) * 0.5f, (max.z + min.z) * 0.5f);
+
+				Aabb.Transform(Aabb, matrix);
+			}
+			XMFLOAT3 size;
+			{
+				size.x = (max.x - min.x) / 2;
+				size.y = (max.y - min.y) / 2;
+				size.z = (max.z - min.z) / 4;
+			}
+
+			/*{
 				{
 					pos[0].z = min.z;
 					pos[1].z = min.z;
@@ -328,9 +328,11 @@ void BOUNDING_AABB::OverWrite()
 					pos[6].y = max.y;
 					pos[7].y = max.y;
 				}
-			}
+			}*/
 
-			/*Vertex[0].Position = corners[7];
+			Aabb.GetCorners(corners);
+
+			Vertex[0].Position = corners[7];
 			Vertex[1].Position = corners[6];
 			Vertex[2].Position = corners[4];
 			Vertex[3].Position = corners[5];
@@ -339,12 +341,12 @@ void BOUNDING_AABB::OverWrite()
 			Vertex[4].Position = corners[3];
 			Vertex[5].Position = corners[2];
 			Vertex[6].Position = corners[0];
-			Vertex[7].Position = corners[1];*/
+			Vertex[7].Position = corners[1];
 
-			for (int i = 0; i < BoundingBox::CORNER_COUNT; i++)
+			/*for (int i = 0; i < BoundingBox::CORNER_COUNT; i++)
 			{
 				Vertex[i].Position = pos[i];
-			}
+			}*/
 		}
 
 		for (char i = 0; i < BoundingBox::CORNER_COUNT; i++)

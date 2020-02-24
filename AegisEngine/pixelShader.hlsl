@@ -122,6 +122,18 @@ Texture2D       g_ShadowMap : register(t1);     // シャドウマップ
 SamplerState	g_SamplerState : register( s0 );
 SamplerState    g_ShadowSamplerState : register(s1);        // シャドウマップ用のサンプラー
 
+Texture3D<uint4> Clusters : register(t10);
+
+//cbuffer Light_Index_List_Buffer : register(b10)
+//{
+//    min16uint Light_Index_List[2] : packoffset(c0);
+//    min16uint Light_Index_List_Dummy[32765] : packoffset(c1);
+//    min16uint End_Light_Index_List : packoffset(c4095);
+   
+//    // c0 → c1 4バイト
+//    //  * 32768
+//}
+
 //=============================================================================
 // ピクセルシェーダ
 //=============================================================================
@@ -160,6 +172,9 @@ void main( PS_IN Input,
     speculer = saturate(speculer);
     speculer = pow(speculer, 60);
     //
+    
+    int4 coord = int4(Input.WPos.xyz, 0);
+    uint4 light_mask = Clusters.Load(coord);
     
     // シャドウマップ
     float shadow = 0.5;

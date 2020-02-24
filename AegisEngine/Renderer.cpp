@@ -456,7 +456,6 @@ bool CRenderer::Init()
 	material.Specular = COLOR(1.0f, 1.0f, 1.0f, 1.0f);
 	SetMaterial(material);
 
-
 	return true;
 }
 

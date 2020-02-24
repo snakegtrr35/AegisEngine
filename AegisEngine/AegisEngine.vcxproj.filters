@@ -233,9 +233,6 @@
     <ClCompile Include="Bounding_Capsule.cpp">
       <Filter>ソース ファイル\GameObject\Bounding</Filter>
     </ClCompile>
-    <ClCompile Include="ForwardPlus.cpp">
-      <Filter>ソース ファイル\System\Clustered</Filter>
-    </ClCompile>
     <ClCompile Include="FBXmodel.cpp">
       <Filter>ソース ファイル\GameObject</Filter>
     </ClCompile>
@@ -265,6 +262,9 @@
     </ClCompile>
     <ClCompile Include="Text.cpp">
       <Filter>ソース ファイル\GameObject</Filter>
+    </ClCompile>
+    <ClCompile Include="Clustered.cpp">
+      <Filter>ソース ファイル\System\Clustered</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -445,9 +445,6 @@
     <ClInclude Include="Bounding_Capsule.h">
       <Filter>ソース ファイル\GameObject\Bounding</Filter>
     </ClInclude>
-    <ClInclude Include="ForwardPlus.h">
-      <Filter>ソース ファイル\System\Clustered</Filter>
-    </ClInclude>
     <ClInclude Include="FBXmodel.h">
       <Filter>ソース ファイル\GameObject</Filter>
     </ClInclude>
@@ -496,11 +493,11 @@
     <ClInclude Include="Text.h">
       <Filter>ソース ファイル\GameObject</Filter>
     </ClInclude>
+    <ClInclude Include="Clustered.h">
+      <Filter>ソース ファイル\System\Clustered</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="pixelShader.hlsl">
-      <Filter>リソース ファイル\PixelShader</Filter>
-    </FxCompile>
     <FxCompile Include="PixelShader_No_Light.hlsl">
       <Filter>リソース ファイル\PixelShader</Filter>
     </FxCompile>
@@ -545,6 +542,9 @@
     </FxCompile>
     <FxCompile Include="Light_hlsl.h">
       <Filter>リソース ファイル</Filter>
+    </FxCompile>
+    <FxCompile Include="pixelShader.hlsl">
+      <Filter>リソース ファイル\PixelShader</Filter>
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
