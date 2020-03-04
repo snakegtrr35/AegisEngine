@@ -4,7 +4,7 @@
 
 ## ライセンス License
 
-*Assimp*  
+**Assimp**  
 Open Asset Import Library (assimp)
 
 Copyright (c) 2006-2020, assimp team
@@ -84,7 +84,7 @@ LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
 NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-*cereal*  
+**cereal**  
 opyright (c) 2014, Randolph Voorhies, Shane Grant
 All rights reserved.
 
@@ -114,7 +114,7 @@ DirectX Tool Kit
 https://directxtk.codeplex.com/
 Microsoft Public License (Ms-PL)
 
-*DirectXTex*  
+**DirectXTex**  
 The MIT License (MIT)
 
 Copyright (c) 2011-2020 Microsoft Corp
@@ -158,7 +158,7 @@ COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
 IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-*ImGui*  
+**ImGui**  
 The MIT License (MIT)
 
 Copyright (c) 2014-2020 Omar Cornut
