@@ -4,7 +4,7 @@
 
 ## ライセンス License
 
-MIT License
+ImGUI
 The MIT License (MIT)
 
 Copyright (c) 2014-2020 Omar Cornut
