@@ -3,7 +3,7 @@
 これは自作のゲームエンジンです。
 
 ## ライセンス License
-MIT License
+The MIT License (MIT)
 
 Copyright (c) 2019 snakegtrr35
 
