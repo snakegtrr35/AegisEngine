@@ -13,6 +13,7 @@ private:
 	CMODEL* Model;
 
 	bool Fire_Flag;
+	float Time;
 
 public:
 	ENEMY();

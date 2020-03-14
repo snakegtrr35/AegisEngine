@@ -20,7 +20,7 @@
 
 static unique_ptr<SPRITE_ANIMATION> sprite_anime;
 
-static unique_ptr<FIELD> field;
+//static unique_ptr<FIELD> field;
 
 void MAIN_MENU::Init()
 {
@@ -37,8 +37,8 @@ void MAIN_MENU::Init()
 		sprite_anime->Init();
 	}
 
-	field = make_unique<FIELD>();
-	field->Init();
+	//field = make_unique<FIELD>();
+	//field->Init();
 
 	std::thread th(Load, this);
 
@@ -67,7 +67,7 @@ void MAIN_MENU::Draw()
 
 		m = XMMatrixScaling(2.5, 2.5, 2.5);
 
-		field->Draw();
+		//field->Draw();
 	}
 	else
 	{
@@ -94,36 +94,6 @@ void MAIN_MENU::Update(float delta_time)
 	if (false == GetLockLoad())
 	{
 		SCENE::Update(delta_time);
-
-		{
-			/*{
-				vector<SPRITE*> sprites = Get_Game_Objects<SPRITE>();
-
-				for (auto s : sprites)
-				{
-					if ("depth" == s->Get_Object_Name())
-					{
-						s->Set(CRenderer::Get());
-					}
-				}
-			}*/
-
-			/*{
-				auto text = Get_Game_Object<TEXTS>("fps");
-
-				auto time = TIMER::Get_FPS();
-
-				text->Edit(to_string(time));
-			}*/
-		}
-
-		/*if (FADE::End_Fade())
-		{
-			if(flag)
-				SCENE_MANAGER::Set_Scene<GAME>();
-
-			flag = true;
-		}*/
 	}
 	else
 	{
@@ -133,7 +103,7 @@ void MAIN_MENU::Update(float delta_time)
 
 void MAIN_MENU::Uninit()
 {
-	field.reset(nullptr);
+	//field.reset(nullptr);
 
 #ifdef _DEBUG
 	static bool flag = true;
@@ -296,13 +266,5 @@ void MAIN_MENU::Load(SCENE* scene)
 
 	scene->SCENE::Init();
 
-	//Sleep(1000);
-
 	scene->SetLockLoad();
 }
-
-//// íuä∑
-//Replace_String(name, "class ", "      ");
-//Replace_String(name, "__ptr64", "       ");
-//Replace_String(name, "*", " ");
-//name.erase(remove_if(name.begin(), name.end(), isspace), name.end());

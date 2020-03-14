@@ -6,6 +6,7 @@ bool SCENE_MANAGER::Scene_Change_Enable = false;
 
 void SCENE_MANAGER::Init()
 {
+#ifdef _DEBUG
 	{
 		string name("GameInstance");
 
@@ -19,6 +20,7 @@ void SCENE_MANAGER::Init()
 			archive(*this);
 		}
 	}
+#endif // _DEBUG
 }
 
 void SCENE_MANAGER::Draw()
@@ -38,18 +40,11 @@ void SCENE_MANAGER::Update(float delta_time)
 	pScene->Update(delta_time);
 }
 
-#include	"Bullet.h"
-#include	"Billboard.h"
-
 void SCENE_MANAGER::Uninit()
 {
-	{
-		pScene->Delete_Game_Objects<BULLET>();
-		pScene->Delete_Game_Objects<BILL_BOARD_ANIMATION>();
-	}
-
 	pScene.reset(nullptr);
 
+#ifdef _DEBUG
 	{
 		string name("GameInstance");
 
@@ -58,6 +53,7 @@ void SCENE_MANAGER::Uninit()
 		cereal::BinaryOutputArchive archive(file);
 		archive(*this);
 	}
+#endif // _DEBUG
 }
 
 void SCENE_MANAGER::Delete_GameInstance(const string& name)

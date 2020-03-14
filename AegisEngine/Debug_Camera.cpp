@@ -50,6 +50,41 @@ DEBUG_CAMERA::DEBUG_CAMERA()
 
 void DEBUG_CAMERA::Init()
 {
+	XMFLOAT4 at = XMFLOAT4(0.f, 0.f, 0.f, 0.f);
+
+	Viewing_Angle = 80.0f;
+
+	Front = XMVectorSet(0.f, 0.f, 1.0f, 0.f);
+	Front = XMVector3Normalize(Front);
+
+	Up = XMVectorSet(0.f, 1.0f, 0.f, 0.f);
+
+	Right = XMVectorSet(1.0f, 0.f, 0.f, 0.f);
+
+
+	// 三つのベクトルを垂直にする
+	Right = XMVector3Cross(Up, Front);
+	Right = XMVector3Normalize(Right);
+
+	Up = XMVector3Cross(Front, Right);
+	Up = XMVector3Normalize(Up);
+
+	At = XMLoadFloat4(&at);
+
+	//Pos = At - Front * Lenght;
+	Pos = At - (Front * Lenght - Up * 4.0f);
+
+	// ビューポートの設定設定
+	Viewport.left = 0;
+	Viewport.top = 0;
+	Viewport.right = SCREEN_WIDTH;
+	Viewport.bottom = SCREEN_HEIGHT;
+
+	Rotate = 90.0f;
+
+	RotateEnable = MoveEnable = true;
+
+	Rotation = XMFLOAT3(0, 0, 0);
 }
 
 void DEBUG_CAMERA::Uninit()
@@ -73,7 +108,7 @@ void DEBUG_CAMERA::Update(float delta_time)
 	XMVECTOR f(Front);
 	XMFLOAT4 front_vec;
 	XMStoreFloat4(&front_vec, f);
-	front_vec.y = 0.0f;
+	//front_vec.y = 0.0f;
 	f = XMLoadFloat4(&front_vec);
 
 	f = DirectX::XMVector3Normalize(f);

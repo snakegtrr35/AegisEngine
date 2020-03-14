@@ -272,8 +272,16 @@ void GAME::Update(float delta_time)
 	}
 }
 
+
+#include	"Billboard.h"
+
 void GAME::Uninit()
 {
+	{
+		this->Delete_Game_Objects<BULLET>();
+		this->Delete_Game_Objects<BILL_BOARD_ANIMATION>();
+	}
+
 #ifdef _DEBUG
 	static bool flag = true;
 
@@ -306,7 +314,7 @@ void GAME::Uninit()
 
 void GAME::Load(SCENE* scene)
 {
-	bool flag;
+	bool flag = false;
 
 	{
 		const type_info& id = typeid(*scene);
@@ -379,10 +387,10 @@ void GAME::Load(SCENE* scene)
 				number = to_string(i);
 
 				ENEMY* enemy = Add_Game_Object<ENEMY>(LAYER_NAME::GAMEOBJECT, name + number);
-				enemy->SetPosition(XMFLOAT3((float)(-10.0f + i * 5.0f), 0.0f, 10.0f));
+				/*enemy->SetPosition(XMFLOAT3((float)(-10.0f + i * 5.0f), 0.0f, 10.0f));
 				enemy->SetRotation(XMFLOAT3(0.0f, 0.0f, 0.0f));
 
-				auto component = enemy->Get_Component();
+				auto component = enemy->Get_Component();*/
 
 				number.clear();
 			}
@@ -486,19 +494,58 @@ void GAME::Load(SCENE* scene)
 	}
 
 	{
-		COLOR color = COLOR(0.0f, 1.0f, 1.0f, 1.0f);
-
-		auto hp = scene->Get_Game_Object<SPRITE>("hp_ui");
-
-		hp.lock()->SetColor(color);
-
-		auto children = hp.lock()->Get_Child_Sptite();
-
-		for (const auto& child : *children)
+		// メッシュフィールド
 		{
-			if (string("hp") == child->Name)
+			auto mf = scene->Get_Game_Object<MESH_FIELD>("feild");
+
+			if (!mf.expired())
 			{
-				child->Child->SetColor(color);
+				mf.lock()->SetTexture("asphalt01-pattern.jpg");
+			}
+		}
+
+		{
+			COLOR color = COLOR(0.0f, 1.0f, 1.0f, 1.0f);
+
+			auto hp = scene->Get_Game_Object<SPRITE>("hp_ui");
+
+			hp.lock()->SetColor(color);
+
+			auto children = hp.lock()->Get_Child_Sptite();
+
+			for (const auto& child : *children)
+			{
+				if (string("hp") == child->Name)
+				{
+					child->Child->SetColor(color);
+				}
+			}
+		}
+
+		{
+			string name("enemy");
+			string number;
+
+			for (int i = 0; i < 5; i++)
+			{
+				number = to_string(i);
+
+				auto enemy = scene->Get_Game_Object<ENEMY>(name + number);
+
+				if (enemy.expired())
+				{
+					ENEMY* e = Add_Game_Object<ENEMY>(LAYER_NAME::GAMEOBJECT, name + number);
+
+					e->SetPosition(XMFLOAT3((float)(-10.0f + i * 5.0f), 0.0f, 10.0f));
+					e->SetRotation(XMFLOAT3(0.0f, 0.0f, 0.0f));
+
+					continue;
+				}
+
+				enemy.lock()->SetPosition(XMFLOAT3((float)(-10.0f + i * 5.0f), 0.0f, 10.0f));
+				enemy.lock()->SetRotation(XMFLOAT3(0.0f, 0.0f, 0.0f));
+
+				number.clear();
 			}
 		}
 	}

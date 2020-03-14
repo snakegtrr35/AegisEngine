@@ -14,7 +14,7 @@ MESH_FIELD::MESH_FIELD()
 
 	// テクスチャの生成
 	Texture = make_unique<TEXTURE>();
-	Texture->Set_Texture_Name("field004.png");
+	Texture->Set_Texture_Name("UVCheckerMap01-512.png");
 
 	GridSize = XMFLOAT3(1.0f, 0.0f, 1.0f);
 	GridNum = XMINT2(10, 10);

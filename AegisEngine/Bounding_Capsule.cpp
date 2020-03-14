@@ -410,3 +410,30 @@ void BOUNDING_CAPSULE::Draw_Ring(const XMFLOAT3& position, const XMFLOAT3& rotat
 
 	CRenderer::GetDeviceContext()->DrawIndexed(IndexNum_Ring, 0, 0);
 }
+
+#include	"imgui/imgui.h"
+
+void BOUNDING_CAPSULE::Draw_Inspector()
+{
+	auto str = (char*)u8"ƒRƒŠƒWƒ‡ƒ“(AABB)";
+
+	ImGui::Text(str);
+
+	COMPONENT::Draw_Inspector();
+
+	float position[3] = { Position.x, Position.y, Position.z };
+	float scale[3] = { Scaling.x, Scaling.y, Scaling.z };
+	float Rotate[3] = { Rotation.x, Rotation.y, Rotation.z };
+
+	ImGui::DragFloat3("Position##CAPSULE", position, 0.01f);
+	ImGui::DragFloat3("Scaling", scale, 0.01f);
+	ImGui::DragFloat3("Rotate", Rotate, 0.01f);
+	ImGui::DragFloat("Radius", &Radius, 0.01f, 0.01f, 1000.0f);
+	ImGui::DragFloat("Height", &Height, 0.01f, 0.01f, 1000.0f);
+
+	Position = XMFLOAT3(position[0], position[1], position[2]);
+	Scaling = XMFLOAT3(scale[0], scale[1], scale[2]);
+	Rotation = XMFLOAT3(Rotate[0], Rotate[1], Rotate[2]);
+
+	OverWrite();
+}

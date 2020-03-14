@@ -13,8 +13,8 @@ class BULLET;
 
 class PLAYER : public GAME_OBJECT {
 private:
-	CMODEL* Model = nullptr;
-	//FBXmodel* Model = nullptr;
+	//CMODEL* Model = nullptr;
+	FBXmodel* Model = nullptr;
 
 	float HP;
 
@@ -35,6 +35,10 @@ public:
 	void Add_HP(float hp) {
 		 HP += hp;
 	}
+
+	/*void Set_HP(const float hp) {
+		HP = hp;
+	}*/
 
 	float Get_HP() {
 		return HP;
