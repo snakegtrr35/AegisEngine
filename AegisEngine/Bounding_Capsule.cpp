@@ -19,23 +19,34 @@ void BOUNDING_CAPSULE::Init()
 
 void BOUNDING_CAPSULE::Draw()
 {
-	if (false == CManager::Get_Instance()->Get_ShadowMap()->Get_Enable())
+	if (CManager::Get_Instance()->Get_ShadowMap()->Get_Enable()) return;
+
+	//XMFLOAT3 pos(Position.x, Position.y, Position.z);
+	//XMFLOAT3 rotation(Rotation.x, Rotation.y, Rotation.z);
+
+	//CRenderer::Set_Shader(SHADER_INDEX_V::DEFAULT, SHADER_INDEX_P::NO_TEXTURE);
+
+	//XMFLOAT3 p(pos.x, pos.y, pos.z);
+
 	{
-		XMFLOAT3 pos(Position.x, Position.y, Position.z);
-		XMFLOAT3 rotation(Rotation.x, Rotation.y, Rotation.z);
+		XMFLOAT3 pos = *Owner.lock()->Get_Position();
+		XMFLOAT3 rota = *Owner.lock()->Get_Rotation();
 
-		CRenderer::Set_Shader(SHADER_INDEX_V::DEFAULT, SHADER_INDEX_P::NO_TEXTURE);
+		pos = pos + Position;
+		rota = rota + Rotation;
 
-		XMFLOAT3 p(pos.x, pos.y, pos.z);
-
-		Draw_Body(p, rotation);
-
-		CRenderer::Set_Shader();
+		Draw_Body(pos, rota);
 	}
+
+	//Draw_Body(p, rotation);
+	//Draw_Body(pos, Rotation);
+
+	//CRenderer::Set_Shader();
 }
 
 void BOUNDING_CAPSULE::Update(float delta_time)
 {
+	//OverWrite();
 }
 
 void BOUNDING_CAPSULE::Uninit()
@@ -47,6 +58,14 @@ void BOUNDING_CAPSULE::Uninit()
 
 	pVertexBuffer_Ring.reset(nullptr);
 	pIndexBuffer_Ring.reset(nullptr);
+}
+
+void BOUNDING_CAPSULE::OverWrite()
+{
+	Color = Default_Color;
+
+	Init_Body();
+	Init_Ring();
 }
 
 void BOUNDING_CAPSULE::Set_Radius(const float radius)
@@ -64,7 +83,6 @@ void BOUNDING_CAPSULE::Init_Body()
 	int vertex_num = max(int(10 * (UINT)Radius * 0.5), 8);
 
 	// 頂点バッファの設定
-	if (nullptr == pVertexBuffer.get())
 	{
 		vector<VERTEX_3D> Vertex;
 		VERTEX_3D vertex;
@@ -131,7 +149,6 @@ void BOUNDING_CAPSULE::Init_Body()
 	}
 
 	// 頂点バッファの設定
-	if (nullptr == pVertexBuffer2.get())
 	{
 		vertex_num = max(int(10 * (UINT)Radius * 0.5), 8);
 
@@ -200,7 +217,6 @@ void BOUNDING_CAPSULE::Init_Body()
 	}
 
 	// インデックスバッファの設定
-	if (nullptr == pIndexBuffer.get())
 	{
 		IndexNum = vertex_num * 2;
 		vector<WORD> Index;
@@ -240,7 +256,6 @@ void BOUNDING_CAPSULE::Init_Body()
 void BOUNDING_CAPSULE::Init_Ring()
 {
 	// 頂点バッファの設定
-	if (nullptr == pVertexBuffer_Ring.get())
 	{
 		const UINT cnt = 10 * (UINT)Radius;
 
@@ -286,7 +301,6 @@ void BOUNDING_CAPSULE::Init_Ring()
 	}
 
 	// インデックスバッファの設定
-	if (nullptr == pIndexBuffer_Ring.get())
 	{
 		const UINT cnt = 10 * (UINT)Radius;
 
@@ -326,6 +340,37 @@ void BOUNDING_CAPSULE::Init_Ring()
 	}
 }
 
+void BOUNDING_CAPSULE::Draw_Body(const XMFLOAT3& position, const XMFLOAT3& rotation)
+{
+	CRenderer::Set_Shader(SHADER_INDEX_V::DEFAULT, SHADER_INDEX_P::NO_TEXTURE);
+
+	// トポロジの設定
+	CRenderer::GetDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_LINESTRIP);
+
+	// 本体の描画
+	{
+		// 入力アセンブラにインデックスバッファを設定
+		CRenderer::SetIndexBuffer(pIndexBuffer.get());
+
+		// 入力アセンブラに頂点バッファを設定
+		CRenderer::SetVertexBuffers(pVertexBuffer.get());
+
+		Draw_Semicircle(position, rotation);
+
+		// 入力アセンブラに頂点バッファを設定
+		CRenderer::SetVertexBuffers(pVertexBuffer2.get());
+
+		Draw_Semicircle(position, rotation);
+	}
+
+	// 上下のリングの描画
+	{
+		Draw_Ring(position, rotation);
+	}
+
+	CRenderer::Set_Shader();
+}
+
 void BOUNDING_CAPSULE::Draw_Semicircle(const XMFLOAT3& position, const XMFLOAT3& rotation)
 {
 	// トポロジの設定
@@ -334,7 +379,8 @@ void BOUNDING_CAPSULE::Draw_Semicircle(const XMFLOAT3& position, const XMFLOAT3&
 	const auto camera01 = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<CCamera>("camera");
 	const auto camera02 = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
 
-	XMMATRIX world = XMMatrixRotationRollPitchYaw(XMConvertToRadians(rotation.x), XMConvertToRadians(rotation.y), XMConvertToRadians(rotation.z));
+	XMMATRIX world /*= XMMatrixScaling(Scaling.x, Scaling.y, Scaling.z)*/ = XMMatrixIdentity();
+	world *= XMMatrixRotationRollPitchYaw(XMConvertToRadians(rotation.x), XMConvertToRadians(rotation.y - 10.0f), XMConvertToRadians(rotation.z));
 	world *= XMMatrixTranslation(position.x, position.y, position.z);
 
 	if (!camera01.expired() && Empty_weak_ptr<CCamera>(camera01))
@@ -353,28 +399,6 @@ void BOUNDING_CAPSULE::Draw_Semicircle(const XMFLOAT3& position, const XMFLOAT3&
 	CRenderer::GetDeviceContext()->DrawIndexed(IndexNum, 0, 0);
 }
 
-void BOUNDING_CAPSULE::Draw_Body(const XMFLOAT3& position, const XMFLOAT3& rotation)
-{
-	{
-		// 入力アセンブラにインデックスバッファを設定
-		CRenderer::SetIndexBuffer(pIndexBuffer.get());
-
-		// 入力アセンブラに頂点バッファを設定
-		CRenderer::SetVertexBuffers(pVertexBuffer.get());
-
-		Draw_Semicircle(position, rotation);
-
-		// 入力アセンブラに頂点バッファを設定
-		CRenderer::SetVertexBuffers(pVertexBuffer2.get());
-
-		Draw_Semicircle(position, rotation);
-	}
-
-	{
-		Draw_Ring(position, rotation);
-	}
-}
-
 void BOUNDING_CAPSULE::Draw_Ring(const XMFLOAT3& position, const XMFLOAT3& rotation)
 {
 	// 入力アセンブラに頂点バッファを設定
@@ -388,7 +412,8 @@ void BOUNDING_CAPSULE::Draw_Ring(const XMFLOAT3& position, const XMFLOAT3& rotat
 
 	// 3Dマトリックス設定
 	{
-		XMMATRIX world = XMMatrixRotationRollPitchYaw(XMConvertToRadians(rotation.x), XMConvertToRadians(rotation.y), XMConvertToRadians(rotation.z));
+		XMMATRIX world /*= XMMatrixScaling(Scaling.x, Scaling.y, Scaling.z)*/ = XMMatrixIdentity();
+		world *= XMMatrixRotationRollPitchYaw(XMConvertToRadians(rotation.x), XMConvertToRadians(rotation.y), XMConvertToRadians(rotation.z));
 		world *= XMMatrixTranslation(position.x, position.y, position.z);
 
 		const auto camera01 = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<CCamera>("camera");
@@ -415,7 +440,7 @@ void BOUNDING_CAPSULE::Draw_Ring(const XMFLOAT3& position, const XMFLOAT3& rotat
 
 void BOUNDING_CAPSULE::Draw_Inspector()
 {
-	auto str = (char*)u8"コリジョン(AABB)";
+	auto str = (char*)u8"コリジョン(カプセル)";
 
 	ImGui::Text(str);
 
@@ -426,14 +451,16 @@ void BOUNDING_CAPSULE::Draw_Inspector()
 	float Rotate[3] = { Rotation.x, Rotation.y, Rotation.z };
 
 	ImGui::DragFloat3("Position##CAPSULE", position, 0.01f);
-	ImGui::DragFloat3("Scaling", scale, 0.01f);
-	ImGui::DragFloat3("Rotate", Rotate, 0.01f);
-	ImGui::DragFloat("Radius", &Radius, 0.01f, 0.01f, 1000.0f);
-	ImGui::DragFloat("Height", &Height, 0.01f, 0.01f, 1000.0f);
+	ImGui::DragFloat3("Scaling##CAPSULE", scale, 0.01f);
+	ImGui::DragFloat3("Rotate##CAPSULE", Rotate, 0.1f);
+	ImGui::DragFloat("Radius##CAPSULE", &Radius, 0.01f, 0.01f, 1000.0f);
+	ImGui::DragFloat("Height##CAPSULE", &Height, 0.01f, Radius, 1000.0f);
 
 	Position = XMFLOAT3(position[0], position[1], position[2]);
 	Scaling = XMFLOAT3(scale[0], scale[1], scale[2]);
 	Rotation = XMFLOAT3(Rotate[0], Rotate[1], Rotate[2]);
+
+	if (Height < Radius) Height = Radius;
 
 	OverWrite();
 }

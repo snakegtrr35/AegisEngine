@@ -35,7 +35,7 @@ void PLAYER::Init(void)
 		Model->Load(name);
 	}
 
-	Position = XMFLOAT3(0.f, 0.f, 0.f);
+	//Position = XMFLOAT3(0.f, 0.f, 0.f);
 
 	{
 		auto scene = CManager::Get_Instance()->Get_Scene();
@@ -94,7 +94,7 @@ void PLAYER::Update(float delta_time)
 	//Position = pos;
 
 	// カメラに合わせた回転
-	Rotation.y = rotate.y + 0.0f;
+	//Rotation.y = rotate.y + 0.0f;
 
 	// モデルの更新
 	{

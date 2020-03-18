@@ -260,8 +260,8 @@ void BOUNDING_AABB::Draw_Inspector()
 	float radius[3] = { Radius.x, Radius.y, Radius.z };
 
 	ImGui::DragFloat3("Position##AABB", position, 0.01f);
-	ImGui::DragFloat3("Scaling", scale, 0.01f);
-	ImGui::DragFloat3("Radius", radius, 0.01f, 0.01f, 1000.0f);
+	ImGui::DragFloat3("Scaling##AABB", scale, 0.01f);
+	ImGui::DragFloat3("Radius##AABB", radius, 0.01f, 0.01f, 1000.0f);
 
 	Position = XMFLOAT3(position[0], position[1], position[2]);
 	Scaling = XMFLOAT3(scale[0], scale[1], scale[2]);

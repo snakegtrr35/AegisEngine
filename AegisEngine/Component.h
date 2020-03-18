@@ -29,13 +29,13 @@ public:
 
 	virtual ~COMPONENT() {}
 
-	virtual void Init() {}
-	virtual void Draw() {}
-	virtual void Draw_DPP() {}
-	virtual void Update(float delta_time) {}
-	virtual void Uninit() {}
+	virtual void Init() = 0;
+	virtual void Draw() = 0;
+	virtual void Draw_DPP() = 0;
+	virtual void Update(float delta_time) = 0;
+	virtual void Uninit() = 0;
 
-	virtual void Draw_Inspector();
+	virtual void Draw_Inspector() = 0;
 
 	void Set_Owner(const weak_ptr<GAME_OBJECT>& owner);
 

@@ -1,3 +1,8 @@
+/**
+ * @file Bounding_Frustum.h
+ * @brief FRUSTUMのヘッダーファイル
+ */
+
 #pragma once
 
 #ifndef BOUNDING_SFRUSTUM_H
@@ -8,13 +13,26 @@
 // 球
 class BOUNDING_FRUSTUM : public BOUNDING {
 private:
-	unique_ptr<ID3D11Buffer, Release> pVertexBuffer;		// 頂点バッファ
-	unique_ptr<ID3D11Buffer, Release> pIndexBuffer;			// インデックスバッファ
+	//! 頂点バッファ
+	unique_ptr<ID3D11Buffer, Release> pVertexBuffer;
 
+	//! インデックスバッファ
+	unique_ptr<ID3D11Buffer, Release> pIndexBuffer;
+
+	//! 視錐台
 	BoundingFrustum Frustum;
 
 public:
+	/**
+	* @brief コンストラクタ
+	* @details 引数無しコンストラクタ
+	*/
 	BOUNDING_FRUSTUM() {}
+
+	/**
+	* @brief デストラクタ
+	* @details デストラクタ
+	*/
 	~BOUNDING_FRUSTUM() { Uninit(); }
 
 	/**
@@ -59,6 +77,11 @@ public:
 	*/
 	void OverWrite() override;
 
+	/**
+	* @brief バウンディング視錐台を取得する関数
+	* @return BoundingFrustum& バウンディング視錐台(当たり判定専用)
+	* @details バウンディング視錐台(当たり判定専用)を取得する関数
+	*/
 	const BoundingFrustum& Get_Collition();
 
 	template<typename Archive>

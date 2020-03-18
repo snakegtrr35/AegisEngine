@@ -8,7 +8,7 @@
 #ifndef MATH_H
 #define MATH_H
 
-namespace Math
+namespace AeigisMath
 {
 	// óêêîä÷åWÇÃä÷êî
 
@@ -492,10 +492,10 @@ namespace Math
 		Quaternion Lerp(const Quaternion& a, const Quaternion& b, float f)
 		{
 			Quaternion retVal;
-			retVal.x = Math::Lerp(a.x, b.x, f);
-			retVal.y = Math::Lerp(a.y, b.y, f);
-			retVal.z = Math::Lerp(a.z, b.z, f);
-			retVal.w = Math::Lerp(a.w, b.w, f);
+			retVal.x = AeigisMath::Lerp(a.x, b.x, f);
+			retVal.y = AeigisMath::Lerp(a.y, b.y, f);
+			retVal.z = AeigisMath::Lerp(a.z, b.z, f);
+			retVal.w = AeigisMath::Lerp(a.w, b.w, f);
 			retVal.Normalize();
 			return retVal;
 		}
@@ -790,8 +790,6 @@ namespace Math
 
 	const Quaternion Quaternion_Identity(0.0f, 0.0f, 0.0f, 1.0f);
 }
-
-using namespace Math;
 
 XMFLOAT3 operator+(const XMFLOAT3& left, const XMFLOAT3 right);
 

@@ -117,7 +117,7 @@ void GAME::Update(float delta_time)
 			if (KEYBOARD::Trigger_Keyboard(VK_UP))
 			{
 				cnt--;
-				cnt = Loop_Minus(cnt, 3);
+				cnt = AeigisMath::Loop_Minus(cnt, 3);
 
 				AUDIO_MANAGER::Play_Sound_Object(SOUND_INDEX::SOUND_INDEX_SENTAKU, false);
 			}
@@ -125,7 +125,7 @@ void GAME::Update(float delta_time)
 			if (KEYBOARD::Trigger_Keyboard(VK_DOWN))
 			{
 				cnt++;
-				cnt = Loop_Plus(cnt, 3);
+				cnt = AeigisMath::Loop_Plus(cnt, 3);
 
 				AUDIO_MANAGER::Play_Sound_Object(SOUND_INDEX::SOUND_INDEX_SENTAKU, false);
 			}
@@ -209,7 +209,7 @@ void GAME::Update(float delta_time)
 
 							hp = player.lock()->Get_HP();
 
-							child->Child->SetSize(XMFLOAT4(LerpEx(-485.0f, 170.0f, hp, 0.0f, 100.0f), 25, 485, 25));
+							child->Child->SetSize(XMFLOAT4(AeigisMath::LerpEx(-485.0f, 170.0f, hp, 0.0f, 100.0f), 25, 485, 25));
 
 							if (hp <= 50.0f)
 							{
@@ -429,7 +429,7 @@ void GAME::Load(SCENE* scene)
 			hp->SetSize(XMFLOAT4(170, 25, 485, 25));	// HP MAX 655pixel
 			//hp->SetSize(XMFLOAT4(-485, 25, 485, 25));	// HP 0
 
-			hp->SetSize(XMFLOAT4(LerpEx(-485.0f, 170.0f, 100.0f, 0.0f, 100.0f), 25, 485, 25));
+			hp->SetSize(XMFLOAT4(AeigisMath::LerpEx(-485.0f, 170.0f, 100.0f, 0.0f, 100.0f), 25, 485, 25));
 		}
 
 		// ’e‚ÌUI

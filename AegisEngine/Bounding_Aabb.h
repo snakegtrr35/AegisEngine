@@ -100,7 +100,7 @@ public:
 
 	/**
 	* @brief バウンディングAABB(当たり判定専用)を取得する関数
-	* @return BoundingBox& バウンディングAABB(当たり判定専用)
+	* @return BoundingBox バウンディングAABB(当たり判定専用)
 	* @details バウンディングAABB(当たり判定専用)を取得する関数
 	*/
 	const BoundingBox& Get_Collition();

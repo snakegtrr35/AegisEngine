@@ -152,7 +152,7 @@ void ENEMY::Update(float delta_time)
 	if (0.5f <= Time)
 	{
 		// ’e‚ðŒ‚‚Â
-		if (Math::Random_Bool(0.01))
+		if (AeigisMath::Random_Bool(0.01))
 		{
 			XMVECTOR vector = XMLoadFloat3(&vec);
 			vector = XMVector3Normalize(vector);

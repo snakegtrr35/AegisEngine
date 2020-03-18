@@ -249,9 +249,9 @@ void BOUNDING_OBB::Draw_Inspector()
 	float radius[3] = { Radius.x, Radius.y, Radius.z };
 
 	ImGui::DragFloat3("Position##OBB", position, 0.01f);
-	ImGui::DragFloat3("Rotate", rotation, 0.1f);
-	ImGui::DragFloat3("Scaling", scale, 0.01f);
-	ImGui::DragFloat3("Radius", radius, 0.01f, 0.01f, 1000.0f);
+	ImGui::DragFloat3("Rotate##OBB", rotation, 0.1f);
+	ImGui::DragFloat3("Scaling##OBB", scale, 0.01f);
+	ImGui::DragFloat3("Radius##OBB", radius, 0.01f, 0.01f, 1000.0f);
 
 	Position = XMFLOAT3(position[0], position[1], position[2]);
 	Rotation = XMFLOAT3(rotation[0], rotation[1], rotation[2]);

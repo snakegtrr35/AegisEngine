@@ -1,3 +1,8 @@
+/**
+ * @file Bounding_Sphere.h
+ * @brief SHPEREのヘッダーファイル
+ */
+
 #pragma once
 
 #ifndef BOUNDING_SHPERE_H
@@ -8,18 +13,35 @@
 // 球
 class BOUNDING_SHPERE : public BOUNDING {
 private:
-	unique_ptr<ID3D11Buffer, Release> pVertexBuffer;		// 頂点バッファ
-	unique_ptr<ID3D11Buffer, Release> pIndexBuffer;			// インデックスバッファ
+	//! 頂点バッファ
+	unique_ptr<ID3D11Buffer, Release> pVertexBuffer;
 
+	//! インデックスバッファ
+	unique_ptr<ID3D11Buffer, Release> pIndexBuffer;
+
+	//! 半径
 	float Radius;
+
+	//! インデックス数
 	UINT IndexNum;
 
+	//! SHPERE
 	BoundingSphere Sphere;
 
+	//! 実際の描画
 	void Draw_Ring(const XMFLOAT3& rotation);
 
 public:
+	/**
+	* @brief コンストラクタ
+	* @details 引数無しコンストラクタ
+	*/
 	BOUNDING_SHPERE() : Radius(1.0f), IndexNum(0) {}
+
+	/**
+	* @brief デストラクタ
+	* @details デストラクタ
+	*/
 	~BOUNDING_SHPERE() { Uninit(); }
 
 	/**
@@ -64,10 +86,24 @@ public:
 	*/
 	void OverWrite() override;
 
+	/**
+	* @brief 半径を設定する関数
+	* @param radius(半径) 半径
+	*/
 	void Set_Radius(const float radius);
 
+	/**
+	* @brief 半径を取得する関数
+	* @return float 半径
+	* @details 半径を取得する関数
+	*/
 	const float Get_Radius();
 
+	/**
+	* @brief バウンディング球を取得する関数
+	* @return BoundingSphere& バウンディング球(当たり判定専用)
+	* @details バウンディング球(当たり判定専用)を取得する関数
+	*/
 	const BoundingSphere& Get_Collition();
 
 	template<typename Archive>

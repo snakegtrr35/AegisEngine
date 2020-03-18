@@ -26,6 +26,7 @@
 #include	"Bounding_Aabb.h"
 #include	"Bounding_Obb.h"
 #include	"Bounding_Sphere.h"
+#include	"Bounding_Capsule.h"
 
 #include	"Player.h"
 
@@ -1162,6 +1163,12 @@ void My_imgui::Add_Component(GAME_OBJECT* object, const string s)
 		comp->Add_Component<BOUNDING_SHPERE>(scene->Get_Game_Object(object));
 		return;
 	}
+
+	if (string::npos != s.find("カプセル"))
+	{
+		comp->Add_Component<BOUNDING_CAPSULE>(scene->Get_Game_Object(object));
+		return;
+	}
 }
 
 void My_imgui::Delete_Component(GAME_OBJECT* object, const string s)
@@ -1186,6 +1193,11 @@ void My_imgui::Delete_Component(GAME_OBJECT* object, const string s)
 	if (string::npos != s.find("球"))
 	{
 		component = comp->Get_Component<BOUNDING_SHPERE>();
+	}
+
+	if (string::npos != s.find("カプセル"))
+	{
+		component = comp->Get_Component<BOUNDING_CAPSULE>();
 	}
 
 	if(nullptr == component) return;
