@@ -67,6 +67,8 @@ public:
 
 		T* scene = new T();
 
+		if(nullptr != pScene.get()) pScene->Uninit();
+
 		pScene.reset(scene);
 
 		pScene->Init();
@@ -75,7 +77,7 @@ public:
 	template<typename Archive>
 	void serialize(Archive& ar)
 	{
-		ar(GamaInstance);
+		//ar(GamaInstance);
 	}
 };
 

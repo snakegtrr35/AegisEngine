@@ -47,16 +47,20 @@ struct CHILD_DATE {
 */
 class SPRITE : public GAME_OBJECT {
 private:
-
 protected:
-	unique_ptr<ID3D11Buffer, Release> pVertexBuffer;			//!< 頂点バッファ
-	static unique_ptr<ID3D11Buffer, Release> pIndexBuffer;		//!< インデックスバッファ
+	//!< 頂点バッファ
+	unique_ptr<ID3D11Buffer, Release> pVertexBuffer;
 
-	VERTEX_3D Vertex[4];										//!< 頂点データ
+	//!< インデックスバッファ
+	static unique_ptr<ID3D11Buffer, Release> pIndexBuffer;
 
-	unique_ptr<TEXTURE> Texture;								//!< テクスチャ
+	//!< 頂点データ
+	VERTEX_3D Vertex[4];
+	//!< テクスチャ
+	unique_ptr<TEXTURE> Texture;
 
-	XMFLOAT2 Position;											//!< ポジション
+	//!< ポジション
+	XMFLOAT2 Position;
 
 	/**
 	* サイズ
@@ -65,15 +69,20 @@ protected:
 	* z : 下
 	* w : 左
 	*/
-	XMFLOAT4 Size;												//! サイズ
+	XMFLOAT4 Size;
 
-	COLOR Color;												//!< カラー
+	//!< カラー
+	COLOR Color;//!< 子スプライトのリスト
 
-	vector< unique_ptr<CHILD_DATE> > Children;					//!< 子スプライトのリスト
+	//!< 子スプライトのリスト
+	vector< unique_ptr<CHILD_DATE> > Children;
 
-	list<MENU_COMPONENT*> MenuEvents;							//!< メニューイベント(リスト)
+	//!< メニューイベント(リスト)
+	list<MENU_COMPONENT*> MenuEvents;
 
-	bool Enable;												//!< スプライトの有効無効フラグ(デフォルトは有効)
+	//!< スプライトの有効無効フラグ(デフォルトは true )
+	bool Enable;
+
 
 	ID3D11ShaderResourceView* ShaderResourceView = nullptr;
 

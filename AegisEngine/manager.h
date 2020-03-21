@@ -38,7 +38,7 @@ private:
 
 public:
 
-	CManager() {}
+	CManager() : GameEnable(true) {}
 	~CManager() { Uninit(); }
 
 	static bool Init();

@@ -36,6 +36,8 @@ void ENEMY::Init()
 
 	Scaling = XMFLOAT3(1.0f, 1.0f, 1.0f);*/
 
+	Time = 0.f;
+
 	{
 		//string name = "asset/model/Player.fbx";
 		string name("asset/model/viranrifle.fbx");
@@ -53,7 +55,13 @@ void ENEMY::Init()
 	{
 		auto scene = CManager::Get_Instance()->Get_Scene();
 
-		auto aabb = Get_Component()->Add_Component<BOUNDING_AABB>(scene->Get_Game_Object(this));
+		//if (nullptr == ab)
+		{
+			auto aabb = Get_Component()->Add_Component<BOUNDING_AABB>(scene->Get_Game_Object(this));
+
+			aabb->Set_Radius(XMFLOAT3(0.5f, 1.0f, 0.5f));
+			aabb->Set_Position(XMFLOAT3(0.f, 0.5f, 0.f));
+		}
 	}
 
 	GAME_OBJECT::Init();
@@ -141,25 +149,31 @@ void ENEMY::Update(float delta_time)
 
 	}
 
-
-	// ’e‚ðŒ‚‚Â
-	if ( Math::Random_Bool(0.01))
+	if (0.5f <= Time)
 	{
-		XMVECTOR vector = XMLoadFloat3(&vec);
-		vector = XMVector3Normalize(vector);
+		// ’e‚ðŒ‚‚Â
+		if (AeigisMath::Random_Bool(0.01))
+		{
+			XMVECTOR vector = XMLoadFloat3(&vec);
+			vector = XMVector3Normalize(vector);
 
-		XMFLOAT3 rotate;
-		XMStoreFloat3(&rotate, vector * 2.0f);
+			XMFLOAT3 rotate;
+			XMStoreFloat3(&rotate, vector * 2.0f);
 
-		XMFLOAT3 position = Position;
+			XMFLOAT3 position = Position;
 
-		position.x += rotate.x * 2;
-		position.z += rotate.z * 2;
+			position.x += rotate.x * 2;
+			position.z += rotate.z * 2;
 
 
-		Create_Bullet(position, rotate);
+			Create_Bullet(position, rotate);
 
-		AUDIO_MANAGER::Play_Sound_Object(SOUND_INDEX::SOUND_INDEX_SHOT, false);
+			AUDIO_MANAGER::Play_Sound_Object(SOUND_INDEX::SOUND_INDEX_SHOT, false);
+		}
+	}
+	else
+	{
+		Time += delta_time;
 	}
 
 	Model->Set_Position(Position);

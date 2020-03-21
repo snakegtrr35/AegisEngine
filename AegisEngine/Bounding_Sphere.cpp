@@ -320,8 +320,8 @@ void BOUNDING_SHPERE::Draw_Inspector()
 	float scale[3] = { Scaling.x, Scaling.y, Scaling.z };
 
 	ImGui::DragFloat3("Position##SPHERE", position, 0.01f);
-	ImGui::DragFloat3("Scaling", scale, 0.01f);
-	ImGui::DragFloat("Radius", &Radius, 0.01f, 0.01f, 1000.0f);
+	ImGui::DragFloat3("Scaling##SPHERE", scale, 0.01f);
+	ImGui::DragFloat("Radius##SPHERE", &Radius, 0.01f, 0.01f, 1000.0f);
 
 	Position = XMFLOAT3(position[0], position[1], position[2]);
 	Scaling = XMFLOAT3(scale[0], scale[1], scale[2]);

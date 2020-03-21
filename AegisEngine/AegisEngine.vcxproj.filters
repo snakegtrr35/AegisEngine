@@ -63,6 +63,21 @@
     <Filter Include="ソース ファイル\System\Component">
       <UniqueIdentifier>{e35aa352-d0a8-4569-b5b3-661f7c5d142a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\System\Light">
+      <UniqueIdentifier>{88be6331-361f-439c-85f7-4c8ee35b39af}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\System\Effekseer">
+      <UniqueIdentifier>{d668f8e8-8746-4ac6-8b21-92f9be32ae63}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\System\ImGui">
+      <UniqueIdentifier>{d4c0c065-da58-4c71-b746-738432228a0e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\System\Renderer">
+      <UniqueIdentifier>{16f3c8bd-5e05-4ca9-ac50-ac7e4c055f04}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\System\Time">
+      <UniqueIdentifier>{3ef673e1-d6e8-4a88-8087-6cbfb36edb17}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="imgui\imgui.cpp">
@@ -137,9 +152,6 @@
     <ClCompile Include="XYZ_Axis.cpp">
       <Filter>ソース ファイル\System</Filter>
     </ClCompile>
-    <ClCompile Include="Time.cpp">
-      <Filter>ソース ファイル\System</Filter>
-    </ClCompile>
     <ClCompile Include="stdafx.cpp">
       <Filter>ソース ファイル\System</Filter>
     </ClCompile>
@@ -153,15 +165,6 @@
       <Filter>ソース ファイル\System</Filter>
     </ClCompile>
     <ClCompile Include="manager.cpp">
-      <Filter>ソース ファイル\System</Filter>
-    </ClCompile>
-    <ClCompile Include="My_imgui.cpp">
-      <Filter>ソース ファイル\System</Filter>
-    </ClCompile>
-    <ClCompile Include="Renderer.cpp">
-      <Filter>ソース ファイル\System</Filter>
-    </ClCompile>
-    <ClCompile Include="Effekseer.cpp">
       <Filter>ソース ファイル\System</Filter>
     </ClCompile>
     <ClCompile Include="Enemy.cpp">
@@ -181,9 +184,6 @@
     </ClCompile>
     <ClCompile Include="Mesh_Field.cpp">
       <Filter>ソース ファイル\GameObject\Mesh</Filter>
-    </ClCompile>
-    <ClCompile Include="Menu_Component.cpp">
-      <Filter>ソース ファイル\System</Filter>
     </ClCompile>
     <ClCompile Include="Main_Menu.cpp">
       <Filter>ソース ファイル\System\Scene</Filter>
@@ -242,9 +242,6 @@
     <ClCompile Include="Bounding_Frustum.cpp">
       <Filter>ソース ファイル\GameObject\Bounding</Filter>
     </ClCompile>
-    <ClCompile Include="Light.cpp">
-      <Filter>ソース ファイル\System</Filter>
-    </ClCompile>
     <ClCompile Include="Sprite_Animation.cpp">
       <Filter>ソース ファイル\GameObject</Filter>
     </ClCompile>
@@ -265,6 +262,24 @@
     </ClCompile>
     <ClCompile Include="Text.cpp">
       <Filter>ソース ファイル\GameObject</Filter>
+    </ClCompile>
+    <ClCompile Include="Light.cpp">
+      <Filter>ソース ファイル\System\Light</Filter>
+    </ClCompile>
+    <ClCompile Include="Effekseer.cpp">
+      <Filter>ソース ファイル\System\Effekseer</Filter>
+    </ClCompile>
+    <ClCompile Include="My_imgui.cpp">
+      <Filter>ソース ファイル\System\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="Renderer.cpp">
+      <Filter>ソース ファイル\System\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="Time.cpp">
+      <Filter>ソース ファイル\System\Time</Filter>
+    </ClCompile>
+    <ClCompile Include="Menu_Component.cpp">
+      <Filter>ソース ファイル\System\Component</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -334,34 +349,19 @@
     <ClInclude Include="XYZ_Axis.h">
       <Filter>ソース ファイル\System</Filter>
     </ClInclude>
-    <ClInclude Include="Timer.h">
-      <Filter>ソース ファイル\System</Filter>
-    </ClInclude>
     <ClInclude Include="stdafx.h">
       <Filter>ソース ファイル\System</Filter>
     </ClInclude>
     <ClInclude Include="ShadowMap.h">
       <Filter>ソース ファイル\System</Filter>
     </ClInclude>
-    <ClInclude Include="Renderer.h">
-      <Filter>ソース ファイル\System</Filter>
-    </ClInclude>
     <ClInclude Include="resource.h">
-      <Filter>ソース ファイル\System</Filter>
-    </ClInclude>
-    <ClInclude Include="My_imgui.h">
-      <Filter>ソース ファイル\System</Filter>
-    </ClInclude>
-    <ClInclude Include="Menu_Component.h">
       <Filter>ソース ファイル\System</Filter>
     </ClInclude>
     <ClInclude Include="manager.h">
       <Filter>ソース ファイル\System</Filter>
     </ClInclude>
     <ClInclude Include="main.h">
-      <Filter>ソース ファイル\System</Filter>
-    </ClInclude>
-    <ClInclude Include="Effekseer.h">
       <Filter>ソース ファイル\System</Filter>
     </ClInclude>
     <ClInclude Include="common.h">
@@ -454,9 +454,6 @@
     <ClInclude Include="Bounding_Frustum.h">
       <Filter>ソース ファイル\GameObject\Bounding</Filter>
     </ClInclude>
-    <ClInclude Include="Light.h">
-      <Filter>ソース ファイル\System</Filter>
-    </ClInclude>
     <ClInclude Include="Color.h">
       <Filter>ソース ファイル\System</Filter>
     </ClInclude>
@@ -495,6 +492,24 @@
     </ClInclude>
     <ClInclude Include="Text.h">
       <Filter>ソース ファイル\GameObject</Filter>
+    </ClInclude>
+    <ClInclude Include="Light.h">
+      <Filter>ソース ファイル\System\Light</Filter>
+    </ClInclude>
+    <ClInclude Include="Effekseer.h">
+      <Filter>ソース ファイル\System\Effekseer</Filter>
+    </ClInclude>
+    <ClInclude Include="My_imgui.h">
+      <Filter>ソース ファイル\System\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="Renderer.h">
+      <Filter>ソース ファイル\System\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="Timer.h">
+      <Filter>ソース ファイル\System\Time</Filter>
+    </ClInclude>
+    <ClInclude Include="Menu_Component.h">
+      <Filter>ソース ファイル\System\Component</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

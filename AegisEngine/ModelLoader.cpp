@@ -103,7 +103,7 @@ bool CMODEL::Load(const string& filename)
 		//}
 	}
 
-	Anime_State_Machine.Set_Anime_Name("Stop");
+	//Anime_State_Machine.Set_Anime_Name("Stop");
 
 	return true;
 }

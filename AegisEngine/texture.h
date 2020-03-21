@@ -10,6 +10,7 @@ class TEXTURE {
 private:
 
 	string FileName;
+	size_t File;
 
 public:
 	TEXTURE();
@@ -26,6 +27,7 @@ public:
 	void serialize(Archive& ar)
 	{
 		ar(FileName);
+		ar(File);
 	}
 };
 

@@ -1,0 +1,11 @@
+prefix=D:/SchoolAccount/documents/School/lib/assimp_vs2017_x64
+exec_prefix=D:/SchoolAccount/documents/School/lib/assimp_vs2017_x64/
+libdir=D:/SchoolAccount/documents/School/lib/assimp_vs2017_x64/lib
+includedir=D:/SchoolAccount/documents/School/lib/assimp_vs2017_x64/../include/include
+
+Name: Assimp
+Description: Import various well-known 3D model formats in an uniform manner.
+Version: 5.0.0
+Libs: -L${libdir} -lassimp
+Libs.private:  
+Cflags: -I${includedir}

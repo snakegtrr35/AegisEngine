@@ -86,7 +86,7 @@ void TITLE::Update(float delta_time)
 			if (KEYBOARD::Trigger_Keyboard(VK_UP))
 			{
 				cnt--;
-				cnt = Loop_Minus(cnt, 3);
+				cnt = AeigisMath::Loop_Minus(cnt, 3);
 
 				AUDIO_MANAGER::Play_Sound_Object(SOUND_INDEX::SOUND_INDEX_SENTAKU, false);
 			}
@@ -94,7 +94,7 @@ void TITLE::Update(float delta_time)
 			if (KEYBOARD::Trigger_Keyboard(VK_DOWN))
 			{
 				cnt++;
-				cnt = Loop_Plus(cnt, 3);
+				cnt = AeigisMath::Loop_Plus(cnt, 3);
 
 				AUDIO_MANAGER::Play_Sound_Object(SOUND_INDEX::SOUND_INDEX_SENTAKU, false);
 			}
@@ -152,8 +152,8 @@ void TITLE::Update(float delta_time)
 		{
 			if (FADE::End_Fade())
 			{
-				//SCENE_MANAGER::Set_Scene<MAIN_MENU>();
-				SCENE_MANAGER::Set_Scene<GAME>();
+				SCENE_MANAGER::Set_Scene<MAIN_MENU>();
+				//SCENE_MANAGER::Set_Scene<GAME>();
 			}
 		}
 	}

@@ -26,10 +26,15 @@
 #include	"Bounding_Aabb.h"
 #include	"Bounding_Obb.h"
 #include	"Bounding_Sphere.h"
+#include	"Bounding_Capsule.h"
+
+#include	"Player.h"
 
 extern float radius;
 
 static string old_name;
+
+extern double fps;
 
 void EditTransform(const float* cameraView, float* cameraProjection, float* matrix, bool enable, GAME_OBJECT* object);
 
@@ -385,6 +390,15 @@ void My_imgui::Draw(void)
 				{
 					ImGui::Text((char*)u8"false");
 
+				}
+
+				ImGui::Text((char*)u8"%f", fps);
+
+				auto p = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<PLAYER>("player");
+
+				if (!p.expired())
+				{
+					ImGui::Text("HP  %f", p.lock()->Get_HP());
 				}
 			}
 
@@ -804,7 +818,10 @@ const char My_imgui::File_Check(const string& file_name)
 		return -1;
 	}
 
-	if (TEXTURE_MANEGER::Get_Instance()->Get_TextureFile().find(file_name) != TEXTURE_MANEGER::Get_Instance()->Get_TextureFile().end())
+	size_t file = hash<string>()(file_name);//
+
+	//if (TEXTURE_MANEGER::Get_Instance()->Get_TextureFile().find(file_name) != TEXTURE_MANEGER::Get_Instance()->Get_TextureFile().end())
+	if (TEXTURE_MANEGER::Get_Instance()->Get_TextureFile().find(file) != TEXTURE_MANEGER::Get_Instance()->Get_TextureFile().end())
 	{
 		// 既に読み込んでいるテクスチャ
 		return -2;
@@ -962,12 +979,12 @@ void My_imgui::File()
 
 		ImGui::Begin("Texture");
 
-		auto texture = TEXTURE_MANEGER::Get_Instance()->Get_TextureData_Start();
+		auto start = TEXTURE_MANEGER::Get_Instance()->Get_TextureData_Start();
 		auto end = TEXTURE_MANEGER::Get_Instance()->Get_TextureData_End();
 
-		for(; texture != end; texture++)
+		for(auto tex = start; tex != end; tex++)
 		{
-			ImTextureID image = texture->second.Resource.get();
+			ImTextureID image = tex->second.Resource.get();
 
 			if (i < 3)
 			{
@@ -1146,6 +1163,12 @@ void My_imgui::Add_Component(GAME_OBJECT* object, const string s)
 		comp->Add_Component<BOUNDING_SHPERE>(scene->Get_Game_Object(object));
 		return;
 	}
+
+	if (string::npos != s.find("カプセル"))
+	{
+		comp->Add_Component<BOUNDING_CAPSULE>(scene->Get_Game_Object(object));
+		return;
+	}
 }
 
 void My_imgui::Delete_Component(GAME_OBJECT* object, const string s)
@@ -1170,6 +1193,11 @@ void My_imgui::Delete_Component(GAME_OBJECT* object, const string s)
 	if (string::npos != s.find("球"))
 	{
 		component = comp->Get_Component<BOUNDING_SHPERE>();
+	}
+
+	if (string::npos != s.find("カプセル"))
+	{
+		component = comp->Get_Component<BOUNDING_CAPSULE>();
 	}
 
 	if(nullptr == component) return;
