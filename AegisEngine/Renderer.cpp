@@ -6,6 +6,10 @@
 
 #include	"manager.h"
 
+#include	<dxgi1_4.h>
+
+#pragma comment (lib, "Dxgi.lib")
+
 D3D_FEATURE_LEVEL											CRenderer::m_FeatureLevel = D3D_FEATURE_LEVEL_11_0;
 
 ID3D11Device*												CRenderer::m_D3DDevice = nullptr;
@@ -585,6 +589,35 @@ bool CRenderer::Init3D()
 	{
 		FAILDE_ASSERT;
 		return false;
+	}
+
+	{
+		IDXGIFactory4* pDXGIFactory;
+		IDXGIAdapter3* pAdapter;
+
+		//ファクトリの作成
+		hr = CreateDXGIFactory2(0, IID_PPV_ARGS(&pDXGIFactory));
+		if (FAILED(hr))
+		{
+			FAILDE_ASSERT;
+			return false;
+		}
+
+
+		DXGI_ADAPTER_DESC AdapterDesc;
+		//最初に見つかったアダプターを使用する
+		hr = pDXGIFactory->EnumAdapters(0, (IDXGIAdapter**)&pAdapter);
+		if (FAILED(hr))
+		{
+			FAILDE_ASSERT;
+			return false;
+		}
+
+		DXGI_QUERY_VIDEO_MEMORY_INFO info;
+
+		pAdapter->QueryVideoMemoryInfo(0, DXGI_MEMORY_SEGMENT_GROUP_LOCAL, &info);
+
+		int a = 0;
 	}
 
 	// DXGIのファクトリの作成

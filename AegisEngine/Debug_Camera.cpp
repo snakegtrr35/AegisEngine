@@ -60,7 +60,7 @@ void DEBUG_CAMERA::Update(float delta_time)
 {
 	XMFLOAT2 point = MOUSE::Get_Mouse()->Get_Position();
 
-	bool flag = !KEYBOARD::Press_Keyboard(VK_SHIFT);
+	bool flag = KEYBOARD::Press_Keyboard(VK_SHIFT);
 
 	bool flag2 = KEYBOARD::Press_Keyboard(VK_RBUTTON);
 
@@ -73,7 +73,7 @@ void DEBUG_CAMERA::Update(float delta_time)
 	XMVECTOR f(Front);
 	XMFLOAT4 front_vec;
 	XMStoreFloat4(&front_vec, f);
-	front_vec.y = 0.0f;
+	//front_vec.y = 0.0f;
 	f = XMLoadFloat4(&front_vec);
 
 	f = DirectX::XMVector3Normalize(f);

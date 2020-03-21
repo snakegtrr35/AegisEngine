@@ -94,14 +94,36 @@ void PLAYER::Update(float delta_time)
 
 	XMStoreFloat3(&pos, *vec);
 
-	Position = pos;
+	//Position = pos;
 	// メッシュフィールドとの当たり判定
 	//MESH_FIELD* pfield = CManager::Get_Scene()->Get_Game_Object<MESH_FIELD>();
 	//if (nullptr != pfield)
 	//	Position.y = pfield->Get_Height(Position);
 
 	// カメラに合わせた回転
-	Rotation.y = rotate.y + 0.0f;
+	//Rotation.y = rotate.y + 0.0f;
+
+	{
+		if (KEYBOARD::Press_Keyboard(VK_UP))
+		{
+			Position.z += delta_time * 5.0f;
+		}
+
+		if (KEYBOARD::Press_Keyboard(VK_DOWN))
+		{
+			Position.z -= delta_time * 5.0f;
+		}
+
+		if (KEYBOARD::Press_Keyboard(VK_RIGHT))
+		{
+			Position.x += delta_time * 5.0f;
+		}
+
+		if (KEYBOARD::Press_Keyboard(VK_LEFT))
+		{
+			Position.x -= delta_time * 5.0f;
+		}
+	}
 
 	// モデルの更新
 	{
