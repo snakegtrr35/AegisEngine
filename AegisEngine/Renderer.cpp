@@ -53,6 +53,9 @@ unique_ptr<ID3D11ShaderResourceView, Release>				CRenderer::ShaderResourceView[3
 // ライト
 LIGHT CRenderer::m_Light;//
 
+IDXGIAdapter3* pAdapter = nullptr;
+DXGI_QUERY_VIDEO_MEMORY_INFO info;
+
 bool CRenderer::Init()
 {
 	HRESULT hr = S_OK;
@@ -592,8 +595,20 @@ bool CRenderer::Init3D()
 	}
 
 	{
+		// DXGIアダプタ（GPU）の取得
+		hr = m_dxgiDev->GetAdapter((IDXGIAdapter**)&pAdapter);
+		if (FAILED(hr))
+		{
+			FAILDE_ASSERT;
+			return false;
+		}
+
+		pAdapter->QueryVideoMemoryInfo(0, DXGI_MEMORY_SEGMENT_GROUP_LOCAL, &info);
+	}
+
+	/*{
 		IDXGIFactory4* pDXGIFactory;
-		IDXGIAdapter3* pAdapter;
+		//IDXGIAdapter3* pAdapter;
 
 		//ファクトリの作成
 		hr = CreateDXGIFactory2(0, IID_PPV_ARGS(&pDXGIFactory));
@@ -612,16 +627,17 @@ bool CRenderer::Init3D()
 			FAILDE_ASSERT;
 			return false;
 		}
+		pDXGIFactory->Release();
 
-		DXGI_QUERY_VIDEO_MEMORY_INFO info;
+		//DXGI_QUERY_VIDEO_MEMORY_INFO info;
 
-		pAdapter->QueryVideoMemoryInfo(0, DXGI_MEMORY_SEGMENT_GROUP_LOCAL, &info);
+		//pAdapter->QueryVideoMemoryInfo(0, DXGI_MEMORY_SEGMENT_GROUP_LOCAL, &info);
 
-		int a = 0;
-	}
+		//int a = 0;
+	}*/
 
 	// DXGIのファクトリの作成
-	IDXGIFactory2* factory = nullptr;
+                 	IDXGIFactory2* factory = nullptr;
 	hr = adapter->GetParent(IID_PPV_ARGS(&factory));
 	adapter->Release();
 	if (FAILED(hr))
@@ -1106,6 +1122,8 @@ void CRenderer::End()
 			Stand_By_Enable = false;		// スタンバイモードを解除する
 		}
 	}
+
+	pAdapter->QueryVideoMemoryInfo(0, DXGI_MEMORY_SEGMENT_GROUP_LOCAL, &info);
 }
 
 void CRenderer::SetDepthEnable( bool Enable )
