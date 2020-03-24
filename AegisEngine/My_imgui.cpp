@@ -38,6 +38,11 @@ extern double fps;
 
 void EditTransform(const float* cameraView, float* cameraProjection, float* matrix, bool enable, GAME_OBJECT* object);
 
+#include	<dxgi1_4.h>
+extern DXGI_QUERY_VIDEO_MEMORY_INFO info;
+#include <psapi.h>
+
+
 void My_imgui::Init(HWND hWnd)
 {
 	// Setup Dear ImGui context
@@ -399,6 +404,37 @@ void My_imgui::Draw(void)
 				if (!p.expired())
 				{
 					ImGui::Text("HP  %f", p.lock()->Get_HP());
+				}
+			}
+
+			{
+				ImGui::Text((char*)u8"GPUメモリ使用量 %d byte", info.CurrentUsage);
+
+				ImGui::Text((char*)u8"1 %d キロバイト", info.CurrentUsage / 1000);
+
+				ImGui::Text((char*)u8"1 %d メガバイト", info.CurrentUsage / 1000 / 1000);
+			}
+
+			{
+				HANDLE hProc = GetCurrentProcess();
+
+				PROCESS_MEMORY_COUNTERS_EX pmc;
+
+				BOOL isSuccess = GetProcessMemoryInfo(hProc, (PROCESS_MEMORY_COUNTERS*)&pmc, sizeof(pmc));
+
+				if (isSuccess == FALSE)
+				{
+					CloseHandle(hProc);
+				}
+				else
+				{
+					ImGui::Text((char*)u8"メモリ使用量 %d byte", pmc.PrivateUsage);
+
+					ImGui::Text((char*)u8"1 メモリ使用量 %.3f キロバイト", float(pmc.PrivateUsage / 1024.0f));
+
+					ImGui::Text((char*)u8"2 メモリ使用量 %.3f メガバイト", float(pmc.PrivateUsage / 1024.0f / 1024.0f));
+
+					CloseHandle(hProc);
 				}
 			}
 

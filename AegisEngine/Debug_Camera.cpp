@@ -95,7 +95,7 @@ void DEBUG_CAMERA::Update(float delta_time)
 {
 	XMFLOAT2 point = MOUSE::Get_Mouse()->Get_Position();
 
-	bool flag = !KEYBOARD::Press_Keyboard(VK_SHIFT);
+	bool flag = KEYBOARD::Press_Keyboard(VK_SHIFT);
 
 	bool flag2 = KEYBOARD::Press_Keyboard(VK_RBUTTON);
 

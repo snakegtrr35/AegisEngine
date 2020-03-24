@@ -598,7 +598,7 @@ void TEXTURE_MANEGER::Load_Check()
 			auto fileAction = monitor->popFileAcctionStack();
 			wstring actionType = L"";
 
-			switch (fileAction.m_actionType)
+			/*switch (fileAction.m_actionType)
 			{
 			case FileActionType::kAdded:
 				actionType = L"Added";
@@ -632,7 +632,7 @@ void TEXTURE_MANEGER::Load_Check()
 				break;
 			default:
 				break;
-			}
+			}*/
 		}
 	}
 }

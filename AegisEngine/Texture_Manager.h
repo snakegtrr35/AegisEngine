@@ -16,11 +16,11 @@ enum class FileActionType
 	kRenamedNew = FILE_ACTION_RENAMED_NEW_NAME,
 };
 
-struct FileAction
-{
-	FileActionType m_actionType;
-	wstring m_fileName;
-};
+//struct FileAction
+//{
+//	FileActionType m_actionType;
+//	wstring m_fileName;
+//};
 
 class FileChangeMonitor
 {
@@ -30,7 +30,8 @@ class FileChangeMonitor
 	HANDLE m_eventHandle = nullptr;
 	std::vector<unsigned char> m_buf;
 	OVERLAPPED m_olp;
-	std::queue<FileAction> m_fileActions;
+	//std::queue<FileAction> m_fileActions;
+	std::set<wstring> m_fileActions;
 	//std::vector<FileAction> m_fileActions;
 
 	// 変更の監視を開始
@@ -42,10 +43,10 @@ class FileChangeMonitor
 		m_olp.hEvent = m_eventHandle;
 
 		const DWORD filter =
-			FILE_NOTIFY_CHANGE_FILE_NAME |
+			/*FILE_NOTIFY_CHANGE_FILE_NAME |
 			FILE_NOTIFY_CHANGE_DIR_NAME |
 			FILE_NOTIFY_CHANGE_ATTRIBUTES |
-			FILE_NOTIFY_CHANGE_SIZE |
+			FILE_NOTIFY_CHANGE_SIZE |*/
 			FILE_NOTIFY_CHANGE_LAST_WRITE;
 		if (!ReadDirectoryChangesW(m_directoryHandle, &m_buf[0], m_bufferSize, TRUE, filter, nullptr, &m_olp, nullptr))
 		{
@@ -64,11 +65,13 @@ public:
 	}
 
 	// ファイル変更履歴キューから情報を取り出す
-	FileAction popFileAcctionStack()
+	wstring popFileAcctionStack()
 	{
-		auto file_action = m_fileActions.front();
-		m_fileActions.pop();
-		return file_action;
+		//auto file_action = m_fileActions.front();
+		//m_fileActions.pop();
+		auto file_action = m_fileActions.begin();
+		m_fileActions.erase(m_fileActions.begin());
+		return *file_action;
 	}
 
 	// 初期化
@@ -85,6 +88,7 @@ public:
 			return false;
 		}
 
+		m_buf.reserve(m_bufferSize);
 		m_buf.resize(m_bufferSize);
 
 		m_eventHandle = CreateEvent(nullptr, TRUE, FALSE, nullptr);
@@ -129,11 +133,14 @@ public:
 
 		while (true)
 		{
-			FileAction action;
-			action.m_actionType = static_cast<FileActionType>(pData->Action);
-			action.m_fileName = wstring(pData->FileName).substr(0, pData->FileNameLength / sizeof(TCHAR));
+			//FileAction action;
+			//action.m_actionType = static_cast<FileActionType>(pData->Action);
+			//action.m_fileName = wstring(pData->FileName).substr(0, pData->FileNameLength / sizeof(wchar_t));
 
-			m_fileActions.push(action);
+			wstring m_fileName = wstring(pData->FileName).substr(0, pData->FileNameLength / sizeof(wchar_t));
+
+			//m_fileActions.push(action);
+			m_fileActions.insert(m_fileName);
 
 			if (pData->NextEntryOffset == 0)
 			{

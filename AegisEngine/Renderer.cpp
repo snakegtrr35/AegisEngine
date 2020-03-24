@@ -6,6 +6,10 @@
 
 #include	"manager.h"
 
+#include	<dxgi1_4.h>
+
+#pragma comment (lib, "Dxgi.lib")
+
 D3D_FEATURE_LEVEL											CRenderer::m_FeatureLevel = D3D_FEATURE_LEVEL_11_0;
 
 ID3D11Device*												CRenderer::m_D3DDevice = nullptr;
@@ -48,6 +52,9 @@ unique_ptr<ID3D11ShaderResourceView, Release>				CRenderer::ShaderResourceView[3
 
 // ライト
 LIGHT CRenderer::m_Light;//
+
+IDXGIAdapter3* pAdapter = nullptr;
+DXGI_QUERY_VIDEO_MEMORY_INFO info;
 
 bool CRenderer::Init()
 {
@@ -587,8 +594,50 @@ bool CRenderer::Init3D()
 		return false;
 	}
 
+	{
+		// DXGIアダプタ（GPU）の取得
+		hr = m_dxgiDev->GetAdapter((IDXGIAdapter**)&pAdapter);
+		if (FAILED(hr))
+		{
+			FAILDE_ASSERT;
+			return false;
+		}
+
+		pAdapter->QueryVideoMemoryInfo(0, DXGI_MEMORY_SEGMENT_GROUP_LOCAL, &info);
+	}
+
+	/*{
+		IDXGIFactory4* pDXGIFactory;
+		//IDXGIAdapter3* pAdapter;
+
+		//ファクトリの作成
+		hr = CreateDXGIFactory2(0, IID_PPV_ARGS(&pDXGIFactory));
+		if (FAILED(hr))
+		{
+			FAILDE_ASSERT;
+			return false;
+		}
+
+
+		DXGI_ADAPTER_DESC AdapterDesc;
+		//最初に見つかったアダプターを使用する
+		hr = pDXGIFactory->EnumAdapters(0, (IDXGIAdapter**)&pAdapter);
+		if (FAILED(hr))
+		{
+			FAILDE_ASSERT;
+			return false;
+		}
+		pDXGIFactory->Release();
+
+		//DXGI_QUERY_VIDEO_MEMORY_INFO info;
+
+		//pAdapter->QueryVideoMemoryInfo(0, DXGI_MEMORY_SEGMENT_GROUP_LOCAL, &info);
+
+		//int a = 0;
+	}*/
+
 	// DXGIのファクトリの作成
-	IDXGIFactory2* factory = nullptr;
+                 	IDXGIFactory2* factory = nullptr;
 	hr = adapter->GetParent(IID_PPV_ARGS(&factory));
 	adapter->Release();
 	if (FAILED(hr))
@@ -1073,6 +1122,8 @@ void CRenderer::End()
 			Stand_By_Enable = false;		// スタンバイモードを解除する
 		}
 	}
+
+	pAdapter->QueryVideoMemoryInfo(0, DXGI_MEMORY_SEGMENT_GROUP_LOCAL, &info);
 }
 
 void CRenderer::SetDepthEnable( bool Enable )
