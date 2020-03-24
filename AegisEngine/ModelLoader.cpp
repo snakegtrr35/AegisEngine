@@ -264,7 +264,7 @@ void CMODEL::Draw()
 		// •’Ê‚Ì•`‰æ
 		for (auto mesh : Meshes.Get())
 		{
-			for (auto i : mesh.second.Get())
+			for (auto& i : mesh.second.Get())
 			{
 				i.second.Draw(matrix);
 			}

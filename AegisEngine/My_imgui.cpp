@@ -115,15 +115,6 @@ void My_imgui::Draw(void)
 			ImGui::Checkbox("Demo Window", &show_demo_window);
 			ImGui::Checkbox("Another Window", &show_another_window);
 
-			ImGui::SliderFloat("float", &f, 0.0f, 10.0f);
-			ImGui::ColorEdit3("clear color", (float*)&clear_color);
-
-			if (ImGui::Button("Button"))
-				counter++;
-
-			ImGui::SameLine();
-			ImGui::Text("counter = %d", counter);
-
 			ImGui::Text("Application average %.6f ms/frame (%.1f FPS)", (1000.0f / ImGui::GetIO().Framerate) /** 0.001f*/, ImGui::GetIO().Framerate);
 
 			ImGui::Text("x = %f", ImGui::GetMousePos().x);
@@ -260,17 +251,15 @@ void My_imgui::Draw(void)
 		{
 			// ライトの設定
 			{
-				static bool f = false;
-
 				ImGuiWindowFlags window_flag = ImGuiWindowFlags_NoResize;
 
 				LIGHT* light = CRenderer::Get_Light();
 
-				static float vec4_Direction[] = { light->Direction.x, light->Direction.y, light->Direction.z, light->Direction.w };
-				static float vec4_Position[] = { light->Position.x, light->Position.y, light->Position.z, light->Position.w };
-				static float vec4_Diffuse[] = { light->Diffuse.r, light->Diffuse.g, light->Diffuse.b, light->Diffuse.a };
-				static float vec4_Ambient[] = { light->Ambient.r, light->Ambient.g, light->Ambient.b, light->Ambient.a };
-				static float vec4_Specular[] = { light->Specular.r, light->Specular.g, light->Specular.b, light->Specular.a };
+				float vec4_Direction[] = { light->Direction.x, light->Direction.y, light->Direction.z, light->Direction.w };
+				float vec4_Position[] = { light->Position.x, light->Position.y, light->Position.z, light->Position.w };
+				float vec4_Diffuse[] = { light->Diffuse.r, light->Diffuse.g, light->Diffuse.b, light->Diffuse.a };
+				float vec4_Ambient[] = { light->Ambient.r, light->Ambient.g, light->Ambient.b, light->Ambient.a };
+				float vec4_Specular[] = { light->Specular.r, light->Specular.g, light->Specular.b, light->Specular.a };
 
 				ImGui::Begin("Directional Light", nullptr/*, window_flag*/);
 
@@ -524,6 +513,20 @@ void My_imgui::Uninit(void)
 	ImGui_ImplDX11_Shutdown();
 	ImGui_ImplWin32_Shutdown();
 	ImGui::DestroyContext();
+
+	{
+		for (auto& item : Component_Items.first)
+		{
+			item.clear();
+		}
+		Component_Items.first.clear();
+
+		for (auto& item : Component_Items.second)
+		{
+			item.clear();
+		}
+		Component_Items.second.clear();
+	}
 }
 
 void My_imgui::Begin()
@@ -556,8 +559,11 @@ const bool My_imgui::Get_Mouse_Over_Enable()
 
 void My_imgui::Draw_Inspector(const string& name)
 {
-	static const char* item_current = nullptr;
-	static const char* temp_current = nullptr;
+	//static const char* item_current = nullptr;
+	//static const char* temp_current = nullptr;
+
+	static unique_ptr<const char> item_current;
+	static unique_ptr<const char> temp_current;
 
 	bool flag = false;
 	if (old_name != name)
@@ -651,21 +657,20 @@ void My_imgui::Draw_Inspector(const string& name)
 		}
 
 		{
-			/*static const char* item_current = nullptr;
-			static const char* temp_current = nullptr;*/
-
 			{
-				static ImGuiComboFlags flags = ImGuiComboFlags_NoArrowButton;
-
-				if (ImGui::BeginCombo((char*)u8"コンポーネント", item_current, flags)) // The second parameter is the label previewed before opening the combo.
+				if (ImGui::BeginCombo((char*)u8"コンポーネント", item_current.get(), ImGuiComboFlags_NoArrowButton)) // The second parameter is the label previewed before opening the combo.
 				{
 					for (int n = 0; n < Component_Items.first.size(); n++)
 					{
-						bool is_selected = (item_current == Component_Items.first.at(n));
-						if (ImGui::Selectable(Component_Items.first.at(n), is_selected))
+						bool is_selected = (item_current.get() == Component_Items.first.at(n).c_str());
+						//if (ImGui::Selectable(Component_Items.first.at(n), is_selected))
+						if (ImGui::Selectable(Component_Items.first.at(n).c_str(), is_selected))
 						{
-							item_current = Component_Items.first.at(n);
-							temp_current = Component_Items.second.at(n);
+							//item_current = Component_Items.first.at(n).c_str();
+							//temp_current = Component_Items.second.at(n).c_str();
+
+							item_current.reset(Component_Items.first.at(n).c_str());
+							temp_current.reset(Component_Items.second.at(n).c_str());
 						}
 					}
 					ImGui::EndCombo();
@@ -680,7 +685,7 @@ void My_imgui::Draw_Inspector(const string& name)
 			{
 				if (nullptr != temp_current)
 				{
-					string s(temp_current);
+					string s(temp_current.get());
 
 					Add_Component(object, s);
 				}
@@ -690,7 +695,7 @@ void My_imgui::Draw_Inspector(const string& name)
 			{
 				if (nullptr != temp_current)
 				{
-					string s(temp_current);
+					string s(temp_current.get());
 
 					Delete_Component(object, s);
 				}
@@ -704,7 +709,7 @@ void My_imgui::Draw_Inspector(const string& name)
 void EditTransform(const float* cameraView, float* cameraProjection, float* matrix, bool enable, GAME_OBJECT* object)
 {
 	static ImGuizmo::OPERATION mCurrentGizmoOperation(ImGuizmo::TRANSLATE);
-	static float snap[3] = { 0.001f, 0.001f, 0.001f };
+	float snap[3] = { 0.001f, 0.001f, 0.001f };
 
 	if (ImGui::RadioButton("Translate", mCurrentGizmoOperation == ImGuizmo::TRANSLATE))
 		mCurrentGizmoOperation = ImGuizmo::TRANSLATE;
@@ -1137,9 +1142,7 @@ void My_imgui::Light_Setting()
 							bool is_selected = false;
 
 							{
-								static ImGuiComboFlags flags = ImGuiComboFlags_NoArrowButton;
-
-								if (ImGui::BeginCombo((char*)u8"ライトの種類", item_current, flags))
+								if (ImGui::BeginCombo((char*)u8"ライトの種類", item_current, ImGuiComboFlags_NoArrowButton))
 								{
 									for (int n = 0; n < Items.size(); n++)
 									{

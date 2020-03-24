@@ -8,6 +8,9 @@ FILE_CHANGE_MONITOR::FILE_CHANGE_MONITOR(const string& directoryName) : m_direct
 
 FILE_CHANGE_MONITOR::~FILE_CHANGE_MONITOR()
 {
+	m_fileActions.clear();
+	m_buf.clear();
+
 	CancelIo(m_directoryHandle);
 	WaitForSingleObject(m_eventHandle, INFINITE);
 

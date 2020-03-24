@@ -10,7 +10,7 @@ class CMODEL;
 class BULLET : public GAME_OBJECT {
 protected:
 	XMFLOAT3 MoveVector;
-	CMODEL* Model;
+	unique_ptr<CMODEL> Model;
 
 	short HP;
 	float fps = 0.f;

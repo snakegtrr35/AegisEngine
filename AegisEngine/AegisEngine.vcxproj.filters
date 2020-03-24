@@ -284,6 +284,9 @@
     <ClCompile Include="FileChangeMonitor.cpp">
       <Filter>ソース ファイル\System\Texture</Filter>
     </ClCompile>
+    <ClCompile Include="Mesh.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="imgui\imconfig.h">

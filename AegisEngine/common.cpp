@@ -14,7 +14,11 @@ std::wstring stringTowstring(const std::string& font)
 
 	mbstowcs_s(&wLen, StrW.get(), length * 2, font.c_str(), _TRUNCATE);
 
-	return std::wstring(StrW.get());
+	wstring s(StrW.get());
+
+	StrW.reset(nullptr);
+
+	return s;
 }
 
 std::string wstringTostring(const std::wstring& font)
@@ -30,7 +34,11 @@ std::string wstringTostring(const std::wstring& font)
 
 	wcstombs_s(&Len, Str.get(), length * 2, font.c_str(), length * 2);
 
-	return string(Str.get());
+	string s(Str.get());
+
+	Str.reset(nullptr);
+
+	return s;
 }
 
 #ifdef UNICODE

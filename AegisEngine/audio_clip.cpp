@@ -92,7 +92,7 @@ void CAudioClip::Unload()
 		}
 	}
 
-	if (SoundData)
+	if (nullptr != SoundData)
 	{
 		delete[] SoundData;
 		SoundData = nullptr;

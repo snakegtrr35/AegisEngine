@@ -62,5 +62,6 @@ void BILL::Update(float delta_time)
 
 void BILL::Uninit()
 {
+	Model->Uninit();
 	Model.reset(nullptr);
 }

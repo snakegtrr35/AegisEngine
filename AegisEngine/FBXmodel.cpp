@@ -208,6 +208,13 @@ bool FBXmodel::Load(const string& FileName)
 
 			vector<TEXTURE_S> diffuseMaps = this->loadMaterialTextures(material, aiTextureType_DIFFUSE, "texture_diffuse", m_Scene);
 			Textures.insert(Textures.end(), diffuseMaps.begin(), diffuseMaps.end());
+
+			for (auto i : diffuseMaps)
+			{
+				i.path.clear();
+				i.Texture = nullptr;
+			}
+			diffuseMaps.clear();
 		}
 
 		Bone_num.clear();
@@ -246,8 +253,8 @@ void FBXmodel::UnLoad()
 {
 	for (UINT m = 0; m < m_MeshNum; m++)
 	{
-		m_Meshes[m].VertexBuffer->Release();
-		m_Meshes[m].IndexBuffer->Release();
+		SAFE_RELEASE(m_Meshes[m].VertexBuffer);
+		SAFE_RELEASE(m_Meshes[m].IndexBuffer);
 	}
 	m_Meshes.clear();
 	

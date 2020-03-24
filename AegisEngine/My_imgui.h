@@ -15,9 +15,6 @@ private:
 	bool show_demo_window;
 	bool show_another_window;
 	bool show_default_window;
-	ImVec4 clear_color;
-	float f;
-	int counter;
 
 	bool Texture_Import_Enable;
 	bool Texture_Delete_Enable;
@@ -28,7 +25,8 @@ private:
 
 	bool Debug_Draw_Enable;
 
-	pair< vector<const char*>, vector<const char*> > Component_Items;
+	//pair< vector<const char*>, vector<const char*> > Component_Items;
+	pair< vector<string>, vector<string> > Component_Items;
 
 	void Texture_Import();
 	const char File_Check(const string& file_name);
@@ -51,9 +49,7 @@ private:
 
 public:
 	My_imgui() : show_demo_window(false), show_another_window(false), show_default_window(false),
-				 Texture_Import_Enable(false), Texture_Delete_Enable(false), Setting_Enable(false),
-				 clear_color(ImVec4(0.45f, 0.55f, 0.60f, 1.00f)),
-				 f(0.0f), counter(0), Mouse_Over_Enable(false){
+				 Texture_Import_Enable(false), Texture_Delete_Enable(false), Setting_Enable(false), Mouse_Over_Enable(false){
 
 #ifdef _DEBUG
 		Debug_Draw_Enable = true;

@@ -20,7 +20,7 @@ BULLET::BULLET() : MoveVector(XMFLOAT3(0.0f, 0.0f, 0.0f))
 
 	Scaling = XMFLOAT3(0.1f, 0.1f, 0.1f);
 
-	Model = new CMODEL();
+	Model = make_unique<CMODEL>();
 
 	HP = 400;
 }
@@ -31,7 +31,7 @@ BULLET::BULLET(XMFLOAT3& position, XMFLOAT3& move_vector) : MoveVector(move_vect
 
 	Scaling = XMFLOAT3(0.1f, 0.1f, 0.1f);
 
-	Model = new CMODEL();
+	Model = make_unique<CMODEL>();
 
 	HP = 400;
 }
@@ -151,7 +151,7 @@ void BULLET::Update(float delta_time)
 
 void BULLET::Uninit()
 {
-	SAFE_DELETE(Model);
+	Model.reset(nullptr);
 }
 
 void BULLET::Set_Move_Vector(const XMFLOAT3 move_vector)

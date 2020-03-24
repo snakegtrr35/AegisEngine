@@ -6,10 +6,9 @@
 
 #ifdef _DEBUG
 // メモリリークのためのインクルード
-#include	<crtdbg.h>
-
 #define _CRTDBG_MAP_ALLOC
-#define new new(_NORMAL_BLOCK, __FILE__, __LINE__)
+#include <cstdlib>
+#include <crtdbg.h>
 
 #endif // _DEBUG
 
@@ -36,6 +35,12 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 #ifdef _DEBUG
 	// メモリリーク検出
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
+	//_CrtDumpMemoryLeaks();
+	//_CrtSetReportMode(_CRT_ERROR, _CRTDBG_MODE_DEBUG | _CRTDBG_MODE_FILE);
+
+	//_crtBreakAlloc = (4908);
+	//_CrtSetBreakAlloc(5495);
+	//_CrtSetBreakAlloc = (84);
 #endif // _DEBUG
 
 	WNDCLASSEX wcex =

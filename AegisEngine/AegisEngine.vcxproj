@@ -67,6 +67,7 @@
     <ClCompile Include="manager.cpp" />
     <ClCompile Include="Math.cpp" />
     <ClCompile Include="Menu_Component.cpp" />
+    <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="Mesh_Cylinder.cpp" />
     <ClCompile Include="Mesh_Dome.cpp" />
     <ClCompile Include="Mesh_Field.cpp" />
