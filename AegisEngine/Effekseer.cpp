@@ -91,9 +91,9 @@ bool EFFEKSEER_MANAGER::Init()
 
 	Effects["test"] = Effekseer::Effect::Create(Manager, (const EFK_CHAR*)L"test.efk");
 
-	//Effects["test"].Handle = Manager->Play(Effects["test"].Effect, 0, 0, 0);
-	//Manager->SetRotation(Effects["test"].Handle, Effekseer::Vector3D(0, 1, 0), 45.0f);
-	//Manager->SetSpeed(Effects["test"].Handle, 0.5f);
+	//Handles["test"] = Manager->Play(Effects["test"].Effect, 0, 0, 0);
+	//Manager->SetRotation(Handles["test"], Effekseer::Vector3D(0, 1, 0), 45.0f);
+	Manager->SetSpeed(Handles["test"], 0.5f);
 
 	return true;
 }
@@ -144,7 +144,7 @@ void EFFEKSEER_MANAGER::Update(float delta_time)
 {
 	auto player = CManager::Get_Instance()->Get_Scene()->Get_Game_Object("player");
 
-	//	Set_Location("test", XMFLOAT3(player->Get_Position()->x, player->Get_Position()->y, player->Get_Position()->z));
+	if(nullptr != player) Set_Location("test", XMFLOAT3(player->Get_Position()->x, player->Get_Position()->y, player->Get_Position()->z));
 
 	//Manager->SetLocation(Handles["test"], Effekseer::Vector3D(player->Get_Position()->x, player->Get_Position()->y, player->Get_Position()->z));
 	Manager->SetScale(Handles["test"], 0.5f, 0.5f, 0.5f);
@@ -367,5 +367,5 @@ void EFFEKSEER_MANAGER::Set_Speed(const string& handle_name, const float speed)
 
 //const EFFECT& EFFEKSEER_MANAGER::Get_Effect(const string& name)
 //{
-//	return Effects[name];
+//	return Handles[name];
 //}
