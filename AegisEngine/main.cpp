@@ -9,7 +9,6 @@
 #define _CRTDBG_MAP_ALLOC
 #include <cstdlib>
 #include <crtdbg.h>
-
 #endif // _DEBUG
 
 
@@ -38,9 +37,8 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 	//_CrtDumpMemoryLeaks();
 	//_CrtSetReportMode(_CRT_ERROR, _CRTDBG_MODE_DEBUG | _CRTDBG_MODE_FILE);
 
-	//_crtBreakAlloc = (4908);
-	//_CrtSetBreakAlloc(5495);
-	//_CrtSetBreakAlloc = (84);
+	//_crtBreakAlloc = 5194;
+
 #endif // _DEBUG
 
 	WNDCLASSEX wcex =

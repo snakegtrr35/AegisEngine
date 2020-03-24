@@ -351,7 +351,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>..\AegisEngine\Library\Effekseer\include;C:\Program Files\cereal;C:\Program Files\assimp_vs2017_x64\include;$(IncludePath)</IncludePath>
+    <IncludePath>..\AegisEngine\Library\Effekseer\include;C:\Program Files\cereal;..\AegisEngine\Library\assimp_vs2017_x64\include;$(IncludePath)</IncludePath>
     <LibraryPath>..\AegisEngine\Library\assimp_vs2017_x64\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -359,7 +359,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>..\AegisEngine\Library\Effekseer\include;C:\Program Files\cereal;C:\Program Files\assimp_vs2017_x64\include;$(IncludePath)</IncludePath>
+    <IncludePath>..\AegisEngine\Library\Effekseer\include;C:\Program Files\cereal;..\AegisEngine\Library\assimp_vs2017_x64\include;$(IncludePath)</IncludePath>
     <LibraryPath>..\AegisEngine\Library\assimp_vs2017_x64\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">

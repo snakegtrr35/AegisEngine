@@ -42,9 +42,7 @@ protected:
 public:
 
 	GAME_OBJECT();
-	virtual ~GAME_OBJECT() {
-		Object_Name_Map.erase(Object_Name);
-	};
+	virtual ~GAME_OBJECT();
 
 	virtual void Init();
 	virtual void Draw();

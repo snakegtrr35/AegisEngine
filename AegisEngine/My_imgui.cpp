@@ -515,17 +515,9 @@ void My_imgui::Uninit(void)
 	ImGui::DestroyContext();
 
 	{
-		for (auto& item : Component_Items.first)
-		{
-			item.clear();
-		}
-		Component_Items.first.clear();
+		pair< vector<string>, vector<string> > temp;
 
-		for (auto& item : Component_Items.second)
-		{
-			item.clear();
-		}
-		Component_Items.second.clear();
+		temp.swap(Component_Items);
 	}
 }
 

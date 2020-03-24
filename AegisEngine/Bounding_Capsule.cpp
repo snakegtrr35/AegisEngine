@@ -413,7 +413,7 @@ void BOUNDING_CAPSULE::Draw_Ring(const XMFLOAT3& position, const XMFLOAT3& rotat
 	// 3Dマトリックス設定
 	{
 		XMMATRIX world /*= XMMatrixScaling(Scaling.x, Scaling.y, Scaling.z)*/ = XMMatrixIdentity();
-		world *= XMMatrixRotationRollPitchYaw(XMConvertToRadians(rotation.x), XMConvertToRadians(rotation.y), XMConvertToRadians(rotation.z));
+		world *= XMMatrixRotationRollPitchYaw(XMConvertToRadians(rotation.x), XMConvertToRadians(rotation.y - 10.0f), XMConvertToRadians(rotation.z));
 		world *= XMMatrixTranslation(position.x, position.y, position.z);
 
 		const auto camera01 = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<CCamera>("camera");

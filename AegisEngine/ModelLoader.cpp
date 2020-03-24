@@ -198,8 +198,8 @@ void CMODEL::Draw()
 	matrix = XMMatrixMultiply(matrix, transform);
 
 	{
-		const auto camera01 = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<CCamera>("camera");
-		const auto camera02 = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
+		auto camera01 = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<CCamera>("camera");
+		auto camera02 = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
 
 		{
 			XMVECTOR camera_pos;

@@ -373,8 +373,8 @@ void FBXmodel::DrawMesh(const aiNode* Node, const XMMATRIX& Matrix)
 	world = XMMatrixTranspose(aiMatrixToMatrix(Node->mTransformation));
 	world *= Matrix;
 
-	const auto camera01 = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<CCamera>("camera");
-	const auto camera02 = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
+	auto camera01 = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<CCamera>("camera");
+	auto camera02 = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
 
 	XMMATRIX view = CManager::Get_Instance()->Get_ShadowMap()->Get_View();
 	XMMATRIX proj = CManager::Get_Instance()->Get_ShadowMap()->Get_Plojection();
@@ -450,6 +450,9 @@ void FBXmodel::DrawMesh(const aiNode* Node, const XMMATRIX& Matrix)
 	{
 		DrawMesh(Node->mChildren[i], world);
 	}
+
+	//camera01.reset();
+	//camera02.reset();
 }
 
 void FBXmodel::DrawMesh_DPP(const aiNode* Node, const XMMATRIX& Matrix)

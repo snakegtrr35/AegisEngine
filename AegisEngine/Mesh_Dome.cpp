@@ -146,8 +146,8 @@ void MESH_DOOM::Draw()
 			world *= XMMatrixRotationRollPitchYaw(XMConvertToRadians(Rotation.x), XMConvertToRadians(Rotation.y), XMConvertToRadians(Rotation.z));			// ‰ñ“]
 			world *= XMMatrixTranslation(Position.x, Position.y, Position.z);																				// ˆÚ“®
 
-			const auto camera01 = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<CCamera>("camera");
-			const auto camera02 = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
+			auto camera01 = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<CCamera>("camera");
+			auto camera02 = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
 
 			if (!camera01.expired() && Empty_weak_ptr<CCamera>(camera01))
 			{
