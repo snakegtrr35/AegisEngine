@@ -3,22 +3,34 @@
 
 std::wstring stringTowstring(const std::string& font)
 {
-	//wchar_t* wStrW = new wchar_t[font.size() * 2];
-
-	unique_ptr<wchar_t[]>  wStrW = make_unique<wchar_t[]>(font.size() * 2);
-
-	size_t wLen = 0;
-
 	//ロケール指定
 	setlocale(LC_ALL, "japanese");
 
-	mbstowcs_s(&wLen, wStrW.get(), font.size() * 2, font.c_str(), _TRUNCATE);
+	size_t length = font.size();
 
-	std::wstring f(wStrW.get());
+	unique_ptr<wchar_t[]>  StrW = make_unique<wchar_t[]>(length * 2);
 
-	//delete wStrW;
+	size_t wLen = 0;
 
-	return f;
+	mbstowcs_s(&wLen, StrW.get(), length * 2, font.c_str(), _TRUNCATE);
+
+	return std::wstring(StrW.get());
+}
+
+std::string wstringTostring(const std::wstring& font)
+{
+	//ロケール指定
+	setlocale(LC_ALL, "japanese");
+
+	size_t length = font.size();
+
+	unique_ptr<char[]>  Str = make_unique<char[]>(length * 2);
+
+	size_t Len = 0;
+
+	wcstombs_s(&Len, Str.get(), length * 2, font.c_str(), length * 2);
+
+	return string(Str.get());
 }
 
 #ifdef UNICODE

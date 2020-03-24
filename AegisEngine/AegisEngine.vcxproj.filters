@@ -281,6 +281,9 @@
     <ClCompile Include="Menu_Component.cpp">
       <Filter>ソース ファイル\System\Component</Filter>
     </ClCompile>
+    <ClCompile Include="FileChangeMonitor.cpp">
+      <Filter>ソース ファイル\System\Texture</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="imgui\imconfig.h">

@@ -43,6 +43,7 @@ struct Delete {
 };
 
 std::wstring stringTowstring(const std::string& font);
+std::string wstringTostring(const std::wstring& font);
 
 std::string Replace_String(std::string& replacedStr, const std::string& from, const std::string& to);
 

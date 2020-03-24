@@ -12,7 +12,7 @@ unique_ptr<TEXTURE_MANEGER> TEXTURE_MANEGER::Texture_Manager;
 //static HANDLE hEvent;
 //static size_t bufsiz = 512;
 
-void TEXTURE_MANEGER::Init()
+bool TEXTURE_MANEGER::Init()
 {
 	if (nullptr == Texture_Manager.get())
 	{
@@ -44,96 +44,23 @@ void TEXTURE_MANEGER::Init()
 	// 画像データの読み込み
 	Texture_Manager->Load(flag);
 
-	//{
-	//	// 対象のディレクトリを監視用にオープンする.
-	//	// 共有ディレクトリ使用可、対象フォルダを削除可
-	//	// 非同期I/O使用
-	//	hDir = CreateFile(
-	//		"./asset/texture", // 監視先
-	//		FILE_LIST_DIRECTORY,
-	//		FILE_SHARE_READ | FILE_SHARE_WRITE,
-	//		nullptr,
-	//		OPEN_EXISTING,
-	//		FILE_FLAG_BACKUP_SEMANTICS | FILE_FLAG_OVERLAPPED, // ReadDirectoryChangesW用
-	//		nullptr
-	//	);
-
-	//	if (hDir == INVALID_HANDLE_VALUE) {
-	//		FAILDE_ASSERT;
-	//	}
-
-
-	//	// 変更されたファイルのリストを記録するためのバッファ
-	//	// 最初のReadDirectoryChangesWの通知から次のReadDirectoryChangesWまでの
-	//	// 間に変更されたファイルの情報を格納できるだけのサイズが必要
-	//	// バッファオーバーとしてもファイルに変更が発生したことは感知できるが、
-	//	// なにが変更されたかは通知できない。
-	//	std::vector<BYTE> buf(bufsiz);
-
-	//	pBuf = &buf[0];
-
-	//	// 非同期I/Oの完了待機用, 手動リセットモード。
-	//	// 変更通知のイベント発報とキャンセル完了のイベント発報の
-	//	// 2つのイベントソースがあるためイベントの流れが予想できず
-	//	// 自動リセットイベントにするのは危険。
-	//	hEvent = CreateEvent(nullptr, TRUE, FALSE, nullptr);
-
-	//	ResetEvent(hEvent);
-	//}
-
-	//{
-	//	// 非同期I/O
-	//	// ループ中でのみ使用・待機するので、ここ(スタック)に置いても安全.
-	//	OVERLAPPED olp = { 0 };
-
-	//	olp.hEvent = hEvent;
-
-	//	// 監視条件 (FindFirstChangeNotificationと同じ)
-	//	DWORD filter =
-	//		//FILE_NOTIFY_CHANGE_FILE_NAME |  // ファイル名の変更
-	//		//FILE_NOTIFY_CHANGE_DIR_NAME |  // ディレクトリ名の変更
-	//		//FILE_NOTIFY_CHANGE_ATTRIBUTES |  // 属性の変更
-	//		//FILE_NOTIFY_CHANGE_SIZE |  // サイズの変更
-	//		FILE_NOTIFY_CHANGE_LAST_WRITE;    // 最終書き込み日時の変更
-
-	//	// 変更を監視する.
-	//	// 初回呼び出し時にシステムが指定サイズでバッファを確保し、そこに変更を記録する
-	//	// 完了通知後もシステムは変更を追跡しており、後続のReadDirectoryChangeWの
-	//	// 呼び出しで、前回通知後からの変更をまとめて受け取ることができる
-	//	// バッファがあふれた場合はサイズ0で応答が返される
-	//	ReadDirectoryChangesW(
-	//		hDir,   // 対象ディレクトリ
-	//		pBuf,   // 通知を格納するバッファ
-	//		bufsiz, // バッファサイズ
-	//		FALSE,   // サブディレクトリを対象にするか?
-	//		filter, // 変更通知を受け取るフィルタ
-	//		NULL,   // (結果サイズ, 非同期なので未使用)
-	//		&olp,   // 非同期I/Oバッファ
-	//		NULL    // (完了ルーチン, 未使用)
-	//	);
-	//}
-
 #ifdef _DEBUG
 	{
-		Texture_Manager->monitor = make_unique<FileChangeMonitor>();
-		Texture_Manager->monitor->init("./asset/texture");
-
-		// 状況を更新
-		Texture_Manager->monitor->readChanges();
+		Texture_Manager->Monitor = make_unique<FILE_CHANGE_MONITOR>("./asset/texture");
+		if (false == Texture_Manager->Monitor->Init())
+		{
+			return false;
+		}
 	}
 #endif // _DEBUG
+
+	return true;
 }
 
 void TEXTURE_MANEGER::Uninit()
 {
 #ifdef _DEBUG
-	//解放
-	// 解放する
-	monitor->release();
-	//CancelIo(hDir);
-
-	//CloseHandle(hEvent);
-	//CloseHandle(hDir);
+	Monitor.reset(nullptr);
 #endif // _DEBUG
 
 	{
@@ -159,70 +86,114 @@ void TEXTURE_MANEGER::Update()
 	Load_Check();
 #endif // _DEBUG
 
-	string path;			// ファイル名(パス付き)
-	string file_name;		// ファイル名(パスなし)
-	string type;
+	//string path;			// ファイル名(パス付き)
+	//string file_name;		// ファイル名(パスなし)
+	//string type;
+	//size_t pos;
+	//DWORD time;				// ファイルの最終更新時間
+	//size_t first;			// 
+
+	//filesystem::directory_iterator e = filesystem::directory_iterator("./asset/texture");
+	//for (auto file : e)
+	//{
+	//	// 一つ一つのファイル名(パス付き)
+	//	path = file.path().string();
+
+	//	// 置換
+	//	replace(path.begin(), path.end(), '\\', '/');
+
+	//	pos = path.find_last_of("/");
+
+	//	file_name = path.substr(pos + 1);
+
+	//	time = Get_File_Time(path);
+
+	//	first = hash<string>()(file_name);//
+
+	//	if (TextureFile.find(first) != TextureFile.end())
+	//	{
+	//		if (time != TextureFile[first].Time)
+	//		{
+	//			// ファイルが更新された
+	//			wstring name;
+	//			HRESULT hr;
+	//			ID3D11ShaderResourceView* ShaderResourceView;
+
+	//			pos = file_name.find_last_of(".");
+	//			type = file_name.substr(pos + 1, 3);
+
+	//			// char から wchar_t への変換
+	//			name = stringTowstring("asset/texture/" + file_name);
+
+	//			if ("dds" == type)	// dds
+	//			{
+	//				hr = CreateDDSTextureFromFile(CRenderer::GetDevice(), CRenderer::GetDeviceContext(), name.c_str(), nullptr, &ShaderResourceView, nullptr, nullptr);
+	//				if (FAILED(hr))
+	//				{
+	//					FAILDE_ASSERT;
+	//					return;
+	//				}
+	//			}
+	//			else	// jpg か png
+	//			{
+	//				hr = CreateWICTextureFromFile(CRenderer::GetDevice(), CRenderer::GetDeviceContext(), name.c_str(), nullptr, &ShaderResourceView, nullptr, nullptr);
+	//				if (FAILED(hr))
+	//				{
+	//					FAILDE_ASSERT;
+	//					return;
+	//				}
+	//			}
+
+	//			TextureFile[first].Time = time;//
+	//			TextureData[first].Resource.reset(ShaderResourceView);//
+	//		}
+	//	}
+	//}
+
+	wstring path;			// ファイル名(パス付き)
+	wstring file_name;		// ファイル名(パスなし)
+	wstring type;
 	size_t pos;
-	DWORD time;				// ファイルの最終更新時間
 	size_t first;			// 
 
-	filesystem::directory_iterator e = filesystem::directory_iterator("./asset/texture");
-	for (auto file : e)
+	while (false == Monitor->Get_FileStack_Empty())
 	{
-		// 一つ一つのファイル名(パス付き)
-		path = file.path().string();
+		file_name = Monitor->Pop_FileStack();
 
-		// 置換
-		replace(path.begin(), path.end(), '\\', '/');
+		path = L"./asset/texture/" + file_name;
 
-		pos = path.find_last_of("/");
-
-		file_name = path.substr(pos + 1);
-
-		time = Get_File_Time(path);
-
-		first = hash<string>()(file_name);//
-
-		if (TextureFile.find(first) != TextureFile.end())
 		{
-			if (time != TextureFile[first].Time)
+			// ファイルが更新された
+			wstring name;
+			HRESULT hr;
+			ID3D11ShaderResourceView* ShaderResourceView;
+
+			pos = file_name.find_last_of(L".");
+			type = file_name.substr(pos + 1, 3);
+
+			if (L"dds" == type)	// dds
 			{
-				// ファイルが更新された
-				wstring name;
-				HRESULT hr;
-				ID3D11ShaderResourceView* ShaderResourceView;
-
-				pos = file_name.find_last_of(".");
-				type = file_name.substr(pos + 1, 3);
-
-				// char から wchar_t への変換
-				name = stringTowstring("asset/texture/" + file_name);
-
-				if ("dds" == type)	// dds
+				hr = CreateDDSTextureFromFile(CRenderer::GetDevice(), CRenderer::GetDeviceContext(), path.c_str(), nullptr, &ShaderResourceView, nullptr, nullptr);
+				if (FAILED(hr))
 				{
-					hr = CreateDDSTextureFromFile(CRenderer::GetDevice(), CRenderer::GetDeviceContext(), name.c_str(), nullptr, &ShaderResourceView, nullptr, nullptr);
-					if (FAILED(hr))
-					{
-						FAILDE_ASSERT;
-						return;
-					}
+					FAILDE_ASSERT;
+					return;
 				}
-				else	// jpg か png
-				{
-					hr = CreateWICTextureFromFile(CRenderer::GetDevice(), CRenderer::GetDeviceContext(), name.c_str(), nullptr, &ShaderResourceView, nullptr, nullptr);
-					if (FAILED(hr))
-					{
-						FAILDE_ASSERT;
-						return;
-					}
-				}
-
-				//TextureFile[file_name].Time = time;
-				//TextureData[file_name].Resource.reset(ShaderResourceView);
-
-				TextureFile[first].Time = time;//
-				TextureData[first].Resource.reset(ShaderResourceView);//
 			}
+			else	// jpg か png
+			{
+				hr = CreateWICTextureFromFile(CRenderer::GetDevice(), CRenderer::GetDeviceContext(), path.c_str(), nullptr, &ShaderResourceView, nullptr, nullptr);
+				if (FAILED(hr))
+				{
+					FAILDE_ASSERT;
+					return;
+				}
+			}
+
+			first = hash<string>()( wstringTostring(file_name));//
+
+			//TextureFile[first].Time = time;//
+			TextureData[first].Resource.reset(ShaderResourceView);//
 		}
 	}
 }
@@ -337,7 +308,7 @@ void TEXTURE_MANEGER::Load(const bool flag)
 			{
 				//テクスチャの登録
 				TextureFile[first].Path = path;
-				TextureFile[first].Time = Get_File_Time(path);
+				//TextureFile[first].Time = Get_File_Time(path);
 			}
 
 			// テクスチャの読み込み
@@ -494,7 +465,7 @@ void TEXTURE_MANEGER::Add(const string& file_name)
 
 			first = hash<string>()(file_name);//
 			TextureFile[first].Path = "asset/texture/" + path;
-			TextureFile[first].Time = Get_File_Time(path);
+			//TextureFile[first].Time = Get_File_Time(path);
 
 			TextureData[first].Resource.reset(ShaderResourceView);
 			TextureData[first].WH.x = width;
@@ -533,107 +504,12 @@ void TEXTURE_MANEGER::Load_Check()
 {
 	fps += TIMER::Get_DeltaTime();
 
-	if (20.0 < fps)
+	if (10.0 < fps)
 	{
 		fps = 0.0;
 
-		//{
-		//	// 非同期I/O
-		//	// ループ中でのみ使用・待機するので、ここ(スタック)に置いても安全.
-		//	OVERLAPPED olp = { 0 };
-
-		//	olp.hEvent = hEvent;
-
-		//	// 監視条件 (FindFirstChangeNotificationと同じ)
-		//	DWORD filter =
-		//		//FILE_NOTIFY_CHANGE_FILE_NAME |  // ファイル名の変更
-		//		//FILE_NOTIFY_CHANGE_DIR_NAME |  // ディレクトリ名の変更
-		//		//FILE_NOTIFY_CHANGE_ATTRIBUTES |  // 属性の変更
-		//		//FILE_NOTIFY_CHANGE_SIZE |  // サイズの変更
-		//		FILE_NOTIFY_CHANGE_LAST_WRITE;    // 最終書き込み日時の変更
-
-		//	// 変更を監視する.
-		//	// 初回呼び出し時にシステムが指定サイズでバッファを確保し、そこに変更を記録する
-		//	// 完了通知後もシステムは変更を追跡しており、後続のReadDirectoryChangeWの
-		//	// 呼び出しで、前回通知後からの変更をまとめて受け取ることができる
-		//	// バッファがあふれた場合はサイズ0で応答が返される
-		//	if (FALSE == ReadDirectoryChangesW(
-		//		hDir,   // 対象ディレクトリ
-		//		pBuf,   // 通知を格納するバッファ
-		//		bufsiz, // バッファサイズ
-		//		FALSE,   // サブディレクトリを対象にするか?
-		//		filter, // 変更通知を受け取るフィルタ
-		//		NULL,   // (結果サイズ, 非同期なので未使用)
-		//		&olp,   // 非同期I/Oバッファ
-		//		NULL    // (完了ルーチン, 未使用)
-		//	))
-		//	{
-		//		return;
-		//	}
-
-		//	wstring FileName;
-
-		//	FILE_NOTIFY_INFORMATION* pInfo = (FILE_NOTIFY_INFORMATION*)pBuf;
-		//	switch (pInfo->Action)
-		//	{
-		//	case FILE_ACTION_MODIFIED:
-		//		FileName = wstring(pInfo->FileName);
-
-		//		FileName.pop_back();
-
-		//		Load_Flag = true;
-
-		//		break;
-		//	}
-		//}
-
-		int a;
-
 		// 状況を更新
-		monitor->readChanges();
-
-		// 変更があればログとして吐き出す
-		while (monitor->getFileAcctionStackCount() > 0)
-		{
-			auto fileAction = monitor->popFileAcctionStack();
-			wstring actionType = L"";
-
-			/*switch (fileAction.m_actionType)
-			{
-			case FileActionType::kAdded:
-				actionType = L"Added";
-
-				a = 0;
-
-				break;
-			case FileActionType::kRemoved:
-				actionType = L"Removed";
-
-				a = 0;
-
-				break;
-			case FileActionType::kModified:
-				actionType = L"Modified";
-
-				a = 0;
-
-				break;
-			case FileActionType::kRenamedOld:
-				actionType = L"RenamedOld";
-
-				a = 0;
-
-				break;
-			case FileActionType::kRenamedNew:
-				actionType = L"RenamedNew";
-
-				a = 0;
-
-				break;
-			default:
-				break;
-			}*/
-		}
+		Monitor->readChanges();
 	}
 }
 #endif // _DEBUG

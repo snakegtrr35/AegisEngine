@@ -39,6 +39,7 @@
     <ClCompile Include="Fade.cpp" />
     <ClCompile Include="FBXmodel.cpp" />
     <ClCompile Include="Field.cpp" />
+    <ClCompile Include="FileChangeMonitor.cpp" />
     <ClCompile Include="ForwardPlus.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
       </ExcludedFromBuild>
