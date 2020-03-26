@@ -4,11 +4,13 @@
 #define MANAGER_H
 
 #include	"Scene_Manager.h"
+#include	"ShadowMap.h"
+#include	"My_imgui.h"
 //class SCENE_MANAGER;
 class SCENE;
 
-class SHADOW_MAP;
-class My_imgui;
+//class SHADOW_MAP;
+//class My_imgui;
 
 class CManager {
 private:
@@ -25,10 +27,10 @@ private:
 
 	static unique_ptr<CManager> Manager;
 
-	unique_ptr<SCENE_MANAGER, Uninit> pSceneManager;
+	unique_ptr<SCENE_MANAGER> pSceneManager;
 	bool GameEnable;
 
-	unique_ptr<SHADOW_MAP, Delete> pShadowMap;
+	unique_ptr<SHADOW_MAP> pShadowMap;
 #ifdef _DEBUG
 	unique_ptr<My_imgui, Delete> imgui;		// Imgui‚ÌƒNƒ‰ƒX
 	bool Play_Enable;

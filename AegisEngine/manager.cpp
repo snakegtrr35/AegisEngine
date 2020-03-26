@@ -253,12 +253,20 @@ void CManager::Draw()
 
 void CManager::Uninit()
 {
-	//pSceneManager->Uninit();
+	pSceneManager->Uninit();
 	pSceneManager.reset(nullptr);
 
+	//pShadowMap->Uninit();
 	pShadowMap.reset(nullptr);//
 
 #ifdef _DEBUG
+
+	{
+		//unique_ptr<My_imgui> temp;
+
+		//temp.swap(imgui);
+	}
+
 	imgui->Uninit();
 	imgui.reset(nullptr);
 #endif // _DEBUG

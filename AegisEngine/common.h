@@ -27,17 +27,53 @@ const constexpr float ANIMETION_FRAME_30 = 1.f / 30.0f;		// 30FPS
 /*! Release() がある */
 struct Release {
 	template<class T>
-	void operator()(T* p) const {
+	void operator()(T* p) const noexcept
+	{
 		p->Release();
 		p = nullptr;
 	}
 };
 
 //! スマートポインタ用のカスタムデリーター
-/*! Uninit() がある */
 struct Delete {
 	template<class T>
-	void operator()(T* p) const {
+	void operator()(T* p) const noexcept
+	{
+		delete p;
+		p = nullptr;
+	}
+};
+
+//! スマートポインタ用のカスタムデリーター(配列版)
+struct Delete_Array {
+	template<class T>
+	void operator()(T* p) const noexcept
+	{
+		delete[] p;
+		p = nullptr;
+	}
+};
+
+//! スマートポインタ用のカスタムデリーター
+/*! Uninit() がある */
+struct Uninit {
+	template<class T>
+	void operator()(T* p) const noexcept
+	{
+		p->Uninit();
+		delete p;
+		p = nullptr;
+	}
+};
+
+//! スマートポインタ用のカスタムデリーター(配列版)
+/*! Uninit() がある */
+struct Uninit_Array {
+	template<class T>
+	void operator()(T* p) const noexcept
+	{
+		p->Uninit();
+		delete[] p;
 		p = nullptr;
 	}
 };
