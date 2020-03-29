@@ -3,9 +3,9 @@
 #ifndef  POLYGON_3D_H
 #define POLYGON_3D_H
 
-#include	"Game_Object.h"
 #include	"Renderer.h"
 
+class GAME_OBJECT;
 class TEXTURE;
 
 struct POLYGOM {

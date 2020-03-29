@@ -1,3 +1,4 @@
+#include	"Game_Object.h"
 #include	"Sprite.h"
 #include	"manager.h"
 #include	"ShadowMap.h"
@@ -347,6 +348,32 @@ CHILD_DATE* const SPRITE::Get_Child_Sptite(const string& name)
 
 	return nullptr;
 }
+
+void SPRITE::Draw_Child()
+{
+	for (const auto& child : Children)
+	{
+		if (child->Child->Enable)
+		{
+			child->Child->Draw();
+
+			child->Child->Draw_Child();
+		}
+	}
+};
+
+void SPRITE::Draw_DPP_Child()
+{
+	for (const auto& child : Children)
+	{
+		if (child->Child->Enable)
+		{
+			child->Child->Draw_DPP();
+
+			child->Child->Draw_DPP_Child();
+		}
+	}
+};
 
 void SPRITE::Set_Position_Child(const string& const name, const XMFLOAT2& position, const XMFLOAT2& offset)
 {

@@ -3,7 +3,7 @@
 #ifndef PLAYER_H
 #define PLAYER_H
 
-#include	"Game_Object.h"
+class GAME_OBJECT;
 
 class CMODEL;
 class FBXmodel;

@@ -1,3 +1,4 @@
+#include	"Game_Object.h"
 #include	"Field.h"
 #include	"Renderer.h"
 #include	"camera.h"

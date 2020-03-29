@@ -6,8 +6,8 @@
 //
 //=======================================
 
-#ifndef _FBXmodel_H__
-#define _FBXmodel_H__
+#ifndef FBXmodel_H
+#define FBXmodel_H
 
 #include	<assimp/Importer.hpp>
 #include	<assimp/cimport.h>
@@ -109,4 +109,4 @@ public:
 	
 };
 
-#endif // !_FBXmodel_H__
+#endif // !FBXmodel_H

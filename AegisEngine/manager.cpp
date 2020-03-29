@@ -116,12 +116,12 @@ void CManager::Update()
 
 		if (Play_Enable)
 		{
-			pSceneManager->Update(TIMER::Get_DeltaTime());
+			pSceneManager->Update((float)TIMER::Get_DeltaTime());
 		}
 		else
 		{
 			auto camera = pSceneManager->Get_Scene()->Get_Game_Object("camera");
-			if(nullptr != camera) camera->Update(TIMER::Get_DeltaTime());
+			if(nullptr != camera) camera->Update((float)TIMER::Get_DeltaTime());
 		}
 #else
 		pSceneManager->Update(TIMER::Get_DeltaTime());
@@ -136,7 +136,7 @@ void CManager::Update()
 
 		// Effekseer
 		{
-			EFFEKSEER_MANAGER::Update(TIMER::Get_DeltaTime());
+			EFFEKSEER_MANAGER::Update((float)TIMER::Get_DeltaTime());
 		}
 
 		MOUSE::Get_Mouse()->Reset_Wheel_Moveset();
@@ -303,8 +303,9 @@ const bool CManager::Get_Mouse_Over_ImGui()
 {
 #ifdef _DEBUG
 	return imgui->Get_Mouse_Over_Enable();
-#endif // _DEBUG
+#else
 	return false;
+#endif // _DEBUG
 }
 
 bool CManager::Get_GameEnd()

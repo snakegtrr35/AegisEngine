@@ -1,3 +1,4 @@
+#include	"Game_Object.h"
 #include	"Fade.h"
 #include	"Scene.h"
 #include	"manager.h"

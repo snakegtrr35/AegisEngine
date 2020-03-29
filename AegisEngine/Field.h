@@ -3,10 +3,11 @@
 #ifndef FIELD_H
 #define FIELD_H
 
-#include	"Game_Object.h"
 #include	"texture.h"
 #include	"Renderer.h"
 #include	"main.h"
+
+class GAME_OBJECT;
 
 class FIELD : public GAME_OBJECT {
 	VERTEX_3D Vertex[4];

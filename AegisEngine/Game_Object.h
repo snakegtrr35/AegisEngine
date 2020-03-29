@@ -3,14 +3,13 @@
 #ifndef GAME_OBJECT_H
 #define GAME_OBJECT_H
 
-//#include	"Component.h"
 #include	"Component_Manager.h"
 
 class GAME_OBJECT {
 private:
 	static unordered_set<string> Object_Name_Map;
 
-	friend COMPONENT_MANEGER;
+	//friend COMPONENT_MANEGER;
 
 protected:
 	string Object_Name;					//! オブジェクトの名前
@@ -46,9 +45,9 @@ public:
 
 	virtual void Init();
 	virtual void Draw();
-	virtual void Draw_DPP() {}
+	virtual void Draw_DPP() = 0;
 	virtual void Update(float delta_time);
-	virtual void Uninit() {}
+	virtual void Uninit() = 0;
 
 	void Set_Destroy() {
 		DestroyFlag = true;

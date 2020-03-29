@@ -15,7 +15,9 @@
 #include	"Renderer.h"
 #include	"Mesh.h"
 #include	"Animetion_State_Machine.h"
-#include	"Game_Object.h"
+//#include	"Game_Object.h"
+
+class GAME_OBJECT;
 
 class CMODEL : public GAME_OBJECT {
 private:

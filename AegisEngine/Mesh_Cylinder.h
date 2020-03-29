@@ -3,8 +3,9 @@
 #ifndef MESH_CYLINDER_H
 #define MESH_CYLINDER_H
 
-#include	"Game_Object.h"
 #include	"texture.h"
+
+class GAME_OBJECT;
 
 class MESH_CYlLINDER : public GAME_OBJECT {
 private:

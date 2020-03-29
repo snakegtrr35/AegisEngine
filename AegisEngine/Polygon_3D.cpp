@@ -1,3 +1,4 @@
+#include	"Game_Object.h"
 #include	"Polygon_3D.h"
 #include	"texture.h"
 #include	"Input.h"

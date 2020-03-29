@@ -1,9 +1,10 @@
-#include	"Renderer.h"
-#include	"texture.h"
+#include	"Game_Object.h"
 #include	"Billboard.h"
 
 #include	"camera.h"
 #include	"Debug_Camera.h"
+#include	"Renderer.h"
+#include	"texture.h"
 #include	"manager.h"
 #include	"Scene.h"
 #include	"ShadowMap.h"

@@ -1,3 +1,4 @@
+#include	"Game_Object.h"
 #include	"ModelLoader.h"
 #include	"Library/DirectXTex/WICTextureLoader.h"
 

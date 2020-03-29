@@ -35,12 +35,11 @@ private:
 
 	float Mouse_Sensitivity;
 
-	MOUSE() {}									// デフォルトコンストラクタの禁止
-	MOUSE(const MOUSE& mouse) {}				// コピーコンストラクタの禁止
-	MOUSE& operator=(const MOUSE& mouse) {}		// ムーブコンストラクタの禁止
+	MOUSE() {}									// デフォルトコンストラクタの外部からの呼び出し禁止
+	MOUSE(const MOUSE&) = delete;				// コピーコンストラクタの禁止
+	MOUSE& operator=(const MOUSE&) = delete;	// ムーブコンストラクタの禁止
 
 public:
-
 	~MOUSE() { Uninit(); }
 
 	static void Init(void);

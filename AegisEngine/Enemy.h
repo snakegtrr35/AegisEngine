@@ -3,10 +3,8 @@
 #ifndef ENEMY_H
 #define ENEMY_H
 
-class CMODEL;
-class COLLISION;
-class BOUNDING_AABB;
 class GAME_OBJECT;
+class CMODEL;
 
 class ENEMY : public GAME_OBJECT {
 private:

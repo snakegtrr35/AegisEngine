@@ -3,8 +3,9 @@
 #ifndef MESH_FIELF_H
 #define MESH_FIELF_H
 
-#include	"Game_Object.h"
+#include	"Renderer.h"
 
+class GAME_OBJECT;
 class TEXTURE;
 
 //==============================

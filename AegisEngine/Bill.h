@@ -3,8 +3,7 @@
 #ifndef BILL_H
 #define BILL_H
 
-#include	"Game_Object.h"
-
+class GAME_OBJECT;
 class CMODEL;
 
 class BILL : public GAME_OBJECT {

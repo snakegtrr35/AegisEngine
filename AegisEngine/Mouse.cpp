@@ -1,3 +1,7 @@
+#ifdef _DEBUG
+#define new new(_NORMAL_BLOCK, __FILE__, __LINE__)
+#endif // _DEBUG
+
 #include	"Mouse.h"
 #include	<algorithm>
 
@@ -22,7 +26,7 @@ void MOUSE::Update(void)
 	{
 		GetCursorPos(&pMouse->ScreenPoint);
 
-		pMouse->ScreenPosition = XMFLOAT2(pMouse->ScreenPoint.x, pMouse->ScreenPoint.y);
+		pMouse->ScreenPosition = XMFLOAT2((float)pMouse->ScreenPoint.x, (float)pMouse->ScreenPoint.y);
 	}
 }
 

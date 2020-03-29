@@ -1,9 +1,9 @@
-#include	"Game_Object.h"
-#include	"Component.h"
-
 #ifdef _DEBUG
 #define new new(_NORMAL_BLOCK, __FILE__, __LINE__)
 #endif // _DEBUG
+
+#include	"Game_Object.h"
+#include	"Component.h"
 
 unordered_set<string> GAME_OBJECT::Object_Name_Map;
 

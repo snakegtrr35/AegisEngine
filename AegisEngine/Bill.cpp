@@ -1,3 +1,4 @@
+#include	"Game_Object.h"
 #include	"Bill.h"
 #include	"ModelLoader.h"
 #include	"Component.h"

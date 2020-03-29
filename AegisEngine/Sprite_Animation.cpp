@@ -1,3 +1,4 @@
+#include	"Game_Object.h"
 #include	"Sprite_Animation.h"
 #include	"manager.h"
 #include	"ShadowMap.h"

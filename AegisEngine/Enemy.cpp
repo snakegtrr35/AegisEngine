@@ -2,8 +2,8 @@
 #include	"manager.h"
 #include	"Scene_Manager.h"
 
-#include	"Player.h"
 #include	"Enemy.h"
+#include	"Player.h"
 #include	"Debug_Camera.h"
 #include	"Bounding_Aabb.h"
 

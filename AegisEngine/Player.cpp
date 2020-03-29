@@ -1,3 +1,6 @@
+#include	"Game_Object.h"
+#include	"Player.h"
+
 #include	"manager.h"
 #include	"Scene.h"
 
@@ -6,11 +9,9 @@
 
 #include	"Input.h"
 #include	"Collision.h"
-#include	"Player.h"
 #include	"Bounding_Aabb.h"
 #include	"Bullet.h"
 #include	"Debug_Camera.h"
-
 #include	"audio_clip.h"
 
 static void Create_Bullet(XMFLOAT3& position, const XMFLOAT3& front);
