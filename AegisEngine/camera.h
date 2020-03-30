@@ -47,11 +47,11 @@ public:
 		return pCamera;
 	}
 
-	static const XMMATRIX& Get_Camera_View() {
+	const XMMATRIX& Get_Camera_View() {
 		return m_ViewMatrix;
 	}
 
-	static const XMMATRIX& Get_Camera_Projection() {
+	const XMMATRIX& Get_Camera_Projection() {
 		return m_ProjectionMatrix;
 	}
 

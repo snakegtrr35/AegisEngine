@@ -13,12 +13,11 @@ class TEXTURE;
 //==============================
 class BILL_BOARD : public GAME_OBJECT {
 private:
-
 protected:
-	ID3D11Buffer* pVertexBuffer;			// 頂点バッファ
-	static ID3D11Buffer* pIndexBuffer;		// インデックスバッファ
-	VERTEX_3D Vertex[4];					// 頂点データ
-	TEXTURE* Texture;						// テクスチャ
+	unique_ptr<ID3D11Buffer, Release> pVertexBuffer;			// 頂点バッファ
+	static unique_ptr<ID3D11Buffer, Release> pIndexBuffer;		// インデックスバッファ
+	VERTEX_3D Vertex[4];										// 頂点データ
+	unique_ptr<TEXTURE> Texture;								// テクスチャ
 
 	XMFLOAT2 WH;							// 幅と高さ
 

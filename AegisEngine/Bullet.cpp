@@ -78,6 +78,15 @@ void BULLET::Update(float delta_time)
 	if (HP <= 0)
 	{
 		CManager::Get_Instance()->Get_Scene()->Destroy_Game_Object(this);
+
+		// ビルボード
+		{
+			BILL_BOARD_ANIMATION* bba = CManager::Get_Instance()->Get_Scene()->Add_Game_Object<BILL_BOARD_ANIMATION>(LAYER_NAME::EFFECT, "test");
+			bba->Set_Position(&Position);
+			bba->SetWH(XMFLOAT2(1.0f, 1.0f));
+			bba->SetParam(9.0f, 4, 4);
+			bba->Init();
+		}
 	}
 
 	fps += delta_time;
@@ -106,6 +115,7 @@ void BULLET::Update(float delta_time)
 				//	bba->Set_Position(&Position);
 				//	bba->SetWH(XMFLOAT2(1.0f, 1.0f));
 				//	bba->SetParam(3.0f, 4, 4);
+				//	bba->Init();
 				//}
 
 				CManager::Get_Instance()->Get_Scene()->Destroy_Game_Object(this);
@@ -128,7 +138,6 @@ void BULLET::Update(float delta_time)
 					//	bba->Set_Position(&Position);
 					//	bba->SetWH(XMFLOAT2(10.0f, 10.0f));
 					//	bba->SetParam(3.0f, 4, 4);
-
 					//	bba->Init();
 					//}
 
