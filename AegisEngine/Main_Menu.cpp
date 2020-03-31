@@ -12,6 +12,8 @@
 #include	"Fade.h"
 #include	"Bill.h"
 #include	"Player.h"
+#include	"Bullet.h"
+#include	"Billboard.h"
 
 #include	"Timer.h"
 
@@ -104,6 +106,11 @@ void MAIN_MENU::Update(float delta_time)
 void MAIN_MENU::Uninit()
 {
 	//field.reset(nullptr);
+
+	{
+		this->Delete_Game_Objects<BULLET>();
+		this->Delete_Game_Objects<BILL_BOARD_ANIMATION>();
+	}
 
 #ifdef _DEBUG
 	static bool flag = true;

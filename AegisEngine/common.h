@@ -81,6 +81,8 @@ struct Uninit_Array {
 std::wstring stringTowstring(const std::string& font);
 std::string wstringTostring(const std::wstring& font);
 
+void ExtratNum(std::string& str);
+
 std::string Replace_String(std::string& replacedStr, const std::string& from, const std::string& to);
 
 #ifdef UNICODE

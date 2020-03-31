@@ -14,6 +14,8 @@
 
 #include	"audio_clip.h"
 
+#include	<sstream>
+
 BULLET::BULLET() : MoveVector(XMFLOAT3(0.0f, 0.0f, 0.0f))
 {
 	Position = XMFLOAT3(0.0f, 0.0f, 0.0f);
@@ -22,7 +24,7 @@ BULLET::BULLET() : MoveVector(XMFLOAT3(0.0f, 0.0f, 0.0f))
 
 	Model = make_unique<CMODEL>();
 
-	HP = 400;
+	HP = 200;
 }
 
 BULLET::BULLET(XMFLOAT3& position, XMFLOAT3& move_vector) : MoveVector(move_vector)
@@ -33,7 +35,7 @@ BULLET::BULLET(XMFLOAT3& position, XMFLOAT3& move_vector) : MoveVector(move_vect
 
 	Model = make_unique<CMODEL>();
 
-	HP = 400;
+	HP = 200;
 }
 
 BULLET::~BULLET()
@@ -81,12 +83,23 @@ void BULLET::Update(float delta_time)
 
 		// ビルボード
 		{
-			BILL_BOARD_ANIMATION* bba = CManager::Get_Instance()->Get_Scene()->Add_Game_Object<BILL_BOARD_ANIMATION>(LAYER_NAME::EFFECT, "test");
-			bba->Set_Position(&Position);
-			bba->SetWH(XMFLOAT2(1.0f, 1.0f));
-			bba->SetParam(9.0f, 4, 4);
-			bba->Init();
+			auto name = this->Get_Object_Name();
+
+			string str(name);
+			ExtratNum(str);
+			if (false == str.empty())
+			{
+				const int x = std::stoi(str);
+
+				BILL_BOARD_ANIMATION* bba = CManager::Get_Instance()->Get_Scene()->Add_Game_Object<BILL_BOARD_ANIMATION>(LAYER_NAME::EFFECT, "explosion" + to_string(x));
+				bba->Set_Position(&Position);
+				bba->SetWH(XMFLOAT2(1.0f, 1.0f));
+				bba->SetParam(6.0f, 4, 4);
+				bba->Init();
+			}
 		}
+
+		return;
 	}
 
 	fps += delta_time;
@@ -94,6 +107,8 @@ void BULLET::Update(float delta_time)
 	if (ANIMETION_FRAME_60 <= fps)
 	{
 		HP--;
+
+		fps = 0.0f;
 	}
 	
 	auto scene = CManager::Get_Instance()->Get_Scene();
@@ -109,19 +124,27 @@ void BULLET::Update(float delta_time)
 
 			if (ContainmentType::DISJOINT != bullet_collision->Get_Collition().Contains(enemy_collision->Get_Collition()))
 			{
-				//// ビルボード
-				//{
-				//	BILL_BOARD_ANIMATION* bba = CManager::Get_Instance()->Get_Scene()->Add_Game_Object<BILL_BOARD_ANIMATION>(LAYER_NAME::EFFECT, "test");
-				//	bba->Set_Position(&Position);
-				//	bba->SetWH(XMFLOAT2(1.0f, 1.0f));
-				//	bba->SetParam(3.0f, 4, 4);
-				//	bba->Init();
-				//}
+				// ビルボード
+				{
+					auto name = this->Get_Object_Name();
+
+					string str(name);
+					ExtratNum(str);
+					const int x = std::stoi(str);
+
+					BILL_BOARD_ANIMATION* bba = CManager::Get_Instance()->Get_Scene()->Add_Game_Object<BILL_BOARD_ANIMATION>(LAYER_NAME::EFFECT, "explosion" + to_string(x));
+					bba->Set_Position(&Position);
+					bba->SetWH(XMFLOAT2(1.0f, 1.0f));
+					bba->SetParam(6.0f, 4, 4);
+					bba->Init();
+				}
 
 				CManager::Get_Instance()->Get_Scene()->Destroy_Game_Object(this);
 				CManager::Get_Instance()->Get_Scene()->Destroy_Game_Object(enemy);
 
 				AUDIO_MANAGER::Play_Sound_Object(SOUND_INDEX::SOUND_INDEX_EXPLOSION);
+
+				return;
 			}
 
 			// プレイヤーと弾の当たり判定
@@ -132,20 +155,28 @@ void BULLET::Update(float delta_time)
 				{
 					auto billboards = scene->Get_Game_Objects<BILL_BOARD_ANIMATION>();
 
-					//// ビルボード
-					//{
-					//	BILL_BOARD_ANIMATION* bba = CManager::Get_Instance()->Get_Scene()->Add_Game_Object<BILL_BOARD_ANIMATION>(LAYER_NAME::EFFECT, "billboard" + to_string(billboards.size() + 1));
-					//	bba->Set_Position(&Position);
-					//	bba->SetWH(XMFLOAT2(10.0f, 10.0f));
-					//	bba->SetParam(3.0f, 4, 4);
-					//	bba->Init();
-					//}
+					// ビルボード
+					{
+						auto name = this->Get_Object_Name();
+
+						string str(name);
+						ExtratNum(str);
+						const int x = std::stoi(str);
+
+						BILL_BOARD_ANIMATION* bba = CManager::Get_Instance()->Get_Scene()->Add_Game_Object<BILL_BOARD_ANIMATION>(LAYER_NAME::EFFECT, "explosion" + to_string(x));
+						bba->Set_Position(&Position);
+						bba->SetWH(XMFLOAT2(1.0f, 1.0f));
+						bba->SetParam(6.0f, 4, 4);
+						bba->Init();
+					}
 
 					player.lock()->Add_HP(-1.0f);
 
 					CManager::Get_Instance()->Get_Scene()->Destroy_Game_Object(this);
 
 					AUDIO_MANAGER::Play_Sound_Object(SOUND_INDEX::SOUND_INDEX_EXPLOSION);
+
+					return;
 				}
 			}
 		}

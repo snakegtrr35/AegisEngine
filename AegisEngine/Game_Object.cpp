@@ -33,3 +33,36 @@ void GAME_OBJECT::Update(float delta_time)
 {
 	Component->Update(delta_time);
 }
+
+void GAME_OBJECT::Set_Destroy()
+{
+	DestroyFlag = true;
+};
+
+// ƒƒ‚ƒŠã‚©‚ç‚Ìíœ
+bool GAME_OBJECT::Destroy()
+{
+	if (DestroyFlag)
+	{
+		return true;
+	}
+	return false;
+};
+
+void GAME_OBJECT::Set_Object_Name(const string& name)
+{
+
+	if (Object_Name_Map.find(name) == Object_Name_Map.end())
+	{
+		Object_Name_Map.emplace(name);
+		Object_Name = name;
+	}
+#ifdef _DEBUG
+	else
+	{
+		//Erroer_Message("Šù‚Ég‚í‚ê‚Ä‚¢‚é–¼‘O‚Å‚·");
+
+		int a = 0;
+	}
+#endif // _DEBUG
+};

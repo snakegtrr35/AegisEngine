@@ -41,6 +41,13 @@ std::string wstringTostring(const std::wstring& font)
 	return s;
 }
 
+auto notdigit = not1(std::function<bool(char)>(bind(std::isdigit<char>, std::placeholders::_1, std::locale())));
+
+void ExtratNum(std::string& str)
+{
+	str.erase(std::remove_if(str.begin(), str.end(), notdigit), str.end());
+}
+
 #ifdef UNICODE
 void Erroer_Message(const std::wstring& str1, const std::wstring& str2)
 {

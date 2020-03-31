@@ -49,37 +49,16 @@ public:
 	virtual void Update(float delta_time);
 	virtual void Uninit() = 0;
 
-	void Set_Destroy() {
-		DestroyFlag = true;
-	};
+	void Set_Destroy();
 
 	// ƒƒ‚ƒŠã‚©‚ç‚Ìíœ
-	bool Destroy() {
-		if (DestroyFlag)
-		{
-			return true;
-		}
-		return false;
-	};
+	bool Destroy();
 
 	const string& Get_Object_Name() {
 		return Object_Name;
 	};
 
-	void Set_Object_Name(const string& name) {
-
-		if (Object_Name_Map.find(name) == Object_Name_Map.end())
-		{
-			Object_Name_Map.emplace(name);
-			Object_Name = name;
-		}
-#ifdef _DEBUG
-		else
-		{
-			//Erroer_Message("Šù‚Ég‚í‚ê‚Ä‚¢‚é–¼‘O‚Å‚·");
-		}
-#endif // _DEBUG
-	};
+	void Set_Object_Name(const string& name);
 
 
 	void Set_Object_Map(const string& name) {
