@@ -7,11 +7,6 @@
 
 unique_ptr<TEXTURE_MANEGER> TEXTURE_MANEGER::Texture_Manager;
 
-//static HANDLE hDir;
-//static void* pBuf;
-//static HANDLE hEvent;
-//static size_t bufsiz = 512;
-
 bool TEXTURE_MANEGER::Init()
 {
 	if (nullptr == Texture_Manager.get())
@@ -84,71 +79,6 @@ void TEXTURE_MANEGER::Update()
 {
 #ifdef _DEBUG
 	Load_Check();
-#endif // _DEBUG
-
-	//string path;			// ファイル名(パス付き)
-	//string file_name;		// ファイル名(パスなし)
-	//string type;
-	//size_t pos;
-	//DWORD time;				// ファイルの最終更新時間
-	//size_t first;			// 
-
-	//filesystem::directory_iterator e = filesystem::directory_iterator("./asset/texture");
-	//for (auto file : e)
-	//{
-	//	// 一つ一つのファイル名(パス付き)
-	//	path = file.path().string();
-
-	//	// 置換
-	//	replace(path.begin(), path.end(), '\\', '/');
-
-	//	pos = path.find_last_of("/");
-
-	//	file_name = path.substr(pos + 1);
-
-	//	time = Get_File_Time(path);
-
-	//	first = hash<string>()(file_name);//
-
-	//	if (TextureFile.find(first) != TextureFile.end())
-	//	{
-	//		if (time != TextureFile[first].Time)
-	//		{
-	//			// ファイルが更新された
-	//			wstring name;
-	//			HRESULT hr;
-	//			ID3D11ShaderResourceView* ShaderResourceView;
-
-	//			pos = file_name.find_last_of(".");
-	//			type = file_name.substr(pos + 1, 3);
-
-	//			// char から wchar_t への変換
-	//			name = stringTowstring("asset/texture/" + file_name);
-
-	//			if ("dds" == type)	// dds
-	//			{
-	//				hr = CreateDDSTextureFromFile(CRenderer::GetDevice(), CRenderer::GetDeviceContext(), name.c_str(), nullptr, &ShaderResourceView, nullptr, nullptr);
-	//				if (FAILED(hr))
-	//				{
-	//					FAILDE_ASSERT;
-	//					return;
-	//				}
-	//			}
-	//			else	// jpg か png
-	//			{
-	//				hr = CreateWICTextureFromFile(CRenderer::GetDevice(), CRenderer::GetDeviceContext(), name.c_str(), nullptr, &ShaderResourceView, nullptr, nullptr);
-	//				if (FAILED(hr))
-	//				{
-	//					FAILDE_ASSERT;
-	//					return;
-	//				}
-	//			}
-
-	//			TextureFile[first].Time = time;//
-	//			TextureData[first].Resource.reset(ShaderResourceView);//
-	//		}
-	//	}
-	//}
 
 	wstring path;			// ファイル名(パス付き)
 	wstring file_name;		// ファイル名(パスなし)
@@ -169,7 +99,7 @@ void TEXTURE_MANEGER::Update()
 			ID3D11ShaderResourceView* ShaderResourceView;
 
 			pos = file_name.find_last_of(L".");
-			type = file_name.substr(pos + 1, 3);
+			type = file_name.substr(pos + 1);
 
 			if (L"dds" == type)	// dds
 			{
@@ -190,12 +120,12 @@ void TEXTURE_MANEGER::Update()
 				}
 			}
 
-			first = hash<string>()( wstringTostring(file_name));//
+			first = hash<string>()( wstringTostring(file_name));
 
-			//TextureFile[first].Time = time;//
-			TextureData[first].Resource.reset(ShaderResourceView);//
+			TextureData[first].Resource.reset(ShaderResourceView);
 		}
 	}
+#endif // _DEBUG
 }
 
 void TEXTURE_MANEGER::Default_Load(const bool flag)
@@ -264,13 +194,9 @@ void TEXTURE_MANEGER::Default_Load(const bool flag)
 				}
 			}
 
-			//TextureData[file_name].Resource.reset(ShaderResourceView);
-			//TextureData[file_name].WH.x = width;
-			//TextureData[file_name].WH.y = height;
-
-			TextureData[first].Resource.reset(ShaderResourceView);//
-			TextureData[first].WH.x = width;//
-			TextureData[first].WH.y = height;//
+			TextureData[first].Resource.reset(ShaderResourceView);
+			TextureData[first].WH.x = width;
+			TextureData[first].WH.y = height;
 		}
 	}
 }
@@ -308,7 +234,6 @@ void TEXTURE_MANEGER::Load(const bool flag)
 			{
 				//テクスチャの登録
 				TextureFile[first].Path = path;
-				//TextureFile[first].Time = Get_File_Time(path);
 			}
 
 			// テクスチャの読み込み
@@ -342,11 +267,6 @@ void TEXTURE_MANEGER::Load(const bool flag)
 						return;
 					}
 				}
-
-				//TextureData[file_name].Resource.reset(ShaderResourceView);
-				//TextureData[file_name].WH.x = width;
-				//TextureData[file_name].WH.y = height;
-				//TextureData[file_name].Cnt = 0;
 
 				TextureData[first].Resource.reset(ShaderResourceView);
 				TextureData[first].WH.x = width;
@@ -456,16 +376,8 @@ void TEXTURE_MANEGER::Add(const string& file_name)
 				}
 			}
 
-			//TextureFile[file_name].Path = "asset/texture/" + path;
-			//TextureFile[file_name].Time = Get_File_Time(path);
-
-			//TextureData[file_name].Resource.reset(ShaderResourceView);
-			//TextureData[file_name].WH.x = width;
-			//TextureData[file_name].WH.y = height;
-
-			first = hash<string>()(file_name);//
+			first = hash<string>()(file_name);
 			TextureFile[first].Path = "asset/texture/" + path;
-			//TextureFile[first].Time = Get_File_Time(path);
 
 			TextureData[first].Resource.reset(ShaderResourceView);
 			TextureData[first].WH.x = width;
@@ -487,7 +399,6 @@ const bool TEXTURE_MANEGER::Unload(const string& const file_name)
 #endif // _DEBUG
 
 	TextureData[first].Resource.reset(nullptr);
-	//TextureData[first].Resource.release();
 
 	TextureData.erase(first);
 
@@ -496,10 +407,10 @@ const bool TEXTURE_MANEGER::Unload(const string& const file_name)
 	return true;
 }
 
+#ifdef _DEBUG
 #include	"Timer.h"
 double fps = 0.0;
 
-#ifdef _DEBUG
 void TEXTURE_MANEGER::Load_Check()
 {
 	fps += TIMER::Get_DeltaTime();
@@ -513,40 +424,6 @@ void TEXTURE_MANEGER::Load_Check()
 	}
 }
 #endif // _DEBUG
-
-DWORD TEXTURE_MANEGER::Get_File_Time(const string& path)
-{
-	HANDLE hFile;
-	FILETIME ftFileTime, ftLocalFileTime;
-	SYSTEMTIME stFileTime;
-
-	hFile = CreateFile(
-		path.c_str(), GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE, NULL,
-		OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL
-	);
-
-	GetFileTime(hFile, NULL, NULL, &ftFileTime);
-	FileTimeToLocalFileTime(&ftFileTime, &ftLocalFileTime);
-	FileTimeToSystemTime(&ftLocalFileTime, &stFileTime);
-
-	CloseHandle(hFile);
-
-	// 日付をUNIXタイムスタンプに変換
-	time_t rawtime;
-	tm* timeinfo;
-
-	time(&rawtime);
-	timeinfo = localtime(&rawtime);
-
-	timeinfo->tm_year = stFileTime.wYear - 1900;
-	timeinfo->tm_mon = stFileTime.wMonth - 1;    //months since January - [0,11]
-	timeinfo->tm_mday = stFileTime.wDay;          //day of the month - [1,31] 
-	timeinfo->tm_hour = stFileTime.wHour;         //hours since midnight - [0,23]
-	timeinfo->tm_min = stFileTime.wMinute;          //minutes after the hour - [0,59]
-	timeinfo->tm_sec = stFileTime.wSecond;          //seconds after the minute - [0,59]
-
-	return (DWORD)(mktime(timeinfo));
-}
 
 void TEXTURE_MANEGER::Add_ReferenceCnt(const size_t file)
 {
@@ -568,14 +445,6 @@ void TEXTURE_MANEGER::Sub_ReferenceCnt(const size_t file)
 
 XMINT2* const TEXTURE_MANEGER::Get_WH(const size_t file)
 {
-	//for (int i = 0; i < TEXTURE_FILE_COUNT; i++)
-	//{
-	//	if (file_name == g_TextureFiles[i].Name)
-	//	{
-	//		return &g_TextureFiles[i].WH;
-	//	}
-	//}
-
 	if (TextureData.find(file) != TextureData.end())
 	{
 		return &TextureData[file].WH;
@@ -586,14 +455,6 @@ XMINT2* const TEXTURE_MANEGER::Get_WH(const size_t file)
 
 ID3D11ShaderResourceView* const TEXTURE_MANEGER::GetShaderResourceView(const size_t file)
 {
-	//for (auto tex = TextureResource.begin(); tex != TextureResource.end(); tex++)
-	//{
-	//	if (file_name == tex->first)
-	//	{
-	//		return tex->second.get();
-	//	}
-	//}
-
 	if (TextureData.find(file) != TextureData.end())
 	{
 		return TextureData[file].Resource.get();
@@ -602,19 +463,11 @@ ID3D11ShaderResourceView* const TEXTURE_MANEGER::GetShaderResourceView(const siz
 	return nullptr;
 }
 
-//unordered_map<string, TEXTURE_FILE>& TEXTURE_MANEGER::Get_TextureFile()
-//{
-//	return TextureFile;
-//}
 unordered_map<size_t, TEXTURE_FILE>& TEXTURE_MANEGER::Get_TextureFile()
 {
 	return TextureFile;
 }
 
-//unordered_map<string, TEXTURE_DATA>::iterator TEXTURE_MANEGER::Get_TextureData_Start()
-//{
-//	return TextureData.begin();
-//}
 const unordered_map<size_t, TEXTURE_DATA>::iterator TEXTURE_MANEGER::Get_TextureData_Start()
 {
 	return TextureData.begin();

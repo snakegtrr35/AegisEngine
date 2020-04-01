@@ -62,7 +62,7 @@ void GAME_OBJECT::Set_Object_Name(const string& name)
 	{
 		//Erroer_Message("Šù‚ÉŽg‚í‚ê‚Ä‚¢‚é–¼‘O‚Å‚·");
 
-		int a = 0;
+   		int a = 0;
 	}
 #endif // _DEBUG
 };

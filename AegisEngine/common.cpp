@@ -41,7 +41,12 @@ std::string wstringTostring(const std::wstring& font)
 	return s;
 }
 
-auto notdigit = not1(std::function<bool(char)>(bind(std::isdigit<char>, std::placeholders::_1, std::locale())));
+//auto notdigit = not1(std::function<bool(char)>(bind(std::isdigit<char>, std::placeholders::_1, std::locale())));
+
+auto notdigit = [](char s)
+{
+	return (0 == std::isdigit<unsigned char>(static_cast<unsigned char>(s), std::locale()));
+};
 
 void ExtratNum(std::string& str)
 {

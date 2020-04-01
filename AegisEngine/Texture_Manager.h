@@ -49,14 +49,12 @@ constexpr const int TEXTURE_SIZE_MAX = 16384;
 
 struct TEXTURE_FILE {
 	string Path;		//! テクスチャファイルのファイルパス
-	//DWORD Time;			//!	テクスチャファイルの最終更新時間(UNIX時間)
 
-	TEXTURE_FILE() /*: Time(0)*/ {}
+	TEXTURE_FILE() {}
 
 	template<class T>
 	void serialize(T& archive) {
 		archive(Path);
-		//archive(Time);
 	}
 };
 
@@ -80,10 +78,8 @@ private:
 	unordered_map<size_t, TEXTURE_FILE> TextureFile;			//! テクスチャのファイルデータ
 	unordered_map<size_t, TEXTURE_DATA> TextureData;			//! テクスチャデータ
 
-	void Default_Load(const bool flag);		// デフォルトのテクスチャの読み込み
-	void Load(const bool flag);				// テクスチャの読み込み
-
-	DWORD Get_File_Time(const string& path);
+	void Default_Load(const bool flag);							// デフォルトのテクスチャの読み込み
+	void Load(const bool flag);									// テクスチャの読み込み
 
 #ifdef _DEBUG
 	void Load_Check();
@@ -98,7 +94,7 @@ private:
 #endif // _DEBUG
 
 public:
-	TEXTURE_MANEGER() : /*Time(0),*/ Load_Flag(false) {};
+	TEXTURE_MANEGER() : Load_Flag(false) {};
 	~TEXTURE_MANEGER() { Uninit(); }
 
 
@@ -124,10 +120,6 @@ public:
 
 	const unordered_map<size_t, TEXTURE_DATA>::iterator Get_TextureData_Start();
 	const unordered_map<size_t, TEXTURE_DATA>::iterator Get_TextureData_End();
-
-	set<wstring>* Get() {
-		return Monitor.get()->Get();
-	}
 
 	template<class T>
 	void serialize(T& archive) {
