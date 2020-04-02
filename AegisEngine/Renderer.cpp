@@ -549,9 +549,54 @@ bool CRenderer::Init3D()
 	// フラグ
 	UINT d3dFlags = D3D11_CREATE_DEVICE_BGRA_SUPPORT; // BGRA テクスチャ有効(Direct2Dには必ず必要)
 
+	// アダプターの列挙
+	vector<IDXGIAdapter*> Adapters;
+	{
+		IDXGIFactory* pDXGIFactory = nullptr;
+		IDXGIAdapter* pAdapter = nullptr;
+
+		//ファクトリの作成
+		hr = CreateDXGIFactory2(0, IID_PPV_ARGS(&pDXGIFactory));
+		if (FAILED(hr))
+		{
+			FAILDE_ASSERT;
+			return false;
+		}
+
+		{
+			DXGI_ADAPTER_DESC desc;
+			wstring str;
+
+			for (UINT index = 0; ; index++)
+			{
+				IDXGIAdapter* pAdapter = nullptr;
+
+				hr = pDXGIFactory->EnumAdapters(index, &pAdapter);
+				if (FAILED(hr))
+					break;
+
+				if (SUCCEEDED(pAdapter->GetDesc(&desc)))
+				{
+					str = wstring(desc.Description);
+
+					if (wstring::npos == str.find(L"Microsoft"))
+					{
+						Adapters.emplace_back(pAdapter);
+					}
+					else
+					{
+						SAFE_RELEASE(pAdapter);
+					}
+				}
+			}
+		}
+
+		SAFE_RELEASE(pDXGIFactory);
+	}
+
 	// Direct3Dの作成
 	hr = D3D11CreateDevice(
-		nullptr, D3D_DRIVER_TYPE_HARDWARE, 0, d3dFlags,
+		Adapters.front(), D3D_DRIVER_TYPE_UNKNOWN, 0, d3dFlags,
 		&m_FeatureLevel, 1, D3D11_SDK_VERSION,
 		&m_D3DDevice, nullptr, &m_ImmediateContext);
 	if (FAILED(hr))
@@ -559,6 +604,12 @@ bool CRenderer::Init3D()
 		FAILDE_ASSERT;
 		return false;
 	}
+
+	for (auto& adap : Adapters)
+	{
+		adap->Release();
+	}
+	Adapters.clear();
 
 	//// MSAA用
 	//for (int i = 1; i <= D3D11_MAX_MULTISAMPLE_SAMPLE_COUNT; i <<= 1)
@@ -606,38 +657,8 @@ bool CRenderer::Init3D()
 		pAdapter->QueryVideoMemoryInfo(0, DXGI_MEMORY_SEGMENT_GROUP_LOCAL, &info);
 	}
 
-	/*{
-		IDXGIFactory4* pDXGIFactory;
-		//IDXGIAdapter3* pAdapter;
-
-		//ファクトリの作成
-		hr = CreateDXGIFactory2(0, IID_PPV_ARGS(&pDXGIFactory));
-		if (FAILED(hr))
-		{
-			FAILDE_ASSERT;
-			return false;
-		}
-
-
-		DXGI_ADAPTER_DESC AdapterDesc;
-		//最初に見つかったアダプターを使用する
-		hr = pDXGIFactory->EnumAdapters(0, (IDXGIAdapter**)&pAdapter);
-		if (FAILED(hr))
-		{
-			FAILDE_ASSERT;
-			return false;
-		}
-		pDXGIFactory->Release();
-
-		//DXGI_QUERY_VIDEO_MEMORY_INFO info;
-
-		//pAdapter->QueryVideoMemoryInfo(0, DXGI_MEMORY_SEGMENT_GROUP_LOCAL, &info);
-
-		//int a = 0;
-	}*/
-
 	// DXGIのファクトリの作成
-                 	IDXGIFactory2* factory = nullptr;
+	IDXGIFactory2* factory = nullptr;
 	hr = adapter->GetParent(IID_PPV_ARGS(&factory));
 	adapter->Release();
 	if (FAILED(hr))
