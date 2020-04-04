@@ -3,42 +3,6 @@
 #include	"Renderer.h"
 
 
-
-//static TEXTURE_FILE g_TextureFiles[] = {
-//	{"number.png", XMINT2(512, 512) },
-//	{"number02.png", XMINT2(320, 32) },
-//
-//	{"title.png", XMINT2(1920, 1080) },
-//	{"game_clear.png", XMINT2(1920, 1080) },
-//	{"game_over.png", XMINT2(1920, 1080) },
-//
-//	{"field004.png", XMINT2(128, 128) },
-//	{"shadow000.jpg", XMINT2(80, 80) },
-//	{"Explosion.png", XMINT2(360, 360) },
-//	{"arrow.png", XMINT2(665, 95) },
-//	{"Reticule.png", XMINT2(512, 512) },
-//
-//	{"hp_rod.png", XMINT2(64, 256) },
-//	{"hp.png", XMINT2(2, 2) },
-//	{"bullet_icon.png", XMINT2(64, 128) },
-//
-//	{"pause.png", XMINT2(512, 512) },
-//	{"select.png", XMINT2(60, 60) },
-//
-//	{"UVCheckerMap01-512.png", XMINT2(512, 512) },
-//	{"UVCheckerMap01-1024.png", XMINT2(1024, 1024) },
-//
-//	{"asphalt01-pattern.jpg", XMINT2(1000, 1000) },
-//
-//	{"asult_rifl.png", XMINT2(512, 512) },
-//	{"Bazooka.png", XMINT2(512, 512) },
-//
-//	{"go.png", XMINT2(256, 128) },
-//
-//	{"sky.png", XMINT2(8192, 4096) },
-//};
-
-
 TEXTURE::TEXTURE()
 {
 	FileName = "none";
@@ -47,9 +11,6 @@ TEXTURE::TEXTURE()
 
 TEXTURE::TEXTURE(const string& file_name)
 {
-	//FileName = file_name;
-	//TEXTURE_MANEGER::Get_Instance()->Add_ReferenceCnt(FileName);
-
 	FileName = file_name;
 	File = hash<string>()(file_name);//
 	TEXTURE_MANEGER::Get_Instance()->Add_ReferenceCnt(File);
@@ -60,8 +21,7 @@ TEXTURE::TEXTURE(const string& file_name)
 //========================================
 void TEXTURE::Set_Texture(void)
 {
-	//ID3D11ShaderResourceView* shader_resouce_view = TEXTURE_MANEGER::Get_Instance()->GetShaderResourceView(FileName);
-	ID3D11ShaderResourceView* shader_resouce_view = TEXTURE_MANEGER::Get_Instance()->GetShaderResourceView(File);//
+	ID3D11ShaderResourceView* shader_resouce_view = TEXTURE_MANEGER::Get_Instance()->GetShaderResourceView(File);
 
 	CRenderer::GetDeviceContext()->PSSetShaderResources(0, 1, &shader_resouce_view);
 }
@@ -72,17 +32,11 @@ void TEXTURE::Set_Texture(void)
 void TEXTURE::Set_Texture_Name(const string& file_name)
 {
 	if (file_name != FileName)
-	//if (File != hash<string>()(file_name))
 	{
-		//TEXTURE_MANEGER::Get_Instance()->Sub_ReferenceCnt(FileName);
-		//FileName = file_name;
-		//TEXTURE_MANEGER::Get_Instance()->Add_ReferenceCnt(FileName);
-
-
-		TEXTURE_MANEGER::Get_Instance()->Sub_ReferenceCnt(File);//
-		FileName = file_name;//
-		File = hash<string>()(file_name);//
-		TEXTURE_MANEGER::Get_Instance()->Add_ReferenceCnt(File);//
+		TEXTURE_MANEGER::Get_Instance()->Sub_ReferenceCnt(File);
+		FileName = file_name;
+		File = hash<string>()(file_name);
+		TEXTURE_MANEGER::Get_Instance()->Add_ReferenceCnt(File);
 	}
 }
 
@@ -96,7 +50,6 @@ const string& TEXTURE::Get_Texture_Name(void)
 
 XMINT2* const TEXTURE::Get_WH()
 {
-	//return TEXTURE_MANEGER::Get_Instance()->Get_WH(FileName);
 	return TEXTURE_MANEGER::Get_Instance()->Get_WH(File);
 }
 
@@ -104,7 +57,6 @@ XMINT2* const TEXTURE::Get_WH()
 map<wstring,unique_ptr<ID3D11ShaderResourceView, Release>> FONT::FontResource;
 ID3D11SamplerState* FONT::SamplerState = nullptr;
 
-//wstring stringTowstring(string& font);
 
 void FONT::Init()
 {
@@ -212,9 +164,15 @@ void FONT::Load_Font()
 
 	ID3D11ShaderResourceView* ShaderResourceView;
 
+	// デバイス
+	auto device = CRenderer::GetDevice();
+
+	// デバイスコンテキスト
+	auto deviceContext = CRenderer::GetDeviceContext();
+
 	for (auto font : Font)
 	{
-		//// フォントビットマップ取得
+		// フォントビットマップ取得
 
 		UINT code = (UINT)font;
 
@@ -223,7 +181,7 @@ void FONT::Load_Font()
 		GLYPHMETRICS gm;
 		CONST MAT2 mat = { {0,1}, {0,0}, {0,0}, {0,1} };
 
-		DWORD size = GetGlyphOutlineW(hdc, code, gradFlag, &gm, 0, NULL, &mat);
+		DWORD size = GetGlyphOutlineW(hdc, code, gradFlag, &gm, 0, nullptr, &mat);
 		BYTE* pMono = new BYTE[size];
 
 		GetGlyphOutlineW(hdc, code, gradFlag, &gm, size, pMono, &mat);
@@ -240,10 +198,7 @@ void FONT::Load_Font()
 
 		ID3D11Texture2D* font_texture;
 
-		HRESULT hr = CRenderer::GetDevice()->CreateTexture2D(&fontTextureDesc, NULL, &font_texture);
-
-		//デバイスコンテキスト
-		auto deviceContext = CRenderer::GetDeviceContext();
+		HRESULT hr = device->CreateTexture2D(&fontTextureDesc, nullptr, &font_texture);
 
 		// フォント情報をテクスチャに書き込む部分
 		D3D11_MAPPED_SUBRESOURCE hMappedResource;
@@ -284,10 +239,10 @@ void FONT::Load_Font()
 		}
 		deviceContext->Unmap(font_texture, 0);
 		//不要なので削除
-		delete[] pMono;
+		SAFE_DELETE_ARRAY(pMono);
 
 		// シェーダーリソースの作成
-		CRenderer::GetDevice()->CreateShaderResourceView(font_texture, &srvDesc, &ShaderResourceView);
+		device->CreateShaderResourceView(font_texture, &srvDesc, &ShaderResourceView);
 
 		wstring f;
 		f.push_back(font);
@@ -321,7 +276,7 @@ void FONT::Load_Font(const wstring& one_character)
 	//HFONT oldFont = (HFONT)SelectObject(hdc, hFont);
 
 	// フォントビットマップ取得
-	wchar_t font = (wchar_t)one_character.c_str();
+	wchar_t font = one_character.front();
 
 	UINT code = (UINT)font;
 
@@ -346,10 +301,16 @@ void FONT::Load_Font(const wstring& one_character)
 	GLYPHMETRICS gm;
 	CONST MAT2 mat = { {0,1}, {0,0}, {0,0}, {0,1} };
 
-	DWORD size = GetGlyphOutlineW(hdc, code, gradFlag, &gm, 0, NULL, &mat);
+	DWORD size = GetGlyphOutlineW(hdc, code, gradFlag, &gm, 0, nullptr, &mat);
 	BYTE* pMono = new BYTE[size];
 
 	GetGlyphOutlineW(hdc, code, gradFlag, &gm, size, pMono, &mat);
+
+	// デバイス
+	auto device = CRenderer::GetDevice();
+
+	// デバイスコンテキスト
+	auto deviceContext = CRenderer::GetDeviceContext();
 
 	//================================================================================
 
@@ -374,10 +335,7 @@ void FONT::Load_Font(const wstring& one_character)
 
 	ID3D11Texture2D* font_texture;
 
-	HRESULT hr = CRenderer::GetDevice()->CreateTexture2D(&fontTextureDesc, NULL, &font_texture);
-
-	//デバイスコンテキスト
-	auto deviceContext = CRenderer::GetDeviceContext();
+	HRESULT hr = device->CreateTexture2D(&fontTextureDesc, nullptr, &font_texture);
 
 	// フォント情報をテクスチャに書き込む部分
 	D3D11_MAPPED_SUBRESOURCE hMappedResource;
@@ -418,7 +376,7 @@ void FONT::Load_Font(const wstring& one_character)
 	}
 	deviceContext->Unmap(font_texture, 0);
 	//不要なので削除
-	delete[] pMono;
+	SAFE_DELETE_ARRAY(pMono);
 
 	// ShaderResourceViewの情報を作成する
 	D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc;
@@ -430,7 +388,7 @@ void FONT::Load_Font(const wstring& one_character)
 
 	ID3D11ShaderResourceView* ShaderResourceView;
 
-	CRenderer::GetDevice()->CreateShaderResourceView(font_texture, &srvDesc, &ShaderResourceView);
+	device->CreateShaderResourceView(font_texture, &srvDesc, &ShaderResourceView);
 
 	wstring a;
 	a.push_back(font);
@@ -453,15 +411,14 @@ void FONT::Add_Font(const wstring& one_character)
 
 ID3D11ShaderResourceView* FONT::Get_Font_Resource(const wstring& one_character)
 {
-	for (auto tex = FontResource.begin(); tex != FontResource.end(); tex++)
+	if (FontResource.end() != FontResource.find(one_character))
 	{
-		if (one_character == tex->first)
-		{
-			return FontResource[one_character].get();
-		}
+		return FontResource[one_character].get();
 	}
-
-	return nullptr;
+	else
+	{
+		return nullptr;
+	}
 }
 
 ID3D11SamplerState* FONT::Get_SamplerState()
