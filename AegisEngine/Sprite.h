@@ -48,18 +48,18 @@ struct CHILD_DATE {
 class SPRITE : public GAME_OBJECT {
 private:
 protected:
-	//!< 頂点バッファ
+	//! 頂点バッファ
 	unique_ptr<ID3D11Buffer, Release> pVertexBuffer;
 
-	//!< インデックスバッファ
+	//! インデックスバッファ
 	static unique_ptr<ID3D11Buffer, Release> pIndexBuffer;
 
-	//!< 頂点データ
+	//! 頂点データ
 	VERTEX_3D Vertex[4];
-	//!< テクスチャ
+	//! テクスチャ
 	unique_ptr<TEXTURE> Texture;
 
-	//!< ポジション
+	//! ポジション
 	XMFLOAT2 Position;
 
 	/**
