@@ -27,6 +27,8 @@ FIELD::FIELD(XMFLOAT3 position, XMFLOAT2 wh)
 
 	WH = wh;
 
+	VERTEX_3D Vertex[4];
+
 	Vertex[0].Position = XMFLOAT3(1.0f, 0.0f, -1.0f);
 	Vertex[0].Normal = XMFLOAT3(0.0f, 1.0f, 0.0f);
 	Vertex[0].Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
@@ -183,6 +185,7 @@ FIELD::~FIELD()
 void FIELD::Init()
 {
 	HRESULT hr;
+	VERTEX_3D Vertex[4];
 
 	Vertex[0].Position = XMFLOAT3(1.0f, 0.0f, -1.0f);
 	Vertex[0].Normal = XMFLOAT3(0.0f, 1.0f, 0.0f);

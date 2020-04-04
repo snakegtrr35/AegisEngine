@@ -80,8 +80,8 @@ public:
 	virtual void Draw();
 
 	/**
-	* @brief •`‰æ(Depth pre-pass)ŠÖ”
-	* @details ƒˆ‰¼‘zDepth pre-passŠÖ”
+	* @brief •`‰æ(Depth-pre-pass)ŠÖ”
+	* @details ƒˆ‰¼‘zDepth-pre-passŠÖ”
 	*/
 	virtual void Draw_DPP() = 0;
 

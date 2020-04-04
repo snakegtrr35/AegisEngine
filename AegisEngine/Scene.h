@@ -267,8 +267,8 @@ public:
 	};
 
 	/**
-	* @brief •`‰æ(Depth pre-pass)ŠÖ”
-	* @details Depth pre-pass‚ğs‚¤ŠÖ”
+	* @brief •`‰æ(Depth-pre-pass)ŠÖ”
+	* @details Depth-pre-pass‚ğ‚·‚éŠÖ”
 	*/
 	virtual void Draw_DPP(void) {
 		//for (int i = 0; i < (int)LAYER_NAME::MAX_LAYER; i++)

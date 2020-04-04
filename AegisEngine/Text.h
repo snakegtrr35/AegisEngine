@@ -21,8 +21,8 @@ private:
 	void Text_Draw(const string& text);
 
 	/**
-	* @brief •`‰æ(Depth pre-pass)ŠÖ”
-	* @details Depth pre-pass‚ğs‚¤ŠÖ”
+	* @brief •`‰æ(Depth-pre-pass)ŠÖ”
+	* @details Depth-pre-pass‚ğ‚·‚éŠÖ”
 	*/
 	void Text_Draw_DPP(const string& text);
 
@@ -52,8 +52,8 @@ public:
 	void Draw();
 
 	/**
-	* @brief •`‰æ(Depth pre-pass)ŠÖ”
-	* @details Depth pre-pass‚ğs‚¤ŠÖ”
+	* @brief •`‰æ(Depth-pre-pass)ŠÖ”
+	* @details Depth-pre-pass‚ğ‚·‚éŠÖ”
 	*/
 	void Draw_DPP();
 

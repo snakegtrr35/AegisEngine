@@ -142,7 +142,7 @@ void Create_Bullet(XMFLOAT3& position, const XMFLOAT3& front)
 	int cnt = 1;
 	if (!bullets.empty())
 	{
-		name = bullets.back()->Get_Object_Name();
+ 		name = bullets.back()->Get_Object_Name();
  		ExtratNum(name);
 
 		cnt = std::atoi(name.c_str());

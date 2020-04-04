@@ -46,12 +46,17 @@ bool GAME_OBJECT::Destroy()
 void GAME_OBJECT::Set_Object_Name(const string& name)
 {
 #ifdef _DEBUG
-	if (false == Object_Name_Map.emplace(name).second)
+	if (Object_Name_Map.emplace(name).second)
+	{
+		Object_Name = name;
+	}
+	else
 	{
 		//Erroer_Message("Šù‚ÉŽg‚í‚ê‚Ä‚¢‚é–¼‘O‚Å‚·");
 		int a = 0;
 	}
 #else
-	Object_Name_Map.emplace(name).second
+	Object_Name_Map.emplace(name);
+	Object_Name = name;
 #endif // _DEBUG
 };
