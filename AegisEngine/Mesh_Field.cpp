@@ -39,6 +39,7 @@ void MESH_FIELD::Init()
 				position.z = 0.5f * (float)GridNum.y * GridSize.z - (float)z * GridSize.z;
 
 				VertexArray[x + (GridNum.x + 1) * z].Position = position;
+				VertexArray[x + (GridNum.y + 1) * z].Normal = XMFLOAT3(0.0f, 1.0f, 0.0f);
 				VertexArray[x + (GridNum.x + 1) * z].Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
 				VertexArray[x + (GridNum.x + 1) * z].TexCoord = XMFLOAT2((float)x, (float)z);
 			}
@@ -100,6 +101,8 @@ void MESH_FIELD::Init()
 	// インデックスバッファの作成
 	{
 		IndexNum = (2 + (GridNum.x * 2)) * GridNum.y + (GridNum.y - 1) * 2;
+
+		const UINT size = IndexNum;
 
 		vector<WORD> indexArray;
 		indexArray.reserve(IndexNum);

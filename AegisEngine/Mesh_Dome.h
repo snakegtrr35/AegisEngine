@@ -15,13 +15,13 @@ class MESH_DOOM :public GAME_OBJECT {
 private:
 
 	//! 半径
-	float			Radius;
+	float								Radius;
 
 	//! 頂点数
-	unsigned int	VertexNum;
+	UINT	VertexNum;
 
 	//! インデックス数
-	unsigned int	IndexNum;
+	UINT								IndexNum;
 
 	//! 頂点バッファ
 	unique_ptr<ID3D11Buffer, Release>	VertexBuffer;	
@@ -30,7 +30,7 @@ private:
 	unique_ptr<ID3D11Buffer, Release>	IndexBuffer;	
 
 	//! テクスチャ
-	unique_ptr<TEXTURE> Texture;						
+	unique_ptr<TEXTURE>					Texture;						
 
 public:
 
@@ -38,13 +38,13 @@ public:
 	* @brief コンストラクタ
 	* @details 引数無しコンストラクタ
 	*/
-	MESH_DOOM() : Radius(500.0f) {}
+	MESH_DOOM();
 
 	/**
 	* @brief デストラクタ
 	* @details デストラクタ
 	*/
-	~MESH_DOOM() {}
+	~MESH_DOOM() { Uninit(); }
 
 	/**
 	* @brief 初期化関数
