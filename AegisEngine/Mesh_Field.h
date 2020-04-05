@@ -20,26 +20,25 @@ class MESH_FIELD :public GAME_OBJECT {
 private:
 
 	//! グリッドサイズ
-	XMFLOAT3				GridSize;
+	XMFLOAT3							GridSize;
 
 	//! グリッド数
-	XMINT2					GridNum;
+	XMINT2								GridNum;
 
 	//! インデックス数
-	unsigned int			IndexNum;
+	UINT								IndexNum;
 
 	// 頂点データ
-	//VERTEX_3D*				VertexArray;
-	vector<VERTEX_3D>		VertexArray;
+	vector<VERTEX_3D>					VertexArray;
 
 	//! 頂点バッファ
-	ID3D11Buffer*			VertexBuffer;		
+	unique_ptr<ID3D11Buffer, Release>	VertexBuffer;
 
 	//! インデックスバッファ
-	ID3D11Buffer*			IndexBuffer;		
+	unique_ptr<ID3D11Buffer, Release>	IndexBuffer;
 
 	//! テクスチャ
-	unique_ptr<TEXTURE>		Texture;			
+	unique_ptr<TEXTURE>					Texture;
 
 public:
 
