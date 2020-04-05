@@ -17,7 +17,7 @@ void MESH_CYlLINDER::Init()
 
 	// インデックスバッファの確保
 	IndexNum = (2 + (cornerNum * 2)) * CylinderLength + (CylinderLength - 1) * 2;
-	unsigned short* indexArray = new unsigned short[IndexNum];
+	WORD* indexArray = new WORD[IndexNum];
 
 	// 頂点バッファへの頂点情報の書き込み
 	float theta = 0.0f;
@@ -45,14 +45,14 @@ void MESH_CYlLINDER::Init()
 	{
 		for (int x = 0; x < cornerNum + 1; x++)
 		{
-			indexArray[indexNum++] = (cornerNum + 1) * (y + 1) + x;
-			indexArray[indexNum++] = (cornerNum + 1) * y + x;
+			indexArray[indexNum++] = WORD((cornerNum + 1) * (y + 1) + x);
+			indexArray[indexNum++] = WORD((cornerNum + 1) * y + x);
 
 			// 縮退ポリゴン用にインデックスの追加
 			if (x > indexFlapX && y < indexFlapY)
 			{
-				indexArray[indexNum++] = (cornerNum + 1) * y + (cornerNum + 1) - 1;
-				indexArray[indexNum++] = (cornerNum + 1) * (y + 1 + 1) + 0;
+				indexArray[indexNum++] = WORD((cornerNum + 1) * y + (cornerNum + 1) - 1);
+				indexArray[indexNum++] = WORD((cornerNum + 1) * (y + 1 + 1));
 			}
 		}
 	}

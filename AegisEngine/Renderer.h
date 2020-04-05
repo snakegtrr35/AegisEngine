@@ -12,6 +12,10 @@ struct VERTEX_3D
     XMFLOAT3 Normal;
     XMFLOAT4 Diffuse;
     XMFLOAT2 TexCoord;
+
+	VERTEX_3D() : Position(XMFLOAT3(0.f, 0.f, 0.f)), Normal(XMFLOAT3(0.f, 0.f, 0.f)), Diffuse(XMFLOAT4(0.f, 0.f, 0.f, 1.0f)), TexCoord(XMFLOAT2(0.f, 0.f)) {}
+
+	VERTEX_3D(XMFLOAT3 v, XMFLOAT3 n, XMFLOAT4 d, XMFLOAT2 t) : Position(v), Normal(n), Diffuse(d), TexCoord(t) {}
 };
 
 //! í∏ì_ç\ë¢ëÃ

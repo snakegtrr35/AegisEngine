@@ -1,3 +1,8 @@
+/**
+ * @file Mesh_Dome.h
+ * @brief メッシュドームヘッダーファイル
+ */
+
 #pragma once
 
 #ifndef MESH_DOOM_H
@@ -6,26 +11,70 @@
 class GAME_OBJECT;
 class TEXTURE;
 
-class MESH_DOOM :public GAME_OBJECT
-{
+class MESH_DOOM :public GAME_OBJECT {
 private:
+
+	//! 半径
 	float			Radius;
+
+	//! 頂点数
 	unsigned int	VertexNum;
+
+	//! インデックス数
 	unsigned int	IndexNum;
 
-	unique_ptr<ID3D11Buffer, Release>	VertexBuffer;	// 頂点バッファ
-	unique_ptr<ID3D11Buffer, Release>	IndexBuffer;	// インデックスバッファ
-	unique_ptr<TEXTURE> Texture;						// テクスチャ
+	//! 頂点バッファ
+	unique_ptr<ID3D11Buffer, Release>	VertexBuffer;	
+
+	//! インデックスバッファ
+	unique_ptr<ID3D11Buffer, Release>	IndexBuffer;	
+
+	//! テクスチャ
+	unique_ptr<TEXTURE> Texture;						
 
 public:
+
+	/**
+	* @brief コンストラクタ
+	* @details 引数無しコンストラクタ
+	*/
 	MESH_DOOM() : Radius(500.0f) {}
+
+	/**
+	* @brief デストラクタ
+	* @details デストラクタ
+	*/
 	~MESH_DOOM() {}
 
+	/**
+	* @brief 初期化関数
+	* @details 初期化する関数
+	*/
 	void Init() override;
-	void Uninit() override;
-	void Update(float delta_time) override;
+
+	/**
+	* @brief 描画関数
+	* @details 描画する関数
+	*/
 	void Draw() override;
+
+	/**
+	* @brief 描画(Depth-pre-pass)関数
+	* @details Depth-pre-passをする関数
+	*/
 	void Draw_DPP() override;
+
+	/**
+	* @brief 更新関数
+	* @details 更新する関数
+	*/
+	void Update(float delta_time) override;
+
+	/**
+	* @brief 終了処理関数
+	* @details 終了処理をする関数
+	*/
+	void Uninit() override;
 
 	template<typename Archive>
 	void serialize(Archive& ar)

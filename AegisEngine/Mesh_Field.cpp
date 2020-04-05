@@ -10,7 +10,7 @@
 
 MESH_FIELD::MESH_FIELD()
 {
-	VertexArray = nullptr;
+	//VertexArray = nullptr;
 	IndexBuffer = VertexBuffer = nullptr;
 
 	// テクスチャの生成
@@ -23,11 +23,14 @@ MESH_FIELD::MESH_FIELD()
 
 void MESH_FIELD::Init()
 {
-	unsigned int VertexNum = (GridNum.x + 1) * (GridNum.y + 1);
-	VertexArray = new VERTEX_3D[VertexNum];
+	const WORD VertexNum = (GridNum.x + 1) * (GridNum.y + 1);
+	//VertexArray = new VERTEX_3D[VertexNum];
+
+	VertexArray.reserve(VertexNum);//
+	VertexArray.assign(VertexNum, VERTEX_3D());//
 
 	IndexNum = (2 + (GridNum.x * 2)) * GridNum.y + (GridNum.y - 1) * 2;
-	unsigned short* indexArray = new unsigned short[IndexNum];
+	WORD* indexArray = new WORD[IndexNum];
 
 	// 頂点バッファへの書き込み
 	for (int z = 0; z < GridNum.y + 1; z++)
@@ -90,14 +93,14 @@ void MESH_FIELD::Init()
 	{
 		for (int x = 0; x < GridNum.x + 1; x++)
 		{
-			indexArray[indexNum++] = (GridNum.x + 1) * (z + 1) + x;
-			indexArray[indexNum++] = (GridNum.x + 1) * z + x;
+			indexArray[indexNum++] = WORD((GridNum.x + 1) * (z + 1) + x);
+			indexArray[indexNum++] = WORD((GridNum.x + 1) * z + x);
 
 			// 縮退ポリゴン用にインデックスの追加
 			if (x > indexFlapX && z < indexFlapZ)
 			{
-				indexArray[indexNum++] = (GridNum.x + 1) * z + (GridNum.x + 1) - 1;
-				indexArray[indexNum++] = (GridNum.x + 1) * (z + 1 + 1) + 0;
+				indexArray[indexNum++] = WORD((GridNum.x + 1) * z + (GridNum.x + 1) - 1);
+				indexArray[indexNum++] = WORD((GridNum.x + 1) * (z + 1 + 1));
 			}
 		}
 	}
@@ -114,7 +117,8 @@ void MESH_FIELD::Init()
 
 		D3D11_SUBRESOURCE_DATA sd;
 		ZeroMemory(&sd, sizeof(sd));
-		sd.pSysMem = VertexArray;
+		//sd.pSysMem = VertexArray;
+		sd.pSysMem = VertexArray.data();//
 
 		CRenderer::GetDevice()->CreateBuffer(&bd, &sd, &VertexBuffer);
 	}
@@ -143,7 +147,7 @@ void MESH_FIELD::Init()
 
 void MESH_FIELD::Uninit()
 {
-	SAFE_DELETE(VertexArray);
+	//SAFE_DELETE(VertexArray);
 	SAFE_RELEASE(VertexBuffer);
 	SAFE_RELEASE(IndexBuffer);
 
@@ -422,14 +426,14 @@ void MESH_WALL::Init()
 	{
 		for (int x = 0; x < GridNum.x + 1; x++)
 		{
-			indexArray[indexNum++] = (GridNum.x + 1) * (z + 1) + x;
-			indexArray[indexNum++] = (GridNum.x + 1) * z + x;
+			indexArray[indexNum++] = WORD((GridNum.x + 1) * (z + 1) + x);
+			indexArray[indexNum++] = WORD((GridNum.x + 1) * z + x);
 
 			// 縮退ポリゴン用にインデックスの追加
 			if (x > indexFlapX && z < indexFlapZ)
 			{
-				indexArray[indexNum++] = (GridNum.x + 1) * z + (GridNum.x + 1) - 1;
-				indexArray[indexNum++] = (GridNum.x + 1) * (z + 1 + 1) + 0;
+				indexArray[indexNum++] = WORD((GridNum.x + 1) * z + (GridNum.x + 1) - 1);
+				indexArray[indexNum++] = WORD((GridNum.x + 1) * (z + 1 + 1));
 			}
 		}
 	}

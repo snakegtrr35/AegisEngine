@@ -47,14 +47,14 @@ void MESH_DOOM::Init()
 	{
 		for (int x = 0; x < cornerNum + 1; x++)
 		{
-			indexArray[indexNum++] = (cornerNum + 1) * (y + 1) + x;
-			indexArray[indexNum++] = (cornerNum + 1) * y + x;
+			indexArray[indexNum++] = WORD((cornerNum + 1) * (y + 1) + x);
+			indexArray[indexNum++] = WORD((cornerNum + 1) * y + x);
 
 			// k‘Þƒ|ƒŠƒSƒ“—p
 			if (x > indexFlapX && y < indexFlapY)
 			{
-				indexArray[indexNum++] = (cornerNum + 1) * y + (cornerNum + 1) - 1;
-				indexArray[indexNum++] = (cornerNum + 1) * (y + 1 + 1) + 0;
+				indexArray[indexNum++] = WORD((cornerNum + 1) * y + (cornerNum + 1) - 1);
+				indexArray[indexNum++] = WORD((cornerNum + 1) * (y + 1 + 1));
 			}
 		}
 	}
