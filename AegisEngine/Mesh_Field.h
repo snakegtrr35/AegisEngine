@@ -16,7 +16,7 @@ class TEXTURE;
 //==============================
 //  フィールドクラス
 //==============================
-class MESH_FIELD :public GAME_OBJECT {
+class MESH_FIELD : public GAME_OBJECT {
 private:
 
 	//! グリッドサイズ

@@ -1,5 +1,5 @@
-#include    "Commom_Hlsl.h"
-#include    "Light_Hlsl.h"
+#include    "Commom_Hlsl.hlsli"
+#include    "Light_Hlsl.hlsli"
 
 //*****************************************************************************
 // 定数バッファ
