@@ -11,12 +11,6 @@ template <typename T>
 bool Empty_weak_ptr(const weak_ptr<T>& w)
 {
 	bool flag = (!w.owner_before(weak_ptr<T>{})) && (!weak_ptr<T>{}.owner_before(w));
-
-	//if (nullptr == w.get())
-	//{
-	//	flag = false;
-	//}
-
 	return flag;
 }
 
@@ -61,7 +55,6 @@ public:
 	template <typename T>
 	static T* Add_Game_Object(LAYER_NAME layer, const string& name)
 	{
-		//T* object = new T();
 		shared_ptr<T> object(new T());
 
 		object->Set_Object_Name(name);
@@ -128,7 +121,6 @@ public:
 
 	// リストから特定のオブジェクの取得
 	// 引数 name オブジェクト名
-
 	static weak_ptr<GAME_OBJECT> Get_Game_Object(const GAME_OBJECT* me)
 	{
 		for (int i = 0; i < (int)LAYER_NAME::MAX_LAYER; i++)
@@ -271,14 +263,6 @@ public:
 	* @details Depth pre-passを行う関数
 	*/
 	virtual void Draw_DPP(void) {
-		//for (int i = 0; i < (int)LAYER_NAME::MAX_LAYER; i++)
-		//{
-		//	for (auto object = GameObjects[i].begin(); object != GameObjects[i].end(); object++)
-		//	{
-		//		object->get()->Draw_DPP();
-		//	}
-		//}
-
 		for (int i = (int)LAYER_NAME::MAX_LAYER - 1; (int)LAYER_NAME::BACKGROUND <= i; i--)
 		{
 			for (auto object = GameObjects[i].begin(); object != GameObjects[i].end(); object++)
@@ -312,7 +296,6 @@ public:
 		{
 			for (int i = 0; i < (int)LAYER_NAME::MAX_LAYER; i++)
 			{
-				//for (GAME_OBJECT* object : GameObjects[i])
 				for (auto object = GameObjects[i].begin(); object != GameObjects[i].end(); object++)
 				{
 					object->get()->Update(delta_time);
