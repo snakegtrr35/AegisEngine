@@ -94,7 +94,7 @@ void BULLET::Update(float delta_time)
 				BILL_BOARD_ANIMATION* bba = CManager::Get_Instance()->Get_Scene()->Add_Game_Object<BILL_BOARD_ANIMATION>(LAYER_NAME::EFFECT, "explosion" + to_string(x));
 				bba->Set_Position(&Position);
 				bba->SetWH(XMFLOAT2(1.0f, 1.0f));
-				bba->SetParam(6.0f, 4, 4);
+				bba->SetParam(6, 4, 4);
 				bba->Init();
 			}
 		}
@@ -135,7 +135,7 @@ void BULLET::Update(float delta_time)
 					BILL_BOARD_ANIMATION* bba = CManager::Get_Instance()->Get_Scene()->Add_Game_Object<BILL_BOARD_ANIMATION>(LAYER_NAME::EFFECT, "explosion" + to_string(x));
 					bba->Set_Position(&Position);
 					bba->SetWH(XMFLOAT2(1.0f, 1.0f));
-					bba->SetParam(6.0f, 4, 4);
+					bba->SetParam(6, 4, 4);
 					bba->Init();
 				}
 
@@ -166,7 +166,7 @@ void BULLET::Update(float delta_time)
 						BILL_BOARD_ANIMATION* bba = CManager::Get_Instance()->Get_Scene()->Add_Game_Object<BILL_BOARD_ANIMATION>(LAYER_NAME::EFFECT, "explosion" + to_string(x));
 						bba->Set_Position(&Position);
 						bba->SetWH(XMFLOAT2(1.0f, 1.0f));
-						bba->SetParam(6.0f, 4, 4);
+						bba->SetParam(6, 4, 4);
 						bba->Init();
 					}
 

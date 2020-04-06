@@ -28,14 +28,14 @@ void BOUNDING_SHPERE::Init()
 		vector<VERTEX_3D> vertex;
 		vertex.reserve(cnt);
 
-		for (int i = 0; i < cnt; i++)
+		for (UINT i = 0; i < cnt; i++)
 		{
 			vertex.emplace_back(VERTEX_3D());
 		}
 
 		const float angle = XM_2PI / cnt;
 
-		for (int i = 0; i < cnt; i++)
+		for (UINT i = 0; i < cnt; i++)
 		{
 			vertex[i].Position = XMFLOAT3(cosf(angle * i) * Radius, sinf(angle * i) * Radius, 0.0f);
 			vertex[i].Normal = XMFLOAT3(0.0f, 0.0f, 0.0f);
@@ -77,12 +77,12 @@ void BOUNDING_SHPERE::Init()
 		vector<WORD> index_array;
 		index_array.reserve(IndexNum);
 
-		for (int i = 0; i < IndexNum; i++)
+		for (UINT i = 0; i < IndexNum; i++)
 		{
 			index_array.emplace_back(0);
 		}
 
-		for (int i = 0; i < cnt; i++)
+		for (UINT i = 0; i < cnt; i++)
 		{
 			index_array[i * 2] = (WORD)i;
 			index_array[i * 2 + 1] = (WORD)((i + 1) % cnt);
@@ -222,14 +222,14 @@ void BOUNDING_SHPERE::OverWrite()
 		vector<VERTEX_3D> vertex;
 		vertex.reserve(cnt);
 
-		for (int i = 0; i < cnt; i++)
+		for (UINT i = 0; i < cnt; i++)
 		{
 			vertex.emplace_back(VERTEX_3D());
 		}
 
 		const float angle = XM_2PI / cnt;
 
-		for (int i = 0; i < cnt; i++)
+		for (UINT i = 0; i < cnt; i++)
 		{
 			vertex[i].Position = XMFLOAT3(cosf(angle * i) * Radius, sinf(angle * i) * Radius, 0.0f);
 			vertex[i].Normal = XMFLOAT3(0.0f, 0.0f, 0.0f);
@@ -270,12 +270,12 @@ void BOUNDING_SHPERE::OverWrite()
 		vector<WORD> index_array;
 		index_array.reserve(IndexNum);
 
-		for (int i = 0; i < IndexNum; i++)
+		for (UINT i = 0; i < IndexNum; i++)
 		{
 			index_array.emplace_back(0);
 		}
 
-		for (int i = 0; i < cnt; i++)
+		for (UINT i = 0; i < cnt; i++)
 		{
 			index_array[i * 2] = (WORD)i;
 			index_array[i * 2 + 1] = (WORD)((i + 1) % cnt);

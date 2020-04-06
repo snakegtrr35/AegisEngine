@@ -550,14 +550,14 @@ bool CRenderer::Init3D()
 		// アダプターの列挙
 		vector<IDXGIAdapter*> Adapters;
 		{
-			IDXGIFactory* pDXGIFactory = nullptr;
+			IDXGIFactory1* pDXGIFactory = nullptr;
 			IDXGIAdapter* pAdapter = nullptr;
 
 			DXGI_ADAPTER_DESC desc;
 			wstring str;
 
 			//ファクトリの作成
-			hr = CreateDXGIFactory(__uuidof(IDXGIFactory), reinterpret_cast<void**>(&pDXGIFactory));
+			hr = CreateDXGIFactory1(__uuidof(IDXGIFactory1), reinterpret_cast<void**>(&pDXGIFactory));
 			if (FAILED(hr))
 			{
 				FAILDE_ASSERT;

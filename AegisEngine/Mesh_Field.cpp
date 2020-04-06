@@ -19,61 +19,62 @@ MESH_FIELD::MESH_FIELD() : GridSize(XMFLOAT3(1.0f, 0.0f, 1.0f)), GridNum(XMINT2(
 
 void MESH_FIELD::Init()
 {
-	const WORD VertexNum = (GridNum.x + 1) * (GridNum.y + 1);
-
 	// 頂点バッファの作成
 	{
-		VertexArray.reserve(VertexNum);
-		VertexArray.assign(VertexNum, VERTEX_3D());
+		// 頂点数
+		const WORD VertexNum = WORD((GridNum.x + 1) * (GridNum.y + 1));
 
-		// 頂点バッファへの書き込み
-		for (int z = 0; z < GridNum.y + 1; z++)
+		VertexArray.resize(VertexNum);
+
 		{
-			for (int x = 0; x < GridNum.x + 1; x++)
+			XMFLOAT3 position;
+			float legth = 0.0f;
+			XMFLOAT3 va, vb;
+			XMFLOAT3 vn;
+
+			// 頂点バッファへの書き込み
+			for (int z = 0; z < GridNum.y + 1; z++)
 			{
-				XMFLOAT3 position;
+				for (int x = 0; x < GridNum.x + 1; x++)
+				{
+					position.x = -0.5f * (float)GridNum.x * GridSize.x + (float)x * GridSize.x;
+					//position.y = sinf(z * 0.8) * 0.3f;
+					position.y = 0.0f;
+					position.z = 0.5f * (float)GridNum.y * GridSize.z - (float)z * GridSize.z;
 
-				position.x = -0.5f * (float)GridNum.x * GridSize.x + (float)x * GridSize.x;
-				//position.y = sinf(z * 0.8) * 0.3f;
-				position.y = 0.0f;
-				position.z = 0.5f * (float)GridNum.y * GridSize.z - (float)z * GridSize.z;
-
-				VertexArray[x + (GridNum.x + 1) * z].Position = position;
-				VertexArray[x + (GridNum.y + 1) * z].Normal = XMFLOAT3(0.0f, 1.0f, 0.0f);
-				VertexArray[x + (GridNum.x + 1) * z].Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
-				VertexArray[x + (GridNum.x + 1) * z].TexCoord = XMFLOAT2((float)x, (float)z);
+					VertexArray[x + (GridNum.x + 1) * z].Position = position;
+					VertexArray[x + (GridNum.y + 1) * z].Normal = XMFLOAT3(0.0f, 1.0f, 0.0f);
+					VertexArray[x + (GridNum.x + 1) * z].Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+					VertexArray[x + (GridNum.x + 1) * z].TexCoord = XMFLOAT2((float)x, (float)z);
+				}
 			}
-		}
 
-		// 頂点バッファへの書き込み(Normal)
-		for (int z = 1; z < GridNum.y; z++)
-		{
-			for (int x = 1; x < GridNum.x; x++)
+			// 頂点バッファへの書き込み(Normal)
+			for (int z = 1; z < GridNum.y; z++)
 			{
-				XMFLOAT3 va, vb;
+				for (int x = 1; x < GridNum.x; x++)
+				{
+					va.x = VertexArray[(z - 1) * GridNum.y + x].Position.x - VertexArray[(z + 1) * GridNum.x + x].Position.x;
+					va.y = VertexArray[(z - 1) * GridNum.y + x].Position.y - VertexArray[(z + 1) * GridNum.x + x].Position.y;
+					va.z = VertexArray[(z - 1) * GridNum.y + x].Position.z - VertexArray[(z + 1) * GridNum.x + x].Position.z;
 
-				va.x = VertexArray[(z - 1) * GridNum.y + x].Position.x - VertexArray[(z + 1) * GridNum.x + x].Position.x;
-				va.y = VertexArray[(z - 1) * GridNum.y + x].Position.y - VertexArray[(z + 1) * GridNum.x + x].Position.y;
-				va.z = VertexArray[(z - 1) * GridNum.y + x].Position.z - VertexArray[(z + 1) * GridNum.x + x].Position.z;
+					vb.x = VertexArray[(x + 1) + (GridNum.x + 1) * z].Position.x - VertexArray[(x - 1) + (GridNum.x + 1) * z].Position.x;
+					vb.y = VertexArray[(x + 1) + (GridNum.x + 1) * z].Position.y - VertexArray[(x - 1) + (GridNum.x + 1) * z].Position.y;
+					vb.z = VertexArray[(x + 1) + (GridNum.x + 1) * z].Position.z - VertexArray[(x - 1) + (GridNum.x + 1) * z].Position.z;
 
-				vb.x = VertexArray[(x + 1) + (GridNum.x + 1) * z].Position.x - VertexArray[(x - 1) + (GridNum.x + 1) * z].Position.x;
-				vb.y = VertexArray[(x + 1) + (GridNum.x + 1) * z].Position.y - VertexArray[(x - 1) + (GridNum.x + 1) * z].Position.y;
-				vb.z = VertexArray[(x + 1) + (GridNum.x + 1) * z].Position.z - VertexArray[(x - 1) + (GridNum.x + 1) * z].Position.z;
+					// 外積
+					vn.x = va.y * vb.z - va.z * vb.y;
+					vn.y = va.z * vb.x - va.x * vb.z;
+					vn.z = va.x * vb.y - va.y * vb.x;
 
-				XMFLOAT3 vn;
+					legth = sqrtf(vn.x * vn.x + vn.y * vn.y + vn.z * vn.z);
 
-				// 外積
-				vn.x = va.y * vb.z - va.z * vb.y;
-				vn.y = va.z * vb.x - va.x * vb.z;
-				vn.z = va.x * vb.y - va.y * vb.x;
+					vn.x = vn.x / legth;
+					vn.y = vn.y / legth;
+					vn.z = vn.z / legth;
 
-				float legth = sqrtf(vn.x * vn.x + vn.y * vn.y + vn.z * vn.z);
-
-				vn.x = vn.x / legth;
-				vn.y = vn.y / legth;
-				vn.z = vn.z / legth;
-
-				VertexArray[x + (GridNum.y + 1) * z].Normal = vn;
+					VertexArray[x + (GridNum.y + 1) * z].Normal = vn;
+				}
 			}
 		}
 
@@ -84,7 +85,7 @@ void MESH_FIELD::Init()
 			D3D11_BUFFER_DESC bd;
 			ZeroMemory(&bd, sizeof(bd));
 			bd.Usage = D3D11_USAGE_DEFAULT;
-			bd.ByteWidth = sizeof(VERTEX_3D) * VertexNum;
+			bd.ByteWidth = sizeof(VERTEX_3D) * VertexArray.size();
 			bd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
 			bd.CPUAccessFlags = 0;
 
@@ -105,8 +106,7 @@ void MESH_FIELD::Init()
 		const UINT size = IndexNum;
 
 		vector<WORD> indexArray;
-		indexArray.reserve(IndexNum);
-		indexArray.assign(IndexNum, 0);
+		indexArray.resize(IndexNum);
 
 		// 頂点インデックスバッファへの書き込み
 		int indexNum = 0;
