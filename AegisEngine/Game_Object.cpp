@@ -3,7 +3,6 @@
 #endif // _DEBUG
 
 #include	"Game_Object.h"
-#include	"Component.h"
 
 unordered_set<string> GAME_OBJECT::Object_Name_Map;
 
@@ -39,30 +38,25 @@ void GAME_OBJECT::Set_Destroy()
 	DestroyFlag = true;
 };
 
-// ƒƒ‚ƒŠã‚©‚ç‚Ìíœ
 bool GAME_OBJECT::Destroy()
 {
-	if (DestroyFlag)
-	{
-		return true;
-	}
-	return false;
+	return DestroyFlag;
 };
 
 void GAME_OBJECT::Set_Object_Name(const string& name)
 {
-
-	if (Object_Name_Map.find(name) == Object_Name_Map.end())
+#ifdef _DEBUG
+	if (Object_Name_Map.emplace(name).second)
 	{
-		Object_Name_Map.emplace(name);
 		Object_Name = name;
 	}
-#ifdef _DEBUG
 	else
 	{
 		//Erroer_Message("Šù‚Ég‚í‚ê‚Ä‚¢‚é–¼‘O‚Å‚·");
-
 		int a = 0;
 	}
+#else
+	Object_Name_Map.emplace(name);
+	Object_Name = name;
 #endif // _DEBUG
 };

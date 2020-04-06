@@ -100,31 +100,33 @@ void BILL_BOARD::Draw()
 	if (CManager::Get_Instance()->Get_ShadowMap()->Get_Enable()) return;
 
 	{
-		Vertex[0].Position = XMFLOAT3(-WH.x, WH.y, 0.0f);
-		Vertex[0].Normal = XMFLOAT3(0.0f, 0.0f, 1.0f);
-		Vertex[0].Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
-		Vertex[0].TexCoord = XMFLOAT2(0.0f, 0.0f);
+		VERTEX_3D vertex[4];
 
-		Vertex[1].Position = XMFLOAT3(WH.x, WH.y, 0.0f);
-		Vertex[1].Normal = XMFLOAT3(0.0f, 0.0f, 1.0f);
-		Vertex[1].Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
-		Vertex[1].TexCoord = XMFLOAT2(1.0f, 0.0f);
+		vertex[0].Position = XMFLOAT3(-WH.x, WH.y, 0.0f);
+		vertex[0].Normal = XMFLOAT3(0.0f, 0.0f, 1.0f);
+		vertex[0].Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+		vertex[0].TexCoord = XMFLOAT2(0.0f, 0.0f);
 
-		Vertex[2].Position = XMFLOAT3(-WH.x, -WH.y, 0.0f);
-		Vertex[2].Normal = XMFLOAT3(0.0f, 0.0f, 1.0f);
-		Vertex[2].Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
-		Vertex[2].TexCoord = XMFLOAT2(0.0f, 1.0f);
+		vertex[1].Position = XMFLOAT3(WH.x, WH.y, 0.0f);
+		vertex[1].Normal = XMFLOAT3(0.0f, 0.0f, 1.0f);
+		vertex[1].Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+		vertex[1].TexCoord = XMFLOAT2(1.0f, 0.0f);
 
-		Vertex[3].Position = XMFLOAT3(WH.x, -WH.y, 0.0f);
-		Vertex[3].Normal = XMFLOAT3(0.0f, 0.0f, 1.0f);
-		Vertex[3].Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
-		Vertex[3].TexCoord = XMFLOAT2(1.0f, 1.0f);
+		vertex[2].Position = XMFLOAT3(-WH.x, -WH.y, 0.0f);
+		vertex[2].Normal = XMFLOAT3(0.0f, 0.0f, 1.0f);
+		vertex[2].Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+		vertex[2].TexCoord = XMFLOAT2(0.0f, 1.0f);
+
+		vertex[3].Position = XMFLOAT3(WH.x, -WH.y, 0.0f);
+		vertex[3].Normal = XMFLOAT3(0.0f, 0.0f, 1.0f);
+		vertex[3].Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+		vertex[3].TexCoord = XMFLOAT2(1.0f, 1.0f);
 
 		// 頂点バッファの書き換え
 		{
 			D3D11_MAPPED_SUBRESOURCE msr;
 			CRenderer::GetDeviceContext()->Map(pVertexBuffer.get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &msr);
-			memcpy(msr.pData, Vertex, sizeof(VERTEX_3D) * 4); // 4頂点分コピー
+			memcpy(msr.pData, vertex, sizeof(VERTEX_3D) * 4); // 4頂点分コピー
 			CRenderer::GetDeviceContext()->Unmap(pVertexBuffer.get(), 0);
 		}
 	}
@@ -202,31 +204,33 @@ void BILL_BOARD::Draw()
 void BILL_BOARD::Draw_DPP()
 {
 	{
-		Vertex[0].Position = XMFLOAT3(-WH.x, WH.y, 0.0f);
-		Vertex[0].Normal = XMFLOAT3(0.0f, 0.0f, 1.0f);
-		Vertex[0].Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
-		Vertex[0].TexCoord = XMFLOAT2(0.0f, 0.0f);
+		VERTEX_3D vertex[4];
 
-		Vertex[1].Position = XMFLOAT3(WH.x, WH.y, 0.0f);
-		Vertex[1].Normal = XMFLOAT3(0.0f, 0.0f, 1.0f);
-		Vertex[1].Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
-		Vertex[1].TexCoord = XMFLOAT2(1.0f, 0.0f);
+		vertex[0].Position = XMFLOAT3(-WH.x, WH.y, 0.0f);
+		vertex[0].Normal = XMFLOAT3(0.0f, 0.0f, 1.0f);
+		vertex[0].Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+		vertex[0].TexCoord = XMFLOAT2(0.0f, 0.0f);
 
-		Vertex[2].Position = XMFLOAT3(-WH.x, -WH.y, 0.0f);
-		Vertex[2].Normal = XMFLOAT3(0.0f, 0.0f, 1.0f);
-		Vertex[2].Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
-		Vertex[2].TexCoord = XMFLOAT2(0.0f, 1.0f);
+		vertex[1].Position = XMFLOAT3(WH.x, WH.y, 0.0f);
+		vertex[1].Normal = XMFLOAT3(0.0f, 0.0f, 1.0f);
+		vertex[1].Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+		vertex[1].TexCoord = XMFLOAT2(1.0f, 0.0f);
 
-		Vertex[3].Position = XMFLOAT3(WH.x, -WH.y, 0.0f);
-		Vertex[3].Normal = XMFLOAT3(0.0f, 0.0f, 1.0f);
-		Vertex[3].Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
-		Vertex[3].TexCoord = XMFLOAT2(1.0f, 1.0f);
+		vertex[2].Position = XMFLOAT3(-WH.x, -WH.y, 0.0f);
+		vertex[2].Normal = XMFLOAT3(0.0f, 0.0f, 1.0f);
+		vertex[2].Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+		vertex[2].TexCoord = XMFLOAT2(0.0f, 1.0f);
+
+		vertex[3].Position = XMFLOAT3(WH.x, -WH.y, 0.0f);
+		vertex[3].Normal = XMFLOAT3(0.0f, 0.0f, 1.0f);
+		vertex[3].Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+		vertex[3].TexCoord = XMFLOAT2(1.0f, 1.0f);
 
 		// 頂点バッファの書き換え
 		{
 			D3D11_MAPPED_SUBRESOURCE msr;
 			CRenderer::GetDeviceContext()->Map(pVertexBuffer.get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &msr);
-			memcpy(msr.pData, Vertex, sizeof(VERTEX_3D) * 4); // 4頂点分コピー
+			memcpy(msr.pData, vertex, sizeof(VERTEX_3D) * 4); // 4頂点分コピー
 			CRenderer::GetDeviceContext()->Unmap(pVertexBuffer.get(), 0);
 		}
 	}
@@ -301,7 +305,7 @@ void BILL_BOARD::Uninit()
 }
 
 // 幅と高さの設定
-void BILL_BOARD::SetWH(const XMFLOAT2 wh)
+void BILL_BOARD::SetWH(const XMFLOAT2& wh)
 {
 	WH = wh;
 };
@@ -374,6 +378,7 @@ void BILL_BOARD_ANIMATION::Draw(float tx, float ty)
 
 	{
 		XMINT2* wh = Texture->Get_WH();
+		VERTEX_3D vertex[4];
 
 		// UV座標計算
 		float u[2], v[2];
@@ -382,31 +387,31 @@ void BILL_BOARD_ANIMATION::Draw(float tx, float ty)
 		u[1] = (Tx + Tw) / wh->x;
 		v[1] = (Ty + Th) / wh->y;
 
-		Vertex[0].Position = XMFLOAT3(-WH.x, WH.y, 0.0f);
-		Vertex[0].Normal = XMFLOAT3(0.0f, 0.0f, -1.0f);
-		Vertex[0].Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
-		Vertex[0].TexCoord = XMFLOAT2(u[0], v[0]);
+		vertex[0].Position = XMFLOAT3(-WH.x, WH.y, 0.0f);
+		vertex[0].Normal = XMFLOAT3(0.0f, 0.0f, -1.0f);
+		vertex[0].Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+		vertex[0].TexCoord = XMFLOAT2(u[0], v[0]);
 
-		Vertex[1].Position = XMFLOAT3(WH.x, WH.y, 0.0f);
-		Vertex[1].Normal = XMFLOAT3(0.0f, 0.0f, -1.0f);
-		Vertex[1].Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
-		Vertex[1].TexCoord = XMFLOAT2(u[1], v[0]);
+		vertex[1].Position = XMFLOAT3(WH.x, WH.y, 0.0f);
+		vertex[1].Normal = XMFLOAT3(0.0f, 0.0f, -1.0f);
+		vertex[1].Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+		vertex[1].TexCoord = XMFLOAT2(u[1], v[0]);
 
-		Vertex[2].Position = XMFLOAT3(-WH.x, -WH.y, 0.0f);
-		Vertex[2].Normal = XMFLOAT3(0.0f, 0.0f, -1.0f);
-		Vertex[2].Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
-		Vertex[2].TexCoord = XMFLOAT2(u[0], v[1]);
+		vertex[2].Position = XMFLOAT3(-WH.x, -WH.y, 0.0f);
+		vertex[2].Normal = XMFLOAT3(0.0f, 0.0f, -1.0f);
+		vertex[2].Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+		vertex[2].TexCoord = XMFLOAT2(u[0], v[1]);
 
-		Vertex[3].Position = XMFLOAT3(WH.x, -WH.y, 0.0f);
-		Vertex[3].Normal = XMFLOAT3(0.0f, 0.0f, -1.0f);
-		Vertex[3].Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
-		Vertex[3].TexCoord = XMFLOAT2(u[1], v[1]);
+		vertex[3].Position = XMFLOAT3(WH.x, -WH.y, 0.0f);
+		vertex[3].Normal = XMFLOAT3(0.0f, 0.0f, -1.0f);
+		vertex[3].Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+		vertex[3].TexCoord = XMFLOAT2(u[1], v[1]);
 
 		// 頂点バッファの書き換え
 		{
 			D3D11_MAPPED_SUBRESOURCE msr;
 			CRenderer::GetDeviceContext()->Map(pVertexBuffer.get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &msr);
-			memcpy(msr.pData, Vertex, sizeof(VERTEX_3D) * 4); // 4頂点分コピー
+			memcpy(msr.pData, vertex, sizeof(VERTEX_3D) * 4); // 4頂点分コピー
 			CRenderer::GetDeviceContext()->Unmap(pVertexBuffer.get(), 0);
 		}
 	}
@@ -503,41 +508,44 @@ void BILL_BOARD_ANIMATION::Draw_DPP(float tx, float ty)
 		Ty = ty;
 	}
 
-	XMINT2* wh = Texture->Get_WH();
-
-	// UV座標計算
-	float u[2], v[2];
-	u[0] = Tx / wh->x;
-	v[0] = Ty / wh->y;
-	u[1] = (Tx + Tw) / wh->x;
-	v[1] = (Ty + Th) / wh->y;
-
-	Vertex[0].Position = XMFLOAT3(-WH.x, WH.y, 0.0f);
-	Vertex[0].Normal = XMFLOAT3(0.0f, 0.0f, -1.0f);
-	Vertex[0].Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
-	Vertex[0].TexCoord = XMFLOAT2(u[0], v[0]);
-
-	Vertex[1].Position = XMFLOAT3(WH.x, WH.y, 0.0f);
-	Vertex[1].Normal = XMFLOAT3(0.0f, 0.0f, -1.0f);
-	Vertex[1].Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
-	Vertex[1].TexCoord = XMFLOAT2(u[1], v[0]);
-
-	Vertex[2].Position = XMFLOAT3(-WH.x, -WH.y, 0.0f);
-	Vertex[2].Normal = XMFLOAT3(0.0f, 0.0f, -1.0f);
-	Vertex[2].Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
-	Vertex[2].TexCoord = XMFLOAT2(u[0], v[1]);
-
-	Vertex[3].Position = XMFLOAT3(WH.x, -WH.y, 0.0f);
-	Vertex[3].Normal = XMFLOAT3(0.0f, 0.0f, -1.0f);
-	Vertex[3].Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
-	Vertex[3].TexCoord = XMFLOAT2(u[1], v[1]);
-
-	// 頂点バッファの書き換え
 	{
-		D3D11_MAPPED_SUBRESOURCE msr;
-		CRenderer::GetDeviceContext()->Map(pVertexBuffer.get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &msr);
-		memcpy(msr.pData, Vertex, sizeof(VERTEX_3D) * 4); // 4頂点分コピー
-		CRenderer::GetDeviceContext()->Unmap(pVertexBuffer.get(), 0);
+		XMINT2* wh = Texture->Get_WH();
+		VERTEX_3D vertex[4];
+
+		// UV座標計算
+		float u[2], v[2];
+		u[0] = Tx / wh->x;
+		v[0] = Ty / wh->y;
+		u[1] = (Tx + Tw) / wh->x;
+		v[1] = (Ty + Th) / wh->y;
+
+		vertex[0].Position = XMFLOAT3(-WH.x, WH.y, 0.0f);
+		vertex[0].Normal = XMFLOAT3(0.0f, 0.0f, -1.0f);
+		vertex[0].Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+		vertex[0].TexCoord = XMFLOAT2(u[0], v[0]);
+
+		vertex[1].Position = XMFLOAT3(WH.x, WH.y, 0.0f);
+		vertex[1].Normal = XMFLOAT3(0.0f, 0.0f, -1.0f);
+		vertex[1].Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+		vertex[1].TexCoord = XMFLOAT2(u[1], v[0]);
+
+		vertex[2].Position = XMFLOAT3(-WH.x, -WH.y, 0.0f);
+		vertex[2].Normal = XMFLOAT3(0.0f, 0.0f, -1.0f);
+		vertex[2].Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+		vertex[2].TexCoord = XMFLOAT2(u[0], v[1]);
+
+		vertex[3].Position = XMFLOAT3(WH.x, -WH.y, 0.0f);
+		vertex[3].Normal = XMFLOAT3(0.0f, 0.0f, -1.0f);
+		vertex[3].Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+		vertex[3].TexCoord = XMFLOAT2(u[1], v[1]);
+
+		// 頂点バッファの書き換え
+		{
+			D3D11_MAPPED_SUBRESOURCE msr;
+			CRenderer::GetDeviceContext()->Map(pVertexBuffer.get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &msr);
+			memcpy(msr.pData, vertex, sizeof(VERTEX_3D) * 4); // 4頂点分コピー
+			CRenderer::GetDeviceContext()->Unmap(pVertexBuffer.get(), 0);
+		}
 	}
 
 	// 入力アセンブラに頂点バッファを設定
@@ -601,7 +609,7 @@ void BILL_BOARD_ANIMATION::Update(float delta_time)
 {
 	Age++;
 
-	PatternCount = (int)(Age / WaitFrame);
+	PatternCount = (WORD)(Age / WaitFrame);
 
 	if ((Pattern_Max_X * Pattern_Max_Y) <= PatternCount)
 	{
@@ -614,12 +622,7 @@ void BILL_BOARD_ANIMATION::Uninit()
 	BILL_BOARD::Uninit();
 }
 
-// テクスチャアニメーションのパラメーターの設定
-//
-// 引数:wait_frame ... 待ちフレーム
-//      tw ... テクスチャ切り取り幅
-//      th ... テクスチャ切り取り高さ
-void BILL_BOARD_ANIMATION::SetParam(const float& wait_frame, const unsigned char& x, const unsigned char& y)
+void BILL_BOARD_ANIMATION::SetParam(const WORD wait_frame, const BYTE x, const BYTE y)
 {
 	WaitFrame = wait_frame;
 	Pattern_Max_X = x;
@@ -631,11 +634,7 @@ void BILL_BOARD_ANIMATION::SetParam(const float& wait_frame, const unsigned char
 	Th = (float)(wh->y / Pattern_Max_Y);
 }
 
-// テクスチャアニメーションのテクスチャ切り取り座標の設定
-//
-// 引数:tx_param ... テクスチャ切り取り幅（手動）
-//      ty_param ... テクスチャ切り取り高さ（手動）
-void BILL_BOARD_ANIMATION::Set_Param_Txy(const float& tx_param, const float& ty_param )
+void BILL_BOARD_ANIMATION::Set_Param_Txy(const float tx_param, const float ty_param )
 {
 	Tx_Param = tx_param;
 	Ty_Param = ty_param;

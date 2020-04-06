@@ -57,8 +57,8 @@ public:
 	void Draw() override;
 
 	/**
-	* @brief •`‰æ(Depth pre-pass)ŠÖ”
-	* @details Depth pre-pass‚ğs‚¤ŠÖ”
+	* @brief •`‰æ(Depth-pre-pass)ŠÖ”
+	* @details Depth-pre-pass‚ğ‚·‚éŠÖ”
 	*/
 	void Draw_DPP() override {}
 

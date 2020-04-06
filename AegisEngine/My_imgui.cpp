@@ -427,26 +427,6 @@ void My_imgui::Draw(void)
 				}
 			}
 
-			{
-				auto monitor = TEXTURE_MANEGER::Get_Instance()->Get();
-
-				ImGui::Text((char*)u8"更新される画像ファイル一覧");
-
-				string str;
-
-				for (const auto& s : *monitor)
-				{
-					str = wstringTostring(s);
-
-					ImGui::Text("%s", str.c_str());
-				}
-
-				if(ImGui::Button((char*)u8"削除"))
-				{
-					monitor->clear();
-				}
-			}
-
 			ImGui::End();
 		}
 

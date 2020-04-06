@@ -138,7 +138,18 @@ void Create_Bullet(XMFLOAT3& position, const XMFLOAT3& front)
 
 	auto bullets = scene->Get_Game_Objects<BULLET>();
 
-	auto bullet = scene->Add_Game_Object<BULLET>(LAYER_NAME::GAMEOBJECT, "bullet" + to_string(bullets.size() + 1));
+	string name = "1";
+	int cnt = 1;
+	if (!bullets.empty())
+	{
+ 		name = bullets.back()->Get_Object_Name();
+ 		ExtratNum(name);
+
+		cnt = std::atoi(name.c_str());
+		cnt++;
+	}
+
+	auto bullet = scene->Add_Game_Object<BULLET>(LAYER_NAME::GAMEOBJECT, "bullet" + to_string(cnt));
 
 	bullet->Init();
 

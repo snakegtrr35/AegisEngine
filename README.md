@@ -1,6 +1,7 @@
 ## AegisEngise
 
-これは自作のゲームエンジンです。
+これは自作のゲームエンジンです。  
+これは就職作品として、開発しています。
 
 ## ライセンス License
 The MIT License (MIT)

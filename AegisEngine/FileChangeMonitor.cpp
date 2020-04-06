@@ -1,3 +1,4 @@
+#ifdef _DEBUG
 #include	"Texture_Manager.h"
 
 FILE_CHANGE_MONITOR::FILE_CHANGE_MONITOR(const string& directoryName) : m_directoryName(directoryName)
@@ -110,3 +111,4 @@ set<wstring>* FILE_CHANGE_MONITOR::Get()
 {
 	return &m_fileActions;
 }
+#endif // _DEBUG

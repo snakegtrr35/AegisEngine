@@ -8,144 +8,154 @@
 #include	"Scene.h"
 #include	"ShadowMap.h"
 
-MESH_FIELD::MESH_FIELD()
+MESH_FIELD::MESH_FIELD() : GridSize(XMFLOAT3(1.0f, 0.0f, 1.0f)), GridNum(XMINT2(10, 10))
 {
-	VertexArray = nullptr;
-	IndexBuffer = VertexBuffer = nullptr;
+	VertexBuffer.reset(nullptr);
+	IndexBuffer.reset(nullptr);
 
 	// テクスチャの生成
-	Texture = make_unique<TEXTURE>();
-	Texture->Set_Texture_Name("UVCheckerMap01-512.png");
-
-	GridSize = XMFLOAT3(1.0f, 0.0f, 1.0f);
-	GridNum = XMINT2(10, 10);
+	Texture = make_unique<TEXTURE>("UVCheckerMap01-512.png");
 };
 
 void MESH_FIELD::Init()
 {
-	unsigned int VertexNum = (GridNum.x + 1) * (GridNum.y + 1);
-	VertexArray = new VERTEX_3D[VertexNum];
+	const WORD VertexNum = (GridNum.x + 1) * (GridNum.y + 1);
 
-	IndexNum = (2 + (GridNum.x * 2)) * GridNum.y + (GridNum.y - 1) * 2;
-	unsigned short* indexArray = new unsigned short[IndexNum];
-
-	// 頂点バッファへの書き込み
-	for (int z = 0; z < GridNum.y + 1; z++)
+	// 頂点バッファの作成
 	{
-		for (int x = 0; x < GridNum.x + 1; x++)
+		VertexArray.reserve(VertexNum);
+		VertexArray.assign(VertexNum, VERTEX_3D());
+
+		// 頂点バッファへの書き込み
+		for (int z = 0; z < GridNum.y + 1; z++)
 		{
-			XMFLOAT3 position;
-
-			position.x = -0.5f * (float)GridNum.x * GridSize.x + (float)x * GridSize.x;
-			//position.y = sinf(z * 0.8) * 0.3f;
-			position.y = 0.0f;
-			position.z = 0.5f * (float)GridNum.y * GridSize.z - (float)z * GridSize.z;
-
-			VertexArray[x + (GridNum.x + 1) * z].Position = position;
-
-			VertexArray[x + (GridNum.y + 1) * z].Normal = XMFLOAT3(0.0f, 1.0f, 0.0f);
-
-			VertexArray[x + (GridNum.x + 1) * z].Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
-			VertexArray[x + (GridNum.x + 1) * z].TexCoord = XMFLOAT2((float)x, (float)z);
-		}
-	}
-
-	// 頂点バッファへの書き込み(Normal)
-	for (int z = 1; z < GridNum.y; z++)
-	{
-		for (int x = 1; x < GridNum.x; x++)
-		{
-			XMFLOAT3 va, vb;
-
-			va.x = VertexArray[(z - 1) * GridNum.y + x].Position.x - VertexArray[(z + 1) * GridNum.x + x].Position.x;
-			va.y = VertexArray[(z - 1) * GridNum.y + x].Position.y - VertexArray[(z + 1) * GridNum.x + x].Position.y;
-			va.z = VertexArray[(z - 1) * GridNum.y + x].Position.z - VertexArray[(z + 1) * GridNum.x + x].Position.z;
-
-			vb.x = VertexArray[(x + 1) + (GridNum.x + 1) * z].Position.x - VertexArray[(x - 1) + (GridNum.x + 1) * z].Position.x;
-			vb.y = VertexArray[(x + 1) + (GridNum.x + 1) * z].Position.y - VertexArray[(x - 1) + (GridNum.x + 1) * z].Position.y;
-			vb.z = VertexArray[(x + 1) + (GridNum.x + 1) * z].Position.z - VertexArray[(x - 1) + (GridNum.x + 1) * z].Position.z;
-
-			XMFLOAT3 vn;
-
-			// 外積
-			vn.x = va.y * vb.z - va.z * vb.y;		
-			vn.y = va.z * vb.x - va.x * vb.z;
-			vn.z = va.x * vb.y - va.y * vb.x;
-
-			float legth = sqrtf(vn.x * vn.x + vn.y * vn.y + vn.z * vn.z);
-
-			vn.x = vn.x / legth;
-			vn.y = vn.y / legth;
-			vn.z = vn.z / legth;
-
-			VertexArray[x + (GridNum.y + 1) * z].Normal = vn;
-		}
-	}
-
-	// 頂点インデックスバッファへの書き込み
-	int indexNum = 0;
-	int indexFlapX = GridNum.x - 1;
-	int indexFlapZ = GridNum.y - 1;
-	for (int z = 0; z < GridNum.y; z++)
-	{
-		for (int x = 0; x < GridNum.x + 1; x++)
-		{
-			indexArray[indexNum++] = (GridNum.x + 1) * (z + 1) + x;
-			indexArray[indexNum++] = (GridNum.x + 1) * z + x;
-
-			// 縮退ポリゴン用にインデックスの追加
-			if (x > indexFlapX && z < indexFlapZ)
+			for (int x = 0; x < GridNum.x + 1; x++)
 			{
-				indexArray[indexNum++] = (GridNum.x + 1) * z + (GridNum.x + 1) - 1;
-				indexArray[indexNum++] = (GridNum.x + 1) * (z + 1 + 1) + 0;
+				XMFLOAT3 position;
+
+				position.x = -0.5f * (float)GridNum.x * GridSize.x + (float)x * GridSize.x;
+				//position.y = sinf(z * 0.8) * 0.3f;
+				position.y = 0.0f;
+				position.z = 0.5f * (float)GridNum.y * GridSize.z - (float)z * GridSize.z;
+
+				VertexArray[x + (GridNum.x + 1) * z].Position = position;
+				VertexArray[x + (GridNum.y + 1) * z].Normal = XMFLOAT3(0.0f, 1.0f, 0.0f);
+				VertexArray[x + (GridNum.x + 1) * z].Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+				VertexArray[x + (GridNum.x + 1) * z].TexCoord = XMFLOAT2((float)x, (float)z);
 			}
 		}
+
+		// 頂点バッファへの書き込み(Normal)
+		for (int z = 1; z < GridNum.y; z++)
+		{
+			for (int x = 1; x < GridNum.x; x++)
+			{
+				XMFLOAT3 va, vb;
+
+				va.x = VertexArray[(z - 1) * GridNum.y + x].Position.x - VertexArray[(z + 1) * GridNum.x + x].Position.x;
+				va.y = VertexArray[(z - 1) * GridNum.y + x].Position.y - VertexArray[(z + 1) * GridNum.x + x].Position.y;
+				va.z = VertexArray[(z - 1) * GridNum.y + x].Position.z - VertexArray[(z + 1) * GridNum.x + x].Position.z;
+
+				vb.x = VertexArray[(x + 1) + (GridNum.x + 1) * z].Position.x - VertexArray[(x - 1) + (GridNum.x + 1) * z].Position.x;
+				vb.y = VertexArray[(x + 1) + (GridNum.x + 1) * z].Position.y - VertexArray[(x - 1) + (GridNum.x + 1) * z].Position.y;
+				vb.z = VertexArray[(x + 1) + (GridNum.x + 1) * z].Position.z - VertexArray[(x - 1) + (GridNum.x + 1) * z].Position.z;
+
+				XMFLOAT3 vn;
+
+				// 外積
+				vn.x = va.y * vb.z - va.z * vb.y;
+				vn.y = va.z * vb.x - va.x * vb.z;
+				vn.z = va.x * vb.y - va.y * vb.x;
+
+				float legth = sqrtf(vn.x * vn.x + vn.y * vn.y + vn.z * vn.z);
+
+				vn.x = vn.x / legth;
+				vn.y = vn.y / legth;
+				vn.z = vn.z / legth;
+
+				VertexArray[x + (GridNum.y + 1) * z].Normal = vn;
+			}
+		}
+
+		// 頂点バッファの生成
+		{
+			ID3D11Buffer* buffer = nullptr;
+
+			D3D11_BUFFER_DESC bd;
+			ZeroMemory(&bd, sizeof(bd));
+			bd.Usage = D3D11_USAGE_DEFAULT;
+			bd.ByteWidth = sizeof(VERTEX_3D) * VertexNum;
+			bd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+			bd.CPUAccessFlags = 0;
+
+			D3D11_SUBRESOURCE_DATA sd;
+			ZeroMemory(&sd, sizeof(sd));
+			sd.pSysMem = VertexArray.data();
+
+			CRenderer::GetDevice()->CreateBuffer(&bd, &sd, &buffer);
+
+			VertexBuffer.reset(buffer);
+		}
 	}
 
-
-	// 頂点バッファの生成
+	// インデックスバッファの作成
 	{
-		D3D11_BUFFER_DESC bd;
-		ZeroMemory(&bd, sizeof(bd));
-		bd.Usage = D3D11_USAGE_DEFAULT;
-		bd.ByteWidth = sizeof(VERTEX_3D) * VertexNum;
-		bd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-		bd.CPUAccessFlags = 0;
+		IndexNum = (2 + (GridNum.x * 2)) * GridNum.y + (GridNum.y - 1) * 2;
 
-		D3D11_SUBRESOURCE_DATA sd;
-		ZeroMemory(&sd, sizeof(sd));
-		sd.pSysMem = VertexArray;
+		const UINT size = IndexNum;
 
-		CRenderer::GetDevice()->CreateBuffer(&bd, &sd, &VertexBuffer);
+		vector<WORD> indexArray;
+		indexArray.reserve(IndexNum);
+		indexArray.assign(IndexNum, 0);
+
+		// 頂点インデックスバッファへの書き込み
+		int indexNum = 0;
+		int indexFlapX = GridNum.x - 1;
+		int indexFlapZ = GridNum.y - 1;
+		for (int z = 0; z < GridNum.y; z++)
+		{
+			for (int x = 0; x < GridNum.x + 1; x++)
+			{
+				indexArray[indexNum++] = WORD((GridNum.x + 1) * (z + 1) + x);
+				indexArray[indexNum++] = WORD((GridNum.x + 1) * z + x);
+
+				// 縮退ポリゴン用にインデックスの追加
+				if (x > indexFlapX && z < indexFlapZ)
+				{
+					indexArray[indexNum++] = WORD((GridNum.x + 1) * z + (GridNum.x + 1) - 1);
+					indexArray[indexNum++] = WORD((GridNum.x + 1) * (z + 1 + 1));
+				}
+			}
+		}
+
+		// インデックスバッファの生成
+		{
+			ID3D11Buffer* buffer = nullptr;
+
+			D3D11_BUFFER_DESC bd;
+			ZeroMemory(&bd, sizeof(bd));
+			bd.Usage = D3D11_USAGE_DEFAULT;
+			bd.ByteWidth = sizeof(WORD) * IndexNum;
+			bd.BindFlags = D3D11_BIND_INDEX_BUFFER;
+			bd.CPUAccessFlags = 0;
+
+			D3D11_SUBRESOURCE_DATA sd;
+			ZeroMemory(&sd, sizeof(sd));
+			sd.pSysMem = indexArray.data();
+
+			CRenderer::GetDevice()->CreateBuffer(&bd, &sd, &buffer);
+
+			IndexBuffer.reset(buffer);
+		}
 	}
-
-	// インデックスバッファの生成
-	{
-		D3D11_BUFFER_DESC bd;
-		ZeroMemory(&bd, sizeof(bd));
-		bd.Usage = D3D11_USAGE_DEFAULT;
-		bd.ByteWidth = sizeof(unsigned short) * IndexNum;
-		bd.BindFlags = D3D11_BIND_INDEX_BUFFER;
-		bd.CPUAccessFlags = 0;
-
-		D3D11_SUBRESOURCE_DATA sd;
-		ZeroMemory(&sd, sizeof(sd));
-		sd.pSysMem = indexArray;
-
-		CRenderer::GetDevice()->CreateBuffer(&bd, &sd, &IndexBuffer);
-	}
-
-	// メモリ解放
-	SAFE_DELETE_ARRAY(indexArray);
 
 	GAME_OBJECT::Init();
 }
 
 void MESH_FIELD::Uninit()
 {
-	SAFE_DELETE(VertexArray);
-	SAFE_RELEASE(VertexBuffer);
-	SAFE_RELEASE(IndexBuffer);
+	VertexBuffer.reset(nullptr);
+	IndexBuffer.reset(nullptr);
 
 	Texture.reset(nullptr);
 }
@@ -219,10 +229,10 @@ void MESH_FIELD::Draw()
 	}
 
 	// 頂点バッファ設定
-	CRenderer::SetVertexBuffers(VertexBuffer);
+	CRenderer::SetVertexBuffers(VertexBuffer.get());
 
 	// インデックスバッファ設定
-	CRenderer::SetIndexBuffer(IndexBuffer);
+	CRenderer::SetIndexBuffer(IndexBuffer.get());
 
 	// テクスチャの設定
 	Texture->Set_Texture();
@@ -257,10 +267,10 @@ void MESH_FIELD::Draw_DPP()
 	}
 
 	// 頂点バッファ設定
-	CRenderer::SetVertexBuffers(VertexBuffer);
+	CRenderer::SetVertexBuffers(VertexBuffer.get());
 
 	// インデックスバッファ設定
-	CRenderer::SetIndexBuffer(IndexBuffer);
+	CRenderer::SetIndexBuffer(IndexBuffer.get());
 
 	// トポロジ設定
 	CRenderer::GetDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
@@ -422,14 +432,14 @@ void MESH_WALL::Init()
 	{
 		for (int x = 0; x < GridNum.x + 1; x++)
 		{
-			indexArray[indexNum++] = (GridNum.x + 1) * (z + 1) + x;
-			indexArray[indexNum++] = (GridNum.x + 1) * z + x;
+			indexArray[indexNum++] = WORD((GridNum.x + 1) * (z + 1) + x);
+			indexArray[indexNum++] = WORD((GridNum.x + 1) * z + x);
 
 			// 縮退ポリゴン用にインデックスの追加
 			if (x > indexFlapX && z < indexFlapZ)
 			{
-				indexArray[indexNum++] = (GridNum.x + 1) * z + (GridNum.x + 1) - 1;
-				indexArray[indexNum++] = (GridNum.x + 1) * (z + 1 + 1) + 0;
+				indexArray[indexNum++] = WORD((GridNum.x + 1) * z + (GridNum.x + 1) - 1);
+				indexArray[indexNum++] = WORD((GridNum.x + 1) * (z + 1 + 1));
 			}
 		}
 	}

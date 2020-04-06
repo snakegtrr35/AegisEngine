@@ -38,8 +38,8 @@ private:
 	void Draw2(float tx = -1.0f, float ty = -1.0f);
 
 	/**
-	* @brief •`‰æ(Depth pre-pass)ŠÖ”
-	* @details ÀÛ‚ÉDepth pre-pass‚ğs‚¤ŠÖ”
+	* @brief •`‰æ(Depth-pre-pass)ŠÖ”
+	* @details Depth-pre-pass‚ğ‚·‚éŠÖ”
 	*/
 	void Draw_DPP2(float tx = -1.0f, float ty = -1.0f);
 
@@ -78,8 +78,8 @@ public:
 	void Draw() override;
 
 	/**
-	* @brief •`‰æ(Depth pre-pass)ŠÖ”
-	* @details Depth pre-pass‚ğs‚¤ŠÖ”
+	* @brief •`‰æ(Depth-pre-pass)ŠÖ”
+	* @details Depth-pre-pass‚ğ‚·‚éŠÖ”
 	*/
 	void Draw_DPP() override;
 

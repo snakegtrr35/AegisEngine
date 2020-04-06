@@ -6,10 +6,6 @@
 
 #include	"manager.h"
 
-#include	<dxgi1_4.h>
-
-#pragma comment (lib, "Dxgi.lib")
-
 D3D_FEATURE_LEVEL											CRenderer::m_FeatureLevel = D3D_FEATURE_LEVEL_11_0;
 
 ID3D11Device*												CRenderer::m_D3DDevice = nullptr;
@@ -550,14 +546,75 @@ bool CRenderer::Init3D()
 	UINT d3dFlags = D3D11_CREATE_DEVICE_BGRA_SUPPORT; // BGRA テクスチャ有効(Direct2Dには必ず必要)
 
 	// Direct3Dの作成
-	hr = D3D11CreateDevice(
-		nullptr, D3D_DRIVER_TYPE_HARDWARE, 0, d3dFlags,
-		&m_FeatureLevel, 1, D3D11_SDK_VERSION,
-		&m_D3DDevice, nullptr, &m_ImmediateContext);
-	if (FAILED(hr))
 	{
-		FAILDE_ASSERT;
-		return false;
+		// アダプターの列挙
+		vector<IDXGIAdapter*> Adapters;
+		{
+			IDXGIFactory* pDXGIFactory = nullptr;
+			IDXGIAdapter* pAdapter = nullptr;
+
+			DXGI_ADAPTER_DESC desc;
+			wstring str;
+
+			//ファクトリの作成
+			hr = CreateDXGIFactory(__uuidof(IDXGIFactory), reinterpret_cast<void**>(&pDXGIFactory));
+			if (FAILED(hr))
+			{
+				FAILDE_ASSERT;
+				return false;
+			}
+
+			for (UINT index = 0; ; index++)
+			{
+				hr = pDXGIFactory->EnumAdapters(index, &pAdapter);
+				if (FAILED(hr))
+					break;
+
+				if (SUCCEEDED(pAdapter->GetDesc(&desc)))
+				{
+					str = wstring(desc.Description);
+
+					if (wstring::npos == str.find(L"Microsoft"))
+					{
+						Adapters.emplace_back(pAdapter);
+					}
+					else
+					{
+						SAFE_RELEASE(pAdapter);
+					}
+				}
+			}
+
+			SAFE_RELEASE(pDXGIFactory);
+		}
+
+		// 内蔵GPUじゃないGPUがある
+		if (false == Adapters.empty())
+		{
+			// Direct3Dの作成
+			hr = D3D11CreateDevice(Adapters.front(), D3D_DRIVER_TYPE_UNKNOWN, 0, d3dFlags, &m_FeatureLevel, 1, D3D11_SDK_VERSION, &m_D3DDevice, nullptr, &m_ImmediateContext);
+			if (FAILED(hr))
+			{
+				FAILDE_ASSERT;
+				return false;
+			}
+		}
+		else// 内蔵GPUしかない
+		{
+			// Direct3Dの作成
+			hr = D3D11CreateDevice(nullptr, D3D_DRIVER_TYPE_HARDWARE, 0, d3dFlags, &m_FeatureLevel, 1, D3D11_SDK_VERSION, &m_D3DDevice, nullptr, &m_ImmediateContext);
+			if (FAILED(hr))
+			{
+				FAILDE_ASSERT;
+				return false;
+			}
+		}
+
+		for (auto& adap : Adapters)
+		{
+			adap->Release();
+		}
+		Adapters.clear();
 	}
 
 	//// MSAA用
@@ -606,38 +663,8 @@ bool CRenderer::Init3D()
 		pAdapter->QueryVideoMemoryInfo(0, DXGI_MEMORY_SEGMENT_GROUP_LOCAL, &info);
 	}
 
-	/*{
-		IDXGIFactory4* pDXGIFactory;
-		//IDXGIAdapter3* pAdapter;
-
-		//ファクトリの作成
-		hr = CreateDXGIFactory2(0, IID_PPV_ARGS(&pDXGIFactory));
-		if (FAILED(hr))
-		{
-			FAILDE_ASSERT;
-			return false;
-		}
-
-
-		DXGI_ADAPTER_DESC AdapterDesc;
-		//最初に見つかったアダプターを使用する
-		hr = pDXGIFactory->EnumAdapters(0, (IDXGIAdapter**)&pAdapter);
-		if (FAILED(hr))
-		{
-			FAILDE_ASSERT;
-			return false;
-		}
-		pDXGIFactory->Release();
-
-		//DXGI_QUERY_VIDEO_MEMORY_INFO info;
-
-		//pAdapter->QueryVideoMemoryInfo(0, DXGI_MEMORY_SEGMENT_GROUP_LOCAL, &info);
-
-		//int a = 0;
-	}*/
-
 	// DXGIのファクトリの作成
-                 	IDXGIFactory2* factory = nullptr;
+	IDXGIFactory2* factory = nullptr;
 	hr = adapter->GetParent(IID_PPV_ARGS(&factory));
 	adapter->Release();
 	if (FAILED(hr))
@@ -647,8 +674,7 @@ bool CRenderer::Init3D()
 	}
 
 	// スワップチェインをHWNDから作成
-	hr = factory->CreateSwapChainForHwnd(m_D3DDevice, GetWindow(),
-		&sc, nullptr, nullptr, &m_SwapChain);
+	hr = factory->CreateSwapChainForHwnd(m_D3DDevice, GetWindow(), &sc, nullptr, nullptr, &m_SwapChain);
 	factory->Release();
 	if (FAILED(hr))
 	{
@@ -836,11 +862,7 @@ bool CRenderer::Init2D()
 
 	// Direct2Dのファクトリーの作成
 	ID2D1Factory1* d2dFactory = nullptr;
-	hr = D2D1CreateFactory(
-		D2D1_FACTORY_TYPE_SINGLE_THREADED,
-		__uuidof(ID2D1Factory1),
-		nullptr,
-		reinterpret_cast<void**>(&d2dFactory));
+	hr = D2D1CreateFactory(D2D1_FACTORY_TYPE_SINGLE_THREADED, __uuidof(ID2D1Factory1), nullptr, reinterpret_cast<void**>(&d2dFactory));
 	if (FAILED(hr))
 	{
 		FAILDE_ASSERT;
@@ -858,9 +880,7 @@ bool CRenderer::Init2D()
 	}
 
 	// Direct2Dデバイスコンテクストの作成
-	hr = m_D2DDevice->CreateDeviceContext(
-		D2D1_DEVICE_CONTEXT_OPTIONS_ENABLE_MULTITHREADED_OPTIMIZATIONS,
-		&m_D2DDeviceContext);
+	hr = m_D2DDevice->CreateDeviceContext(D2D1_DEVICE_CONTEXT_OPTIONS_ENABLE_MULTITHREADED_OPTIMIZATIONS, &m_D2DDeviceContext);
 	if (FAILED(hr))
 	{
 		FAILDE_ASSERT;
@@ -888,8 +908,7 @@ bool CRenderer::Init2D()
 			dx,
 			dy);
 
-	hr = m_D2DDeviceContext->CreateBitmapFromDxgiSurface(
-		surf, &d2dProp, &m_D2DTargetBitmap);
+	hr = m_D2DDeviceContext->CreateBitmapFromDxgiSurface(surf, &d2dProp, &m_D2DTargetBitmap);
 	surf->Release();
 	if (FAILED(hr))
 	{
@@ -901,10 +920,7 @@ bool CRenderer::Init2D()
 	m_D2DDeviceContext->SetTarget(m_D2DTargetBitmap);
 
 	// DirectWriteのファクトリの作成
-	hr = DWriteCreateFactory(
-		DWRITE_FACTORY_TYPE_SHARED,
-		__uuidof(m_DwriteFactory),
-		reinterpret_cast<IUnknown**>(&m_DwriteFactory));
+	hr = DWriteCreateFactory(DWRITE_FACTORY_TYPE_SHARED, __uuidof(m_DwriteFactory), reinterpret_cast<IUnknown**>(&m_DwriteFactory));
 	if (FAILED(hr))
 	{
 		FAILDE_ASSERT;
