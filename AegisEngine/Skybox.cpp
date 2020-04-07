@@ -9,10 +9,14 @@
 #include	"Scene.h"
 #include	"ShadowMap.h"
 
+#include	"Library/DirectXTex/DDSTextureLoader.h"
+
 unique_ptr<ID3D11Buffer, Release> SKYBOX::VertexBuffer;
 unique_ptr<ID3D11Buffer, Release> SKYBOX::IndexBuffer;
 
 static constexpr UINT Indecies = 24;
+
+static ID3D11ShaderResourceView* Srv = nullptr;
 
 SKYBOX::SKYBOX()
 {
@@ -106,6 +110,13 @@ void SKYBOX::Init()
 			IndexBuffer.reset(buffer);
 		}
 	}
+
+	{
+		auto device = CRenderer::GetDevice();
+		auto device_context = CRenderer::GetDeviceContext();
+		
+		CreateDDSTextureFromFile(device, device_context, L"asset/texture/cloudySea.dds", nullptr, &Srv, nullptr, nullptr);
+	}
 }
 
 void SKYBOX::Draw()
@@ -170,9 +181,9 @@ void SKYBOX::Draw()
 	CRenderer::SetIndexBuffer(IndexBuffer.get());
 
 	// テクスチャの設定
-	//CRenderer::GetDeviceContext()->PSSetShaderResources(0, 1, );
+	CRenderer::GetDeviceContext()->PSSetShaderResources(0, 1, &Srv);
 
-	//CRenderer::Set_Shader(, );
+	//CRenderer::Set_Shader(SHADER_INDEX_V::DEFAULT, SHADER_INDEX_P::);
 
 	CRenderer::GetDeviceContext()->DrawIndexed(Indecies, 0, 0);
 

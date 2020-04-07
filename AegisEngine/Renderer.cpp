@@ -89,13 +89,13 @@ bool CRenderer::Init()
 			FILE* file;
 			long int fsize;
 
-			file = fopen("vertexShader.cso", "rb");
+			file = fopen("VertexShader.cso", "rb");
 			fsize = _filelength(_fileno(file));
 			unsigned char* buffer = new unsigned char[fsize];
 			fread(buffer, fsize, 1, file);
 			fclose(file);
 
-			hr = m_D3DDevice->CreateVertexShader(buffer, fsize, NULL, &m_VertexShader[SHADER_INDEX_V::DEFAULT]);
+			hr = m_D3DDevice->CreateVertexShader(buffer, fsize, nullptr, &m_VertexShader[SHADER_INDEX_V::DEFAULT]);
 			if (FAILED(hr))
 			{
 				FAILDE_ASSERT;
@@ -123,7 +123,7 @@ bool CRenderer::Init()
 			fread(buffer, fsize, 1, file);
 			fclose(file);
 
-			hr = m_D3DDevice->CreateVertexShader(buffer, fsize, NULL, &m_VertexShader[SHADER_INDEX_V::SHADOW_MAP]);
+			hr = m_D3DDevice->CreateVertexShader(buffer, fsize, nullptr, &m_VertexShader[SHADER_INDEX_V::SHADOW_MAP]);
 			if (FAILED(hr))
 			{
 				FAILDE_ASSERT;
@@ -144,7 +144,7 @@ bool CRenderer::Init()
 			fread(buffer, fsize, 1, file);
 			fclose(file);
 
-			hr = m_D3DDevice->CreateVertexShader(buffer, fsize, NULL, &m_VertexShader[SHADER_INDEX_V::DEPTH_PRE]);
+			hr = m_D3DDevice->CreateVertexShader(buffer, fsize, nullptr, &m_VertexShader[SHADER_INDEX_V::DEPTH_PRE]);
 			if (FAILED(hr))
 			{
 				FAILDE_ASSERT;
@@ -181,7 +181,7 @@ bool CRenderer::Init()
 			fread(buffer, fsize, 1, file);
 			fclose(file);
 
-			hr = m_D3DDevice->CreateVertexShader(buffer, fsize, NULL, &m_VertexShader[SHADER_INDEX_V::ANIMATION]);
+			hr = m_D3DDevice->CreateVertexShader(buffer, fsize, nullptr, &m_VertexShader[SHADER_INDEX_V::ANIMATION]);
 			if (FAILED(hr))
 			{
 				FAILDE_ASSERT;
@@ -209,7 +209,7 @@ bool CRenderer::Init()
 			fread(buffer, fsize, 1, file);
 			fclose(file);
 
-			hr = m_D3DDevice->CreateVertexShader(buffer, fsize, NULL, &m_VertexShader[SHADER_INDEX_V::SHADOW_MAP_ANIMATION]);
+			hr = m_D3DDevice->CreateVertexShader(buffer, fsize, nullptr, &m_VertexShader[SHADER_INDEX_V::SHADOW_MAP_ANIMATION]);
 			delete[] buffer;
 
 			if (FAILED(hr))
@@ -230,7 +230,7 @@ bool CRenderer::Init()
 			fread(buffer, fsize, 1, file);
 			fclose(file);
 
-			hr = m_D3DDevice->CreateVertexShader(buffer, fsize, NULL, &m_VertexShader[SHADER_INDEX_V::DEPTH_PRE_ANIME]);
+			hr = m_D3DDevice->CreateVertexShader(buffer, fsize, nullptr, &m_VertexShader[SHADER_INDEX_V::DEPTH_PRE_ANIME]);
 			delete[] buffer;
 
 			if (FAILED(hr))
@@ -269,7 +269,7 @@ bool CRenderer::Init()
 			fread(buffer, fsize, 1, file);
 			fclose(file);
 
-			hr = m_D3DDevice->CreateVertexShader(buffer, fsize, NULL, &m_VertexShader[SHADER_INDEX_V::INSTANCING]);
+			hr = m_D3DDevice->CreateVertexShader(buffer, fsize, nullptr, &m_VertexShader[SHADER_INDEX_V::INSTANCING]);
 			if (FAILED(hr))
 			{
 				FAILDE_ASSERT;
@@ -294,13 +294,13 @@ bool CRenderer::Init()
 			FILE* file;
 			long int fsize;
 
-			file = fopen("pixelShader.cso", "rb");
+			file = fopen("PixelShader.cso", "rb");
 			fsize = _filelength(_fileno(file));
 			unsigned char* buffer = new unsigned char[fsize];
 			fread(buffer, fsize, 1, file);
 			fclose(file);
 
-			hr = m_D3DDevice->CreatePixelShader(buffer, fsize, NULL, &m_PixelShader[SHADER_INDEX_P::DEFAULT]);
+			hr = m_D3DDevice->CreatePixelShader(buffer, fsize, nullptr, &m_PixelShader[SHADER_INDEX_P::DEFAULT]);
 			if (FAILED(hr))
 			{
 				FAILDE_ASSERT;
@@ -315,13 +315,13 @@ bool CRenderer::Init()
 			FILE* file;
 			long int fsize;
 
-			file = fopen("pixelShader_No_Texture.cso", "rb");
+			file = fopen("PixelShader_No_Texture.cso", "rb");
 			fsize = _filelength(_fileno(file));
 			unsigned char* buffer = new unsigned char[fsize];
 			fread(buffer, fsize, 1, file);
 			fclose(file);
 
-			hr = m_D3DDevice->CreatePixelShader(buffer, fsize, NULL, &m_PixelShader[SHADER_INDEX_P::NO_TEXTURE]);
+			hr = m_D3DDevice->CreatePixelShader(buffer, fsize, nullptr, &m_PixelShader[SHADER_INDEX_P::NO_TEXTURE]);
 			if (FAILED(hr))
 			{
 				FAILDE_ASSERT;
@@ -336,13 +336,34 @@ bool CRenderer::Init()
 			FILE* file;
 			long int fsize;
 
-			file = fopen("pixelShader_No_Light.cso", "rb");
+			file = fopen("PixelShader_No_Light.cso", "rb");
 			fsize = _filelength(_fileno(file));
 			unsigned char* buffer = new unsigned char[fsize];
 			fread(buffer, fsize, 1, file);
 			fclose(file);
 
-			hr = m_D3DDevice->CreatePixelShader(buffer, fsize, NULL, &m_PixelShader[SHADER_INDEX_P::NO_LIGHT]);
+			hr = m_D3DDevice->CreatePixelShader(buffer, fsize, nullptr, &m_PixelShader[SHADER_INDEX_P::NO_LIGHT]);
+			if (FAILED(hr))
+			{
+				FAILDE_ASSERT;
+				return false;
+			}
+
+			delete[] buffer;
+		}
+
+		// スカイボックス
+		{
+			FILE* file;
+			long int fsize;
+
+			file = fopen("PixelShader_Skybox.cso", "rb");
+			fsize = _filelength(_fileno(file));
+			unsigned char* buffer = new unsigned char[fsize];
+			fread(buffer, fsize, 1, file);
+			fclose(file);
+
+			hr = m_D3DDevice->CreatePixelShader(buffer, fsize, nullptr, &m_PixelShader[SHADER_INDEX_P::SKYBOX]);
 			if (FAILED(hr))
 			{
 				FAILDE_ASSERT;
@@ -363,7 +384,7 @@ bool CRenderer::Init()
 			fread(buffer, fsize, 1, file);
 			fclose(file);
 
-			hr = m_D3DDevice->CreatePixelShader(buffer, fsize, NULL, &m_PixelShader[SHADER_INDEX_P::SHADOW_MAP]);
+			hr = m_D3DDevice->CreatePixelShader(buffer, fsize, nullptr, &m_PixelShader[SHADER_INDEX_P::SHADOW_MAP]);
 			if (FAILED(hr))
 			{
 				FAILDE_ASSERT;
@@ -389,7 +410,7 @@ bool CRenderer::Init()
 
 	hBufferDesc.ByteWidth = sizeof(MATERIAL);
 
-	hr = m_D3DDevice->CreateBuffer(&hBufferDesc, NULL, &m_MaterialBuffer);
+	hr = m_D3DDevice->CreateBuffer(&hBufferDesc, nullptr, &m_MaterialBuffer);
 	if (FAILED(hr))
 	{
 		FAILDE_ASSERT;
@@ -401,7 +422,7 @@ bool CRenderer::Init()
 
 	hBufferDesc.ByteWidth = sizeof(LIGHT);
 
-	hr = m_D3DDevice->CreateBuffer(&hBufferDesc, NULL, &m_LightBuffer);
+	hr = m_D3DDevice->CreateBuffer(&hBufferDesc, nullptr, &m_LightBuffer);
 	if (FAILED(hr))
 	{
 		FAILDE_ASSERT;
@@ -412,7 +433,7 @@ bool CRenderer::Init()
 	m_ImmediateContext->PSSetConstantBuffers(4, 1, &m_LightBuffer);
 
 	hBufferDesc.ByteWidth = sizeof(CONSTANT);
-	hr = m_D3DDevice->CreateBuffer(&hBufferDesc, NULL, &m_ConstantBuffer);
+	hr = m_D3DDevice->CreateBuffer(&hBufferDesc, nullptr, &m_ConstantBuffer);
 	if (FAILED(hr))
 	{
 		FAILDE_ASSERT;
@@ -423,7 +444,7 @@ bool CRenderer::Init()
 	m_ImmediateContext->PSSetConstantBuffers(0, 1, &m_ConstantBuffer);
 
 	hBufferDesc.ByteWidth = sizeof(CONSTANT_02);
-	hr = m_D3DDevice->CreateBuffer(&hBufferDesc, NULL, &m_ConstantBuffer_02);
+	hr = m_D3DDevice->CreateBuffer(&hBufferDesc, nullptr, &m_ConstantBuffer_02);
 	if (FAILED(hr))
 	{
 		FAILDE_ASSERT;
@@ -437,10 +458,8 @@ bool CRenderer::Init()
 	m_ImmediateContext->IASetInputLayout(m_VertexLayout[0]);
 
 	// シェーダ設定
-	//m_ImmediateContext->VSSetShader(m_VertexShader[0], NULL, 0);
-	//m_ImmediateContext->PSSetShader(m_PixelShader[0], NULL, 0);
-	m_ImmediateContext->VSSetShader(m_VertexShader[SHADER_INDEX_V::DEFAULT], NULL, 0);
-	m_ImmediateContext->PSSetShader(m_PixelShader[SHADER_INDEX_P::DEFAULT], NULL, 0);
+	m_ImmediateContext->VSSetShader(m_VertexShader[SHADER_INDEX_V::DEFAULT], nullptr, 0);
+	m_ImmediateContext->PSSetShader(m_PixelShader[SHADER_INDEX_P::DEFAULT], nullptr, 0);
 
 	// ライト初期化
 	ZeroMemory(&m_Light, sizeof(m_Light));
@@ -469,12 +488,12 @@ void CRenderer::Uninit()
 		BOOL FullScreen = FALSE;
 		if (nullptr != m_SwapChain)
 		{
-			m_SwapChain->GetFullscreenState(&FullScreen, NULL);
+			m_SwapChain->GetFullscreenState(&FullScreen, nullptr);
 
 			// フルスクリーンのとき
 			if (FullScreen == TRUE)
 			{
-				m_SwapChain->SetFullscreenState(FALSE, NULL);
+				m_SwapChain->SetFullscreenState(FALSE, nullptr);
 			}
 		}
 	}
@@ -714,7 +733,7 @@ bool CRenderer::Init3D()
 	td.BindFlags = D3D11_BIND_DEPTH_STENCIL;
 	td.CPUAccessFlags = 0;
 	td.MiscFlags = 0;
-	hr = m_D3DDevice->CreateTexture2D(&td, NULL, &depthTexture);
+	hr = m_D3DDevice->CreateTexture2D(&td, nullptr, &depthTexture);
 	if (FAILED(hr))
 	{
 		FAILDE_ASSERT;
@@ -804,7 +823,7 @@ bool CRenderer::Init3D()
 	}
 
 	float blendFactor[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
-	ID3D11BlendState* blendState = NULL;
+	ID3D11BlendState* blendState = nullptr;
 	m_D3DDevice->CreateBlendState(&blendDesc, &blendState);
 	m_ImmediateContext->OMSetBlendState(blendState, blendFactor, 0xffffffff);
 
@@ -1071,10 +1090,10 @@ void CRenderer::Change_Window_Mode()
 	BOOL FullScreen;
 
 	// GetFullscreenState
-	m_SwapChain->GetFullscreenState(&FullScreen, NULL);
+	m_SwapChain->GetFullscreenState(&FullScreen, nullptr);
 
 	// SetFullscreenState
-	m_SwapChain->SetFullscreenState(!FullScreen, NULL);
+	m_SwapChain->SetFullscreenState(!FullScreen, nullptr);
 
 	// 初期起動をフルスクリーンモードにした場合、ウィンドウモードに変更すると
 	// ウィンドウがアクティブにならないので表示させる。
@@ -1160,22 +1179,18 @@ void CRenderer::SetWorldViewProjection2D(const XMFLOAT3& scaling, const XMFLOAT3
 	world = XMMatrixScaling(scaling.x, scaling.y, 1.0f);
 	world *= XMMatrixRotationRollPitchYaw(XMConvertToRadians(rotation.x), XMConvertToRadians(rotation.y), XMConvertToRadians(rotation.z));
 
-	//m_ImmediateContext->UpdateSubresource(m_WorldBuffer, 0, NULL, &XMMatrixTranspose(world), 0, 0);
-
 	XMMATRIX view;
 	view = XMMatrixIdentity();
-	//m_ImmediateContext->UpdateSubresource(m_ViewBuffer, 0, NULL, &XMMatrixTranspose(view), 0, 0);
 
 	XMMATRIX projection;
 	projection = XMMatrixOrthographicOffCenterLH(0.0f, SCREEN_WIDTH, SCREEN_HEIGHT, 0.0f, 0.0f, 1.0f);
-	//m_ImmediateContext->UpdateSubresource(m_ProjectionBuffer, 0, NULL, &XMMatrixTranspose(projection), 0, 0);
 
 	CONSTANT constant;
 	constant.WorldMatrix = XMMatrixTranspose(world);
 	constant.ViewMatrix = XMMatrixTranspose(view);
 	constant.ProjectionMatrix = XMMatrixTranspose(projection);
 
-	CRenderer::GetDeviceContext()->UpdateSubresource(m_ConstantBuffer, 0, NULL, &constant, 0, 0);
+	CRenderer::GetDeviceContext()->UpdateSubresource(m_ConstantBuffer, 0, nullptr, &constant, 0, 0);
 }
 
 void CRenderer::Set_MatrixBuffer(const XMMATRIX world, const XMMATRIX view, const XMMATRIX projection)
@@ -1185,12 +1200,12 @@ void CRenderer::Set_MatrixBuffer(const XMMATRIX world, const XMMATRIX view, cons
 	constant.ViewMatrix = XMMatrixTranspose(view);
 	constant.ProjectionMatrix = XMMatrixTranspose(projection);
 
-	CRenderer::GetDeviceContext()->UpdateSubresource(m_ConstantBuffer, 0, NULL, &constant, 0, 0);
+	CRenderer::GetDeviceContext()->UpdateSubresource(m_ConstantBuffer, 0, nullptr, &constant, 0, 0);
 }
 
 void CRenderer::SetMaterial( MATERIAL Material )
 {
-	m_ImmediateContext->UpdateSubresource( m_MaterialBuffer, 0, NULL, &Material, 0, 0 );
+	m_ImmediateContext->UpdateSubresource( m_MaterialBuffer, 0, nullptr, &Material, 0, 0 );
 }
 
 void CRenderer::SetLight(LIGHT* Light)
@@ -1201,7 +1216,7 @@ void CRenderer::SetLight(LIGHT* Light)
 
 	XMStoreFloat4(&Light->Direction, vec);
 
-	m_ImmediateContext->UpdateSubresource(m_LightBuffer, 0, NULL, Light, 0, 0);
+	m_ImmediateContext->UpdateSubresource(m_LightBuffer, 0, nullptr, Light, 0, 0);
 }
 
 void CRenderer::Light_Identity()
@@ -1213,7 +1228,7 @@ void CRenderer::Light_Identity()
 	light.Ambient = COLOR(0.5f, 0.5f, 0.5f, 1.0f);
 	light.Specular = COLOR(1.0f, 1.0f, 1.0f, 1.0f);
 
-	m_ImmediateContext->UpdateSubresource(m_LightBuffer, 0, NULL, &light, 0, 0);
+	m_ImmediateContext->UpdateSubresource(m_LightBuffer, 0, nullptr, &light, 0, 0);
 }
 
 void CRenderer::Set_RasterizerState()
