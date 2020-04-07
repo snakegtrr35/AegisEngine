@@ -14,7 +14,7 @@
 unique_ptr<ID3D11Buffer, Release> SKYBOX::VertexBuffer;
 unique_ptr<ID3D11Buffer, Release> SKYBOX::IndexBuffer;
 
-static constexpr UINT Indecies = 24;
+static constexpr UINT Indecies = 36;
 
 static ID3D11ShaderResourceView* Srv = nullptr;
 
@@ -22,7 +22,7 @@ SKYBOX::SKYBOX()
 {
 	//Texture = make_unique<TEXTURE>("");
 
-	Scaling = XMFLOAT3(100.0f, 100.0f, 100.0f);
+	Scaling = XMFLOAT3(1.0f, 1.0f, 1.0f);
 }
 
 SKYBOX::~SKYBOX(){ Uninit(); }
@@ -34,6 +34,10 @@ void SKYBOX::Init()
 	{
 		vector<VERTEX_3D> vertex_array;
 		vertex_array.resize(8);
+		for (auto& vertex : vertex_array)
+		{
+			vertex.Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+		}
 
 		// 右上奥
 		vertex_array[0].Position = XMFLOAT3(-1.0f, 1.0f, 1.0f);
@@ -83,12 +87,24 @@ void SKYBOX::Init()
 	// インデックスバッファの作成
 	if (nullptr == IndexBuffer.get())
 	{
-		const vector<WORD> index_array = {	0, 1, 2, 3,
-											5, 4, 7, 6,
-											5, 4, 1, 0, 
-											0, 1, 6, 7,
-											4, 0, 6, 2,
-											1, 5, 3, 7 };
+		const vector<WORD> index_array = {	// Front Face
+											0, 1, 2,
+											1, 3, 2,
+											// Back Face
+											5, 4, 7,
+											4, 6, 7,
+											// Top Face
+											4, 5, 0,
+											5, 1, 0,
+											// Bottom Face
+											2, 3, 6,
+											3, 7, 6,
+											// Left Face
+											4, 0, 6,
+											0, 2, 6,
+											// Right Face
+											1, 5, 3,
+											5, 7, 3 };
 
 		// インデックスバッファの生成
 		{
@@ -121,6 +137,8 @@ void SKYBOX::Init()
 
 void SKYBOX::Draw()
 {
+	if (CManager::Get_Instance()->Get_ShadowMap()->Get_Enable()) return;
+
 	// 3Dマトリックス設定
 	{
 		XMMATRIX world = XMMatrixScaling(Scaling.x, Scaling.y, Scaling.z);
@@ -132,45 +150,15 @@ void SKYBOX::Draw()
 
 		if (!camera01.expired())
 		{
-			// シャドウマップ用の描画か?
-			if (CManager::Get_Instance()->Get_ShadowMap()->Get_Enable())
-			{
-				XMMATRIX view = CManager::Get_Instance()->Get_ShadowMap()->Get_View();
-				XMMATRIX proj = CManager::Get_Instance()->Get_ShadowMap()->Get_Plojection();
+			CRenderer::Set_MatrixBuffer(world, camera01.lock()->Get_Camera_View(), camera01.lock()->Get_Camera_Projection());
 
-				CRenderer::Set_MatrixBuffer(world, view, proj);
-
-				CRenderer::Set_Shader(SHADER_INDEX_V::SHADOW_MAP, SHADER_INDEX_P::SHADOW_MAP);
-			}
-			else
-			{
-				CRenderer::Set_MatrixBuffer(world, camera01.lock()->Get_Camera_View(), camera01.lock()->Get_Camera_Projection());
-
-				CRenderer::Set_MatrixBuffer01(*camera01.lock()->Get_Pos());
-
-				CRenderer::Set_Shader();
-			}
+			CRenderer::Set_MatrixBuffer01(*camera01.lock()->Get_Pos());
 		}
 		else
 		{
-			// シャドウマップ用の描画か?
-			if (CManager::Get_Instance()->Get_ShadowMap()->Get_Enable())
-			{
-				XMMATRIX view = CManager::Get_Instance()->Get_ShadowMap()->Get_View();
-				XMMATRIX proj = CManager::Get_Instance()->Get_ShadowMap()->Get_Plojection();
+			CRenderer::Set_MatrixBuffer(world, camera02.lock()->Get_Camera_View(), camera02.lock()->Get_Camera_Projection());
 
-				CRenderer::Set_MatrixBuffer(world, view, proj);
-
-				CRenderer::Set_Shader(SHADER_INDEX_V::SHADOW_MAP, SHADER_INDEX_P::SHADOW_MAP);
-			}
-			else
-			{
-				CRenderer::Set_MatrixBuffer(world, camera02.lock()->Get_Camera_View(), camera02.lock()->Get_Camera_Projection());
-
-				CRenderer::Set_MatrixBuffer01(*camera02.lock()->Get_Pos());
-
-				CRenderer::Set_Shader();
-			}
+			CRenderer::Set_MatrixBuffer01(*camera02.lock()->Get_Pos());
 		}
 	}
 
@@ -183,7 +171,10 @@ void SKYBOX::Draw()
 	// テクスチャの設定
 	CRenderer::GetDeviceContext()->PSSetShaderResources(0, 1, &Srv);
 
-	//CRenderer::Set_Shader(SHADER_INDEX_V::DEFAULT, SHADER_INDEX_P::);
+	// トポロジ設定
+	CRenderer::GetDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+	CRenderer::Set_Shader(SHADER_INDEX_V::SKYBOX, SHADER_INDEX_P::SKYBOX);
 
 	CRenderer::GetDeviceContext()->DrawIndexed(Indecies, 0, 0);
 

@@ -19,7 +19,7 @@ SamplerState g_SamplerState : register(s0);
 //=============================================================================
 void main(PS_IN Input,
 
-		   out float4 outDiffuse : SV_Target)
+		out float4 outDiffuse : SV_Target)
 {
     outDiffuse = g_Texture.Sample(g_SamplerState, Input.WPos.xyz);
 

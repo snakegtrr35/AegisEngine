@@ -112,6 +112,27 @@ bool CRenderer::Init()
 			}
 		}
 
+		// 頂点シェーダ生成 スカイボックス
+		{
+			FILE* file;
+			long int fsize;
+
+			file = fopen("VertexShader_Skybox.cso", "rb");
+			fsize = _filelength(_fileno(file));
+			unsigned char* buffer = new unsigned char[fsize];
+			fread(buffer, fsize, 1, file);
+			fclose(file);
+
+			hr = m_D3DDevice->CreateVertexShader(buffer, fsize, nullptr, &m_VertexShader[SHADER_INDEX_V::SKYBOX]);
+			if (FAILED(hr))
+			{
+				FAILDE_ASSERT;
+				return false;
+			}
+
+			delete[] buffer;
+		}
+
 		// 頂点シェーダ生成 シャドウマップ
 		{
 			FILE* file;
@@ -155,7 +176,6 @@ bool CRenderer::Init()
 		}
 	}
 
-
 	// 頂点シェーダ生成 アニメーション
 	{
 		// 入力レイアウト生成
@@ -171,6 +191,7 @@ bool CRenderer::Init()
 
 		UINT numElements = ARRAYSIZE(animation_layout);
 
+		// 頂点シェーダ生成 アニメーション
 		{
 			FILE* file;
 			long int fsize;

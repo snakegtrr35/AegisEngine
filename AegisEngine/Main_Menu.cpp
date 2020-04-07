@@ -20,6 +20,8 @@
 #include	"FBXmodel.h"
 #include	"Sprite_Animation.h"
 
+#include	"Skybox.h"
+
 static unique_ptr<SPRITE_ANIMATION> sprite_anime;
 
 //static unique_ptr<FIELD> field;
@@ -37,6 +39,10 @@ void MAIN_MENU::Init()
 		sprite_anime->SetParam(10, 3, 1);
 
 		sprite_anime->Init();
+	}
+
+	{
+		SCENE::Add_Game_Object<SKYBOX>(LAYER_NAME::BACKGROUND, "sktbox");
 	}
 
 	//field = make_unique<FIELD>();
@@ -110,6 +116,8 @@ void MAIN_MENU::Uninit()
 	{
 		this->Delete_Game_Objects<BULLET>();
 		this->Delete_Game_Objects<BILL_BOARD_ANIMATION>();
+
+		this->Delete_Game_Objects<SKYBOX>();
 	}
 
 #ifdef _DEBUG
