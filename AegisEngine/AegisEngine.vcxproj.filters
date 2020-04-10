@@ -520,6 +520,9 @@
     <ClInclude Include="Skybox.h">
       <Filter>ソース ファイル\GameObject\Mesh</Filter>
     </ClInclude>
+    <ClInclude Include="Aegis_zlib.h">
+      <Filter>ソース ファイル\System</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="PixelShader_No_Light.hlsl">

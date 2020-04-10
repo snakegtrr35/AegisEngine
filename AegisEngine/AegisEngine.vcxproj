@@ -101,6 +101,7 @@
     <ClCompile Include="XYZ_Axis.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Aegis_zlib.h" />
     <ClInclude Include="Animetion_State_Machine.h" />
     <ClInclude Include="audio_clip.h" />
     <ClInclude Include="Axis.h" />
@@ -361,7 +362,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
     <IncludePath>..\AegisEngine\Library\Effekseer\include;C:\Program Files\cereal;..\AegisEngine\Library\assimp_vs2017_x64\include;$(IncludePath)</IncludePath>
-    <LibraryPath>..\AegisEngine\Library\assimp_vs2017_x64\lib;$(LibraryPath)</LibraryPath>
+    <LibraryPath>..\AegisEngine\Library\zlib;..\AegisEngine\Library\assimp_vs2017_x64\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
@@ -369,7 +370,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
     <IncludePath>..\AegisEngine\Library\Effekseer\include;C:\Program Files\cereal;..\AegisEngine\Library\assimp_vs2017_x64\include;$(IncludePath)</IncludePath>
-    <LibraryPath>..\AegisEngine\Library\assimp_vs2017_x64\lib;$(LibraryPath)</LibraryPath>
+    <LibraryPath>..\AegisEngine\Library\zlib;..\AegisEngine\Library\assimp_vs2017_x64\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -397,6 +398,7 @@
       <ForcedIncludeFiles>stdafx.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
       <DisableSpecificWarnings>4227;%(DisableSpecificWarnings)</DisableSpecificWarnings>
       <LanguageStandard>stdcpp17</LanguageStandard>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -441,6 +443,7 @@
       <LanguageStandard>stdcpp17</LanguageStandard>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <EnableEnhancedInstructionSet>StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
