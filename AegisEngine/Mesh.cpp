@@ -58,11 +58,12 @@ void MESH::Uninit()
 
 	for (auto& tex : Textures)
 	{
+		tex.FileName.clear();
 		SAFE_RELEASE(tex.Texture);
 	}
 	Textures.clear();
 
-	for (auto child : ChildMeshes)
+	for (auto& child : ChildMeshes)
 	{
 		child.second.Uninit();
 	}
@@ -570,6 +571,7 @@ void MESH::Draw_DPP_Mesh_Animation(XMMATRIX& parent_matrix, unordered_map<string
 
 
 
+////////////////////////////////////////////////////////////////////////////////
 
 
 
@@ -578,7 +580,7 @@ MESHS::MESHS() : Name(string()), VertexBuffer(nullptr), IndexBuffer(nullptr)
 {
 }
 
-MESHS::MESHS(vector<VERTEX_3D>& vertices, vector<UINT>& indices, vector<TEXTURE_S>& textures, XMMATRIX& matrix, string name) : Name(name), Matrix(XMMATRIXToXMFLOAT4X4(matrix)), /*Vertices(vertices),*/ Indices(indices), VertexBuffer(nullptr), IndexBuffer(nullptr)
+MESHS::MESHS(vector<VERTEX_3D>& vertices, vector<UINT>& indices, string& texture_name, XMMATRIX& matrix, string name) : Name(name), TextureName(texture_name), Matrix(XMMATRIXToXMFLOAT4X4(matrix)), /*Vertices(vertices),*/ Indices(indices), VertexBuffer(nullptr), IndexBuffer(nullptr)
 {
 #ifdef _DEBUG
 	if (false == SetupMesh(vertices))
@@ -590,9 +592,13 @@ MESHS::MESHS(vector<VERTEX_3D>& vertices, vector<UINT>& indices, vector<TEXTURE_
 #endif // _DEBUG
 }
 
-void MESHS::Draw(XMMATRIX& matrix)
+void MESHS::Init()
 {
-	Draw_Mesh(matrix);
+}
+
+void MESHS::Draw(XMMATRIX& matrix, const vector<TEXTURE_S>& textures)
+{
+	Draw_Mesh(matrix, textures);
 }
 
 void MESHS::Draw_DPP(XMMATRIX& matrix)
@@ -613,11 +619,12 @@ void MESHS::Uninit()
 
 	for (auto& tex : Textures)
 	{
+		tex.FileName.clear();
 		SAFE_RELEASE(tex.Texture);
 	}
 	Textures.clear();
 
-	for (auto child : ChildMeshes)
+	for (auto& child : ChildMeshes)
 	{
 		child.Uninit();
 	}
@@ -629,6 +636,11 @@ vector<MESHS>& MESHS::Get_Meshs()
 	return ChildMeshes;
 }
 
+vector<TEXTURE_S>& MESHS::Get_Textures()
+{
+	return Textures;
+}
+
 const string& MESHS::Get_Name()
 {
 	return Name;
@@ -637,6 +649,16 @@ const string& MESHS::Get_Name()
 void MESHS::Set_Name(const string& name)
 {
 	Name = name;
+}
+
+const string& MESHS::Get_Texture_Name()
+{
+	return TextureName;
+}
+
+void MESHS::Set_Texture_Name(const string & texture_name)
+{
+	TextureName = texture_name;
 }
 
 bool MESHS::SetupMesh(vector<VERTEX_3D>& vertices)
@@ -686,17 +708,26 @@ bool MESHS::SetupMesh(vector<VERTEX_3D>& vertices)
 	return true;
 }
 
-void MESHS::Draw_Mesh(XMMATRIX& parent_matrix)
+void MESHS::Draw_Mesh(XMMATRIX& parent_matrix, const vector<TEXTURE_S>& textures)
 {
 	XMMATRIX matrix;
 
-	if (!Indices.empty() && nullptr != Textures[0].Texture)
+	if (!Indices.empty())
 	{
 		CRenderer::SetVertexBuffers(VertexBuffer);
 
 		CRenderer::GetDeviceContext()->IASetIndexBuffer(IndexBuffer, DXGI_FORMAT_R32_UINT, 0);
 
-		CRenderer::GetDeviceContext()->PSSetShaderResources(0, 1, &Textures[0].Texture);
+		for (UINT i = 0; textures.size(); i++)
+		{
+			if (textures[i].FileName == TextureName)
+			{
+				CRenderer::GetDeviceContext()->PSSetShaderResources(0, 1, &textures[i].Texture);
+				break;
+			}
+		}
+
+		//CRenderer::GetDeviceContext()->PSSetShaderResources(0, 1, &Textures[0].Texture);
 
 		// 3Dマトリックス設定
 		{
@@ -753,7 +784,7 @@ void MESHS::Draw_Mesh(XMMATRIX& parent_matrix)
 
 	for (auto child : ChildMeshes)
 	{
-		child.Draw_Mesh(matrix);
+		child.Draw_Mesh(matrix, textures);
 	}
 }
 

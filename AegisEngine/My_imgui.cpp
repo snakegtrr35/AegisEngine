@@ -13,6 +13,7 @@
 #include	"manager.h"
 #include	"ShadowMap.h"
 #include	"Texture_Manager.h"
+#include	"Model_Manager.h"
 #include	"camera.h"
 #include	"Debug_Camera.h"
 #include	"Component.h"
@@ -167,18 +168,15 @@ void My_imgui::Draw(void)
 
 					if (ImGui::BeginMenu("Import"))
 					{
-						//if (ImGui::BeginMenu("Object"))
 						{
 							if (ImGui::MenuItem("Texture"))
 							{
 								Texture_Import_Enable = true;
 							}
-							if (ImGui::MenuItem("model"))
+							if (ImGui::MenuItem("Model"))
 							{
-								int a = 0;
+								Model_Import_Enable = true;
 							}
-
-							//ImGui::EndMenu();
 						}
 
 						ImGui::EndMenu();
@@ -193,7 +191,7 @@ void My_imgui::Draw(void)
 							}
 							if (ImGui::MenuItem("model"))
 							{
-								int a = 0;
+								Model_Delete_Enable = true;
 							}
 						}
 
@@ -465,6 +463,12 @@ void My_imgui::Draw(void)
 
 		// テクスチャの削除
 		Texture_Delete();
+
+		// モデルにインポート
+		Model_Import();
+
+		// モデルの削除
+		Model_Delete();
 
 		Setting();
 
@@ -743,7 +747,7 @@ void My_imgui::Draw_Components(const vector<COMPONENT*>& components)
 
 void My_imgui::Texture_Import()
 {
-	static bool flag = true;
+	static bool flag = false;
 	static bool flag2 = false;
 
 	static string file_name;
@@ -756,7 +760,7 @@ void My_imgui::Texture_Import()
 
 		ImGui::SetNextWindowSize(ImVec2(360, 167), ImGuiCond_Appearing);
 
-		ImGui::Begin((char*)u8"テクスチャ インポート", &Texture_Import_Enable, window_flags);
+		if(ImGui::Begin((char*)u8"テクスチャ インポート", &Texture_Import_Enable, window_flags))
 		{
 			ImGui::Indent(15.0f);
 
@@ -774,9 +778,7 @@ void My_imgui::Texture_Import()
 
 			if (ImGui::Button((char*)u8"インポート", size))
 			{
-				Erroer_Message("テスト");
-
-				check = File_Check(file_name);
+				check = Texture_File_Check(file_name);
 
 				if (1 == check)
 				{
@@ -789,16 +791,15 @@ void My_imgui::Texture_Import()
 					flag2 = true;
 				}
 			}
+			ImGui::End();
 		}
-		ImGui::End();
 
+		if (flag2)
 		{
-			if (flag2)
+			ImGui::SetNextWindowPos(ImVec2(SCREEN_WIDTH * 0.5f - 120.0f, SCREEN_HEIGHT * 0.5f - 55.0f), ImGuiCond_Appearing);
+
+			if (ImGui::Begin((char*)u8"エラー", &flag2, window_flags))
 			{
-				ImGui::SetNextWindowPos(ImVec2(SCREEN_WIDTH * 0.5f - 120.0f, SCREEN_HEIGHT * 0.5f - 55.0f), ImGuiCond_Appearing);
-
-				ImGui::Begin((char*)u8"エラー", &flag2, window_flags);
-
 				ImGui::Indent(20.0f);
 
 				ImGui::Spacing();
@@ -843,7 +844,7 @@ void My_imgui::Texture_Import()
 	}
 }
 
-const char My_imgui::File_Check(const string& file_name)
+const char My_imgui::Texture_File_Check(const string& file_name)
 {
 	if (file_name.empty())
 	{
@@ -853,7 +854,6 @@ const char My_imgui::File_Check(const string& file_name)
 
 	size_t file = hash<string>()(file_name);//
 
-	//if (TEXTURE_MANEGER::Get_Instance()->Get_TextureFile().find(file_name) != TEXTURE_MANEGER::Get_Instance()->Get_TextureFile().end())
 	if (TEXTURE_MANEGER::Get_Instance()->Get_TextureFile().find(file) != TEXTURE_MANEGER::Get_Instance()->Get_TextureFile().end())
 	{
 		// 既に読み込んでいるテクスチャ
@@ -886,13 +886,13 @@ void My_imgui::Texture_Delete()
 
 	ImGuiWindowFlags window_flags = ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoDocking;
 
-	if (Texture_Import_Enable)
+	if (Texture_Delete_Enable)
 	{
 		static char check;
 
 		ImGui::SetNextWindowSize(ImVec2(360, 167), ImGuiCond_Appearing);
 
-		ImGui::Begin((char*)u8"テクスチャ 削除", &Texture_Import_Enable, window_flags);
+		if(ImGui::Begin((char*)u8"テクスチャ 削除", &Texture_Delete_Enable, window_flags))
 		{
 			ImGui::Indent(15.0f);
 
@@ -909,13 +909,238 @@ void My_imgui::Texture_Delete()
 
 			if (ImGui::Button((char*)u8"削除", size))
 			{
-				check = File_Check(file_name);
+				check = Texture_File_Check(file_name);
 
 				if (-1 != check)
 				{
 					TEXTURE_MANEGER::Get_Instance()->Unload(file_name);
 
 					ImGui::Text((char*)u8"テクスチャが削除されました");
+				}
+				else
+				{
+					flag2 = true;
+				}
+			}
+			ImGui::End();
+		}
+
+			if (flag2)
+			{
+				ImGui::SetNextWindowPos(ImVec2(SCREEN_WIDTH * 0.5f - 120.0f, SCREEN_HEIGHT * 0.5f - 55.0f), ImGuiCond_Appearing);
+
+				if (ImGui::Begin((char*)u8"エラー", &flag2, window_flags))
+				{
+					ImGui::Indent(20.0f);
+
+					ImGui::Spacing();
+					ImGui::Spacing();
+					ImGui::Spacing();
+					ImGui::Spacing();
+
+					switch (check)
+					{
+						case -1:
+							ImGui::Text((char*)u8"テクスチャ名が入力されてないです");
+							break;
+
+						case -3:
+							ImGui::Text((char*)u8"テクスチャが存在しないです");
+							break;
+
+						default:
+							break;
+						}
+					ImGui::End();
+				}
+			}
+
+		flag = true;
+	}
+	else
+	{
+		if (flag)
+		{
+			file_name.clear();
+
+			flag = false;
+		}
+
+		flag2 = false;
+	}
+}
+
+void My_imgui::Model_Import()
+{
+	static bool flag = false;
+	static bool flag2 = false;
+
+	static string file_name;
+
+	ImGuiWindowFlags window_flags = ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoDocking;
+
+	if (Model_Import_Enable)
+	{
+		static char check;
+
+		ImGui::SetNextWindowSize(ImVec2(360, 167), ImGuiCond_Appearing);
+
+		ImGui::Begin((char*)u8"モデル インポート", &Model_Import_Enable, window_flags);
+		{
+			ImGui::Indent(15.0f);
+
+			ImGui::InputText((char*)u8"モデル名", &file_name);
+			ImGui::SameLine(); HelpMarker((char*)u8"対応フォーマットは 'fbx'");
+
+			ImGui::Spacing();
+			ImGui::Spacing();
+			ImGui::Spacing();
+			ImGui::Spacing();
+
+			ImGui::Indent(100);
+
+			ImVec2 size(100, 40);
+
+			if (ImGui::Button((char*)u8"インポート", size))
+			{
+				check = Model_File_Check(file_name);
+
+				if (1 == check)
+				{
+					MODEL_MANEGER::Get_Instance()->Add(file_name);
+
+					ImGui::Text((char*)u8"モデルが読み込まれました");
+				}
+				else
+				{
+					flag2 = true;
+				}
+			}
+			ImGui::End();
+		}
+
+		if (flag2)
+		{
+			ImGui::SetNextWindowPos(ImVec2(SCREEN_WIDTH * 0.5f - 120.0f, SCREEN_HEIGHT * 0.5f - 55.0f), ImGuiCond_Appearing);
+
+			if (ImGui::Begin((char*)u8"エラー", &flag2, window_flags))
+			{
+				ImGui::Indent(20.0f);
+
+				ImGui::Spacing();
+				ImGui::Spacing();
+				ImGui::Spacing();
+				ImGui::Spacing();
+
+				switch (check)
+				{
+					case -1:
+						ImGui::Text((char*)u8"モデル名が入力されてないです");
+						break;
+
+					case -2:
+						ImGui::Text((char*)u8"既に読み込んでいるモデルです");
+						break;
+
+					case -3:
+						ImGui::Text((char*)u8"モデルが存在しないです");
+						break;
+
+					default:
+						break;
+				}
+
+				ImGui::End();
+			}
+		}
+
+		flag = true;
+	}
+	else
+	{
+		if (flag)
+		{
+			file_name.clear();
+
+			flag = false;
+		}
+
+		flag2 = false;
+	}
+}
+
+const char My_imgui::Model_File_Check(const string& file_name)
+{
+	if (file_name.empty())
+	{
+		// モデル名が入力されていない
+		return -1;
+	}
+
+	size_t file = hash<string>()(file_name);//
+
+	if (MODEL_MANEGER::Get_Instance()->Get_ModelFile().find(file) != MODEL_MANEGER::Get_Instance()->Get_ModelFile().end())
+	{
+		// 既に読み込んでいるモデル
+		return -2;
+	}
+
+	// ファイルがあるかの判定
+	{
+		string path = "./asset/model/";
+
+		path += file_name;
+
+		bool flag = std::filesystem::exists(path);
+		if (false == flag)
+		{
+			// ファイルが存在しない
+			return -3;
+		}
+	}
+
+	return 1;
+}
+
+void My_imgui::Model_Delete()
+{
+	static bool flag = true;
+	static bool flag2 = false;
+
+	static string file_name;
+
+	ImGuiWindowFlags window_flags = ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoDocking;
+
+	if (Model_Delete_Enable)
+	{
+		static char check;
+
+		ImGui::SetNextWindowSize(ImVec2(360, 167), ImGuiCond_Appearing);
+
+		ImGui::Begin((char*)u8"モデル 削除", &Model_Delete_Enable, window_flags);
+		{
+			ImGui::Indent(15.0f);
+
+			ImGui::InputText((char*)u8"モデル名", &file_name);
+
+			ImGui::Spacing();
+			ImGui::Spacing();
+			ImGui::Spacing();
+			ImGui::Spacing();
+
+			ImGui::Indent(100);
+
+			ImVec2 size(100, 40);
+
+			if (ImGui::Button((char*)u8"削除", size))
+			{
+				check = Texture_File_Check(file_name);
+
+				if (-1 != check)
+				{
+					TEXTURE_MANEGER::Get_Instance()->Unload(file_name);
+
+					ImGui::Text((char*)u8"モデルが削除されました");
 				}
 				else
 				{
@@ -942,11 +1167,11 @@ void My_imgui::Texture_Delete()
 				switch (check)
 				{
 				case -1:
-					ImGui::Text((char*)u8"テクスチャ名が入力されてないです");
+					ImGui::Text((char*)u8"モデル名が入力されてないです");
 					break;
 
 				case -3:
-					ImGui::Text((char*)u8"テクスチャが存在しないです");
+					ImGui::Text((char*)u8"モデルが存在しないです");
 					break;
 
 				default:

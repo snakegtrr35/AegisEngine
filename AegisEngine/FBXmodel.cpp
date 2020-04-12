@@ -211,7 +211,7 @@ bool FBXmodel::Load(const string& FileName)
 
 			for (auto i : diffuseMaps)
 			{
-				i.path.clear();
+				i.FileName.clear();
 				i.Texture = nullptr;
 			}
 			diffuseMaps.clear();
@@ -554,7 +554,7 @@ vector<TEXTURE_S> FBXmodel::loadMaterialTextures(aiMaterial* mat, aiTextureType 
 		bool skip = false;
 		for (UINT j = 0; j < Textures.size(); j++)
 		{
-			if (Textures[j].path.c_str() == str.C_Str())
+			if (Textures[j].FileName.c_str() == str.C_Str())
 			{
 				textures.push_back(Textures[j]);
 				skip = true; // A texture with the same filepath has already been loaded, continue to next one. (optimization)
@@ -584,7 +584,7 @@ vector<TEXTURE_S> FBXmodel::loadMaterialTextures(aiMaterial* mat, aiTextureType 
 					FAILDE_ASSERT;
 			}
 
-			texture.path = str.C_Str();
+			texture.FileName = str.C_Str();
 			textures.push_back(texture);
 			this->Textures.push_back(texture);  // Store it as texture loaded for entire model, to ensure we won't unnecesery load duplicate textures.
 		}

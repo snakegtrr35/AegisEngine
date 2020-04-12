@@ -119,6 +119,8 @@ bool CMODEL::Reload(const string& filename)
 
 	processNode(pScene->mRootNode, pScene, Meshes.Get());
 
+	textype.clear();
+
 	{
 		vector<Anim> animation;
 
@@ -393,6 +395,7 @@ void CMODEL::Uninit()
 
 	for (auto tex : textures_loaded)
 	{
+		tex.FileName.clear();
 		SAFE_RELEASE(tex.Texture);
 	}
 	textures_loaded.clear();
@@ -412,7 +415,7 @@ MESH CMODEL::processMesh(aiMesh* mesh, aiNode* node, const aiScene* scene)
 {
 	// Data to fill
 	vector<VERTEX_3D> vertices;
-	vertices.reserve(mesh->mNumVertices);
+	vertices.resize(mesh->mNumVertices);
 
 	vector<UINT> indices;
 	vector<TEXTURE_S> textures;
@@ -425,45 +428,41 @@ MESH CMODEL::processMesh(aiMesh* mesh, aiNode* node, const aiScene* scene)
 	{
 		aiMaterial* mat = scene->mMaterials[mesh->mMaterialIndex];
 
-		if (textype.empty()) textype = determineTextureType(scene, mat);
+		textype = determineTextureType(scene, mat);
 	}
 
 	// Walk through each of the mesh's vertices
 	for (UINT i = 0; i < mesh->mNumVertices; i++)
 	{
-		VERTEX_3D vertex;
-
 		// 頂点データの設定
-		vertex.Position.x = mesh->mVertices[i].x;
-		vertex.Position.y = mesh->mVertices[i].y;
-		vertex.Position.z = mesh->mVertices[i].z;
+		vertices[i].Position.x = mesh->mVertices[i].x;
+		vertices[i].Position.y = mesh->mVertices[i].y;
+		vertices[i].Position.z = mesh->mVertices[i].z;
 
 		// 頂点カラーの設定
 		if (mesh->HasVertexColors(i))
 		{
-			vertex.Diffuse.x = mesh->mColors[i]->r;
-			vertex.Diffuse.y = mesh->mColors[i]->g;
-			vertex.Diffuse.z = mesh->mColors[i]->b;
-			vertex.Diffuse.w = mesh->mColors[i]->a;
+			vertices[i].Diffuse.x = mesh->mColors[i]->r;
+			vertices[i].Diffuse.y = mesh->mColors[i]->g;
+			vertices[i].Diffuse.z = mesh->mColors[i]->b;
+			vertices[i].Diffuse.w = mesh->mColors[i]->a;
 		}
 		else
 		{
-			vertex.Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+			vertices[i].Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
 		}
 
 		// 法線ベクトルの設定
-		vertex.Normal.x = mesh->mNormals[i].x;
-		vertex.Normal.y = mesh->mNormals[i].y;
-		vertex.Normal.z = mesh->mNormals[i].z;
+		vertices[i].Normal.x = mesh->mNormals[i].x;
+		vertices[i].Normal.y = mesh->mNormals[i].y;
+		vertices[i].Normal.z = mesh->mNormals[i].z;
 
 		// UV座標の設定
 		if (mesh->mTextureCoords[0])
 		{
-			vertex.TexCoord.x = (float)mesh->mTextureCoords[0][i].x;
-			vertex.TexCoord.y = (float)mesh->mTextureCoords[0][i].y;
+			vertices[i].TexCoord.x = (float)mesh->mTextureCoords[0][i].x;
+			vertices[i].TexCoord.y = (float)mesh->mTextureCoords[0][i].y;
 		}
-
-		vertices.push_back(vertex);
 	}
 
 	// インデックスの設定
@@ -472,7 +471,7 @@ MESH CMODEL::processMesh(aiMesh* mesh, aiNode* node, const aiScene* scene)
 		aiFace face = mesh->mFaces[i];
 
 		for (UINT j = 0; j < face.mNumIndices; j++)
-			indices.push_back(face.mIndices[j]);
+			indices.emplace_back(face.mIndices[j]);
 	}
 
 	// テクスチャの設定
@@ -504,7 +503,7 @@ vector<TEXTURE_S> CMODEL::loadMaterialTextures(aiMaterial* mat, aiTextureType ty
 		bool skip = false;
 		for (UINT j = 0; j < textures_loaded.size(); j++)
 		{
-			if (textures_loaded[j].path.c_str() == str.C_Str())
+			if (textures_loaded[j].FileName.c_str() == str.C_Str())
 			{
 				textures.push_back(textures_loaded[j]);
 				skip = true; // A texture with the same filepath has already been loaded, continue to next one. (optimization)
@@ -534,9 +533,9 @@ vector<TEXTURE_S> CMODEL::loadMaterialTextures(aiMaterial* mat, aiTextureType ty
 					FAILDE_ASSERT
 			}
 
-			texture.path = str.C_Str();
-			textures.push_back(texture);
-			this->textures_loaded.push_back(texture);  // Store it as texture loaded for entire model, to ensure we won't unnecesery load duplicate textures.
+			texture.FileName = str.C_Str();
+			textures.emplace_back(texture);
+			this->textures_loaded.emplace_back(texture);  // Store it as texture loaded for entire model, to ensure we won't unnecesery load duplicate textures.
 		}
 	}
 	return textures;

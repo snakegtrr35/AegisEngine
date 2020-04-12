@@ -22,7 +22,7 @@
 #define ARRAY_SIZE_IN_ELEMENTS(a) (sizeof(a)/sizeof(a[0]))
 
 struct TEXTURE_S {
-	string path;
+	string FileName;
 	ID3D11ShaderResourceView* Texture = nullptr;
 };
 
@@ -129,6 +129,16 @@ public:
 };
 
 
+
+
+
+////////////////////////////////////////////////////////////////////////////////
+
+
+
+
+
+
 class MESHS {
 private:
 	//vector<VERTEX_3D> Vertices;
@@ -141,11 +151,13 @@ private:
 
 	string Name; //! メッシュの名前
 
+	string TextureName;	//! テクスチャ名
+
 	XMFLOAT4X4 Matrix;
 
 	vector<MESHS> ChildMeshes;
 
-	void Draw_Mesh(XMMATRIX& parent_matrix);
+	void Draw_Mesh(XMMATRIX& parent_matrix, const vector<TEXTURE_S>& textures);
 
 	void Draw_DPP_Mesh(XMMATRIX& parent_matrix);
 
@@ -155,11 +167,13 @@ public:
 
 	MESHS();
 
-	MESHS(vector<VERTEX_3D>& vertices, vector<UINT>& indices, vector<TEXTURE_S>& textures, XMMATRIX& matrix, string name);
+	MESHS(vector<VERTEX_3D>& vertices, vector<UINT>& indices, string& texture_name, XMMATRIX& matrix, string name);
 
 	~MESHS() { Uninit(); }
 
-	void Draw(XMMATRIX& matrix);
+	void Init();
+
+	void Draw(XMMATRIX& matrix, const vector<TEXTURE_S>& textures);
 
 	void Draw_DPP(XMMATRIX& matrix);
 
@@ -169,9 +183,15 @@ public:
 
 	vector<MESHS>& Get_Meshs();
 
+	vector<TEXTURE_S>& Get_Textures();
+
 	const string& Get_Name();
 
 	void Set_Name(const string& name);
+
+	const string& Get_Texture_Name();
+
+	void Set_Texture_Name(const string& texture_name);
 
 	template<class Archive>
 	void serialize(Archive& ar) {

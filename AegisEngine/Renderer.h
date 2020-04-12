@@ -16,6 +16,14 @@ struct VERTEX_3D
 	VERTEX_3D() : Position(XMFLOAT3(0.f, 0.f, 0.f)), Normal(XMFLOAT3(0.f, 0.f, 0.f)), Diffuse(XMFLOAT4(0.f, 0.f, 0.f, 1.0f)), TexCoord(XMFLOAT2(0.f, 0.f)) {}
 
 	VERTEX_3D(XMFLOAT3 v, XMFLOAT3 n, XMFLOAT4 d, XMFLOAT2 t) : Position(v), Normal(n), Diffuse(d), TexCoord(t) {}
+
+	template<class Archive>
+	void serialize(Archive& ar) {
+		ar(Position);
+		ar(Normal);
+		ar(Diffuse);
+		ar(TexCoord);
+	}
 };
 
 //! 頂点構造体
@@ -27,6 +35,16 @@ struct VERTEX_3D_NORMAL
 	XMFLOAT3 Tangent;
 	XMFLOAT4 Diffuse;
 	XMFLOAT2 TexCoord;
+
+	template<class Archive>
+	void serialize(Archive& ar) {
+		ar(Position);
+		ar(Normal);
+		ar(Binormal);
+		ar(Tangent);
+		ar(Diffuse);
+		ar(TexCoord);
+	}
 };
 
 //! マテリアル構造体

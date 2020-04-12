@@ -81,7 +81,7 @@ void MODEL::Draw()
 	{
 		for (auto& m : mesh.Get_Meshs())
 		{
-			m.Draw(matrix);
+			m.Draw(matrix, meshs->Get_Textures());
 		}
 	}
 

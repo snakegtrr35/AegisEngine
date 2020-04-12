@@ -16,8 +16,11 @@ private:
 	bool show_another_window;
 	bool show_default_window;
 
-	bool Texture_Import_Enable;
-	bool Texture_Delete_Enable;
+	bool Texture_Import_Enable;		// テクスチャインポートメニュー
+	bool Texture_Delete_Enable;		// テクスチャ削除メニュー
+
+	bool Model_Import_Enable;		// モデルインポートメニュー
+	bool Model_Delete_Enable;		// モデル削除メニュー
 
 	bool Setting_Enable;
 
@@ -29,9 +32,12 @@ private:
 	pair< vector<string>, vector<string> > Component_Items;
 
 	void Texture_Import();
-	const char File_Check(const string& file_name);
-
+	const char Texture_File_Check(const string& file_name);
 	void Texture_Delete();
+
+	void Model_Import();
+	const char Model_File_Check(const string& file_name);
+	void Model_Delete();
 
 	void Setting();
 
@@ -49,7 +55,7 @@ private:
 
 public:
 	My_imgui() : show_demo_window(false), show_another_window(false), show_default_window(false),
-				 Texture_Import_Enable(false), Texture_Delete_Enable(false), Setting_Enable(false), Mouse_Over_Enable(false){
+				 Texture_Import_Enable(false), Texture_Delete_Enable(false), Model_Import_Enable(false), Model_Delete_Enable(false), Setting_Enable(false), Mouse_Over_Enable(false){
 
 #ifdef _DEBUG
 		Debug_Draw_Enable = true;

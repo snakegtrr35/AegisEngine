@@ -12,6 +12,7 @@
 
 #include	"texture.h"
 #include	"Texture_Manager.h"
+#include	"Model_Manager.h"
 #include	"Timer.h"
 #include	"audio_clip.h"
 #include	"ShadowMap.h"
@@ -66,6 +67,8 @@ bool CManager::Init()
 	AUDIO_MANAGER::Init();
 
 	TEXTURE_MANEGER::Init();
+
+	MODEL_MANEGER::Init();
 
 	FONT::Init();
 

@@ -24,7 +24,7 @@ struct MODEL_FILE {
 
 struct MODEL_DATA {
 	MESHS Meshes;			//! メッシュ
-	UINT Cnt;		//! 参照回数
+	UINT Cnt;				//! 参照回数
 
 	MODEL_DATA() : Cnt(0) {}
 
@@ -44,10 +44,11 @@ private:
 
 	void Load(const bool flag);								// モデルの読み込み
 
-	void processNode(aiNode* node, const aiScene* scene, vector<MESHS>& mesh_map);
-	MESHS processMesh(aiMesh* mesh, aiNode* node, const aiScene* scene);
+	void processNode(aiNode* node, const aiScene* scene, vector<MESHS>& mesh_map, vector<TEXTURE_S>& textures_loaded);
+	MESHS processMesh(aiMesh* mesh, aiNode* node, const aiScene* scene, vector<TEXTURE_S>& textures_loaded);
 
-	vector<TEXTURE_S> loadMaterialTextures(aiMaterial* mat, aiTextureType type, string typeName, const aiScene* scene);
+	//vector<TEXTURE_S> loadMaterialTextures(aiMaterial* mat, aiTextureType type, string typeName, const aiScene* scene, vector<TEXTURE_S>& textures_loaded);
+	string loadMaterialTextures(aiMaterial* mat, aiTextureType type, string typeName, const aiScene* scene, vector<TEXTURE_S>& textures_loaded);
 	string determineTextureType(const aiScene* scene, aiMaterial* mat);
 	int getTextureIndex(aiString* str);
 	ID3D11ShaderResourceView* getTextureFromModel(const aiScene* scene, int textureindex);
@@ -63,6 +64,8 @@ public:
 	void Uninit();
 
 	static MODEL_MANEGER* Get_Instance();
+
+	const unordered_map<size_t, MODEL_FILE>& Get_ModelFile();
 
 	MESHS* const Get_Mesh(const size_t key);
 
