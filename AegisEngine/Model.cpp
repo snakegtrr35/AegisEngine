@@ -6,16 +6,8 @@
 #include	"camera.h"
 #include	"Debug_Camera.h"
 
-static string textype;
-
-MODEL::MODEL()
+MODEL::MODEL() : FileName(string()), Key(0)
 {
-
-}
-
-MODEL::~MODEL()
-{
-
 }
 
 void MODEL::Init()
@@ -87,9 +79,9 @@ void MODEL::Draw()
 	// •’Ê‚Ì•`‰æ
 	for (auto mesh : meshs->Get_Meshs())
 	{
-		for (auto& i : mesh.Get_Meshs())
+		for (auto& m : mesh.Get_Meshs())
 		{
-			i.Draw(matrix);
+			m.Draw(matrix);
 		}
 	}
 
@@ -98,17 +90,14 @@ void MODEL::Draw()
 
 void MODEL::Draw_DPP()
 {
-
 }
 
 void MODEL::Update(float delta_time)
 {
-
 }
 
 void MODEL::Uninit()
 {
-
 }
 
 void MODEL::Draw_Inspector()
@@ -116,3 +105,18 @@ void MODEL::Draw_Inspector()
 
 }
 
+void MODEL::Set_Model_Name(const string& file_name)
+{
+	if (file_name != FileName)
+	{
+		MODEL_MANEGER::Get_Instance()->Sub_ReferenceCnt(Key);
+		FileName = file_name;
+		Key = hash<string>()(file_name);
+		MODEL_MANEGER::Get_Instance()->Add_ReferenceCnt(Key);
+	}
+}
+
+const string& MODEL::Get_Model_Name()
+{
+	return FileName;
+}

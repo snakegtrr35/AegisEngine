@@ -33,7 +33,7 @@ public:
 	* @brief デストラクタ
 	* @details デストラクタ
 	*/
-	~MODEL();
+	~MODEL() { Uninit(); };
 
 	/**
 	* @brief 初期化関数
@@ -70,6 +70,40 @@ public:
 	* @details インスペクターでの描画をする関数
 	*/
 	void Draw_Inspector() override;
+
+	// モデル名の設定
+	void Set_Model_Name(const string& file_name);	
+
+	// モデル名の取得
+	const string& Get_Model_Name();
+
+	template<class Archive>
+	void serialize(Archive& ar)
+	{
+		ar(cereal::base_class<COMPONENT>(this));
+		ar(FileName);
+		ar(Key);
+	}
+
+	/*template<class Archive>
+	void save(Archive& ar) const
+	{
+		ar(cereal::base_class<COMPONENT>(this));
+		ar(FileName);
+		ar(Key);
+	}
+
+	template<class Archive>
+	void load(Archive& ar)
+	{
+		ar(cereal::base_class<COMPONENT>(this));
+		ar(FileName);
+		ar(Key);
+	}*/
+
 };
+
+CEREAL_REGISTER_TYPE(MODEL)
+CEREAL_REGISTER_POLYMORPHIC_RELATION(COMPONENT, MODEL)
 
 #endif // !MODEL_H

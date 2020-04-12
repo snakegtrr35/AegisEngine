@@ -151,6 +151,8 @@ void MESH::Draw_Mesh(XMMATRIX& parent_matrix)
 {
 	XMMATRIX matrix;
 
+	if (Indices.empty() || nullptr == Textures[0].Texture) FAILDE_ASSERT;
+
 	if (!Indices.empty() && nullptr != Textures[0].Texture)
 	{
 		CRenderer::SetVertexBuffers(VertexBuffer);
@@ -572,11 +574,11 @@ void MESH::Draw_DPP_Mesh_Animation(XMMATRIX& parent_matrix, unordered_map<string
 
 
 
-MESHS::MESHS() : Name(string()), Matrix(XMMatrixIdentity()), VertexBuffer(nullptr), IndexBuffer(nullptr)
+MESHS::MESHS() : Name(string()), VertexBuffer(nullptr), IndexBuffer(nullptr)
 {
 }
 
-MESHS::MESHS(vector<VERTEX_3D>& vertices, vector<UINT>& indices, vector<TEXTURE_S>& textures, XMMATRIX& matrix, string name) : Name(name), Matrix(matrix), /*Vertices(vertices),*/ Indices(indices), VertexBuffer(nullptr), IndexBuffer(nullptr)
+MESHS::MESHS(vector<VERTEX_3D>& vertices, vector<UINT>& indices, vector<TEXTURE_S>& textures, XMMATRIX& matrix, string name) : Name(name), Matrix(XMMATRIXToXMFLOAT4X4(matrix)), /*Vertices(vertices),*/ Indices(indices), VertexBuffer(nullptr), IndexBuffer(nullptr)
 {
 #ifdef _DEBUG
 	if (false == SetupMesh(vertices))
@@ -586,11 +588,6 @@ MESHS::MESHS(vector<VERTEX_3D>& vertices, vector<UINT>& indices, vector<TEXTURE_
 #else
 	SetupMesh(vertices);
 #endif // _DEBUG
-}
-
-MESHS::~MESHS()
-{
-
 }
 
 void MESHS::Draw(XMMATRIX& matrix)
@@ -605,7 +602,6 @@ void MESHS::Draw_DPP(XMMATRIX& matrix)
 
 void MESHS::Update()
 {
-
 }
 
 void MESHS::Uninit()
@@ -704,7 +700,7 @@ void MESHS::Draw_Mesh(XMMATRIX& parent_matrix)
 
 		// 3Dマトリックス設定
 		{
-			matrix = XMMatrixMultiply(Matrix, parent_matrix);
+			matrix = XMMatrixMultiply(XMFLOAT4X4ToXMMATRIX(Matrix), parent_matrix);
 
 			const auto camera01 = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<CCamera>("camera");
 			const auto camera02 = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
@@ -752,7 +748,7 @@ void MESHS::Draw_Mesh(XMMATRIX& parent_matrix)
 	}
 	else
 	{
-		matrix = XMMatrixMultiply(Matrix, parent_matrix);
+		matrix = XMMatrixMultiply(XMFLOAT4X4ToXMMATRIX(Matrix), parent_matrix);
 	}
 
 	for (auto child : ChildMeshes)
@@ -763,5 +759,4 @@ void MESHS::Draw_Mesh(XMMATRIX& parent_matrix)
 
 void MESHS::Draw_DPP_Mesh(XMMATRIX& parent_matrix)
 {
-
 }

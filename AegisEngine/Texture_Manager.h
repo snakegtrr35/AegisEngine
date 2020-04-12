@@ -119,8 +119,8 @@ public:
 	const unordered_map<size_t, TEXTURE_DATA>::iterator Get_TextureData_Start();
 	const unordered_map<size_t, TEXTURE_DATA>::iterator Get_TextureData_End();
 
-	template<class T>
-	void serialize(T& archive) {
+	template<class Archive>
+	void serialize(Archive& archive) {
 		archive(Default_Texture_File);
 		archive(TextureFile);
 	}

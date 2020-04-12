@@ -391,9 +391,9 @@ const bool TEXTURE_MANEGER::Unload(const string& const file_name)
 	size_t first = hash<string>()(file_name);//
 
 #ifdef _DEBUG
-	if (TextureData[first].Cnt != 0)
+	if (0 != TextureData[first].Cnt)
 	{
-		// QÆ‚µ‚Ä‚¢‚é‚±‚Ì‚ª‚ ‚é
+		// QÆ‚µ‚Ä‚¢‚é‚à‚Ì‚ª‚ ‚é
 		return false;
 	}
 #endif // _DEBUG

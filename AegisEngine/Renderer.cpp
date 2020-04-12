@@ -1311,7 +1311,7 @@ void CRenderer::SetVertexBuffers(ID3D11Buffer* VertexBuffer, ID3D11Buffer* Insta
 
 void CRenderer::SetIndexBuffer( ID3D11Buffer* IndexBuffer )
 {
-	m_ImmediateContext->IASetIndexBuffer( IndexBuffer, DXGI_FORMAT_R32_UINT, 0 );
+	m_ImmediateContext->IASetIndexBuffer( IndexBuffer, DXGI_FORMAT_R16_UINT, 0 );
 }
 
 void CRenderer::DrawIndexed( unsigned int IndexCount, unsigned int StartIndexLocation, int BaseVertexLocation )

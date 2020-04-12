@@ -141,7 +141,7 @@ private:
 
 	string Name; //! ÉÅÉbÉVÉÖÇÃñºëO
 
-	XMMATRIX Matrix;
+	XMFLOAT4X4 Matrix;
 
 	vector<MESHS> ChildMeshes;
 
@@ -157,7 +157,7 @@ public:
 
 	MESHS(vector<VERTEX_3D>& vertices, vector<UINT>& indices, vector<TEXTURE_S>& textures, XMMATRIX& matrix, string name);
 
-	~MESHS();
+	~MESHS() { Uninit(); }
 
 	void Draw(XMMATRIX& matrix);
 
@@ -172,6 +172,15 @@ public:
 	const string& Get_Name();
 
 	void Set_Name(const string& name);
+
+	template<class Archive>
+	void serialize(Archive& ar) {
+		//ar(Vertices);
+		ar(Indices);
+		ar(Name);
+		ar(Matrix);
+		ar(ChildMeshes);
+	}
 };
 
 

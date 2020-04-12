@@ -72,8 +72,8 @@ public:
 	void Add_ReferenceCnt(const size_t file);
 	void Sub_ReferenceCnt(const size_t file);
 
-	template<class T>
-	void serialize(T& archive) {
+	template<class Archive>
+	void serialize(Archive& archive) {
 		archive(ModelFile);
 	}
 };
