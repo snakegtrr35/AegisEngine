@@ -131,13 +131,15 @@ public:
 
 class MESHS {
 private:
+	//vector<VERTEX_3D> Vertices;
 	vector<UINT> Indices;
+
 	vector<TEXTURE_S> Textures;
 
 	ID3D11Buffer* VertexBuffer;
 	ID3D11Buffer* IndexBuffer;
 
-	string Name;
+	string Name; //! ÉÅÉbÉVÉÖÇÃñºëO
 
 	XMMATRIX Matrix;
 
@@ -165,13 +167,11 @@ public:
 
 	void Uninit();
 
-	void Add(const string name, const MESH& mesh);
+	vector<MESHS>& Get_Meshs();
 
-	unordered_map<string, MESH>& Get();
+	const string& Get_Name();
 
-	unordered_map<string, Anim>& Get_Anime();
-
-	bool GetAnime();
+	void Set_Name(const string& name);
 };
 
 

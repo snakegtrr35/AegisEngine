@@ -23,7 +23,7 @@ struct MODEL_FILE {
 };
 
 struct MODEL_DATA {
-	MESH Meshes;			//! メッシュ
+	MESHS Meshes;			//! メッシュ
 	UINT Cnt;		//! 参照回数
 
 	MODEL_DATA() : Cnt(0) {}
@@ -44,8 +44,8 @@ private:
 
 	void Load(const bool flag);								// モデルの読み込み
 
-	void processNode(aiNode* node, const aiScene* scene, unordered_map<string, MESH>& mesh_map);
-	MESH processMesh(aiMesh* mesh, aiNode* node, const aiScene* scene);
+	void processNode(aiNode* node, const aiScene* scene, vector<MESHS>& mesh_map);
+	MESHS processMesh(aiMesh* mesh, aiNode* node, const aiScene* scene);
 
 	vector<TEXTURE_S> loadMaterialTextures(aiMaterial* mat, aiTextureType type, string typeName, const aiScene* scene);
 	string determineTextureType(const aiScene* scene, aiMaterial* mat);
@@ -63,6 +63,8 @@ public:
 	void Uninit();
 
 	static MODEL_MANEGER* Get_Instance();
+
+	MESHS* const Get_Mesh(const size_t key);
 
 	void Add(const string& file_name);
 	const bool Unload(const string& const file_name);

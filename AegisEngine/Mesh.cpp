@@ -563,3 +563,205 @@ void MESH::Draw_DPP_Mesh_Animation(XMMATRIX& parent_matrix, unordered_map<string
 		child.second.Draw_DPP_Mesh_Animation(world, anime, frame, name1, name2, blend);
 	}
 }
+
+
+
+
+
+
+
+
+
+MESHS::MESHS() : Name(string()), Matrix(XMMatrixIdentity()), VertexBuffer(nullptr), IndexBuffer(nullptr)
+{
+}
+
+MESHS::MESHS(vector<VERTEX_3D>& vertices, vector<UINT>& indices, vector<TEXTURE_S>& textures, XMMATRIX& matrix, string name) : Name(name), Matrix(matrix), /*Vertices(vertices),*/ Indices(indices), VertexBuffer(nullptr), IndexBuffer(nullptr)
+{
+#ifdef _DEBUG
+	if (false == SetupMesh(vertices))
+	{
+		FAILDE_ASSERT;
+	}
+#else
+	SetupMesh(vertices);
+#endif // _DEBUG
+}
+
+MESHS::~MESHS()
+{
+
+}
+
+void MESHS::Draw(XMMATRIX& matrix)
+{
+	Draw_Mesh(matrix);
+}
+
+void MESHS::Draw_DPP(XMMATRIX& matrix)
+{
+	Draw_DPP_Mesh(matrix);
+}
+
+void MESHS::Update()
+{
+
+}
+
+void MESHS::Uninit()
+{
+	SAFE_RELEASE(VertexBuffer);
+	SAFE_RELEASE(IndexBuffer);
+
+	Indices.clear();
+
+	for (auto& tex : Textures)
+	{
+		SAFE_RELEASE(tex.Texture);
+	}
+	Textures.clear();
+
+	for (auto child : ChildMeshes)
+	{
+		child.Uninit();
+	}
+	ChildMeshes.clear();
+}
+
+vector<MESHS>& MESHS::Get_Meshs()
+{
+	return ChildMeshes;
+}
+
+const string& MESHS::Get_Name()
+{
+	return Name;
+}
+
+void MESHS::Set_Name(const string& name)
+{
+	Name = name;
+}
+
+bool MESHS::SetupMesh(vector<VERTEX_3D>& vertices)
+{
+	HRESULT hr;
+
+	// 頂点バッファの生成
+	{
+		D3D11_BUFFER_DESC desc;
+		desc.Usage = D3D11_USAGE_DEFAULT;
+		desc.ByteWidth = sizeof(VERTEX_3D) * vertices.size();
+		desc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+		desc.CPUAccessFlags = 0;
+		desc.MiscFlags = 0;
+
+		// サブリソースの設定
+		D3D11_SUBRESOURCE_DATA initData;
+		ZeroMemory(&initData, sizeof(D3D11_SUBRESOURCE_DATA));
+
+		initData.pSysMem = vertices.data();
+
+		hr = CRenderer::GetDevice()->CreateBuffer(&desc, &initData, &VertexBuffer);
+		if (FAILED(hr))
+			return false;
+	}
+
+	// インデックスバッファの生成
+	{
+		D3D11_BUFFER_DESC desc;
+		desc.Usage = D3D11_USAGE_DEFAULT;
+		desc.ByteWidth = sizeof(UINT) * (UINT)Indices.size();
+		desc.BindFlags = D3D11_BIND_INDEX_BUFFER;
+		desc.CPUAccessFlags = 0;
+		desc.MiscFlags = 0;
+
+		// サブリソースの設定
+		D3D11_SUBRESOURCE_DATA initData;
+		ZeroMemory(&initData, sizeof(D3D11_SUBRESOURCE_DATA));
+
+		initData.pSysMem = Indices.data();
+
+		hr = CRenderer::GetDevice()->CreateBuffer(&desc, &initData, &IndexBuffer);
+		if (FAILED(hr))
+			return false;
+	}
+
+	return true;
+}
+
+void MESHS::Draw_Mesh(XMMATRIX& parent_matrix)
+{
+	XMMATRIX matrix;
+
+	if (!Indices.empty() && nullptr != Textures[0].Texture)
+	{
+		CRenderer::SetVertexBuffers(VertexBuffer);
+
+		CRenderer::GetDeviceContext()->IASetIndexBuffer(IndexBuffer, DXGI_FORMAT_R32_UINT, 0);
+
+		CRenderer::GetDeviceContext()->PSSetShaderResources(0, 1, &Textures[0].Texture);
+
+		// 3Dマトリックス設定
+		{
+			matrix = XMMatrixMultiply(Matrix, parent_matrix);
+
+			const auto camera01 = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<CCamera>("camera");
+			const auto camera02 = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
+
+			// 普通のカメラかデバッグカメラか?
+			if (!camera01.expired())
+			{
+				// シャドウマップ用の描画か?
+				if (CManager::Get_Instance()->Get_ShadowMap()->Get_Enable())
+				{
+					XMMATRIX view = CManager::Get_Instance()->Get_ShadowMap()->Get_View();
+					XMMATRIX proj = CManager::Get_Instance()->Get_ShadowMap()->Get_Plojection();
+
+					CRenderer::Set_MatrixBuffer(matrix, view, proj);
+				}
+				else
+				{
+					CRenderer::Set_MatrixBuffer(matrix, camera01.lock()->Get_Camera_View(), camera01.lock()->Get_Camera_Projection());
+
+					CRenderer::Set_MatrixBuffer01(*camera01.lock()->Get_Pos());
+				}
+			}
+			else
+			{
+				// シャドウマップ用の描画か?
+				if (CManager::Get_Instance()->Get_ShadowMap()->Get_Enable())
+				{
+					XMMATRIX view = CManager::Get_Instance()->Get_ShadowMap()->Get_View();
+					XMMATRIX proj = CManager::Get_Instance()->Get_ShadowMap()->Get_Plojection();
+
+					CRenderer::Set_MatrixBuffer(matrix, view, proj);
+				}
+				else
+				{
+					CRenderer::Set_MatrixBuffer(matrix, camera02.lock()->Get_Camera_View(), camera02.lock()->Get_Camera_Projection());
+
+					CRenderer::Set_MatrixBuffer01(*camera02.lock()->Get_Pos());
+				}
+			}
+		}
+
+		CRenderer::GetDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+		CRenderer::GetDeviceContext()->DrawIndexed((UINT)Indices.size(), 0, 0);
+	}
+	else
+	{
+		matrix = XMMatrixMultiply(Matrix, parent_matrix);
+	}
+
+	for (auto child : ChildMeshes)
+	{
+		child.Draw_Mesh(matrix);
+	}
+}
+
+void MESHS::Draw_DPP_Mesh(XMMATRIX& parent_matrix)
+{
+
+}

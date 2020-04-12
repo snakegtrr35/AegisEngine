@@ -75,7 +75,7 @@ void MODEL_MANEGER::Load(const bool flag)
 			// モデルの読み込み
 			if (ModelFile.find(key) != ModelFile.end())
 			{
-				MESH Mesh;
+				MESHS Mesh;
 
 				Assimp::Importer importer;
 
@@ -88,7 +88,7 @@ void MODEL_MANEGER::Load(const bool flag)
 
 				//this->directory = FileName.substr(0, FileName.find_last_of('/'));
 
-				processNode(pScene->mRootNode, pScene, Mesh.Get());
+				processNode(pScene->mRootNode, pScene, Mesh.Get_Meshs());
 
 				ModelData[key].Meshes = Mesh;
 				ModelData[key].Cnt = 0;
@@ -118,7 +118,7 @@ void MODEL_MANEGER::Load(const bool flag)
 
 			// モデルの読み込み
 			{
-				MESH Mesh;
+				MESHS Mesh;
 
 				Assimp::Importer importer;
 
@@ -131,7 +131,7 @@ void MODEL_MANEGER::Load(const bool flag)
 
 				//this->directory = FileName.substr(0, FileName.find_last_of('/'));
 
-				processNode(pScene->mRootNode, pScene, Mesh.Get());
+				processNode(pScene->mRootNode, pScene, Mesh.Get_Meshs());
 
 				ModelData[key].Meshes = Mesh;
 				ModelData[key].Cnt = 0;
@@ -143,6 +143,15 @@ void MODEL_MANEGER::Load(const bool flag)
 MODEL_MANEGER* MODEL_MANEGER::Get_Instance()
 {
 	return ModelManager.get();
+}
+
+MESHS* const MODEL_MANEGER::Get_Mesh(const size_t key)
+{
+	if (ModelData.find(key) != ModelData.end())
+	{
+		return &(ModelData[key].Meshes);
+	}
+	return nullptr;
 }
 
 void MODEL_MANEGER::Add(const string& file_name)
@@ -191,11 +200,11 @@ void MODEL_MANEGER::Sub_ReferenceCnt(const size_t file)
 
 
 
-MESH MODEL_MANEGER::processMesh(aiMesh* mesh, aiNode* node, const aiScene* scene)
+MESHS MODEL_MANEGER::processMesh(aiMesh* mesh, aiNode* node, const aiScene* scene)
 {
 	// Data to fill
 	vector<VERTEX_3D> vertices;
-	vertices.reserve(mesh->mNumVertices);
+	vertices.resize(mesh->mNumVertices);
 
 	vector<UINT> indices;
 	vector<TEXTURE_S> textures;
@@ -214,39 +223,35 @@ MESH MODEL_MANEGER::processMesh(aiMesh* mesh, aiNode* node, const aiScene* scene
 	// Walk through each of the mesh's vertices
 	for (UINT i = 0; i < mesh->mNumVertices; i++)
 	{
-		VERTEX_3D vertex;
-
 		// 頂点データの設定
-		vertex.Position.x = mesh->mVertices[i].x;
-		vertex.Position.y = mesh->mVertices[i].y;
-		vertex.Position.z = mesh->mVertices[i].z;
+		vertices[i].Position.x = mesh->mVertices[i].x;
+		vertices[i].Position.y = mesh->mVertices[i].y;
+		vertices[i].Position.z = mesh->mVertices[i].z;
 
 		// 頂点カラーの設定
 		if (mesh->HasVertexColors(i))
 		{
-			vertex.Diffuse.x = mesh->mColors[i]->r;
-			vertex.Diffuse.y = mesh->mColors[i]->g;
-			vertex.Diffuse.z = mesh->mColors[i]->b;
-			vertex.Diffuse.w = mesh->mColors[i]->a;
+			vertices[i].Diffuse.x = mesh->mColors[i]->r;
+			vertices[i].Diffuse.y = mesh->mColors[i]->g;
+			vertices[i].Diffuse.z = mesh->mColors[i]->b;
+			vertices[i].Diffuse.w = mesh->mColors[i]->a;
 		}
 		else
 		{
-			vertex.Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+			vertices[i].Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
 		}
 
 		// 法線ベクトルの設定
-		vertex.Normal.x = mesh->mNormals[i].x;
-		vertex.Normal.y = mesh->mNormals[i].y;
-		vertex.Normal.z = mesh->mNormals[i].z;
+		vertices[i].Normal.x = mesh->mNormals[i].x;
+		vertices[i].Normal.y = mesh->mNormals[i].y;
+		vertices[i].Normal.z = mesh->mNormals[i].z;
 
 		// UV座標の設定
 		if (mesh->mTextureCoords[0])
 		{
-			vertex.TexCoord.x = (float)mesh->mTextureCoords[0][i].x;
-			vertex.TexCoord.y = (float)mesh->mTextureCoords[0][i].y;
+			vertices[i].TexCoord.x = (float)mesh->mTextureCoords[0][i].x;
+			vertices[i].TexCoord.y = (float)mesh->mTextureCoords[0][i].y;
 		}
-
-		vertices.push_back(vertex);
 	}
 
 	// インデックスの設定
@@ -255,7 +260,9 @@ MESH MODEL_MANEGER::processMesh(aiMesh* mesh, aiNode* node, const aiScene* scene
 		aiFace face = mesh->mFaces[i];
 
 		for (UINT j = 0; j < face.mNumIndices; j++)
+		{
 			indices.push_back(face.mIndices[j]);
+		}
 	}
 
 	// テクスチャの設定
@@ -272,7 +279,7 @@ MESH MODEL_MANEGER::processMesh(aiMesh* mesh, aiNode* node, const aiScene* scene
 		matrix = Covert_Matrix(&node->mTransformation);
 	}
 
-	return MESH(vertices, indices, textures, matrix, name);
+	return MESHS(vertices, indices, textures, matrix, name);
 }
 
 vector<TEXTURE_S> MODEL_MANEGER::loadMaterialTextures(aiMaterial* mat, aiTextureType type, string typeName, const aiScene* scene)
@@ -325,20 +332,25 @@ vector<TEXTURE_S> MODEL_MANEGER::loadMaterialTextures(aiMaterial* mat, aiTexture
 	return textures;
 }
 
-void MODEL_MANEGER::processNode(aiNode* node, const aiScene* scene, unordered_map<string, MESH>& mesh_map)
+void MODEL_MANEGER::processNode(aiNode* node, const aiScene* scene, vector<MESHS>& meshs)
 {
 	for (UINT i = 0; i < node->mNumMeshes; i++)
 	{
 		aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
 
-		MESH ms = processMesh(mesh, node, scene);
-
-		mesh_map[node->mName.C_Str()] = ms;
+		meshs.emplace_back(processMesh(mesh, node, scene));
 	}
 
 	for (UINT i = 0; i < node->mNumChildren; i++)
 	{
-		//processNode(node->mChildren[i], scene, mesh_map[node->mName.C_Str()].Get());
+		for (auto& m : meshs)
+		{
+			if (node->mName.C_Str() == m.Get_Name())
+			{
+				processNode(node->mChildren[i], scene, m.Get_Meshs());
+				break;
+			}
+		}
 	}
 }
 
@@ -377,11 +389,11 @@ ID3D11ShaderResourceView* MODEL_MANEGER::getTextureFromModel(const aiScene* scen
 	HRESULT hr;
 	ID3D11ShaderResourceView* texture;
 
-	int* size = reinterpret_cast<int*>(&scene->mTextures[textureindex]->mWidth);
+	UINT size = scene->mTextures[textureindex]->mWidth;
 
-	hr = CreateWICTextureFromMemory(CRenderer::GetDevice(), CRenderer::GetDeviceContext(), reinterpret_cast<unsigned char*>(scene->mTextures[textureindex]->pcData), *size, nullptr, &texture);
+	hr = CreateWICTextureFromMemory(CRenderer::GetDevice(), CRenderer::GetDeviceContext(), reinterpret_cast<BYTE*>(scene->mTextures[textureindex]->pcData), size, nullptr, &texture);
 	if (FAILED(hr))
 		FAILDE_ASSERT
 
-		return texture;
+	return texture;
 }

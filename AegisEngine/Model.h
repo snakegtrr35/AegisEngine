@@ -18,22 +18,8 @@ private:
 	//! ファイル名
 	string FileName;
 
-	//! メッシュ
-	MESH Meshes;
-
-	//! テクスチャ
-	vector<TEXTURE_S> textures;
-
-	//! パス
-	string directory;
-
-	void processNode(aiNode* node, const aiScene* scene, unordered_map<string, MESH>& mesh_map);
-	MESH processMesh(aiMesh* mesh, aiNode* node, const aiScene* scene);
-
-	vector<TEXTURE_S> loadMaterialTextures(aiMaterial* mat, aiTextureType type, string typeName, const aiScene* scene);
-	string determineTextureType(const aiScene* scene, aiMaterial* mat);
-	int getTextureIndex(aiString* str);
-	ID3D11ShaderResourceView* getTextureFromModel(const aiScene* scene, int textureindex);
+	//! ファイル名のハッシュ値
+	size_t Key;
 
 public:
 

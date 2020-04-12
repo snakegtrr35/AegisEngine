@@ -61,7 +61,7 @@ struct TEXTURE_FILE {
 struct TEXTURE_DATA {
 	unique_ptr<ID3D11ShaderResourceView, Release> Resource;		//! リソースデータ
 	XMINT2 WH;													//!	テクスチャの幅と高さ
-	UINT Cnt;											//! 参照回数
+	UINT Cnt;													//! 参照回数
 
 	TEXTURE_DATA() : WH(XMINT2(0, 0)), Cnt(0) {}
 };
