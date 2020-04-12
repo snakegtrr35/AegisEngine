@@ -14,8 +14,6 @@ NodeAnim createNodeAnim(const aiNodeAnim* anim);
 VectorKey fromAssimp(const aiVectorKey& key);
 QuatKey fromAssimp(const aiQuatKey& key);
 
-XMMATRIX Covert_Matrix(const aiMatrix4x4* matrix);
-
 static string textype;
 
 bool flag = true;
@@ -45,8 +43,6 @@ bool CMODEL::Load(const string& filename)
 
 	this->directory = filename.substr(0, filename.find_last_of('/'));
 
-	//Meshes[pScene->mRootNode->mName.C_Str()] = MESH();
-	//processNode(pScene->mRootNode, nullptr, pScene, Meshes);
 	processNode(pScene->mRootNode, pScene, Meshes.Get());
 
 	// アニメーション情報の設定
@@ -70,35 +66,35 @@ bool CMODEL::Load(const string& filename)
 		////
 		//pScene = importer.ReadFile("asset/model/human01_Walk.fbx",
 		//	aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_LimitBoneWeights | aiProcess_ConvertToLeftHanded | aiProcessPreset_TargetRealtime_MaxQuality);
-
+		//
 		//if (pScene->HasAnimations())
 		//{
 		//	aiAnimation** anim = pScene->mAnimations;
-
+		//
 		//	for (UINT i = 0; i < pScene->mNumAnimations; i++)
 		//	{
 		//		animation = createAnimation(anim[i]);
-
+		//
 		//		Meshes.SetAnimation(anim[i]->mName.data, animation);
-
+		//
 		//		Anime_State_Machine.Add_Name(anim[i]->mName.data);
 		//	}
 		//}
-
+		//
 		////
 		//pScene = importer.ReadFile("asset/model/human01_Jump.fbx",
 		//	aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_LimitBoneWeights | aiProcess_ConvertToLeftHanded | aiProcessPreset_TargetRealtime_MaxQuality);
-
+		//
 		//if (pScene->HasAnimations())
 		//{
 		//	aiAnimation** anim = pScene->mAnimations;
-
+		//
 		//	for (UINT i = 0; i < pScene->mNumAnimations; i++)
 		//	{
 		//		animation = createAnimation(anim[i]);
-
+		//
 		//		Meshes.SetAnimation(anim[i]->mName.data, animation);
-
+		//
 		//		Anime_State_Machine.Add_Name(anim[i]->mName.data);
 		//	}
 		//}
@@ -121,8 +117,6 @@ bool CMODEL::Reload(const string& filename)
 
 	this->directory = filename.substr(0, filename.find_last_of('/'));
 
-	//Meshes[pScene->mRootNode->mName.C_Str()] = MESH();
-	//processNode(pScene->mRootNode, nullptr, pScene, Meshes);if (camera
 	processNode(pScene->mRootNode, pScene, Meshes.Get());
 
 	{
@@ -548,7 +542,7 @@ vector<TEXTURE_S> CMODEL::loadMaterialTextures(aiMaterial* mat, aiTextureType ty
 	return textures;
 }
 
-void CMODEL::processNode(aiNode* node, const aiScene* scene, map<string, MESH>& mesh_map)
+void CMODEL::processNode(aiNode* node, const aiScene* scene, unordered_map<string, MESH>& mesh_map)
 {
 	for (UINT i = 0; i < node->mNumMeshes; i++)
 	{
@@ -680,11 +674,11 @@ QuatKey fromAssimp(const aiQuatKey& key)
 }
 
 
-XMMATRIX Covert_Matrix(const aiMatrix4x4* matrix)
-{
-	aiMatrix4x4 mtr = *matrix;
-
-	aiTransposeMatrix4(&mtr);		// 転置行列 DirectX用にする
-
-	return XMLoadFloat4x4((XMFLOAT4X4*)& mtr);
-}
+//XMMATRIX Covert_Matrix(const aiMatrix4x4* matrix)
+//{
+//	aiMatrix4x4 mtr = *matrix;
+//
+//	aiTransposeMatrix4(&mtr);		// 転置行列 DirectX用にする
+//
+//	return XMLoadFloat4x4((XMFLOAT4X4*)& mtr);
+//}

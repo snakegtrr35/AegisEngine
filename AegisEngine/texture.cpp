@@ -3,16 +3,12 @@
 #include	"Renderer.h"
 
 
-TEXTURE::TEXTURE()
+TEXTURE::TEXTURE() : FileName("none"), File(hash<string>()(FileName))
 {
-	FileName = "none";
-	File = hash<string>()(FileName);//
 }
 
-TEXTURE::TEXTURE(const string& file_name)
+TEXTURE::TEXTURE(const string& file_name) : FileName(file_name), File(hash<string>()(file_name))
 {
-	FileName = file_name;
-	File = hash<string>()(file_name);//
 	TEXTURE_MANEGER::Get_Instance()->Add_ReferenceCnt(File);
 }
 
@@ -98,10 +94,10 @@ void FONT::Load_Font()
 		fontSize, 0, 0, 0, fontWeight, 0, 0, 0,
 		SHIFTJIS_CHARSET, OUT_TT_ONLY_PRECIS, CLIP_DEFAULT_PRECIS,
 		PROOF_QUALITY, DEFAULT_PITCH | FF_MODERN,
-		//(WCHAR)"ＭＳ Ｐ明朝"
-		//(WCHAR)"ＭＳ 明朝"
-		//(WCHAR)"ＭＳ ゴシック"
-		(WCHAR)"メイリオ"
+		//(CHAR)"ＭＳ Ｐ明朝"
+		//(CHAR)"ＭＳ 明朝"
+		//(CHAR)"ＭＳ ゴシック"
+		(CHAR)"メイリオ"
 	};
 	HFONT hFont = CreateFontIndirectW(&lf);
 
@@ -170,38 +166,47 @@ void FONT::Load_Font()
 	// デバイスコンテキスト
 	auto deviceContext = CRenderer::GetDeviceContext();
 
+	UINT code;
+	TEXTMETRIC tm;
+	GetTextMetrics(hdc, &tm);
+	GLYPHMETRICS gm;
+	CONST MAT2 mat = { {0,1}, {0,0}, {0,0}, {0,1} };
+	DWORD size;
+	BYTE* pMono = nullptr;
+
+	int fontWidth = 0;
+	int fontHeight = 0;
+
+	ID3D11Texture2D* font_texture = nullptr;
+	HRESULT hr;
+	D3D11_MAPPED_SUBRESOURCE hMappedResource;
+
+	wstring f;
+
 	for (auto font : Font)
 	{
 		// フォントビットマップ取得
 
-		UINT code = (UINT)font;
+		code = (UINT)font;
 
-		TEXTMETRIC tm;
-		GetTextMetrics(hdc, &tm);
-		GLYPHMETRICS gm;
-		CONST MAT2 mat = { {0,1}, {0,0}, {0,0}, {0,1} };
-
-		DWORD size = GetGlyphOutlineW(hdc, code, gradFlag, &gm, 0, nullptr, &mat);
-		BYTE* pMono = new BYTE[size];
+		size = GetGlyphOutlineW(hdc, code, gradFlag, &gm, 0, nullptr, &mat);
+		pMono = new BYTE[size];
 
 		GetGlyphOutlineW(hdc, code, gradFlag, &gm, size, pMono, &mat);
 
 		//================================================================================
 
 		//フォントの幅と高さ
-		int fontWidth = gm.gmCellIncX;
-		int fontHeight = tm.tmHeight;
+		fontWidth = gm.gmCellIncX;
+		fontHeight = tm.tmHeight;
 
 		//フォントを書き込むテクスチャ作成
 		fontTextureDesc.Width = fontWidth;
 		fontTextureDesc.Height = fontHeight;
 
-		ID3D11Texture2D* font_texture;
-
-		HRESULT hr = device->CreateTexture2D(&fontTextureDesc, nullptr, &font_texture);
+		hr = device->CreateTexture2D(&fontTextureDesc, nullptr, &font_texture);
 
 		// フォント情報をテクスチャに書き込む部分
-		D3D11_MAPPED_SUBRESOURCE hMappedResource;
 		hr = deviceContext->Map(
 			font_texture,
 			0,
@@ -244,7 +249,8 @@ void FONT::Load_Font()
 		// シェーダーリソースの作成
 		device->CreateShaderResourceView(font_texture, &srvDesc, &ShaderResourceView);
 
-		wstring f;
+		SAFE_RELEASE(font_texture);
+
 		f.push_back(font);
 
 		FontResource[f].reset(ShaderResourceView);
@@ -263,17 +269,17 @@ void FONT::Load_Font(const wstring& one_character)
 		fontSize, 0, 0, 0, fontWeight, 0, 0, 0,
 		SHIFTJIS_CHARSET, OUT_TT_ONLY_PRECIS, CLIP_DEFAULT_PRECIS,
 		PROOF_QUALITY, DEFAULT_PITCH | FF_MODERN,
-		//(WCHAR)"ＭＳ Ｐ明朝"
-		//(WCHAR)"ＭＳ 明朝"
-		//(WCHAR)"ＭＳ ゴシック"
-		(WCHAR)"メイリオ"
+		//(CHAR)"ＭＳ Ｐ明朝"
+		//(CHAR)"ＭＳ 明朝"
+		//(CHAR)"ＭＳ ゴシック"
+		(CHAR)"メイリオ"
 	};
 	HFONT hFont = CreateFontIndirectW(&lf);
 
 	// 現在のウィンドウに適用
 	// デバイスにフォントを持たせないとGetGlyphOutline関数はエラーとなる
 	HDC hdc = GetDC(NULL);
-	//HFONT oldFont = (HFONT)SelectObject(hdc, hFont);
+	HFONT oldFont = (HFONT)SelectObject(hdc, hFont);
 
 	// フォントビットマップ取得
 	wchar_t font = one_character.front();
@@ -333,7 +339,7 @@ void FONT::Load_Font(const wstring& one_character)
 	fontTextureDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 	fontTextureDesc.MiscFlags = 0;
 
-	ID3D11Texture2D* font_texture;
+	ID3D11Texture2D* font_texture = nullptr;
 
 	HRESULT hr = device->CreateTexture2D(&fontTextureDesc, nullptr, &font_texture);
 
@@ -390,12 +396,12 @@ void FONT::Load_Font(const wstring& one_character)
 
 	device->CreateShaderResourceView(font_texture, &srvDesc, &ShaderResourceView);
 
-	wstring a;
-	a.push_back(font);
+	SAFE_RELEASE(font_texture);
 
-	FontResource[a].reset(ShaderResourceView);
+	wstring f;
+	f.push_back(font);
 
-	a.clear();
+	FontResource[f].reset(ShaderResourceView);
 }
 
 void FONT::Add_Font(const wstring& one_character)

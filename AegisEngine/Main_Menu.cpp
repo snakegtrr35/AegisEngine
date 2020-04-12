@@ -24,8 +24,6 @@
 
 static unique_ptr<SPRITE_ANIMATION> sprite_anime;
 
-//static unique_ptr<FIELD> field;
-
 void MAIN_MENU::Init()
 {
 	{
@@ -41,18 +39,10 @@ void MAIN_MENU::Init()
 		sprite_anime->Init();
 	}
 
-	{
-		SCENE::Add_Game_Object<SKYBOX>(LAYER_NAME::BACKGROUND, "sktbox");
-	}
-
-	//field = make_unique<FIELD>();
-	//field->Init();
 
 	std::thread th(Load, this);
 
 	th.detach();
-
-	//cnt = 0;
 }
 
 void MAIN_MENU::Draw()
@@ -207,7 +197,7 @@ void MAIN_MENU::Load(SCENE* scene)
 		}*/
 
 		{
-			auto bill = scene->Add_Game_Object<BILL>(LAYER_NAME::GAMEOBJECT, "bull");
+			auto bill = scene->Add_Game_Object<BILL>(LAYER_NAME::GAMEOBJECT, "bill");
 		}
 
 		//{

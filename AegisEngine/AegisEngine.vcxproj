@@ -40,7 +40,7 @@
     <ClCompile Include="FBXmodel.cpp" />
     <ClCompile Include="Field.cpp" />
     <ClCompile Include="FileChangeMonitor.cpp" />
-    <ClCompile Include="ForwardPlus.cpp">
+    <ClCompile Include="Clustered.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
       </ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -71,7 +71,9 @@
     <ClCompile Include="Mesh_Cylinder.cpp" />
     <ClCompile Include="Mesh_Dome.cpp" />
     <ClCompile Include="Mesh_Field.cpp" />
+    <ClCompile Include="Model.cpp" />
     <ClCompile Include="ModelLoader.cpp" />
+    <ClCompile Include="Model_Manager.cpp" />
     <ClCompile Include="Mouse.cpp" />
     <ClCompile Include="My_imgui.cpp" />
     <ClCompile Include="Player.cpp" />
@@ -137,7 +139,7 @@
     <ClInclude Include="Fade.h" />
     <ClInclude Include="FBXmodel.h" />
     <ClInclude Include="Field.h" />
-    <ClInclude Include="ForwardPlus.h">
+    <ClInclude Include="Clustered.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
       </ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -175,7 +177,9 @@
     <ClInclude Include="Mesh_Cylinder.h" />
     <ClInclude Include="Mesh_Dome.h" />
     <ClInclude Include="Mesh_Field.h" />
+    <ClInclude Include="Model.h" />
     <ClInclude Include="ModelLoader.h" />
+    <ClInclude Include="Model_Manager.h" />
     <ClInclude Include="Mouse.h" />
     <ClInclude Include="My_imgui.h" />
     <ClInclude Include="Player.h" />

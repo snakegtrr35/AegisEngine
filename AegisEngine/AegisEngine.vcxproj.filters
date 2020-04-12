@@ -78,6 +78,9 @@
     <Filter Include="ソース ファイル\System\Time">
       <UniqueIdentifier>{3ef673e1-d6e8-4a88-8087-6cbfb36edb17}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\System\Model">
+      <UniqueIdentifier>{3d25086e-fd84-4d43-bc5c-2030f39e078d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="imgui\imgui.cpp">
@@ -233,9 +236,6 @@
     <ClCompile Include="Bounding_Capsule.cpp">
       <Filter>ソース ファイル\GameObject\Bounding</Filter>
     </ClCompile>
-    <ClCompile Include="ForwardPlus.cpp">
-      <Filter>ソース ファイル\System\Clustered</Filter>
-    </ClCompile>
     <ClCompile Include="FBXmodel.cpp">
       <Filter>ソース ファイル\GameObject</Filter>
     </ClCompile>
@@ -289,6 +289,15 @@
     </ClCompile>
     <ClCompile Include="Skybox.cpp">
       <Filter>ソース ファイル\GameObject\Mesh</Filter>
+    </ClCompile>
+    <ClCompile Include="Clustered.cpp">
+      <Filter>ソース ファイル\System\Clustered</Filter>
+    </ClCompile>
+    <ClCompile Include="Model.cpp">
+      <Filter>ソース ファイル\System\Model</Filter>
+    </ClCompile>
+    <ClCompile Include="Model_Manager.cpp">
+      <Filter>ソース ファイル\System\Model</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -454,9 +463,6 @@
     <ClInclude Include="Bounding_Capsule.h">
       <Filter>ソース ファイル\GameObject\Bounding</Filter>
     </ClInclude>
-    <ClInclude Include="ForwardPlus.h">
-      <Filter>ソース ファイル\System\Clustered</Filter>
-    </ClInclude>
     <ClInclude Include="FBXmodel.h">
       <Filter>ソース ファイル\GameObject</Filter>
     </ClInclude>
@@ -522,6 +528,15 @@
     </ClInclude>
     <ClInclude Include="Aegis_zlib.h">
       <Filter>ソース ファイル\System</Filter>
+    </ClInclude>
+    <ClInclude Include="Clustered.h">
+      <Filter>ソース ファイル\System\Clustered</Filter>
+    </ClInclude>
+    <ClInclude Include="Model_Manager.h">
+      <Filter>ソース ファイル\System\Model</Filter>
+    </ClInclude>
+    <ClInclude Include="Model.h">
+      <Filter>ソース ファイル\System\Model</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

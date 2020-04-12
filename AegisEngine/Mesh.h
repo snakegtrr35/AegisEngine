@@ -85,7 +85,7 @@ private:
 
 	XMMATRIX Matrix;
 
-	map<string, MESH> ChildMeshes;
+	unordered_map<string, MESH> ChildMeshes;
 
 	void Draw_Mesh(XMMATRIX& parent_matrix);
 
@@ -119,13 +119,69 @@ public:
 
 	void SetAnimation(const string& name, const Anim& animations);
 
-	void Add(const string name, const MESH& mesh);
+	//void Add(const string name, const MESH& mesh);
 
-	map<string, MESH>& Get();
+	unordered_map<string, MESH>& Get();
 
 	unordered_map<string, Anim>& Get_Anime();
 
 	bool GetAnime();
 };
+
+
+class MESHS {
+private:
+	vector<UINT> Indices;
+	vector<TEXTURE_S> Textures;
+
+	ID3D11Buffer* VertexBuffer;
+	ID3D11Buffer* IndexBuffer;
+
+	string Name;
+
+	XMMATRIX Matrix;
+
+	vector<MESHS> ChildMeshes;
+
+	void Draw_Mesh(XMMATRIX& parent_matrix);
+
+	void Draw_DPP_Mesh(XMMATRIX& parent_matrix);
+
+	bool SetupMesh(vector<VERTEX_3D>& vertices);
+
+public:
+
+	MESHS();
+
+	MESHS(vector<VERTEX_3D>& vertices, vector<UINT>& indices, vector<TEXTURE_S>& textures, XMMATRIX& matrix, string name);
+
+	~MESHS();
+
+	void Draw(XMMATRIX& matrix);
+
+	void Draw_DPP(XMMATRIX& matrix);
+
+	void Update();
+
+	void Uninit();
+
+	void Add(const string name, const MESH& mesh);
+
+	unordered_map<string, MESH>& Get();
+
+	unordered_map<string, Anim>& Get_Anime();
+
+	bool GetAnime();
+};
+
+
+inline XMMATRIX Covert_Matrix(const aiMatrix4x4* matrix)
+{
+	aiMatrix4x4 mtr = *matrix;
+
+	aiTransposeMatrix4(&mtr);		// ì]íuçsóÒ DirectXópÇ…Ç∑ÇÈ
+
+	return XMLoadFloat4x4((XMFLOAT4X4*)& mtr);
+}
 
 #endif

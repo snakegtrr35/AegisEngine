@@ -74,12 +74,12 @@ void MESH::SetAnimation(const string& name, const Anim& animations)
 	Animation[name] = animations;
 }
 
-void MESH::Add(const string name, const MESH& mesh)
-{
-	ChildMeshes[name] = mesh;
-}
+//void MESH::Add(const string name, const MESH& mesh)
+//{
+//	ChildMeshes[name] = mesh;
+//}
 
-map<string, MESH>& MESH::Get()
+unordered_map<string, MESH>& MESH::Get()
 {
 	return ChildMeshes;
 }
