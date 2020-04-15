@@ -37,6 +37,8 @@ struct MODEL_DATA {
 class MODEL_MANEGER {
 private:
 
+	friend MESHS;
+
 	static unique_ptr<MODEL_MANEGER> ModelManager;
 
 	unordered_map<size_t, MODEL_FILE> ModelFile;			//! モデルのファイルデータ

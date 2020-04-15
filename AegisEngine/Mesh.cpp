@@ -576,24 +576,74 @@ void MESH::Draw_DPP_Mesh_Animation(XMMATRIX& parent_matrix, unordered_map<string
 
 
 
-MESHS::MESHS() : Name(string()), VertexBuffer(nullptr), IndexBuffer(nullptr)
+
+
+MESHS::MESHS() : VertexBuffer(nullptr), IndexBuffer(nullptr)
 {
 }
 
-MESHS::MESHS(vector<VERTEX_3D>& vertices, vector<UINT>& indices, string& texture_name, XMMATRIX& matrix, string name) : Name(name), TextureName(texture_name), Matrix(XMMATRIXToXMFLOAT4X4(matrix)), /*Vertices(vertices),*/ Indices(indices), VertexBuffer(nullptr), IndexBuffer(nullptr)
+void MESHS::Set(const MESHS& meshs)
 {
-#ifdef _DEBUG
-	if (false == SetupMesh(vertices))
+	this->Vertices = meshs.Vertices;
+	this->Indices = meshs.Indices;
+	this->Matrix = meshs.Matrix;
+	this->Name = meshs.Name;
+	this->TextureName = meshs.TextureName;
+	this->Textures = meshs.Textures;
+
+	this->ChildMeshes.resize(meshs.ChildMeshes.size());
+
+	for (UINT i = 0; i < meshs.ChildMeshes.size(); i++)
 	{
-		FAILDE_ASSERT;
+		this->ChildMeshes.at(i).Set(meshs.ChildMeshes.at(i));
 	}
-#else
-	SetupMesh(vertices);
-#endif // _DEBUG
 }
+
+MESHS::MESHS(vector<VERTEX_3D>& vertices, vector<UINT>& indices, string& texture_name, XMMATRIX& matrix, string name) : Name(name), TextureName(texture_name), Matrix(XMMATRIXToXMFLOAT4X4(matrix)), Vertices(vertices), Indices(indices), VertexBuffer(nullptr), IndexBuffer(nullptr)
+{
+//#ifdef _DEBUG
+//	if (false == SetupMesh(vertices))
+//	{
+//		FAILDE_ASSERT;
+//	}
+//#else
+//	SetupMesh(vertices);
+//#endif // _DEBUG
+}
+
+#include	"Library/DirectXTex/WICTextureLoader.h"
 
 void MESHS::Init()
 {
+	{
+		SetupMesh();
+		{
+			vector<VERTEX_3D> vertex;
+
+			vertex.swap(Vertices);
+		}
+
+		{
+			for (auto& tex : Textures)
+			{
+				const string directory = "./asset/model/";
+				string path = directory + tex.FileName;
+				wstring filenamews = wstring(path.begin(), path.end());
+
+				{
+					HRESULT hr = CreateWICTextureFromFile(CRenderer::GetDevice(), CRenderer::GetDeviceContext(), filenamews.c_str(), nullptr, &tex.Texture, nullptr, nullptr);
+					if (FAILED(hr))
+						FAILDE_ASSERT
+				}
+
+			}
+		}
+
+		for (auto& child : ChildMeshes)
+		{
+			child.Init();
+		}
+	}
 }
 
 void MESHS::Draw(XMMATRIX& matrix, const vector<TEXTURE_S>& textures)
@@ -661,15 +711,16 @@ void MESHS::Set_Texture_Name(const string & texture_name)
 	TextureName = texture_name;
 }
 
-bool MESHS::SetupMesh(vector<VERTEX_3D>& vertices)
+void MESHS::SetupMesh(/*vector<VERTEX_3D>& vertices*/)
 {
 	HRESULT hr;
 
 	// 頂点バッファの生成
+	if(nullptr == VertexBuffer && !Vertices.empty())
 	{
 		D3D11_BUFFER_DESC desc;
 		desc.Usage = D3D11_USAGE_DEFAULT;
-		desc.ByteWidth = sizeof(VERTEX_3D) * vertices.size();
+		desc.ByteWidth = sizeof(VERTEX_3D) * Vertices.size();
 		desc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
 		desc.CPUAccessFlags = 0;
 		desc.MiscFlags = 0;
@@ -678,14 +729,15 @@ bool MESHS::SetupMesh(vector<VERTEX_3D>& vertices)
 		D3D11_SUBRESOURCE_DATA initData;
 		ZeroMemory(&initData, sizeof(D3D11_SUBRESOURCE_DATA));
 
-		initData.pSysMem = vertices.data();
+		initData.pSysMem = Vertices.data();
 
 		hr = CRenderer::GetDevice()->CreateBuffer(&desc, &initData, &VertexBuffer);
 		if (FAILED(hr))
-			return false;
+			FAILDE_ASSERT;
 	}
 
 	// インデックスバッファの生成
+	if (nullptr == IndexBuffer && !Indices.empty())
 	{
 		D3D11_BUFFER_DESC desc;
 		desc.Usage = D3D11_USAGE_DEFAULT;
@@ -702,10 +754,8 @@ bool MESHS::SetupMesh(vector<VERTEX_3D>& vertices)
 
 		hr = CRenderer::GetDevice()->CreateBuffer(&desc, &initData, &IndexBuffer);
 		if (FAILED(hr))
-			return false;
+			FAILDE_ASSERT;
 	}
-
-	return true;
 }
 
 void MESHS::Draw_Mesh(XMMATRIX& parent_matrix, const vector<TEXTURE_S>& textures)

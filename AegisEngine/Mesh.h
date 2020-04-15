@@ -140,8 +140,8 @@ public:
 
 
 class MESHS {
-private:
-	//vector<VERTEX_3D> Vertices;
+protected:
+	vector<VERTEX_3D> Vertices;
 	vector<UINT> Indices;
 
 	vector<TEXTURE_S> Textures;
@@ -161,11 +161,12 @@ private:
 
 	void Draw_DPP_Mesh(XMMATRIX& parent_matrix);
 
-	bool SetupMesh(vector<VERTEX_3D>& vertices);
+	void SetupMesh(/*vector<VERTEX_3D>& vertices*/);
 
 public:
 
 	MESHS();
+
 
 	MESHS(vector<VERTEX_3D>& vertices, vector<UINT>& indices, string& texture_name, XMMATRIX& matrix, string name);
 
@@ -192,6 +193,8 @@ public:
 	const string& Get_Texture_Name();
 
 	void Set_Texture_Name(const string& texture_name);
+
+	void Set(const MESHS& meshs);
 
 	template<class Archive>
 	void serialize(Archive& ar) {

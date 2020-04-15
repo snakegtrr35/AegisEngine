@@ -174,9 +174,11 @@ MESHS* const MODEL_MANEGER::Get_Mesh(const size_t key)
 	return nullptr;
 }
 
+using is = std::pair<size_t, MESHS>;
+
 void MODEL_MANEGER::Add(const string& file_name)
 {
-	const size_t key = hash<string>()(file_name);
+	size_t key = hash<string>()(file_name);
 
 	//ƒeƒNƒXƒ`ƒƒ‚Ì“o˜^
 	ModelFile[key].Path = "./asset/model/" + file_name;
@@ -197,7 +199,8 @@ void MODEL_MANEGER::Add(const string& file_name)
 
 		processNode(pScene->mRootNode, pScene, Mesh.Get_Meshs(), Mesh.Get_Textures());
 
-		ModelData[key].Meshes = Mesh;
+		ModelData[key].Meshes.Set(Mesh);
+		ModelData[key].Meshes.Init();
 		ModelData[key].Cnt = 0;
 
 		textype.clear();
@@ -253,7 +256,6 @@ MESHS MODEL_MANEGER::processMesh(aiMesh* mesh, aiNode* node, const aiScene* scen
 	vertices.resize(mesh->mNumVertices);
 
 	vector<UINT> indices;
-	//vector<TEXTURE_S> textures;
 
 	XMMATRIX matrix;
 
@@ -358,7 +360,7 @@ string MODEL_MANEGER::loadMaterialTextures(aiMaterial* mat, aiTextureType type, 
 			if (textype == "embedded compressed texture")
 			{
 				int textureindex = getTextureIndex(&str);
-				texture.Texture = getTextureFromModel(scene, textureindex);
+				//texture.Texture = getTextureFromModel(scene, textureindex);
 			}
 			else
 			{
@@ -367,11 +369,11 @@ string MODEL_MANEGER::loadMaterialTextures(aiMaterial* mat, aiTextureType type, 
 				wstring filenamews = wstring(path.begin(), path.end());
 
 				{
-					hr = CreateWICTextureFromFile(CRenderer::GetDevice(), CRenderer::GetDeviceContext(), filenamews.c_str(), nullptr, &texture.Texture, nullptr, nullptr);
+					//hr = CreateWICTextureFromFile(CRenderer::GetDevice(), CRenderer::GetDeviceContext(), filenamews.c_str(), nullptr, &texture.Texture, nullptr, nullptr);
 				}
 
-				if (FAILED(hr))
-					FAILDE_ASSERT
+				//if (FAILED(hr))
+				//	FAILDE_ASSERT
 			}
 
 			texture.FileName = str.C_Str();
@@ -387,9 +389,9 @@ void MODEL_MANEGER::processNode(aiNode* node, const aiScene* scene, vector<MESHS
 	{
 		aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
 
-		MESHS m = processMesh(mesh, node, scene, textures_loaded);
+		//MESHS m = std::move(processMesh(mesh, node, scene, textures_loaded));
 
-		meshs.emplace_back(m);
+		meshs.emplace_back(processMesh(mesh, node, scene, textures_loaded));
 	}
 
 	for (UINT i = 0; i < node->mNumChildren; i++)

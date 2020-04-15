@@ -69,6 +69,7 @@ bool CManager::Init()
 	TEXTURE_MANEGER::Init();
 
 	MODEL_MANEGER::Init();
+	MODEL_MANEGER::Get_Instance()->Add("player_neutral.fbx");
 
 	FONT::Init();
 

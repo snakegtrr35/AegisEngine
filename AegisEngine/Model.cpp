@@ -26,9 +26,13 @@ void MODEL::Draw()
 		}
 	}
 
+	const auto pos = *(Owner.lock()->Get_Position());
+	const auto rota = *(Owner.lock()->Get_Rotation());
+	const auto scale = *(Owner.lock()->Get_Scaling());
+
 	XMMATRIX matrix = XMMatrixScaling(Scaling.x, Scaling.y, Scaling.z);
 	matrix *= XMMatrixRotationRollPitchYaw(XMConvertToRadians(Rotation.x), XMConvertToRadians(Rotation.y), XMConvertToRadians(Rotation.z));
-	matrix *= XMMatrixTranslation(Position.x, Position.y, Position.z);
+	matrix *= XMMatrixTranslation(Position.x + pos.x, Position.y + pos.y, Position.z + pos.z);
 
 	{
 		auto camera01 = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<CCamera>("camera");
@@ -100,11 +104,6 @@ void MODEL::Uninit()
 {
 }
 
-void MODEL::Draw_Inspector()
-{
-
-}
-
 void MODEL::Set_Model_Name(const string& file_name)
 {
 	if (file_name != FileName)
@@ -119,4 +118,27 @@ void MODEL::Set_Model_Name(const string& file_name)
 const string& MODEL::Get_Model_Name()
 {
 	return FileName;
+}
+
+#include	"imgui/imgui.h"
+
+void MODEL::Draw_Inspector()
+{
+	auto str = (char*)u8"ƒRƒŠƒWƒ‡ƒ“(MODEL)";
+
+	ImGui::Text(str);
+
+	COMPONENT::Draw_Inspector();
+
+	float position[3] = { Position.x, Position.y, Position.z };
+	float rotate[3] = { Rotation.x, Rotation.y, Rotation.z };
+	float scale[3] = { Scaling.x, Scaling.y, Scaling.z };
+
+	ImGui::DragFloat3("Position##MODEL", position, 0.01f);
+	ImGui::DragFloat3("Radius##MODEL", rotate, 0.01f);
+	ImGui::DragFloat3("Scaling##MODEL", scale, 0.01f);
+
+	Position = XMFLOAT3(position[0], position[1], position[2]);
+	Rotation = XMFLOAT3(rotate[0], rotate[1], rotate[2]);
+	Scaling = XMFLOAT3(scale[0], scale[1], scale[2]);
 }
