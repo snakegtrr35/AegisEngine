@@ -365,7 +365,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>.\Library\Effekseer\include;C:\Program Files\cereal;.\Library\assimp_vs2017_x64\include;$(IncludePath)</IncludePath>
+    <IncludePath>.\Library\Effekseer\include;.\Library\cereal;.\Library\assimp_vs2017_x64\include;$(IncludePath)</IncludePath>
     <LibraryPath>.\Library\zlib;.\Library\assimp_vs2017_x64\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -373,7 +373,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>.\Library\Effekseer\include;C:\Program Files\cereal;.\Library\assimp_vs2017_x64\include;$(IncludePath)</IncludePath>
+    <IncludePath>.\Library\Effekseer\include;.\Library\cereal;.\Library\assimp_vs2017_x64\include;$(IncludePath)</IncludePath>
     <LibraryPath>.\Library\zlib;.\Library\assimp_vs2017_x64\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
