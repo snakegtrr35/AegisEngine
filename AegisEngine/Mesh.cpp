@@ -578,40 +578,15 @@ void MESH::Draw_DPP_Mesh_Animation(XMMATRIX& parent_matrix, unordered_map<string
 
 
 
+#include	"Library/DirectXTex/WICTextureLoader.h"
+
 MESHS::MESHS() : VertexBuffer(nullptr), IndexBuffer(nullptr)
 {
 }
 
-void MESHS::Set(const MESHS& meshs)
-{
-	this->Vertices = meshs.Vertices;
-	this->Indices = meshs.Indices;
-	this->Matrix = meshs.Matrix;
-	this->Name = meshs.Name;
-	this->TextureName = meshs.TextureName;
-	this->Textures = meshs.Textures;
-
-	this->ChildMeshes.resize(meshs.ChildMeshes.size());
-
-	for (UINT i = 0; i < meshs.ChildMeshes.size(); i++)
-	{
-		this->ChildMeshes.at(i).Set(meshs.ChildMeshes.at(i));
-	}
-}
-
 MESHS::MESHS(vector<VERTEX_3D>& vertices, vector<UINT>& indices, string& texture_name, XMMATRIX& matrix, string name) : Name(name), TextureName(texture_name), Matrix(XMMATRIXToXMFLOAT4X4(matrix)), Vertices(vertices), Indices(indices), VertexBuffer(nullptr), IndexBuffer(nullptr)
 {
-//#ifdef _DEBUG
-//	if (false == SetupMesh(vertices))
-//	{
-//		FAILDE_ASSERT;
-//	}
-//#else
-//	SetupMesh(vertices);
-//#endif // _DEBUG
 }
-
-#include	"Library/DirectXTex/WICTextureLoader.h"
 
 void MESHS::Init()
 {
@@ -635,7 +610,6 @@ void MESHS::Init()
 					if (FAILED(hr))
 						FAILDE_ASSERT
 				}
-
 			}
 		}
 
@@ -711,7 +685,24 @@ void MESHS::Set_Texture_Name(const string & texture_name)
 	TextureName = texture_name;
 }
 
-void MESHS::SetupMesh(/*vector<VERTEX_3D>& vertices*/)
+void MESHS::Set(const MESHS& meshs)
+{
+	this->Vertices = meshs.Vertices;
+	this->Indices = meshs.Indices;
+	this->Matrix = meshs.Matrix;
+	this->Name = meshs.Name;
+	this->TextureName = meshs.TextureName;
+	this->Textures = meshs.Textures;
+
+	this->ChildMeshes.resize(meshs.ChildMeshes.size());
+
+	for (UINT i = 0; i < meshs.ChildMeshes.size(); i++)
+	{
+		this->ChildMeshes.at(i).Set(meshs.ChildMeshes.at(i));
+	}
+}
+
+void MESHS::SetupMesh()
 {
 	HRESULT hr;
 
@@ -776,8 +767,6 @@ void MESHS::Draw_Mesh(XMMATRIX& parent_matrix, const vector<TEXTURE_S>& textures
 				break;
 			}
 		}
-
-		//CRenderer::GetDeviceContext()->PSSetShaderResources(0, 1, &Textures[0].Texture);
 
 		// 3Dマトリックス設定
 		{

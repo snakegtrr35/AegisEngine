@@ -161,7 +161,7 @@ protected:
 
 	void Draw_DPP_Mesh(XMMATRIX& parent_matrix);
 
-	void SetupMesh(/*vector<VERTEX_3D>& vertices*/);
+	void SetupMesh();
 
 public:
 

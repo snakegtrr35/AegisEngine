@@ -101,7 +101,8 @@ void MODEL_MANEGER::Load(const bool flag)
 
 				processNode(pScene->mRootNode, pScene, Mesh.Get_Meshs(), Mesh.Get_Textures());
 
-				ModelData[key].Meshes = Mesh;
+				ModelData[key].Meshes.Set(Mesh);
+				ModelData[key].Meshes.Init();
 				ModelData[key].Cnt = 0;
 
 				textype.clear();
@@ -146,7 +147,8 @@ void MODEL_MANEGER::Load(const bool flag)
 
 				processNode(pScene->mRootNode, pScene, Mesh.Get_Meshs(), Mesh.Get_Textures());
 
-				ModelData[key].Meshes = Mesh;
+				ModelData[key].Meshes.Set(Mesh);
+				ModelData[key].Meshes.Init();
 				ModelData[key].Cnt = 0;
 
 				textype.clear();
