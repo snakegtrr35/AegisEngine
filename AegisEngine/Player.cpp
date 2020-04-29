@@ -4,8 +4,8 @@
 #include	"manager.h"
 #include	"Scene.h"
 
-//#include	"ModelLoader.h"
-#include	"FBXmodel.h"
+#include	"ModelLoader.h"
+//#include	"FBXmodel.h"
 
 #include	"Input.h"
 #include	"Collision.h"
@@ -18,8 +18,8 @@ static void Create_Bullet(XMFLOAT3& position, const XMFLOAT3& front);
 
 PLAYER::PLAYER(void)
 {
-	//Model = new CMODEL();
-	Model = new FBXmodel();
+	Model = new CMODEL();
+	//Model = new FBXmodel();
 }
 
 PLAYER::~PLAYER()
@@ -30,8 +30,8 @@ PLAYER::~PLAYER()
 void PLAYER::Init(void)
 {
 	{
-		//string name = "asset/model/viranrifle.fbx";
-		string name = "asset/model/kakunin_joint.fbx";
+		string name = "asset/model/viranrifle.fbx";
+		//string name = "asset/model/kakunin_joint.fbx";
 
 		Model->Load(name);
 	}
@@ -56,8 +56,8 @@ void PLAYER::Draw(void)
 		matrix *= XMMatrixRotationRollPitchYaw(XMConvertToRadians(Rotation.x), XMConvertToRadians(Rotation.y), XMConvertToRadians(Rotation.z));
 		matrix *= XMMatrixTranslation(Position.x, Position.y, Position.z);
 
-		//Model->Draw();
-		Model->Draw(matrix);
+		Model->Draw();
+		//Model->Draw(matrix);
 	}
 
 	GAME_OBJECT::Draw();
@@ -70,8 +70,8 @@ void PLAYER::Draw_DPP(void)
 		matrix *= XMMatrixRotationRollPitchYaw(XMConvertToRadians(Rotation.x), XMConvertToRadians(Rotation.y), XMConvertToRadians(Rotation.z));
 		matrix *= XMMatrixTranslation(Position.x, Position.y, Position.z);
 
-		//Model->Draw_DPP();
-		Model->Draw_DPP(matrix);
+		Model->Draw_DPP();
+		//Model->Draw_DPP(matrix);
 	}
 }
 
@@ -92,16 +92,16 @@ void PLAYER::Update(float delta_time)
 
 	XMStoreFloat3(&pos, *vec);
 
-	//Position = pos;
+	Position = pos;
 
 	// カメラに合わせた回転
-	//Rotation.y = rotate.y + 0.0f;
+	Rotation.y = rotate.y + 0.0f;
 
 	// モデルの更新
 	{
-		//Model->Set_Position(Position);
-		//Model->Set_Rotation(Rotation);
-		//Model->Set_Scaling(Scaling);
+		Model->Set_Position(Position);
+		Model->Set_Rotation(Rotation);
+		Model->Set_Scaling(Scaling);
 
 		Model->Update(delta_time);
 	}

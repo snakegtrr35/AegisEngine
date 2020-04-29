@@ -69,7 +69,7 @@ bool CManager::Init()
 	TEXTURE_MANEGER::Init();
 
 	MODEL_MANEGER::Init();
-	MODEL_MANEGER::Get_Instance()->Add("player_neutral.fbx");
+	//MODEL_MANEGER::Get_Instance()->Add("player_neutral.fbx");
 
 	FONT::Init();
 
@@ -95,8 +95,8 @@ bool CManager::Init()
 
 	//Manager->pSceneManager->Delete_GameInstance("test");
 
-	//Manager->pSceneManager->Set_Scene<TITLE>();
-	Manager->pSceneManager->Set_Scene<MAIN_MENU>();
+	Manager->pSceneManager->Set_Scene<TITLE>();
+	//Manager->pSceneManager->Set_Scene<MAIN_MENU>();
 	//Manager->pSceneManager->Set_Scene<GAME>();
 
 	Manager->pShadowMap.reset(new SHADOW_MAP());//

@@ -429,6 +429,79 @@ void My_imgui::Draw(void)
 		}
 
 		{
+			if (ImGui::Begin("Drag and drop Test"))
+			{
+				enum Mode
+				{
+					Mode_Copy,
+					Mode_Move,
+					Mode_Swap
+				};
+				static int mode = 0;
+				if (ImGui::RadioButton("Copy", mode == Mode_Copy)) { mode = Mode_Copy; } ImGui::SameLine();
+				if (ImGui::RadioButton("Move", mode == Mode_Move)) { mode = Mode_Move; } ImGui::SameLine();
+				if (ImGui::RadioButton("Swap", mode == Mode_Swap)) { mode = Mode_Swap; }
+
+				static std::vector<std::string> names = { "Bobby", "Beatrice", "Betty", "Brianna", "Barry", "Bernard", "Bibi", "Blaine", "Bryn" };
+
+				auto start = TEXTURE_MANEGER::Get_Instance()->Get_TextureData_Start();//
+
+				for (int n = 0; n < names.size(); n++)
+				{
+					ImGui::PushID(n);
+					if ((n % 3) != 0)
+						ImGui::SameLine();
+					//ImGui::Button(names[n].c_str(), ImVec2(60, 60));
+
+					{
+						ImTextureID image = start->second.Resource.get();
+
+						start++;
+
+						ImGui::ImageButton(image, ImVec2(start->second.WH.x / 5.0f, start->second.WH.y / 5.0f));
+					}
+
+					// Our buttons are both drag sources and drag targets here!
+					if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_None))
+					{
+						ImGui::SetDragDropPayload("DND_DEMO_CELL", &n, sizeof(int));    // Set payload to carry the index of our item (could be anything)
+						if (mode == Mode_Copy) { ImGui::Text("Copy %s", names[n]); }    // Display preview (could be anything, e.g. when dragging an image we could decide to display the filename and a small preview of the image, etc.)
+						if (mode == Mode_Move) { ImGui::Text("Move %s", names[n]); }
+						if (mode == Mode_Swap) { ImGui::Text("Swap %s", names[n].c_str()); }
+						ImGui::EndDragDropSource();
+					}
+					if (ImGui::BeginDragDropTarget())
+					{
+						if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("DND_DEMO_CELL"))
+						{
+							IM_ASSERT(payload->DataSize == sizeof(int));
+							int payload_n = *(const int*)payload->Data;
+							if (mode == Mode_Copy)
+							{
+								names[n] = names[payload_n];
+							}
+							if (mode == Mode_Move)
+							{
+								names[n] = names[payload_n];
+								names[payload_n] = "";
+							}
+							if (mode == Mode_Swap)
+							{
+								const auto tmp = names[n];
+								names[n] = names[payload_n];
+								names[payload_n] = tmp;
+							}
+						}
+						ImGui::EndDragDropTarget();
+					}
+					ImGui::PopID();
+				}
+
+				ImGui::End();
+			}
+		}
+
+		{
 			ImGuiWindowFlags flag = ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize;
 
 			ImVec2 size(150.0f, 50.f);

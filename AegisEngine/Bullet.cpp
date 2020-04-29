@@ -130,13 +130,16 @@ void BULLET::Update(float delta_time)
 
 					string str(name);
 					ExtratNum(str);
-					const int x = std::stoi(str);
+					if (!str.empty())
+					{
+						const int x = std::stoi(str);
 
-					BILL_BOARD_ANIMATION* bba = CManager::Get_Instance()->Get_Scene()->Add_Game_Object<BILL_BOARD_ANIMATION>(LAYER_NAME::EFFECT, "explosion" + to_string(x));
-					bba->Set_Position(&Position);
-					bba->SetWH(XMFLOAT2(1.0f, 1.0f));
-					bba->SetParam(6, 4, 4);
-					bba->Init();
+						BILL_BOARD_ANIMATION* bba = CManager::Get_Instance()->Get_Scene()->Add_Game_Object<BILL_BOARD_ANIMATION>(LAYER_NAME::EFFECT, "explosion" + to_string(x));
+						bba->Set_Position(&Position);
+						bba->SetWH(XMFLOAT2(1.0f, 1.0f));
+						bba->SetParam(6, 4, 4);
+						bba->Init();
+					}
 				}
 
 				CManager::Get_Instance()->Get_Scene()->Destroy_Game_Object(this);
@@ -161,13 +164,17 @@ void BULLET::Update(float delta_time)
 
 						string str(name);
 						ExtratNum(str);
-						const int x = std::stoi(str);
 
-						BILL_BOARD_ANIMATION* bba = CManager::Get_Instance()->Get_Scene()->Add_Game_Object<BILL_BOARD_ANIMATION>(LAYER_NAME::EFFECT, "explosion" + to_string(x));
-						bba->Set_Position(&Position);
-						bba->SetWH(XMFLOAT2(1.0f, 1.0f));
-						bba->SetParam(6, 4, 4);
-						bba->Init();
+						if (!str.empty())
+						{
+							const int x = std::stoi(str);
+
+							BILL_BOARD_ANIMATION* bba = CManager::Get_Instance()->Get_Scene()->Add_Game_Object<BILL_BOARD_ANIMATION>(LAYER_NAME::EFFECT, "explosion" + to_string(x));
+							bba->Set_Position(&Position);
+							bba->SetWH(XMFLOAT2(1.0f, 1.0f));
+							bba->SetParam(6, 4, 4);
+							bba->Init();
+						}
 					}
 
 					player.lock()->Add_HP(-1.0f);

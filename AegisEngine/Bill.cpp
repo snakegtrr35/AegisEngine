@@ -33,13 +33,13 @@ void BILL::Init()
 	//aabb->Set_Position(Position);
 	//aabb->Set_Radius(XMFLOAT3(10, 10, 10));
 
-	{
+	/*{
 		auto model = Get_Component()->Add_Component<MODEL>(scene->Get_Game_Object(this));
 
 		model->Set_Model_Name("player_neutral.fbx");
 
 		model->Set_Position(Position + XMFLOAT3(10, 0, 0));
-	}
+	}*/
 
 	GAME_OBJECT::Init();
 }
