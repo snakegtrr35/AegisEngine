@@ -163,6 +163,7 @@
     <ClInclude Include="Library\DirectXTex\DDSTextureLoader.h" />
     <ClInclude Include="Library\DirectXTex\WICTextureLoader.h" />
     <ClInclude Include="Light.h" />
+    <FxCompile Include="FXAA.hlsl" />
     <FxCompile Include="Light_hlsl.hlsli">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>

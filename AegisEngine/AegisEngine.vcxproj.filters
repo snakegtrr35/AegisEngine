@@ -597,6 +597,9 @@
     <FxCompile Include="VertexShader_Skybox.hlsl">
       <Filter>リソース ファイル\VertexShader</Filter>
     </FxCompile>
+    <FxCompile Include="FXAA.hlsl">
+      <Filter>リソース ファイル</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="AegisEngine.rc">
