@@ -9,6 +9,10 @@
 
 #include	"imgui/ImGuizmo.h"
 
+#include	"imgui/imgui_internal.h"
+ImVec2 operator+(const ImVec2& lhs, const ImVec2& rhs) { return ImVec2(lhs.x + rhs.x, lhs.y + rhs.y); }
+ImVec2 operator-(const ImVec2& lhs, const ImVec2& rhs) { return ImVec2(lhs.x - rhs.x, lhs.y - rhs.y); }
+
 #include	"Scene.h"
 #include	"manager.h"
 #include	"ShadowMap.h"
@@ -425,11 +429,35 @@ void My_imgui::Draw(void)
 				}
 			}
 
+			{
+				ImDrawList* draw_list = ImGui::GetWindowDrawList();
+				ImVec2 pos = ImGui::GetCurrentWindow()->DC.CursorPos;
+				{
+					ImGui::DrawRect(ImVec2(100, 100), ImVec4(1.0f, 0.f, 0.f, 1.0f), "test", ImVec4(0.f, 0.f, 0.f, 1.0f), 3.0f);
+				}
+
+				ImGui::SameLine();
+
+				{
+					ImGui::DrawRect(ImVec2(100, 100), ImVec4(0.f, 0.f, 1.0f, 1.0f), "test", ImVec4(0.f, 0.f, 0.f, 1.0f), 3.0f);
+				}
+
+				ImGui::SameLine();
+
+				{
+					ImGui::DrawRect(ImVec2(100, 100), ImVec4(1.0f, 1.0f, 0.f, 1.0f), "test", ImVec4(0.f, 0.f, 0.f, 1.0f), 3.0f);
+				}
+			}
+
 			ImGui::End();
 		}
 
 		{
-			if (ImGui::Begin("Drag and drop Test"))
+			static std::vector<std::string> names = { "Bobby", "Beatrice", "Betty", "Brianna", "Barry", "Bernard", "Bibi", "Blaine", "Bryn" };
+
+			static int cnt = 0;
+
+			if (ImGui::Begin("Drag Test"))
 			{
 				enum Mode
 				{
@@ -437,40 +465,39 @@ void My_imgui::Draw(void)
 					Mode_Move,
 					Mode_Swap
 				};
-				static int mode = 0;
-				if (ImGui::RadioButton("Copy", mode == Mode_Copy)) { mode = Mode_Copy; } ImGui::SameLine();
-				if (ImGui::RadioButton("Move", mode == Mode_Move)) { mode = Mode_Move; } ImGui::SameLine();
-				if (ImGui::RadioButton("Swap", mode == Mode_Swap)) { mode = Mode_Swap; }
-
-				static std::vector<std::string> names = { "Bobby", "Beatrice", "Betty", "Brianna", "Barry", "Bernard", "Bibi", "Blaine", "Bryn" };
+				//static int mode = 0;
+				//if (ImGui::RadioButton("Copy", mode == Mode_Copy)) { mode = Mode_Copy; } ImGui::SameLine();
+				//if (ImGui::RadioButton("Move", mode == Mode_Move)) { mode = Mode_Move; } ImGui::SameLine();
+				//if (ImGui::RadioButton("Swap", mode == Mode_Swap)) { mode = Mode_Swap; }
 
 				auto start = TEXTURE_MANEGER::Get_Instance()->Get_TextureData_Start();//
 
-				for (int n = 0; n < names.size(); n++)
+				for (cnt = 0; cnt < names.size(); cnt++)
 				{
-					ImGui::PushID(n);
-					if ((n % 3) != 0)
+					ImGui::PushID(cnt);
+					if ((cnt % 3) != 0)
 						ImGui::SameLine();
-					//ImGui::Button(names[n].c_str(), ImVec2(60, 60));
+					ImGui::Button(names[cnt].c_str(), ImVec2(60, 60));
 
-					{
+					/*{
 						ImTextureID image = start->second.Resource.get();
 
 						start++;
 
 						ImGui::ImageButton(image, ImVec2(start->second.WH.x / 5.0f, start->second.WH.y / 5.0f));
-					}
+					}*/
 
 					// Our buttons are both drag sources and drag targets here!
 					if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_None))
 					{
-						ImGui::SetDragDropPayload("DND_DEMO_CELL", &n, sizeof(int));    // Set payload to carry the index of our item (could be anything)
-						if (mode == Mode_Copy) { ImGui::Text("Copy %s", names[n]); }    // Display preview (could be anything, e.g. when dragging an image we could decide to display the filename and a small preview of the image, etc.)
-						if (mode == Mode_Move) { ImGui::Text("Move %s", names[n]); }
-						if (mode == Mode_Swap) { ImGui::Text("Swap %s", names[n].c_str()); }
+						ImGui::SetDragDropPayload("DND_DEMO_CELL", &cnt, sizeof(int));    // Set payload to carry the index of our item (could be anything)
+						//if (mode == Mode_Copy) { ImGui::Text("Copy %s", names[cnt]); }    // Display preview (could be anything, e.g. when dragging an image we could decide to display the filename and a small preview of the image, etc.)
+						//if (mode == Mode_Move) { ImGui::Text("Move %s", names[cnt]); }
+						//if (mode == Mode_Swap) { ImGui::Text("Swap %s", names[cnt].c_str()); }
+						{ ImGui::Text("%s", names[cnt].c_str()); }
 						ImGui::EndDragDropSource();
 					}
-					if (ImGui::BeginDragDropTarget())
+					/*if (ImGui::BeginDragDropTarget())
 					{
 						if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("DND_DEMO_CELL"))
 						{
@@ -489,6 +516,56 @@ void My_imgui::Draw(void)
 							{
 								const auto tmp = names[n];
 								names[n] = names[payload_n];
+								names[payload_n] = tmp;
+							}
+						}
+						ImGui::EndDragDropTarget();
+					}*/
+					ImGui::PopID();
+				}
+
+				ImGui::End();
+			}
+
+			if (ImGui::Begin("Drop Test"))
+			{
+				enum Mode
+				{
+					Mode_Copy,
+					Mode_Move,
+					Mode_Swap
+				};
+				static int mode = 0;
+				if (ImGui::RadioButton("Copy", mode == Mode_Copy)) { mode = Mode_Copy; } ImGui::SameLine();
+				if (ImGui::RadioButton("Move", mode == Mode_Move)) { mode = Mode_Move; } ImGui::SameLine();
+				if (ImGui::RadioButton("Swap", mode == Mode_Swap)) { mode = Mode_Swap; }
+
+				for (cnt = 0; cnt < names.size(); cnt++)
+				{
+					ImGui::PushID(cnt);
+					if ((cnt % 3) != 0)
+						ImGui::SameLine();
+					ImGui::Button(names[cnt].c_str(), ImVec2(60, 60));
+
+					if (ImGui::BeginDragDropTarget())
+					{
+						if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("DND_DEMO_CELL"))
+						{
+							IM_ASSERT(payload->DataSize == sizeof(int));
+							int payload_n = *(const int*)payload->Data;
+							if (mode == Mode_Copy)
+							{
+								names[cnt] = names[payload_n];
+							}
+							if (mode == Mode_Move)
+							{
+								names[cnt] = names[payload_n];
+								names[payload_n] = "";
+							}
+							if (mode == Mode_Swap)
+							{
+								const auto tmp = names[cnt];
+								names[cnt] = names[payload_n];
 								names[payload_n] = tmp;
 							}
 						}
@@ -1532,6 +1609,41 @@ void My_imgui::Delete_Component(GAME_OBJECT* object, const string s)
 	if(nullptr == component) return;
 
 	component->SetDestroy();
+}
+
+void ImGui::DrawRect(const ImVec2& size, const ImVec4& color, const char* text, const ImVec4& text_color, const float frame_size, const ImVec4& frame_color)
+{
+	ImDrawList* draw_list = ImGui::GetWindowDrawList();
+	ImGuiStyle& style = ImGui::GetStyle();
+	const ImVec2 pos = ImGui::GetCurrentWindow()->DC.CursorPos;
+	const ImRect bb(pos, pos + size);
+
+	// ˜gü‚Ì•`‰æ
+	{
+		const ImU32 col = ImGui::GetColorU32(frame_color);
+
+		draw_list->AddRect(bb.Min, bb.Max, col, 0.0f, ImDrawCornerFlags_All, frame_size);
+	}
+
+	// ‹éŒ`‚Ì•`‰æ
+	{
+		if (nullptr == text) text = "";
+		const ImVec2 label_size = ImGui::CalcTextSize(text, NULL, true);
+
+		const ImU32 col = ImGui::GetColorU32(color);
+
+		draw_list->AddRectFilled(bb.Min, bb.Max, col);
+
+		const ImVec4 color = style.Colors[ImGuiCol_Text];
+
+		style.Colors[ImGuiCol_Text] = text_color;
+
+		ImGui::RenderTextClipped(bb.Min + style.FramePadding, bb.Max - style.FramePadding, text, NULL, &label_size, style.ButtonTextAlign, &bb);
+
+		style.Colors[ImGuiCol_Text] = color;
+
+		ImGui::Dummy(ImVec2(size.x - frame_size * 2.0f, size.y - frame_size * 2.0f));
+	}
 }
 
 #endif // _DEBUG

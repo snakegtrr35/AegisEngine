@@ -7,6 +7,13 @@
 
 #include	"main.h"
 
+namespace ImGui {
+
+	//! 矩形の描画する為のオリジナルの便利関数
+	void DrawRect(const ImVec2& size, const ImVec4& color, const char* text, const ImVec4& text_color, const float frame_size = 0.0f, const ImVec4& frame_color = ImVec4(1.0f, 1.0f, 1.0f, 1.0f));
+
+}
+
 class COMPONENT;
 class GAME_OBJECT;
 
