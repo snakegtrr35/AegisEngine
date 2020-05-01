@@ -86,10 +86,21 @@ bool CLUSTERED::Init()
 
 void CLUSTERED::Update()
 {
+	auto device_context = CRenderer::GetDeviceContext();
+	D3D11_MAPPED_SUBRESOURCE msr;
+
+	device_context->Map(ClusteredTexture.get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &msr);
+
+
+
+	device_context->Unmap(ClusteredTexture.get(), 0);
 }
 
 void CLUSTERED::Draw()
 {
+	auto tex = ClusteredSRV.get();
+
+	CRenderer::GetDeviceContext()->PSSetShaderResources(10, 1, &tex);
 }
 
 void CLUSTERED::Uninit()
