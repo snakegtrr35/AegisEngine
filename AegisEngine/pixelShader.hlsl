@@ -210,8 +210,47 @@ void main( PS_IN Input,
         }
 
     }
+    
+    //{
+    //    int4 coord = int4(Input.WPos.xyz * Scale + Bias, 0);
+    //    uint cluster_mask = Cluster.Load(coord);
        
-    color.rgb += light_color;
+    //    while (cluster_mask)
+    //    {
+    //        uint cluster_index = firstbitlow(cluster_mask);
+    //        cluster_mask &= ~(1 << cluster_index);
+
+    //        int3 coord_index = coord.xyz;
+        
+    //        // 3D‚Å‚Ì”Ô†‚ð1D‚Ì”Ô†‚É•ÏŠ·
+    //        int index = (coord_index.z * CLUSTERED_X * CLUSTERED_Y + coord_index.y * CLUSTERED_X + coord_index.x) + 1;
+        
+    //        uint light_mask = LightList.Load(int3(index, cluster_index, 0));
+        
+    //        while (light_mask)
+    //        {
+    //            uint light_index = firstbitlow(light_mask);
+    //            light_mask &= ~(1 << light_index);
+            
+    //            uint light_idx = mad(cluster_mask, 32, light_index);
+
+    //            Lights light = LightsBuf[light_idx];
+            
+    //            switch (light.Type)
+    //            {
+    //                case LIGHT_TYPE_POINT:
+    //                        float3 col = DoPointLight(light, Input.WPos, CameraPos, Input.Normal);
+    //                        light_color = saturate(col + light_color);
+    //                    break;
+            
+    //                case LIGHT_TYPE_SPOT:
+    //                    break;
+    //            }
+    //        }
+    //    }
+    //}
+    
+        color.rgb += light_color;
     
     outDiffuse = color;
 }

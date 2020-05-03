@@ -5,6 +5,10 @@
 #define LIGHT_TYPE_POINT 0          // ポイントライト
 #define LIGHT_TYPE_SPOT 1           // スポットライト
 
+static const uint CLUSTERED_X = 32;
+static const uint CLUSTERED_Y = 32;
+static const uint CLUSTERED_Z = 16;
+
 // ライトバッファ
 struct Lights
 {
@@ -27,6 +31,8 @@ cbuffer LightsBuffer : register(b10)
 
 // クラスター
 Texture3D<uint2> Cluster : register(t10);
+// ライトリスト
+Texture2D<uint> LightList : register(t11);
 
 // クラスターバッファ
 cbuffer ClusterBuffer : register(b11)
