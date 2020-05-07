@@ -225,7 +225,7 @@ void main( PS_IN Input,
     //        // 3DÇ≈ÇÃî‘çÜÇ1DÇÃî‘çÜÇ…ïœä∑
     //        int index = (coord_index.z * CLUSTERED_X * CLUSTERED_Y + coord_index.y * CLUSTERED_X + coord_index.x) + 1;
         
-    //        uint light_mask = LightList.Load(int3(index, cluster_index, 0));
+    //        uint light_mask = LightList.Load(int3(cluster_index, index, 0));
         
     //        while (light_mask)
     //        {
@@ -250,7 +250,7 @@ void main( PS_IN Input,
     //    }
     //}
     
-        color.rgb += light_color;
+    color.rgb += light_color;
     
     outDiffuse = color;
 }

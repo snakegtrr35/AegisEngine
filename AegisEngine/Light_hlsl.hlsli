@@ -5,9 +5,9 @@
 #define LIGHT_TYPE_POINT 0          // ポイントライト
 #define LIGHT_TYPE_SPOT 1           // スポットライト
 
-static const uint CLUSTERED_X = 32;
-static const uint CLUSTERED_Y = 32;
-static const uint CLUSTERED_Z = 16;
+//static const uint CLUSTERED_X = 32;
+//static const uint CLUSTERED_Y = 32;
+//static const uint CLUSTERED_Z = 16;
 
 // ライトバッファ
 struct Lights
@@ -29,20 +29,20 @@ cbuffer LightsBuffer : register(b10)
     Lights LightsBuf[MAX_NUM_LIGHTS];
 }
 
-// クラスター
-Texture3D<uint2> Cluster : register(t10);
-// ライトリスト
-Texture2D<uint> LightList : register(t11);
+//// クラスター
+//Texture3D<uint2> Cluster : register(t10);
+//// ライトリスト
+//Texture2D<uint> LightList : register(t11);
 
-// クラスターバッファ
-cbuffer ClusterBuffer : register(b11)
-{
-    float3 Scale;
-    float dummy1;
+//// クラスターバッファ
+//cbuffer ClusterBuffer : register(b11)
+//{
+//    float3 Scale;
+//    float dummy1;
     
-    float3 Bias;
-    float dummy2;
-}
+//    float3 Bias;
+//    float dummy2;
+//}
 
 float3 DoPointLight(Lights light, float4 Position, float4 CameraPos, float4 Normal)
 {

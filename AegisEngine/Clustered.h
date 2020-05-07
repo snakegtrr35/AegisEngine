@@ -21,10 +21,12 @@ private:
 
 	};
 
-	using CLSTER = array<array<array<XMINT2, CLUSTERED_X>, CLUSTERED_Y>, CLUSTERED_Z>;
+	using CLSTER = array<array<array<UINT, CLUSTERED_X>, CLUSTERED_Y>, CLUSTERED_Z>;
 
-	//! compute shader for per - tile depth bounds
-	unique_ptr <ID3D11ComputeShader, Release>			m_LightCullCS;
+	using LIGHT_LIST = array<array<UINT, 32>, CLUSTERED_X * CLUSTERED_Y * CLUSTERED_Z>;
+
+	////! compute shader for per - tile depth bounds
+	//unique_ptr <ID3D11ComputeShader, Release>			m_LightCullCS;
 
 	unique_ptr <ID3D11Texture3D, Release>				ClusteredTexture;
 	unique_ptr <ID3D11ShaderResourceView, Release>		ClusteredSRV;

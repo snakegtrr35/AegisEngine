@@ -1,4 +1,6 @@
 #include	"Clustered.h"
+#include	"manager.h"
+#include	"Scene.h"
 #include	"Light.h"
 #include	"Renderer.h"
 #include	<io.h>
@@ -12,34 +14,34 @@ bool CLUSTERED::Init()
 	HRESULT hr;
 	auto device = CRenderer::GetDevice();
 	
-	// コンピュートシェーダーの生成
-	{
-		ID3D11ComputeShader* pCS = nullptr;
+	//// コンピュートシェーダーの生成
+	//{
+	//	ID3D11ComputeShader* pCS = nullptr;
 
-		// ライトカリングシェーダの生成
-		{
-			FILE* file;
-			long int fsize;
+	//	// ライトカリングシェーダの生成
+	//	{
+	//		FILE* file;
+	//		long int fsize;
 
-			file = fopen("ParallelReduction.cso", "rb");
-			fsize = _filelength(_fileno(file));
-			BYTE* buffer = new BYTE[fsize];
-			fread(buffer, fsize, 1, file);
-			fclose(file);
+	//		file = fopen("ParallelReduction.cso", "rb");
+	//		fsize = _filelength(_fileno(file));
+	//		BYTE* buffer = new BYTE[fsize];
+	//		fread(buffer, fsize, 1, file);
+	//		fclose(file);
 
-			hr = device->CreateComputeShader(buffer, fsize, NULL, &pCS);
+	//		hr = device->CreateComputeShader(buffer, fsize, NULL, &pCS);
 
-			delete[] buffer;
+	//		delete[] buffer;
 
-			if (FAILED(hr))
-			{
-				FAILDE_ASSERT;
-				return false;
-			}
+	//		if (FAILED(hr))
+	//		{
+	//			FAILDE_ASSERT;
+	//			return false;
+	//		}
 
-			m_LightCullCS.reset(pCS);
-		}
-	}
+	//		m_LightCullCS.reset(pCS);
+	//	}
+	//}
 
 	// クラスターグリッドの作成
 	{
@@ -91,8 +93,8 @@ bool CLUSTERED::Init()
 		D3D11_TEXTURE2D_DESC desc;
 		ZeroMemory(&desc, sizeof(desc));
 
-		desc.Width = CLUSTERED_X * CLUSTERED_Y * CLUSTERED_Z;
-		desc.Height = CLUSTERED_X;
+		desc.Width = CLUSTERED_X;
+		desc.Height = CLUSTERED_X * CLUSTERED_Y * CLUSTERED_Z;
 		desc.MipLevels = 1;
 		desc.ArraySize = 1;
 		desc.SampleDesc.Count = 1;
@@ -141,7 +143,12 @@ bool CLUSTERED::Init()
 		desc.StructureByteStride = sizeof(float);
 		desc.ByteWidth = sizeof(CLSTER_BUFFER);
 
-		hr = device->CreateBuffer(&desc, nullptr, &buffer);
+	hr = device->CreateBuffer(&desc, nullptr, &buffer);
+	if (FAILED(hr))
+	{
+		FAILDE_ASSERT;
+		return false;
+	}
 
 		ClusterBuffer.reset(buffer);
 	}
@@ -152,26 +159,69 @@ bool CLUSTERED::Init()
 void CLUSTERED::Update()
 {
 	auto device_context = CRenderer::GetDeviceContext();
-	D3D11_MAPPED_SUBRESOURCE msr;
 
-	device_context->Map(ClusteredTexture.get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &msr);
+	unique_ptr<LIGHT_LIST> light_list = make_unique<LIGHT_LIST>();
 
-	CLSTER* cluster = reinterpret_cast<CLSTER*>(msr.pData);
-
-	UINT cnt = 0;
-
-	for (int z = 0; z < CLUSTERED_Z; z++)
 	{
-		for (int y = 0; y < CLUSTERED_Y; y++)
+		unique_ptr<CLSTER> cluster = make_unique<CLSTER>();
+
+		const auto* lights = CManager::Get_Instance()->Get_Scene()->Get_Light_Manager()->Get_Lights();
+
+		UINT cnt = 0;
+
+		for (const auto& light : *lights)
 		{
-			for (int x = 0; x < CLUSTERED_X; x++, cnt++)
+			for (int z = 0; z < CLUSTERED_Z; z++)
 			{
-				cluster->at(z).at(y).at(x) = XMINT2(x, cnt);	// テスト
+				for (int y = 0; y < CLUSTERED_Y; y++)
+				{
+					for (int x = 0; x < CLUSTERED_X; x++)
+					{
+						//cluster.at(z).at(y).at(x) = cnt;	// テスト
+
+						// 当たり判定
+						{
+							const UINT quo = cnt / 32;
+							cluster->at(z).at(y).at(x) |= (1 << quo);	// ライト番号 / 32 の商の値のビットを立てる
+
+							const UINT rem = cnt % 32;
+							light_list->at(z * CLUSTERED_X * CLUSTERED_Y + y * CLUSTERED_X + x).at(quo) |= (1 << rem);	// ライト番号 / 32 の余りの値のビットを立てる
+						}
+					}
+				}
+			}
+			cnt++;
+		}
+
+		D3D11_MAPPED_SUBRESOURCE msr;
+		device_context->Map(ClusteredTexture.get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &msr);
+
+		for (UINT z = 0; z < CLUSTERED_Z; z++)
+		{
+			for (UINT y = 0; y < CLUSTERED_Y; y++)
+			{
+				memcpy(reinterpret_cast<BYTE*>(msr.pData) + z * msr.DepthPitch + y * msr.RowPitch, cluster->at(z).at(y).data(), CLUSTERED_X * sizeof(UINT));
 			}
 		}
+
+		device_context->Unmap(ClusteredTexture.get(), 0);
+
+		cluster.reset(nullptr);
 	}
 
-	device_context->Unmap(ClusteredTexture.get(), 0);
+	{
+		D3D11_MAPPED_SUBRESOURCE msr;
+		device_context->Map(ClusteredTexture.get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &msr);
+
+		for (UINT y = 0; y < CLUSTERED_X * CLUSTERED_Y * CLUSTERED_Z; y++)
+		{
+			memcpy(reinterpret_cast<BYTE*>(msr.pData) + y * msr.RowPitch, light_list->at(y).data(), 32 * sizeof(UINT));
+		}
+
+		device_context->Unmap(ClusteredTexture.get(), 0);
+	}
+
+	light_list.reset(nullptr);
 }
 
 void CLUSTERED::Draw()
@@ -187,7 +237,7 @@ void CLUSTERED::Draw()
 
 void CLUSTERED::Uninit()
 {
-	m_LightCullCS.reset(nullptr);
+	//m_LightCullCS.reset(nullptr);
 
 	ClusteredTexture.reset(nullptr);
 	ClusteredSRV.reset(nullptr);

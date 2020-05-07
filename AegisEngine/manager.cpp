@@ -108,7 +108,7 @@ bool CManager::Init()
 		CLUSTERED clustered;
 
 		clustered.Init();
-		clustered.Uninit();
+		clustered.Update();
 	}
 
 	return true;

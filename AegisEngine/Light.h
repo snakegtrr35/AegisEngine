@@ -53,7 +53,7 @@ public:
 	void Update();
 	void Uninit();
 
-	static array<LIGHT_BUFFER, MAX_NUM_LIGHTS>* Get_Lights() {
+	 static array<LIGHT_BUFFER, MAX_NUM_LIGHTS>* Get_Lights() {
 		return &Lights;
 	}
 
