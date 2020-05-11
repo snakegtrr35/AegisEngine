@@ -3,9 +3,9 @@
 #ifndef FORWARDLUS_H
 #define FORWARDLUS_H
 
-static constexpr UINT CLUSTERED_X = 32;
-static constexpr UINT CLUSTERED_Y = 32;
-static constexpr UINT CLUSTERED_Z = 16;
+static constexpr UINT CLUSTERED_X = 32 / 8;
+static constexpr UINT CLUSTERED_Y = 32 / 8;
+static constexpr UINT CLUSTERED_Z = 16 / 8;
 
 class CLUSTERED {
 private:
@@ -23,7 +23,7 @@ private:
 
 	using CLSTER = array<array<array<UINT, CLUSTERED_X>, CLUSTERED_Y>, CLUSTERED_Z>;
 
-	using LIGHT_LIST = array<array<UINT, 32>, CLUSTERED_X * CLUSTERED_Y * CLUSTERED_Z>;
+	using LIGHT_LIST = array<array<UINT, CLUSTERED_X * CLUSTERED_Y * CLUSTERED_Z>, 32>;
 
 	////! compute shader for per - tile depth bounds
 	//unique_ptr <ID3D11ComputeShader, Release>			m_LightCullCS;

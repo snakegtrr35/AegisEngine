@@ -2,6 +2,10 @@
 #define LIGHT_TYPE_POINT 0          // ポイントライト
 #define LIGHT_TYPE_SPOT 1           // スポットライト
 
+#define CLUSTERED_X 32
+#define CLUSTERED_Y 32
+#define CLUSTERED_Z 16
+
 //static const uint MAX_NUM_LIGHTS = 512;
 
 struct CS_INPUT{
@@ -31,12 +35,12 @@ cbuffer LightsBuffer : register(b10)
     Lights LightsBuf[MAX_NUM_LIGHTS];
 }
 
+groupshared bool g_BitBuffer[MAX_NUM_LIGHTS];
+
 Texture3D<uint> g_In_Tex : register(t0);
 
-RWTexture3D<uint> g_CluseredGrid : register(t1);
-RWTexture3D<uint> g_LightList : register(t2);
-
-groupshared uint g_BitBuffer;
+RWTexture3D<uint> g_CluseredGrid : register(u0);
+RWTexture2D<uint> g_LightList : register(u1);
 
 [numthreads(MAX_NUM_LIGHTS, 1, 1)]
 void main(CS_INPUT Input)
@@ -44,4 +48,27 @@ void main(CS_INPUT Input)
     // ライトインデックス
     uint light_index = Input.GTid.x;
 
+    // 当たり判定
+    g_BitBuffer[light_index] = false;
+    g_BitBuffer[light_index] = true;
+    
+    GroupMemoryBarrierWithGroupSync();
+    
+    if (0 == Input.GTid.x)
+    {
+        const uint x = Input.Gid.z * CLUSTERED_X * CLUSTERED_Y + Input.Gid.y * CLUSTERED_X + Input.Gid.x;
+        
+        for (uint i = 0; i < MAX_NUM_LIGHTS; i++)
+        {
+            if (true == g_BitBuffer[i])
+            {
+                const uint quo = i / 32;
+                g_CluseredGrid[Input.Gid] |= (1 << quo); // ライト番号 / 32 の商の値のビットを立てる
+                
+                const uint rem = i % 32;
+                g_LightList[uint2(x, quo)] |= (1 << rem); // ライト番号 / 32 の余りの値のビットを立てる
+            }
+        }
+    }
+    
 }
