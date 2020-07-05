@@ -66,7 +66,7 @@ void Erroer_Message(const std::string& str1, const std::string& str2)
 	str01 = stringTowstring(str1);
 	str02 = stringTowstring(str2);
 
-	MessageBox(GetWindow(), str01.c_str(), str02.c_str(), MB_OK | MB_ICONWARNING)
+	MessageBox(GetWindow(), str01.c_str(), str02.c_str(), MB_OK | MB_ICONWARNING);
 }
 #else
 void Erroer_Message(const std::string& str1, const std::string& str2)

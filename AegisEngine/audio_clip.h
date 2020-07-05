@@ -99,11 +99,11 @@ private:
 public:
 
 #ifdef UNICODE
-	Load(const wchar_t* FileName);
+	void Load(const wchar_t* FileName);
 
 	void Set_Name(const wstring& name);
 
-	wstring* const Get_Name()
+	wstring* const Get_Name();
 #else
 	void Load(const char* FileName);
 

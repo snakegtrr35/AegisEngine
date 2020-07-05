@@ -1,4 +1,4 @@
-#define MAX_NUM_LIGHTS 64
+#define MAX_NUM_LIGHTS 512
 #define LIGHT_TYPE_POINT 0          // ポイントライト
 #define LIGHT_TYPE_SPOT 1           // スポットライト
 

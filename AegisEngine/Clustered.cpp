@@ -154,7 +154,7 @@ bool CLUSTERED::Init()
 	}
 
 	// コンピュートシェーダー用の変数
-	{
+	/*{
 		// クラスターグリッド
 		{
 			ID3D11Texture3D* m_tex = nullptr;
@@ -270,7 +270,7 @@ bool CLUSTERED::Init()
 
 			g_pBlurRV0.reset(srv);
 		}
-	}
+	}*/
 
 	return true;
 }
