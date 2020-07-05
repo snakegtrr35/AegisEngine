@@ -16,6 +16,7 @@ ImVec2 operator-(const ImVec2& lhs, const ImVec2& rhs) { return ImVec2(lhs.x - r
 #include	"Scene.h"
 #include	"manager.h"
 #include	"ShadowMap.h"
+#include	"texture.h"
 #include	"Texture_Manager.h"
 #include	"Model_Manager.h"
 #include	"camera.h"
@@ -59,18 +60,25 @@ void My_imgui::Init(HWND hWnd)
 	// u8を使えば日本語の表示はできる
 	ImFontConfig config;
 
-	config.OversampleH = 3;
-	config.OversampleV = 1;
-	config.GlyphExtraSpacing.x = 0.0f;
-	config.GlyphExtraSpacing.y = 0.0f;
+	// Load a first font
+	ImFont* font = io.Fonts->AddFontDefault();
 
-	io.Fonts->AddFontFromFileTTF("c:\\Windows\\Fonts\\meiryo.ttc", 16.0f, &config, io.Fonts->GetGlyphRangesJapanese());
-	io.Fonts->AddFontFromFileTTF("c:\\Windows\\Fonts\\meiryo.ttc", 15.0f, &config, io.Fonts->GetGlyphRangesJapanese());
-	io.Fonts->AddFontFromFileTTF("c:\\Windows\\Fonts\\meiryo.ttc", 14.0f, &config, io.Fonts->GetGlyphRangesJapanese());
+	// Add character ranges and merge into the previous font
+	// The ranges array is not copied by the AddFont* functions and is used lazily
+	// so ensure it is available at the time of building or calling GetTexDataAsRGBA32().
+	//ImFontConfig config;
+	config.MergeMode = true;
+	io.Fonts->AddFontFromFileTTF("./asset/font/Gidole-Regular.ttf", 15.0f, &config, io.Fonts->GetGlyphRangesDefault());
+	io.Fonts->AddFontFromFileTTF("./asset/font/meiryo.ttc", 15.0f, &config, io.Fonts->GetGlyphRangesJapanese());
+	io.Fonts->Build();
 
-	io.Fonts->AddFontFromFileTTF("c:\\Windows\\Fonts\\msgothic.ttc", 16.0f, &config, io.Fonts->GetGlyphRangesJapanese());
-	io.Fonts->AddFontFromFileTTF("c:\\Windows\\Fonts\\msgothic.ttc", 15.0f, &config, io.Fonts->GetGlyphRangesJapanese());
-	io.Fonts->AddFontFromFileTTF("c:\\Windows\\Fonts\\msgothic.ttc", 14.0f, &config, io.Fonts->GetGlyphRangesJapanese());
+	//io.Fonts->AddFontFromFileTTF("c:\\Windows\\Fonts\\meiryo.ttc", 16.0f, &config, io.Fonts->GetGlyphRangesJapanese());
+	//io.Fonts->AddFontFromFileTTF("c:\\Windows\\Fonts\\meiryo.ttc", 15.0f, &config, io.Fonts->GetGlyphRangesJapanese());
+	//io.Fonts->AddFontFromFileTTF("c:\\Windows\\Fonts\\meiryo.ttc", 14.0f, &config, io.Fonts->GetGlyphRangesJapanese());
+	//
+	//io.Fonts->AddFontFromFileTTF("c:\\Windows\\Fonts\\msgothic.ttc", 16.0f, &config, io.Fonts->GetGlyphRangesJapanese());
+	//io.Fonts->AddFontFromFileTTF("c:\\Windows\\Fonts\\msgothic.ttc", 15.0f, &config, io.Fonts->GetGlyphRangesJapanese());
+	//io.Fonts->AddFontFromFileTTF("c:\\Windows\\Fonts\\msgothic.ttc", 14.0f, &config, io.Fonts->GetGlyphRangesJapanese());
 
 	// Setup Platform/Renderer bindings
 	ImGui_ImplWin32_Init(hWnd);
@@ -394,14 +402,14 @@ void My_imgui::Draw(void)
 
 				if (!p.expired())
 				{
-					ImGui::Text("HP  %f", p.lock()->Get_HP());
+					("HP  %f", p.lock()->Get_HP());
 				}
 			}
 
 			{
-				ImGui::Text((char*)u8"GPUメモリ使用量 %d byte", info.CurrentUsage);
+				((char*)u8"GPUメモリ使用量 %d byte", info.CurrentUsage);
 
-				ImGui::Text((char*)u8"1 %d キロバイト", info.CurrentUsage / 1000);
+				((char*)u8"1 %d キロバイト", info.CurrentUsage / 1000);
 
 				ImGui::Text((char*)u8"1 %d メガバイト", info.CurrentUsage / 1000 / 1000);
 			}
@@ -465,62 +473,66 @@ void My_imgui::Draw(void)
 					Mode_Move,
 					Mode_Swap
 				};
-				//static int mode = 0;
-				//if (ImGui::RadioButton("Copy", mode == Mode_Copy)) { mode = Mode_Copy; } ImGui::SameLine();
-				//if (ImGui::RadioButton("Move", mode == Mode_Move)) { mode = Mode_Move; } ImGui::SameLine();
-				//if (ImGui::RadioButton("Swap", mode == Mode_Swap)) { mode = Mode_Swap; }
 
-				auto start = TEXTURE_MANEGER::Get_Instance()->Get_TextureData_Start();//
+				auto tex_file = TEXTURE_MANEGER::Get_Instance()->Get_TextureFile().begin();
 
-				for (cnt = 0; cnt < names.size(); cnt++)
+				TEXTURE tex;
+
+				for (cnt = 0; cnt < 9; cnt++)
 				{
 					ImGui::PushID(cnt);
-					if ((cnt % 3) != 0)
-						ImGui::SameLine();
-					ImGui::Button(names[cnt].c_str(), ImVec2(60, 60));
-
-					/*{
-						ImTextureID image = start->second.Resource.get();
-
-						start++;
-
-						ImGui::ImageButton(image, ImVec2(start->second.WH.x / 5.0f, start->second.WH.y / 5.0f));
-					}*/
-
-					// Our buttons are both drag sources and drag targets here!
-					if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_None))
 					{
-						ImGui::SetDragDropPayload("DND_DEMO_CELL", &cnt, sizeof(int));    // Set payload to carry the index of our item (could be anything)
-						//if (mode == Mode_Copy) { ImGui::Text("Copy %s", names[cnt]); }    // Display preview (could be anything, e.g. when dragging an image we could decide to display the filename and a small preview of the image, etc.)
-						//if (mode == Mode_Move) { ImGui::Text("Move %s", names[cnt]); }
-						//if (mode == Mode_Swap) { ImGui::Text("Swap %s", names[cnt].c_str()); }
-						{ ImGui::Text("%s", names[cnt].c_str()); }
-						ImGui::EndDragDropSource();
-					}
-					/*if (ImGui::BeginDragDropTarget())
-					{
-						if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("DND_DEMO_CELL"))
+						if ((cnt % 3) != 0)
+							ImGui::SameLine();
+
+						size_t pos = tex_file->second.Path.find_last_of("/");
+
+						string tex_name = tex_file->second.Path.substr(pos + 1);
+
+						ImGui::BeginGroup();
 						{
-							IM_ASSERT(payload->DataSize == sizeof(int));
-							int payload_n = *(const int*)payload->Data;
-							if (mode == Mode_Copy)
 							{
-								names[n] = names[payload_n];
+								auto hash = std::hash<string>()(tex_name);
+
+								ImTextureID image = TEXTURE_MANEGER::Get_Instance()->GetShaderResourceView(hash);
+
+								auto wh = TEXTURE_MANEGER::Get_Instance()->Get_WH(hash);
+
+								//ImVec2 size =ImVec2(wh->x / 5.0f, wh->y / 5.0f);
+								ImVec2 size = ImVec2(256, 256);
+
+								ImGui::ImageButton(image, size);
+
+								if ((tex_name.size() * 4.0f) <= (256 * 0.5f))
+								{
+									ImGui::Indent(256 * 0.5f - tex_name.size() * 4.0f);
+								}
+								else
+								{
+									ImGui::Indent(tex_name.size() * 4.0f - 256 * 0.5f);
+								}
 							}
-							if (mode == Mode_Move)
+
+							// Our buttons are both drag sources and drag targets here!
+							if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_None))
 							{
-								names[n] = names[payload_n];
-								names[payload_n] = "";
+								ImGui::SetDragDropPayload("DND_DEMO_CELL", &cnt, sizeof(int));    // Set payload to carry the index of our item (could be anything)
+								//{ ImGui::Text("%s", names[cnt].c_str()); }
+								{
+									ImGui::Text("%s", tex_name.c_str());
+								}
+								ImGui::EndDragDropSource();
 							}
-							if (mode == Mode_Swap)
-							{
-								const auto tmp = names[n];
-								names[n] = names[payload_n];
-								names[payload_n] = tmp;
-							}
+
+							ImGui::Text("%s", tex_name.c_str());
+
+							ImGui::Spacing();
+
 						}
-						ImGui::EndDragDropTarget();
-					}*/
+						ImGui::EndGroup();
+
+						tex_file++;
+					}
 					ImGui::PopID();
 				}
 
@@ -529,6 +541,8 @@ void My_imgui::Draw(void)
 
 			if (ImGui::Begin("Drop Test"))
 			{
+				static std::vector<std::string> names_temp = { "Bobby", "Beatrice", "Betty", "Brianna", "Barry", "Bernard", "Bibi", "Blaine", "Bryn" };
+
 				enum Mode
 				{
 					Mode_Copy,
@@ -540,12 +554,14 @@ void My_imgui::Draw(void)
 				if (ImGui::RadioButton("Move", mode == Mode_Move)) { mode = Mode_Move; } ImGui::SameLine();
 				if (ImGui::RadioButton("Swap", mode == Mode_Swap)) { mode = Mode_Swap; }
 
-				for (cnt = 0; cnt < names.size(); cnt++)
+				auto start = TEXTURE_MANEGER::Get_Instance()->Get_TextureFile().begin();
+
+				for (cnt = 0; cnt < names_temp.size(); cnt++)
 				{
 					ImGui::PushID(cnt);
 					if ((cnt % 3) != 0)
 						ImGui::SameLine();
-					ImGui::Button(names[cnt].c_str(), ImVec2(60, 60));
+					ImGui::Button(names_temp[cnt].c_str(), ImVec2(names_temp[cnt].size() * 8.0f, 60));
 
 					if (ImGui::BeginDragDropTarget())
 					{
@@ -555,23 +571,29 @@ void My_imgui::Draw(void)
 							int payload_n = *(const int*)payload->Data;
 							if (mode == Mode_Copy)
 							{
-								names[cnt] = names[payload_n];
+								size_t pos = start->second.Path.find_last_of("/");
+
+								string tex_name = start->second.Path.substr(pos + 1);
+
+								names_temp[cnt] = tex_name;
 							}
-							if (mode == Mode_Move)
+							/*if (mode == Mode_Move)
 							{
-								names[cnt] = names[payload_n];
+								names_temp[cnt] = names[payload_n];
 								names[payload_n] = "";
-							}
-							if (mode == Mode_Swap)
+							}*/
+							/*if (mode == Mode_Swap)
 							{
 								const auto tmp = names[cnt];
 								names[cnt] = names[payload_n];
 								names[payload_n] = tmp;
-							}
+							}*/
 						}
 						ImGui::EndDragDropTarget();
 					}
 					ImGui::PopID();
+
+					start++;
 				}
 
 				ImGui::End();
