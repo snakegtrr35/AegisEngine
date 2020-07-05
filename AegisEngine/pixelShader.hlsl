@@ -232,15 +232,15 @@ void main( PS_IN Input,
     //            uint light_index = firstbitlow(light_mask);
     //            light_mask &= ~(1 << light_index);
             
-    //            uint light_idx = mad(cluster_mask, 32, light_index);
+    //            uint light_idx = mad(cluster_index, 32, light_index);
 
     //            Lights light = LightsBuf[light_idx];
             
     //            switch (light.Type)
     //            {
     //                case LIGHT_TYPE_POINT:
-    //                        float3 col = DoPointLight(light, Input.WPos, CameraPos, Input.Normal);
-    //                        light_color = saturate(col + light_color);
+    //                    float3 col = DoPointLight(light, Input.WPos, CameraPos, Input.Normal);
+    //                    light_color = saturate(col + light_color);
     //                    break;
             
     //                case LIGHT_TYPE_SPOT:
