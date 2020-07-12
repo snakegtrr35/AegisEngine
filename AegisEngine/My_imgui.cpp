@@ -5,6 +5,8 @@
 #include	"imgui/imgui_impl_win32.h"
 #include	"imgui/imgui_stdlib.h"
 
+#include	"imgui//IconsFontAwesome5_c.h"
+
 #include	"My_imgui.h"
 
 #include	"imgui/ImGuizmo.h"
@@ -48,6 +50,59 @@ void EditTransform(const float* cameraView, float* cameraProjection, float* matr
 extern DXGI_QUERY_VIDEO_MEMORY_INFO info;
 #include <psapi.h>
 
+template <typename ... Args>
+std::string format(const std::string& fmt, Args ... args)
+{
+	size_t len = std::snprintf(nullptr, 0, fmt.c_str(), args ...);
+	std::vector<char> buf(len + 1);
+	std::snprintf(&buf[0], len + 1, fmt.c_str(), args ...);
+	return std::string(&buf[0]/*, &buf[0] + len*/);
+}
+
+void printFile(const std::string& path)
+{
+	wstring wstr;
+	string str;
+
+	for (const std::filesystem::directory_entry& i : std::filesystem::directory_iterator(path)) {	
+		if (i.is_directory()) {
+
+			//wstr = stringTowstring(i.path().filename().string());
+
+			str = format((char*)u8"%s %s", ICON_FA_FOLDER, i.path().filename().string().c_str());
+
+			if(ImGui::TreeNodeEx(str.c_str(), ImGuiTreeNodeFlags_Bullet))
+			{
+				printFile(i.path().string());
+				ImGui::TreePop();
+			}
+		}
+		else
+		{
+			str = format((char*)u8"%s %s", ICON_FA_FILE, i.path().filename().string().c_str());
+
+			if (ImGui::TreeNodeEx(str.c_str(), ImGuiTreeNodeFlags_Leaf))
+			{
+				ImGui::PushID(str.c_str());
+				{
+					if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_None))
+					{
+						ImGui::SetDragDropPayload("DND_DEMO_CELL", i.path().filename().string().c_str(), sizeof(char*) * i.path().filename().string().size());    // Set payload to carry the index of our item (could be anything)
+						{
+							ImGui::Text((char*)u8"%s", str.c_str());
+						}
+						ImGui::EndDragDropSource();
+					}
+
+					ImGui::TreePop();
+				}
+				ImGui::PopID();
+			}
+		}
+	}
+
+}
+
 
 void My_imgui::Init(HWND hWnd)
 {
@@ -66,19 +121,19 @@ void My_imgui::Init(HWND hWnd)
 	// Add character ranges and merge into the previous font
 	// The ranges array is not copied by the AddFont* functions and is used lazily
 	// so ensure it is available at the time of building or calling GetTexDataAsRGBA32().
-	//ImFontConfig config;
 	config.MergeMode = true;
 	io.Fonts->AddFontFromFileTTF("./asset/font/Gidole-Regular.ttf", 15.0f, &config, io.Fonts->GetGlyphRangesDefault());
 	io.Fonts->AddFontFromFileTTF("./asset/font/meiryo.ttc", 15.0f, &config, io.Fonts->GetGlyphRangesJapanese());
-	io.Fonts->Build();
 
-	//io.Fonts->AddFontFromFileTTF("c:\\Windows\\Fonts\\meiryo.ttc", 16.0f, &config, io.Fonts->GetGlyphRangesJapanese());
-	//io.Fonts->AddFontFromFileTTF("c:\\Windows\\Fonts\\meiryo.ttc", 15.0f, &config, io.Fonts->GetGlyphRangesJapanese());
-	//io.Fonts->AddFontFromFileTTF("c:\\Windows\\Fonts\\meiryo.ttc", 14.0f, &config, io.Fonts->GetGlyphRangesJapanese());
-	//
-	//io.Fonts->AddFontFromFileTTF("c:\\Windows\\Fonts\\msgothic.ttc", 16.0f, &config, io.Fonts->GetGlyphRangesJapanese());
-	//io.Fonts->AddFontFromFileTTF("c:\\Windows\\Fonts\\msgothic.ttc", 15.0f, &config, io.Fonts->GetGlyphRangesJapanese());
-	//io.Fonts->AddFontFromFileTTF("c:\\Windows\\Fonts\\msgothic.ttc", 14.0f, &config, io.Fonts->GetGlyphRangesJapanese());
+	///
+	config.PixelSnapH = true;
+	ImWchar icon_ranges[] = { ICON_MIN_FA, ICON_MAX_FA, 0 };
+	//io.Fonts->AddFontFromFileTTF("./asset/font/fa-regular-400.ttf", 13.0f, &config, icon_ranges);
+	io.Fonts->AddFontFromFileTTF("./asset/font/Font Awesome 5 Free-Solid-900.otf", 13.0f, &config, icon_ranges);
+	///
+
+
+	io.Fonts->Build();
 
 	// Setup Platform/Renderer bindings
 	ImGui_ImplWin32_Init(hWnd);
@@ -116,537 +171,541 @@ void My_imgui::Init(HWND hWnd)
 
 void My_imgui::Draw(void)
 {
+	if (show_demo_window)
+		ImGui::ShowDemoWindow(&show_demo_window);
+
+	if (show_default_window)
 	{
-		if (show_demo_window)
-			ImGui::ShowDemoWindow(&show_demo_window);
+		ImGui::Begin("Hello, world!");
 
-		if (show_default_window)
+		ImGui::Text("This is some useful text.");
+		ImGui::Checkbox("Demo Window", &show_demo_window);
+		ImGui::Checkbox("Another Window", &show_another_window);
+
+		ImGui::Text("Application average %.6f ms/frame (%.1f FPS)", (1000.0f / ImGui::GetIO().Framerate) /** 0.001f*/, ImGui::GetIO().Framerate);
+
+		ImGui::Text("x = %f", ImGui::GetMousePos().x);
+		ImGui::Text("y = %f", ImGui::GetMousePos().y);
+
+		ImGui::End();
+	}
+
+	if (show_another_window)
+	{
+		ImGui::Begin("Another Window", &show_another_window);
+		ImGui::Text("Hello from another window!");
+		if (ImGui::Button("Close Me"))
+			show_another_window = false;
+
+		ImGui::End();
+
+	}
+
+	static bool show_app_style_editor = false;
+
+	// メニューバー
+	{
+		if (ImGui::BeginMainMenuBar())
 		{
-			ImGui::Begin("Hello, world!");
-
-			ImGui::Text("This is some useful text.");
-			ImGui::Checkbox("Demo Window", &show_demo_window);
-			ImGui::Checkbox("Another Window", &show_another_window);
-
-			ImGui::Text("Application average %.6f ms/frame (%.1f FPS)", (1000.0f / ImGui::GetIO().Framerate) /** 0.001f*/, ImGui::GetIO().Framerate);
-
-			ImGui::Text("x = %f", ImGui::GetMousePos().x);
-			ImGui::Text("y = %f", ImGui::GetMousePos().y);
-
-			ImGui::End();
-		}
-
-		if (show_another_window)
-		{
-			ImGui::Begin("Another Window", &show_another_window);
-			ImGui::Text("Hello from another window!");
-			if (ImGui::Button("Close Me"))
-				show_another_window = false;
-
-			ImGui::End();
-
-		}
-
-		static bool show_app_style_editor = false;
-
-		// メニューバー
-		{
-			if (ImGui::BeginMainMenuBar())
+			if (ImGui::BeginMenu("File"))
 			{
-				if (ImGui::BeginMenu("File"))
+				if (ImGui::MenuItem("New")) {}
+
+				if (ImGui::MenuItem("Open", "Ctrl+O")) {}
+
+				if (ImGui::BeginMenu("Open Recent"))
 				{
-					if (ImGui::MenuItem("New")) {}
-
-					if (ImGui::MenuItem("Open", "Ctrl+O")) {}
-
-					if (ImGui::BeginMenu("Open Recent"))
+					ImGui::MenuItem("fish_hat.c");
+					ImGui::MenuItem("fish_hat.inl");
+					ImGui::MenuItem("fish_hat.h");
+					if (ImGui::BeginMenu("More.."))
 					{
-						ImGui::MenuItem("fish_hat.c");
-						ImGui::MenuItem("fish_hat.inl");
-						ImGui::MenuItem("fish_hat.h");
-						if (ImGui::BeginMenu("More.."))
+						ImGui::MenuItem("Hello");
+						ImGui::MenuItem("Sailor");
+						if (ImGui::BeginMenu("Recurse.."))
 						{
-							ImGui::MenuItem("Hello");
-							ImGui::MenuItem("Sailor");
-							if (ImGui::BeginMenu("Recurse.."))
-							{
 
-								ImGui::EndMenu();
-							}
 							ImGui::EndMenu();
 						}
 						ImGui::EndMenu();
 					}
-
-					if (ImGui::BeginMenu("Import"))
-					{
-						{
-							if (ImGui::MenuItem("Texture"))
-							{
-								Texture_Import_Enable = true;
-							}
-							if (ImGui::MenuItem("Model"))
-							{
-								Model_Import_Enable = true;
-							}
-						}
-
-						ImGui::EndMenu();
-					}
-
-					if (ImGui::BeginMenu("Delete"))
-					{
-						{
-							if (ImGui::MenuItem("Texture"))
-							{
-								Texture_Delete_Enable = true;
-							}
-							if (ImGui::MenuItem("model"))
-							{
-								Model_Delete_Enable = true;
-							}
-						}
-
-						ImGui::EndMenu();
-					}
-
-					if (ImGui::MenuItem("Close"))
-					{
-						CManager::Get_Instance()->GameEnd();
-					}
-
 					ImGui::EndMenu();
 				}
 
-				if (ImGui::BeginMenu("Edit"))
+				if (ImGui::BeginMenu("Import"))
 				{
-					if (ImGui::MenuItem("Undo", "CTRL+Z")) {}
-					if (ImGui::MenuItem("Redo", "CTRL+Y", false, false)) {}  // Disabled item
-					ImGui::Separator();
-					if (ImGui::MenuItem("Cut", "CTRL+X")) {}
-					if (ImGui::MenuItem("Copy", "CTRL+C")) {}
-					if (ImGui::MenuItem("Paste", "CTRL+V")) {}
+					{
+						if (ImGui::MenuItem("Texture"))
+						{
+							Texture_Import_Enable = true;
+						}
+						if (ImGui::MenuItem("Model"))
+						{
+							Model_Import_Enable = true;
+						}
+					}
+
 					ImGui::EndMenu();
 				}
 
-				if (ImGui::BeginMenu("Setting"))
+				if (ImGui::BeginMenu("Delete"))
 				{
-					ImGui::MenuItem("Style Editor", NULL, &show_app_style_editor);
-
-					ImGui::Checkbox("Default Window", &show_default_window);
-
-					ImGui::Checkbox("Debug Draw Enable", &Debug_Draw_Enable);
-					ImGui::SameLine(); HelpMarker((char*)u8"デバッグ表示　有効無効\n");
-
-					ImGui::MenuItem("Setting", NULL, &Setting_Enable);
+					{
+						if (ImGui::MenuItem("Texture"))
+						{
+							Texture_Delete_Enable = true;
+						}
+						if (ImGui::MenuItem("model"))
+						{
+							Model_Delete_Enable = true;
+						}
+					}
 
 					ImGui::EndMenu();
 				}
 
-				ImGui::EndMainMenuBar();
+				if (ImGui::MenuItem("Close"))
+				{
+					CManager::Get_Instance()->GameEnd();
+				}
+
+				ImGui::EndMenu();
 			}
+
+			if (ImGui::BeginMenu("Edit"))
+			{
+				if (ImGui::MenuItem("Undo", "CTRL+Z")) {}
+				if (ImGui::MenuItem("Redo", "CTRL+Y", false, false)) {}  // Disabled item
+				ImGui::Separator();
+				if (ImGui::MenuItem("Cut", "CTRL+X")) {}
+				if (ImGui::MenuItem("Copy", "CTRL+C")) {}
+				if (ImGui::MenuItem("Paste", "CTRL+V")) {}
+				ImGui::EndMenu();
+			}
+
+			if (ImGui::BeginMenu("Setting"))
+			{
+				ImGui::MenuItem("Style Editor", NULL, &show_app_style_editor);
+
+				ImGui::Checkbox("Default Window", &show_default_window);
+
+				ImGui::Checkbox("Debug Draw Enable", &Debug_Draw_Enable);
+				ImGui::SameLine(); HelpMarker((char*)u8"デバッグ表示　有効無効\n");
+
+				ImGui::MenuItem("Setting", NULL, &Setting_Enable);
+
+				ImGui::EndMenu();
+			}
+
+			ImGui::EndMainMenuBar();
 		}
+	}
 
-		if (show_app_style_editor)
+	if (show_app_style_editor)
+	{
+		ImGui::Begin("Style Editor", &show_app_style_editor, ImGuiWindowFlags_NoResize);
+
+		ImGuiStyle style = ImGui::GetStyle();
+
+		ImGui::ShowStyleEditor(&style);
+		ImGui::End();
+	}
+
+	static string s = GAME_OBJECT::Get_Object_Name_Map().begin()->c_str();
+
+	old_name = s;
+
+	{
+		// ライトの設定
 		{
-			ImGui::Begin("Style Editor", &show_app_style_editor, ImGuiWindowFlags_NoResize);
+			ImGuiWindowFlags window_flag = ImGuiWindowFlags_NoResize;
 
-			ImGuiStyle style = ImGui::GetStyle();
+			LIGHT* light = CRenderer::Get_Light();
 
-			ImGui::ShowStyleEditor(&style);
+			float vec4_Direction[] = { light->Direction.x, light->Direction.y, light->Direction.z, light->Direction.w };
+			float vec4_Position[] = { light->Position.x, light->Position.y, light->Position.z, light->Position.w };
+			float vec4_Diffuse[] = { light->Diffuse.r, light->Diffuse.g, light->Diffuse.b, light->Diffuse.a };
+			float vec4_Ambient[] = { light->Ambient.r, light->Ambient.g, light->Ambient.b, light->Ambient.a };
+			float vec4_Specular[] = { light->Specular.r, light->Specular.g, light->Specular.b, light->Specular.a };
+
+			ImGui::Begin("Directional Light", nullptr/*, window_flag*/);
+
+			ImGui::DragFloat4("Direction", vec4_Direction, 0.01f);
+			ImGui::SameLine(); HelpMarker((char*)u8"\"平行光\" 向き\n");
+
+			ImGui::DragFloat4("Position", vec4_Position, 0.01f);
+			ImGui::SameLine(); HelpMarker((char*)u8"\"平行光源の位置\"");
+
+			ImGui::DragFloat4("Diffuse", vec4_Diffuse, 0.01f);
+			ImGui::SameLine(); HelpMarker((char*)u8"\"平行光\" 拡散(直接)光\n");
+
+			ImGui::DragFloat4("Ambient", vec4_Ambient, 0.01f);
+			ImGui::SameLine(); HelpMarker((char*)u8"\"平行光\" 環境光\n");
+
+			ImGui::DragFloat4("Specular", vec4_Specular, 0.01f);
+			ImGui::SameLine(); HelpMarker((char*)u8"\"平行光\" 鏡面光\n");
+
 			ImGui::End();
-		}
 
-		static string s = GAME_OBJECT::Get_Object_Name_Map().begin()->c_str();
-
-		old_name = s;
-
-		{
 			// ライトの設定
-			{
-				ImGuiWindowFlags window_flag = ImGuiWindowFlags_NoResize;
-
-				LIGHT* light = CRenderer::Get_Light();
-
-				float vec4_Direction[] = { light->Direction.x, light->Direction.y, light->Direction.z, light->Direction.w };
-				float vec4_Position[] = { light->Position.x, light->Position.y, light->Position.z, light->Position.w };
-				float vec4_Diffuse[] = { light->Diffuse.r, light->Diffuse.g, light->Diffuse.b, light->Diffuse.a };
-				float vec4_Ambient[] = { light->Ambient.r, light->Ambient.g, light->Ambient.b, light->Ambient.a };
-				float vec4_Specular[] = { light->Specular.r, light->Specular.g, light->Specular.b, light->Specular.a };
-
-				ImGui::Begin("Directional Light", nullptr/*, window_flag*/);
-
-				ImGui::DragFloat4("Direction", vec4_Direction, 0.01f);
-				ImGui::SameLine(); HelpMarker((char*)u8"\"平行光\" 向き\n");
-
-				ImGui::DragFloat4("Position", vec4_Position, 0.01f);
-				ImGui::SameLine(); HelpMarker((char*)u8"\"平行光源の位置\"");
-
-				ImGui::DragFloat4("Diffuse", vec4_Diffuse, 0.01f);
-				ImGui::SameLine(); HelpMarker((char*)u8"\"平行光\" 拡散(直接)光\n");
-
-				ImGui::DragFloat4("Ambient", vec4_Ambient, 0.01f);
-				ImGui::SameLine(); HelpMarker((char*)u8"\"平行光\" 環境光\n");
-
-				ImGui::DragFloat4("Specular", vec4_Specular, 0.01f);
-				ImGui::SameLine(); HelpMarker((char*)u8"\"平行光\" 鏡面光\n");
-
-				ImGui::End();
-
-				// ライトの設定
-				light->Direction = XMFLOAT4(vec4_Direction[0], vec4_Direction[1], vec4_Direction[2], vec4_Direction[3]);
-				light->Position = XMFLOAT4(vec4_Position[0], vec4_Position[1], vec4_Position[2], vec4_Position[3]);
-				light->Diffuse = COLOR(vec4_Diffuse[0], vec4_Diffuse[1], vec4_Diffuse[2], vec4_Diffuse[3]);
-				light->Ambient = COLOR(vec4_Ambient[0], vec4_Ambient[1], vec4_Ambient[2], vec4_Ambient[3]);
-				light->Specular = COLOR(vec4_Specular[0], vec4_Specular[1], vec4_Specular[2], vec4_Specular[3]);
-				CRenderer::SetLight(light);
-			}
-
-			// レンダリングテクスチャ
-			{
-				// タイトルバーありの場合、imageyよりWindowSizeがImVec2(17, 40)分大きければ丁度いい
-				// タイトルバーなしの場合、imageyよりWindowSizeがImVec2(13, 16)分大きければ丁度いい
-
-				ImGuiWindowFlags window_flags = ImGuiWindowFlags_NoResize;
-
-				{
-					ImGui::SetNextWindowSize(ImVec2(512 + 17, 512 + 40), ImGuiCond_Once);
-
-					ImGui::Begin("Shadow", nullptr, window_flags);
-
-					ImTextureID image = CManager::Get_Instance()->Get_ShadowMap()->Get();
-
-					ImGui::Image(image, ImVec2(512, 512));
-
-					ImGui::End();
-				}
-			}
-
-			// オブジェクト一覧
-			{
-				ImGuiWindowFlags window_flag = ImGuiWindowFlags_NoTitleBar;
-				ImGuiTreeNodeFlags node_flags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_OpenOnDoubleClick;
-				auto map = GAME_OBJECT::Get_Object_Name_Map();
-
-				vector<string> Object_Name_List;
-				Object_Name_List.reserve(map.size());
-
-				for (auto object : map)
-				{
-					Object_Name_List.emplace_back(object);
-				}
-
-				sort(Object_Name_List.begin(), Object_Name_List.end());
-
-				ImGui::Begin("World", nullptr, window_flag);
-
-				ImGui::Unindent(ImGui::GetTreeNodeToLabelSpacing());
-
-				{
-					int i = 0;
-					for (auto object : Object_Name_List)
-					{
-						// マウスボタン : 0 = left, 1 = right, 2 = middle + extras
-						string str = object.c_str();
-
-						node_flags |= /*ImGuiTreeNodeFlags_Leaf |*/ ImGuiTreeNodeFlags_NoTreePushOnOpen; // ImGuiTreeNodeFlags_Bullet
-						ImGui::TreeNodeEx((void*)(intptr_t)i, node_flags, str.c_str());
-
-						if (ImGui::IsMouseClicked(0))
-						{
-							if (ImGui::IsItemClicked(0))
-							{
-								s = str.c_str();
-							}
-						}
-
-						if (ImGui::IsMouseClicked(1))
-						{
-							if (ImGui::IsItemClicked(1))
-							{
-								s = str.c_str();
-							}
-						}
-
-						i++;
-					}
-				}
-
-				ImGui::End();
-
-			}
+			light->Direction = XMFLOAT4(vec4_Direction[0], vec4_Direction[1], vec4_Direction[2], vec4_Direction[3]);
+			light->Position = XMFLOAT4(vec4_Position[0], vec4_Position[1], vec4_Position[2], vec4_Position[3]);
+			light->Diffuse = COLOR(vec4_Diffuse[0], vec4_Diffuse[1], vec4_Diffuse[2], vec4_Diffuse[3]);
+			light->Ambient = COLOR(vec4_Ambient[0], vec4_Ambient[1], vec4_Ambient[2], vec4_Ambient[3]);
+			light->Specular = COLOR(vec4_Specular[0], vec4_Specular[1], vec4_Specular[2], vec4_Specular[3]);
+			CRenderer::SetLight(light);
 		}
 
-		{
-			const weak_ptr<DEBUG_CAMERA> camera = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
-
-			ImGuiWindowFlags window_flags = ImGuiWindowFlags_NoResize;
-
-			ImGui::SetNextWindowSize(ImVec2(500, 500), ImGuiCond_Once);
-
-			ImGui::Begin("Test", nullptr, window_flags);
-
-			{
-				ImGuiIO& io = ImGui::GetIO();
-
-				if (io.WantCaptureMouse)
-				{
-					ImGui::Text((char*)u8"true");
-				}
-				else
-				{
-					ImGui::Text((char*)u8"false");
-
-				}
-
-				ImGui::Text((char*)u8"%f", fps);
-
-				auto p = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<PLAYER>("player");
-
-				if (!p.expired())
-				{
-					("HP  %f", p.lock()->Get_HP());
-				}
-			}
-
-			{
-				((char*)u8"GPUメモリ使用量 %d byte", info.CurrentUsage);
-
-				((char*)u8"1 %d キロバイト", info.CurrentUsage / 1000);
-
-				ImGui::Text((char*)u8"1 %d メガバイト", info.CurrentUsage / 1000 / 1000);
-			}
-
-			{
-				HANDLE hProc = GetCurrentProcess();
-
-				PROCESS_MEMORY_COUNTERS_EX pmc;
-
-				BOOL isSuccess = GetProcessMemoryInfo(hProc, (PROCESS_MEMORY_COUNTERS*)&pmc, sizeof(pmc));
-
-				if (isSuccess == FALSE)
-				{
-					CloseHandle(hProc);
-				}
-				else
-				{
-					ImGui::Text((char*)u8"メモリ使用量 %d byte", pmc.PrivateUsage);
-
-					ImGui::Text((char*)u8"1 メモリ使用量 %.3f キロバイト", float(pmc.PrivateUsage / 1024.0f));
-
-					ImGui::Text((char*)u8"2 メモリ使用量 %.3f メガバイト", float(pmc.PrivateUsage / 1024.0f / 1024.0f));
-
-					CloseHandle(hProc);
-				}
-			}
-
-			{
-				ImDrawList* draw_list = ImGui::GetWindowDrawList();
-				ImVec2 pos = ImGui::GetCurrentWindow()->DC.CursorPos;
-				{
-					ImGui::DrawRect(ImVec2(100, 100), ImVec4(1.0f, 0.f, 0.f, 1.0f), "test", ImVec4(0.f, 0.f, 0.f, 1.0f), 3.0f);
-				}
-
-				ImGui::SameLine();
-
-				{
-					ImGui::DrawRect(ImVec2(100, 100), ImVec4(0.f, 0.f, 1.0f, 1.0f), "test", ImVec4(0.f, 0.f, 0.f, 1.0f), 3.0f);
-				}
-
-				ImGui::SameLine();
-
-				{
-					ImGui::DrawRect(ImVec2(100, 100), ImVec4(1.0f, 1.0f, 0.f, 1.0f), "test", ImVec4(0.f, 0.f, 0.f, 1.0f), 3.0f);
-				}
-			}
-
-			ImGui::End();
-		}
-
-		{
-			static std::vector<std::string> names = { "Bobby", "Beatrice", "Betty", "Brianna", "Barry", "Bernard", "Bibi", "Blaine", "Bryn" };
-
-			static int cnt = 0;
-
-			if (ImGui::Begin("Drag Test"))
-			{
-				enum Mode
-				{
-					Mode_Copy,
-					Mode_Move,
-					Mode_Swap
-				};
-
-				auto tex_file = TEXTURE_MANEGER::Get_Instance()->Get_TextureFile().begin();
-
-				TEXTURE tex;
-
-				for (cnt = 0; cnt < 9; cnt++)
-				{
-					ImGui::PushID(cnt);
-					{
-						if ((cnt % 3) != 0)
-							ImGui::SameLine();
-
-						size_t pos = tex_file->second.Path.find_last_of("/");
-
-						string tex_name = tex_file->second.Path.substr(pos + 1);
-
-						ImGui::BeginGroup();
-						{
-							{
-								auto hash = std::hash<string>()(tex_name);
-
-								ImTextureID image = TEXTURE_MANEGER::Get_Instance()->GetShaderResourceView(hash);
-
-								auto wh = TEXTURE_MANEGER::Get_Instance()->Get_WH(hash);
-
-								//ImVec2 size =ImVec2(wh->x / 5.0f, wh->y / 5.0f);
-								const ImVec2 size = ImVec2(64.0f, 64.0f);
-
-								//ImGui::ImageButton(image, size);
-
-								if ((tex_name.size() * 4.0f) < (size.x * 0.6f))
-								{
-									ImGui::ImageButton(image, size);
-
-									ImGui::Indent(size.x * 0.6f - tex_name.size() * 4.0f);
-								}
-								else
-								{
-									//ImGui::Indent((tex_name.size() * 4.0f - size.x) * 0.5f);
-
-									ImGui::ImageButton(image, size);
-
-									//ImGui::Indent(tex_name.size() * 4.0f - size.x );
-									//ImGui::Indent(size.x * 0.6f - tex_name.size() * 4.0f);
-								}
-							}
-
-							// Our buttons are both drag sources and drag targets here!
-							if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_None))
-							{
-								ImGui::SetDragDropPayload("DND_DEMO_CELL", &cnt, sizeof(int));    // Set payload to carry the index of our item (could be anything)
-								//{ ImGui::Text("%s", names[cnt].c_str()); }
-								{
-									ImGui::Text("%s", tex_name.c_str());
-								}
-								ImGui::EndDragDropSource();
-							}
-
-							ImGui::Text("%s", tex_name.c_str());
-
-							ImGui::Spacing();
-
-						}
-						ImGui::EndGroup();
-
-						tex_file++;
-					}
-					ImGui::PopID();
-				}
-
-				ImGui::End();
-			}
-
-			if (ImGui::Begin("Drop Test"))
-			{
-				static std::vector<std::string> names_temp = { "Bobby", "Beatrice", "Betty", "Brianna", "Barry", "Bernard", "Bibi", "Blaine", "Bryn" };
-
-				enum Mode
-				{
-					Mode_Copy,
-					Mode_Move,
-					Mode_Swap
-				};
-				static int mode = 0;
-				if (ImGui::RadioButton("Copy", mode == Mode_Copy)) { mode = Mode_Copy; } ImGui::SameLine();
-				if (ImGui::RadioButton("Move", mode == Mode_Move)) { mode = Mode_Move; } ImGui::SameLine();
-				if (ImGui::RadioButton("Swap", mode == Mode_Swap)) { mode = Mode_Swap; }
-
-				auto start = TEXTURE_MANEGER::Get_Instance()->Get_TextureFile().begin();
-
-				for (cnt = 0; cnt < names_temp.size(); cnt++)
-				{
-					ImGui::PushID(cnt);
-					if ((cnt % 3) != 0)
-						ImGui::SameLine();
-					ImGui::Button(names_temp[cnt].c_str(), ImVec2(names_temp[cnt].size() * 8.0f, 60));
-
-					if (ImGui::BeginDragDropTarget())
-					{
-						if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("DND_DEMO_CELL"))
-						{
-							IM_ASSERT(payload->DataSize == sizeof(int));
-							int payload_n = *(const int*)payload->Data;
-							if (mode == Mode_Copy)
-							{
-								size_t pos = start->second.Path.find_last_of("/");
-
-								string tex_name = start->second.Path.substr(pos + 1);
-
-								names_temp[cnt] = tex_name;
-							}
-							/*if (mode == Mode_Move)
-							{
-								names_temp[cnt] = names[payload_n];
-								names[payload_n] = "";
-							}*/
-							/*if (mode == Mode_Swap)
-							{
-								const auto tmp = names[cnt];
-								names[cnt] = names[payload_n];
-								names[payload_n] = tmp;
-							}*/
-						}
-						ImGui::EndDragDropTarget();
-					}
-					ImGui::PopID();
-
-					start++;
-				}
-
-				ImGui::End();
-			}
-		}
-
-		{
-			ImGuiWindowFlags flag = ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize;
-
-			ImVec2 size(150.0f, 50.f);
-			ImVec2 pos(SCREEN_WIDTH * 0.5f - size.x * 0.5f, 20.0f);
-
-			ImGui::SetNextWindowSize(size);
-			ImGui::SetNextWindowPos(pos);
-
-			ImGui::Begin("PLAY", nullptr, flag);
-
-			static int radio = 1;
-			ImGui::RadioButton("PLAT", &radio, 1); ImGui::SameLine();
-			ImGui::RadioButton("STOP", &radio, 0);
-
-			radio ? CManager::Get_Instance()->Set_Play_Enable(true) : CManager::Get_Instance()->Set_Play_Enable(false);
-
-			ImGui::End();
-		}
-
+		// レンダリングテクスチャ
 		{
 			// タイトルバーありの場合、imageyよりWindowSizeがImVec2(17, 40)分大きければ丁度いい
 			// タイトルバーなしの場合、imageyよりWindowSizeがImVec2(13, 16)分大きければ丁度いい
 
-			ImGuiWindowFlags window_flags = ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoTitleBar;
+			ImGuiWindowFlags window_flags = ImGuiWindowFlags_NoResize;
 
 			{
-				ImGui::SetNextWindowSize(ImVec2(float(SCREEN_WIDTH / 3.0f) + 13, float(SCREEN_HEIGHT / 3.0f) + 16), ImGuiCond_Once);
+				ImGui::SetNextWindowSize(ImVec2(512 + 17, 512 + 40), ImGuiCond_Once);
 
-				ImGui::Begin("Rnderer", nullptr, window_flags);
+				ImGui::Begin("Shadow", nullptr, window_flags);
 
-				ImTextureID image = CRenderer::Get_Texture();
+				ImTextureID image = CManager::Get_Instance()->Get_ShadowMap()->Get();
 
-				ImGui::Image(image, ImVec2(float(SCREEN_WIDTH / 3.0f), float(SCREEN_HEIGHT / 3.0f)));
+				ImGui::Image(image, ImVec2(512, 512));
 
 				ImGui::End();
 			}
+		}
+
+		// オブジェクト一覧
+		{
+			ImGuiWindowFlags window_flag = ImGuiWindowFlags_NoTitleBar;
+			ImGuiTreeNodeFlags node_flags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_OpenOnDoubleClick;
+			auto map = GAME_OBJECT::Get_Object_Name_Map();
+
+			vector<string> Object_Name_List;
+			Object_Name_List.reserve(map.size());
+
+			for (auto object : map)
+			{
+				Object_Name_List.emplace_back(object);
+			}
+
+			sort(Object_Name_List.begin(), Object_Name_List.end());
+
+			ImGui::Begin("World", nullptr, window_flag);
+
+			ImGui::Unindent(ImGui::GetTreeNodeToLabelSpacing());
+
+			{
+				int i = 0;
+				for (auto object : Object_Name_List)
+				{
+					// マウスボタン : 0 = left, 1 = right, 2 = middle + extras
+					string str = object.c_str();
+
+					node_flags |= /*ImGuiTreeNodeFlags_Leaf |*/ ImGuiTreeNodeFlags_NoTreePushOnOpen; // ImGuiTreeNodeFlags_Bullet
+					ImGui::TreeNodeEx((void*)(intptr_t)i, node_flags, str.c_str());
+
+					if (ImGui::IsMouseClicked(0))
+					{
+						if (ImGui::IsItemClicked(0))
+						{
+							s = str.c_str();
+						}
+					}
+
+					if (ImGui::IsMouseClicked(1))
+					{
+						if (ImGui::IsItemClicked(1))
+						{
+							s = str.c_str();
+						}
+					}
+
+					i++;
+				}
+			}
+
+			ImGui::End();
+
+		}
+	}
+
+	{
+		const weak_ptr<DEBUG_CAMERA> camera = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
+
+		ImGuiWindowFlags window_flags = ImGuiWindowFlags_NoResize;
+
+		ImGui::SetNextWindowSize(ImVec2(500, 500), ImGuiCond_Once);
+
+		ImGui::Begin("Test", nullptr, window_flags);
+
+		{
+			ImGuiIO& io = ImGui::GetIO();
+
+			if (io.WantCaptureMouse)
+			{
+				ImGui::Text((char*)u8"true");
+			}
+			else
+			{
+				ImGui::Text((char*)u8"false");
+
+			}
+
+			ImGui::Text((char*)u8"%f", fps);
+
+			auto p = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<PLAYER>("player");
+
+			if (!p.expired())
+			{
+				("HP  %f", p.lock()->Get_HP());
+			}
+		}
+
+		{
+			ImGui::Text((char*)u8"GPUメモリ使用量 %d byte", info.CurrentUsage);
+
+			ImGui::Text((char*)u8"1 %d キロバイト", info.CurrentUsage / 1000);
+
+			ImGui::Text((char*)u8"1 %d メガバイト", info.CurrentUsage / 1000 / 1000);
+		}
+
+		{
+			HANDLE hProc = GetCurrentProcess();
+
+			PROCESS_MEMORY_COUNTERS_EX pmc;
+
+			BOOL isSuccess = GetProcessMemoryInfo(hProc, (PROCESS_MEMORY_COUNTERS*)&pmc, sizeof(pmc));
+
+			if (isSuccess == FALSE)
+			{
+				CloseHandle(hProc);
+			}
+			else
+			{
+				ImGui::Text((char*)u8"メモリ使用量 %d byte", pmc.PrivateUsage);
+
+				ImGui::Text((char*)u8"1 メモリ使用量 %.3f キロバイト", float(pmc.PrivateUsage / 1024.0f));
+
+				ImGui::Text((char*)u8"2 メモリ使用量 %.3f メガバイト", float(pmc.PrivateUsage / 1024.0f / 1024.0f));
+
+				CloseHandle(hProc);
+			}
+		}
+
+		{
+			ImDrawList* draw_list = ImGui::GetWindowDrawList();
+			ImVec2 pos = ImGui::GetCurrentWindow()->DC.CursorPos;
+			{
+				ImGui::DrawRect(ImVec2(100, 100), ImVec4(1.0f, 0.f, 0.f, 1.0f), "test", ImVec4(0.f, 0.f, 0.f, 1.0f), 3.0f);
+			}
+
+			ImGui::SameLine();
+
+			{
+				ImGui::DrawRect(ImVec2(100, 100), ImVec4(0.f, 0.f, 1.0f, 1.0f), "test", ImVec4(0.f, 0.f, 0.f, 1.0f), 3.0f);
+			}
+
+			ImGui::SameLine();
+
+			{
+				ImGui::DrawRect(ImVec2(100, 100), ImVec4(1.0f, 1.0f, 0.f, 1.0f), "test", ImVec4(0.f, 0.f, 0.f, 1.0f), 3.0f);
+			}
+		}
+
+		ImGui::End();
+	}
+
+	// Drag Test
+	{
+		static std::vector<std::string> names = { "Bobby", "Beatrice", "Betty", "Brianna", "Barry", "Bernard", "Bibi", "Blaine", "Bryn" };
+
+		static int cnt = 0;
+
+		if (ImGui::Begin("Drag Test"))
+		{
+			enum Mode
+			{
+				Mode_Copy,
+				Mode_Move,
+				Mode_Swap
+			};
+
+			auto tex_file = TEXTURE_MANEGER::Get_Instance()->Get_TextureFile().begin();
+
+			TEXTURE tex;
+
+			for (cnt = 0; cnt < 9; cnt++)
+			{
+				ImGui::PushID(cnt);
+				{
+					if ((cnt % 3) != 0)
+						ImGui::SameLine();
+
+					size_t pos = tex_file->second.Path.find_last_of("/");
+
+					string tex_name = tex_file->second.Path.substr(pos + 1);
+
+					ImGui::BeginGroup();
+					{
+						{
+							auto hash = std::hash<string>()(tex_name);
+
+							ImTextureID image = TEXTURE_MANEGER::Get_Instance()->GetShaderResourceView(hash);
+
+							auto wh = TEXTURE_MANEGER::Get_Instance()->Get_WH(hash);
+
+							//ImVec2 size =ImVec2(wh->x / 5.0f, wh->y / 5.0f);
+							const ImVec2 size = ImVec2(64.0f, 64.0f);
+
+							//ImGui::ImageButton(image, size);
+
+							if ((tex_name.size() * 4.0f) < (size.x * 0.6f))
+							{
+								ImGui::ImageButton(image, size);
+
+								ImGui::Indent(size.x * 0.6f - tex_name.size() * 4.0f);
+							}
+							else
+							{
+								//ImGui::Indent((tex_name.size() * 4.0f - size.x) * 0.5f);
+
+								ImGui::ImageButton(image, size);
+
+								//ImGui::Indent(tex_name.size() * 4.0f - size.x );
+								//ImGui::Indent(size.x * 0.6f - tex_name.size() * 4.0f);
+							}
+						}
+
+						// Our buttons are both drag sources and drag targets here!
+						if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_None))
+						{
+							ImGui::SetDragDropPayload("DND_DEMO_CELL", &cnt, sizeof(int));    // Set payload to carry the index of our item (could be anything)
+							//{ ImGui::Text("%s", names[cnt].c_str()); }
+							{
+								ImGui::Text("%s", tex_name.c_str());
+							}
+							ImGui::EndDragDropSource();
+						}
+
+						ImGui::Text("%s", tex_name.c_str());
+
+						ImGui::Spacing();
+
+					}
+					ImGui::EndGroup();
+
+					tex_file++;
+				}
+				ImGui::PopID();
+			}
+
+			ImGui::End();
+		}
+
+		if (ImGui::Begin("Drop Test"))
+		{
+			static std::vector<std::string> names_temp = { "Bobby", "Beatrice", "Betty", "Brianna", "Barry", "Bernard", "Bibi", "Blaine", "Bryn" };
+
+			enum Mode
+			{
+				Mode_Copy,
+				Mode_Move,
+				Mode_Swap
+			};
+			static int mode = 0;
+			if (ImGui::RadioButton("Copy", mode == Mode_Copy)) { mode = Mode_Copy; } ImGui::SameLine();
+			if (ImGui::RadioButton("Move", mode == Mode_Move)) { mode = Mode_Move; } ImGui::SameLine();
+			if (ImGui::RadioButton("Swap", mode == Mode_Swap)) { mode = Mode_Swap; }
+
+			auto start = TEXTURE_MANEGER::Get_Instance()->Get_TextureFile().begin();
+
+			for (cnt = 0; cnt < names_temp.size(); cnt++)
+			{
+				ImGui::PushID(cnt);
+				if ((cnt % 3) != 0)
+					ImGui::SameLine();
+				ImGui::Button(names_temp[cnt].c_str(), ImVec2(names_temp[cnt].size() * 8.0f, 60));
+
+				if (ImGui::BeginDragDropTarget())
+				{
+					if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("DND_DEMO_CELL"))
+					{
+						//IM_ASSERT(payload->DataSize == sizeof(int));
+						//IM_ASSERT(payload->DataSize == sizeof(char*));
+						//int payload_n = *(const int*)payload->Data;
+
+						string str = reinterpret_cast<char*>(payload->Data);
+
+						if (mode == Mode_Copy)
+						{
+							size_t pos = start->second.Path.find_last_of("/");
+
+							string tex_name = start->second.Path.substr(pos + 1);
+
+							//names_temp[cnt] = tex_name;
+							names_temp[cnt] = str.c_str();
+						}
+						/*if (mode == Mode_Move)
+						{
+							names_temp[cnt] = names[payload_n];
+							names[payload_n] = "";
+						}*/
+						/*if (mode == Mode_Swap)
+						{
+							const auto tmp = names[cnt];
+							names[cnt] = names[payload_n];
+							names[payload_n] = tmp;
+						}*/
+					}
+					ImGui::EndDragDropTarget();
+				}
+				ImGui::PopID();
+
+				start++;
+			}
+
+			ImGui::End();
+		}
+	}
+
+	{
+		ImGuiWindowFlags flag = ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize;
+
+		ImVec2 size(150.0f, 50.f);
+		ImVec2 pos(SCREEN_WIDTH * 0.5f - size.x * 0.5f, 20.0f);
+
+		ImGui::SetNextWindowSize(size);
+		ImGui::SetNextWindowPos(pos);
+
+		ImGui::Begin("PLAY", nullptr, flag);
+
+		static int radio = 1;
+		ImGui::RadioButton("PLAT", &radio, 1); ImGui::SameLine();
+		ImGui::RadioButton("STOP", &radio, 0);
+
+		radio ? CManager::Get_Instance()->Set_Play_Enable(true) : CManager::Get_Instance()->Set_Play_Enable(false);
+
+		ImGui::End();
+	}
+
+	{
+		// タイトルバーありの場合、imageyよりWindowSizeがImVec2(17, 40)分大きければ丁度いい
+		// タイトルバーなしの場合、imageyよりWindowSizeがImVec2(13, 16)分大きければ丁度いい
+
+		ImGuiWindowFlags window_flags = ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoTitleBar;
+
+		{
+			ImGui::Begin("folder_tree");
+
+			printFile("asset");
+
+			ImGui::Text((char*)u8"メモリ使用量");
+
+			ImGui::Text((char*)u8"%s %s %s %s", ICON_FA_COG, ICON_FA_COGS, ICON_FA_COINS, ICON_FA_COLUMNS);
+
+			ImGui::End();
 		}
 
 		// ライトの設定(ディレクショナルライトではない)

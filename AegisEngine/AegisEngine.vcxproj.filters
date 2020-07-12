@@ -538,6 +538,9 @@
     <ClInclude Include="Model.h">
       <Filter>ソース ファイル\System\Model</Filter>
     </ClInclude>
+    <ClInclude Include="imgui\IconsFontAwesome5_c.h">
+      <Filter>Imgui</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="PixelShader_No_Light.hlsl">
