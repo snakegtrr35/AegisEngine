@@ -176,7 +176,14 @@ void SPRITE::Draw(void)
 			// 2Dマトリックス設定
 			CRenderer::SetWorldViewProjection2D(Scaling);
 
-			CRenderer::Set_Shader(SHADER_INDEX_V::DEFAULT, SHADER_INDEX_P::NO_LIGHT);
+			if (flag)
+			{
+				CRenderer::Set_Shader(SHADER_INDEX_V::DEFAULT, SHADER_INDEX_P::NO_LIGHT);
+			}
+			else
+			{
+				CRenderer::Set_Shader(SHADER_INDEX_V::DEFAULT, SHADER_INDEX_P::POST_EFFECT);
+			}
 
 			CRenderer::DrawIndexed(6, 0, 0);
 

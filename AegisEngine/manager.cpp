@@ -252,6 +252,10 @@ void CManager::Draw()
 	//	brush->Release();
 	//}
 
+	{
+		//CRenderer::End_Draw();
+	}
+
 #ifdef _DEBUG
 	if (false == this->Get_Scene()->GetLockLoad())
 	{

@@ -250,7 +250,10 @@ void My_imgui::Draw(void)
 		if (show_app_style_editor)
 		{
 			ImGui::Begin("Style Editor", &show_app_style_editor, ImGuiWindowFlags_NoResize);
-			ImGui::ShowStyleEditor();
+
+			ImGuiStyle style = ImGui::GetStyle();
+
+			ImGui::ShowStyleEditor(&style);
 			ImGui::End();
 		}
 
@@ -499,17 +502,24 @@ void My_imgui::Draw(void)
 								auto wh = TEXTURE_MANEGER::Get_Instance()->Get_WH(hash);
 
 								//ImVec2 size =ImVec2(wh->x / 5.0f, wh->y / 5.0f);
-								ImVec2 size = ImVec2(256, 256);
+								const ImVec2 size = ImVec2(64.0f, 64.0f);
 
-								ImGui::ImageButton(image, size);
+								//ImGui::ImageButton(image, size);
 
-								if ((tex_name.size() * 4.0f) <= (256 * 0.5f))
+								if ((tex_name.size() * 4.0f) < (size.x * 0.6f))
 								{
-									ImGui::Indent(256 * 0.5f - tex_name.size() * 4.0f);
+									ImGui::ImageButton(image, size);
+
+									ImGui::Indent(size.x * 0.6f - tex_name.size() * 4.0f);
 								}
 								else
 								{
-									ImGui::Indent(tex_name.size() * 4.0f - 256 * 0.5f);
+									//ImGui::Indent((tex_name.size() * 4.0f - size.x) * 0.5f);
+
+									ImGui::ImageButton(image, size);
+
+									//ImGui::Indent(tex_name.size() * 4.0f - size.x );
+									//ImGui::Indent(size.x * 0.6f - tex_name.size() * 4.0f);
 								}
 							}
 
@@ -618,6 +628,25 @@ void My_imgui::Draw(void)
 			radio ? CManager::Get_Instance()->Set_Play_Enable(true) : CManager::Get_Instance()->Set_Play_Enable(false);
 
 			ImGui::End();
+		}
+
+		{
+			// タイトルバーありの場合、imageyよりWindowSizeがImVec2(17, 40)分大きければ丁度いい
+			// タイトルバーなしの場合、imageyよりWindowSizeがImVec2(13, 16)分大きければ丁度いい
+
+			ImGuiWindowFlags window_flags = ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoTitleBar;
+
+			{
+				ImGui::SetNextWindowSize(ImVec2(float(SCREEN_WIDTH / 3.0f) + 13, float(SCREEN_HEIGHT / 3.0f) + 16), ImGuiCond_Once);
+
+				ImGui::Begin("Rnderer", nullptr, window_flags);
+
+				ImTextureID image = CRenderer::Get_Texture();
+
+				ImGui::Image(image, ImVec2(float(SCREEN_WIDTH / 3.0f), float(SCREEN_HEIGHT / 3.0f)));
+
+				ImGui::End();
+			}
 		}
 
 		// ライトの設定(ディレクショナルライトではない)

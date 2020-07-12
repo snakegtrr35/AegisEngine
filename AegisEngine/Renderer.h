@@ -118,6 +118,7 @@ enum class SHADER_INDEX_P {
 	NO_LIGHT,
 	SKYBOX,
 	SHADOW_MAP,
+	POST_EFFECT,
 	MAX
 };
 
@@ -158,6 +159,9 @@ private:
 	static IDXGISwapChain1*										m_SwapChain;
 	//! レンダーターゲットビュー
 	static ID3D11RenderTargetView*								m_RenderTargetView;
+
+	static unique_ptr < ID3D11RenderTargetView, Release>		RenderTargetView_16bit;
+	static unique_ptr<ID3D11ShaderResourceView, Release>		ShaderResourceView_16bit;
 
 	static unique_ptr<ID3D11RenderTargetView, Release>			RenderTargetView[3];
 	static unique_ptr<ID3D11ShaderResourceView, Release>		ShaderResourceView[3];
@@ -406,6 +410,12 @@ public:
 	static ID3D11ShaderResourceView* Get3() {
 		return ShaderResourceView[2].get();
 	}
+
+	static ID3D11ShaderResourceView* Get_Texture() {
+		return ShaderResourceView_16bit.get();
+	}
+
+	static void End_Draw();
 
 	static LIGHT* Get_Light()
 	{

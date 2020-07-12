@@ -372,6 +372,8 @@ public:
 	//	ar(Size);
 	//	ar(Color);
 	//}
+
+	bool flag = true;
 };
 
 CEREAL_REGISTER_TYPE(SPRITE)
