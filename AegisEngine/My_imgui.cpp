@@ -50,6 +50,8 @@ void EditTransform(const float* cameraView, float* cameraProjection, float* matr
 extern DXGI_QUERY_VIDEO_MEMORY_INFO info;
 #include <psapi.h>
 
+extern void ShowExampleAppDockSpace(bool* p_open);
+
 template <typename ... Args>
 std::string format(const std::string& fmt, Args ... args)
 {
@@ -310,6 +312,9 @@ void My_imgui::Draw(void)
 		ImGui::ShowStyleEditor(&style);
 		ImGui::End();
 	}
+
+	static bool flag = true;
+	ShowExampleAppDockSpace(&flag);
 
 	static string s = GAME_OBJECT::Get_Object_Name_Map().begin()->c_str();
 
