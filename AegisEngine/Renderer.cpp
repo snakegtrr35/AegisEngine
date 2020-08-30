@@ -765,6 +765,57 @@ bool CRenderer::Init3D()
 	}
 
 	{
+		ID3D11Texture2D* pTex = nullptr;
+
+		// テクスチャの作成
+		D3D11_TEXTURE2D_DESC td;
+		td.Width = SCREEN_WIDTH;
+		td.Height = SCREEN_HEIGHT;
+		td.MipLevels = 1;
+		td.ArraySize = 1;
+		td.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+		td.SampleDesc.Count = 1;
+		td.SampleDesc.Quality = 0;
+		td.Usage = D3D11_USAGE_DEFAULT;
+		td.BindFlags = D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE;
+		td.CPUAccessFlags = 0;
+		td.MiscFlags = 0;
+
+		hr = m_D3DDevice->CreateTexture2D(&td, nullptr, &pTex);
+		if (FAILED(hr))
+		{
+			FAILDE_ASSERT;
+			return false;
+		}
+
+		// レンダーターゲットビュー設定
+		{
+			ID3D11RenderTargetView* pRtv = nullptr;
+
+			hr = m_D3DDevice->CreateRenderTargetView(pTex, nullptr, &pRtv);
+			if (FAILED(hr))
+			{
+				return false;
+			}
+
+			RenderTargetView[0].reset(pRtv);
+		}
+
+		// シェーダーリソースビュー設定
+		{
+			ID3D11ShaderResourceView* srv = nullptr;
+
+			hr = m_D3DDevice->CreateShaderResourceView(pTex, nullptr, &srv);
+			if (FAILED(hr))
+			{
+				FAILDE_ASSERT;
+				return false;
+			}
+			ShaderResourceView[0].reset(srv);
+		}
+	}
+
+	{
 		// アルベドテクスチャの作成
 		{
 			ID3D11Texture2D* pTex = nullptr;
@@ -1221,7 +1272,7 @@ void CRenderer::Change_Window_Mode()
 
 void CRenderer::Begin()
 {
-	auto render_target = RenderTargetView_16bit.get();
+	//auto render_target = RenderTargetView_16bit.get();
 
 	// バックバッファクリア
 	float ClearColor[4] = { 0.5f, 0.5f, 0.5f, 1.0f };
@@ -1248,7 +1299,8 @@ void CRenderer::End_Draw()
 		sprite.get()->SetPosition(XMFLOAT2(SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.5f));
 		sprite.get()->SetSize(XMFLOAT4(SCREEN_HEIGHT * 0.5f, SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.5f, SCREEN_WIDTH * 0.5f));
 
-		sprite.get()->Set(ShaderResourceView_16bit.get());
+		sprite.get()->Set(ShaderResourceView[0].get());
+		//te.get()->Set(ShaderResourceView_16bit.get());
 
 		sprite.get()->flag = false;
 
@@ -1261,8 +1313,25 @@ void CRenderer::End_Draw()
 		m_ImmediateContext->ClearRenderTargetView(m_RenderTargetView, ClearColor);//
 		m_ImmediateContext->ClearDepthStencilView(m_DepthStencilView, D3D11_CLEAR_DEPTH, 1.0f, 0);
 
-		sprite.get()->Draw();
+		{
+			// サンプラーステート設定
+			D3D11_SAMPLER_DESC samplerDesc;
+			ZeroMemory(&samplerDesc, sizeof(samplerDesc));
+			samplerDesc.Filter = D3D11_FILTER_ANISOTROPIC;
+			samplerDesc.AddressU = samplerDesc.AddressV = samplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_CLAMP;
+			samplerDesc.MaxAnisotropy = 4;
+			samplerDesc.ComparisonFunc = D3D11_COMPARISON_ALWAYS;
+			samplerDesc.MaxLOD = 0.0f;
+			samplerDesc.MinLOD = 0.0f;
+
+			ID3D11SamplerState* samplerState = nullptr;
+			m_D3DDevice->CreateSamplerState(&samplerDesc, &samplerState);
+
+			m_ImmediateContext->PSSetSamplers(1, 1, &samplerState);
+		}
 	}
+
+		sprite.get()->Draw();
 }
 
 void CRenderer::End()
@@ -1493,19 +1562,21 @@ void CRenderer::SetPass_Rendring()
 
 	{
 		// デフォルトのレンダーターゲットビューに切り替え
-		m_ImmediateContext->OMSetRenderTargets(1, &m_RenderTargetView, m_DepthStencilView);
-		m_ImmediateContext->ClearRenderTargetView(m_RenderTargetView, clearColor);
+		auto render_target = RenderTargetView[0].get();
+		m_ImmediateContext->OMSetRenderTargets(1, &render_target, m_DepthStencilView);
+		m_ImmediateContext->ClearRenderTargetView(render_target, clearColor);
+
+		//m_ImmediateContext->OMSetRenderTargets(1, &m_RenderTargetView, m_DepthStencilView);
+		//m_ImmediateContext->ClearRenderTargetView(m_RenderTargetView, clearColor);
 		m_ImmediateContext->ClearDepthStencilView(m_DepthStencilView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 
-		/*{
-			auto render_target = RenderTargetView_16bit.get();
+		{
+			//auto render_target = RenderTargetView_16bit.get();
 
-			//m_ImmediateContext->OMSetRenderTargets(1, &m_RenderTargetView, m_DepthStencilView);
-			m_ImmediateContext->OMSetRenderTargets(1, &render_target, m_DepthStencilView);//
-			//m_ImmediateContext->ClearRenderTargetView(m_RenderTargetView, ClearColor);
-			m_ImmediateContext->ClearRenderTargetView(RenderTargetView_16bit.get(), clearColor);//
-			m_ImmediateContext->ClearDepthStencilView(m_DepthStencilView, D3D11_CLEAR_DEPTH, 1.0f, 0);
-		}*/
+			//m_ImmediateContext->OMSetRenderTargets(1, &render_target, m_DepthStencilView);//
+			//m_ImmediateContext->ClearRenderTargetView(RenderTargetView_16bit.get(), clearColor);//
+			//m_ImmediateContext->ClearDepthStencilView(m_DepthStencilView, D3D11_CLEAR_DEPTH, 1.0f, 0);
+		}
 
 		{
 			// ビューポート設定

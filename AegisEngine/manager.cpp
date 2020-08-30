@@ -253,7 +253,7 @@ void CManager::Draw()
 	//}
 
 	{
-		//CRenderer::End_Draw();
+		CRenderer::End_Draw();
 	}
 
 #ifdef _DEBUG
