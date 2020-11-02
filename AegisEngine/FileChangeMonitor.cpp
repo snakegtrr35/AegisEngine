@@ -1,10 +1,18 @@
 #ifdef _DEBUG
 #include	"Texture_Manager.h"
 
-FILE_CHANGE_MONITOR::FILE_CHANGE_MONITOR(const string& directoryName) : m_directoryName(directoryName)
+#include "common.h"
+
+FILE_CHANGE_MONITOR::FILE_CHANGE_MONITOR(const string& directoryName) /*: m_directoryName(directoryName)*/
 {
 	m_directoryHandle = nullptr;
 	m_eventHandle = nullptr;
+
+#ifdef UNICODE
+	m_directoryName = stringTowstring(directoryName);
+#else
+	m_directoryName = directoryName;
+#endif // !UNICODE
 }
 
 FILE_CHANGE_MONITOR::~FILE_CHANGE_MONITOR()

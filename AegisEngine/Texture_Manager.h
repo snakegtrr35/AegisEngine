@@ -9,7 +9,11 @@
 
 class FILE_CHANGE_MONITOR {
 private:
+#ifdef UNICODE
+	wstring m_directoryName;
+#else
 	string m_directoryName;
+#endif // !UNICODE
 	const DWORD m_bufferSize = 1024 * 2;
 	HANDLE m_directoryHandle;
 	HANDLE m_eventHandle;

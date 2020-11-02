@@ -313,7 +313,7 @@ void My_imgui::Draw(void)
 		ImGui::End();
 	}
 
-	static bool flag = false;
+	static bool flag = true;
 	ShowExampleAppDockSpace(&flag);
 
 	static string s = GAME_OBJECT::Get_Object_Name_Map().begin()->c_str();

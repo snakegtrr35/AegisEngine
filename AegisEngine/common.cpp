@@ -73,6 +73,7 @@ void Erroer_Message(const std::string& str1, const std::string& str2)
 {
 	MessageBox(GetWindow(), str1.c_str(), str2.c_str(), MB_OK | MB_ICONWARNING);
 }
+#endif // !UNICODE
 
 string Replace_String(string& replacedStr, const string& from, const string& to)
 {
@@ -96,4 +97,3 @@ string Replace_String(string& replacedStr, const string& from, const string& to)
 
 	return replacedStr.replace(pos, len, to);
 }
-#endif // !UNICODE
