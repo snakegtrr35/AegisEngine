@@ -832,8 +832,8 @@ void My_imgui::Draw(void)
 		ImGui::End();
 	}
 
-	static bool flag = true;
-	ShowExampleAppDockSpace(&flag);
+	// ドッキングスペース
+	ImGui::DockSpaceOverViewport(ImGui::GetMainViewport(), ImGuiDockNodeFlags_PassthruCentralNode);
 
 	static string s = GAME_OBJECT::Get_Object_Name_Map().begin()->c_str();
 
