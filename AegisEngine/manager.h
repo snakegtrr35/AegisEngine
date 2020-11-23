@@ -9,6 +9,8 @@ class SCENE;
 class SHADOW_MAP;
 class My_imgui;
 
+class CLUSTERED;
+
 class CManager {
 private:
 
@@ -32,6 +34,8 @@ private:
 	unique_ptr<My_imgui, Delete> imgui;		// Imguiのクラス
 	bool Play_Enable;
 #endif // _DEBUG
+
+	unique_ptr<CLUSTERED, Delete> cluster;		// CLUSTEREDのクラス
 
 	UINT ThreadCount;
 

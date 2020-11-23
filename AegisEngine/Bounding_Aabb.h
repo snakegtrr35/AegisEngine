@@ -112,6 +112,12 @@ public:
 		ar(Radius);
 	}
 
+	/**
+	* @brief 頂点バッファの更新関数
+	* @param BoundingBox AABB
+	*/
+	void OverWrite(BoundingBox aabb);
+
 	//template<class Archive>
 	//void save(Archive& ar) const
 	//{

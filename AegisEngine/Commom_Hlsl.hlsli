@@ -44,4 +44,12 @@ struct PS_IN_SHADOW {
     float4 Pos		: POSITION1;
 };
 
+struct CS_IN
+{
+    uint3 GTid : SV_GroupThreadID;
+    uint3 Gid : SV_GroupID;
+    uint3 DTid : SV_DispatchThreadID;
+    uint Gix : SV_GroupIndex;
+};
+
 #endif //! COMMOM_HLSL_H

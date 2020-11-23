@@ -8,7 +8,7 @@
 void BOUNDING_FRUSTUM::Init()
 {
 	{
-		BoundingFrustum::CreateFromMatrix(Frustum, XMMatrixPerspectiveFovLH(XMConvertToRadians(80.0f + 35.0f), float(SCREEN_WIDTH / SCREEN_HEIGHT), 0.1f, 10.0f));
+		BoundingFrustum::CreateFromMatrix(Frustum, XMMatrixPerspectiveFovLH(XMConvertToRadians(80.0f + 35.0f), float(SCREEN_WIDTH / SCREEN_HEIGHT), 0.001f, 1000.0f));
 		Frustum.Origin.z = 0.0f;
 		{
 			XMMATRIX matrix = XMMatrixRotationRollPitchYaw(XMConvertToRadians(Rotation.x), XMConvertToRadians(Rotation.y), XMConvertToRadians(Rotation.z));
@@ -171,14 +171,14 @@ void BOUNDING_FRUSTUM::Draw()
 
 void BOUNDING_FRUSTUM::Update(float delta_time)
 {
-	BoundingFrustum::CreateFromMatrix(Frustum, XMMatrixPerspectiveFovLH(XMConvertToRadians(80.0f + 35.0f), float(SCREEN_WIDTH / SCREEN_HEIGHT), 0.1f, 10.0f));
+	BoundingFrustum::CreateFromMatrix(Frustum, XMMatrixPerspectiveFovLH(XMConvertToRadians(80.0f + 35.0f), float(SCREEN_WIDTH / SCREEN_HEIGHT), 0.001f, 1000.0f));
 	Frustum.Origin.z = 0.0f;
 
 	XMFLOAT3 r;
 
 	const auto camera = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
 
-	//if (nullptr != camera)
+	if (false == camera.expired())
 	{
 		//XMStoreFloat3(&r, XMLoadFloat3(camera->Get_Rotation()) );
 
@@ -322,4 +322,61 @@ void BOUNDING_FRUSTUM::OverWrite()
 const BoundingFrustum& BOUNDING_FRUSTUM::Get_Collition()
 {
 	return Frustum;
+}
+
+void BOUNDING_FRUSTUM::Aabb_Cale(BOUNDING_AABB& aabb_)
+{
+	XMFLOAT3 max = {}, min = {};
+
+	std::vector<XMFLOAT3> points = {};
+	points.resize(8);
+
+	Frustum.GetCorners(points.data());
+
+	float max_x, max_y, max_z;
+	float min_x, min_y, min_z;
+
+	for (int i = 0; i < points.size(); i++)
+	{
+		// Å‘å’l
+		if (max.x < points[i].x || 0 == i)
+		{
+			max.x = points[i].x;
+		}
+
+		if (max.y < points[i].y || 0 == i)
+		{
+			max.y = points[i].y;
+		}
+
+		if (max.z < points[i].z || 0 == i)
+		{
+			max.z = points[i].z;
+		}
+
+		// Å¬’l
+		if (points[i].x < min.x || 0 == i)
+		{
+			min.x = points[i].x;
+		}
+
+		if (points[i].y < min.y || 0 == i)
+		{
+			min.y = points[i].y;
+		}
+
+		if (points[i].z < min.z || 0 == i)
+		{
+			min.z = points[i].z;
+		}
+	}
+
+	BoundingBox aabb;
+
+	XMVECTOR max_vec = XMLoadFloat3(&max);
+	XMVECTOR min_vec = XMLoadFloat3(&min);
+
+	BoundingBox::CreateFromPoints(aabb, max_vec, min_vec);
+
+	aabb_.OverWrite(aabb);
 }

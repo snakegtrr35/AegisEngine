@@ -13,7 +13,12 @@ BOUNDING_AABB::~BOUNDING_AABB()
 void BOUNDING_AABB::Init()
 {
 	{
-		XMFLOAT3 pos = *Owner.lock()->Get_Position();
+		XMFLOAT3 pos = XMFLOAT3();
+
+		if (false == Owner.expired())
+		{
+			pos = *Owner.lock()->Get_Position();
+		}
 
 		Aabb = BoundingBox(XMFLOAT3(0.f, 0.f, 0.f), Radius);
 
@@ -244,6 +249,53 @@ const BoundingBox& BOUNDING_AABB::Get_Collition()
 	return Aabb;
 }
 
+void BOUNDING_AABB::OverWrite(BoundingBox aabb)
+{
+	Aabb = aabb;
+
+	Color = Default_Color;
+
+	if (nullptr != pVertexBuffer)
+	{
+
+		VERTEX_3D Vertex[BoundingBox::CORNER_COUNT];
+		XMFLOAT3 corners[BoundingBox::CORNER_COUNT];
+
+		Aabb.GetCorners(corners);
+
+		Vertex[0].Position = corners[7];
+
+		Vertex[1].Position = corners[6];
+
+		Vertex[2].Position = corners[4];
+
+		Vertex[3].Position = corners[5];
+
+
+		Vertex[4].Position = corners[3];
+
+		Vertex[5].Position = corners[2];
+
+		Vertex[6].Position = corners[0];
+
+		Vertex[7].Position = corners[1];
+
+		for (char i = 0; i < BoundingBox::CORNER_COUNT; i++)
+		{
+			Vertex[i].Diffuse = XMFLOAT4(Color.r, Color.g, Color.b, Color.a);
+			Vertex[i].Normal = XMFLOAT3(1.0f, 0.0f, 0.0f);
+			Vertex[i].TexCoord = XMFLOAT2(0.0f, 0.0f);
+		}
+
+		// 頂点バッファの書き換え
+		{
+			D3D11_MAPPED_SUBRESOURCE msr;
+			CRenderer::GetDeviceContext()->Map(pVertexBuffer.get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &msr);
+			memcpy(msr.pData, Vertex, sizeof(VERTEX_3D) * BoundingBox::CORNER_COUNT);
+			CRenderer::GetDeviceContext()->Unmap(pVertexBuffer.get(), 0);
+		}
+	}
+}
 
 #include	"imgui/imgui.h"
 

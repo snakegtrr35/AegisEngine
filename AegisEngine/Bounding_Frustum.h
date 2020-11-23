@@ -9,6 +9,7 @@
 #define BOUNDING_SFRUSTUM_H
 
 #include	"Bounding.h"
+#include	"Bounding_Aabb.h"
 
 // 球
 class BOUNDING_FRUSTUM : public BOUNDING {
@@ -83,6 +84,11 @@ public:
 	* @details バウンディング視錐台(当たり判定専用)を取得する関数
 	*/
 	const BoundingFrustum& Get_Collition();
+
+	/**
+	* @brief AABBからバウンディング視錐台を生成する関数
+	*/
+	void Aabb_Cale(BOUNDING_AABB& aabb_);
 
 	template<typename Archive>
 	void serialize(Archive& ar)

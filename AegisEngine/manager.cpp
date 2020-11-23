@@ -81,6 +81,10 @@ bool CManager::Init()
 
 	EFFEKSEER_MANAGER::Init();
 
+	Manager->cluster.reset(new CLUSTERED());
+	Manager->cluster->Init();
+
+
 	//CRenderer::Change_Window_Mode();
 
 #ifdef _DEBUG
@@ -170,6 +174,8 @@ void CManager::Update()
 		{
 			EFFEKSEER_MANAGER::Play("test");
 		}
+
+		Manager->cluster->Update();
 	}
 
 #ifdef _DEBUG
@@ -197,6 +203,7 @@ void CManager::Draw()
 		CRenderer::SetPass_Rendring();
 		pShadowMap->Set();
 		Manager->pSceneManager->Get_Scene()->Get_Light_Manager()->Draw();
+		Manager->cluster->Draw();
 		pSceneManager->Draw();
 	}
 
