@@ -73,10 +73,32 @@ XMFLOAT3 operator+(const XMFLOAT3& left, const XMFLOAT3 right)
 	return XMFLOAT3(left.x + right.x, left.y + right.y, left.z + right.z);
 }
 
+XMFLOAT3 operator-(const XMFLOAT3& left, const XMFLOAT3 right)
+{
+	return XMFLOAT3(left.x - right.x, left.y - right.y, left.z - right.z);
+}
+
 XMFLOAT3 operator*(const XMFLOAT3& left, const float s)
 {
 	return XMFLOAT3(left.x * s, left.y * s, left.z * s);
 }
+
+XMFLOAT3 operator*(const XMFLOAT3& left, const XMFLOAT3 right)
+{
+	return XMFLOAT3(left.x * right.x, left.y * right.y, left.z * right.z);
+}
+
+XMFLOAT3 operator/(const XMFLOAT3& left, const XMFLOAT3 right)
+{
+	return XMFLOAT3(left.x / right.x, left.y / right.y, left.z / -right.z);
+}
+
+XMFLOAT3 operator/(const float s, const XMFLOAT3 right)
+{
+	return XMFLOAT3(s / right.x, s / right.y, s / -right.z);
+}
+
+
 
 XMFLOAT4 operator*(const XMFLOAT4& left, const float s)
 {

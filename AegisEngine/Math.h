@@ -793,7 +793,16 @@ namespace AeigisMath
 
 XMFLOAT3 operator+(const XMFLOAT3& left, const XMFLOAT3 right);
 
+XMFLOAT3 operator-(const XMFLOAT3& left, const XMFLOAT3 right);
+
+XMFLOAT3 operator*(const XMFLOAT3& left, const XMFLOAT3 right);
+
 XMFLOAT3 operator*(const XMFLOAT3& left, const float s);
+
+XMFLOAT3 operator/(const XMFLOAT3& left, const XMFLOAT3 right);
+
+XMFLOAT3 operator/(const float s, const XMFLOAT3 right);
+
 
 XMFLOAT4 operator*(const XMFLOAT4& left, const float s);
 

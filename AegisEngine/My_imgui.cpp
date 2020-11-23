@@ -2085,14 +2085,12 @@ void My_imgui::Light_Setting()
 						bool flag = lights->at(i).Enable;
 						float Position[3] = { lights->at(i).Position.x, lights->at(i).Position.y, lights->at(i).Position.z };
 						float Color[3] = { lights->at(i).Color.r, lights->at(i).Color.g, lights->at(i).Color.b };
-						float Radius = lights->at(i).Radius;
 
 						UINT Type = lights->at(i).Type;//
 
 						ImGui::Checkbox("Enable", &flag);
 						ImGui::DragFloat3("Position", Position, 0.01f);
 						ImGui::DragFloat3("Color", Color, 0.01f, 0.f, 1.0f);
-						ImGui::DragFloat("Radius", &Radius, 0.01f, 0.f, 1000.0f);
 
 						////
 						{
@@ -2163,7 +2161,6 @@ void My_imgui::Light_Setting()
 						lights->at(i).Enable = flag;
 						lights->at(i).Position = XMFLOAT3(Position[0], Position[1], Position[2]);
 						lights->at(i).Color = COLOR(Color[0], Color[1], Color[2], 0.0f);
-						lights->at(i).Radius = Radius;
 					}
 
 					ImGui::TreePop();

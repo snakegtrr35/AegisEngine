@@ -79,10 +79,6 @@ void ENEMY::Draw_DPP()
 	Model->Draw_DPP();
 }
 
-XMFLOAT3 operator-(const XMFLOAT3& vec1, const XMFLOAT3& vec2) {
-	return XMFLOAT3(vec1.x - vec2.x, vec1.y - vec2.y, vec1.z - vec2.z);
-}
-
 void ENEMY::Update(float delta_time)
 {
 	XMFLOAT3 vec;
