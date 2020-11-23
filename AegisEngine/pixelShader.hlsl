@@ -4,67 +4,6 @@
 //*****************************************************************************
 // 定数バッファ
 //*****************************************************************************
-
-
-
-//#define MAX_NUM_LIGHTS 64
-//#define LIGHT_TYPE_POINT 0          // ポイントライト
-//#define LIGHT_TYPE_SPOT 1           // スポットライト
-
-//// ライトバッファ
-//struct Lights
-//{
-//    // 共通部分
-//    bool Enable /*: packoffset(c0)*/;
-//    float3 Position /*: packoffset(c0.x)*/;
-//    float4 Color /*: packoffset(c1)*/;
-//    float Radius /*: packoffset(c2.x)*/;
-//    float3 Attenuation /*: packoffset(c2.y)*/;
-    
-//    uint Type;
-//    float3 Dummy;
-//};
-
-//// マトリクスバッファ
-//cbuffer LightsBuffer : register(b6)
-//{
-//    Lights LightsBuf[MAX_NUM_LIGHTS];
-//}
-
-//float3 DoPointLight(Lights light, float4 Position, float4 CameraPos, float4 Normal)
-//{
-//    float3 result = (float) 0.0;
-
-//    float3 Dir = light.Position - Position.xyz;
-//    //float3 Dir = Position.xyz - light.Position;
-//    float distance = length(Dir);
-//    //Dir = normalize(Dir);
-//    Dir = Dir / distance;
-
-//    //拡散
-//    float colD = 0.5 - 0.5 * dot(Normal.xyz, Dir);
-//    //colD = 1;
-
-//    float colA = saturate(1.0f / (light.Attenuation.x + light.Attenuation.y * distance + light.Attenuation.z * distance * distance));
-
-//    result = light.Color.rgb * (colD * colA);
-//    return result;
-//}
-
-//bool Cul_Radius(Lights light, float4 Position)
-//{
-//    float x = (Position.xyz.x - light.Position.x) * (Position.xyz.x - light.Position.x);
-//    float y = (Position.xyz.y - light.Position.y) * (Position.xyz.y - light.Position.y);
-//    float z = (Position.xyz.z - light.Position.z) * (Position.xyz.z - light.Position.z);
-
-//    float Dir = x + y + z;
-
-//    return (Dir <= (light.Radius * light.Radius));
-//}
-
-
-
-
 // マトリクスバッファ
 cbuffer ConstantBuffer : register(b0)
 {
@@ -188,69 +127,77 @@ void main( PS_IN Input,
     
     color.rgb += (ambient.rgb * TexColor.rgb);
 
-    float3 light_color = (float3) 0.0;
+    //float3 light_color = (float3) 0.0;
     
-    for (int i = 0; i < MAX_NUM_LIGHTS; i++)
-    {
-        if (LightsBuf[i].Enable)
-        {
-            switch (LightsBuf[i].Type)
-            {
-                case LIGHT_TYPE_POINT:
-                    if (Cul_Radius(LightsBuf[i], Input.WPos))
-                    {
-                        float3 col = DoPointLight(LightsBuf[i], Input.WPos, CameraPos, Input.Normal);
-                        light_color = saturate(col + light_color);
-                    }
-                break;
-                
-                case LIGHT_TYPE_SPOT:
-                    break;
-            }
-        }
-
-    }
-    
+    //for (int i = 0; i < MAX_NUM_LIGHTS; i++)
     //{
-    //    int4 coord = int4(Input.WPos.xyz * Scale + Bias, 0);
-    //    uint cluster_mask = Cluster.Load(coord);
-       
-    //    while (cluster_mask)
+    //    if (LightsBuf[i].Enable)
     //    {
-    //        uint cluster_index = firstbitlow(cluster_mask);
-    //        cluster_mask &= ~(1 << cluster_index);
-
-    //        int3 coord_index = coord.xyz;
-        
-    //        // 3Dでの番号を1Dの番号に変換
-    //        int index = (coord_index.z * CLUSTERED_X * CLUSTERED_Y + coord_index.y * CLUSTERED_X + coord_index.x) + 1;
-        
-    //        uint light_mask = LightList.Load(int3(cluster_index, index, 0));
-        
-    //        while (light_mask)
+    //        switch (LightsBuf[i].Type)
     //        {
-    //            uint light_index = firstbitlow(light_mask);
-    //            light_mask &= ~(1 << light_index);
-            
-    //            uint light_idx = mad(cluster_index, 32, light_index);
-
-    //            Lights light = LightsBuf[light_idx];
-            
-    //            switch (light.Type)
-    //            {
-    //                case LIGHT_TYPE_POINT:
-    //                    float3 col = DoPointLight(light, Input.WPos, CameraPos, Input.Normal);
+    //            case LIGHT_TYPE_POINT:
+    //                if (Cul_Radius(LightsBuf[i], Input.WPos))
+    //                {
+    //                    float3 col = DoPointLight(LightsBuf[i], Input.WPos, CameraPos, Input.Normal);
     //                    light_color = saturate(col + light_color);
-    //                    break;
-            
-    //                case LIGHT_TYPE_SPOT:
-    //                    break;
-    //            }
+    //                }
+    //            break;
+                
+    //            case LIGHT_TYPE_SPOT:
+    //                break;
     //        }
     //    }
+
     //}
     
-    color.rgb += light_color;
+    {
+        float3 light_color = 0.0;
+        {
+            float3 world_pos = Input.WPos.xyz;
+            
+            int3 coord = int3(floor(abs((Bias - world_pos) / Scale)));
+            uint cluster_mask = g_Cluster.Load(float4(coord, 0));
+       
+            while (cluster_mask)
+            {
+                uint cluster_index = firstbitlow(cluster_mask);
+                cluster_mask &= ~(1 << cluster_index);
+
+                int3 coord_index = coord.xyz;
+        
+                // 3Dでの番号を1Dの番号に変換
+                int index = (coord_index.z * CLUSTERED_Z + CLUSTERED_Y * coord_index.y + CLUSTERED_X * coord_index.x) /*+ 1*/;
+        
+                uint light_mask = g_LightList.Load(int3(index, cluster_index, 0));
+        
+                while (light_mask)
+                {
+                    uint light_index = firstbitlow(light_mask);
+                    light_mask &= ~(1 << light_index);
+            
+                    uint light_idx = mad(cluster_index, 32, light_index);
+
+                    Lights light = LightsBuf[light_idx];
+            
+                    if (light.Enable)
+                    {
+                        switch (light.Type)
+                        {
+                            case LIGHT_TYPE_POINT:
+                                float3 col = DoPointLight(light, world_pos);
+                                light_color = saturate(col + light_color);
+                                break;
+            
+                            case LIGHT_TYPE_SPOT:
+                                break;
+                        }
+                    }
+                }
+            }
+            
+        }
+        color.rgb += light_color;
+    }
     
     outDiffuse = color;
 }
