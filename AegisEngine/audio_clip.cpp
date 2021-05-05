@@ -1,6 +1,17 @@
 #include "main.h"
 #include "audio_clip.h"
 
+#include <opusfile.h>
+#include <vorbis/vorbisfile.h>
+// libopusとopusfileをリンク
+#pragma comment(lib, "opus.lib")
+#pragma comment(lib, "opusfile.lib")
+// vorbisをリンク
+#pragma comment ( lib, "vorbis_static.lib" )
+#pragma comment ( lib, "vorbisfile_static.lib" )
+// liboggをリンク
+#pragma comment(lib, "libogg.lib")
+
 #ifdef UNICODE
 map<wstring, CAudioClip*> AUDIO_MANAGER::Sound_Dates;
 #else
@@ -19,6 +30,7 @@ void CAudioClip::Load(const char* FileName)
 	// サウンドデータ読込
 	WAVEFORMATEX wfx = { 0 };
 
+	if(wstring::npos == wstring(FileName).find(L".ogg"))
 	{
 		HMMIO hmmio = NULL;
 		MMIOINFO mmioinfo = { 0 };
@@ -70,6 +82,11 @@ void CAudioClip::Load(const char* FileName)
 
 
 		mmioClose(hmmio, 0);
+	}
+	else
+	{
+		Load_Ogg(FileName);
+		return;
 	}
 
 	// サウンドソース生成
@@ -257,5 +274,116 @@ void AUDIO_MANAGER::Load()
 	for (int i = 0; i < SOUND_FILE_COUNT; i++)
 	{
 		Add_Sound_Object((SOUND_INDEX)i);
+	}
+}
+
+void CAudioClip::Load_Ogg(const wchar_t* FileName)
+{
+	WAVEFORMATEX wfx{};
+
+	int ret = 0;
+	//ファイル開く
+	OggOpusFile* of = op_open_file(wstringTostring(FileName).c_str(), &ret);
+
+	if(nullptr != of)
+	{
+		//波形情報の取得
+		const OpusHead* pHead = op_head(of, -1);
+		if (!pHead) {
+			assert(false);
+		}
+		//PCMなので固定
+		wfx.wFormatTag = WAVE_FORMAT_PCM;
+		//チャンネル数(モノラル:1 ステレオ:2)
+		wfx.nChannels = pHead->channel_count;
+		//サンプリングレート(48000固定)
+		wfx.nSamplesPerSec = 48000;
+		//サンプル当たりのビット数(8bit:8 16bit:16)
+		wfx.wBitsPerSample = 16;
+		//ブロックサイズ(16bit ステレオなら 2*2=4)
+		wfx.nBlockAlign = wfx.nChannels * wfx.wBitsPerSample / 8;
+		//データ速度(秒間当たりのデータ量 channel*sample*bit/8)
+		wfx.nAvgBytesPerSec = wfx.nSamplesPerSec * wfx.nBlockAlign;
+		// 合計サイズの取得
+		ogg_int64_t decodedSize = op_pcm_total(of, -1) * wfx.nBlockAlign;
+		//必要なメモリ確保
+		char* pDecodedBuf = new char[decodedSize];
+		char* pBuf = pDecodedBuf;
+		int readSize;
+		while ((readSize = op_read(of, (opus_int16*)pBuf, 8096, NULL)) > 0)
+		{
+			pBuf += readSize * wfx.nBlockAlign;
+		}
+		op_free(of);
+
+		SoundData = new BYTE[decodedSize];
+		memcpy(SoundData, reinterpret_cast<BYTE*>(pDecodedBuf), decodedSize);
+
+		Length = decodedSize;
+		PlayLength = decodedSize / wfx.nBlockAlign;
+
+		delete[] pDecodedBuf;
+	}
+	else
+	{
+		OggVorbis_File ovf;
+		int error = ov_fopen(wstringTostring(FileName).c_str(), &ovf);
+		if (error != 0) {
+			switch (error) {
+			case OV_EREAD:       break;
+			case OV_ENOTVORBIS:  break;
+			case OV_EVERSION:    break;
+			case OV_EBADHEADER:  break;
+			case OV_EFAULT:      break;
+			default:             break;
+			}
+			assert(false);
+		}
+
+		// Oggファイルの音声フォーマット情報
+		vorbis_info* oggInfo = ov_info(&ovf, -1);
+
+		//PCMなので固定
+		wfx.wFormatTag = WAVE_FORMAT_PCM;
+		//チャンネル数
+		wfx.nChannels = oggInfo->channels;
+		//サンプリングレート
+		wfx.nSamplesPerSec = oggInfo->rate;
+		//サンプル当たりのビット数(8bit:8 16bit:16)
+		wfx.wBitsPerSample = 16;
+		//ブロックサイズ(16bit ステレオなら 2*2=4)
+		wfx.nBlockAlign = wfx.nChannels * wfx.wBitsPerSample / 8;
+		//データ速度(秒間当たりのデータ量)
+		wfx.nAvgBytesPerSec = wfx.nSamplesPerSec * wfx.nBlockAlign;
+		
+		// 合計サイズの取得
+		ogg_int64_t decodedSize = ov_pcm_total(&ovf, -1) * wfx.nBlockAlign;
+
+		char* pDecodedBuf = new char[decodedSize];
+		char* pBuf = pDecodedBuf;
+		//char* tmpBuffer = new char[decodedSize];
+		int bitstream = 0;
+		int readSize = 0;
+		int comSize = 0;
+		while ((readSize = ov_read(&ovf, pBuf, 4096, 0, 2, 1, &bitstream)) > 0)
+		{
+			pBuf += readSize;
+		}
+
+		ov_clear(&ovf);
+
+		SoundData = new BYTE[decodedSize];
+		memcpy(SoundData, reinterpret_cast<BYTE*>(pDecodedBuf), decodedSize);
+
+		Length = decodedSize;
+		PlayLength = decodedSize / wfx.nBlockAlign;
+
+		delete[] pDecodedBuf;
+	}
+
+	// サウンドソース生成
+	for (int j = 0; j < SOUND_SOURCE_MAX; j++)
+	{
+		AUDIO_MANAGER::Get_Xaudio()->CreateSourceVoice(&SourceVoice[j], &wfx);
 	}
 }

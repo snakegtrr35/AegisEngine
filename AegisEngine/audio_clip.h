@@ -18,6 +18,8 @@ enum class SOUND_INDEX {
 	SOUND_INDEX_CLEAR,			// クリアのBGM
 	SOUND_INDEX_GAMEOVER,		// ゲームオーバーのBGM
 
+	SOUND_INDEX_82,
+
 	SOUND_INDEX_SHOT,
 	SOUND_INDEX_EXPLOSION,
 	SOUND_INDEX_KETTEI,
@@ -51,6 +53,9 @@ static const SOUND_FILE g_SoundFiles[] = {
 	{ L"asset/sound/BGM_battle.wav", SOUND_TAG::BGM },
 	{ L"asset/sound/BGM_game_clear .wav", SOUND_TAG::BGM },
 	{ L"asset/sound/BGM_game_over.wav", SOUND_TAG::BGM },
+
+	{ L"asset/Sound/82_vorbis.ogg", SOUND_TAG::BGM },
+	//{ L"asset/Sound/82_opus.ogg", SOUND_TAG::BGM },
 
 	{ L"asset/sound/SE_shot.wav", SOUND_TAG::SE },
 	{ L"asset/sound/SE_explosion000.wav", SOUND_TAG::SE },
@@ -102,6 +107,8 @@ public:
 	void Load(const wchar_t* FileName);
 
 	void Set_Name(const wstring& name);
+
+	void Load_Ogg(const wchar_t* FileName);
 
 	wstring* const Get_Name();
 #else
