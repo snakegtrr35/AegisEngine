@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 
 #ifndef MODEL_LOADER_H
 #define MODEL_LOADER_H
@@ -20,8 +20,8 @@ class GAME_OBJECT;
 
 class CMODEL : public GAME_OBJECT {
 private:
-	//map<string, MESH> Meshes;		// ƒƒbƒVƒ…
-	MESH Meshes;		// ƒƒbƒVƒ…
+	//map<string, MESH> Meshes;		// ãƒ¡ãƒƒã‚·ãƒ¥
+	MESH Meshes;		// ãƒ¡ãƒƒã‚·ãƒ¥
 	string directory;
 	vector<TEXTURE_S> textures_loaded;
 

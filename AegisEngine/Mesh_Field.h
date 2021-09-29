@@ -1,6 +1,6 @@
-/**
+ï»¿/**
  * @file Mesh_Field.h
- * @brief ƒƒbƒVƒ…ƒtƒB[ƒ‹ƒhŠÖŒW‚Ìƒwƒbƒ_[ƒtƒ@ƒCƒ‹
+ * @brief ãƒ¡ãƒƒã‚·ãƒ¥ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰é–¢ä¿‚ã®ãƒ˜ãƒƒãƒ€ãƒ¼ãƒ•ã‚¡ã‚¤ãƒ«
  */
 
 #pragma once
@@ -14,88 +14,88 @@ class GAME_OBJECT;
 class TEXTURE;
 
 //==============================
-//  ƒtƒB[ƒ‹ƒhƒNƒ‰ƒX
+//  ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰ã‚¯ãƒ©ã‚¹
 //==============================
 class MESH_FIELD : public GAME_OBJECT {
 private:
 
-	//! ƒOƒŠƒbƒhƒTƒCƒY
+	//! ã‚°ãƒªãƒƒãƒ‰ã‚µã‚¤ã‚º
 	XMFLOAT3							GridSize;
 
-	//! ƒOƒŠƒbƒh”
+	//! ã‚°ãƒªãƒƒãƒ‰æ•°
 	XMINT2								GridNum;
 
-	//! ƒCƒ“ƒfƒbƒNƒX”
+	//! ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹æ•°
 	UINT								IndexNum;
 
-	// ’¸“_ƒf[ƒ^
+	// é ‚ç‚¹ãƒ‡ãƒ¼ã‚¿
 	vector<VERTEX_3D>					VertexArray;
 
-	//! ’¸“_ƒoƒbƒtƒ@
+	//! é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡
 	unique_ptr<ID3D11Buffer, Release>	VertexBuffer;
 
-	//! ƒCƒ“ƒfƒbƒNƒXƒoƒbƒtƒ@
+	//! ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ãƒãƒƒãƒ•ã‚¡
 	unique_ptr<ID3D11Buffer, Release>	IndexBuffer;
 
-	//! ƒeƒNƒXƒ`ƒƒ
+	//! ãƒ†ã‚¯ã‚¹ãƒãƒ£
 	unique_ptr<TEXTURE>					Texture;
 
 public:
 
 	/**
-	* @brief ƒRƒ“ƒXƒgƒ‰ƒNƒ^
-	* @details ˆø”–³‚µƒRƒ“ƒXƒgƒ‰ƒNƒ^
+	* @brief ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
+	* @details å¼•æ•°ç„¡ã—ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
 	*/
 	MESH_FIELD();
 
 	/**
-	* @brief ƒfƒXƒgƒ‰ƒNƒ^
-	* @details ƒfƒXƒgƒ‰ƒNƒ^
+	* @brief ãƒ‡ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
+	* @details ãƒ‡ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
 	*/
 	~MESH_FIELD() { Uninit(); }
 
 	/**
-	* @brief ‰Šú‰»ŠÖ”
-	* @details ‰Šú‰»‚·‚éŠÖ”
+	* @brief åˆæœŸåŒ–é–¢æ•°
+	* @details åˆæœŸåŒ–ã™ã‚‹é–¢æ•°
 	*/
 	void Init() override;
 
 	/**
-	* @brief •`‰æŠÖ”
-	* @details •`‰æ‚·‚éŠÖ”
+	* @brief æç”»é–¢æ•°
+	* @details æç”»ã™ã‚‹é–¢æ•°
 	*/
 	void Draw() override;
 
 	/**
-	* @brief •`‰æ(Depth-pre-pass)ŠÖ”
-	* @details Depth-pre-pass‚ğ‚·‚éŠÖ”
+	* @brief æç”»(Depth-pre-pass)é–¢æ•°
+	* @details Depth-pre-passã‚’ã™ã‚‹é–¢æ•°
 	*/
 	void Draw_DPP() override;
 
 	/**
-	* @brief XVŠÖ”
-	* @details XV‚·‚éŠÖ”
+	* @brief æ›´æ–°é–¢æ•°
+	* @details æ›´æ–°ã™ã‚‹é–¢æ•°
 	*/
 	void Update(float delta_time) override;
 
 	/**
-	* @brief I—¹ˆ—ŠÖ”
-	* @details I—¹ˆ—‚ğ‚·‚éŠÖ”
+	* @brief çµ‚äº†å‡¦ç†é–¢æ•°
+	* @details çµ‚äº†å‡¦ç†ã‚’ã™ã‚‹é–¢æ•°
 	*/
 	void Uninit() override;
 
 	/**
-	* @brief ƒƒbƒVƒ…ƒtƒB[ƒ‹ƒh‚Ì‚‚³‚ğæ“¾‚·‚éŠÖ”
-	* @param position ƒƒbƒVƒ…ƒtƒB[ƒ‹ƒh‚ÌÀ•W
-	* @return float ƒƒbƒVƒ…ƒtƒB[ƒ‹ƒh‚Ì‚‚³
-	* @details ˆø”‚ÌÀ•W‚ÌƒƒbƒVƒ…ƒtƒB[ƒ‹ƒh‚Ì‚‚³‚ğæ“¾‚·‚éŠÖ”
+	* @brief ãƒ¡ãƒƒã‚·ãƒ¥ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰ã®é«˜ã•ã‚’å–å¾—ã™ã‚‹é–¢æ•°
+	* @param position ãƒ¡ãƒƒã‚·ãƒ¥ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰ã®åº§æ¨™
+	* @return float ãƒ¡ãƒƒã‚·ãƒ¥ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰ã®é«˜ã•
+	* @details å¼•æ•°ã®åº§æ¨™ã®ãƒ¡ãƒƒã‚·ãƒ¥ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰ã®é«˜ã•ã‚’å–å¾—ã™ã‚‹é–¢æ•°
 	*/
 	const float Get_Height(const XMFLOAT3& position);
 
 	/**
-	* @brief ƒeƒNƒXƒ`ƒƒ‚ğİ’è‚·‚éŠÖ”
-	* @param file_name g—p‚·‚éƒeƒNƒXƒ`ƒƒ–¼
-	* @details ƒeƒNƒXƒ`ƒƒ(ƒNƒ‰ƒX)‚ğİ’è‚·‚éŠÖ”
+	* @brief ãƒ†ã‚¯ã‚¹ãƒãƒ£ã‚’è¨­å®šã™ã‚‹é–¢æ•°
+	* @param file_name ä½¿ç”¨ã™ã‚‹ãƒ†ã‚¯ã‚¹ãƒãƒ£å
+	* @details ãƒ†ã‚¯ã‚¹ãƒãƒ£(ã‚¯ãƒ©ã‚¹)ã‚’è¨­å®šã™ã‚‹é–¢æ•°
 	*/
 	void SetTexture(const string& const file_name);
 
@@ -125,7 +125,7 @@ CEREAL_REGISTER_TYPE(MESH_FIELD)
 CEREAL_REGISTER_POLYMORPHIC_RELATION(GAME_OBJECT, MESH_FIELD)
 
 //==============================
-//  ƒEƒH[ƒ‹ƒNƒ‰ƒX
+//  ã‚¦ã‚©ãƒ¼ãƒ«ã‚¯ãƒ©ã‚¹
 //==============================
 class MESH_WALL :public GAME_OBJECT {
 private:
@@ -134,9 +134,9 @@ private:
 	unsigned int	IndexNum;
 	VERTEX_3D* VertexArray;
 
-	ID3D11Buffer* VertexBuffer;		// ’¸“_ƒoƒbƒtƒ@
-	ID3D11Buffer* IndexBuffer;		// ƒCƒ“ƒfƒbƒNƒXƒoƒbƒtƒ@
-	TEXTURE* Texture;				// ƒeƒNƒXƒ`ƒƒ
+	ID3D11Buffer* VertexBuffer;		// é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡
+	ID3D11Buffer* IndexBuffer;		// ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ãƒãƒƒãƒ•ã‚¡
+	TEXTURE* Texture;				// ãƒ†ã‚¯ã‚¹ãƒãƒ£
 
 public:
 	MESH_WALL();

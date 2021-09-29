@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 
 #ifndef CUBE_H
 #define CUBE_H
@@ -8,7 +8,7 @@
 
 class GRID : public GAME_OBJECT {
 private:
-	ID3D11Buffer* pVertexBuffer;	// ’¸“_ƒoƒbƒtƒ@
+	ID3D11Buffer* pVertexBuffer;	// é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡
 
 public:
 	GRID();

@@ -1,9 +1,9 @@
-#ifndef LIGHT_HLSL_H
+ï»¿#ifndef LIGHT_HLSL_H
 #define LIGHT_HLSL_H
 
 #define MAX_NUM_LIGHTS 512
-#define LIGHT_TYPE_POINT 0          // ƒ|ƒCƒ“ƒgƒ‰ƒCƒg
-#define LIGHT_TYPE_SPOT 1           // ƒXƒ|ƒbƒgƒ‰ƒCƒg
+#define LIGHT_TYPE_POINT 0          // ãƒã‚¤ãƒ³ãƒˆãƒ©ã‚¤ãƒˆ
+#define LIGHT_TYPE_SPOT 1           // ã‚¹ãƒãƒƒãƒˆãƒ©ã‚¤ãƒˆ
 
 
 static uint CLUSTERED_X = 32;
@@ -11,10 +11,10 @@ static uint CLUSTERED_Y = 32;
 static uint CLUSTERED_Z = 16;
 
 
-// ƒ‰ƒCƒgƒoƒbƒtƒ@
+// ãƒ©ã‚¤ãƒˆãƒãƒƒãƒ•ã‚¡
 struct Lights
 {
-    // ‹¤’Ê•”•ª
+    // å…±é€šéƒ¨åˆ†
     bool Enable;
     float3 Position;
     
@@ -24,13 +24,13 @@ struct Lights
     float3 Dummy;
 };
 
-// ƒ}ƒgƒŠƒNƒXƒoƒbƒtƒ@
+// ãƒãƒˆãƒªã‚¯ã‚¹ãƒãƒƒãƒ•ã‚¡
 cbuffer LightsBuffer : register(b6)
 {
     Lights LightsBuf[MAX_NUM_LIGHTS];
 }
 
-// ’è”ƒoƒbƒtƒ@
+// å®šæ•°ãƒãƒƒãƒ•ã‚¡
 cbuffer ClusterBuffer : register(b7)
 {
     float3 Scale;

@@ -1,14 +1,14 @@
-#include "Commom_Hlsl.hlsli"
+ï»¿#include "Commom_Hlsl.hlsli"
 
 #define MAX_NUM_LIGHTS 512
-#define LIGHT_TYPE_POINT 0          // ƒ|ƒCƒ“ƒgƒ‰ƒCƒg
-#define LIGHT_TYPE_SPOT 1           // ƒXƒ|ƒbƒgƒ‰ƒCƒg
+#define LIGHT_TYPE_POINT 0          // ãƒã‚¤ãƒ³ãƒˆãƒ©ã‚¤ãƒˆ
+#define LIGHT_TYPE_SPOT 1           // ã‚¹ãƒãƒƒãƒˆãƒ©ã‚¤ãƒˆ
 
 static uint CLUSTERED_X = 32;
 static uint CLUSTERED_Y = 32;
 static uint CLUSTERED_Z = 16;
 
-// ’è”ƒoƒbƒtƒ@
+// å®šæ•°ãƒãƒƒãƒ•ã‚¡
 cbuffer ConstatntBuffer : register(b0)
 {
     float3 Min;
@@ -21,10 +21,10 @@ cbuffer ConstatntBuffer : register(b0)
     float dummy3;
 }
 
-// ƒ‰ƒCƒgƒoƒbƒtƒ@
+// ãƒ©ã‚¤ãƒˆãƒãƒƒãƒ•ã‚¡
 struct Lights
 {
-    // ‹¤’Ê•”•ª
+    // å…±é€šéƒ¨åˆ†
     bool Enable;
     float3 Position;
     
@@ -34,7 +34,7 @@ struct Lights
     float3 Dummy;
 };
 
-// ƒ‰ƒCƒgƒoƒbƒtƒ@
+// ãƒ©ã‚¤ãƒˆãƒãƒƒãƒ•ã‚¡
 cbuffer LightsBuffer : register(b1)
 {
     Lights LightsBuf[MAX_NUM_LIGHTS];
@@ -44,7 +44,7 @@ cbuffer LightsBuffer : register(b1)
 RWTexture3D<uint> outCluster : register(u0);
 RWTexture2D<uint> outLightList : register(u1);
 
-// ƒOƒ‹[ƒv‹¤—Lƒƒ‚ƒŠ
+// ã‚°ãƒ«ãƒ¼ãƒ—å…±æœ‰ãƒ¡ãƒ¢ãƒª
 groupshared uint TempBuffer[2];
 
 bool isHit(in float3 max, in float3 min, in float3 position, in float radius);
@@ -83,7 +83,7 @@ void main(CS_IN Input)
         
         if (light.Enable)
         {
-			// “–‚½‚è”»’è
+			// å½“ãŸã‚Šåˆ¤å®š
             if (isHit(max, min, light.Position, CaleRadius(light)))
             {
                 quo = GTid / 32;
@@ -112,9 +112,9 @@ bool isHit(in float3 max, in float3 min, in float3 position, in float radius)
     float3 BoxExtents = (max - min) * 0.5;
     float3 BoxCenter = min + BoxExtents;
 
-    float SqLen = 0.0; // ’·‚³‚Ì‚×‚«æ‚Ì’l‚ğŠi”[
+    float SqLen = 0.0; // é•·ã•ã®ã¹ãä¹—ã®å€¤ã‚’æ ¼ç´
 
-	// Še²‚Å“_‚ªÅ¬’lˆÈ‰º‚à‚µ‚­‚ÍÅ‘å’lˆÈã‚È‚ç‚ÎA·‚ğl—¶
+	// å„è»¸ã§ç‚¹ãŒæœ€å°å€¤ä»¥ä¸‹ã‚‚ã—ãã¯æœ€å¤§å€¤ä»¥ä¸Šãªã‚‰ã°ã€å·®ã‚’è€ƒæ…®
     if (position.x < min.x)
     {
         SqLen += (position.x - min.x) * (position.x - min.x);

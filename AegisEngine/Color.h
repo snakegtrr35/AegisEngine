@@ -1,9 +1,9 @@
-#pragma once
+ï»¿#pragma once
 
 #ifndef COLOR_H
 #define COLOR_H
 
-//! F\‘¢‘Ì
+//! è‰²æ§‹é€ ä½“
 struct COLOR
 {
 	float r;
@@ -20,59 +20,59 @@ struct COLOR
 		a = _a;
 	}
 
-	// ‘ã“ü‰‰Z( = )
+	// ä»£å…¥æ¼”ç®—( = )
 	COLOR& operator = (const COLOR& color)
 	{
 		r = color.r; g = color.g; b = color.b, a = color.a;
 		return *this;
 	}
 
-	// ˜a( + )
+	// å’Œ( + )
 	const COLOR operator + (const COLOR& color) const
 	{
 		return COLOR(r + color.r, g + color.g, b + color.b, a + color.a);
 	}
 
-	// ·( - )
+	// å·®( - )
 	const COLOR operator - (const COLOR& color) const
 	{
 		return COLOR(r - color.r, g - color.g, b - color.b, a - color.a);
 	}
 
-	// Ï( * )
+	// ç©( * )
 	const COLOR operator * (const COLOR& color) const
 	{
 		return COLOR(r * color.r, g * color.g, b * color.b, a * color.a);
 	}
 
-	// ¤( / )
+	// å•†( / )
 	const COLOR operator / (const COLOR& color) const
 	{
 		return COLOR(r / color.r, g / color.g, b / color.b, a / color.a);
 	}
 
-	// ©g‚É‘Î‚·‚é˜a( += ) 
+	// è‡ªèº«ã«å¯¾ã™ã‚‹å’Œ( += ) 
 	COLOR& operator += (const COLOR& color)
 	{
 		r += color.r; g += color.g;	b += color.b; a += color.a;
 		return *this;
 	}
 
-	// ©g‚É‘Î‚·‚é·( -= ) 
+	// è‡ªèº«ã«å¯¾ã™ã‚‹å·®( -= ) 
 	COLOR& operator -= (const COLOR& color)
 	{
 		r -= color.r; g -= color.g;	b -= color.b; a -= color.a;
 		return *this;
 	}
 
-	// ©g‚É‘Î‚·‚éÏ( *= ) 
+	// è‡ªèº«ã«å¯¾ã™ã‚‹ç©( *= ) 
 	COLOR& operator *= (const COLOR& color)
 	{
 		r *= color.r; g *= color.g;	b *= color.b; a *= color.a;
 		return *this;
 	}
 
-	// ©g‚É‘Î‚·‚é¤( /= ) 
+	// è‡ªèº«ã«å¯¾ã™ã‚‹å•†( /= ) 
 	COLOR& operator /= (const COLOR& color)
 	{
 		r /= color.r; g /= color.g;	b /= color.b; a /= color.a;

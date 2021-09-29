@@ -1,8 +1,8 @@
-//
+Ôªø//
 // Copyright 2014 ADVANCED MICRO DEVICES, INC.  All Rights Reserved.
 //
 // AMD is granting you permission to use this software and documentation (if
-// any) (collectively, the ìMaterialsÅE pursuant to the terms and conditions
+// any) (collectively, the Ê∫∫aterials„Éª pursuant to the terms and conditions
 // of the Software License Agreement included with the Materials.  If you do
 // not have a copy of the Software License Agreement, contact your AMD
 // representative for a copy.

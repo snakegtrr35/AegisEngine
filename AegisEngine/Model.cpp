@@ -1,4 +1,4 @@
-#include	"Model.h"
+ï»¿#include	"Model.h"
 #include	"Model_Manager.h"
 
 #include	"manager.h"
@@ -80,7 +80,7 @@ void MODEL::Draw()
 
 	if (nullptr == meshs) return;
 
-	// •’Ê‚Ì•`‰æ
+	// æ™®é€šã®æç”»
 	for (auto mesh : meshs->Get_Meshs())
 	{
 		for (auto& m : mesh.Get_Meshs())
@@ -124,7 +124,7 @@ const string& MODEL::Get_Model_Name()
 
 void MODEL::Draw_Inspector()
 {
-	auto str = (char*)u8"ƒRƒŠƒWƒ‡ƒ“(MODEL)";
+	auto str = (char*)u8"ã‚³ãƒªã‚¸ãƒ§ãƒ³(MODEL)";
 
 	ImGui::Text(str);
 

@@ -1,6 +1,6 @@
-/**
+ï»¿/**
 * @file SPrite_Animation.h
-* @brief ƒXƒvƒ‰ƒCƒgƒAƒjƒ[ƒVƒ‡ƒ“‚ÌƒNƒ‰ƒX‚ª‚ ‚éƒwƒbƒ_[ƒtƒ@ƒCƒ‹
+* @brief ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ã®ã‚¯ãƒ©ã‚¹ãŒã‚ã‚‹ãƒ˜ãƒƒãƒ€ãƒ¼ãƒ•ã‚¡ã‚¤ãƒ«
 */
 
 #pragma once
@@ -11,8 +11,8 @@
 #include	"Sprite.h"
 
 /**
-* @brief ƒXƒvƒ‰ƒCƒgƒAƒjƒ[ƒVƒ‡ƒ“ƒNƒ‰ƒX
-* @details ƒXƒvƒ‰ƒCƒg‚ÅƒAƒjƒ[ƒVƒ‡ƒ“‚ª‚Å‚«‚éƒNƒ‰ƒX
+* @brief ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ã‚¯ãƒ©ã‚¹
+* @details ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆã§ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ãŒã§ãã‚‹ã‚¯ãƒ©ã‚¹
 */
 class SPRITE_ANIMATION : public SPRITE {
 private:
@@ -23,99 +23,99 @@ private:
 
 	float FrameCount;
 
-	float Tx, Ty;	//!< ƒeƒNƒXƒ`ƒƒØ‚èæ‚èÀ•W
-	float Tw, Th;	//!< ƒeƒNƒXƒ`ƒƒ‚ÌØ‚èæ‚è•‚Æ‚‚³
+	float Tx, Ty;	//!< ãƒ†ã‚¯ã‚¹ãƒãƒ£åˆ‡ã‚Šå–ã‚Šåº§æ¨™
+	float Tw, Th;	//!< ãƒ†ã‚¯ã‚¹ãƒãƒ£ã®åˆ‡ã‚Šå–ã‚Šå¹…ã¨é«˜ã•
 
-	float Tx_Param, Ty_Param;	//!< ƒeƒNƒXƒ`ƒƒØ‚èæ‚èÀ•Wiè“®j
+	float Tx_Param, Ty_Param;	//!< ãƒ†ã‚¯ã‚¹ãƒãƒ£åˆ‡ã‚Šå–ã‚Šåº§æ¨™ï¼ˆæ‰‹å‹•ï¼‰
 
-	unsigned char  Pattern_Max_X;	//!< ƒeƒNƒXƒ`ƒƒ‚Ì•ªŠ„”(‰¡)
-	unsigned char  Pattern_Max_Y;	//!< ƒeƒNƒXƒ`ƒƒ‚Ì•ªŠ„”(c)
+	unsigned char  Pattern_Max_X;	//!< ãƒ†ã‚¯ã‚¹ãƒãƒ£ã®åˆ†å‰²æ•°(æ¨ª)
+	unsigned char  Pattern_Max_Y;	//!< ãƒ†ã‚¯ã‚¹ãƒãƒ£ã®åˆ†å‰²æ•°(ç¸¦)
 
 	/**
-	* @brief •`‰æŠÖ”
-	* @details ÀÛ‚É•`‰æ‚·‚éŠÖ”
+	* @brief æç”»é–¢æ•°
+	* @details å®Ÿéš›ã«æç”»ã™ã‚‹é–¢æ•°
 	*/
 	void Draw2(float tx = -1.0f, float ty = -1.0f);
 
 	/**
-	* @brief •`‰æ(Depth-pre-pass)ŠÖ”
-	* @details Depth-pre-pass‚ğ‚·‚éŠÖ”
+	* @brief æç”»(Depth-pre-pass)é–¢æ•°
+	* @details Depth-pre-passã‚’ã™ã‚‹é–¢æ•°
 	*/
 	void Draw_DPP2(float tx = -1.0f, float ty = -1.0f);
 
 public:
 
 	/**
-	* @brief ƒRƒ“ƒXƒgƒ‰ƒNƒ^
-	* @details ˆø”–³‚µƒRƒ“ƒXƒgƒ‰ƒNƒ^
+	* @brief ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
+	* @details å¼•æ•°ç„¡ã—ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
 	*/
 	SPRITE_ANIMATION();
 
 	/**
-	* @brief ƒRƒ“ƒXƒgƒ‰ƒNƒ^
-	* @param  position ’†SÀ•W(“ñŸŒ³À•W)
-	* @param size ƒTƒCƒY
-	* @details ˆø”•t‚«ƒRƒ“ƒXƒgƒ‰ƒNƒ^
+	* @brief ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
+	* @param  position ä¸­å¿ƒåº§æ¨™(äºŒæ¬¡å…ƒåº§æ¨™)
+	* @param size ã‚µã‚¤ã‚º
+	* @details å¼•æ•°ä»˜ãã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
 	*/
 	SPRITE_ANIMATION(XMFLOAT2 position, XMFLOAT4 size);
 
 	/**
-	* @brief ƒfƒXƒgƒ‰ƒNƒ^
-	* @details ƒfƒXƒgƒ‰ƒNƒ^
+	* @brief ãƒ‡ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
+	* @details ãƒ‡ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
 	*/
 	~SPRITE_ANIMATION();
 
 	/**
-	* @brief ‰Šú‰»ŠÖ”
-	* @details ‰Šú‰»‚·‚éŠÖ”
+	* @brief åˆæœŸåŒ–é–¢æ•°
+	* @details åˆæœŸåŒ–ã™ã‚‹é–¢æ•°
 	*/
 	void Init() override;
 
 	/**
-	* @brief •`‰æŠÖ”
-	* @details •`‰æ‚·‚éŠÖ”
+	* @brief æç”»é–¢æ•°
+	* @details æç”»ã™ã‚‹é–¢æ•°
 	*/
 	void Draw() override;
 
 	/**
-	* @brief •`‰æ(Depth-pre-pass)ŠÖ”
-	* @details Depth-pre-pass‚ğ‚·‚éŠÖ”
+	* @brief æç”»(Depth-pre-pass)é–¢æ•°
+	* @details Depth-pre-passã‚’ã™ã‚‹é–¢æ•°
 	*/
 	void Draw_DPP() override;
 
 	/**
-	* @brief XVŠÖ”
-	* @details XV‚·‚éŠÖ”
+	* @brief æ›´æ–°é–¢æ•°
+	* @details æ›´æ–°ã™ã‚‹é–¢æ•°
 	*/
 	void Update(float delta_time) override;
 
 	/**
-	* @brief I—¹ˆ—ŠÖ”
-	* @details I—¹ˆ—‚ğ‚·‚éŠÖ”
+	* @brief çµ‚äº†å‡¦ç†é–¢æ•°
+	* @details çµ‚äº†å‡¦ç†ã‚’ã™ã‚‹é–¢æ•°
 	*/
 	void Uninit() override;
 
 	/**
-	* @brief ƒeƒNƒXƒ`ƒƒƒAƒjƒ[ƒVƒ‡ƒ“‚Ìƒpƒ‰ƒ[ƒ^[‚Ìİ’è‚·‚éŠÖ”
-	* @param wait_frame ‘Ò‚¿ƒtƒŒ[ƒ€
-	* @param x ƒeƒNƒXƒ`ƒƒØ‚èæ‚è•
-	* @param y ƒeƒNƒXƒ`ƒƒØ‚èæ‚è‚‚³
-	* @details ƒeƒNƒXƒ`ƒƒƒAƒjƒ[ƒVƒ‡ƒ“‚Ìƒpƒ‰ƒ[ƒ^[‚Ìİ’è‚·‚éŠÖ”
+	* @brief ãƒ†ã‚¯ã‚¹ãƒãƒ£ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ã®ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿ãƒ¼ã®è¨­å®šã™ã‚‹é–¢æ•°
+	* @param wait_frame å¾…ã¡ãƒ•ãƒ¬ãƒ¼ãƒ 
+	* @param x ãƒ†ã‚¯ã‚¹ãƒãƒ£åˆ‡ã‚Šå–ã‚Šå¹…
+	* @param y ãƒ†ã‚¯ã‚¹ãƒãƒ£åˆ‡ã‚Šå–ã‚Šé«˜ã•
+	* @details ãƒ†ã‚¯ã‚¹ãƒãƒ£ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ã®ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿ãƒ¼ã®è¨­å®šã™ã‚‹é–¢æ•°
 	*/
 	void SetParam(const float& wait_frame, const unsigned char& x, const unsigned char& y);
 
 	/**
-	* @brief ƒeƒNƒXƒ`ƒƒƒAƒjƒ[ƒVƒ‡ƒ“‚ÌƒeƒNƒXƒ`ƒƒØ‚èæ‚èÀ•W‚ğİ’è‚·‚éŠÖ”
-	* @param tx_param ƒeƒNƒXƒ`ƒƒØ‚èæ‚è•iè“®j
-	* @param ty_param ƒeƒNƒXƒ`ƒƒØ‚èæ‚è‚‚³iè“®j
-	* @details ƒeƒNƒXƒ`ƒƒƒAƒjƒ[ƒVƒ‡ƒ“‚ÌƒeƒNƒXƒ`ƒƒØ‚èæ‚èÀ•W‚ğİ’è‚·‚éŠÖ”
+	* @brief ãƒ†ã‚¯ã‚¹ãƒãƒ£ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ã®ãƒ†ã‚¯ã‚¹ãƒãƒ£åˆ‡ã‚Šå–ã‚Šåº§æ¨™ã‚’è¨­å®šã™ã‚‹é–¢æ•°
+	* @param tx_param ãƒ†ã‚¯ã‚¹ãƒãƒ£åˆ‡ã‚Šå–ã‚Šå¹…ï¼ˆæ‰‹å‹•ï¼‰
+	* @param ty_param ãƒ†ã‚¯ã‚¹ãƒãƒ£åˆ‡ã‚Šå–ã‚Šé«˜ã•ï¼ˆæ‰‹å‹•ï¼‰
+	* @details ãƒ†ã‚¯ã‚¹ãƒãƒ£ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ã®ãƒ†ã‚¯ã‚¹ãƒãƒ£åˆ‡ã‚Šå–ã‚Šåº§æ¨™ã‚’è¨­å®šã™ã‚‹é–¢æ•°
 	*/
 	void Set_Param_Txy(const float& tx_param = -1.0f, const float& ty_param = -1.0f);
 
 	/**
-	* @brief ƒeƒNƒXƒ`ƒƒ‚ÌØ‚èæ‚è•‚Æ‚‚³‚ğæ“¾‚·‚éŠÖ”
-	* @return XMFLOAT2 ƒeƒNƒXƒ`ƒƒ‚ÌØ‚èæ‚è•‚Æ‚‚³
-	* @details ƒeƒNƒXƒ`ƒƒ‚ÌØ‚èæ‚è•‚Æ‚‚³‚ğæ“¾‚·‚éŠÖ”
+	* @brief ãƒ†ã‚¯ã‚¹ãƒãƒ£ã®åˆ‡ã‚Šå–ã‚Šå¹…ã¨é«˜ã•ã‚’å–å¾—ã™ã‚‹é–¢æ•°
+	* @return XMFLOAT2 ãƒ†ã‚¯ã‚¹ãƒãƒ£ã®åˆ‡ã‚Šå–ã‚Šå¹…ã¨é«˜ã•
+	* @details ãƒ†ã‚¯ã‚¹ãƒãƒ£ã®åˆ‡ã‚Šå–ã‚Šå¹…ã¨é«˜ã•ã‚’å–å¾—ã™ã‚‹é–¢æ•°
 	*/
 	const XMFLOAT2 Get_Twh() {
 		return XMFLOAT2(Tw, Th);

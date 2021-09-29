@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #ifndef SCENE_MANAGER_H
 #define SCENE_MANAGER_H
@@ -6,8 +6,8 @@
 class SCENE;
 
 /**
-* @brief �V�[���Ǘ��N���X
-* @details �V�[���N���X���Ǘ����邽�߂̃N���X
+* @brief シーン管理クラス
+* @details シーンクラスを管理するためのクラス
 */
 class SCENE_MANAGER {
 private:

@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 
 #ifndef XYZ_AXIS_H
 #define XYZ_AXIS_H
@@ -10,8 +10,8 @@ class TEXTURE;
 
 class AXIS : public GAME_OBJECT {
 private:
-	ID3D11Buffer* pVertexBuffer[3];	// ’¸“_ƒoƒbƒtƒ@
-	ID3D11Buffer* pIndexBuffer;		// ƒCƒ“ƒfƒbƒNƒXƒoƒbƒtƒ@
+	ID3D11Buffer* pVertexBuffer[3];	// é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡
+	ID3D11Buffer* pIndexBuffer;		// ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ãƒãƒƒãƒ•ã‚¡
 
 public:
 	AXIS();

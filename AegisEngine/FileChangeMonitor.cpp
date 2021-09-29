@@ -1,4 +1,4 @@
-#ifdef _DEBUG
+﻿#ifdef _DEBUG
 #include	"Texture_Manager.h"
 
 #include "common.h"

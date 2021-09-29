@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 
 #ifndef AXIS_H
 #define AXIS_H
@@ -31,7 +31,7 @@ public:
 
 		Right = XMVectorSet(1.0f, 0.0f, 0.0f, 0.0f);
 
-		// O‚Â‚ÌƒxƒNƒgƒ‹‚ğ‚’¼‚É‚·‚é
+		// ä¸‰ã¤ã®ãƒ™ã‚¯ãƒˆãƒ«ã‚’å‚ç›´ã«ã™ã‚‹
 		Right = XMVector3Cross(Up, Front);
 		Right = XMVector3Normalize(Right);
 
@@ -46,11 +46,11 @@ public:
 	virtual ~AXIS_COMPONENT() { Set(Front, Up, Right); };
 
 	/**
-	* @brief O‚Â‚ÌƒxƒNƒgƒ‹‚ğ‚’¼‚É‚·‚éŠÖ”
-	* @details O‚Â‚ÌƒxƒNƒgƒ‹‚ğ‚’¼‚É‚·‚é
+	* @brief ä¸‰ã¤ã®ãƒ™ã‚¯ãƒˆãƒ«ã‚’å‚ç›´ã«ã™ã‚‹é–¢æ•°
+	* @details ä¸‰ã¤ã®ãƒ™ã‚¯ãƒˆãƒ«ã‚’å‚ç›´ã«ã™ã‚‹
 	*/
 	void Init() {
-		/*// O‚Â‚ÌƒxƒNƒgƒ‹‚ğ‚’¼‚É‚·‚é
+		/*// ä¸‰ã¤ã®ãƒ™ã‚¯ãƒˆãƒ«ã‚’å‚ç›´ã«ã™ã‚‹
 		Front = XMVector3Normalize(Front);
 
 		Right = XMVector3Cross(Up, Front);
@@ -68,9 +68,9 @@ public:
 	void Uninit() override {};
 
 	/**
-	* @brief ƒtƒƒ“ƒgƒxƒNƒgƒ‹‚ğİ’è‚·‚éŠÖ”
-	* @param[in] vector İ’è‚·‚éƒxƒNƒgƒ‹
-	* @details ƒtƒƒ“ƒgƒxƒNƒgƒ‹‚ğˆø”(vector)‚Éİ’è‚·‚éŠÖ”
+	* @brief ãƒ•ãƒ­ãƒ³ãƒˆãƒ™ã‚¯ãƒˆãƒ«ã‚’è¨­å®šã™ã‚‹é–¢æ•°
+	* @param[in] vector è¨­å®šã™ã‚‹ãƒ™ã‚¯ãƒˆãƒ«
+	* @details ãƒ•ãƒ­ãƒ³ãƒˆãƒ™ã‚¯ãƒˆãƒ«ã‚’å¼•æ•°(vector)ã«è¨­å®šã™ã‚‹é–¢æ•°
 	*/
 	void Set_Front(const XMVECTOR& vector) {
 		Front = XMQuaternionNormalize(vector);
@@ -86,51 +86,51 @@ public:
 	};
 
 	/**
-	*@brief ƒtƒƒ“ƒgƒxƒNƒgƒ‹‚ğæ“¾‚·‚éŠÖ”
-	* @details ƒtƒƒ“ƒgƒxƒNƒgƒ‹‚ğæ“¾‚·‚éŠÖ”
+	*@brief ãƒ•ãƒ­ãƒ³ãƒˆãƒ™ã‚¯ãƒˆãƒ«ã‚’å–å¾—ã™ã‚‹é–¢æ•°
+	* @details ãƒ•ãƒ­ãƒ³ãƒˆãƒ™ã‚¯ãƒˆãƒ«ã‚’å–å¾—ã™ã‚‹é–¢æ•°
 	*/
 	const XMVECTOR& Get_Front() {
 		return Front;
 	};
 
 	/**
-	* @brief ƒAƒbƒvƒxƒNƒgƒ‹‚ğİ’è‚·‚éŠÖ”
-	* @param[in] vector İ’è‚·‚éƒxƒNƒgƒ‹
-	* @details ƒAƒbƒvƒxƒNƒgƒ‹‚ğˆø”(vector)‚Éİ’è‚·‚éŠÖ”
+	* @brief ã‚¢ãƒƒãƒ—ãƒ™ã‚¯ãƒˆãƒ«ã‚’è¨­å®šã™ã‚‹é–¢æ•°
+	* @param[in] vector è¨­å®šã™ã‚‹ãƒ™ã‚¯ãƒˆãƒ«
+	* @details ã‚¢ãƒƒãƒ—ãƒ™ã‚¯ãƒˆãƒ«ã‚’å¼•æ•°(vector)ã«è¨­å®šã™ã‚‹é–¢æ•°
 	*/
 	void Set_Up(const XMVECTOR& vector) {
 		Up = XMQuaternionNormalize(vector);
 	};
 
 	/**
-	*@brief ƒAƒbƒvƒxƒNƒgƒ‹‚ğæ“¾‚·‚éŠÖ”
-	* @details ƒAƒbƒvƒxƒNƒgƒ‹‚ğæ“¾‚·‚éŠÖ”
+	*@brief ã‚¢ãƒƒãƒ—ãƒ™ã‚¯ãƒˆãƒ«ã‚’å–å¾—ã™ã‚‹é–¢æ•°
+	* @details ã‚¢ãƒƒãƒ—ãƒ™ã‚¯ãƒˆãƒ«ã‚’å–å¾—ã™ã‚‹é–¢æ•°
 	*/
 	const XMVECTOR& Get_Up() {
 		return Up;
 	};
 
 	/**
-	* @brief ƒ‰ƒCƒgƒxƒNƒgƒ‹‚ğİ’è‚·‚éŠÖ”
-	* @param[in] vector İ’è‚·‚éƒxƒNƒgƒ‹
-	* @details ƒ‰ƒCƒgƒxƒNƒgƒ‹‚ğˆø”(vector)‚Éİ’è‚·‚éŠÖ”
+	* @brief ãƒ©ã‚¤ãƒˆãƒ™ã‚¯ãƒˆãƒ«ã‚’è¨­å®šã™ã‚‹é–¢æ•°
+	* @param[in] vector è¨­å®šã™ã‚‹ãƒ™ã‚¯ãƒˆãƒ«
+	* @details ãƒ©ã‚¤ãƒˆãƒ™ã‚¯ãƒˆãƒ«ã‚’å¼•æ•°(vector)ã«è¨­å®šã™ã‚‹é–¢æ•°
 	*/
 	void Set_Right(const XMVECTOR& vector) {
 		Right = XMQuaternionNormalize(vector);
 	};
 
 	/**
-	* @brief ƒ‰ƒCƒgƒxƒNƒgƒ‹‚ğæ“¾‚·‚éŠÖ”
-	* @details ƒ‰ƒCƒgƒxƒNƒgƒ‹‚ğæ“¾‚·‚éŠÖ”
+	* @brief ãƒ©ã‚¤ãƒˆãƒ™ã‚¯ãƒˆãƒ«ã‚’å–å¾—ã™ã‚‹é–¢æ•°
+	* @details ãƒ©ã‚¤ãƒˆãƒ™ã‚¯ãƒˆãƒ«ã‚’å–å¾—ã™ã‚‹é–¢æ•°
 	*/
 	const XMVECTOR& Get_Right() {
 		return Right;
 	};
 
 	/**
-	* @brief ƒtƒƒ“ƒgƒxƒNƒgƒ‹‚ğ‰ñ“]‚³‚¹‚éŠÖ”
-	* @param[in] angle ‰ñ“]‚³‚¹‚éŠp“x(ƒfƒBƒOƒŠ[)
-	* @details ƒtƒƒ“ƒgƒxƒNƒgƒ‹‚ğ(angle)“x‚Å‰ñ“]‚³‚¹‚éŠÖ”(ã‰º)
+	* @brief ãƒ•ãƒ­ãƒ³ãƒˆãƒ™ã‚¯ãƒˆãƒ«ã‚’å›è»¢ã•ã›ã‚‹é–¢æ•°
+	* @param[in] angle å›è»¢ã•ã›ã‚‹è§’åº¦(ãƒ‡ã‚£ã‚°ãƒªãƒ¼)
+	* @details ãƒ•ãƒ­ãƒ³ãƒˆãƒ™ã‚¯ãƒˆãƒ«ã‚’(angle)åº¦ã§å›è»¢ã•ã›ã‚‹é–¢æ•°(ä¸Šä¸‹)
 	*/
 	void Rotation_Front(const float angle) {
 		XMMATRIX mtxRotation = XMMatrixRotationAxis(Right, XMConvertToRadians(angle));
@@ -151,9 +151,9 @@ public:
 	}
 
 	/**
-	* @brief ƒ‰ƒCƒgƒxƒNƒgƒ‹‚ğ‰ñ“]‚³‚¹‚éŠÖ”
-	* @param[in] angle ‰ñ“]‚³‚¹‚éŠp“x(ƒfƒBƒOƒŠ[)
-	* @details ƒ‰ƒCƒgƒxƒNƒgƒ‹‚ğ(angle)“x‚Å‰ñ“]‚³‚¹‚éŠÖ”(¶‰E)
+	* @brief ãƒ©ã‚¤ãƒˆãƒ™ã‚¯ãƒˆãƒ«ã‚’å›è»¢ã•ã›ã‚‹é–¢æ•°
+	* @param[in] angle å›è»¢ã•ã›ã‚‹è§’åº¦(ãƒ‡ã‚£ã‚°ãƒªãƒ¼)
+	* @details ãƒ©ã‚¤ãƒˆãƒ™ã‚¯ãƒˆãƒ«ã‚’(angle)åº¦ã§å›è»¢ã•ã›ã‚‹é–¢æ•°(å·¦å³)
 	*/
 	void Rotation_Right(const float angle) {
 		XMMATRIX mtxRotation = XMMatrixRotationAxis(Up, angle);
@@ -174,9 +174,9 @@ public:
 	}
 
 	/**
-	* @brief ƒAƒbƒvƒxƒNƒgƒ‹‚ğ‰ñ“]‚³‚¹‚éŠÖ”
-	* @param[in] angle ‰ñ“]‚³‚¹‚éŠp“x(ƒfƒBƒOƒŠ[)
-	* @details ƒAƒbƒvƒxƒNƒgƒ‹‚ğ(angle)“x‚Å‰ñ“]‚³‚¹‚éŠÖ”
+	* @brief ã‚¢ãƒƒãƒ—ãƒ™ã‚¯ãƒˆãƒ«ã‚’å›è»¢ã•ã›ã‚‹é–¢æ•°
+	* @param[in] angle å›è»¢ã•ã›ã‚‹è§’åº¦(ãƒ‡ã‚£ã‚°ãƒªãƒ¼)
+	* @details ã‚¢ãƒƒãƒ—ãƒ™ã‚¯ãƒˆãƒ«ã‚’(angle)åº¦ã§å›è»¢ã•ã›ã‚‹é–¢æ•°
 	*/
 	void Rotation_Up(const float angle) {
 		XMMATRIX mtxRotation = XMMatrixRotationAxis(Front, XMConvertToRadians(angle));

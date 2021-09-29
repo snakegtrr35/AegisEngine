@@ -1,4 +1,4 @@
-#include	"main.h"
+ï»¿#include	"main.h"
 #include	"manager.h"
 #include	"Renderer.h"
 #include	"Input.h"
@@ -47,7 +47,7 @@ bool CManager::Init()
 	}
 	Manager->Set_ThreadCount(count);
 
-	// COM‚Ì‰Šú‰»
+	// COMã®åˆæœŸåŒ–
 	hr = CoInitializeEx(0, COINITBASE_MULTITHREADED);
 
 	if (FAILED(hr))
@@ -75,7 +75,7 @@ bool CManager::Init()
 
 	FONT::Init();
 
-	// ŠÔŠÖŒW‚Ì‰Šú‰»
+	// æ™‚é–“é–¢ä¿‚ã®åˆæœŸåŒ–
 	TIMER::Init();
 	CLOCK_TIMER::Init();
 
@@ -123,7 +123,7 @@ void CManager::Update()
 	TIMER::Update();//
 	CLOCK_TIMER::Update();
 
-	// ƒCƒ“ƒvƒbƒg‚ÌXV
+	// ã‚¤ãƒ³ãƒ—ãƒƒãƒˆã®æ›´æ–°
 	CINPUT::Update();
 
 	if (false == this->Get_Scene()->GetLockLoad())
@@ -146,7 +146,7 @@ void CManager::Update()
 
 		if (pSceneManager->Get_Scene_Change_Enable()) return;
 
-		// ƒVƒƒƒhƒEƒ}ƒbƒv‚ÌXV
+		// ã‚·ãƒ£ãƒ‰ã‚¦ãƒãƒƒãƒ—ã®æ›´æ–°
 		{
 			pShadowMap->Update();//
 		}
@@ -191,14 +191,14 @@ void CManager::Draw()
 
 	CRenderer::Begin();
 
-	// ƒVƒƒƒhƒEƒ}ƒbƒv‚Ì•`‰æ
+	// ã‚·ãƒ£ãƒ‰ã‚¦ãƒãƒƒãƒ—ã®æç”»
 	{
 		pShadowMap->Begin();
 		pSceneManager->Draw();
 		pShadowMap->End();//
 	}
 
-	// ÅIƒŒƒ“ƒ_ƒŠƒ“ƒO
+	// æœ€çµ‚ãƒ¬ãƒ³ãƒ€ãƒªãƒ³ã‚°
 	{
 		CRenderer::SetPass_Rendring();
 		pShadowMap->Set();
@@ -240,7 +240,7 @@ void CManager::Draw()
 
 	//	{
 	//		rect = D2D1::RectF(500, 100, 900, 200);
-	//		const wstring drawText = L"Hello HELL World!!!\n’n‹…‚Ì–¢—ˆ‚É‚²•òd‚·‚é‚É‚á‚ñI";
+	//		const wstring drawText = L"Hello HELL World!!!\nåœ°çƒã®æœªæ¥ã«ã”å¥‰ä»•ã™ã‚‹ã«ã‚ƒã‚“ï¼";
 
 	//		CRenderer::Get2DDeviceContext()->DrawText(
 	//			drawText.c_str(), drawText.size(), CRenderer::GetTextFormat(), &rect, brush);
@@ -306,7 +306,7 @@ void CManager::Uninit()
 
 	CINPUT::Uninit();
 
-	// COM‚ÌI—¹ˆ—
+	// COMã®çµ‚äº†å‡¦ç†
 	CoUninitialize();
 }
 

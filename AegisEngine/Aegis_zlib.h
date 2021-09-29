@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #ifndef AEGIA_ZLIB_H
 #define AEGIA_ZLIB_H

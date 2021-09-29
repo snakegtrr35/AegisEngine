@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 
 #ifndef TEXTURE_MANEGER_H
 #define TEXTURE_MANEGER_H
@@ -21,7 +21,7 @@ private:
 	OVERLAPPED Olp;
 	set<wstring> m_fileActions;
 
-	// •ÏX‚ÌŠÄ‹‚ğŠJn
+	// å¤‰æ›´ã®ç›£è¦–ã‚’é–‹å§‹
 	bool beginReadChanges();
 
 public:
@@ -32,13 +32,13 @@ public:
 
 	bool Get_FileStack_Empty();
 
-	// ƒtƒ@ƒCƒ‹•ÏX—š—ğƒLƒ…[‚©‚çî•ñ‚ğæ‚èo‚·
+	// ãƒ•ã‚¡ã‚¤ãƒ«å¤‰æ›´å±¥æ­´ã‚­ãƒ¥ãƒ¼ã‹ã‚‰æƒ…å ±ã‚’å–ã‚Šå‡ºã™
 	wstring Pop_FileStack();
 
-	// ‰Šú‰»
+	// åˆæœŸåŒ–
 	bool Init();
 
-	// •ÏX‚ğ“Ç‚İæ‚é
+	// å¤‰æ›´ã‚’èª­ã¿å–ã‚‹
 	void readChanges();
 
 	set<wstring>* Get();
@@ -52,7 +52,7 @@ public:
 constexpr const int TEXTURE_SIZE_MAX = 16384;
 
 struct TEXTURE_FILE {
-	string Path;		//! ƒeƒNƒXƒ`ƒƒƒtƒ@ƒCƒ‹‚Ìƒtƒ@ƒCƒ‹ƒpƒX
+	string Path;		//! ãƒ†ã‚¯ã‚¹ãƒãƒ£ãƒ•ã‚¡ã‚¤ãƒ«ã®ãƒ•ã‚¡ã‚¤ãƒ«ãƒ‘ã‚¹
 
 	TEXTURE_FILE() {}
 
@@ -63,27 +63,27 @@ struct TEXTURE_FILE {
 };
 
 struct TEXTURE_DATA {
-	unique_ptr<ID3D11ShaderResourceView, Release> Resource;		//! ƒŠƒ\[ƒXƒf[ƒ^
-	XMINT2 WH;													//!	ƒeƒNƒXƒ`ƒƒ‚Ì•‚Æ‚‚³
-	UINT Cnt;													//! QÆ‰ñ”
+	unique_ptr<ID3D11ShaderResourceView, Release> Resource;		//! ãƒªã‚½ãƒ¼ã‚¹ãƒ‡ãƒ¼ã‚¿
+	XMINT2 WH;													//!	ãƒ†ã‚¯ã‚¹ãƒãƒ£ã®å¹…ã¨é«˜ã•
+	UINT Cnt;													//! å‚ç…§å›æ•°
 
 	TEXTURE_DATA() : WH(XMINT2(0, 0)), Cnt(0) {}
 };
 
 //========================================
-// ƒeƒNƒXƒ`ƒƒƒ}ƒl[ƒWƒƒ[ƒNƒ‰ƒX
+// ãƒ†ã‚¯ã‚¹ãƒãƒ£ãƒãƒãƒ¼ã‚¸ãƒ£ãƒ¼ã‚¯ãƒ©ã‚¹
 //========================================
 class TEXTURE_MANEGER {
 private:
 
 	static unique_ptr<TEXTURE_MANEGER> Texture_Manager;
 
-	unordered_map<size_t, string> Default_Texture_File;			//! ƒfƒtƒHƒ‹ƒg‚ÌƒeƒNƒXƒ`ƒƒ‚Ìƒtƒ@ƒCƒ‹ƒpƒX
-	unordered_map<size_t, TEXTURE_FILE> TextureFile;			//! ƒeƒNƒXƒ`ƒƒ‚Ìƒtƒ@ƒCƒ‹ƒf[ƒ^
-	unordered_map<size_t, TEXTURE_DATA> TextureData;			//! ƒeƒNƒXƒ`ƒƒƒf[ƒ^
+	unordered_map<size_t, string> Default_Texture_File;			//! ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆã®ãƒ†ã‚¯ã‚¹ãƒãƒ£ã®ãƒ•ã‚¡ã‚¤ãƒ«ãƒ‘ã‚¹
+	unordered_map<size_t, TEXTURE_FILE> TextureFile;			//! ãƒ†ã‚¯ã‚¹ãƒãƒ£ã®ãƒ•ã‚¡ã‚¤ãƒ«ãƒ‡ãƒ¼ã‚¿
+	unordered_map<size_t, TEXTURE_DATA> TextureData;			//! ãƒ†ã‚¯ã‚¹ãƒãƒ£ãƒ‡ãƒ¼ã‚¿
 
-	void Default_Load(const bool flag);							// ƒfƒtƒHƒ‹ƒg‚ÌƒeƒNƒXƒ`ƒƒ‚Ì“Ç‚İ‚İ
-	void Load(const bool flag);									// ƒeƒNƒXƒ`ƒƒ‚Ì“Ç‚İ‚İ
+	void Default_Load(const bool flag);							// ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆã®ãƒ†ã‚¯ã‚¹ãƒãƒ£ã®èª­ã¿è¾¼ã¿
+	void Load(const bool flag);									// ãƒ†ã‚¯ã‚¹ãƒãƒ£ã®èª­ã¿è¾¼ã¿
 
 #ifdef _DEBUG
 	void Load_Check();

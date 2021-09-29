@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 
 #ifndef MESH_H
 #define MESH_H
@@ -33,7 +33,7 @@ struct BONEINFO {
 	XMMATRIX Matrix;
 };
 
-// •`‰æƒTƒuƒZƒbƒg\‘¢‘Ì
+// æç”»ã‚µãƒ–ã‚»ãƒƒãƒˆæ§‹é€ ä½“
 struct MESH_SUBSET
 {
 	UINT StartVertex;
@@ -149,9 +149,9 @@ protected:
 	ID3D11Buffer* VertexBuffer;
 	ID3D11Buffer* IndexBuffer;
 
-	string Name; //! ƒƒbƒVƒ…‚Ì–¼‘O
+	string Name; //! ãƒ¡ãƒƒã‚·ãƒ¥ã®åå‰
 
-	string TextureName;	//! ƒeƒNƒXƒ`ƒƒ–¼
+	string TextureName;	//! ãƒ†ã‚¯ã‚¹ãƒãƒ£å
 
 	XMFLOAT4X4 Matrix;
 
@@ -211,7 +211,7 @@ inline XMMATRIX Covert_Matrix(const aiMatrix4x4* matrix)
 {
 	aiMatrix4x4 mtr = *matrix;
 
-	aiTransposeMatrix4(&mtr);		// “]’us—ñ DirectX—p‚É‚·‚é
+	aiTransposeMatrix4(&mtr);		// è»¢ç½®è¡Œåˆ— DirectXç”¨ã«ã™ã‚‹
 
 	return XMLoadFloat4x4((XMFLOAT4X4*)& mtr);
 }

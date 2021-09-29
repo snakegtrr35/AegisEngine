@@ -1,4 +1,4 @@
-#ifdef _DEBUG
+ï»¿#ifdef _DEBUG
 
 #pragma once
 
@@ -9,7 +9,7 @@
 
 namespace ImGui {
 
-	//! ‹éŒ`‚Ì•`‰æ‚·‚éˆ×‚ÌƒIƒŠƒWƒiƒ‹‚Ì•Ö—˜ŠÖ”
+	//! çŸ©å½¢ã®æç”»ã™ã‚‹ç‚ºã®ã‚ªãƒªã‚¸ãƒŠãƒ«ã®ä¾¿åˆ©é–¢æ•°
 	void DrawRect(const ImVec2& size, const ImVec4& color, const char* text, const ImVec4& text_color, const float frame_size = 0.0f, const ImVec4& frame_color = ImVec4(1.0f, 1.0f, 1.0f, 1.0f));
 
 }
@@ -23,11 +23,11 @@ private:
 	bool show_another_window;
 	bool show_default_window;
 
-	bool Texture_Import_Enable;		// ƒeƒNƒXƒ`ƒƒƒCƒ“ƒ|[ƒgƒƒjƒ…[
-	bool Texture_Delete_Enable;		// ƒeƒNƒXƒ`ƒƒíœƒƒjƒ…[
+	bool Texture_Import_Enable;		// ãƒ†ã‚¯ã‚¹ãƒãƒ£ã‚¤ãƒ³ãƒãƒ¼ãƒˆãƒ¡ãƒ‹ãƒ¥ãƒ¼
+	bool Texture_Delete_Enable;		// ãƒ†ã‚¯ã‚¹ãƒãƒ£å‰Šé™¤ãƒ¡ãƒ‹ãƒ¥ãƒ¼
 
-	bool Model_Import_Enable;		// ƒ‚ƒfƒ‹ƒCƒ“ƒ|[ƒgƒƒjƒ…[
-	bool Model_Delete_Enable;		// ƒ‚ƒfƒ‹íœƒƒjƒ…[
+	bool Model_Import_Enable;		// ãƒ¢ãƒ‡ãƒ«ã‚¤ãƒ³ãƒãƒ¼ãƒˆãƒ¡ãƒ‹ãƒ¥ãƒ¼
+	bool Model_Delete_Enable;		// ãƒ¢ãƒ‡ãƒ«å‰Šé™¤ãƒ¡ãƒ‹ãƒ¥ãƒ¼
 
 	bool Setting_Enable;
 

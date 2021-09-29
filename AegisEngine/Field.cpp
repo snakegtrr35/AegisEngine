@@ -1,4 +1,4 @@
-#include	"Game_Object.h"
+ï»¿#include	"Game_Object.h"
 #include	"Field.h"
 #include	"Renderer.h"
 #include	"camera.h"
@@ -14,7 +14,7 @@ FIELD::FIELD()
 	pVertexBuffer.reset(nullptr);
 	pIndexBuffer.reset(nullptr);
 
-	// ƒeƒNƒXƒ`ƒƒ‚Ìİ’è
+	// ãƒ†ã‚¯ã‚¹ãƒãƒ£ã®è¨­å®š
 	Texture.reset(new TEXTURE(string("UVCheckerMap01-512.png")));
 }
 
@@ -49,7 +49,7 @@ FIELD::FIELD(XMFLOAT3 position, XMFLOAT2 wh)
 	Vertex[3].Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
 	Vertex[3].TexCoord = XMFLOAT2(1.0f, 1.0f);
 
-	// ’¸“_ƒoƒbƒtƒ@‚Ìİ’è
+	// é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡ã®è¨­å®š
 	{
 		ID3D11Buffer* buffer = nullptr;
 
@@ -63,7 +63,7 @@ FIELD::FIELD(XMFLOAT3 position, XMFLOAT2 wh)
 		bd.MiscFlags = 0;
 		bd.StructureByteStride = 0;
 
-		// ƒTƒuƒŠƒ\[ƒX‚Ìİ’è
+		// ã‚µãƒ–ãƒªã‚½ãƒ¼ã‚¹ã®è¨­å®š
 		D3D11_SUBRESOURCE_DATA srd;
 		ZeroMemory(&srd, sizeof(D3D11_SUBRESOURCE_DATA));
 
@@ -71,7 +71,7 @@ FIELD::FIELD(XMFLOAT3 position, XMFLOAT2 wh)
 		srd.SysMemPitch = 0;
 		srd.SysMemSlicePitch = 0;
 
-		// ’¸“_ƒoƒbƒtƒ@‚Ì¶¬
+		// é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡ã®ç”Ÿæˆ
 		hr = CRenderer::GetDevice()->CreateBuffer(&bd, &srd, &buffer);
 
 		if (FAILED(hr))
@@ -82,9 +82,9 @@ FIELD::FIELD(XMFLOAT3 position, XMFLOAT2 wh)
 		pVertexBuffer.reset(buffer);
 	}
 
-	////@ƒCƒ“ƒXƒ^ƒ“ƒVƒ“ƒO—p‚Ìƒoƒbƒtƒ@‚Ì¶¬
+	////ã€€ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚·ãƒ³ã‚°ç”¨ã®ãƒãƒƒãƒ•ã‚¡ã®ç”Ÿæˆ
 	//{
-	//	// ƒ}ƒgƒŠƒNƒX
+	//	// ãƒãƒˆãƒªã‚¯ã‚¹
 	//	XMMATRIX matrix;
 	//	vector<XMMATRIX> instMatrix;
 	//	instMatrix.reserve(g_InstanceNum);
@@ -122,7 +122,7 @@ FIELD::FIELD(XMFLOAT3 position, XMFLOAT2 wh)
 	//		bd.MiscFlags = 0;
 	//		bd.StructureByteStride = 0;
 
-	//		// ƒTƒuƒŠƒ\[ƒX‚Ìİ’è
+	//		// ã‚µãƒ–ãƒªã‚½ãƒ¼ã‚¹ã®è¨­å®š
 	//		D3D11_SUBRESOURCE_DATA srd;
 	//		ZeroMemory(&srd, sizeof(D3D11_SUBRESOURCE_DATA));
 
@@ -130,7 +130,7 @@ FIELD::FIELD(XMFLOAT3 position, XMFLOAT2 wh)
 	//		srd.SysMemPitch = 0;
 	//		srd.SysMemSlicePitch = 0;
 
-	//		// ’¸“_ƒoƒbƒtƒ@‚Ì¶¬
+	//		// é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡ã®ç”Ÿæˆ
 	//		hr = CRenderer::GetDevice()->CreateBuffer(&bd, &srd, &buffer);
 
 	//		if (FAILED(hr))
@@ -142,7 +142,7 @@ FIELD::FIELD(XMFLOAT3 position, XMFLOAT2 wh)
 	//	}
 	//}
 
-	// ƒCƒ“ƒfƒbƒNƒXƒoƒbƒtƒ@‚Ìİ’è
+	// ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ãƒãƒƒãƒ•ã‚¡ã®è¨­å®š
 	{
 		ID3D11Buffer* buffer = nullptr;
 
@@ -173,7 +173,7 @@ FIELD::FIELD(XMFLOAT3 position, XMFLOAT2 wh)
 		pIndexBuffer.reset(buffer);
 	}
 
-	// ƒeƒNƒXƒ`ƒƒ‚Ìİ’è
+	// ãƒ†ã‚¯ã‚¹ãƒãƒ£ã®è¨­å®š
 	Texture.reset(new TEXTURE(string("UVCheckerMap01-512.png")));
 }
 
@@ -208,7 +208,7 @@ void FIELD::Init()
 	Vertex[3].TexCoord = XMFLOAT2(1.0f, 1.0f);
 
 
-	// ’¸“_ƒoƒbƒtƒ@‚Ìİ’è
+	// é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡ã®è¨­å®š
 	{
 		ID3D11Buffer* buffer = nullptr;
 
@@ -222,7 +222,7 @@ void FIELD::Init()
 		bd.MiscFlags = 0;
 		bd.StructureByteStride = 0;
 
-		// ƒTƒuƒŠƒ\[ƒX‚Ìİ’è
+		// ã‚µãƒ–ãƒªã‚½ãƒ¼ã‚¹ã®è¨­å®š
 		D3D11_SUBRESOURCE_DATA srd;
 		ZeroMemory(&srd, sizeof(D3D11_SUBRESOURCE_DATA));
 
@@ -230,7 +230,7 @@ void FIELD::Init()
 		srd.SysMemPitch = 0;
 		srd.SysMemSlicePitch = 0;
 
-		// ’¸“_ƒoƒbƒtƒ@‚Ì¶¬
+		// é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡ã®ç”Ÿæˆ
 		hr = CRenderer::GetDevice()->CreateBuffer(&bd, &srd, &buffer);
 
 		if (FAILED(hr))
@@ -241,9 +241,9 @@ void FIELD::Init()
 		pVertexBuffer.reset(buffer);
 	}
 
-	//@ƒCƒ“ƒXƒ^ƒ“ƒVƒ“ƒO—p‚Ìƒoƒbƒtƒ@‚Ì¶¬
+	//ã€€ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚·ãƒ³ã‚°ç”¨ã®ãƒãƒƒãƒ•ã‚¡ã®ç”Ÿæˆ
 	{
-		// ƒ}ƒgƒŠƒNƒX
+		// ãƒãƒˆãƒªã‚¯ã‚¹
 		XMMATRIX matrix;
 		vector<XMMATRIX> instMatrix;
 		instMatrix.reserve(g_InstanceNum);
@@ -288,7 +288,7 @@ void FIELD::Init()
 			bd.MiscFlags = 0;
 			bd.StructureByteStride = 0;
 
-			// ƒTƒuƒŠƒ\[ƒX‚Ìİ’è
+			// ã‚µãƒ–ãƒªã‚½ãƒ¼ã‚¹ã®è¨­å®š
 			D3D11_SUBRESOURCE_DATA srd;
 			ZeroMemory(&srd, sizeof(D3D11_SUBRESOURCE_DATA));
 
@@ -296,7 +296,7 @@ void FIELD::Init()
 			srd.SysMemPitch = 0;
 			srd.SysMemSlicePitch = 0;
 
-			// ’¸“_ƒoƒbƒtƒ@‚Ì¶¬
+			// é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡ã®ç”Ÿæˆ
 			hr = CRenderer::GetDevice()->CreateBuffer(&bd, &srd, &buffer);
 
 			if (FAILED(hr))
@@ -308,7 +308,7 @@ void FIELD::Init()
 		}
 	}
 
-	// ƒCƒ“ƒfƒbƒNƒXƒoƒbƒtƒ@‚Ìİ’è
+	// ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ãƒãƒƒãƒ•ã‚¡ã®è¨­å®š
 	{
 		ID3D11Buffer* buffer = nullptr;
 
@@ -342,7 +342,7 @@ void FIELD::Init()
 
 void FIELD::Draw()
 {
-	// “ü—ÍƒAƒZƒ“ƒuƒ‰‚É’¸“_ƒoƒbƒtƒ@‚ğİ’è.
+	// å…¥åŠ›ã‚¢ã‚»ãƒ³ãƒ–ãƒ©ã«é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡ã‚’è¨­å®š.
 	//CRenderer::SetVertexBuffers(pVertexBuffer.get());
 
 	CRenderer::Set_InputLayout(INPUTLAYOUT::INSTANCING);//
@@ -353,7 +353,7 @@ void FIELD::Draw()
 
 	Texture->Set_Texture();//
 
-	// 3Dƒ}ƒgƒŠƒbƒNƒXİ’è
+	// 3Dãƒãƒˆãƒªãƒƒã‚¯ã‚¹è¨­å®š
 	{
 		XMMATRIX world = XMMatrixScaling(Scaling.x, Scaling.y, Scaling.z);
 		world *= XMMatrixRotationRollPitchYaw(XMConvertToRadians(Rotation.x), XMConvertToRadians(Rotation.y), XMConvertToRadians(Rotation.z));
@@ -364,7 +364,7 @@ void FIELD::Draw()
 
 		if (!camera01.expired() && Empty_weak_ptr<CCamera>(camera01))
 		{
-			// ƒVƒƒƒhƒEƒ}ƒbƒv—p‚Ì•`‰æ‚©?
+			// ã‚·ãƒ£ãƒ‰ã‚¦ãƒãƒƒãƒ—ç”¨ã®æç”»ã‹?
 			if (CManager::Get_Instance()->Get_ShadowMap()->Get_Enable())
 			{
 				XMMATRIX view = CManager::Get_Instance()->Get_ShadowMap()->Get_View();
@@ -385,7 +385,7 @@ void FIELD::Draw()
 		}
 		else
 		{
-			// ƒVƒƒƒhƒEƒ}ƒbƒv—p‚Ì•`‰æ‚©?
+			// ã‚·ãƒ£ãƒ‰ã‚¦ãƒãƒƒãƒ—ç”¨ã®æç”»ã‹?
 			if (CManager::Get_Instance()->Get_ShadowMap()->Get_Enable())
 			{
 				XMMATRIX view = CManager::Get_Instance()->Get_ShadowMap()->Get_View();
@@ -406,7 +406,7 @@ void FIELD::Draw()
 		}
 	}
 
-	// ƒgƒ|ƒƒW‚Ìİ’è
+	// ãƒˆãƒãƒ­ã‚¸ã®è¨­å®š
 	CRenderer::GetDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 	//CRenderer::DrawIndexed(6, 0, 0);
@@ -423,7 +423,7 @@ void FIELD::Draw()
 
 void FIELD::Draw_DPP()
 {
-	//// 3Dƒ}ƒgƒŠƒbƒNƒXİ’è
+	//// 3Dãƒãƒˆãƒªãƒƒã‚¯ã‚¹è¨­å®š
 	//{
 	//	XMMATRIX world = XMMatrixScaling(Scaling.x, Scaling.y, Scaling.z);
 	//	world *= XMMatrixRotationRollPitchYaw(XMConvertToRadians(Rotation.x), XMConvertToRadians(Rotation.y), XMConvertToRadians(Rotation.z));
@@ -442,7 +442,7 @@ void FIELD::Draw_DPP()
 	//	}
 	//}
 
-	//// “ü—ÍƒAƒZƒ“ƒuƒ‰‚É’¸“_ƒoƒbƒtƒ@‚ğİ’è.
+	//// å…¥åŠ›ã‚¢ã‚»ãƒ³ãƒ–ãƒ©ã«é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡ã‚’è¨­å®š.
 	//CRenderer::SetVertexBuffers(pVertexBuffer.get());
 
 	//CRenderer::SetIndexBuffer(pIndexBuffer.get());
@@ -465,7 +465,7 @@ void FIELD::Uninit()
 }
 
 //==============================
-// ƒ|ƒWƒVƒ‡ƒ“‚Ìİ’è
+// ãƒã‚¸ã‚·ãƒ§ãƒ³ã®è¨­å®š
 //==============================
 void FIELD::SetPosition(const XMFLOAT3 position)
 {
@@ -473,7 +473,7 @@ void FIELD::SetPosition(const XMFLOAT3 position)
 }
 
 //==============================
-// •‚Æ‚‚³‚Ìİ’è
+// å¹…ã¨é«˜ã•ã®è¨­å®š
 //==============================
 void FIELD::SetWH(const XMFLOAT2 wh)
 {
@@ -481,7 +481,7 @@ void FIELD::SetWH(const XMFLOAT2 wh)
 }
 
 //==============================
-// ƒeƒNƒXƒ`ƒƒ‚Ìİ’è
+// ãƒ†ã‚¯ã‚¹ãƒãƒ£ã®è¨­å®š
 //==============================
 void FIELD::SetTexture(const string& const file_name)
 {

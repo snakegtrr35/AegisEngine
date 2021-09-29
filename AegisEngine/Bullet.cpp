@@ -1,4 +1,4 @@
-#include	"manager.h"
+ï»¿#include	"manager.h"
 #include	"Scene_Manager.h"
 #include	"Scene.h"
 
@@ -81,7 +81,7 @@ void BULLET::Update(float delta_time)
 	{
 		CManager::Get_Instance()->Get_Scene()->Destroy_Game_Object(this);
 
-		// ƒrƒ‹ƒ{[ƒh
+		// ãƒ“ãƒ«ãƒœãƒ¼ãƒ‰
 		{
 			auto name = this->Get_Object_Name();
 
@@ -113,7 +113,7 @@ void BULLET::Update(float delta_time)
 	
 	auto scene = CManager::Get_Instance()->Get_Scene();
 
-	// “G‚Æ’e‚Ì“–‚½‚è”»’è
+	// æ•µã¨å¼¾ã®å½“ãŸã‚Šåˆ¤å®š
 	{
 		vector<ENEMY*> enemys = scene->Get_Game_Objects<ENEMY>();
 
@@ -124,7 +124,7 @@ void BULLET::Update(float delta_time)
 
 			if (ContainmentType::DISJOINT != bullet_collision->Get_Collition().Contains(enemy_collision->Get_Collition()))
 			{
-				// ƒrƒ‹ƒ{[ƒh
+				// ãƒ“ãƒ«ãƒœãƒ¼ãƒ‰
 				{
 					auto name = this->Get_Object_Name();
 
@@ -150,7 +150,7 @@ void BULLET::Update(float delta_time)
 				return;
 			}
 
-			// ƒvƒŒƒCƒ„[‚Æ’e‚Ì“–‚½‚è”»’è
+			// ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã¨å¼¾ã®å½“ãŸã‚Šåˆ¤å®š
 			{
 				auto player = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<PLAYER>("player");
 
@@ -158,7 +158,7 @@ void BULLET::Update(float delta_time)
 				{
 					auto billboards = scene->Get_Game_Objects<BILL_BOARD_ANIMATION>();
 
-					// ƒrƒ‹ƒ{[ƒh
+					// ãƒ“ãƒ«ãƒœãƒ¼ãƒ‰
 					{
 						auto name = this->Get_Object_Name();
 

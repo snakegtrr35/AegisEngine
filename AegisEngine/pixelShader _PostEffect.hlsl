@@ -1,10 +1,10 @@
-#include    "Commom_Hlsl.hlsli"
+ï»¿#include    "Commom_Hlsl.hlsli"
 
 //*****************************************************************************
-// ’è”ƒoƒbƒtƒ@
+// å®šæ•°ãƒãƒƒãƒ•ã‚¡
 //*****************************************************************************
 
-// ƒ}ƒeƒŠƒAƒ‹ƒoƒbƒtƒ@
+// ãƒãƒ†ãƒªã‚¢ãƒ«ãƒãƒƒãƒ•ã‚¡
 struct MATERIAL
 {
     float4 Ambient;
@@ -12,7 +12,7 @@ struct MATERIAL
     float4 Specular;
     float4 Emission;
     float Shininess;
-    float3 Dummy; //16bit‹«ŠE—p
+    float3 Dummy; //16bitå¢ƒç•Œç”¨
 };
 
 cbuffer MaterialBuffer : register(b3)
@@ -21,7 +21,7 @@ cbuffer MaterialBuffer : register(b3)
 }
 
 
-// ƒ‰ƒCƒgƒoƒbƒtƒ@
+// ãƒ©ã‚¤ãƒˆãƒãƒƒãƒ•ã‚¡
 struct LIGHT
 {
     float4 Direction;
@@ -100,7 +100,7 @@ float3 ACESFilm(float3 color)
 
 
 //*****************************************************************************
-// ƒOƒ[ƒoƒ‹•Ï”
+// ã‚°ãƒ­ãƒ¼ãƒãƒ«å¤‰æ•°
 //*****************************************************************************
 Texture2D g_Texture : register(t0);
 SamplerState g_SamplerState : register(s0);
@@ -108,7 +108,7 @@ SamplerState g_LinearSampler : register(s1);
 
 
 //=============================================================================
-// ƒsƒNƒZƒ‹ƒVƒF[ƒ_
+// ãƒ”ã‚¯ã‚»ãƒ«ã‚·ã‚§ãƒ¼ãƒ€
 //=============================================================================
 void main(PS_IN Input,
 
@@ -117,7 +117,7 @@ void main(PS_IN Input,
     float2 uv = Input.TexCoord.xy;
     
     //outDiffuse.rgb = /*ACESFilm*/(g_Texture.Sample(g_SamplerState, Input.TexCoord).rgb);
-    //outDiffuse.rgb = sqrt(outDiffuse.rgb); //ƒKƒ“ƒ}2.0ƒJƒ‰[o—Í
+    //outDiffuse.rgb = sqrt(outDiffuse.rgb); //ã‚¬ãƒ³ãƒ2.0ã‚«ãƒ©ãƒ¼å‡ºåŠ›
     //outDiffuse.a = dot(outDiffuse.rgb, float3(0.298912, 0.586611, 0.114478));
     //outDiffuse.rgb = pow(outDiffuse.rgb, 1.0 / 1.5);
     //outDiffuse.a = 1.0;

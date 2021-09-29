@@ -1,4 +1,4 @@
-#include	"Bounding_Capsule.h"
+ï»¿#include	"Bounding_Capsule.h"
 #include	"camera.h"
 #include	"Debug_Camera.h"
 #include	"manager.h"
@@ -82,7 +82,7 @@ void BOUNDING_CAPSULE::Init_Body()
 {
 	int vertex_num = max(int(10 * (UINT)Radius * 0.5), 8);
 
-	// ’¸“_ƒoƒbƒtƒ@‚Ìİ’è
+	// é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡ã®è¨­å®š
 	{
 		vector<VERTEX_3D> Vertex;
 		VERTEX_3D vertex;
@@ -90,7 +90,7 @@ void BOUNDING_CAPSULE::Init_Body()
 
 		const float angle = XM_PI / (vertex_num - 1);
 
-		// ã‚Ì”¼‰~
+		// ä¸Šã®åŠå††
 		for (int i = 0; i < vertex_num; i++)
 		{
 			vertex.Position = XMFLOAT3(cosf(angle * i) * Radius, sinf(angle * i) * Radius + Height - Radius, 0.f);
@@ -101,7 +101,7 @@ void BOUNDING_CAPSULE::Init_Body()
 			Vertex.emplace_back(vertex);
 		}
 
-		// ‰º‚Ì”¼‰~
+		// ä¸‹ã®åŠå††
 		for (int i = 0; i < vertex_num; i++)
 		{
 			vertex.Position = XMFLOAT3(cosf(angle * (i + vertex_num - 1)) * Radius, sinf(angle * (i + vertex_num - 1)) * Radius - Height + Radius, 0.f);
@@ -112,7 +112,7 @@ void BOUNDING_CAPSULE::Init_Body()
 			Vertex.emplace_back(vertex);
 		}
 
-		// ÅŒã‚Ì“_
+		// æœ€å¾Œã®ç‚¹
 		vertex.Position = XMFLOAT3(cosf(0) * Radius, sinf(0) * Radius + Height - Radius, 0.f);
 		vertex.Normal = XMFLOAT3(0.f, 0.f, 0.f);
 		vertex.Diffuse = XMFLOAT4(Color.r, Color.g, Color.b, Color.a);
@@ -123,7 +123,7 @@ void BOUNDING_CAPSULE::Init_Body()
 		vertex_num *= 2;
 		vertex_num += 1;
 
-		// ’¸“_ƒoƒbƒtƒ@‚Ìİ’è
+		// é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡ã®è¨­å®š
 		{
 			ID3D11Buffer* buffer;
 
@@ -148,7 +148,7 @@ void BOUNDING_CAPSULE::Init_Body()
 		}
 	}
 
-	// ’¸“_ƒoƒbƒtƒ@‚Ìİ’è
+	// é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡ã®è¨­å®š
 	{
 		vertex_num = max(int(10 * (UINT)Radius * 0.5), 8);
 
@@ -158,7 +158,7 @@ void BOUNDING_CAPSULE::Init_Body()
 
 		const float angle = XM_PI / (vertex_num - 1);
 
-		// ã‚Ì”¼‰~
+		// ä¸Šã®åŠå††
 		for (int i = 0; i < vertex_num; i++)
 		{
 			vertex.Position = XMFLOAT3(0.f, sinf(angle * i) * Radius + Height - Radius, cosf(angle * i) * Radius);
@@ -169,7 +169,7 @@ void BOUNDING_CAPSULE::Init_Body()
 			Vertex.emplace_back(vertex);
 		}
 
-		// ‰º‚Ì”¼‰~
+		// ä¸‹ã®åŠå††
 		for (int i = 0; i < vertex_num; i++)
 		{
 			vertex.Position = XMFLOAT3(0.f, sinf(angle * (i + vertex_num - 1)) * Radius - Height + Radius, cosf(angle * (i + vertex_num - 1)) * Radius);
@@ -180,7 +180,7 @@ void BOUNDING_CAPSULE::Init_Body()
 			Vertex.emplace_back(vertex);
 		}
 
-		// ÅŒã‚Ì“_
+		// æœ€å¾Œã®ç‚¹
 		vertex.Position = XMFLOAT3(0.f, sinf(0) * Radius + Height - Radius, cosf(0) * Radius);
 		vertex.Normal = XMFLOAT3(0.f, 0.f, 0.f);
 		vertex.Diffuse = XMFLOAT4(Color.r, Color.g, Color.b, Color.a);
@@ -191,7 +191,7 @@ void BOUNDING_CAPSULE::Init_Body()
 		vertex_num *= 2;
 		vertex_num += 1;
 
-		// ’¸“_ƒoƒbƒtƒ@‚Ìİ’è
+		// é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡ã®è¨­å®š
 		{
 			ID3D11Buffer* buffer;
 
@@ -216,7 +216,7 @@ void BOUNDING_CAPSULE::Init_Body()
 		}
 	}
 
-	// ƒCƒ“ƒfƒbƒNƒXƒoƒbƒtƒ@‚Ìİ’è
+	// ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ãƒãƒƒãƒ•ã‚¡ã®è¨­å®š
 	{
 		IndexNum = vertex_num * 2;
 		vector<WORD> Index;
@@ -228,7 +228,7 @@ void BOUNDING_CAPSULE::Init_Body()
 			Index.emplace_back((i + 1) % vertex_num);
 		}
 
-		// ƒCƒ“ƒfƒbƒNƒXƒoƒbƒtƒ@‚Ìİ’è
+		// ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ãƒãƒƒãƒ•ã‚¡ã®è¨­å®š
 		{
 			ID3D11Buffer* buffer;
 
@@ -255,7 +255,7 @@ void BOUNDING_CAPSULE::Init_Body()
 
 void BOUNDING_CAPSULE::Init_Ring()
 {
-	// ’¸“_ƒoƒbƒtƒ@‚Ìİ’è
+	// é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡ã®è¨­å®š
 	{
 		const UINT cnt = 10 * (UINT)Radius;
 
@@ -275,7 +275,7 @@ void BOUNDING_CAPSULE::Init_Ring()
 			Vertex.emplace_back(vertex);
 		}
 
-		// ’¸“_ƒoƒbƒtƒ@‚Ìİ’è
+		// é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡ã®è¨­å®š
 		{
 			ID3D11Buffer* buffer;
 
@@ -300,7 +300,7 @@ void BOUNDING_CAPSULE::Init_Ring()
 		}
 	}
 
-	// ƒCƒ“ƒfƒbƒNƒXƒoƒbƒtƒ@‚Ìİ’è
+	// ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ãƒãƒƒãƒ•ã‚¡ã®è¨­å®š
 	{
 		const UINT cnt = 10 * (UINT)Radius;
 
@@ -314,7 +314,7 @@ void BOUNDING_CAPSULE::Init_Ring()
 			Index.emplace_back((i + 1) % cnt);
 		}
 
-		// ƒCƒ“ƒfƒbƒNƒXƒoƒbƒtƒ@‚Ìİ’è
+		// ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ãƒãƒƒãƒ•ã‚¡ã®è¨­å®š
 		{
 			ID3D11Buffer* buffer;
 
@@ -344,26 +344,26 @@ void BOUNDING_CAPSULE::Draw_Body(const XMFLOAT3& position, const XMFLOAT3& rotat
 {
 	CRenderer::Set_Shader(SHADER_INDEX_V::DEFAULT, SHADER_INDEX_P::NO_TEXTURE);
 
-	// ƒgƒ|ƒƒW‚Ìİ’è
+	// ãƒˆãƒãƒ­ã‚¸ã®è¨­å®š
 	CRenderer::GetDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_LINESTRIP);
 
-	// –{‘Ì‚Ì•`‰æ
+	// æœ¬ä½“ã®æç”»
 	{
-		// “ü—ÍƒAƒZƒ“ƒuƒ‰‚ÉƒCƒ“ƒfƒbƒNƒXƒoƒbƒtƒ@‚ğİ’è
+		// å…¥åŠ›ã‚¢ã‚»ãƒ³ãƒ–ãƒ©ã«ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ãƒãƒƒãƒ•ã‚¡ã‚’è¨­å®š
 		CRenderer::SetIndexBuffer(pIndexBuffer.get());
 
-		// “ü—ÍƒAƒZƒ“ƒuƒ‰‚É’¸“_ƒoƒbƒtƒ@‚ğİ’è
+		// å…¥åŠ›ã‚¢ã‚»ãƒ³ãƒ–ãƒ©ã«é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡ã‚’è¨­å®š
 		CRenderer::SetVertexBuffers(pVertexBuffer.get());
 
 		Draw_Semicircle(position, rotation);
 
-		// “ü—ÍƒAƒZƒ“ƒuƒ‰‚É’¸“_ƒoƒbƒtƒ@‚ğİ’è
+		// å…¥åŠ›ã‚¢ã‚»ãƒ³ãƒ–ãƒ©ã«é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡ã‚’è¨­å®š
 		CRenderer::SetVertexBuffers(pVertexBuffer2.get());
 
 		Draw_Semicircle(position, rotation);
 	}
 
-	// ã‰º‚ÌƒŠƒ“ƒO‚Ì•`‰æ
+	// ä¸Šä¸‹ã®ãƒªãƒ³ã‚°ã®æç”»
 	{
 		Draw_Ring(position, rotation);
 	}
@@ -373,7 +373,7 @@ void BOUNDING_CAPSULE::Draw_Body(const XMFLOAT3& position, const XMFLOAT3& rotat
 
 void BOUNDING_CAPSULE::Draw_Semicircle(const XMFLOAT3& position, const XMFLOAT3& rotation)
 {
-	// ƒgƒ|ƒƒW‚Ìİ’è
+	// ãƒˆãƒãƒ­ã‚¸ã®è¨­å®š
 	CRenderer::GetDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_LINESTRIP);
 
 	const auto camera01 = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<CCamera>("camera");
@@ -401,16 +401,16 @@ void BOUNDING_CAPSULE::Draw_Semicircle(const XMFLOAT3& position, const XMFLOAT3&
 
 void BOUNDING_CAPSULE::Draw_Ring(const XMFLOAT3& position, const XMFLOAT3& rotation)
 {
-	// “ü—ÍƒAƒZƒ“ƒuƒ‰‚É’¸“_ƒoƒbƒtƒ@‚ğİ’è
+	// å…¥åŠ›ã‚¢ã‚»ãƒ³ãƒ–ãƒ©ã«é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡ã‚’è¨­å®š
 	CRenderer::SetVertexBuffers(pVertexBuffer_Ring.get());
 
-	// “ü—ÍƒAƒZƒ“ƒuƒ‰‚ÉƒCƒ“ƒfƒbƒNƒXƒoƒbƒtƒ@‚ğİ’è
+	// å…¥åŠ›ã‚¢ã‚»ãƒ³ãƒ–ãƒ©ã«ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ãƒãƒƒãƒ•ã‚¡ã‚’è¨­å®š
 	CRenderer::SetIndexBuffer(pIndexBuffer_Ring.get());
 
-	// ƒgƒ|ƒƒW‚Ìİ’è
+	// ãƒˆãƒãƒ­ã‚¸ã®è¨­å®š
 	CRenderer::GetDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_LINESTRIP);
 
-	// 3Dƒ}ƒgƒŠƒbƒNƒXİ’è
+	// 3Dãƒãƒˆãƒªãƒƒã‚¯ã‚¹è¨­å®š
 	{
 		XMMATRIX world /*= XMMatrixScaling(Scaling.x, Scaling.y, Scaling.z)*/ = XMMatrixIdentity();
 		world *= XMMatrixRotationRollPitchYaw(XMConvertToRadians(rotation.x), XMConvertToRadians(rotation.y - 10.0f), XMConvertToRadians(rotation.z));
@@ -440,7 +440,7 @@ void BOUNDING_CAPSULE::Draw_Ring(const XMFLOAT3& position, const XMFLOAT3& rotat
 
 void BOUNDING_CAPSULE::Draw_Inspector()
 {
-	auto str = (char*)u8"ƒRƒŠƒWƒ‡ƒ“(ƒJƒvƒZƒ‹)";
+	auto str = (char*)u8"ã‚³ãƒªã‚¸ãƒ§ãƒ³(ã‚«ãƒ—ã‚»ãƒ«)";
 
 	ImGui::Text(str);
 

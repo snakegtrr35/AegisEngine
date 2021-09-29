@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 
 #ifndef CAMERA_H
 #define CAMERA_H
@@ -9,9 +9,9 @@ class CCamera : public GAME_OBJECT{
 private:
 	static CCamera* pCamera;
 
-	float HorzDist;			// …•½‹——£
-	float VerDist;			// ‚’¼‹——£
-	float TargetDist;		// ƒ^[ƒQƒbƒg‹——£
+	float HorzDist;			// æ°´å¹³è·é›¢
+	float VerDist;			// å‚ç›´è·é›¢
+	float TargetDist;		// ã‚¿ãƒ¼ã‚²ãƒƒãƒˆè·é›¢
 
 	XMVECTOR Pos;
 

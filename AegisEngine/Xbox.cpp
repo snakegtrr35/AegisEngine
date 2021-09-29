@@ -1,10 +1,10 @@
-#include	"Xbox.h"
+ï»¿#include	"Xbox.h"
 
 CONTROLER_STATE XBOX::Controllers[MAX_CONTROLLERS];
 CONTROLER_STATE XBOX::Old_Controllers[MAX_CONTROLLERS];
 
 //========================================
-// XboxƒRƒ“ƒgƒ[ƒ‰[‚ÌXV
+// Xboxã‚³ãƒ³ãƒˆãƒ­ãƒ¼ãƒ©ãƒ¼ã®æ›´æ–°
 //========================================
 void XBOX::Update(void)
 {
@@ -21,31 +21,31 @@ void XBOX::Update(void)
 
 			XINPUT_STATE state = Controllers[i].state;
 
-			// ¶ƒXƒeƒBƒbƒNİ’è
+			// å·¦ã‚¹ãƒ†ã‚£ãƒƒã‚¯è¨­å®š
 			{
 				float LX = Controllers[i].state.Gamepad.sThumbLX;
 				float LY = Controllers[i].state.Gamepad.sThumbLY;
 
-				// ƒRƒ“ƒgƒ[ƒ‰‚ª‚Ç‚ê‚¾‚¯‰Ÿ‚³‚ê‚Ä‚¢‚é‚©‚ğ’²‚×‚é
+				// ã‚³ãƒ³ãƒˆãƒ­ãƒ¼ãƒ©ãŒã©ã‚Œã ã‘æŠ¼ã•ã‚Œã¦ã„ã‚‹ã‹ã‚’èª¿ã¹ã‚‹
 				float magnitude = sqrt(LX * LX + LY * LY);
 
-				// ƒRƒ“ƒgƒ[ƒ‰‚ª‰Ÿ‚³‚ê‚é•ûŒü‚ğŒˆ’è‚·‚é
+				// ã‚³ãƒ³ãƒˆãƒ­ãƒ¼ãƒ©ãŒæŠ¼ã•ã‚Œã‚‹æ–¹å‘ã‚’æ±ºå®šã™ã‚‹
 				float normalizedLX = LX / magnitude;
 				float normalizedLY = LY / magnitude;
 
 				float normalizedMagnitude = 0.0f;
 
-				// ƒRƒ“ƒgƒ[ƒ‰‚ªzŠÂ•sŠ´‘Ñ‚ÌŠO‘¤‚É‚ ‚é‚©‚Ç‚¤‚©‚ğŠm”F
+				// ã‚³ãƒ³ãƒˆãƒ­ãƒ¼ãƒ©ãŒå¾ªç’°ä¸æ„Ÿå¸¯ã®å¤–å´ã«ã‚ã‚‹ã‹ã©ã†ã‹ã‚’ç¢ºèª
 				if (magnitude > XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE)
 				{
-					// Å‘å’l‚Å“™‹‰‚ğØ‚èæ‚é
+					// æœ€å¤§å€¤ã§ç­‰ç´šã‚’åˆ‡ã‚Šå–ã‚‹
 					if (magnitude > 32767.0f) magnitude = 32767.0f;
 
-					// •sŠ´‘Ñ‚Ì’[‚ğŠî€‚É‚µ‚Ä‘å‚«‚³‚ğ’²®‚·‚é
+					// ä¸æ„Ÿå¸¯ã®ç«¯ã‚’åŸºæº–ã«ã—ã¦å¤§ãã•ã‚’èª¿æ•´ã™ã‚‹
 					magnitude -= XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE;
 
-					// •K—v‚É‰‚¶‚ÄA‘å‚«‚³‚ğ‚»‚Ì—\‘z”ÍˆÍ‚É‘Î‚µ‚Ä³‹K‰»‚·‚é
-					// 0.0‚©‚ç1.0‚Ì‘å‚«‚³‚Ì’l‚ğ—^‚¦‚é
+					// å¿…è¦ã«å¿œã˜ã¦ã€å¤§ãã•ã‚’ãã®äºˆæƒ³ç¯„å›²ã«å¯¾ã—ã¦æ­£è¦åŒ–ã™ã‚‹
+					// 0.0ã‹ã‚‰1.0ã®å¤§ãã•ã®å€¤ã‚’ä¸ãˆã‚‹
 					normalizedMagnitude = magnitude / (32767 - XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE);
 
 					LX *= normalizedMagnitude / magnitude;
@@ -53,7 +53,7 @@ void XBOX::Update(void)
 					state.Gamepad.sThumbLX = (short)LX;
 					state.Gamepad.sThumbLY = (short)LY;
 				}
-				else // ƒRƒ“ƒgƒ[ƒ‰‚ªƒfƒbƒhƒ][ƒ“‚É‚ ‚éê‡‚ÍAâ‘Î’l‚ğƒ[ƒ‚É‚·‚é
+				else // ã‚³ãƒ³ãƒˆãƒ­ãƒ¼ãƒ©ãŒãƒ‡ãƒƒãƒ‰ã‚¾ãƒ¼ãƒ³ã«ã‚ã‚‹å ´åˆã¯ã€çµ¶å¯¾å€¤ã‚’ã‚¼ãƒ­ã«ã™ã‚‹
 				{
 					state.Gamepad.sThumbLX = 0;
 					state.Gamepad.sThumbLY = 0;
@@ -64,31 +64,31 @@ void XBOX::Update(void)
 
 			}
 
-			// ‰EƒXƒeƒBƒbƒNİ’è
+			// å³ã‚¹ãƒ†ã‚£ãƒƒã‚¯è¨­å®š
 			{
 				float RX = state.Gamepad.sThumbRX;
 				float RY = state.Gamepad.sThumbRY;
 
-				// ƒRƒ“ƒgƒ[ƒ‰‚ª‚Ç‚ê‚¾‚¯‰Ÿ‚³‚ê‚Ä‚¢‚é‚©‚ğ’²‚×‚é
+				// ã‚³ãƒ³ãƒˆãƒ­ãƒ¼ãƒ©ãŒã©ã‚Œã ã‘æŠ¼ã•ã‚Œã¦ã„ã‚‹ã‹ã‚’èª¿ã¹ã‚‹
 				float magnitude = sqrt(RX * RX + RY * RY);
 
-				// ƒRƒ“ƒgƒ[ƒ‰‚ª‰Ÿ‚³‚ê‚é•ûŒü‚ğŒˆ’è‚·‚é
+				// ã‚³ãƒ³ãƒˆãƒ­ãƒ¼ãƒ©ãŒæŠ¼ã•ã‚Œã‚‹æ–¹å‘ã‚’æ±ºå®šã™ã‚‹
 				float normalizedRX = RX / magnitude;
 				float normalizedRY = RY / magnitude;
 
 				float normalizedMagnitude = 0.0f;
 
-				// ƒRƒ“ƒgƒ[ƒ‰‚ªzŠÂ•sŠ´‘Ñ‚ÌŠO‘¤‚É‚ ‚é‚©‚Ç‚¤‚©‚ğŠm”F
+				// ã‚³ãƒ³ãƒˆãƒ­ãƒ¼ãƒ©ãŒå¾ªç’°ä¸æ„Ÿå¸¯ã®å¤–å´ã«ã‚ã‚‹ã‹ã©ã†ã‹ã‚’ç¢ºèª
 				if (magnitude > XINPUT_GAMEPAD_RIGHT_THUMB_DEADZONE)
 				{
-					// Å‘å’l‚Å“™‹‰‚ğØ‚èæ‚é
+					// æœ€å¤§å€¤ã§ç­‰ç´šã‚’åˆ‡ã‚Šå–ã‚‹
 					if (magnitude > 32767.0f) magnitude = 32767.0f;
 
-					// •sŠ´‘Ñ‚Ì’[‚ğŠî€‚É‚µ‚Ä‘å‚«‚³‚ğ’²®‚·‚é
+					// ä¸æ„Ÿå¸¯ã®ç«¯ã‚’åŸºæº–ã«ã—ã¦å¤§ãã•ã‚’èª¿æ•´ã™ã‚‹
 					magnitude -= XINPUT_GAMEPAD_RIGHT_THUMB_DEADZONE;
 
-					// •K—v‚É‰‚¶‚ÄA‘å‚«‚³‚ğ‚»‚Ì—\‘z”ÍˆÍ‚É‘Î‚µ‚Ä³‹K‰»‚·‚é
-					// 0.0‚©‚ç1.0‚Ì‘å‚«‚³‚Ì’l‚ğ—^‚¦‚é
+					// å¿…è¦ã«å¿œã˜ã¦ã€å¤§ãã•ã‚’ãã®äºˆæƒ³ç¯„å›²ã«å¯¾ã—ã¦æ­£è¦åŒ–ã™ã‚‹
+					// 0.0ã‹ã‚‰1.0ã®å¤§ãã•ã®å€¤ã‚’ä¸ãˆã‚‹
 					normalizedMagnitude = magnitude / (32767 - XINPUT_GAMEPAD_RIGHT_THUMB_DEADZONE);
 
 					RX *= normalizedMagnitude / magnitude;
@@ -96,7 +96,7 @@ void XBOX::Update(void)
 					state.Gamepad.sThumbRX = (short)RX;
 					state.Gamepad.sThumbRY = (short)RY;
 				}
-				else // ƒRƒ“ƒgƒ[ƒ‰‚ªƒfƒbƒhƒ][ƒ“‚É‚ ‚éê‡‚ÍAâ‘Î’l‚ğƒ[ƒ‚É‚·‚é
+				else // ã‚³ãƒ³ãƒˆãƒ­ãƒ¼ãƒ©ãŒãƒ‡ãƒƒãƒ‰ã‚¾ãƒ¼ãƒ³ã«ã‚ã‚‹å ´åˆã¯ã€çµ¶å¯¾å€¤ã‚’ã‚¼ãƒ­ã«ã™ã‚‹
 				{
 					state.Gamepad.sThumbLX = 0;
 					state.Gamepad.sThumbLY = 0;
@@ -113,7 +113,7 @@ void XBOX::Update(void)
 }
 
 //========================================
-// ƒgƒŠƒK[
+// ãƒˆãƒªã‚¬ãƒ¼
 //========================================
 bool XBOX::Trigger(const int any_button, const unsigned char number)
 {
@@ -125,7 +125,7 @@ bool XBOX::Trigger(const int any_button, const unsigned char number)
 }
 
 //========================================
-// ƒvƒŒƒX
+// ãƒ—ãƒ¬ã‚¹
 //========================================
 bool XBOX::Press(const int any_button, const unsigned char number)
 {
@@ -137,7 +137,7 @@ bool XBOX::Press(const int any_button, const unsigned char number)
 }
 
 //========================================
-// ƒŠƒŠ[ƒX
+// ãƒªãƒªãƒ¼ã‚¹
 //========================================
 bool XBOX::Release(const int any_button, const unsigned char number)
 {
@@ -152,7 +152,7 @@ bool XBOX::Release(const int any_button, const unsigned char number)
 }
 
 //========================================
-// ¶ƒXƒeƒBƒbƒN
+// å·¦ã‚¹ãƒ†ã‚£ãƒƒã‚¯
 //========================================
 XMINT2 const XBOX::LeftStick(const unsigned char number)
 {
@@ -169,7 +169,7 @@ XMINT2 const XBOX::LeftStick(const unsigned char number)
 }
 
 //========================================
-// ‰EƒXƒeƒBƒbƒN
+// å³ã‚¹ãƒ†ã‚£ãƒƒã‚¯
 //========================================
 XMINT2 const XBOX::RightStick(const unsigned char number)
 {

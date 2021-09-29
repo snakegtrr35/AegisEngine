@@ -1,10 +1,10 @@
-#include    "Commom_Hlsl.hlsli"
+ï»¿#include    "Commom_Hlsl.hlsli"
 #include    "Light_Hlsl.hlsli"
 
 //*****************************************************************************
-// ’è”ƒoƒbƒtƒ@
+// å®šæ•°ãƒãƒƒãƒ•ã‚¡
 //*****************************************************************************
-// ƒ}ƒgƒŠƒNƒXƒoƒbƒtƒ@
+// ãƒãƒˆãƒªã‚¯ã‚¹ãƒãƒƒãƒ•ã‚¡
 cbuffer ConstantBuffer : register(b0)
 {
     matrix World;
@@ -13,7 +13,7 @@ cbuffer ConstantBuffer : register(b0)
 }
 
 
-// ƒ}ƒeƒŠƒAƒ‹ƒoƒbƒtƒ@
+// ãƒãƒ†ãƒªã‚¢ãƒ«ãƒãƒƒãƒ•ã‚¡
 struct MATERIAL
 {
     float4      Ambient;
@@ -21,7 +21,7 @@ struct MATERIAL
     float4      Specular;
     float4      Emission;
     float       Shininess;
-    float3      Dummy; //16bit‹«ŠE—p
+    float3      Dummy; //16bitå¢ƒç•Œç”¨
 };
 
 cbuffer MaterialBuffer : register(b3)
@@ -30,7 +30,7 @@ cbuffer MaterialBuffer : register(b3)
 }
 
 
-// ƒ‰ƒCƒgƒoƒbƒtƒ@
+// ãƒ©ã‚¤ãƒˆãƒãƒƒãƒ•ã‚¡
 struct LIGHT
 {
     float4      Direction;
@@ -53,16 +53,16 @@ cbuffer CameraBuffer : register(b5)
 
 
 //*****************************************************************************
-// ƒOƒ[ƒoƒ‹•Ï”
+// ã‚°ãƒ­ãƒ¼ãƒãƒ«å¤‰æ•°
 //*****************************************************************************
 Texture2D       g_Texture : register( t0 );
-Texture2D       g_ShadowMap : register(t1);     // ƒVƒƒƒhƒEƒ}ƒbƒv
+Texture2D       g_ShadowMap : register(t1);     // ã‚·ãƒ£ãƒ‰ã‚¦ãƒãƒƒãƒ—
 
 SamplerState	g_SamplerState : register( s0 );
-SamplerState    g_ShadowSamplerState : register(s1);        // ƒVƒƒƒhƒEƒ}ƒbƒv—p‚ÌƒTƒ“ƒvƒ‰[
+SamplerState    g_ShadowSamplerState : register(s1);        // ã‚·ãƒ£ãƒ‰ã‚¦ãƒãƒƒãƒ—ç”¨ã®ã‚µãƒ³ãƒ—ãƒ©ãƒ¼
 
 //=============================================================================
-// ƒsƒNƒZƒ‹ƒVƒF[ƒ_
+// ãƒ”ã‚¯ã‚»ãƒ«ã‚·ã‚§ãƒ¼ãƒ€
 //=============================================================================
 void main( PS_IN Input,
            
@@ -81,9 +81,9 @@ void main( PS_IN Input,
     //vec = normalize(vec);
    
     
-    // ŠÂ‹«”½ËŒõ
+    // ç’°å¢ƒåå°„å…‰
     float4 ambient = Input.Diffuse * float4(Material.Ambient.rgb * Light.Ambient.rgb, 1.0);
-    // ŠgU”½ËŒõ
+    // æ‹¡æ•£åå°„å…‰
     float4 diffuse = Input.Diffuse * float4(Material.Diffuse.rgb * (light * Light.Diffuse.rgb), 1.0);
 
     float4 color = (float4)0.0;
@@ -91,16 +91,16 @@ void main( PS_IN Input,
     //
     float3 refrect = reflect(Light.Direction.xyz, Input.Normal.xyz);
     refrect = normalize(refrect);
-    // ‹üƒxƒNƒgƒ‹
+    // è¦–ç·šãƒ™ã‚¯ãƒˆãƒ«
     float3 eye_vec = Input.WPos.xyz - CameraPos.xyz;
     eye_vec = normalize(eye_vec);
-    // ƒXƒyƒLƒ…ƒ‰¬•ª‚ğ‹‚ß‚é
+    // ã‚¹ãƒšã‚­ãƒ¥ãƒ©æˆåˆ†ã‚’æ±‚ã‚ã‚‹
     float speculer = -dot(eye_vec, refrect);
     speculer = saturate(speculer);
     speculer = pow(speculer, 60);
     //
     
-    // ƒVƒƒƒhƒEƒ}ƒbƒv
+    // ã‚·ãƒ£ãƒ‰ã‚¦ãƒãƒƒãƒ—
     float shadow = 0.5;
     //float shadow = 1.0;
     
@@ -165,7 +165,7 @@ void main( PS_IN Input,
 
                 int3 coord_index = coord.xyz;
         
-                // 3D‚Å‚Ì”Ô†‚ğ1D‚Ì”Ô†‚É•ÏŠ·
+                // 3Dã§ã®ç•ªå·ã‚’1Dã®ç•ªå·ã«å¤‰æ›
                 int index = (coord_index.z * CLUSTERED_Z + CLUSTERED_Y * coord_index.y + CLUSTERED_X * coord_index.x) /*+ 1*/;
         
                 uint light_mask = g_LightList.Load(int3(index, cluster_index, 0));

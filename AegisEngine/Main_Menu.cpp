@@ -1,4 +1,4 @@
-#include	"Scene.h"
+ï»¿#include	"Scene.h"
 #include	"Main_Menu.h"
 #include	"ModelLoader.h"
 #include	"Input.h"
@@ -119,7 +119,7 @@ void MAIN_MENU::Uninit()
 
 		string name(id.name());
 
-		// ’uŠ·
+		// ç½®æ›
 		Replace_String(name, "class ", "      ");
 		Replace_String(name, "*", " ");
 		name.erase(remove_if(name.begin(), name.end(), isspace), name.end());
@@ -151,7 +151,7 @@ void MAIN_MENU::Load(SCENE* scene)
 
 		string name(id.name());
 
-		// ’uŠ·
+		// ç½®æ›
 		Replace_String(name, "class ", "      ");
 		Replace_String(name, "*", " ");
 		name.erase(remove_if(name.begin(), name.end(), isspace), name.end());
@@ -169,7 +169,7 @@ void MAIN_MENU::Load(SCENE* scene)
 
 	if (false == flag)
 	{
-		// ƒJƒƒ‰
+		// ã‚«ãƒ¡ãƒ©
 		{
 			//auto camera = Add_Game_Object<CCamera>(LAYER_NAME::BACKGROUND, "camera");
 			auto camera = scene->Add_Game_Object<DEBUG_CAMERA>(LAYER_NAME::BACKGROUND, "camera");
@@ -208,7 +208,7 @@ void MAIN_MENU::Load(SCENE* scene)
 			Add_Game_Object<POLYGON_3D>(LAYER_NAME::GAMEOBJECT, "cube");
 		}*/
 
-		//// ƒeƒLƒXƒg‰æ‘œ
+		//// ãƒ†ã‚­ã‚¹ãƒˆç”»åƒ
 		//{
 		//	XMFLOAT2 pos(50.0f, 50.0f);
 		//	auto text = Add_Game_Object<TEXTS>(LAYER_NAME::UI, "text1");
@@ -217,12 +217,12 @@ void MAIN_MENU::Load(SCENE* scene)
 
 		//	text->SetSize(XMFLOAT4(20, 20, 20, 20));
 
-		//	text->Edit("Hello HELL World!!!’n‹…‚Ì–¢—ˆ‚É‚²•òd‚·‚é‚É‚á‚ñI");
+		//	text->Edit("Hello HELL World!!!åœ°çƒã®æœªæ¥ã«ã”å¥‰ä»•ã™ã‚‹ã«ã‚ƒã‚“ï¼");
 		//}
 
 
 
-		//// ‰æ‘œ
+		//// ç”»åƒ
 		//{
 		//	XMFLOAT2 pos(300, 300);
 

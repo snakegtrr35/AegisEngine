@@ -1,4 +1,4 @@
-#ifdef _DEBUG
+ï»¿#ifdef _DEBUG
 #define new new(_NORMAL_BLOCK, __FILE__, __LINE__)
 #endif // _DEBUG
 
@@ -52,7 +52,7 @@ void GAME_OBJECT::Set_Object_Name(const string& name)
 	}
 	else
 	{
-		//Erroer_Message("Šù‚Ég‚í‚ê‚Ä‚¢‚é–¼‘O‚Å‚·");
+		//Erroer_Message("æ—¢ã«ä½¿ã‚ã‚Œã¦ã„ã‚‹åå‰ã§ã™");
 		int a = 0;
 	}
 #else

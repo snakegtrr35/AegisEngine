@@ -1,6 +1,6 @@
-/**
+ï»¿/**
  * @file Math.h
- * @brief ZpŠÖŒW‚Ìƒwƒbƒ_[ƒtƒ@ƒCƒ‹
+ * @brief ç®—è¡“é–¢ä¿‚ã®ãƒ˜ãƒƒãƒ€ãƒ¼ãƒ•ã‚¡ã‚¤ãƒ«
  */
 
 #pragma once
@@ -10,38 +10,38 @@
 
 namespace AeigisMath
 {
-	// —”ŠÖŒW‚ÌŠÖ”
+	// ä¹±æ•°é–¢ä¿‚ã®é–¢æ•°
 
-	// ˆê—l—”
+	// ä¸€æ§˜ä¹±æ•°
 	inline const int Get_Random(const int min, const int max);
 	inline const float Get_Random(const float min, const float max);
 	inline const double Get_Random(const double min, const double max);
 
-	// true‚Æfalse‚Æ‚¢‚¤2‚Â‚Ì’l‚ğŠm—¦•ª•z‚³‚¹‚éŠÖ”
-	// Šm—¦( probability )‚Åtrue‚ª¶¬‚³‚êAŠm—¦( 1.0 - probability )‚Åfalse‚ª¶¬‚³‚ê‚é
+	// trueã¨falseã¨ã„ã†2ã¤ã®å€¤ã‚’ç¢ºç‡åˆ†å¸ƒã•ã›ã‚‹é–¢æ•°
+	// ç¢ºç‡( probability )ã§trueãŒç”Ÿæˆã•ã‚Œã€ç¢ºç‡( 1.0 - probability )ã§falseãŒç”Ÿæˆã•ã‚Œã‚‹
 	/**
-	* @brief Šm—¦•ª•z
-	* @param probability Šm—¦( probability )
-	* @return bool true –”‚Í false
-	* @details Šm—¦( probability )‚Åtrue‚ª¶¬‚³‚êAŠm—¦( 1.0 - probability )‚Åfalse‚ª¶¬‚³‚ê‚éŠÖ”
+	* @brief ç¢ºç‡åˆ†å¸ƒ
+	* @param probability ç¢ºç‡( probability )
+	* @return bool true åˆã¯ false
+	* @details ç¢ºç‡( probability )ã§trueãŒç”Ÿæˆã•ã‚Œã€ç¢ºç‡( 1.0 - probability )ã§falseãŒç”Ÿæˆã•ã‚Œã‚‹é–¢æ•°
 	*/
 	const bool Random_Bool(const float probability);
 
 	/**
-	* @brief üŒ`•âŠÔ
-	* @param y1 Å¬’l‚Ì‚Ì’l
-	* @param y2 Å‘å’l‚Ì‚Ì’l
-	* @param tx •âŠÔ‚µ‚½‚¢’l
-	* @param x1 üŒ`‚ÌÅ¬’l(ƒfƒtƒHƒ‹ƒg‚Å0.0f)
-	* @param x2 üŒ`‚ÌÅ‘å’l(ƒfƒtƒHƒ‹ƒg‚Å1.0f)
-	* @return float •âŠÔ‚µ‚½’l
-	* @details üŒ`•âŠÔ‚ğs‚¢ŠÖ”
+	* @brief ç·šå½¢è£œé–“
+	* @param y1 æœ€å°å€¤ã®æ™‚ã®å€¤
+	* @param y2 æœ€å¤§å€¤ã®æ™‚ã®å€¤
+	* @param tx è£œé–“ã—ãŸã„å€¤
+	* @param x1 ç·šå½¢ã®æœ€å°å€¤(ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆã§0.0f)
+	* @param x2 ç·šå½¢ã®æœ€å¤§å€¤(ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆã§1.0f)
+	* @return float è£œé–“ã—ãŸå€¤
+	* @details ç·šå½¢è£œé–“ã‚’è¡Œã„é–¢æ•°
 	*/
 	float LerpEx(const float y1, const float y2, const float tx, const float x1 = 0.f, const float x2 = 1.0f);
 
 	float Lerp(float a, float b, float f) { return a + f * (b - a); }
 
-	// •Ï”‚Ìƒ‹[ƒvˆ—
+	// å¤‰æ•°ã®ãƒ«ãƒ¼ãƒ—å‡¦ç†
 	short Loop_Plus(short tx, short max);
 	short Loop_Minus(short tx, short max);
 
@@ -127,13 +127,13 @@ namespace AeigisMath
 			return *this;
 		}
 
-		// ƒxƒNƒgƒ‹‚Ì’·‚³
+		// ãƒ™ã‚¯ãƒˆãƒ«ã®é•·ã•
 		inline float Length()
 		{
 			return sqrtf(x * x + y * y);
 		}
 
-		// ‚±‚ÌƒxƒNƒgƒ‹‚ğ³‹K‰»‚·‚é
+		// ã“ã®ãƒ™ã‚¯ãƒˆãƒ«ã‚’æ­£è¦åŒ–ã™ã‚‹
 		inline void Normalize()
 		{
 			float length = Length();
@@ -141,7 +141,7 @@ namespace AeigisMath
 			y /= length;
 		}
 
-		// ƒxƒNƒgƒ‹‚ğ³‹K‰»‚·‚é
+		// ãƒ™ã‚¯ãƒˆãƒ«ã‚’æ­£è¦åŒ–ã™ã‚‹
 		inline INT2 Normalize(const INT2& vector)
 		{
 			INT2 temp = vector;
@@ -149,19 +149,19 @@ namespace AeigisMath
 			return temp;
 		}
 
-		// 2‚Â‚ÌƒxƒNƒgƒ‹ŠÔ‚ÌƒhƒbƒgÏ (a Dot b)
+		// 2ã¤ã®ãƒ™ã‚¯ãƒˆãƒ«é–“ã®ãƒ‰ãƒƒãƒˆç© (a Dot b)
 		inline float Dot(const INT2& a, const INT2& b)
 		{
 			return (a.x * b.x + a.y * b.y);
 		}
 
-		// f‚É‚æ‚éA‚©‚çB‚Ö‚ÌüŒ`•âŠÔ
+		// fã«ã‚ˆã‚‹Aã‹ã‚‰Bã¸ã®ç·šå½¢è£œé–“
 		inline INT2 Lerp(const INT2& a, const INT2& b, float f)
 		{
 			return INT2(a + f * (b - a));
 		}
 
-		// i³‹K‰»‚³‚ê‚½jN‚É‚Â‚¢‚ÄV‚ğ”½‰f
+		// ï¼ˆæ­£è¦åŒ–ã•ã‚ŒãŸï¼‰Nã«ã¤ã„ã¦Vã‚’åæ˜ 
 		inline INT2 Reflect(const INT2& v, const INT2& n)
 		{
 			return v - 2.0f * INT2::Dot(v, n) * n;
@@ -249,13 +249,13 @@ namespace AeigisMath
 			return *this;
 		}
 
-		// ƒxƒNƒgƒ‹‚Ì’·‚³
+		// ãƒ™ã‚¯ãƒˆãƒ«ã®é•·ã•
 		inline float Length()
 		{
 			return sqrtf(x * x + y * y);
 		}
 
-		// ‚±‚ÌƒxƒNƒgƒ‹‚ğ³‹K‰»‚·‚é
+		// ã“ã®ãƒ™ã‚¯ãƒˆãƒ«ã‚’æ­£è¦åŒ–ã™ã‚‹
 		inline void Normalize()
 		{
 			float length = Length();
@@ -263,7 +263,7 @@ namespace AeigisMath
 			y /= length;
 		}
 
-		// ƒxƒNƒgƒ‹‚ğ³‹K‰»‚·‚é
+		// ãƒ™ã‚¯ãƒˆãƒ«ã‚’æ­£è¦åŒ–ã™ã‚‹
 		inline VECTOR2 Normalize(const VECTOR2& vector)
 		{
 			VECTOR2 temp = vector;
@@ -271,19 +271,19 @@ namespace AeigisMath
 			return temp;
 		}
 
-		// 2‚Â‚ÌƒxƒNƒgƒ‹ŠÔ‚ÌƒhƒbƒgÏ (a Dot b)
+		// 2ã¤ã®ãƒ™ã‚¯ãƒˆãƒ«é–“ã®ãƒ‰ãƒƒãƒˆç© (a Dot b)
 		inline float Dot(const VECTOR2& a, const VECTOR2& b)
 		{
 			return (a.x * b.x + a.y * b.y);
 		}
 
-		// f‚É‚æ‚éA‚©‚çB‚Ö‚ÌüŒ`•âŠÔ
+		// fã«ã‚ˆã‚‹Aã‹ã‚‰Bã¸ã®ç·šå½¢è£œé–“
 		inline VECTOR2 Lerp(const VECTOR2& a, const VECTOR2& b, float f)
 		{
 			return VECTOR2(a + f * (b - a));
 		}
 
-		// i³‹K‰»‚³‚ê‚½jN‚É‚Â‚¢‚ÄV‚ğ”½‰f
+		// ï¼ˆæ­£è¦åŒ–ã•ã‚ŒãŸï¼‰Nã«ã¤ã„ã¦Vã‚’åæ˜ 
 		inline VECTOR2 Reflect(const VECTOR2& v, const VECTOR2& n)
 		{
 			return v - 2.0f * VECTOR2::Dot(v, n) * n;
@@ -374,13 +374,13 @@ namespace AeigisMath
 			return *this;
 		}
 
-		// ƒxƒNƒgƒ‹‚Ì’·‚³
+		// ãƒ™ã‚¯ãƒˆãƒ«ã®é•·ã•
 		inline float Length()
 		{
 			return (sqrt(x * x + y * y + z * z));
 		}
 
-		// ‚±‚ÌƒxƒNƒgƒ‹‚ğ³‹K‰»‚·‚é
+		// ã“ã®ãƒ™ã‚¯ãƒˆãƒ«ã‚’æ­£è¦åŒ–ã™ã‚‹
 		inline void Normalize()
 		{
 			float length = Length();
@@ -389,7 +389,7 @@ namespace AeigisMath
 			z /= length;
 		}
 
-		// ’ñ‹Ÿ‚³‚ê‚½ƒxƒNƒgƒ‹‚ğ³‹K‰»‚·‚é
+		// æä¾›ã•ã‚ŒãŸãƒ™ã‚¯ãƒˆãƒ«ã‚’æ­£è¦åŒ–ã™ã‚‹
 		inline VECTOR3 Normalize(const VECTOR3& vector)
 		{
 			VECTOR3 temp = vector;
@@ -397,13 +397,13 @@ namespace AeigisMath
 			return temp;
 		}
 
-		// 2‚Â‚ÌƒxƒNƒgƒ‹ŠÔ‚ÌƒhƒbƒgÏia Dot bj
+		// 2ã¤ã®ãƒ™ã‚¯ãƒˆãƒ«é–“ã®ãƒ‰ãƒƒãƒˆç©ï¼ˆa Dot bï¼‰
 		inline static float Dot(const VECTOR3& a, const VECTOR3& b)
 		{
 			return (a.x * b.x + a.y * b.y + a.z * b.z);
 		}
 
-		// 2‚Â‚ÌƒxƒNƒgƒ‹ŠÔ‚ÌŠOÏ (a Cross b)
+		// 2ã¤ã®ãƒ™ã‚¯ãƒˆãƒ«é–“ã®å¤–ç© (a Cross b)
 		inline static VECTOR3 Cross(const VECTOR3& a, const VECTOR3& b)
 		{
 			VECTOR3 temp;
@@ -413,20 +413,20 @@ namespace AeigisMath
 			return temp;
 		}
 
-		// f‚É‚æ‚éA‚©‚çB‚Ö‚ÌüŒ`•âŠÔ
+		// fã«ã‚ˆã‚‹Aã‹ã‚‰Bã¸ã®ç·šå½¢è£œé–“
 		inline VECTOR3 Lerp(const VECTOR3& a, const VECTOR3& b, float f)
 		{
 			return VECTOR3(a + f * (b - a));
 		}
 
-		// i³‹K‰»‚³‚ê‚½jN‚É‚Â‚¢‚ÄV‚ğ”½‰f
+		// ï¼ˆæ­£è¦åŒ–ã•ã‚ŒãŸï¼‰Nã«ã¤ã„ã¦Vã‚’åæ˜ 
 		inline VECTOR3 Reflect(const VECTOR3& v, const VECTOR3& n)
 		{
 			return v - 2.0f * VECTOR3::Dot(v, n) * n;
 		}
 
 
-		// ƒNƒH[ƒ^ƒjƒIƒ“‚É‚æ‚éVector3‚Ì•ÏŠ·
+		// ã‚¯ã‚©ãƒ¼ã‚¿ãƒ‹ã‚ªãƒ³ã«ã‚ˆã‚‹Vector3ã®å¤‰æ›
 		static VECTOR3 Transform(const VECTOR3& v, const class Quaternion& q);
 	};
 
@@ -439,12 +439,12 @@ namespace AeigisMath
 
 		Quaternion() : x(0.f), y(0.f), z(0.f), w(1.0f) {}
 
-		// ‚±‚ê‚É‚æ‚èAƒNƒH[ƒ^ƒjƒIƒ“ƒRƒ“ƒ|[ƒlƒ“ƒg‚ª’¼Úİ’è‚³‚ê‚Ü‚·-
-		// ² / Šp“x‚É‚Íg—p‚µ‚È‚¢‚Å‚­‚¾‚³‚¢
+		// ã“ã‚Œã«ã‚ˆã‚Šã€ã‚¯ã‚©ãƒ¼ã‚¿ãƒ‹ã‚ªãƒ³ã‚³ãƒ³ãƒãƒ¼ãƒãƒ³ãƒˆãŒç›´æ¥è¨­å®šã•ã‚Œã¾ã™-
+		// è»¸ / è§’åº¦ã«ã¯ä½¿ç”¨ã—ãªã„ã§ãã ã•ã„
 		Quaternion(float inX, float inY, float inZ, float inW) { Set(inX, inY, inZ, inW); }
 
-		// ²‚ÆŠp“x‚©‚çCQuaternion‚ğ\’z‚µ‚Ü‚·
-		// ²‚Í‚·‚Å‚É³‹K‰»‚³‚ê‚Ä‚¢‚é‚Æ‘z’è‚³‚ê‚Ü‚·‚ªAŠp“x‚ÍƒfƒBƒOƒŠ[‚Å‚·
+		// è»¸ã¨è§’åº¦ã‹ã‚‰CQuaternionã‚’æ§‹ç¯‰ã—ã¾ã™
+		// è»¸ã¯ã™ã§ã«æ­£è¦åŒ–ã•ã‚Œã¦ã„ã‚‹ã¨æƒ³å®šã•ã‚Œã¾ã™ãŒã€è§’åº¦ã¯ãƒ‡ã‚£ã‚°ãƒªãƒ¼ã§ã™
 		Quaternion(const VECTOR3& axis, float angle)
 		{
 			float scalar = sin( XMConvertToRadians(angle) / 2.0f );
@@ -454,7 +454,7 @@ namespace AeigisMath
 			w = cos(angle / 2.0f);
 		}
 
-		// “à•”ƒRƒ“ƒ|[ƒlƒ“ƒg‚ğ’¼Úİ’è‚µ‚Ü‚·
+		// å†…éƒ¨ã‚³ãƒ³ãƒãƒ¼ãƒãƒ³ãƒˆã‚’ç›´æ¥è¨­å®šã—ã¾ã™
 		void Set(float inX, float inY, float inZ, float inW)
 		{
 			x = inX;
@@ -470,7 +470,7 @@ namespace AeigisMath
 			z *= -1.0f;
 		}
 
-		// ‚±ƒNƒH[ƒ^ƒjƒIƒ“³‹K‰»‚·‚é
+		// ã“ã‚¯ã‚©ãƒ¼ã‚¿ãƒ‹ã‚ªãƒ³æ­£è¦åŒ–ã™ã‚‹
 		void Normalize()
 		{
 			float length = sqrt(x * x + y * y + z * z + w * w);
@@ -480,7 +480,7 @@ namespace AeigisMath
 			w /= length;
 		}
 
-		// ’ñ‹Ÿ‚³‚ê‚½ƒNƒH[ƒ^ƒjƒIƒ“‚ğ³‹K‰»‚·‚é
+		// æä¾›ã•ã‚ŒãŸã‚¯ã‚©ãƒ¼ã‚¿ãƒ‹ã‚ªãƒ³ã‚’æ­£è¦åŒ–ã™ã‚‹
 		Quaternion Normalize(const Quaternion& q)
 		{
 			Quaternion retVal = q;
@@ -488,7 +488,7 @@ namespace AeigisMath
 			return retVal;
 		}
 
-		// üŒ`•âŠÔ
+		// ç·šå½¢è£œé–“
 		Quaternion Lerp(const Quaternion& a, const Quaternion& b, float f)
 		{
 			Quaternion retVal;
@@ -500,13 +500,13 @@ namespace AeigisMath
 			return retVal;
 		}
 
-		// 2‚Â‚ÌƒNƒH[ƒ^ƒjƒIƒ“ŠÔ‚ÌƒhƒbƒgÏia Dot bj
+		// 2ã¤ã®ã‚¯ã‚©ãƒ¼ã‚¿ãƒ‹ã‚ªãƒ³é–“ã®ãƒ‰ãƒƒãƒˆç©ï¼ˆa Dot bï¼‰
 		float Dot(const Quaternion& a, const Quaternion& b)
 		{
 			return a.x * b.x + a.y * b.y + a.z * b.z + a.w * b.w;
 		}
 
-		// ‹…–ÊüŒ`•âŠÔ
+		// çƒé¢ç·šå½¢è£œé–“
 		Quaternion Slerp(const Quaternion& a, const Quaternion& b, float f)
 		{
 			float rawCosm = Quaternion::Dot(a, b);
@@ -548,13 +548,13 @@ namespace AeigisMath
 			return retVal;
 		}
 
-		// ˜AŒ‹‚·‚é
-		// q‰ñ“]Ap‰ñ“]
+		// é€£çµã™ã‚‹
+		// qå›è»¢ã€på›è»¢
 		Quaternion Concatenate(const Quaternion& q, const Quaternion& p)
 		{
 			Quaternion retVal;
 
-			// ƒxƒNƒgƒ‹¬•ª‚Íps * qv + qs * pv + pv x qv
+			// ãƒ™ã‚¯ãƒˆãƒ«æˆåˆ†ã¯ps * qv + qs * pv + pv x qv
 			VECTOR3 qv(q.x, q.y, q.z);
 			VECTOR3 pv(p.x, p.y, p.z);
 			VECTOR3 newVec = p.w * qv + q.w * pv + VECTOR3::Cross(pv, qv);
@@ -562,8 +562,8 @@ namespace AeigisMath
 			retVal.y = newVec.y;
 			retVal.z = newVec.z;
 
-			// ƒXƒJƒ‰[ƒRƒ“ƒ|[ƒlƒ“ƒg‚ÍŸ‚Ì‚Æ‚¨‚è‚Å‚·B
-			// ps * qs - pvB qv
+			// ã‚¹ã‚«ãƒ©ãƒ¼ã‚³ãƒ³ãƒãƒ¼ãƒãƒ³ãƒˆã¯æ¬¡ã®ã¨ãŠã‚Šã§ã™ã€‚
+			// ps * qs - pvã€‚ qv
 			retVal.w = p.w * q.w - VECTOR3::Dot(pv, qv);
 
 			return retVal;
@@ -618,7 +618,7 @@ namespace AeigisMath
 		}
 	};
 
-	// ‘ŠŒİ•ÏŠ·ŠÖ”
+	// ç›¸äº’å¤‰æ›é–¢æ•°
 
 	inline XMINT2 INT2ToXMINT2(const INT2& i2)
 	{
@@ -676,7 +676,7 @@ namespace AeigisMath
 		return 	VECTOR3(vec.x, vec.y, vec.z);
 	}
 
-	//ƒNƒH[ƒ^ƒjƒIƒ“‚ğ‰ñ“]s—ñ‚É‚·‚é
+	//ã‚¯ã‚©ãƒ¼ã‚¿ãƒ‹ã‚ªãƒ³ã‚’å›è»¢è¡Œåˆ—ã«ã™ã‚‹
 	inline XMMATRIX QuaternionToMatrix(Quaternion& q) {
 		//MATRIX ret;
 		XMFLOAT4X4 ret;
@@ -707,7 +707,7 @@ namespace AeigisMath
 		return XMLoadFloat4x4(&ret);
 	}
 
-	//‰ñ“]s—ñ‚ğƒNƒH[ƒ^ƒjƒIƒ“‚É‚·‚é
+	//å›è»¢è¡Œåˆ—ã‚’ã‚¯ã‚©ãƒ¼ã‚¿ãƒ‹ã‚ªãƒ³ã«ã™ã‚‹
 	inline Quaternion MatrixToQuaternion(XMMATRIX& mat) {
 		Quaternion q;
 
@@ -766,7 +766,7 @@ namespace AeigisMath
 		}
 	}
 
-	// ’è”
+	// å®šæ•°
 
 	const INT2 INT2_Zero(0, 0);
 	const INT2 INT2_UnitX(1, 0);

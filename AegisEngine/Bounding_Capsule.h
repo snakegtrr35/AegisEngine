@@ -1,6 +1,6 @@
-/**
+ï»¿/**
  * @file Bounding_Capsule.h
- * @brief CAPSULE‚Ìƒwƒbƒ_[ƒtƒ@ƒCƒ‹
+ * @brief CAPSULEã®ãƒ˜ãƒƒãƒ€ãƒ¼ãƒ•ã‚¡ã‚¤ãƒ«
  */
 
 #pragma once
@@ -10,49 +10,49 @@
 
 #include	"Bounding.h"
 
-// ‹…
+// çƒ
 class BOUNDING_CAPSULE : public BOUNDING {
 private:
-	//! ˆê‚Â–Ú‚Ì’¸“_ƒoƒbƒtƒ@
+	//! ä¸€ã¤ç›®ã®é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡
 	unique_ptr<ID3D11Buffer, Release> pVertexBuffer;
 
-	//! “ñ‚Â–Ú‚Ì’¸“_ƒoƒbƒtƒ@
+	//! äºŒã¤ç›®ã®é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡
 	unique_ptr<ID3D11Buffer, Release> pVertexBuffer2;
 
-	//! ƒCƒ“ƒfƒbƒNƒXƒoƒbƒtƒ@
+	//! ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ãƒãƒƒãƒ•ã‚¡
 	unique_ptr<ID3D11Buffer, Release> pIndexBuffer;	
 
-	//! ƒCƒ“ƒfƒbƒNƒX”
+	//! ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹æ•°
 	UINT IndexNum;
 
-	//! ƒŠƒ“ƒO‚Ì’¸“_ƒoƒbƒtƒ@
+	//! ãƒªãƒ³ã‚°ã®é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡
 	unique_ptr<ID3D11Buffer, Release> pVertexBuffer_Ring;
 
-	//! ƒŠƒ“ƒO‚ÌƒCƒ“ƒfƒbƒNƒXƒoƒbƒtƒ@
+	//! ãƒªãƒ³ã‚°ã®ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ãƒãƒƒãƒ•ã‚¡
 	unique_ptr<ID3D11Buffer, Release> pIndexBuffer_Ring;
 
-	//! ƒŠƒ“ƒO‚ÌƒCƒ“ƒfƒbƒNƒX”
+	//! ãƒªãƒ³ã‚°ã®ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹æ•°
 	UINT IndexNum_Ring;
 
-	//! ”¼Œa
+	//! åŠå¾„
 	float Radius;
 
-	//! ‚‚³
+	//! é«˜ã•
 	float Height;
 
-	//! •`‰æ(À‘•)
+	//! æç”»(å®Ÿè£…)
 	void Draw_Body(const XMFLOAT3& position, const XMFLOAT3& rotation);
 
-	//! –{‘Ì‚Ì•`‰æ
+	//! æœ¬ä½“ã®æç”»
 	void Draw_Semicircle(const XMFLOAT3& position, const XMFLOAT3& rotation);
 
-	//! ’†S‚Ì‰~•”•ª‚Ì•`‰æ
+	//! ä¸­å¿ƒã®å††éƒ¨åˆ†ã®æç”»
 	void Draw_Ring(const XMFLOAT3& position, const XMFLOAT3& rotation);
 
-	// !–{‘Ì‚Ì‰Šú‰»
+	// !æœ¬ä½“ã®åˆæœŸåŒ–
 	void Init_Body();
 
-	//! ’†S‚Ì‰~•”•ª‚Ì‰Šú‰»
+	//! ä¸­å¿ƒã®å††éƒ¨åˆ†ã®åˆæœŸåŒ–
 	void Init_Ring();
 
 public:
@@ -60,57 +60,57 @@ public:
 	~BOUNDING_CAPSULE() { Uninit(); }
 
 	/**
-	* @brief ‰Šú‰»ŠÖ”
-	* @details ‰Šú‰»‚·‚éŠÖ”
+	* @brief åˆæœŸåŒ–é–¢æ•°
+	* @details åˆæœŸåŒ–ã™ã‚‹é–¢æ•°
 	*/
 	void Init() override;
 
 	/**
-	* @brief •`‰æŠÖ”
-	* @details •`‰æ‚·‚éŠÖ”
+	* @brief æç”»é–¢æ•°
+	* @details æç”»ã™ã‚‹é–¢æ•°
 	*/
 	void Draw() override;
 
 	/**
-	* @brief •`‰æ(Depth-pre-pass)ŠÖ”
-	* @details Depth-pre-pass‚ğ‚·‚éŠÖ”
+	* @brief æç”»(Depth-pre-pass)é–¢æ•°
+	* @details Depth-pre-passã‚’ã™ã‚‹é–¢æ•°
 	*/
 	void Draw_DPP() override {}
 
 	/**
-	* @brief XVŠÖ”
-	* @details XV‚·‚éŠÖ”
+	* @brief æ›´æ–°é–¢æ•°
+	* @details æ›´æ–°ã™ã‚‹é–¢æ•°
 	*/
 	void Update(float delta_time) override;
 
 	/**
-	* @brief I—¹ˆ—ŠÖ”
-	* @details I—¹ˆ—‚ğ‚·‚éŠÖ”
+	* @brief çµ‚äº†å‡¦ç†é–¢æ•°
+	* @details çµ‚äº†å‡¦ç†ã‚’ã™ã‚‹é–¢æ•°
 	*/
 	void Uninit() override;
 
 	/**
-	* @brief ƒCƒ“ƒXƒyƒNƒ^[‚Å‚Ì•`‰æŠÖ”
-	* @details ƒCƒ“ƒXƒyƒNƒ^[‚Å‚Ì•`‰æ‚ğ‚·‚éŠÖ”
+	* @brief ã‚¤ãƒ³ã‚¹ãƒšã‚¯ã‚¿ãƒ¼ã§ã®æç”»é–¢æ•°
+	* @details ã‚¤ãƒ³ã‚¹ãƒšã‚¯ã‚¿ãƒ¼ã§ã®æç”»ã‚’ã™ã‚‹é–¢æ•°
 	*/
 	void Draw_Inspector() override;
 
 	/**
-	* @brief ’¸“_ƒoƒbƒtƒ@‚ÌXVŠÖ”
-	* @details ’¸“_ƒoƒbƒtƒ@‚ÌXV‚ğ‚·‚éŠÖ”
+	* @brief é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡ã®æ›´æ–°é–¢æ•°
+	* @details é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡ã®æ›´æ–°ã‚’ã™ã‚‹é–¢æ•°
 	*/
 	void OverWrite() override;
 
 	/**
-	* @brief ”¼Œa‚ğİ’è‚·‚éŠÖ”
-	* @param radius(”¼Œa) ”¼Œa
+	* @brief åŠå¾„ã‚’è¨­å®šã™ã‚‹é–¢æ•°
+	* @param radius(åŠå¾„) åŠå¾„
 	*/
 	void Set_Radius(const float radius);
 
 	/**
-	* @brief ”¼Œa‚ğæ“¾‚·‚éŠÖ”
-	* @return float ”¼Œa
-	* @details ”¼Œa‚ğæ“¾‚·‚éŠÖ”
+	* @brief åŠå¾„ã‚’å–å¾—ã™ã‚‹é–¢æ•°
+	* @return float åŠå¾„
+	* @details åŠå¾„ã‚’å–å¾—ã™ã‚‹é–¢æ•°
 	*/
 	const float Get_Radius();
 

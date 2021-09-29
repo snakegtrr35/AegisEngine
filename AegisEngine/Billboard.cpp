@@ -1,4 +1,4 @@
-#include	"Game_Object.h"
+ï»¿#include	"Game_Object.h"
 #include	"Billboard.h"
 
 #include	"camera.h"
@@ -9,24 +9,24 @@
 #include	"Scene.h"
 #include	"ShadowMap.h"
 
-unique_ptr<ID3D11Buffer, Release> BILL_BOARD::pIndexBuffer = nullptr;		// ƒCƒ“ƒfƒbƒNƒXƒoƒbƒtƒ@
+unique_ptr<ID3D11Buffer, Release> BILL_BOARD::pIndexBuffer = nullptr;		// ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ãƒãƒƒãƒ•ã‚¡
 
 BILL_BOARD::BILL_BOARD() : pVertexBuffer(nullptr), Texture(nullptr), WH(XMFLOAT2(1.0f, 1.0f))
 {
-	// ƒeƒNƒXƒ`ƒƒ‚Ìİ’è
+	// ãƒ†ã‚¯ã‚¹ãƒãƒ£ã®è¨­å®š
 	Texture = make_unique<TEXTURE>();
 }
 
 //==============================
-// ƒRƒ“ƒXƒgƒ‰ƒNƒ^
-// position : ’†SÀ•W
-// wh : •‚Æ‚‚³
+// ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
+// position : ä¸­å¿ƒåº§æ¨™
+// wh : å¹…ã¨é«˜ã•
 //==============================
 BILL_BOARD::BILL_BOARD(XMFLOAT3 position, XMFLOAT2 wh) : pVertexBuffer(nullptr), Texture(nullptr), WH(wh)
 {
 	Position = position;
 
-	// ƒeƒNƒXƒ`ƒƒ‚Ìİ’è
+	// ãƒ†ã‚¯ã‚¹ãƒãƒ£ã®è¨­å®š
 	Texture = make_unique<TEXTURE>();
 }
 
@@ -37,7 +37,7 @@ BILL_BOARD::~BILL_BOARD()
 
 void BILL_BOARD::Init()
 {
-	// ’¸“_ƒoƒbƒtƒ@‚Ìİ’è
+	// é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡ã®è¨­å®š
 	{
 		HRESULT hr;
 		ID3D11Buffer* buffer = nullptr;
@@ -50,7 +50,7 @@ void BILL_BOARD::Init()
 		bd.MiscFlags = 0;
 		bd.StructureByteStride = 0;
 
-		// ’¸“_ƒoƒbƒtƒ@‚Ì¶¬
+		// é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡ã®ç”Ÿæˆ
 		hr = CRenderer::GetDevice()->CreateBuffer(&bd, nullptr, &buffer);
 
 		if (FAILED(hr))
@@ -61,7 +61,7 @@ void BILL_BOARD::Init()
 		pVertexBuffer.reset(buffer);
 	}
 
-	// ƒCƒ“ƒfƒbƒNƒXƒoƒbƒtƒ@‚Ìİ’è
+	// ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ãƒãƒƒãƒ•ã‚¡ã®è¨­å®š
 	if (nullptr == pIndexBuffer.get())
 	{
 		HRESULT hr;
@@ -122,29 +122,29 @@ void BILL_BOARD::Draw()
 		vertex[3].Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
 		vertex[3].TexCoord = XMFLOAT2(1.0f, 1.0f);
 
-		// ’¸“_ƒoƒbƒtƒ@‚Ì‘‚«Š·‚¦
+		// é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡ã®æ›¸ãæ›ãˆ
 		{
 			D3D11_MAPPED_SUBRESOURCE msr;
 			CRenderer::GetDeviceContext()->Map(pVertexBuffer.get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &msr);
-			memcpy(msr.pData, vertex, sizeof(VERTEX_3D) * 4); // 4’¸“_•ªƒRƒs[
+			memcpy(msr.pData, vertex, sizeof(VERTEX_3D) * 4); // 4é ‚ç‚¹åˆ†ã‚³ãƒ”ãƒ¼
 			CRenderer::GetDeviceContext()->Unmap(pVertexBuffer.get(), 0);
 		}
 	}
 
-	// “ü—ÍƒAƒZƒ“ƒuƒ‰‚É’¸“_ƒoƒbƒtƒ@‚ğİ’è
+	// å…¥åŠ›ã‚¢ã‚»ãƒ³ãƒ–ãƒ©ã«é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡ã‚’è¨­å®š
 	auto vertex = pVertexBuffer.get();
 	CRenderer::SetVertexBuffers(vertex);
 
 	auto index = pIndexBuffer.get();
 	CRenderer::SetIndexBuffer(index);
 
-	// ƒeƒNƒXƒ`ƒƒ‚Ìİ’è
+	// ãƒ†ã‚¯ã‚¹ãƒãƒ£ã®è¨­å®š
 	Texture->Set_Texture();
 
-	// 3Dƒ}ƒgƒŠƒbƒNƒXİ’è
+	// 3Dãƒãƒˆãƒªãƒƒã‚¯ã‚¹è¨­å®š
 	{
 		XMMATRIX world = XMMatrixIdentity();
-		XMMATRIX mtxViewInv;		// mtxView‚Ì‹ts—ñ
+		XMMATRIX mtxViewInv;		// mtxViewã®é€†è¡Œåˆ—
 
 		const auto camera01 = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<CCamera>("camera");
 		const auto camera02 = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
@@ -158,11 +158,11 @@ void BILL_BOARD::Draw()
 			mtxViewInv = camera02.lock()->Get_Camera_View();
 		}
 
-		// ‹ts—ñ‚Ì“]’us—ñ ( ‹ts—ñ(mtxViewInv)‚Ì¶¬ )
+		// é€†è¡Œåˆ—ã®è»¢ç½®è¡Œåˆ— ( é€†è¡Œåˆ—(mtxViewInv)ã®ç”Ÿæˆ )
 		XMVECTOR det;
 		mtxViewInv = XMMatrixInverse(&det, mtxViewInv);
 
-		// ‹ts—ñ(mtxViewInv)‚Ì’l‚Ì•ÏX
+		// é€†è¡Œåˆ—(mtxViewInv)ã®å€¤ã®å¤‰æ›´
 		XMFLOAT4X4 mat44;
 		XMStoreFloat4x4(&mat44, mtxViewInv);
 
@@ -226,26 +226,26 @@ void BILL_BOARD::Draw_DPP()
 		vertex[3].Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
 		vertex[3].TexCoord = XMFLOAT2(1.0f, 1.0f);
 
-		// ’¸“_ƒoƒbƒtƒ@‚Ì‘‚«Š·‚¦
+		// é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡ã®æ›¸ãæ›ãˆ
 		{
 			D3D11_MAPPED_SUBRESOURCE msr;
 			CRenderer::GetDeviceContext()->Map(pVertexBuffer.get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &msr);
-			memcpy(msr.pData, vertex, sizeof(VERTEX_3D) * 4); // 4’¸“_•ªƒRƒs[
+			memcpy(msr.pData, vertex, sizeof(VERTEX_3D) * 4); // 4é ‚ç‚¹åˆ†ã‚³ãƒ”ãƒ¼
 			CRenderer::GetDeviceContext()->Unmap(pVertexBuffer.get(), 0);
 		}
 	}
 
-	// “ü—ÍƒAƒZƒ“ƒuƒ‰‚É’¸“_ƒoƒbƒtƒ@‚ğİ’è
+	// å…¥åŠ›ã‚¢ã‚»ãƒ³ãƒ–ãƒ©ã«é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡ã‚’è¨­å®š
 	auto vertex = pVertexBuffer.get();
 	CRenderer::SetVertexBuffers(vertex);
 
 	auto index = pIndexBuffer.get();
 	CRenderer::SetIndexBuffer(index);
 
-	// 3Dƒ}ƒgƒŠƒbƒNƒXİ’è
+	// 3Dãƒãƒˆãƒªãƒƒã‚¯ã‚¹è¨­å®š
 	{
 		XMMATRIX world = XMMatrixIdentity();
-		XMMATRIX mtxViewInv;		// mtxView‚Ì‹ts—ñ
+		XMMATRIX mtxViewInv;		// mtxViewã®é€†è¡Œåˆ—
 
 		const auto camera01 = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<CCamera>("camera");
 		const auto camera02 = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
@@ -259,11 +259,11 @@ void BILL_BOARD::Draw_DPP()
 			mtxViewInv = camera02.lock()->Get_Camera_View();
 		}
 
-		// ‹ts—ñ‚Ì“]’us—ñ ( ‹ts—ñ(mtxViewInv)‚Ì¶¬ )
+		// é€†è¡Œåˆ—ã®è»¢ç½®è¡Œåˆ— ( é€†è¡Œåˆ—(mtxViewInv)ã®ç”Ÿæˆ )
 		XMVECTOR det;
 		mtxViewInv = XMMatrixInverse(&det, mtxViewInv);
 
-		// ‹ts—ñ(mtxViewInv)‚Ì’l‚Ì•ÏX
+		// é€†è¡Œåˆ—(mtxViewInv)ã®å€¤ã®å¤‰æ›´
 		XMFLOAT4X4 mat44;
 		XMStoreFloat4x4(&mat44, mtxViewInv);
 
@@ -304,13 +304,13 @@ void BILL_BOARD::Uninit()
 	Texture.reset(nullptr);
 }
 
-// •‚Æ‚‚³‚Ìİ’è
+// å¹…ã¨é«˜ã•ã®è¨­å®š
 void BILL_BOARD::SetWH(const XMFLOAT2& wh)
 {
 	WH = wh;
 };
 
-// ƒeƒNƒXƒ`ƒƒ‚Ìİ’è
+// ãƒ†ã‚¯ã‚¹ãƒãƒ£ã®è¨­å®š
 void BILL_BOARD::SetTexture(const string& const file_name)
 {
 	Texture->Set_Texture_Name(file_name);
@@ -380,7 +380,7 @@ void BILL_BOARD_ANIMATION::Draw(float tx, float ty)
 		XMINT2* wh = Texture->Get_WH();
 		VERTEX_3D vertex[4];
 
-		// UVÀ•WŒvZ
+		// UVåº§æ¨™è¨ˆç®—
 		float u[2], v[2];
 		u[0] = Tx / wh->x;
 		v[0] = Ty / wh->y;
@@ -407,29 +407,29 @@ void BILL_BOARD_ANIMATION::Draw(float tx, float ty)
 		vertex[3].Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
 		vertex[3].TexCoord = XMFLOAT2(u[1], v[1]);
 
-		// ’¸“_ƒoƒbƒtƒ@‚Ì‘‚«Š·‚¦
+		// é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡ã®æ›¸ãæ›ãˆ
 		{
 			D3D11_MAPPED_SUBRESOURCE msr;
 			CRenderer::GetDeviceContext()->Map(pVertexBuffer.get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &msr);
-			memcpy(msr.pData, vertex, sizeof(VERTEX_3D) * 4); // 4’¸“_•ªƒRƒs[
+			memcpy(msr.pData, vertex, sizeof(VERTEX_3D) * 4); // 4é ‚ç‚¹åˆ†ã‚³ãƒ”ãƒ¼
 			CRenderer::GetDeviceContext()->Unmap(pVertexBuffer.get(), 0);
 		}
 	}
 
-	// “ü—ÍƒAƒZƒ“ƒuƒ‰‚É’¸“_ƒoƒbƒtƒ@‚ğİ’è
+	// å…¥åŠ›ã‚¢ã‚»ãƒ³ãƒ–ãƒ©ã«é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡ã‚’è¨­å®š
 	auto vertex = pVertexBuffer.get();
 	CRenderer::SetVertexBuffers(vertex);
 
 	auto index = pIndexBuffer.get();
 	CRenderer::SetIndexBuffer(index);
 
-	// ƒeƒNƒXƒ`ƒƒ‚Ìİ’è
+	// ãƒ†ã‚¯ã‚¹ãƒãƒ£ã®è¨­å®š
 	Texture->Set_Texture();
 
-	// 3Dƒ}ƒgƒŠƒbƒNƒXİ’è
+	// 3Dãƒãƒˆãƒªãƒƒã‚¯ã‚¹è¨­å®š
 	{
 		XMMATRIX world = XMMatrixIdentity();
-		XMMATRIX mtxViewInv;		// mtxView‚Ì‹ts—ñ
+		XMMATRIX mtxViewInv;		// mtxViewã®é€†è¡Œåˆ—
 
 		const auto camera01 = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<CCamera>("camera");
 		const auto camera02 = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
@@ -443,11 +443,11 @@ void BILL_BOARD_ANIMATION::Draw(float tx, float ty)
 			mtxViewInv = camera02.lock()->Get_Camera_View();
 		}
 
-		// ‹ts—ñ‚Ì“]’us—ñ ( ‹ts—ñ(mtxViewInv)‚Ì¶¬ )
+		// é€†è¡Œåˆ—ã®è»¢ç½®è¡Œåˆ— ( é€†è¡Œåˆ—(mtxViewInv)ã®ç”Ÿæˆ )
 		XMVECTOR det;
 		mtxViewInv = XMMatrixInverse(&det, mtxViewInv);
 
-		// ‹ts—ñ(mtxViewInv)‚Ì’l‚Ì•ÏX
+		// é€†è¡Œåˆ—(mtxViewInv)ã®å€¤ã®å¤‰æ›´
 		XMFLOAT4X4 mat44;
 		XMStoreFloat4x4(&mat44, mtxViewInv);
 
@@ -512,7 +512,7 @@ void BILL_BOARD_ANIMATION::Draw_DPP(float tx, float ty)
 		XMINT2* wh = Texture->Get_WH();
 		VERTEX_3D vertex[4];
 
-		// UVÀ•WŒvZ
+		// UVåº§æ¨™è¨ˆç®—
 		float u[2], v[2];
 		u[0] = Tx / wh->x;
 		v[0] = Ty / wh->y;
@@ -539,26 +539,26 @@ void BILL_BOARD_ANIMATION::Draw_DPP(float tx, float ty)
 		vertex[3].Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
 		vertex[3].TexCoord = XMFLOAT2(u[1], v[1]);
 
-		// ’¸“_ƒoƒbƒtƒ@‚Ì‘‚«Š·‚¦
+		// é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡ã®æ›¸ãæ›ãˆ
 		{
 			D3D11_MAPPED_SUBRESOURCE msr;
 			CRenderer::GetDeviceContext()->Map(pVertexBuffer.get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &msr);
-			memcpy(msr.pData, vertex, sizeof(VERTEX_3D) * 4); // 4’¸“_•ªƒRƒs[
+			memcpy(msr.pData, vertex, sizeof(VERTEX_3D) * 4); // 4é ‚ç‚¹åˆ†ã‚³ãƒ”ãƒ¼
 			CRenderer::GetDeviceContext()->Unmap(pVertexBuffer.get(), 0);
 		}
 	}
 
-	// “ü—ÍƒAƒZƒ“ƒuƒ‰‚É’¸“_ƒoƒbƒtƒ@‚ğİ’è
+	// å…¥åŠ›ã‚¢ã‚»ãƒ³ãƒ–ãƒ©ã«é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡ã‚’è¨­å®š
 	auto vertex = pVertexBuffer.get();
 	CRenderer::SetVertexBuffers(vertex);
 
 	auto index = pIndexBuffer.get();
 	CRenderer::SetIndexBuffer(index);
 
-	// 3Dƒ}ƒgƒŠƒbƒNƒXİ’è
+	// 3Dãƒãƒˆãƒªãƒƒã‚¯ã‚¹è¨­å®š
 	{
 		XMMATRIX world = XMMatrixIdentity();
-		XMMATRIX mtxViewInv;		// mtxView‚Ì‹ts—ñ
+		XMMATRIX mtxViewInv;		// mtxViewã®é€†è¡Œåˆ—
 
 		const auto camera01 = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<CCamera>("camera");
 		const auto camera02 = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
@@ -572,11 +572,11 @@ void BILL_BOARD_ANIMATION::Draw_DPP(float tx, float ty)
 			mtxViewInv = camera02.lock()->Get_Camera_View();
 		}
 
-		// ‹ts—ñ‚Ì“]’us—ñ ( ‹ts—ñ(mtxViewInv)‚Ì¶¬ )
+		// é€†è¡Œåˆ—ã®è»¢ç½®è¡Œåˆ— ( é€†è¡Œåˆ—(mtxViewInv)ã®ç”Ÿæˆ )
 		XMVECTOR det;
 		mtxViewInv = XMMatrixInverse(&det, mtxViewInv);
 
-		// ‹ts—ñ(mtxViewInv)‚Ì’l‚Ì•ÏX
+		// é€†è¡Œåˆ—(mtxViewInv)ã®å€¤ã®å¤‰æ›´
 		XMFLOAT4X4 mat44;
 		XMStoreFloat4x4(&mat44, mtxViewInv);
 

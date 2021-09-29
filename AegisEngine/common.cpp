@@ -1,9 +1,9 @@
-#include	"common.h"
+ï»¿#include	"common.h"
 #include	<locale.h>
 
 std::wstring stringTowstring(const std::string& font)
 {
-	//ƒƒP[ƒ‹w’è
+	//ãƒ­ã‚±ãƒ¼ãƒ«æŒ‡å®š
 	setlocale(LC_ALL, "japanese");
 
 	size_t length = font.size();
@@ -23,7 +23,7 @@ std::wstring stringTowstring(const std::string& font)
 
 std::string wstringTostring(const std::wstring& font)
 {
-	//ƒƒP[ƒ‹w’è
+	//ãƒ­ã‚±ãƒ¼ãƒ«æŒ‡å®š
 	setlocale(LC_ALL, "japanese");
 
 	size_t length = font.size();

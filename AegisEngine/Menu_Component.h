@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 
 #ifndef MENU_COMPONENT_H
 #define MENU_COMPONENT_H
@@ -14,7 +14,7 @@ protected:
 	list<MENU_COMPONENT*> MenuObjects;
 
 public:
-	// ƒŠƒXƒg‚Ö‚Ìƒƒjƒ…[ƒIƒuƒWƒFƒNƒg‚Ì’Ç‰Á
+	// ãƒªã‚¹ãƒˆã¸ã®ãƒ¡ãƒ‹ãƒ¥ãƒ¼ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®è¿½åŠ 
 	template <typename T>
 	T* Add_Menu_Object()
 	{
@@ -33,7 +33,7 @@ public:
 		return object;
 	}
 
-	// ƒŠƒXƒg‚©‚ç“Á’è‚Ìƒƒjƒ…[ƒIƒuƒWƒFƒNƒg‚Ìæ“¾
+	// ãƒªã‚¹ãƒˆã‹ã‚‰ç‰¹å®šã®ãƒ¡ãƒ‹ãƒ¥ãƒ¼ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®å–å¾—
 	template <typename T>
 	T* Get_Menu_Object()
 	{

@@ -1,11 +1,11 @@
-#pragma once
+Ôªø#pragma once
 
 #ifndef KEYBOARD_H
 #define KEYBOARD_H
 
 #include	<Windows.h>
 
-// 0Å`9
+// 0ÔΩû9
 #define VK_0 0x30
 #define VK_1 0x31
 #define VK_2 0x32
@@ -17,7 +17,7 @@
 #define VK_8 0x38
 #define VK_9 0x39
 
-// AÅ`Z
+// AÔΩûZ
 #define VK_A 0x41
 #define VK_B 0x42
 #define VK_C 0x43

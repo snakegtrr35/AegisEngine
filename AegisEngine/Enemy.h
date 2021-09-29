@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 
 #ifndef ENEMY_H
 #define ENEMY_H
@@ -23,9 +23,9 @@ public:
 	void Update(float delta_time) override;
 	void Uninit() override;
 
-	void SetPosition(const XMFLOAT3& position);					// ƒ|ƒWƒVƒ‡ƒ“‚Ìİ’è
-	void SetRotation(const XMFLOAT3& position);					// ‰ñ“]‚Ìİ’è
-	void SetScaling(const XMFLOAT3& scaling);					// Šg‘åk¬‚Ì’l‚Ìİ’è
+	void SetPosition(const XMFLOAT3& position);					// ãƒã‚¸ã‚·ãƒ§ãƒ³ã®è¨­å®š
+	void SetRotation(const XMFLOAT3& position);					// å›è»¢ã®è¨­å®š
+	void SetScaling(const XMFLOAT3& scaling);					// æ‹¡å¤§ç¸®å°ã®å€¤ã®è¨­å®š
 
 	template<typename Archive>
 	void serialize(Archive& ar)

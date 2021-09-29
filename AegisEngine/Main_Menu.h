@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 
 #ifndef MAIN_MENU_H
 #define MAIN_MENU_H
@@ -6,9 +6,9 @@
 class SCENE;
 
 /**
-* @brief ƒƒCƒ“ƒƒjƒ…[ƒV[ƒ“ƒNƒ‰ƒX
-* @details ƒV[ƒ“ƒNƒ‰ƒX‚Ì”h¶ƒNƒ‰ƒX
-* @details ƒ^ƒCƒgƒ‹‚ÆƒQ[ƒ€‚ÌŠÔ‚ÌƒV[ƒ“
+* @brief ãƒ¡ã‚¤ãƒ³ãƒ¡ãƒ‹ãƒ¥ãƒ¼ã‚·ãƒ¼ãƒ³ã‚¯ãƒ©ã‚¹
+* @details ã‚·ãƒ¼ãƒ³ã‚¯ãƒ©ã‚¹ã®æ´¾ç”Ÿã‚¯ãƒ©ã‚¹
+* @details ã‚¿ã‚¤ãƒˆãƒ«ã¨ã‚²ãƒ¼ãƒ ã®é–“ã®ã‚·ãƒ¼ãƒ³
 */
 class MAIN_MENU : public SCENE {
 private:

@@ -1,10 +1,10 @@
-#include    "Commom_Hlsl.hlsli"
+ï»¿#include    "Commom_Hlsl.hlsli"
 
 //*****************************************************************************
-// ’è”ƒoƒbƒtƒ@
+// å®šæ•°ãƒãƒƒãƒ•ã‚¡
 //*****************************************************************************
 
-// ƒ}ƒgƒŠƒNƒXƒoƒbƒtƒ@
+// ãƒãƒˆãƒªã‚¯ã‚¹ãƒãƒƒãƒ•ã‚¡
 cbuffer ConstantBuffer : register( b0 )
 {
     matrix World;
@@ -13,7 +13,7 @@ cbuffer ConstantBuffer : register( b0 )
 }
 
 
-// ƒVƒƒƒhƒEƒ}ƒbƒv—p‚Ìƒ}ƒgƒŠƒbƒNƒX
+// ã‚·ãƒ£ãƒ‰ã‚¦ãƒãƒƒãƒ—ç”¨ã®ãƒãƒˆãƒªãƒƒã‚¯ã‚¹
 cbuffer ShadowBuffer : register( b1 )
 {
     matrix ShadowView;
@@ -27,13 +27,13 @@ cbuffer BoneBuffer : register( b6 )
     matrix BoneMatrixDmmy[253]    : packoffset(c8);
     matrix EndBoneMatrix          : packoffset(c1020);
     
-    // c0 ¨ c1 4ƒoƒCƒg
-    // c0 ¨ c4 16ƒoƒCƒg
-    // 4 * 256(ƒ{[ƒ“‚ÌÅ‘å”)
+    // c0 â†’ c1 4ãƒã‚¤ãƒˆ
+    // c0 â†’ c4 16ãƒã‚¤ãƒˆ
+    // 4 * 256(ãƒœãƒ¼ãƒ³ã®æœ€å¤§æ•°)
 }
 
 //=============================================================================
-// ’¸“_ƒVƒF[ƒ_
+// é ‚ç‚¹ã‚·ã‚§ãƒ¼ãƒ€
 //=============================================================================
 PS_IN main( VS_IN_ANIMA Input)
 {

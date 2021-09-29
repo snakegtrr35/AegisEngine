@@ -1,4 +1,4 @@
-#include	"Component.h"
+ï»¿#include	"Component.h"
 
 #include	"imgui/imgui.h"
 
@@ -12,15 +12,15 @@ void COMPONENT::Draw_Inspector()
 		}
 	}
 
-	auto id = ImGui::GetID((char*)u8"ƒRƒŠƒWƒ‡ƒ“(AABB)");
+	auto id = ImGui::GetID((char*)u8"ã‚³ãƒªã‚¸ãƒ§ãƒ³(AABB)");
 
 	{
-		const char* names[] = { (char*)u8"íœ", (char*)u8"BBB" };
+		const char* names[] = { (char*)u8"å‰Šé™¤", (char*)u8"BBB" };
 		static int selected = -1;
 
 		if (ImGui::BeginPopup("popupID"))
 		{
-			ImGui::Text("‘I‘ğ€–Ú");
+			ImGui::Text("é¸æŠé …ç›®");
 			ImGui::Separator();
 			for (int i = 0; i < IM_ARRAYSIZE(names); i++)
 			{
@@ -116,7 +116,7 @@ void COMPONENT::Set_Scaling(const XMFLOAT3& scaling)
 	Scaling = scaling;
 };
 
-// ƒƒ‚ƒŠã‚©‚ç‚Ìíœ
+// ãƒ¡ãƒ¢ãƒªä¸Šã‹ã‚‰ã®å‰Šé™¤
 bool COMPONENT::Destroy()
 {
 	if (DestroyFlag)

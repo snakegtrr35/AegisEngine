@@ -1,11 +1,11 @@
-#include	"main.h"
+ï»¿#include	"main.h"
 #include	"manager.h"
 #include	"resource.h"
 
 #include	"Timer.h"
 
 #ifdef _DEBUG
-// ƒƒ‚ƒŠƒŠ[ƒN‚Ì‚½‚ß‚ÌƒCƒ“ƒNƒ‹[ƒh
+// ãƒ¡ãƒ¢ãƒªãƒªãƒ¼ã‚¯ã®ãŸã‚ã®ã‚¤ãƒ³ã‚¯ãƒ«ãƒ¼ãƒ‰
 #define _CRTDBG_MAP_ALLOC
 #include <cstdlib>
 #include <crtdbg.h>
@@ -32,7 +32,7 @@ HWND GetWindow()
 int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
 #ifdef _DEBUG
-	// ƒƒ‚ƒŠƒŠ[ƒNŒŸo
+	// ãƒ¡ãƒ¢ãƒªãƒªãƒ¼ã‚¯æ¤œå‡º
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 #endif // _DEBUG
 
@@ -52,10 +52,10 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 		NULL
 	};
 
-	// ƒEƒBƒ“ƒhƒEƒNƒ‰ƒX‚Ì“o˜^
+	// ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ã‚¯ãƒ©ã‚¹ã®ç™»éŒ²
 	RegisterClassEx(&wcex);
 
-	// ƒEƒBƒ“ƒhƒE‚Ìì¬
+	// ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ã®ä½œæˆ
 	g_Window = CreateWindowEx(0,
 		CLASS_NAME,
 		WINDOW_NAME,
@@ -72,21 +72,21 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 		hInstance,
 		NULL);
 
-	// ƒEƒCƒ“ƒhƒE‚Ì•\¦(‰Šú‰»ˆ—‚ÌŒã‚És‚¤)
+	// ã‚¦ã‚¤ãƒ³ãƒ‰ã‚¦ã®è¡¨ç¤º(åˆæœŸåŒ–å‡¦ç†ã®å¾Œã«è¡Œã†)
 	ShowWindow(g_Window, nCmdShow);
 	UpdateWindow(g_Window);
 
-	// ‰Šú‰»ˆ—(ƒEƒBƒ“ƒhƒE‚ğì¬‚µ‚Ä‚©‚çs‚¤)
+	// åˆæœŸåŒ–å‡¦ç†(ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ã‚’ä½œæˆã—ã¦ã‹ã‚‰è¡Œã†)
 	if (false == CManager::Init()) return -1;
 
-	//ƒtƒŒ[ƒ€ƒJƒEƒ“ƒg‰Šú‰»
+	//ãƒ•ãƒ¬ãƒ¼ãƒ ã‚«ã‚¦ãƒ³ãƒˆåˆæœŸåŒ–
 	DWORD dwExecLastTime;
 	DWORD dwCurrentTime;
 	timeBeginPeriod(1);
 	dwExecLastTime = timeGetTime();
 	dwCurrentTime = 0;
 
-	// ƒƒbƒZ[ƒWƒ‹[ƒv
+	// ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ãƒ«ãƒ¼ãƒ—
 	MSG msg;
 	ZeroMemory(&msg, sizeof msg);
 
@@ -95,12 +95,12 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
         if(PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
 		{
 			if(msg.message == WM_QUIT)
-			{// PostQuitMessage()‚ªŒÄ‚Î‚ê‚½‚çƒ‹[ƒvI—¹
+			{// PostQuitMessage()ãŒå‘¼ã°ã‚ŒãŸã‚‰ãƒ«ãƒ¼ãƒ—çµ‚äº†
 				break;
 			}
 			else
 			{
-				// ƒƒbƒZ[ƒW‚Ì–|–ó‚ÆƒfƒBƒXƒpƒbƒ`
+				// ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã®ç¿»è¨³ã¨ãƒ‡ã‚£ã‚¹ãƒ‘ãƒƒãƒ
 				TranslateMessage(&msg);
 				DispatchMessage(&msg);
 			}
@@ -113,21 +113,21 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 			{
 				dwExecLastTime = dwCurrentTime;
 
-				// XVˆ—
+				// æ›´æ–°å‡¦ç†
 				CManager::Get_Instance()->Update();
 
-				// •`‰æˆ—
+				// æç”»å‡¦ç†
 				CManager::Get_Instance()->Draw();
 			}
 		}
 	}
 
-	timeEndPeriod(1);				// •ª‰ğ”\‚ğ–ß‚·
+	timeEndPeriod(1);				// åˆ†è§£èƒ½ã‚’æˆ»ã™
 
-	// ƒEƒBƒ“ƒhƒEƒNƒ‰ƒX‚Ì“o˜^‚ğ‰ğœ
+	// ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ã‚¯ãƒ©ã‚¹ã®ç™»éŒ²ã‚’è§£é™¤
 	UnregisterClass(CLASS_NAME, wcex.hInstance);
 
-	// I—¹ˆ—
+	// çµ‚äº†å‡¦ç†
 	CManager::Delete();
 
 	return (int)msg.wParam;
@@ -136,7 +136,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 extern LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
 //=============================================================================
-// ƒEƒCƒ“ƒhƒEƒvƒƒV[ƒWƒƒ
+// ã‚¦ã‚¤ãƒ³ãƒ‰ã‚¦ãƒ—ãƒ­ã‚·ãƒ¼ã‚¸ãƒ£
 //=============================================================================
 LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {

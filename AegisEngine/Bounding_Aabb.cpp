@@ -1,4 +1,4 @@
-#include	"Bounding_Aabb.h"
+ï»¿#include	"Bounding_Aabb.h"
 #include	"camera.h"
 #include	"Debug_Camera.h"
 #include	"manager.h"
@@ -28,7 +28,7 @@ void BOUNDING_AABB::Init()
 		Aabb.Transform(Aabb, matrix);
 	}
 
-	// ’¸“_ƒoƒbƒtƒ@‚ÌÝ’è
+	// é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡ã®è¨­å®š
 	if (nullptr == pVertexBuffer.get())
 	{
 		XMFLOAT3 corners[BoundingBox::CORNER_COUNT];
@@ -61,7 +61,7 @@ void BOUNDING_AABB::Init()
 			Vertex[i].TexCoord = XMFLOAT2(0.0f, 0.0f);
 		}
 
-		// ’¸“_ƒoƒbƒtƒ@‚ÌÝ’è
+		// é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡ã®è¨­å®š
 		{
 			ID3D11Buffer* buffer;
 
@@ -86,7 +86,7 @@ void BOUNDING_AABB::Init()
 		}
 	}
 
-	// ƒCƒ“ƒfƒbƒNƒXƒoƒbƒtƒ@‚ÌÝ’è
+	// ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ãƒãƒƒãƒ•ã‚¡ã®è¨­å®š
 	if (nullptr == pIndexBuffer_BOX.get())
 	{
 		ID3D11Buffer* buffer;
@@ -133,7 +133,7 @@ void BOUNDING_AABB::Draw()
 {
 	//if (false == CManager::Get_Instance()->Get_ShadowMap()->Get_Enable())
 	{
-		// 3Dƒ}ƒgƒŠƒbƒNƒXÝ’è
+		// 3Dãƒžãƒˆãƒªãƒƒã‚¯ã‚¹è¨­å®š
 		{
 
 			const auto camera01 = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<CCamera>("camera");
@@ -149,12 +149,12 @@ void BOUNDING_AABB::Draw()
 			}
 		}
 
-		// “ü—ÍƒAƒZƒ“ƒuƒ‰‚É’¸“_ƒoƒbƒtƒ@‚ðÝ’è
+		// å…¥åŠ›ã‚¢ã‚»ãƒ³ãƒ–ãƒ©ã«é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡ã‚’è¨­å®š
 		CRenderer::SetVertexBuffers(pVertexBuffer.get());
 
 		CRenderer::SetIndexBuffer(pIndexBuffer_BOX.get());
 
-		// ƒgƒ|ƒƒW‚ÌÝ’è
+		// ãƒˆãƒãƒ­ã‚¸ã®è¨­å®š
 		CRenderer::GetDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_LINESTRIP);
 
 		CRenderer::Set_Shader(SHADER_INDEX_V::DEFAULT, SHADER_INDEX_P::NO_TEXTURE);
@@ -219,7 +219,7 @@ void BOUNDING_AABB::OverWrite()
 			Vertex[i].TexCoord = XMFLOAT2(0.0f, 0.0f);
 		}
 
-		// ’¸“_ƒoƒbƒtƒ@‚Ì‘‚«Š·‚¦
+		// é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡ã®æ›¸ãæ›ãˆ
 		{
 			D3D11_MAPPED_SUBRESOURCE msr;
 			CRenderer::GetDeviceContext()->Map(pVertexBuffer.get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &msr);
@@ -287,7 +287,7 @@ void BOUNDING_AABB::OverWrite(BoundingBox aabb)
 			Vertex[i].TexCoord = XMFLOAT2(0.0f, 0.0f);
 		}
 
-		// ’¸“_ƒoƒbƒtƒ@‚Ì‘‚«Š·‚¦
+		// é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡ã®æ›¸ãæ›ãˆ
 		{
 			D3D11_MAPPED_SUBRESOURCE msr;
 			CRenderer::GetDeviceContext()->Map(pVertexBuffer.get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &msr);
@@ -301,7 +301,7 @@ void BOUNDING_AABB::OverWrite(BoundingBox aabb)
 
 void BOUNDING_AABB::Draw_Inspector()
 {
-	auto str = (char*)u8"ƒRƒŠƒWƒ‡ƒ“(AABB)";
+	auto str = (char*)u8"ã‚³ãƒªã‚¸ãƒ§ãƒ³(AABB)";
 
 	ImGui::Text(str);
 

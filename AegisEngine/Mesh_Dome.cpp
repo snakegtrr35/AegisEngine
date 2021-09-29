@@ -1,4 +1,4 @@
-#include	"Game_Object.h"
+ï»¿#include	"Game_Object.h"
 #include	"Mesh_Dome.h"
 #include	"camera.h"
 #include	"Debug_Camera.h"
@@ -13,7 +13,7 @@ MESH_DOOM::MESH_DOOM() : Radius(500.0f)
 	VertexBuffer.reset(nullptr);
 	IndexBuffer.reset(nullptr);
 
-	// ƒeƒNƒXƒ`ƒƒ‚Ì¶¬
+	// ãƒ†ã‚¯ã‚¹ãƒãƒ£ã®ç”Ÿæˆ
 	Texture = make_unique<TEXTURE>("sky.png");
 }
 
@@ -21,16 +21,16 @@ void MESH_DOOM::Init()
 {
 	const int cornerNum = 20;
 
-	// ’¸“_ƒoƒbƒtƒ@‚Ìì¬
+	// é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡ã®ä½œæˆ
 	{
-		// ’¸“_ƒoƒbƒtƒ@‚ÌŠm•Û
+		// é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡ã®ç¢ºä¿
 		VertexNum = (cornerNum + 1) * (cornerNum / 2 + 1);
 
 		vector<VERTEX_3D> vertexArray;
 		vertexArray.reserve(VertexNum);
 		vertexArray.assign(VertexNum, VERTEX_3D());
 
-		// ’¸“_ƒoƒbƒtƒ@‚Ö‚Ì’¸“_î•ñ‚Ì‘‚«‚İ
+		// é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡ã¸ã®é ‚ç‚¹æƒ…å ±ã®æ›¸ãè¾¼ã¿
 		float theta = 0.0f, phi = 0.0f;
 		float addAngle = XM_2PI / (float)cornerNum;
 		for (int y = 0; y < cornerNum / 2 + 1; y++)
@@ -49,7 +49,7 @@ void MESH_DOOM::Init()
 			theta -= addAngle;
 		}
 
-		// ’¸“_ƒoƒbƒtƒ@¶¬
+		// é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡ç”Ÿæˆ
 		if (nullptr == VertexBuffer.get())
 		{
 			ID3D11Buffer* buffer = nullptr;
@@ -71,16 +71,16 @@ void MESH_DOOM::Init()
 		}
 	}
 
-	// ƒCƒ“ƒfƒbƒNƒXƒoƒbƒtƒ@‚Ìì¬
+	// ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ãƒãƒƒãƒ•ã‚¡ã®ä½œæˆ
 	{
-		// ƒCƒ“ƒfƒbƒNƒXƒoƒbƒtƒ@‚ÌŠm•Û
+		// ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ãƒãƒƒãƒ•ã‚¡ã®ç¢ºä¿
 		IndexNum = (2 + (cornerNum * 2)) * cornerNum / 2 + (cornerNum / 2 - 1) * 2;
 
 		vector<WORD> indexArray;
 		indexArray.reserve(IndexNum);
 		indexArray.assign(IndexNum, 0);
 
-		// ’¸“_ƒCƒ“ƒfƒbƒNƒXƒoƒbƒtƒ@‚Ö’¸“_ƒCƒ“ƒfƒbƒNƒX‚Ì‘‚«‚İ
+		// é ‚ç‚¹ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ãƒãƒƒãƒ•ã‚¡ã¸é ‚ç‚¹ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ã®æ›¸ãè¾¼ã¿
 		int indexNum = 0;
 		int indexFlapX = cornerNum - 1;
 		int indexFlapY = cornerNum / 2 - 1;
@@ -91,7 +91,7 @@ void MESH_DOOM::Init()
 				indexArray[indexNum++] = WORD((cornerNum + 1) * (y + 1) + x);
 				indexArray[indexNum++] = WORD((cornerNum + 1) * y + x);
 
-				// k‘Şƒ|ƒŠƒSƒ“—p
+				// ç¸®é€€ãƒãƒªã‚´ãƒ³ç”¨
 				if (x > indexFlapX && y < indexFlapY)
 				{
 					indexArray[indexNum++] = WORD((cornerNum + 1) * y + (cornerNum + 1) - 1);
@@ -100,7 +100,7 @@ void MESH_DOOM::Init()
 			}
 		}
 
-		// ƒCƒ“ƒfƒbƒNƒXƒoƒbƒtƒ@¶¬
+		// ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ãƒãƒƒãƒ•ã‚¡ç”Ÿæˆ
 		if (nullptr == IndexBuffer.get())
 		{
 			ID3D11Buffer* buffer = nullptr;
@@ -124,7 +124,7 @@ void MESH_DOOM::Init()
 }
 
 //***********************************************************************************************
-//  ‰ğ•ú
+//  è§£æ”¾
 //***********************************************************************************************
 void MESH_DOOM::Uninit()
 {
@@ -134,7 +134,7 @@ void MESH_DOOM::Uninit()
 }
 
 //***********************************************************************************************
-//  XV
+//  æ›´æ–°
 //***********************************************************************************************
 void MESH_DOOM::Update(float delta_time)
 {
@@ -142,7 +142,7 @@ void MESH_DOOM::Update(float delta_time)
 }
 
 //***********************************************************************************************
-//  •`‰æ
+//  æç”»
 //***********************************************************************************************
 void MESH_DOOM::Draw()
 {
@@ -151,9 +151,9 @@ void MESH_DOOM::Draw()
 	{
 		XMMATRIX world;
 
-		world = XMMatrixScaling(Scaling.x, Scaling.y, Scaling.z);																						// Šg‘åk¬
-		world *= XMMatrixRotationRollPitchYaw(XMConvertToRadians(Rotation.x), XMConvertToRadians(Rotation.y), XMConvertToRadians(Rotation.z));			// ‰ñ“]
-		world *= XMMatrixTranslation(Position.x, Position.y, Position.z);																				// ˆÚ“®
+		world = XMMatrixScaling(Scaling.x, Scaling.y, Scaling.z);																						// æ‹¡å¤§ç¸®å°
+		world *= XMMatrixRotationRollPitchYaw(XMConvertToRadians(Rotation.x), XMConvertToRadians(Rotation.y), XMConvertToRadians(Rotation.z));			// å›è»¢
+		world *= XMMatrixTranslation(Position.x, Position.y, Position.z);																				// ç§»å‹•
 
 		auto camera01 = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<CCamera>("camera");
 		auto camera02 = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
@@ -171,7 +171,7 @@ void MESH_DOOM::Draw()
 	CRenderer::SetVertexBuffers(VertexBuffer.get());
 	CRenderer::SetIndexBuffer(IndexBuffer.get());
 
-	// ƒgƒ|ƒƒWİ’è
+	// ãƒˆãƒãƒ­ã‚¸è¨­å®š
 	CRenderer::GetDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
 
 	Texture.get()->Set_Texture();

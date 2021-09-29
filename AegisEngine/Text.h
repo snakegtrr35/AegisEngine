@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 
 #ifndef TEXT_H
 #define TEXT_H
@@ -6,73 +6,73 @@
 #include	"Sprite.h"
 
 /**
-* @brief ƒeƒLƒXƒgƒNƒ‰ƒX
-* @details •¶š—ñ‚ğˆµ‚¤‚½‚ß‚ÌƒNƒ‰ƒX
-* @details ƒXƒvƒ‰ƒCƒgƒNƒ‰ƒX‚Ì”h¶ƒNƒ‰ƒX
+* @brief ãƒ†ã‚­ã‚¹ãƒˆã‚¯ãƒ©ã‚¹
+* @details æ–‡å­—åˆ—ã‚’æ‰±ã†ãŸã‚ã®ã‚¯ãƒ©ã‚¹
+* @details ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆã‚¯ãƒ©ã‚¹ã®æ´¾ç”Ÿã‚¯ãƒ©ã‚¹
 */
 class TEXTS :public  SPRITE {
 private:
-	string Text;	//!< •\¦‚·‚é•¶š—ñ
+	string Text;	//!< è¡¨ç¤ºã™ã‚‹æ–‡å­—åˆ—
 
 	/**
-	* @brief •`‰æŠÖ”
-	* @details ÀÛ‚É•`‰æ‚·‚éŠÖ”
+	* @brief æç”»é–¢æ•°
+	* @details å®Ÿéš›ã«æç”»ã™ã‚‹é–¢æ•°
 	*/
 	void Text_Draw(const string& text);
 
 	/**
-	* @brief •`‰æ(Depth-pre-pass)ŠÖ”
-	* @details Depth-pre-pass‚ğ‚·‚éŠÖ”
+	* @brief æç”»(Depth-pre-pass)é–¢æ•°
+	* @details Depth-pre-passã‚’ã™ã‚‹é–¢æ•°
 	*/
 	void Text_Draw_DPP(const string& text);
 
 public:
 	/**
-	* @brief ƒRƒ“ƒXƒgƒ‰ƒNƒ^
-	* @details ˆø”–³‚µƒRƒ“ƒXƒgƒ‰ƒNƒ^
+	* @brief ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
+	* @details å¼•æ•°ç„¡ã—ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
 	*/
 	TEXTS();
 
 	/**
-	* @brief ƒfƒXƒgƒ‰ƒNƒ^
-	* @details ƒfƒXƒgƒ‰ƒNƒ^
+	* @brief ãƒ‡ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
+	* @details ãƒ‡ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
 	*/
 	~TEXTS();
 
 	/**
-	* @brief ‰Šú‰»ŠÖ”
-	* @details ‰Šú‰»‚·‚éŠÖ”
+	* @brief åˆæœŸåŒ–é–¢æ•°
+	* @details åˆæœŸåŒ–ã™ã‚‹é–¢æ•°
 	*/
 	void Init();
 
 	/**
-	* @brief •`‰æŠÖ”
-	* @details •`‰æ‚·‚éŠÖ”
+	* @brief æç”»é–¢æ•°
+	* @details æç”»ã™ã‚‹é–¢æ•°
 	*/
 	void Draw();
 
 	/**
-	* @brief •`‰æ(Depth-pre-pass)ŠÖ”
-	* @details Depth-pre-pass‚ğ‚·‚éŠÖ”
+	* @brief æç”»(Depth-pre-pass)é–¢æ•°
+	* @details Depth-pre-passã‚’ã™ã‚‹é–¢æ•°
 	*/
 	void Draw_DPP();
 
 	/**
-	* @brief XVŠÖ”
-	* @details XV‚·‚éŠÖ”
+	* @brief æ›´æ–°é–¢æ•°
+	* @details æ›´æ–°ã™ã‚‹é–¢æ•°
 	*/
 	void Update(float delta_time);
 
 	/**
-	* @brief I—¹ˆ—ŠÖ”
-	* @details I—¹ˆ—‚ğ‚·‚éŠÖ”
+	* @brief çµ‚äº†å‡¦ç†é–¢æ•°
+	* @details çµ‚äº†å‡¦ç†ã‚’ã™ã‚‹é–¢æ•°
 	*/
 	void Uninit();
 
 	/**
-	* @brief •\¦‚·‚é•¶š—ñ‚ğİ’è‚·‚éŠÖ”
-	* @param text İ’è‚·‚é•¶š—ñ
-	* @details •\¦‚·‚é•¶š—ñ‚ğİ’è‚·‚éŠÖ”
+	* @brief è¡¨ç¤ºã™ã‚‹æ–‡å­—åˆ—ã‚’è¨­å®šã™ã‚‹é–¢æ•°
+	* @param text è¨­å®šã™ã‚‹æ–‡å­—åˆ—
+	* @details è¡¨ç¤ºã™ã‚‹æ–‡å­—åˆ—ã‚’è¨­å®šã™ã‚‹é–¢æ•°
 	*/
 	void Edit(const string& text);
 

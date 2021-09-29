@@ -1,4 +1,4 @@
-#include	"Component.h"
+ï»¿#include	"Component.h"
 #include	"Input.h"
 #include	"Scene.h"
 #include	"manager.h"
@@ -38,8 +38,8 @@ bool MOUSE_EVENT_COMPONENT::Mouse_Click_Left(const string& const name, SPRITE* m
 			position.x = pos->x;
 			position.y = pos->y;
 
-			position.y += 17.0f;	// WS_OVERLAPPEDWINDOW ‚ÌŽž
-			//position.y += 20.0f;	// WS_POPUPWINDOW ‚ÌŽž
+			position.y += 17.0f;	// WS_OVERLAPPEDWINDOW ã®æ™‚
+			//position.y += 20.0f;	// WS_POPUPWINDOW ã®æ™‚
 
 			if ((pos->x - size->w) < mouse_pos.x && mouse_pos.x < (pos->x + size->y) &&
 				(pos->y - size->x) < mouse_pos.y && mouse_pos.y < (pos->y + size->z))
@@ -60,8 +60,8 @@ bool MOUSE_EVENT_COMPONENT::Mouse_Click_Left(const string& const name, SPRITE* m
 				position.x = pos->x;
 				position.y = pos->y;
 
-				position.y += 17.0f;	// WS_OVERLAPPEDWINDOW ‚ÌŽž
-				//position.y += 20.0f;	// WS_POPUPWINDOW ‚ÌŽž
+				position.y += 17.0f;	// WS_OVERLAPPEDWINDOW ã®æ™‚
+				//position.y += 20.0f;	// WS_POPUPWINDOW ã®æ™‚
 
 				if ((pos->x - size->w) < mouse_pos.x && mouse_pos.x < (pos->x + size->y) &&
 					(pos->y - size->x) < mouse_pos.y && mouse_pos.y < (pos->y + size->z))
@@ -91,8 +91,8 @@ bool MOUSE_EVENT_COMPONENT::Mouse_Click_Right(const string& const name, SPRITE* 
 			position.x = pos->x;
 			position.y = pos->y;
 
-			position.y += 17.0f;	// WS_OVERLAPPEDWINDOW ‚ÌŽž
-			//position.y += 20.0f;	// WS_POPUPWINDOW ‚ÌŽž
+			position.y += 17.0f;	// WS_OVERLAPPEDWINDOW ã®æ™‚
+			//position.y += 20.0f;	// WS_POPUPWINDOW ã®æ™‚
 
 			if ((pos->x - size->w) < mouse_pos.x && mouse_pos.x < (pos->x + size->y) &&
 				(pos->y - size->x) < mouse_pos.y && mouse_pos.y < (pos->y + size->z))
@@ -113,8 +113,8 @@ bool MOUSE_EVENT_COMPONENT::Mouse_Click_Right(const string& const name, SPRITE* 
 				position.x = pos->x;
 				position.y = pos->y;
 
-				position.y += 17.0f;	// WS_OVERLAPPEDWINDOW ‚ÌŽž
-				//position.y += 20.0f;	// WS_POPUPWINDOW ‚ÌŽž
+				position.y += 17.0f;	// WS_OVERLAPPEDWINDOW ã®æ™‚
+				//position.y += 20.0f;	// WS_POPUPWINDOW ã®æ™‚
 
 				if ((pos->x - size->w) < mouse_pos.x && mouse_pos.x < (pos->x + size->y) &&
 					(pos->y - size->x) < mouse_pos.y && mouse_pos.y < (pos->y + size->z))
@@ -134,7 +134,7 @@ bool MOUSE_EVENT_COMPONENT::Mouse_Over(const string& const name, SPRITE* me)
 	XMFLOAT4* size;
 	XMFLOAT2 position;
 
-	// ƒ}ƒEƒX‚Æ‹éŒ`‚Ì“–‚½‚è”»’è
+	// ãƒžã‚¦ã‚¹ã¨çŸ©å½¢ã®å½“ãŸã‚Šåˆ¤å®š
 
 	if (name == me->Get_Object_Name() && me->GetEnable())
 	{
@@ -144,8 +144,8 @@ bool MOUSE_EVENT_COMPONENT::Mouse_Over(const string& const name, SPRITE* me)
 		position.x = pos->x;
 		position.y = pos->y;
 
-		position.y += 17.0f;	// WS_OVERLAPPEDWINDOW ‚ÌŽž
-		//position.y += 20.0f;	// WS_POPUPWINDOW ‚ÌŽž
+		position.y += 17.0f;	// WS_OVERLAPPEDWINDOW ã®æ™‚
+		//position.y += 20.0f;	// WS_POPUPWINDOW ã®æ™‚
 
 		if ((pos->x - size->w) <= mouse_pos.x && mouse_pos.x <= (pos->x + size->y) &&
 			(pos->y - size->x) <= mouse_pos.y && mouse_pos.y <= (pos->x + size->z))
@@ -166,8 +166,8 @@ bool MOUSE_EVENT_COMPONENT::Mouse_Over(const string& const name, SPRITE* me)
 			position.x = pos->x;
 			position.y = pos->y;
 
-			position.y += 17.0f;	// WS_OVERLAPPEDWINDOW ‚ÌŽž
-			//position.y += 20.0f;	// WS_POPUPWINDOW ‚ÌŽž
+			position.y += 17.0f;	// WS_OVERLAPPEDWINDOW ã®æ™‚
+			//position.y += 20.0f;	// WS_POPUPWINDOW ã®æ™‚
 
 			if ((pos->x - size->w) <= mouse_pos.x && mouse_pos.x <= (pos->x + size->y) &&
 				(pos->y - size->x) <= mouse_pos.y && mouse_pos.y <= (pos->x + size->z))

@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 
 #ifndef COMPONENT_MANAGER_H
 #define COMPONENT_MANAGER_H
@@ -27,7 +27,7 @@ private:
 
 public:
 
-	// ƒŠƒXƒg‚Ö‚ÌƒRƒ“ƒ|[ƒlƒ“ƒg‚Ì’Ç‰Á
+	// ãƒªã‚¹ãƒˆã¸ã®ã‚³ãƒ³ãƒãƒ¼ãƒãƒ³ãƒˆã®è¿½åŠ 
 	template <typename T>
 	T* Add_Component(const shared_ptr<GAME_OBJECT>& owner)
 	{
@@ -51,7 +51,7 @@ public:
 		return object;
 	}
 
-	// ƒŠƒXƒg‚Ö‚ÌƒRƒ“ƒ|[ƒlƒ“ƒg‚Ì’Ç‰Á
+	// ãƒªã‚¹ãƒˆã¸ã®ã‚³ãƒ³ãƒãƒ¼ãƒãƒ³ãƒˆã®è¿½åŠ 
 	template <typename T>
 	T* Add_Component(const weak_ptr<GAME_OBJECT>& owner)
 	{
@@ -75,7 +75,7 @@ public:
 		return object;
 	}
 
-	// ƒŠƒXƒg‚©‚ç“Á’è‚ÌƒRƒ“ƒ|[ƒlƒ“ƒg‚Ìæ“¾
+	// ãƒªã‚¹ãƒˆã‹ã‚‰ç‰¹å®šã®ã‚³ãƒ³ãƒãƒ¼ãƒãƒ³ãƒˆã®å–å¾—
 	template <typename T>
 	T* Get_Component() {
 		//for (auto object = Conponent_List.begin(); object != Conponent_List.end(); object++)
@@ -89,7 +89,7 @@ public:
 		return nullptr;
 	}
 
-	// ƒŠƒXƒg‚©‚ç‘S‚Ä‚ÌƒRƒ“ƒ|[ƒlƒ“ƒg‚Ìæ“¾
+	// ãƒªã‚¹ãƒˆã‹ã‚‰å…¨ã¦ã®ã‚³ãƒ³ãƒãƒ¼ãƒãƒ³ãƒˆã®å–å¾—
 	vector<COMPONENT*> Get_All_Components();
 
 	COMPONENT_MANEGER() {}

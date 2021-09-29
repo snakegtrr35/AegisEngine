@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 
 #ifndef SCENE_H
 #define SCENE_H
@@ -16,11 +16,11 @@ bool Empty_weak_ptr(const weak_ptr<T>& w)
 
 enum class LAYER_NAME {
 
-	BACKGROUND = 0,		//! ”wŒi‚Ì‚½‚ß‚ÌƒŒƒCƒ„[
-	GAMEOBJECT,			//! ƒQ[ƒ€ƒIƒuƒWƒFƒNƒg‚Ì‚½‚ß‚ÌƒŒƒCƒ„[
-	EFFECT,				//! ƒGƒtƒFƒNƒg‚Ì‚½‚ß‚ÌƒŒƒCƒ„[
-	//DEBUG,			//! ƒfƒoƒbƒO•W€‚Ì‚½‚ß‚ÌƒŒƒCƒ„[
-	UI,					//! UI‚Ì‚½‚ß‚ÌƒŒƒCƒ„[
+	BACKGROUND = 0,		//! èƒŒæ™¯ã®ãŸã‚ã®ãƒ¬ã‚¤ãƒ¤ãƒ¼
+	GAMEOBJECT,			//! ã‚²ãƒ¼ãƒ ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®ãŸã‚ã®ãƒ¬ã‚¤ãƒ¤ãƒ¼
+	EFFECT,				//! ã‚¨ãƒ•ã‚§ã‚¯ãƒˆã®ãŸã‚ã®ãƒ¬ã‚¤ãƒ¤ãƒ¼
+	//DEBUG,			//! ãƒ‡ãƒãƒƒã‚°æ¨™æº–ã®ãŸã‚ã®ãƒ¬ã‚¤ãƒ¤ãƒ¼
+	UI,					//! UIã®ãŸã‚ã®ãƒ¬ã‚¤ãƒ¤ãƒ¼
 	MAX_LAYER
 };
 
@@ -32,8 +32,8 @@ enum class SCENE_INDEX {
 };
 
 /**
-* @brief ƒV[ƒ“ƒNƒ‰ƒX
-* @details ƒV[ƒ“‚ÌƒNƒ‰ƒX‚ÌŠî’êƒNƒ‰ƒX
+* @brief ã‚·ãƒ¼ãƒ³ã‚¯ãƒ©ã‚¹
+* @details ã‚·ãƒ¼ãƒ³ã®ã‚¯ãƒ©ã‚¹ã®åŸºåº•ã‚¯ãƒ©ã‚¹
 */
 class SCENE {
 private:
@@ -51,7 +51,7 @@ protected:
 
 public:
 
-	//// ƒŠƒXƒg‚Ö‚Ì’Ç‰Á
+	//// ãƒªã‚¹ãƒˆã¸ã®è¿½åŠ 
 	template <typename T>
 	static T* Add_Game_Object(LAYER_NAME layer, const string& name)
 	{
@@ -64,7 +64,7 @@ public:
 		return object.get();
 	}
 
-	// ƒŠƒXƒg‚©‚ç“Á’è‚Ì–¼‘O‚ÌƒIƒuƒWƒFƒNƒg‚Ìæ“¾
+	// ãƒªã‚¹ãƒˆã‹ã‚‰ç‰¹å®šã®åå‰ã®ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®å–å¾—
 	template <typename T>
 	static weak_ptr<T> Get_Game_Object(const string& name = "none")
 	{
@@ -95,8 +95,8 @@ public:
 		return obj;
 	}
 
-	// ƒŠƒXƒg‚©‚ç“Á’è‚ÌƒIƒuƒWƒFƒN‚Ìæ“¾
-	// ˆø” name ƒIƒuƒWƒFƒNƒg–¼
+	// ãƒªã‚¹ãƒˆã‹ã‚‰ç‰¹å®šã®ã‚ªãƒ–ã‚¸ã‚§ã‚¯ã®å–å¾—
+	// å¼•æ•° name ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆå
 	static GAME_OBJECT* Get_Game_Object(const string& name)
 	{
 		for (int i = 0; i < (int)LAYER_NAME::MAX_LAYER; i++)
@@ -119,8 +119,8 @@ public:
 		return nullptr;
 	}
 
-	// ƒŠƒXƒg‚©‚ç“Á’è‚ÌƒIƒuƒWƒFƒN‚Ìæ“¾
-	// ˆø” name ƒIƒuƒWƒFƒNƒg–¼
+	// ãƒªã‚¹ãƒˆã‹ã‚‰ç‰¹å®šã®ã‚ªãƒ–ã‚¸ã‚§ã‚¯ã®å–å¾—
+	// å¼•æ•° name ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆå
 	static weak_ptr<GAME_OBJECT> Get_Game_Object(const GAME_OBJECT* me)
 	{
 		for (int i = 0; i < (int)LAYER_NAME::MAX_LAYER; i++)
@@ -146,7 +146,7 @@ public:
 		return obj;
 	}
 
-	// ƒŠƒXƒg‚©‚ç“Á’è‚ÌƒIƒuƒWƒFƒNƒgi•¡”j‚Ìæ“¾
+	// ãƒªã‚¹ãƒˆã‹ã‚‰ç‰¹å®šã®ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆï¼ˆè¤‡æ•°ï¼‰ã®å–å¾—
 	template <typename T>
 	static vector<T*> Get_Game_Objects()
 	{
@@ -171,7 +171,7 @@ public:
 		return objects;
 	}
 
-	// ‘SƒIƒuƒWƒFƒNƒg‚Ìæ“¾
+	// å…¨ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®å–å¾—
 	static vector<GAME_OBJECT*> Get_All_Game_Object()
 	{
 		vector<GAME_OBJECT*> objects;
@@ -192,7 +192,7 @@ public:
 		return objects;
 	}
 
-	// ‘SƒIƒuƒWƒFƒNƒg‚Ìæ“¾
+	// å…¨ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®å–å¾—
 	template <typename T>
 	static void Delete_Game_Objects()
 	{
@@ -212,7 +212,7 @@ public:
 
 		for (int i = 0; i < (int)LAYER_NAME::MAX_LAYER; i++)
 		{
-			GameObjects[i].remove_if([](auto& object) { return object->Destroy(); }); // ƒŠƒXƒg‚©‚çíœ
+			GameObjects[i].remove_if([](auto& object) { return object->Destroy(); }); // ãƒªã‚¹ãƒˆã‹ã‚‰å‰Šé™¤
 		}
 	}
 
@@ -222,11 +222,11 @@ public:
 	}
 
 	/**
-	* @brief ŠÈ’P‚Èà–¾i`‚·‚éŠÖ”j
-	* @param[in] a(ˆø”–¼) ˆø”‚Ìà–¾
-	* @param[out] b(ˆø”–¼) ˆø”‚Ìà–¾
-	* @return bool –ß‚è’l‚Ìà–¾
-	* @details Ú×‚Èà–¾
+	* @brief ç°¡å˜ãªèª¬æ˜ï¼ˆï½ã™ã‚‹é–¢æ•°ï¼‰
+	* @param[in] a(å¼•æ•°å) å¼•æ•°ã®èª¬æ˜
+	* @param[out] b(å¼•æ•°å) å¼•æ•°ã®èª¬æ˜
+	* @return bool æˆ»ã‚Šå€¤ã®èª¬æ˜
+	* @details è©³ç´°ãªèª¬æ˜
 	*/
 	virtual void Init(void) {
 		for (int i = 0; i < (int)LAYER_NAME::MAX_LAYER; i++)
@@ -242,11 +242,11 @@ public:
 	};
 
 	/**
-	* @brief ŠÈ’P‚Èà–¾i`‚·‚éŠÖ”j
-	* @param[in] a(ˆø”–¼) ˆø”‚Ìà–¾
-	* @param[out] b(ˆø”–¼) ˆø”‚Ìà–¾
-	* @return bool –ß‚è’l‚Ìà–¾
-	* @details Ú×‚Èà–¾
+	* @brief ç°¡å˜ãªèª¬æ˜ï¼ˆï½ã™ã‚‹é–¢æ•°ï¼‰
+	* @param[in] a(å¼•æ•°å) å¼•æ•°ã®èª¬æ˜
+	* @param[out] b(å¼•æ•°å) å¼•æ•°ã®èª¬æ˜
+	* @return bool æˆ»ã‚Šå€¤ã®èª¬æ˜
+	* @details è©³ç´°ãªèª¬æ˜
 	*/
 	virtual void Draw(void) {
 		for (int i = 0; i < (int)LAYER_NAME::MAX_LAYER; i++)
@@ -259,8 +259,8 @@ public:
 	};
 
 	/**
-	* @brief •`‰æ(Depth-pre-pass)ŠÖ”
-	* @details Depth-pre-pass‚ğ‚·‚éŠÖ”
+	* @brief æç”»(Depth-pre-pass)é–¢æ•°
+	* @details Depth-pre-passã‚’ã™ã‚‹é–¢æ•°
 	*/
 	virtual void Draw_DPP(void) {
 		for (int i = (int)LAYER_NAME::MAX_LAYER - 1; (int)LAYER_NAME::BACKGROUND <= i; i--)
@@ -273,14 +273,14 @@ public:
 	};
 
 	/**
-	* @brief ŠÈ’P‚Èà–¾i`‚·‚éŠÖ”j
-	* @param[in] a(ˆø”–¼) ˆø”‚Ìà–¾
-	* @param[out] b(ˆø”–¼) ˆø”‚Ìà–¾
-	* @return bool –ß‚è’l‚Ìà–¾
-	* @details Ú×‚Èà–¾
+	* @brief ç°¡å˜ãªèª¬æ˜ï¼ˆï½ã™ã‚‹é–¢æ•°ï¼‰
+	* @param[in] a(å¼•æ•°å) å¼•æ•°ã®èª¬æ˜
+	* @param[out] b(å¼•æ•°å) å¼•æ•°ã®èª¬æ˜
+	* @return bool æˆ»ã‚Šå€¤ã®èª¬æ˜
+	* @details è©³ç´°ãªèª¬æ˜
 	*/
 	virtual void Update(float delta_time) {
-		if (true == PauseEnable)	// ƒ|[ƒY’†
+		if (true == PauseEnable)	// ãƒãƒ¼ã‚ºä¸­
 		{
 			for (auto object = GameObjects[(int)LAYER_NAME::UI].begin(); object != GameObjects[(int)LAYER_NAME::UI].end(); object++)
 			{
@@ -289,10 +289,10 @@ public:
 
 			for (int i = 0; i < (int)LAYER_NAME::MAX_LAYER; i++)
 			{
-				GameObjects[i].remove_if([](auto& object) { return object->Destroy(); }); // ƒŠƒXƒg‚©‚çíœ
+				GameObjects[i].remove_if([](auto& object) { return object->Destroy(); }); // ãƒªã‚¹ãƒˆã‹ã‚‰å‰Šé™¤
 			}
 		}
-		else	// ƒ|[ƒY’†‚Å‚Í‚È‚¢
+		else	// ãƒãƒ¼ã‚ºä¸­ã§ã¯ãªã„
 		{
 			for (int i = 0; i < (int)LAYER_NAME::MAX_LAYER; i++)
 			{
@@ -301,17 +301,17 @@ public:
 					object->get()->Update(delta_time);
 				}
 
-				GameObjects[i].remove_if([](auto& object) { return object->Destroy(); }); // ƒŠƒXƒg‚©‚çíœ
+				GameObjects[i].remove_if([](auto& object) { return object->Destroy(); }); // ãƒªã‚¹ãƒˆã‹ã‚‰å‰Šé™¤
 			}
 		}
 	};
 
 	/**
-	* @brief ŠÈ’P‚Èà–¾i`‚·‚éŠÖ”j
-	* @param[in] a(ˆø”–¼) ˆø”‚Ìà–¾
-	* @param[out] b(ˆø”–¼) ˆø”‚Ìà–¾
-	* @return bool –ß‚è’l‚Ìà–¾
-	* @details Ú×‚Èà–¾
+	* @brief ç°¡å˜ãªèª¬æ˜ï¼ˆï½ã™ã‚‹é–¢æ•°ï¼‰
+	* @param[in] a(å¼•æ•°å) å¼•æ•°ã®èª¬æ˜
+	* @param[out] b(å¼•æ•°å) å¼•æ•°ã®èª¬æ˜
+	* @return bool æˆ»ã‚Šå€¤ã®èª¬æ˜
+	* @details è©³ç´°ãªèª¬æ˜
 	*/
 	virtual void Uninit(void) {
 		for (int i = 0; i < (int)LAYER_NAME::MAX_LAYER; i++)
@@ -326,68 +326,68 @@ public:
 	};
 
 	/**
-	* @brief ƒ[ƒhI—¹‚ğ’m‚ç‚¹‚éŠÖ”
-	* @details ƒ[ƒhI—¹‚ğ’m‚ç‚¹‚éƒtƒ‰ƒO‚ğI—¹‚·‚é
+	* @brief ãƒ­ãƒ¼ãƒ‰çµ‚äº†ã‚’çŸ¥ã‚‰ã›ã‚‹é–¢æ•°
+	* @details ãƒ­ãƒ¼ãƒ‰çµ‚äº†ã‚’çŸ¥ã‚‰ã›ã‚‹ãƒ•ãƒ©ã‚°ã‚’çµ‚äº†ã™ã‚‹
 	*/
 	static void SetLockLoad();
 
 	/**
-	* @brief ƒ[ƒh’†‚©‚ğ”»’è‚·‚éŠÖ”
-	* @return bool ƒ[ƒh’†‚©‚ğ”»’è‚·‚éƒtƒ‰ƒO( ƒ[ƒh’†‚È‚ç true )
-	* @details ƒ[ƒh’†‚©‚ğ”»’è‚·‚éƒtƒ‰ƒO‚ğæ“¾‚·‚éŠÖ”
+	* @brief ãƒ­ãƒ¼ãƒ‰ä¸­ã‹ã‚’åˆ¤å®šã™ã‚‹é–¢æ•°
+	* @return bool ãƒ­ãƒ¼ãƒ‰ä¸­ã‹ã‚’åˆ¤å®šã™ã‚‹ãƒ•ãƒ©ã‚°( ãƒ­ãƒ¼ãƒ‰ä¸­ãªã‚‰ true )
+	* @details ãƒ­ãƒ¼ãƒ‰ä¸­ã‹ã‚’åˆ¤å®šã™ã‚‹ãƒ•ãƒ©ã‚°ã‚’å–å¾—ã™ã‚‹é–¢æ•°
 	*/
 	static bool GetLockLoad();
 
 	/**
-	* @brief ŠÈ’P‚Èà–¾i`‚·‚éŠÖ”j
-	* @param[in] a(ˆø”–¼) ˆø”‚Ìà–¾
-	* @param[out] b(ˆø”–¼) ˆø”‚Ìà–¾
-	* @return bool –ß‚è’l‚Ìà–¾
-	* @details Ú×‚Èà–¾
+	* @brief ç°¡å˜ãªèª¬æ˜ï¼ˆï½ã™ã‚‹é–¢æ•°ï¼‰
+	* @param[in] a(å¼•æ•°å) å¼•æ•°ã®èª¬æ˜
+	* @param[out] b(å¼•æ•°å) å¼•æ•°ã®èª¬æ˜
+	* @return bool æˆ»ã‚Šå€¤ã®èª¬æ˜
+	* @details è©³ç´°ãªèª¬æ˜
 	*/
 	static void Destroy_Game_Object(GAME_OBJECT* game_object) {
 		game_object->Set_Destroy();
 	};
 
 	/**
-	* @brief ƒ|[ƒY‚ğÀs‚·‚éŠÖ”
-	* @details UI‚¾‚¯Update‚ğs‚¢‚Ü‚·
-	* @details Draw‚Í‘S‚Äs‚¢‚Ü‚·
+	* @brief ãƒãƒ¼ã‚ºã‚’å®Ÿè¡Œã™ã‚‹é–¢æ•°
+	* @details UIã ã‘Updateã‚’è¡Œã„ã¾ã™
+	* @details Drawã¯å…¨ã¦è¡Œã„ã¾ã™
 	*/
 	static void Start_Pause() {
 		PauseEnable = true;
 	};
 
 	/**
-	* @brief ƒ|[ƒY‚ğI—¹‚·‚éŠÖ”
-	* @details ƒ|[ƒY‚ğI—¹‚·‚é
+	* @brief ãƒãƒ¼ã‚ºã‚’çµ‚äº†ã™ã‚‹é–¢æ•°
+	* @details ãƒãƒ¼ã‚ºã‚’çµ‚äº†ã™ã‚‹
 	*/
 	static void End_Pause() {
 		PauseEnable = false;
 	};
 
 	/**
-	* @brief ƒ|[ƒY‚ª—LŒø‚©–³Œø‚©‚ğ•Ô‚·ŠÖ”
-	* @details ƒ|[ƒY•Ï”‚ğ•Ô‚·
-	* @return bool ƒ|[ƒY•Ï”
+	* @brief ãƒãƒ¼ã‚ºãŒæœ‰åŠ¹ã‹ç„¡åŠ¹ã‹ã‚’è¿”ã™é–¢æ•°
+	* @details ãƒãƒ¼ã‚ºå¤‰æ•°ã‚’è¿”ã™
+	* @return bool ãƒãƒ¼ã‚ºå¤‰æ•°
 	*/
 	static const bool Get_PauseEnable() {
 		return PauseEnable;
 	};
 
 	/**
-	* @brief ƒIƒuƒWƒFƒNƒg‚ÌŒÂ”‚ğæ“¾‚·‚éŠÖ”
-	* @details “Á’èƒŒƒCƒ„[‚ÌƒIƒuƒWƒFƒNƒg‚ÌŒÂ”‚ğ•Ô‚·
-	* @return UINT ƒIƒuƒWƒFƒNƒg‚ÌŒÂ”
+	* @brief ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®å€‹æ•°ã‚’å–å¾—ã™ã‚‹é–¢æ•°
+	* @details ç‰¹å®šãƒ¬ã‚¤ãƒ¤ãƒ¼ã®ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®å€‹æ•°ã‚’è¿”ã™
+	* @return UINT ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®å€‹æ•°
 	*/
 	static const UINT Get_Game_Object_Count(const LAYER_NAME layer) {
 		return (UINT)GameObjects[(int)layer].size();
 	}
 
 	/**
-	* @brief ƒIƒuƒWƒFƒNƒg‚ÌŒÂ”‚ğæ“¾‚·‚éŠÖ”
-	* @details “Á’èƒŒƒCƒ„[‚ÌƒIƒuƒWƒFƒNƒg‚ÌŒÂ”‚ğ•Ô‚·
-	* @return UINT ƒIƒuƒWƒFƒNƒg‚ÌŒÂ”
+	* @brief ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®å€‹æ•°ã‚’å–å¾—ã™ã‚‹é–¢æ•°
+	* @details ç‰¹å®šãƒ¬ã‚¤ãƒ¤ãƒ¼ã®ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®å€‹æ•°ã‚’è¿”ã™
+	* @return UINT ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®å€‹æ•°
 	*/
 	static LIGHTS* Get_Light_Manager() {
 		return &Light_Manager;
@@ -398,7 +398,7 @@ public:
 	{
 		for (int i = 0; i < (int)LAYER_NAME::MAX_LAYER; i++)
 		{
-			if(!GameObjects[i].empty()) GameObjects[i].remove_if([](auto& object) { return object->Destroy(); }); // ƒŠƒXƒg‚©‚çíœ
+			if(!GameObjects[i].empty()) GameObjects[i].remove_if([](auto& object) { return object->Destroy(); }); // ãƒªã‚¹ãƒˆã‹ã‚‰å‰Šé™¤
 		}
 
 		ar(GameObjects);

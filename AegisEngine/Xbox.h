@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 
 #ifndef XBOX_H
 #define XBOX_H
@@ -9,7 +9,7 @@
 
 #define MAX_CONTROLLERS 4
 
-// ƒQ[ƒ€ƒpƒbƒhƒ{ƒ^ƒ“î•ñ
+// ã‚²ãƒ¼ãƒ ãƒ‘ãƒƒãƒ‰ãƒœã‚¿ãƒ³æƒ…å ±
 /*
 XINPUT_GAMEPAD_DPAD_UP
 XINPUT_GAMEPAD_DPAD_DOWN
@@ -38,20 +38,20 @@ private:
 	static CONTROLER_STATE Old_Controllers[MAX_CONTROLLERS];
 
 public:
-	static void Update(void);		// XboxƒRƒ“ƒgƒ[ƒ‰[‚ÌXV
+	static void Update(void);		// Xboxã‚³ãƒ³ãƒˆãƒ­ãƒ¼ãƒ©ãƒ¼ã®æ›´æ–°
 
 	//========================================
-	// number : 0`4 ‚ÌŠÔ
+	// number : 0ï½4 ã®é–“
 	//========================================
 	static bool Trigger(const int any_button, const unsigned char number = 0);
 
 	//========================================
-	// number : 0`4 ‚ÌŠÔ
+	// number : 0ï½4 ã®é–“
 	//========================================
 	static bool Press(const int any_button, const unsigned char number = 0);
 
 	//========================================
-	// number : 0`4 ‚ÌŠÔ
+	// number : 0ï½4 ã®é–“
 	//========================================
 	static bool Release(const int any_button, const unsigned char number = 0);
 

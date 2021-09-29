@@ -1,4 +1,4 @@
-#pragma once
+Ôªø#pragma once
 
 #ifndef INPUT_H
 #define INPUT_H
@@ -18,7 +18,7 @@ static const constexpr auto MiSubClassID = 1;
 
 class CINPUT {
 private:
-	//static CINPUT* InputDevice;	// ëΩï™Ç¢ÇÁÇ»Ç¢
+	//static CINPUT* InputDevice;	// Â§öÂàÜ„ÅÑ„Çâ„Å™„ÅÑ
 
 	static RAWINPUTDEVICE device[2];
 

@@ -1,15 +1,15 @@
-#include "main.h"
+ï»¿#include "main.h"
 #include "audio_clip.h"
 
 #include <opusfile.h>
 #include <vorbis/vorbisfile.h>
-// libopus‚Æopusfile‚ğƒŠƒ“ƒN
+// libopusã¨opusfileã‚’ãƒªãƒ³ã‚¯
 #pragma comment(lib, "opus.lib")
 #pragma comment(lib, "opusfile.lib")
-// vorbis‚ğƒŠƒ“ƒN
+// vorbisã‚’ãƒªãƒ³ã‚¯
 #pragma comment ( lib, "vorbis_static.lib" )
 #pragma comment ( lib, "vorbisfile_static.lib" )
-// libogg‚ğƒŠƒ“ƒN
+// liboggã‚’ãƒªãƒ³ã‚¯
 #pragma comment(lib, "libogg.lib")
 
 #ifdef UNICODE
@@ -27,7 +27,7 @@ void CAudioClip::Load(const wchar_t* FileName)
 void CAudioClip::Load(const char* FileName)
 #endif // !UNICODE
 {
-	// ƒTƒEƒ“ƒhƒf[ƒ^“Ç
+	// ã‚µã‚¦ãƒ³ãƒ‰ãƒ‡ãƒ¼ã‚¿èª­è¾¼
 	WAVEFORMATEX wfx = { 0 };
 
 	if(wstring::npos == wstring(FileName).find(L".ogg"))
@@ -89,7 +89,7 @@ void CAudioClip::Load(const char* FileName)
 		return;
 	}
 
-	// ƒTƒEƒ“ƒhƒ\[ƒX¶¬
+	// ã‚µã‚¦ãƒ³ãƒ‰ã‚½ãƒ¼ã‚¹ç”Ÿæˆ
 	for (int j = 0; j < SOUND_SOURCE_MAX; j++)
 	{
 		AUDIO_MANAGER::Get_Xaudio()->CreateSourceVoice(&SourceVoice[j], &wfx);
@@ -129,7 +129,7 @@ void CAudioClip::Play( bool Loop )
 			//Sound->SourceVoice->Stop();
 			//Sound->SourceVoice->FlushSourceBuffers();
 
-			// ƒoƒbƒtƒ@İ’è
+			// ãƒãƒƒãƒ•ã‚¡è¨­å®š
 			XAUDIO2_BUFFER bufinfo;
 
 			memset(&bufinfo,0x00,sizeof(bufinfo));
@@ -138,7 +138,7 @@ void CAudioClip::Play( bool Loop )
 			bufinfo.PlayBegin = 0;
 			bufinfo.PlayLength = PlayLength;
 
-			// ƒ‹[ƒvİ’è
+			// ãƒ«ãƒ¼ãƒ—è¨­å®š
 			if( Loop )
 			{
 				bufinfo.LoopBegin = 0;
@@ -148,7 +148,7 @@ void CAudioClip::Play( bool Loop )
 
 			SourceVoice[j]->SubmitSourceBuffer( &bufinfo, NULL );
 
-			// Ä¶
+			// å†ç”Ÿ
 			SourceVoice[j]->Start();
 
 			break;
@@ -197,13 +197,13 @@ const SOUND_TAG CAudioClip::Get_Tag()
 
 void AUDIO_MANAGER::Init(void)
 {
-	// COM‰Šú‰»
+	// COMåˆæœŸåŒ–
 	CoInitializeEx(NULL, COINIT_MULTITHREADED);
 
-	// XAudio¶¬
+	// XAudioç”Ÿæˆ
 	XAudio2Create(&Xaudio, 0);
 
-	// ƒ}ƒXƒ^ƒŠƒ“ƒOƒ{ƒCƒX¶¬
+	// ãƒã‚¹ã‚¿ãƒªãƒ³ã‚°ãƒœã‚¤ã‚¹ç”Ÿæˆ
 	Xaudio->CreateMasteringVoice(&MasteringVoice);
 
 	AUDIO_MANAGER::Load();
@@ -225,7 +225,7 @@ void AUDIO_MANAGER::Uninit(void)
 	CoUninitialize();
 }
 
-// ƒ}ƒbƒv‚Ö‚Ì’Ç‰Á
+// ãƒãƒƒãƒ—ã¸ã®è¿½åŠ 
 void AUDIO_MANAGER::Add_Sound_Object(SOUND_INDEX index) {
 
 	CAudioClip* sound = new CAudioClip();
@@ -237,12 +237,12 @@ void AUDIO_MANAGER::Add_Sound_Object(SOUND_INDEX index) {
 	Sound_Dates.insert(make_pair(g_SoundFiles[(int)index].Name, sound));
 };
 
-// ƒ}ƒbƒv‚©‚çÄ¶
+// ãƒãƒƒãƒ—ã‹ã‚‰å†ç”Ÿ
 void AUDIO_MANAGER::Play_Sound_Object(SOUND_INDEX index, bool flag) {
 	Sound_Dates[g_SoundFiles[(int)index].Name]->Play(flag);
 };
 
-// ƒ}ƒbƒv‚©‚çƒXƒgƒbƒv
+// ãƒãƒƒãƒ—ã‹ã‚‰ã‚¹ãƒˆãƒƒãƒ—
 void AUDIO_MANAGER::Stop_Sound_Object(SOUND_INDEX index) {
 
 	if (SOUND_INDEX::SOUND_INDEX_MAX == index)
@@ -282,31 +282,31 @@ void CAudioClip::Load_Ogg(const wchar_t* FileName)
 	WAVEFORMATEX wfx{};
 
 	int ret = 0;
-	//ƒtƒ@ƒCƒ‹ŠJ‚­
+	//ãƒ•ã‚¡ã‚¤ãƒ«é–‹ã
 	OggOpusFile* of = op_open_file(wstringTostring(FileName).c_str(), &ret);
 
 	if(nullptr != of)
 	{
-		//”gŒ`î•ñ‚Ìæ“¾
+		//æ³¢å½¢æƒ…å ±ã®å–å¾—
 		const OpusHead* pHead = op_head(of, -1);
 		if (!pHead) {
 			assert(false);
 		}
-		//PCM‚È‚Ì‚ÅŒÅ’è
+		//PCMãªã®ã§å›ºå®š
 		wfx.wFormatTag = WAVE_FORMAT_PCM;
-		//ƒ`ƒƒƒ“ƒlƒ‹”(ƒ‚ƒmƒ‰ƒ‹:1 ƒXƒeƒŒƒI:2)
+		//ãƒãƒ£ãƒ³ãƒãƒ«æ•°(ãƒ¢ãƒãƒ©ãƒ«:1 ã‚¹ãƒ†ãƒ¬ã‚ª:2)
 		wfx.nChannels = pHead->channel_count;
-		//ƒTƒ“ƒvƒŠƒ“ƒOƒŒ[ƒg(48000ŒÅ’è)
+		//ã‚µãƒ³ãƒ—ãƒªãƒ³ã‚°ãƒ¬ãƒ¼ãƒˆ(48000å›ºå®š)
 		wfx.nSamplesPerSec = 48000;
-		//ƒTƒ“ƒvƒ‹“–‚½‚è‚Ìƒrƒbƒg”(8bit:8 16bit:16)
+		//ã‚µãƒ³ãƒ—ãƒ«å½“ãŸã‚Šã®ãƒ“ãƒƒãƒˆæ•°(8bit:8 16bit:16)
 		wfx.wBitsPerSample = 16;
-		//ƒuƒƒbƒNƒTƒCƒY(16bit ƒXƒeƒŒƒI‚È‚ç 2*2=4)
+		//ãƒ–ãƒ­ãƒƒã‚¯ã‚µã‚¤ã‚º(16bit ã‚¹ãƒ†ãƒ¬ã‚ªãªã‚‰ 2*2=4)
 		wfx.nBlockAlign = wfx.nChannels * wfx.wBitsPerSample / 8;
-		//ƒf[ƒ^‘¬“x(•bŠÔ“–‚½‚è‚Ìƒf[ƒ^—Ê channel*sample*bit/8)
+		//ãƒ‡ãƒ¼ã‚¿é€Ÿåº¦(ç§’é–“å½“ãŸã‚Šã®ãƒ‡ãƒ¼ã‚¿é‡ channel*sample*bit/8)
 		wfx.nAvgBytesPerSec = wfx.nSamplesPerSec * wfx.nBlockAlign;
-		// ‡ŒvƒTƒCƒY‚Ìæ“¾
+		// åˆè¨ˆã‚µã‚¤ã‚ºã®å–å¾—
 		ogg_int64_t decodedSize = op_pcm_total(of, -1) * wfx.nBlockAlign;
-		//•K—v‚Èƒƒ‚ƒŠŠm•Û
+		//å¿…è¦ãªãƒ¡ãƒ¢ãƒªç¢ºä¿
 		char* pDecodedBuf = new char[decodedSize];
 		char* pBuf = pDecodedBuf;
 		int readSize;
@@ -340,23 +340,23 @@ void CAudioClip::Load_Ogg(const wchar_t* FileName)
 			assert(false);
 		}
 
-		// Oggƒtƒ@ƒCƒ‹‚Ì‰¹ºƒtƒH[ƒ}ƒbƒgî•ñ
+		// Oggãƒ•ã‚¡ã‚¤ãƒ«ã®éŸ³å£°ãƒ•ã‚©ãƒ¼ãƒãƒƒãƒˆæƒ…å ±
 		vorbis_info* oggInfo = ov_info(&ovf, -1);
 
-		//PCM‚È‚Ì‚ÅŒÅ’è
+		//PCMãªã®ã§å›ºå®š
 		wfx.wFormatTag = WAVE_FORMAT_PCM;
-		//ƒ`ƒƒƒ“ƒlƒ‹”
+		//ãƒãƒ£ãƒ³ãƒãƒ«æ•°
 		wfx.nChannels = oggInfo->channels;
-		//ƒTƒ“ƒvƒŠƒ“ƒOƒŒ[ƒg
+		//ã‚µãƒ³ãƒ—ãƒªãƒ³ã‚°ãƒ¬ãƒ¼ãƒˆ
 		wfx.nSamplesPerSec = oggInfo->rate;
-		//ƒTƒ“ƒvƒ‹“–‚½‚è‚Ìƒrƒbƒg”(8bit:8 16bit:16)
+		//ã‚µãƒ³ãƒ—ãƒ«å½“ãŸã‚Šã®ãƒ“ãƒƒãƒˆæ•°(8bit:8 16bit:16)
 		wfx.wBitsPerSample = 16;
-		//ƒuƒƒbƒNƒTƒCƒY(16bit ƒXƒeƒŒƒI‚È‚ç 2*2=4)
+		//ãƒ–ãƒ­ãƒƒã‚¯ã‚µã‚¤ã‚º(16bit ã‚¹ãƒ†ãƒ¬ã‚ªãªã‚‰ 2*2=4)
 		wfx.nBlockAlign = wfx.nChannels * wfx.wBitsPerSample / 8;
-		//ƒf[ƒ^‘¬“x(•bŠÔ“–‚½‚è‚Ìƒf[ƒ^—Ê)
+		//ãƒ‡ãƒ¼ã‚¿é€Ÿåº¦(ç§’é–“å½“ãŸã‚Šã®ãƒ‡ãƒ¼ã‚¿é‡)
 		wfx.nAvgBytesPerSec = wfx.nSamplesPerSec * wfx.nBlockAlign;
 		
-		// ‡ŒvƒTƒCƒY‚Ìæ“¾
+		// åˆè¨ˆã‚µã‚¤ã‚ºã®å–å¾—
 		ogg_int64_t decodedSize = ov_pcm_total(&ovf, -1) * wfx.nBlockAlign;
 
 		char* pDecodedBuf = new char[decodedSize];
@@ -381,7 +381,7 @@ void CAudioClip::Load_Ogg(const wchar_t* FileName)
 		delete[] pDecodedBuf;
 	}
 
-	// ƒTƒEƒ“ƒhƒ\[ƒX¶¬
+	// ã‚µã‚¦ãƒ³ãƒ‰ã‚½ãƒ¼ã‚¹ç”Ÿæˆ
 	for (int j = 0; j < SOUND_SOURCE_MAX; j++)
 	{
 		AUDIO_MANAGER::Get_Xaudio()->CreateSourceVoice(&SourceVoice[j], &wfx);

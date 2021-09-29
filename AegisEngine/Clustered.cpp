@@ -1,4 +1,4 @@
-#include	"Clustered.h"
+ï»¿#include	"Clustered.h"
 #include	"manager.h"
 #include	"Scene.h"
 #include	"Light.h"
@@ -14,11 +14,11 @@ bool CLUSTERED::Init()
 	HRESULT hr;
 	auto device = CRenderer::GetDevice();
 	
-	// ƒRƒ“ƒsƒ…[ƒgƒVƒF[ƒ_[‚Ì¶¬
+	// ã‚³ãƒ³ãƒ”ãƒ¥ãƒ¼ãƒˆã‚·ã‚§ãƒ¼ãƒ€ãƒ¼ã®ç”Ÿæˆ
 	{
 		ID3D11ComputeShader* pCS = nullptr;
 
-		// ƒ‰ƒCƒgƒJƒŠƒ“ƒOƒVƒF[ƒ_‚Ì¶¬
+		// ãƒ©ã‚¤ãƒˆã‚«ãƒªãƒ³ã‚°ã‚·ã‚§ãƒ¼ãƒ€ã®ç”Ÿæˆ
 		{
 			FILE* file;
 			long int fsize;
@@ -39,7 +39,7 @@ bool CLUSTERED::Init()
 		}
 	}
 
-	// ƒNƒ‰ƒXƒ^[ƒOƒŠƒbƒh‚Ìì¬
+	// ã‚¯ãƒ©ã‚¹ã‚¿ãƒ¼ã‚°ãƒªãƒƒãƒ‰ã®ä½œæˆ
 	{
 		ID3D11Texture3D* tex = nullptr;
 
@@ -85,7 +85,7 @@ bool CLUSTERED::Init()
 		}
 	}
 
-	//@ƒ‰ƒCƒgƒŠƒXƒg‚Ìì¬
+	//ã€€ãƒ©ã‚¤ãƒˆãƒªã‚¹ãƒˆã®ä½œæˆ
 	{
 		ID3D11Texture2D* tex = nullptr;
 
@@ -133,7 +133,7 @@ bool CLUSTERED::Init()
 		}
 	}
 
-	// ’è”ƒoƒbƒtƒ@ì¬
+	// å®šæ•°ãƒãƒƒãƒ•ã‚¡ä½œæˆ
 	{
 		ID3D11Buffer* buffer = nullptr;
 
@@ -153,7 +153,7 @@ bool CLUSTERED::Init()
 		ClusterBuffer.reset(buffer);
 	}
 
-	// ƒRƒ“ƒsƒ…[ƒgƒVƒF[ƒ_[—p‚Ì•Ï”
+	// ã‚³ãƒ³ãƒ”ãƒ¥ãƒ¼ãƒˆã‚·ã‚§ãƒ¼ãƒ€ãƒ¼ç”¨ã®å¤‰æ•°
 	{
 		ID3D11Buffer* buffer = nullptr;
 
@@ -230,7 +230,7 @@ void CLUSTERED::Draw()
 		{
 			device_context->CSSetShader(ClusterCS.get(), nullptr, NULL);
 
-			// ’è”ƒoƒbƒtƒ@‚Ìİ’è
+			// å®šæ•°ãƒãƒƒãƒ•ã‚¡ã®è¨­å®š
 			{
 				auto buffer = ConstatntBuffer.get();
 
@@ -307,7 +307,7 @@ void CLUSTERED::Cale_Cluster(XMFLOAT3& max, XMFLOAT3& min)
 
 	for (int i = 0; i < points.size(); i++)
 	{
-		// Å‘å’l
+		// æœ€å¤§å€¤
 		if (max.x <= points[i].x || 0 == i)
 		{
 			max.x = points[i].x;
@@ -323,7 +323,7 @@ void CLUSTERED::Cale_Cluster(XMFLOAT3& max, XMFLOAT3& min)
 			max.z = points[i].z;
 		}
 
-		// Å¬’l
+		// æœ€å°å€¤
 		if (points[i].x <= min.x || 0 == i)
 		{
 			min.x = points[i].x;

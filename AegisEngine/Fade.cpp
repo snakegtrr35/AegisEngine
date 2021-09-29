@@ -1,4 +1,4 @@
-#include	"Game_Object.h"
+ï»¿#include	"Game_Object.h"
 #include	"Fade.h"
 #include	"Scene.h"
 #include	"manager.h"
@@ -49,22 +49,22 @@ void FADE::Draw()
 		Vertex[3].Diffuse = Color;
 		Vertex[3].TexCoord = XMFLOAT2(1.0f, 1.0f);
 
-		// ’¸“_ƒoƒbƒtƒ@‚Ì‘‚«Š·‚¦
+		// é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡ã®æ›¸ãæ›ãˆ
 		{
 			D3D11_MAPPED_SUBRESOURCE msr;
 			CRenderer::GetDeviceContext()->Map(pVertexBuffer.get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &msr);
-			memcpy(msr.pData, Vertex, sizeof(VERTEX_3D) * 4); // 4’¸“_•ªƒRƒs[
+			memcpy(msr.pData, Vertex, sizeof(VERTEX_3D) * 4); // 4é ‚ç‚¹åˆ†ã‚³ãƒ”ãƒ¼
 			CRenderer::GetDeviceContext()->Unmap(pVertexBuffer.get(), 0);
 		}
 	}
 
-	// “ü—ÍƒAƒZƒ“ƒuƒ‰‚É’¸“_ƒoƒbƒtƒ@‚ğİ’è
+	// å…¥åŠ›ã‚¢ã‚»ãƒ³ãƒ–ãƒ©ã«é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡ã‚’è¨­å®š
 	CRenderer::SetVertexBuffers(pVertexBuffer.get());
 
-	// “ü—ÍƒAƒZƒ“ƒuƒ‰‚ÉƒCƒ“ƒfƒbƒNƒXƒoƒbƒtƒ@‚ğİ’è
+	// å…¥åŠ›ã‚¢ã‚»ãƒ³ãƒ–ãƒ©ã«ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ãƒãƒƒãƒ•ã‚¡ã‚’è¨­å®š
 	CRenderer::SetIndexBuffer(pIndexBuffer.get());
 
-	// 2Dƒ}ƒgƒŠƒbƒNƒXİ’è
+	// 2Dãƒãƒˆãƒªãƒƒã‚¯ã‚¹è¨­å®š
 	CRenderer::SetWorldViewProjection2D(Scaling);
 
 	CRenderer::Set_Shader(SHADER_INDEX_V::DEFAULT, SHADER_INDEX_P::NO_TEXTURE);

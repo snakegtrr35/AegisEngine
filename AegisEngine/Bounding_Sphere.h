@@ -1,6 +1,6 @@
-/**
+ï»¿/**
  * @file Bounding_Sphere.h
- * @brief SHPERE‚Ìƒwƒbƒ_[ƒtƒ@ƒCƒ‹
+ * @brief SHPEREã®ãƒ˜ãƒƒãƒ€ãƒ¼ãƒ•ã‚¡ã‚¤ãƒ«
  */
 
 #pragma once
@@ -10,99 +10,99 @@
 
 #include	"Bounding.h"
 
-// ‹…
+// çƒ
 class BOUNDING_SHPERE : public BOUNDING {
 private:
-	//! ’¸“_ƒoƒbƒtƒ@
+	//! é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡
 	unique_ptr<ID3D11Buffer, Release> pVertexBuffer;
 
-	//! ƒCƒ“ƒfƒbƒNƒXƒoƒbƒtƒ@
+	//! ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ãƒãƒƒãƒ•ã‚¡
 	unique_ptr<ID3D11Buffer, Release> pIndexBuffer;
 
-	//! ”¼Œa
+	//! åŠå¾„
 	float Radius;
 
-	//! ƒCƒ“ƒfƒbƒNƒX”
+	//! ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹æ•°
 	UINT IndexNum;
 
 	//! SHPERE
 	BoundingSphere Sphere;
 
-	//! ÀÛ‚Ì•`‰æ
+	//! å®Ÿéš›ã®æç”»
 	void Draw_Ring(const XMFLOAT3& rotation);
 
 public:
 	/**
-	* @brief ƒRƒ“ƒXƒgƒ‰ƒNƒ^
-	* @details ˆø”–³‚µƒRƒ“ƒXƒgƒ‰ƒNƒ^
+	* @brief ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
+	* @details å¼•æ•°ç„¡ã—ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
 	*/
 	BOUNDING_SHPERE() : Radius(1.0f), IndexNum(0) {}
 
 	/**
-	* @brief ƒfƒXƒgƒ‰ƒNƒ^
-	* @details ƒfƒXƒgƒ‰ƒNƒ^
+	* @brief ãƒ‡ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
+	* @details ãƒ‡ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
 	*/
 	~BOUNDING_SHPERE() { Uninit(); }
 
 	/**
-	* @brief ‰Šú‰»ŠÖ”
-	* @details ‰Šú‰»‚·‚éŠÖ”
+	* @brief åˆæœŸåŒ–é–¢æ•°
+	* @details åˆæœŸåŒ–ã™ã‚‹é–¢æ•°
 	*/
 	void Init() override;
 
 	/**
-	* @brief •`‰æŠÖ”
-	* @details •`‰æ‚·‚éŠÖ”
+	* @brief æç”»é–¢æ•°
+	* @details æç”»ã™ã‚‹é–¢æ•°
 	*/
 	void Draw() override;
 
 	/**
-	* @brief •`‰æ(Depth-pre-pass)ŠÖ”
-	* @details Depth-pre-pass‚ğ‚·‚éŠÖ”
+	* @brief æç”»(Depth-pre-pass)é–¢æ•°
+	* @details Depth-pre-passã‚’ã™ã‚‹é–¢æ•°
 	*/
 	void Draw_DPP() override {}
 
 	/**
-	* @brief XVŠÖ”
-	* @details XV‚·‚éŠÖ”
+	* @brief æ›´æ–°é–¢æ•°
+	* @details æ›´æ–°ã™ã‚‹é–¢æ•°
 	*/
 	void Update(float delta_time) override;
 
 	/**
-	* @brief I—¹ˆ—ŠÖ”
-	* @details I—¹ˆ—‚ğ‚·‚éŠÖ”
+	* @brief çµ‚äº†å‡¦ç†é–¢æ•°
+	* @details çµ‚äº†å‡¦ç†ã‚’ã™ã‚‹é–¢æ•°
 	*/
 	void Uninit() override;
 
 	/**
-	* @brief ƒCƒ“ƒXƒyƒNƒ^[‚Å‚Ì•`‰æŠÖ”
-	* @details ƒCƒ“ƒXƒyƒNƒ^[‚Å‚Ì•`‰æ‚ğ‚·‚éŠÖ”
+	* @brief ã‚¤ãƒ³ã‚¹ãƒšã‚¯ã‚¿ãƒ¼ã§ã®æç”»é–¢æ•°
+	* @details ã‚¤ãƒ³ã‚¹ãƒšã‚¯ã‚¿ãƒ¼ã§ã®æç”»ã‚’ã™ã‚‹é–¢æ•°
 	*/
 	void Draw_Inspector() override;
 
 	/**
-	* @brief ’¸“_ƒoƒbƒtƒ@‚ÌXVŠÖ”
-	* @details ’¸“_ƒoƒbƒtƒ@‚ÌXV‚ğ‚·‚éŠÖ”
+	* @brief é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡ã®æ›´æ–°é–¢æ•°
+	* @details é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡ã®æ›´æ–°ã‚’ã™ã‚‹é–¢æ•°
 	*/
 	void OverWrite() override;
 
 	/**
-	* @brief ”¼Œa‚ğİ’è‚·‚éŠÖ”
-	* @param radius(”¼Œa) ”¼Œa
+	* @brief åŠå¾„ã‚’è¨­å®šã™ã‚‹é–¢æ•°
+	* @param radius(åŠå¾„) åŠå¾„
 	*/
 	void Set_Radius(const float radius);
 
 	/**
-	* @brief ”¼Œa‚ğæ“¾‚·‚éŠÖ”
-	* @return float ”¼Œa
-	* @details ”¼Œa‚ğæ“¾‚·‚éŠÖ”
+	* @brief åŠå¾„ã‚’å–å¾—ã™ã‚‹é–¢æ•°
+	* @return float åŠå¾„
+	* @details åŠå¾„ã‚’å–å¾—ã™ã‚‹é–¢æ•°
 	*/
 	const float Get_Radius();
 
 	/**
-	* @brief ƒoƒEƒ“ƒfƒBƒ“ƒO‹…‚ğæ“¾‚·‚éŠÖ”
-	* @return BoundingSphere& ƒoƒEƒ“ƒfƒBƒ“ƒO‹…(“–‚½‚è”»’èê—p)
-	* @details ƒoƒEƒ“ƒfƒBƒ“ƒO‹…(“–‚½‚è”»’èê—p)‚ğæ“¾‚·‚éŠÖ”
+	* @brief ãƒã‚¦ãƒ³ãƒ‡ã‚£ãƒ³ã‚°çƒã‚’å–å¾—ã™ã‚‹é–¢æ•°
+	* @return BoundingSphere& ãƒã‚¦ãƒ³ãƒ‡ã‚£ãƒ³ã‚°çƒ(å½“ãŸã‚Šåˆ¤å®šå°‚ç”¨)
+	* @details ãƒã‚¦ãƒ³ãƒ‡ã‚£ãƒ³ã‚°çƒ(å½“ãŸã‚Šåˆ¤å®šå°‚ç”¨)ã‚’å–å¾—ã™ã‚‹é–¢æ•°
 	*/
 	const BoundingSphere& Get_Collition();
 

@@ -1,4 +1,4 @@
-#include	"Bounding_Obb.h"
+ï»¿#include	"Bounding_Obb.h"
 #include	"camera.h"
 #include	"Debug_Camera.h"
 #include	"manager.h"
@@ -24,7 +24,7 @@ void BOUNDING_OBB::Init()
 		Obb.Transform(Obb, matrix);
 	}
 
-	// ’¸“_ƒoƒbƒtƒ@‚ÌÝ’è
+	// é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡ã®è¨­å®š
 	if (nullptr == pVertexBuffer.get())
 	{
 		VERTEX_3D Vertex[BoundingBox::CORNER_COUNT];
@@ -56,7 +56,7 @@ void BOUNDING_OBB::Init()
 			Vertex[i].TexCoord = XMFLOAT2(0.0f, 0.0f);
 		}
 
-		// ’¸“_ƒoƒbƒtƒ@‚ÌÝ’è
+		// é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡ã®è¨­å®š
 		{
 			ID3D11Buffer* buffer;
 
@@ -81,7 +81,7 @@ void BOUNDING_OBB::Init()
 		}
 	}
 
-	// ƒCƒ“ƒfƒbƒNƒXƒoƒbƒtƒ@‚ÌÝ’è
+	// ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ãƒãƒƒãƒ•ã‚¡ã®è¨­å®š
 	if (nullptr == pIndexBuffer_BOX.get())
 	{
 		ID3D11Buffer* buffer;
@@ -128,12 +128,12 @@ void BOUNDING_OBB::Draw()
 {
 	if (false == CManager::Get_Instance()->Get_ShadowMap()->Get_Enable())
 	{
-		// “ü—ÍƒAƒZƒ“ƒuƒ‰‚É’¸“_ƒoƒbƒtƒ@‚ðÝ’è.
+		// å…¥åŠ›ã‚¢ã‚»ãƒ³ãƒ–ãƒ©ã«é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡ã‚’è¨­å®š.
 		CRenderer::SetVertexBuffers(pVertexBuffer.get());
 
 		CRenderer::SetIndexBuffer(pIndexBuffer_BOX.get());
 
-		// 3Dƒ}ƒgƒŠƒbƒNƒXÝ’è
+		// 3Dãƒžãƒˆãƒªãƒƒã‚¯ã‚¹è¨­å®š
 		{
 			XMFLOAT3 pos = *Owner.lock()->Get_Position();
 
@@ -154,7 +154,7 @@ void BOUNDING_OBB::Draw()
 			}
 		}
 
-		// ƒgƒ|ƒƒW‚ÌÝ’è
+		// ãƒˆãƒãƒ­ã‚¸ã®è¨­å®š
 		CRenderer::GetDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_LINESTRIP);
 
 		CRenderer::Set_Shader(SHADER_INDEX_V::DEFAULT, SHADER_INDEX_P::NO_TEXTURE);
@@ -220,7 +220,7 @@ void BOUNDING_OBB::OverWrite()
 			Vertex[i].TexCoord = XMFLOAT2(0.0f, 0.0f);
 		}
 
-		// ’¸“_ƒoƒbƒtƒ@‚Ì‘‚«Š·‚¦
+		// é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡ã®æ›¸ãæ›ãˆ
 		{
 			D3D11_MAPPED_SUBRESOURCE msr;
 			CRenderer::GetDeviceContext()->Map(pVertexBuffer.get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &msr);
@@ -239,7 +239,7 @@ const BoundingOrientedBox& BOUNDING_OBB::Get_Collition()
 
 void BOUNDING_OBB::Draw_Inspector()
 {
-	ImGui::Text((char*)u8"ƒRƒŠƒWƒ‡ƒ“(OBB)");
+	ImGui::Text((char*)u8"ã‚³ãƒªã‚¸ãƒ§ãƒ³(OBB)");
 
 	COMPONENT::Draw_Inspector();
 

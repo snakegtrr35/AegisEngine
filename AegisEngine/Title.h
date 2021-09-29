@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 
 #ifndef TITLE_H
 #define TITLE_H
@@ -6,8 +6,8 @@
 class SCENE;
 
 /**
-* @brief ƒ^ƒCƒgƒ‹ƒV[ƒ“ƒNƒ‰ƒX
-* @details ƒV[ƒ“ƒNƒ‰ƒX‚Ì”h¶ƒNƒ‰ƒX
+* @brief ã‚¿ã‚¤ãƒˆãƒ«ã‚·ãƒ¼ãƒ³ã‚¯ãƒ©ã‚¹
+* @details ã‚·ãƒ¼ãƒ³ã‚¯ãƒ©ã‚¹ã®æ´¾ç”Ÿã‚¯ãƒ©ã‚¹
 */
 class TITLE : public SCENE {
 private:

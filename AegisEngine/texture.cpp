@@ -1,4 +1,4 @@
-#include	"texture.h"
+ï»¿#include	"texture.h"
 #include	"Texture_Manager.h"
 #include	"Renderer.h"
 
@@ -13,7 +13,7 @@ TEXTURE::TEXTURE(const string& file_name) : FileName(file_name), File(hash<strin
 }
 
 //========================================
-// ƒeƒNƒXƒ`ƒƒ‚ğİ’è(Directx11)
+// ãƒ†ã‚¯ã‚¹ãƒãƒ£ã‚’è¨­å®š(Directx11)
 //========================================
 void TEXTURE::Set_Texture(void)
 {
@@ -23,7 +23,7 @@ void TEXTURE::Set_Texture(void)
 }
 
 //========================================
-// ƒeƒNƒXƒ`ƒƒ–¼‚Ìİ’è
+// ãƒ†ã‚¯ã‚¹ãƒãƒ£åã®è¨­å®š
 //========================================
 void TEXTURE::Set_Texture_Name(const string& file_name)
 {
@@ -37,7 +37,7 @@ void TEXTURE::Set_Texture_Name(const string& file_name)
 }
 
 //========================================
-// ƒeƒNƒXƒ`ƒƒ–¼‚Ìæ“¾
+// ãƒ†ã‚¯ã‚¹ãƒãƒ£åã®å–å¾—
 //========================================
 const string& TEXTURE::Get_Texture_Name(void)
 {
@@ -70,14 +70,14 @@ void FONT::Uninit()
 
 void FONT::Load_Font()
 {
-	// ƒtƒHƒ“ƒgƒf[ƒ^
+	// ãƒ•ã‚©ãƒ³ãƒˆãƒ‡ãƒ¼ã‚¿
 	wstring Font;
 	{
 		string Font01("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789 \+-*=/^.,;'\"!?()[]{}");
 
-		string Font02("‚ ‚¢‚¨‚¤‚¦‚¨‚©‚«‚­‚¯‚±‚³‚µ‚·‚¹‚»‚½‚¿‚Â‚Ä‚Æ‚È‚É‚Ê‚Ë‚Ì‚Í‚Ğ‚Ó‚Ö‚Ù‚Ü‚İ‚Ş‚ß‚à‚â‚ä‚æ‚ç‚è‚é‚ê‚ë‚í‚ğ‚ñ‚ª‚¬‚®‚°‚²‚´‚¶‚¸‚º‚¼‚¾‚À‚Ã‚Å‚Ç‚Î‚Ñ‚Ô‚×‚Ú‚Ï‚Ò‚Õ‚Ø‚Û‚á‚ã‚å‚Á");
+		string Font02("ã‚ã„ãŠã†ãˆãŠã‹ããã‘ã“ã•ã—ã™ã›ããŸã¡ã¤ã¦ã¨ãªã«ã¬ã­ã®ã¯ã²ãµã¸ã»ã¾ã¿ã‚€ã‚ã‚‚ã‚„ã‚†ã‚ˆã‚‰ã‚Šã‚‹ã‚Œã‚ã‚ã‚’ã‚“ãŒããã’ã”ã–ã˜ãšãœãã ã¢ã¥ã§ã©ã°ã³ã¶ã¹ã¼ã±ã´ã·ãºã½ã‚ƒã‚…ã‚‡ã£");
 
-		string Font03("ƒAƒCƒEƒGƒIƒJƒLƒNƒPƒRƒTƒVƒXƒZƒ\ƒ^ƒ`ƒcƒeƒgƒiƒjƒkƒlƒmƒnƒqƒtƒwƒzƒ}ƒ~ƒ€ƒƒ‚ƒ„ƒ†ƒˆƒ‰ƒŠƒ‹ƒŒƒƒƒ’ƒ“ƒKƒMƒOƒQƒSƒUƒWƒYƒ[ƒ]ƒ_ƒaƒdƒfƒhƒoƒrƒuƒxƒ{ƒpƒsƒvƒyƒ|ƒƒƒ…ƒ‡ƒb");
+		string Font03("ã‚¢ã‚¤ã‚¦ã‚¨ã‚ªã‚«ã‚­ã‚¯ã‚±ã‚³ã‚µã‚·ã‚¹ã‚»ã‚½ã‚¿ãƒãƒ„ãƒ†ãƒˆãƒŠãƒ‹ãƒŒãƒãƒãƒãƒ’ãƒ•ãƒ˜ãƒ›ãƒãƒŸãƒ ãƒ¡ãƒ¢ãƒ¤ãƒ¦ãƒ¨ãƒ©ãƒªãƒ«ãƒ¬ãƒ­ãƒ¯ãƒ²ãƒ³ã‚¬ã‚®ã‚°ã‚²ã‚´ã‚¶ã‚¸ã‚ºã‚¼ã‚¾ãƒ€ãƒ‚ãƒ…ãƒ‡ãƒ‰ãƒãƒ“ãƒ–ãƒ™ãƒœãƒ‘ãƒ”ãƒ—ãƒšãƒãƒ£ãƒ¥ãƒ§ãƒƒ");
 
 		Font01 = Font01 + Font02;
 
@@ -86,7 +86,7 @@ void FONT::Load_Font()
 		Font = stringTowstring(Font01);
 	}
 
-	// ƒtƒHƒ“ƒgƒnƒ“ƒhƒ‹‚Ì¶¬
+	// ãƒ•ã‚©ãƒ³ãƒˆãƒãƒ³ãƒ‰ãƒ«ã®ç”Ÿæˆ
 	int fontSize = 128;
 	int fontWeight = 1000;
 	LOGFONTW lf =
@@ -94,20 +94,20 @@ void FONT::Load_Font()
 		fontSize, 0, 0, 0, fontWeight, 0, 0, 0,
 		SHIFTJIS_CHARSET, OUT_TT_ONLY_PRECIS, CLIP_DEFAULT_PRECIS,
 		PROOF_QUALITY, DEFAULT_PITCH | FF_MODERN,
-		//(CHAR)"‚l‚r ‚o–¾’©"
-		//(CHAR)"‚l‚r –¾’©"
-		//(CHAR)"‚l‚r ƒSƒVƒbƒN"
-		(CHAR)"ƒƒCƒŠƒI"
+		//(CHAR)"ï¼­ï¼³ ï¼°æ˜æœ"
+		//(CHAR)"ï¼­ï¼³ æ˜æœ"
+		//(CHAR)"ï¼­ï¼³ ã‚´ã‚·ãƒƒã‚¯"
+		(CHAR)"ãƒ¡ã‚¤ãƒªã‚ª"
 	};
 	HFONT hFont = CreateFontIndirectW(&lf);
 
-	// Œ»İ‚ÌƒEƒBƒ“ƒhƒE‚É“K—p
-	// ƒfƒoƒCƒX‚ÉƒtƒHƒ“ƒg‚ğ‚½‚¹‚È‚¢‚ÆGetGlyphOutlineŠÖ”‚ÍƒGƒ‰[‚Æ‚È‚é
+	// ç¾åœ¨ã®ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ã«é©ç”¨
+	// ãƒ‡ãƒã‚¤ã‚¹ã«ãƒ•ã‚©ãƒ³ãƒˆã‚’æŒãŸã›ãªã„ã¨GetGlyphOutlineé–¢æ•°ã¯ã‚¨ãƒ©ãƒ¼ã¨ãªã‚‹
 	HDC hdc = GetDC(NULL);
 	HFONT oldFont = (HFONT)SelectObject(hdc, hFont);
 
 	const int gradFlag = GGO_GRAY4_BITMAP;
-	// ŠK’²‚ÌÅ‘å’l
+	// éšèª¿ã®æœ€å¤§å€¤
 	int grad = 0;
 	switch (gradFlag)
 	{
@@ -122,7 +122,7 @@ void FONT::Load_Font()
 		break;
 	}
 
-	//ƒtƒHƒ“ƒg‚ğ‘‚«‚ŞƒeƒNƒXƒ`ƒƒì¬
+	//ãƒ•ã‚©ãƒ³ãƒˆã‚’æ›¸ãè¾¼ã‚€ãƒ†ã‚¯ã‚¹ãƒãƒ£ä½œæˆ
 	D3D11_TEXTURE2D_DESC fontTextureDesc;
 	ZeroMemory(&fontTextureDesc, sizeof(fontTextureDesc));
 	fontTextureDesc.MipLevels = 1;
@@ -135,7 +135,7 @@ void FONT::Load_Font()
 	fontTextureDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 	fontTextureDesc.MiscFlags = 0;
 
-	// ƒVƒF[ƒ_—p‚ÉƒTƒ“ƒvƒ‰‚ğì¬‚·‚é
+	// ã‚·ã‚§ãƒ¼ãƒ€ç”¨ã«ã‚µãƒ³ãƒ—ãƒ©ã‚’ä½œæˆã™ã‚‹
 	{
 		D3D11_SAMPLER_DESC samDesc;
 		ZeroMemory(&samDesc, sizeof(samDesc));
@@ -150,7 +150,7 @@ void FONT::Load_Font()
 		CRenderer::GetDevice()->CreateSamplerState(&samDesc, &samplerState);
 	}
 
-	// ShaderResourceView‚Ìî•ñ‚ğì¬‚·‚é
+	// ShaderResourceViewã®æƒ…å ±ã‚’ä½œæˆã™ã‚‹
 	D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc;
 	ZeroMemory(&srvDesc, sizeof(srvDesc));
 	srvDesc.Format = fontTextureDesc.Format;
@@ -160,10 +160,10 @@ void FONT::Load_Font()
 
 	ID3D11ShaderResourceView* ShaderResourceView;
 
-	// ƒfƒoƒCƒX
+	// ãƒ‡ãƒã‚¤ã‚¹
 	auto device = CRenderer::GetDevice();
 
-	// ƒfƒoƒCƒXƒRƒ“ƒeƒLƒXƒg
+	// ãƒ‡ãƒã‚¤ã‚¹ã‚³ãƒ³ãƒ†ã‚­ã‚¹ãƒˆ
 	auto deviceContext = CRenderer::GetDeviceContext();
 
 	UINT code;
@@ -185,7 +185,7 @@ void FONT::Load_Font()
 
 	for (auto font : Font)
 	{
-		// ƒtƒHƒ“ƒgƒrƒbƒgƒ}ƒbƒvæ“¾
+		// ãƒ•ã‚©ãƒ³ãƒˆãƒ“ãƒƒãƒˆãƒãƒƒãƒ—å–å¾—
 
 		code = (UINT)font;
 
@@ -196,29 +196,29 @@ void FONT::Load_Font()
 
 		//================================================================================
 
-		//ƒtƒHƒ“ƒg‚Ì•‚Æ‚‚³
+		//ãƒ•ã‚©ãƒ³ãƒˆã®å¹…ã¨é«˜ã•
 		fontWidth = gm.gmCellIncX;
 		fontHeight = tm.tmHeight;
 
-		//ƒtƒHƒ“ƒg‚ğ‘‚«‚ŞƒeƒNƒXƒ`ƒƒì¬
+		//ãƒ•ã‚©ãƒ³ãƒˆã‚’æ›¸ãè¾¼ã‚€ãƒ†ã‚¯ã‚¹ãƒãƒ£ä½œæˆ
 		fontTextureDesc.Width = fontWidth;
 		fontTextureDesc.Height = fontHeight;
 
 		hr = device->CreateTexture2D(&fontTextureDesc, nullptr, &font_texture);
 
-		// ƒtƒHƒ“ƒgî•ñ‚ğƒeƒNƒXƒ`ƒƒ‚É‘‚«‚Ş•”•ª
+		// ãƒ•ã‚©ãƒ³ãƒˆæƒ…å ±ã‚’ãƒ†ã‚¯ã‚¹ãƒãƒ£ã«æ›¸ãè¾¼ã‚€éƒ¨åˆ†
 		hr = deviceContext->Map(
 			font_texture,
 			0,
 			D3D11_MAP_WRITE_DISCARD,
 			0,
 			&hMappedResource);
-		// ‚±‚±‚Å‘‚«‚Ş
+		// ã“ã“ã§æ›¸ãè¾¼ã‚€
 		BYTE* pBits = (BYTE*)hMappedResource.pData;
-		// ƒtƒHƒ“ƒgî•ñ‚Ì‘‚«‚İ
-		// iOfs_x, iOfs_y : ‘‚«o‚µˆÊ’u(¶ã)
-		// iBmp_w, iBmp_h : ƒtƒHƒ“ƒgƒrƒbƒgƒ}ƒbƒv‚Ì•‚
-		// Level : ƒ¿’l‚Ì’iŠK (GGO_GRAY4_BITMAP‚È‚Ì‚Å17’iŠK)
+		// ãƒ•ã‚©ãƒ³ãƒˆæƒ…å ±ã®æ›¸ãè¾¼ã¿
+		// iOfs_x, iOfs_y : æ›¸ãå‡ºã—ä½ç½®(å·¦ä¸Š)
+		// iBmp_w, iBmp_h : ãƒ•ã‚©ãƒ³ãƒˆãƒ“ãƒƒãƒˆãƒãƒƒãƒ—ã®å¹…é«˜
+		// Level : Î±å€¤ã®æ®µéš (GGO_GRAY4_BITMAPãªã®ã§17æ®µéš)
 		int iOfs_x = gm.gmptGlyphOrigin.x;
 		int iOfs_y = tm.tmAscent - gm.gmptGlyphOrigin.y;
 		int iBmp_w = gm.gmBlackBoxX + (4 - (gm.gmBlackBoxX % 4)) % 4;
@@ -243,10 +243,10 @@ void FONT::Load_Font()
 			}
 		}
 		deviceContext->Unmap(font_texture, 0);
-		//•s—v‚È‚Ì‚Åíœ
+		//ä¸è¦ãªã®ã§å‰Šé™¤
 		SAFE_DELETE_ARRAY(pMono);
 
-		// ƒVƒF[ƒ_[ƒŠƒ\[ƒX‚Ìì¬
+		// ã‚·ã‚§ãƒ¼ãƒ€ãƒ¼ãƒªã‚½ãƒ¼ã‚¹ã®ä½œæˆ
 		device->CreateShaderResourceView(font_texture, &srvDesc, &ShaderResourceView);
 
 		SAFE_RELEASE(font_texture);
@@ -261,7 +261,7 @@ void FONT::Load_Font()
 
 void FONT::Load_Font(const wstring& one_character)
 {
-	// ƒtƒHƒ“ƒgƒnƒ“ƒhƒ‹‚Ì¶¬
+	// ãƒ•ã‚©ãƒ³ãƒˆãƒãƒ³ãƒ‰ãƒ«ã®ç”Ÿæˆ
 	int fontSize = 128;
 	int fontWeight = 1000;
 	LOGFONTW lf =
@@ -269,25 +269,25 @@ void FONT::Load_Font(const wstring& one_character)
 		fontSize, 0, 0, 0, fontWeight, 0, 0, 0,
 		SHIFTJIS_CHARSET, OUT_TT_ONLY_PRECIS, CLIP_DEFAULT_PRECIS,
 		PROOF_QUALITY, DEFAULT_PITCH | FF_MODERN,
-		//(CHAR)"‚l‚r ‚o–¾’©"
-		//(CHAR)"‚l‚r –¾’©"
-		//(CHAR)"‚l‚r ƒSƒVƒbƒN"
-		(CHAR)"ƒƒCƒŠƒI"
+		//(CHAR)"ï¼­ï¼³ ï¼°æ˜æœ"
+		//(CHAR)"ï¼­ï¼³ æ˜æœ"
+		//(CHAR)"ï¼­ï¼³ ã‚´ã‚·ãƒƒã‚¯"
+		(CHAR)"ãƒ¡ã‚¤ãƒªã‚ª"
 	};
 	HFONT hFont = CreateFontIndirectW(&lf);
 
-	// Œ»İ‚ÌƒEƒBƒ“ƒhƒE‚É“K—p
-	// ƒfƒoƒCƒX‚ÉƒtƒHƒ“ƒg‚ğ‚½‚¹‚È‚¢‚ÆGetGlyphOutlineŠÖ”‚ÍƒGƒ‰[‚Æ‚È‚é
+	// ç¾åœ¨ã®ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ã«é©ç”¨
+	// ãƒ‡ãƒã‚¤ã‚¹ã«ãƒ•ã‚©ãƒ³ãƒˆã‚’æŒãŸã›ãªã„ã¨GetGlyphOutlineé–¢æ•°ã¯ã‚¨ãƒ©ãƒ¼ã¨ãªã‚‹
 	HDC hdc = GetDC(NULL);
 	HFONT oldFont = (HFONT)SelectObject(hdc, hFont);
 
-	// ƒtƒHƒ“ƒgƒrƒbƒgƒ}ƒbƒvæ“¾
+	// ãƒ•ã‚©ãƒ³ãƒˆãƒ“ãƒƒãƒˆãƒãƒƒãƒ—å–å¾—
 	wchar_t font = one_character.front();
 
 	UINT code = (UINT)font;
 
 	const int gradFlag = GGO_GRAY4_BITMAP;
-	// ŠK’²‚ÌÅ‘å’l
+	// éšèª¿ã®æœ€å¤§å€¤
 	int grad = 0;
 	switch (gradFlag)
 	{
@@ -312,19 +312,19 @@ void FONT::Load_Font(const wstring& one_character)
 
 	GetGlyphOutlineW(hdc, code, gradFlag, &gm, size, pMono, &mat);
 
-	// ƒfƒoƒCƒX
+	// ãƒ‡ãƒã‚¤ã‚¹
 	auto device = CRenderer::GetDevice();
 
-	// ƒfƒoƒCƒXƒRƒ“ƒeƒLƒXƒg
+	// ãƒ‡ãƒã‚¤ã‚¹ã‚³ãƒ³ãƒ†ã‚­ã‚¹ãƒˆ
 	auto deviceContext = CRenderer::GetDeviceContext();
 
 	//================================================================================
 
-	//ƒtƒHƒ“ƒg‚Ì•‚Æ‚‚³
+	//ãƒ•ã‚©ãƒ³ãƒˆã®å¹…ã¨é«˜ã•
 	int fontWidth = gm.gmCellIncX;
 	int fontHeight = tm.tmHeight;
 
-	//ƒtƒHƒ“ƒg‚ğ‘‚«‚ŞƒeƒNƒXƒ`ƒƒì¬
+	//ãƒ•ã‚©ãƒ³ãƒˆã‚’æ›¸ãè¾¼ã‚€ãƒ†ã‚¯ã‚¹ãƒãƒ£ä½œæˆ
 	D3D11_TEXTURE2D_DESC fontTextureDesc;
 	ZeroMemory(&fontTextureDesc, sizeof(fontTextureDesc));
 	fontTextureDesc.Width = fontWidth;
@@ -343,7 +343,7 @@ void FONT::Load_Font(const wstring& one_character)
 
 	HRESULT hr = device->CreateTexture2D(&fontTextureDesc, nullptr, &font_texture);
 
-	// ƒtƒHƒ“ƒgî•ñ‚ğƒeƒNƒXƒ`ƒƒ‚É‘‚«‚Ş•”•ª
+	// ãƒ•ã‚©ãƒ³ãƒˆæƒ…å ±ã‚’ãƒ†ã‚¯ã‚¹ãƒãƒ£ã«æ›¸ãè¾¼ã‚€éƒ¨åˆ†
 	D3D11_MAPPED_SUBRESOURCE hMappedResource;
 	hr = deviceContext->Map(
 		font_texture,
@@ -351,12 +351,12 @@ void FONT::Load_Font(const wstring& one_character)
 		D3D11_MAP_WRITE_DISCARD,
 		0,
 		&hMappedResource);
-	// ‚±‚±‚Å‘‚«‚Ş
+	// ã“ã“ã§æ›¸ãè¾¼ã‚€
 	BYTE* pBits = (BYTE*)hMappedResource.pData;
-	// ƒtƒHƒ“ƒgî•ñ‚Ì‘‚«‚İ
-	// iOfs_x, iOfs_y : ‘‚«o‚µˆÊ’u(¶ã)
-	// iBmp_w, iBmp_h : ƒtƒHƒ“ƒgƒrƒbƒgƒ}ƒbƒv‚Ì•‚
-	// Level : ƒ¿’l‚Ì’iŠK (GGO_GRAY4_BITMAP‚È‚Ì‚Å17’iŠK)
+	// ãƒ•ã‚©ãƒ³ãƒˆæƒ…å ±ã®æ›¸ãè¾¼ã¿
+	// iOfs_x, iOfs_y : æ›¸ãå‡ºã—ä½ç½®(å·¦ä¸Š)
+	// iBmp_w, iBmp_h : ãƒ•ã‚©ãƒ³ãƒˆãƒ“ãƒƒãƒˆãƒãƒƒãƒ—ã®å¹…é«˜
+	// Level : Î±å€¤ã®æ®µéš (GGO_GRAY4_BITMAPãªã®ã§17æ®µéš)
 	int iOfs_x = gm.gmptGlyphOrigin.x;
 	int iOfs_y = tm.tmAscent - gm.gmptGlyphOrigin.y;
 	int iBmp_w = gm.gmBlackBoxX + (4 - (gm.gmBlackBoxX % 4)) % 4;
@@ -381,10 +381,10 @@ void FONT::Load_Font(const wstring& one_character)
 		}
 	}
 	deviceContext->Unmap(font_texture, 0);
-	//•s—v‚È‚Ì‚Åíœ
+	//ä¸è¦ãªã®ã§å‰Šé™¤
 	SAFE_DELETE_ARRAY(pMono);
 
-	// ShaderResourceView‚Ìî•ñ‚ğì¬‚·‚é
+	// ShaderResourceViewã®æƒ…å ±ã‚’ä½œæˆã™ã‚‹
 	D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc;
 	ZeroMemory(&srvDesc, sizeof(srvDesc));
 	srvDesc.Format = fontTextureDesc.Format;

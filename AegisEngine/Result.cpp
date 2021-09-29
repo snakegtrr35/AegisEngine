@@ -1,4 +1,4 @@
-#include	"Scene.h"
+ï»¿#include	"Scene.h"
 #include	"Result.h"
 #include	"Input.h"
 
@@ -19,7 +19,7 @@ static unique_ptr<SPRITE_ANIMATION> sprite_anime = nullptr;
 
 void RESULT::Init()
 {
-	// ƒŠƒUƒ‹ƒg‰æ–Ê
+	// ãƒªã‚¶ãƒ«ãƒˆç”»é¢
 	{
 		sprite_anime = make_unique<SPRITE_ANIMATION>();
 
@@ -108,7 +108,7 @@ void RESULT::Uninit()
 
 		string name(id.name());
 
-		// ’uŠ·
+		// ç½®æ›
 		Replace_String(name, "class ", "      ");
 		Replace_String(name, "*", " ");
 		name.erase(remove_if(name.begin(), name.end(), isspace), name.end());
@@ -138,7 +138,7 @@ void RESULT::Load(SCENE* scene)
 
 		string name(id.name());
 
-		// ’uŠ·
+		// ç½®æ›
 		Replace_String(name, "class ", "      ");
 		Replace_String(name, "*", " ");
 		name.erase(remove_if(name.begin(), name.end(), isspace), name.end());
@@ -156,7 +156,7 @@ void RESULT::Load(SCENE* scene)
 
 	if (false == flag)
 	{
-		// ƒŠƒUƒ‹ƒg‰æ–Ê
+		// ãƒªã‚¶ãƒ«ãƒˆç”»é¢
 		XMFLOAT2 pos(SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.5f);
 
 		SPRITE* result = Add_Game_Object<SPRITE>(LAYER_NAME::UI, "result");

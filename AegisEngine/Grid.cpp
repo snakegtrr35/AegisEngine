@@ -1,4 +1,4 @@
-#include	"Grid.h"
+ï»¿#include	"Grid.h"
 #include	"camera.h"
 #include	"Debug_Camera.h"
 #include	"manager.h"
@@ -11,7 +11,7 @@ GRID::GRID()
 {
 	const VERTEX_3D Vertexs[COUNT] = {
 
-		// ‰¡
+		// æ¨ª
 		{ XMFLOAT3(-5.0f, 0.0f, -5.0f), XMFLOAT3(0.0f, 1.0f, 0.0f), XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f), XMFLOAT2(0.0f, 0.0f) },
 		{ XMFLOAT3(5.0f, 0.0f, -5.0f), XMFLOAT3(0.0f, 1.0f, 0.0f), XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f), XMFLOAT2(0.0f, 0.0f) },
 
@@ -46,7 +46,7 @@ GRID::GRID()
 		{ XMFLOAT3(5.0f, 0.0f, 5.0f), XMFLOAT3(0.0f, 1.0f, 0.0f), XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f), XMFLOAT2(0.0f, 0.0f) },
 
 
-		// c
+		// ç¸¦
 		{ XMFLOAT3(-5.0f, 0.0f, 5.0f), XMFLOAT3(0.0f, 1.0f, 0.0f), XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f), XMFLOAT2(0.0f, 1.0f) },
 		{ XMFLOAT3(-5.0f, 0.0f, -5.0f), XMFLOAT3(0.0f, 1.0f, 0.0f), XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f), XMFLOAT2(0.0f, 1.0f) },
 
@@ -81,7 +81,7 @@ GRID::GRID()
 		{ XMFLOAT3(5.0f, 0.0f, -5.0f), XMFLOAT3(0.0f, 1.0f, 0.0f), XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f), XMFLOAT2(0.0f, 1.0f) },
 	};
 
-	// ’¸“_ƒoƒbƒtƒ@‚ÌÝ’è
+	// é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡ã®è¨­å®š
 	{
 		HRESULT hr;
 
@@ -95,7 +95,7 @@ GRID::GRID()
 		bd.MiscFlags = 0;
 		bd.StructureByteStride = 0;
 
-		// ƒTƒuƒŠƒ\[ƒX‚ÌÝ’è
+		// ã‚µãƒ–ãƒªã‚½ãƒ¼ã‚¹ã®è¨­å®š
 		D3D11_SUBRESOURCE_DATA srd;
 		ZeroMemory(&srd, sizeof(D3D11_SUBRESOURCE_DATA));
 
@@ -103,7 +103,7 @@ GRID::GRID()
 		srd.SysMemPitch = 0;
 		srd.SysMemSlicePitch = 0;
 
-		// ’¸“_ƒoƒbƒtƒ@‚Ì¶¬
+		// é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡ã®ç”Ÿæˆ
 		hr = CRenderer::GetDevice()->CreateBuffer(&bd, &srd, &pVertexBuffer);
 
 		if (FAILED(hr))
@@ -127,16 +127,16 @@ void GRID::Draw()
 {
 	if (false == CManager::Get_Instance()->Get_ShadowMap()->Get_Enable())
 	{
-		// “ü—ÍƒAƒZƒ“ƒuƒ‰‚É’¸“_ƒoƒbƒtƒ@‚ðÝ’è.
+		// å…¥åŠ›ã‚¢ã‚»ãƒ³ãƒ–ãƒ©ã«é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡ã‚’è¨­å®š.
 		CRenderer::SetVertexBuffers(pVertexBuffer);
 
-		// 3Dƒ}ƒgƒŠƒbƒNƒXÝ’è
+		// 3Dãƒžãƒˆãƒªãƒƒã‚¯ã‚¹è¨­å®š
 		{
 			XMMATRIX world = XMMatrixIdentity();
 
-			world = XMMatrixScaling(Scaling.x, Scaling.y, Scaling.z);																						// Šg‘åk¬
-			world *= XMMatrixRotationRollPitchYaw(XMConvertToRadians(Rotation.x), XMConvertToRadians(Rotation.y), XMConvertToRadians(Rotation.z));			// ‰ñ“](ƒ[ƒ‹ƒsƒbƒ`ƒˆƒE)
-			world *= XMMatrixTranslation(Position.x, Position.y, Position.z);																				// ˆÚ“®
+			world = XMMatrixScaling(Scaling.x, Scaling.y, Scaling.z);																						// æ‹¡å¤§ç¸®å°
+			world *= XMMatrixRotationRollPitchYaw(XMConvertToRadians(Rotation.x), XMConvertToRadians(Rotation.y), XMConvertToRadians(Rotation.z));			// å›žè»¢(ãƒ­ãƒ¼ãƒ«ãƒ”ãƒƒãƒãƒ¨ã‚¦)
+			world *= XMMatrixTranslation(Position.x, Position.y, Position.z);																				// ç§»å‹•
 
 			const auto camera01 = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<CCamera>("camera");
 			const auto camera02 = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
@@ -155,14 +155,14 @@ void GRID::Draw()
 			}
 		}
 
-		// ƒgƒ|ƒƒW‚ÌÝ’è
+		// ãƒˆãƒãƒ­ã‚¸ã®è¨­å®š
 		CRenderer::GetDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_LINELIST);
 
 		CRenderer::Set_Shader(SHADER_INDEX_V::DEFAULT, SHADER_INDEX_P::NO_TEXTURE);
 
 		CRenderer::GetDeviceContext()->Draw(COUNT, 0);
 
-		// ƒCƒ“ƒXƒ^ƒ“ƒVƒ“ƒO
+		// ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚·ãƒ³ã‚°
 		//CRenderer::GetDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 		//CRenderer::GetDeviceContext()->DrawInstanced(COUNT, 200000, 0, 0);
 

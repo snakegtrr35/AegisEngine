@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 
 #ifndef COMMON_H
 #define COMMON_H
@@ -7,7 +7,7 @@
 #include	<xstring>
 #include	<string>
 
-// ƒƒ‚ƒŠŠJ•ú
+// ãƒ¡ãƒ¢ãƒªé–‹æ”¾
 #define SAFE_RELEASE(x)			if( nullptr != x ){ x->Release(); x = nullptr; }
 #define SAFE_DELETE(x)			if( nullptr != x ){ delete x;  x = nullptr; }
 #define SAFE_DELETE_ARRAY(x)	if( nullptr != x ){ delete[] x;  x = nullptr; }
@@ -23,8 +23,8 @@
 const constexpr float ANIMETION_FRAME_60 = 1.f / 60.0f;		// 60FPS
 const constexpr float ANIMETION_FRAME_30 = 1.f / 30.0f;		// 30FPS
 
-//! ƒXƒ}[ƒgƒ|ƒCƒ“ƒ^—p‚ÌƒJƒXƒ^ƒ€ƒfƒŠ[ƒ^
-/*! Release() ‚ª‚ ‚é */
+//! ã‚¹ãƒãƒ¼ãƒˆãƒã‚¤ãƒ³ã‚¿ç”¨ã®ã‚«ã‚¹ã‚¿ãƒ ãƒ‡ãƒªãƒ¼ã‚¿
+/*! Release() ãŒã‚ã‚‹ */
 struct Release {
 	template<class T>
 	void operator()(T* p) const noexcept
@@ -34,7 +34,7 @@ struct Release {
 	}
 };
 
-//! ƒXƒ}[ƒgƒ|ƒCƒ“ƒ^—p‚ÌƒJƒXƒ^ƒ€ƒfƒŠ[ƒ^[
+//! ã‚¹ãƒãƒ¼ãƒˆãƒã‚¤ãƒ³ã‚¿ç”¨ã®ã‚«ã‚¹ã‚¿ãƒ ãƒ‡ãƒªãƒ¼ã‚¿ãƒ¼
 struct Delete {
 	template<class T>
 	void operator()(T* p) const noexcept
@@ -44,7 +44,7 @@ struct Delete {
 	}
 };
 
-//! ƒXƒ}[ƒgƒ|ƒCƒ“ƒ^—p‚ÌƒJƒXƒ^ƒ€ƒfƒŠ[ƒ^[(”z—ñ”Å)
+//! ã‚¹ãƒãƒ¼ãƒˆãƒã‚¤ãƒ³ã‚¿ç”¨ã®ã‚«ã‚¹ã‚¿ãƒ ãƒ‡ãƒªãƒ¼ã‚¿ãƒ¼(é…åˆ—ç‰ˆ)
 struct Delete_Array {
 	template<class T>
 	void operator()(T* p) const noexcept
@@ -54,8 +54,8 @@ struct Delete_Array {
 	}
 };
 
-//! ƒXƒ}[ƒgƒ|ƒCƒ“ƒ^—p‚ÌƒJƒXƒ^ƒ€ƒfƒŠ[ƒ^[
-/*! Uninit() ‚ª‚ ‚é */
+//! ã‚¹ãƒãƒ¼ãƒˆãƒã‚¤ãƒ³ã‚¿ç”¨ã®ã‚«ã‚¹ã‚¿ãƒ ãƒ‡ãƒªãƒ¼ã‚¿ãƒ¼
+/*! Uninit() ãŒã‚ã‚‹ */
 struct Uninit {
 	template<class T>
 	void operator()(T* p) const noexcept
@@ -66,8 +66,8 @@ struct Uninit {
 	}
 };
 
-//! ƒXƒ}[ƒgƒ|ƒCƒ“ƒ^—p‚ÌƒJƒXƒ^ƒ€ƒfƒŠ[ƒ^[(”z—ñ”Å)
-/*! Uninit() ‚ª‚ ‚é */
+//! ã‚¹ãƒãƒ¼ãƒˆãƒã‚¤ãƒ³ã‚¿ç”¨ã®ã‚«ã‚¹ã‚¿ãƒ ãƒ‡ãƒªãƒ¼ã‚¿ãƒ¼(é…åˆ—ç‰ˆ)
+/*! Uninit() ãŒã‚ã‚‹ */
 struct Uninit_Array {
 	template<class T>
 	void operator()(T* p) const noexcept
@@ -86,10 +86,10 @@ void ExtratNum(std::string& str);
 std::string Replace_String(std::string& replacedStr, const std::string& from, const std::string& to);
 
 #ifdef UNICODE
-void Erroer_Message(const std::wstring& str1, const std::wstring& str2 = std::wstring(L"ƒGƒ‰[ƒƒbƒZ[ƒW"));
-void Erroer_Message(const std::string& str1, const std::string& str2 = std::string("ƒGƒ‰[ƒƒbƒZ[ƒW"));
+void Erroer_Message(const std::wstring& str1, const std::wstring& str2 = std::wstring(L"ã‚¨ãƒ©ãƒ¼ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸"));
+void Erroer_Message(const std::string& str1, const std::string& str2 = std::string("ã‚¨ãƒ©ãƒ¼ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸"));
 #else
-void Erroer_Message(const std::string& str1, const std::string& str2 = std::string("ƒGƒ‰[ƒƒbƒZ[ƒW"));
+void Erroer_Message(const std::string& str1, const std::string& str2 = std::string("ã‚¨ãƒ©ãƒ¼ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸"));
 #endif // !UNICODE
 
 #endif // !COMMON_H

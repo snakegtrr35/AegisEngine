@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 
 #ifndef MOUSE_H
 #define MOUSE_H
@@ -18,11 +18,11 @@ private:
 
 	static unique_ptr<MOUSE> pMouse;
 
-	//! ƒXƒNƒŠ[ƒ“ã‚Ìƒ}ƒEƒX‚Ì•Ï”
+	//! ã‚¹ã‚¯ãƒªãƒ¼ãƒ³ä¸Šã®ãƒã‚¦ã‚¹ã®å¤‰æ•°
 	POINT ScreenPoint;
 	XMFLOAT2 ScreenPosition;
 
-	// ƒ}ƒEƒX‚Ì‘Š‘ÎÀ•W
+	// ãƒã‚¦ã‚¹ã®ç›¸å¯¾åº§æ¨™
 	POINT Pos;
 	POINT OldPos;
 
@@ -35,9 +35,9 @@ private:
 
 	float Mouse_Sensitivity;
 
-	MOUSE() {}									// ƒfƒtƒHƒ‹ƒgƒRƒ“ƒXƒgƒ‰ƒNƒ^‚ÌŠO•”‚©‚ç‚ÌŒÄ‚Ño‚µ‹Ö~
-	MOUSE(const MOUSE&) = delete;				// ƒRƒs[ƒRƒ“ƒXƒgƒ‰ƒNƒ^‚Ì‹Ö~
-	MOUSE& operator=(const MOUSE&) = delete;	// ƒ€[ƒuƒRƒ“ƒXƒgƒ‰ƒNƒ^‚Ì‹Ö~
+	MOUSE() {}									// ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿ã®å¤–éƒ¨ã‹ã‚‰ã®å‘¼ã³å‡ºã—ç¦æ­¢
+	MOUSE(const MOUSE&) = delete;				// ã‚³ãƒ”ãƒ¼ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿ã®ç¦æ­¢
+	MOUSE& operator=(const MOUSE&) = delete;	// ãƒ ãƒ¼ãƒ–ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿ã®ç¦æ­¢
 
 public:
 	~MOUSE() { Uninit(); }

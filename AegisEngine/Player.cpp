@@ -1,4 +1,4 @@
-#include	"Game_Object.h"
+ï»¿#include	"Game_Object.h"
 #include	"Player.h"
 
 #include	"manager.h"
@@ -94,10 +94,10 @@ void PLAYER::Update(float delta_time)
 
 	Position = pos;
 
-	// ƒJƒƒ‰‚É‡‚í‚¹‚½‰ñ“]
+	// ã‚«ãƒ¡ãƒ©ã«åˆã‚ã›ãŸå›žè»¢
 	Rotation.y = rotate.y + 0.0f;
 
-	// ƒ‚ƒfƒ‹‚ÌXV
+	// ãƒ¢ãƒ‡ãƒ«ã®æ›´æ–°
 	{
 		Model->Set_Position(Position);
 		Model->Set_Rotation(Rotation);

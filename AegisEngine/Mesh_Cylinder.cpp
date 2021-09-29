@@ -1,4 +1,4 @@
-#include	"Game_Object.h"
+ï»¿#include	"Game_Object.h"
 #include	"Mesh_Cylinder.h"
 #include	"camera.h"
 #include	"Debug_Camera.h"
@@ -11,15 +11,15 @@ void MESH_CYlLINDER::Init()
 {
 	int cornerNum = (int)Radius * CylinderLength * 10;
 
-	// ’¸“_ƒoƒbƒtƒ@‚ÌŠm•Û
+	// é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡ã®ç¢ºä¿
 	VertexNum = (cornerNum + 1) * (CylinderLength + 1);
 	VERTEX_3D* vertexArray = new VERTEX_3D[VertexNum];
 
-	// ƒCƒ“ƒfƒbƒNƒXƒoƒbƒtƒ@‚ÌŠm•Û
+	// ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ãƒãƒƒãƒ•ã‚¡ã®ç¢ºä¿
 	IndexNum = (2 + (cornerNum * 2)) * CylinderLength + (CylinderLength - 1) * 2;
 	WORD* indexArray = new WORD[IndexNum];
 
-	// ’¸“_ƒoƒbƒtƒ@‚Ö‚Ì’¸“_î•ñ‚Ì‘‚«‚İ
+	// é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡ã¸ã®é ‚ç‚¹æƒ…å ±ã®æ›¸ãè¾¼ã¿
 	float theta = 0.0f;
 	float addAngle = 2.0f * XM_PI / ((float)CylinderLength * 60.0f);
 	for (int y = 0; y < CylinderLength + 1; y++)
@@ -37,7 +37,7 @@ void MESH_CYlLINDER::Init()
 		}
 	}
 
-	// ’¸“_ƒCƒ“ƒfƒbƒNƒXƒoƒbƒtƒ@‚Ö’¸“_ƒCƒ“ƒfƒbƒNƒX‚Ì‘‚«‚İ
+	// é ‚ç‚¹ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ãƒãƒƒãƒ•ã‚¡ã¸é ‚ç‚¹ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ã®æ›¸ãè¾¼ã¿
 	int indexNum = 0;
 	int indexFlapX = cornerNum - 1;
 	int indexFlapY = CylinderLength - 1;
@@ -48,7 +48,7 @@ void MESH_CYlLINDER::Init()
 			indexArray[indexNum++] = WORD((cornerNum + 1) * (y + 1) + x);
 			indexArray[indexNum++] = WORD((cornerNum + 1) * y + x);
 
-			// k‘Şƒ|ƒŠƒSƒ“—p‚ÉƒCƒ“ƒfƒbƒNƒX‚Ì’Ç‰Á
+			// ç¸®é€€ãƒãƒªã‚´ãƒ³ç”¨ã«ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ã®è¿½åŠ 
 			if (x > indexFlapX && y < indexFlapY)
 			{
 				indexArray[indexNum++] = WORD((cornerNum + 1) * y + (cornerNum + 1) - 1);
@@ -58,7 +58,7 @@ void MESH_CYlLINDER::Init()
 	}
 
 
-	// ’¸“_ƒoƒbƒtƒ@¶¬
+	// é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡ç”Ÿæˆ
 	if (nullptr == VertexBuffer.get())
 	{
 		ID3D11Buffer* pVB = nullptr;
@@ -79,7 +79,7 @@ void MESH_CYlLINDER::Init()
 		VertexBuffer.reset(pVB);
 	}
 
-	// ƒCƒ“ƒfƒbƒNƒXƒoƒbƒtƒ@¶¬
+	// ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ãƒãƒƒãƒ•ã‚¡ç”Ÿæˆ
 	if (nullptr == IndexBuffer.get())
 	{
 		ID3D11Buffer* pIB = nullptr;
@@ -100,16 +100,16 @@ void MESH_CYlLINDER::Init()
 		IndexBuffer.reset(pIB);
 	}
 
-	// ƒƒ‚ƒŠ‰ğ•ú
+	// ãƒ¡ãƒ¢ãƒªè§£æ”¾
 	SAFE_DELETE_ARRAY(vertexArray);
 	SAFE_DELETE_ARRAY(indexArray);
 
-	// ƒgƒ‰ƒ“ƒXƒtƒH[ƒ€‰Šú‰»
+	// ãƒˆãƒ©ãƒ³ã‚¹ãƒ•ã‚©ãƒ¼ãƒ åˆæœŸåŒ–
 	Position	= XMFLOAT3(0.0f, 0.0f, 0.0f);
 	Rotation	= XMFLOAT3(0.0f, 0.0f, 0.0f);
 	Scaling		= XMFLOAT3(1.0f, 1.0f, 1.0f);
 
-	// ƒeƒNƒXƒ`ƒƒ‚Ìİ’è
+	// ãƒ†ã‚¯ã‚¹ãƒãƒ£ã®è¨­å®š
 	Texture.reset(new TEXTURE(string("field004.png")));
 }
 
@@ -149,14 +149,14 @@ void MESH_CYlLINDER::Draw()
 			}
 		}
 
-		CRenderer::SetVertexBuffers(VertexBuffer.get());	// ’¸“_ƒoƒbƒtƒ@İ’è
-		CRenderer::SetIndexBuffer(IndexBuffer.get());		// ƒCƒ“ƒfƒbƒNƒXƒoƒbƒtƒ@İ’è
+		CRenderer::SetVertexBuffers(VertexBuffer.get());	// é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡è¨­å®š
+		CRenderer::SetIndexBuffer(IndexBuffer.get());		// ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ãƒãƒƒãƒ•ã‚¡è¨­å®š
 
 		Texture.get()->Set_Texture();
 
-		CRenderer::GetDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);	// ƒgƒ|ƒƒWİ’è
+		CRenderer::GetDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);	// ãƒˆãƒãƒ­ã‚¸è¨­å®š
 
-		// ƒ|ƒŠƒSƒ“•`‰æ
+		// ãƒãƒªã‚´ãƒ³æç”»
 		CRenderer::GetDeviceContext()->DrawIndexed(IndexNum, 0, 0);
 	}
 
@@ -185,12 +185,12 @@ void MESH_CYlLINDER::Draw_DPP()
 		}
 	}
 
-	CRenderer::SetVertexBuffers(VertexBuffer.get());	// ’¸“_ƒoƒbƒtƒ@İ’è
-	CRenderer::SetIndexBuffer(IndexBuffer.get());		// ƒCƒ“ƒfƒbƒNƒXƒoƒbƒtƒ@İ’è
+	CRenderer::SetVertexBuffers(VertexBuffer.get());	// é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡è¨­å®š
+	CRenderer::SetIndexBuffer(IndexBuffer.get());		// ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ãƒãƒƒãƒ•ã‚¡è¨­å®š
 
-	CRenderer::GetDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);	// ƒgƒ|ƒƒWİ’è
+	CRenderer::GetDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);	// ãƒˆãƒãƒ­ã‚¸è¨­å®š
 
-	// ƒ|ƒŠƒSƒ“•`‰æ
+	// ãƒãƒªã‚´ãƒ³æç”»
 	CRenderer::GetDeviceContext()->DrawIndexed(IndexNum, 0, 0);
 }
 

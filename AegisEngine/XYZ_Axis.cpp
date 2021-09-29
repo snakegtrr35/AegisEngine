@@ -1,4 +1,4 @@
-#include	"XYZ_Axis.h"
+ï»¿#include	"XYZ_Axis.h"
 #include	"camera.h"
 #include	"Debug_Camera.h"
 #include	"manager.h"
@@ -23,7 +23,7 @@ AXIS::AXIS()
 			{ XMFLOAT3(0.8f, 0.0f, -0.2f), XMFLOAT3(0.0f, 1.0f, 0.0f), XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f), XMFLOAT2(0.0f, 0.0f) },
 		};
 
-		// ’¸“_ƒoƒbƒtƒ@‚ÌÝ’è
+		// é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡ã®è¨­å®š
 		{
 			HRESULT hr;
 
@@ -37,7 +37,7 @@ AXIS::AXIS()
 			bd.MiscFlags = 0;
 			bd.StructureByteStride = 0;
 
-			// ƒTƒuƒŠƒ\[ƒX‚ÌÝ’è
+			// ã‚µãƒ–ãƒªã‚½ãƒ¼ã‚¹ã®è¨­å®š
 			D3D11_SUBRESOURCE_DATA srd;
 			ZeroMemory(&srd, sizeof(D3D11_SUBRESOURCE_DATA));
 
@@ -45,7 +45,7 @@ AXIS::AXIS()
 			srd.SysMemPitch = 0;
 			srd.SysMemSlicePitch = 0;
 
-			// ’¸“_ƒoƒbƒtƒ@‚Ì¶¬
+			// é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡ã®ç”Ÿæˆ
 			hr = CRenderer::GetDevice()->CreateBuffer(&bd, &srd, &pVertexBuffer[0]);
 
 			if (FAILED(hr))
@@ -70,7 +70,7 @@ AXIS::AXIS()
 			{ XMFLOAT3(-0.2f, 0.8f, 0.0f), XMFLOAT3(0.0f, 1.0f, 0.0f), XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f), XMFLOAT2(0.0f, 0.0f) },
 		};
 
-		// ’¸“_ƒoƒbƒtƒ@‚ÌÝ’è
+		// é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡ã®è¨­å®š
 		{
 			HRESULT hr;
 
@@ -84,7 +84,7 @@ AXIS::AXIS()
 			bd.MiscFlags = 0;
 			bd.StructureByteStride = 0;
 
-			// ƒTƒuƒŠƒ\[ƒX‚ÌÝ’è
+			// ã‚µãƒ–ãƒªã‚½ãƒ¼ã‚¹ã®è¨­å®š
 			D3D11_SUBRESOURCE_DATA srd;
 			ZeroMemory(&srd, sizeof(D3D11_SUBRESOURCE_DATA));
 
@@ -92,7 +92,7 @@ AXIS::AXIS()
 			srd.SysMemPitch = 0;
 			srd.SysMemSlicePitch = 0;
 
-			// ’¸“_ƒoƒbƒtƒ@‚Ì¶¬
+			// é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡ã®ç”Ÿæˆ
 			hr = CRenderer::GetDevice()->CreateBuffer(&bd, &srd, &pVertexBuffer[1]);
 
 			if (FAILED(hr))
@@ -117,7 +117,7 @@ AXIS::AXIS()
 			{ XMFLOAT3(-0.2f, 0.0f, 0.8f), XMFLOAT3(0.0f, 1.0f, 0.0f), XMFLOAT4(0.0f, 0.0f, 1.0f, 1.0f), XMFLOAT2(0.0f, 0.0f) },
 		};
 
-		// ’¸“_ƒoƒbƒtƒ@‚ÌÝ’è
+		// é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡ã®è¨­å®š
 		{
 			HRESULT hr;
 
@@ -131,7 +131,7 @@ AXIS::AXIS()
 			bd.MiscFlags = 0;
 			bd.StructureByteStride = 0;
 
-			// ƒTƒuƒŠƒ\[ƒX‚ÌÝ’è
+			// ã‚µãƒ–ãƒªã‚½ãƒ¼ã‚¹ã®è¨­å®š
 			D3D11_SUBRESOURCE_DATA srd;
 			ZeroMemory(&srd, sizeof(D3D11_SUBRESOURCE_DATA));
 
@@ -139,7 +139,7 @@ AXIS::AXIS()
 			srd.SysMemPitch = 0;
 			srd.SysMemSlicePitch = 0;
 
-			// ’¸“_ƒoƒbƒtƒ@‚Ì¶¬
+			// é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡ã®ç”Ÿæˆ
 			hr = CRenderer::GetDevice()->CreateBuffer(&bd, &srd, &pVertexBuffer[2]);
 
 			if (FAILED(hr))
@@ -150,7 +150,7 @@ AXIS::AXIS()
 		}
 	}
 
-	// ƒCƒ“ƒfƒbƒNƒXƒoƒbƒtƒ@‚ÌÝ’è
+	// ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ãƒãƒƒãƒ•ã‚¡ã®è¨­å®š
 	if (nullptr == pIndexBuffer)
 	{
 		HRESULT hr;
@@ -197,10 +197,10 @@ void AXIS::Draw(void)
 	{
 		XMMATRIX world;
 
-		// “ü—ÍƒAƒZƒ“ƒuƒ‰‚ÉƒCƒ“ƒfƒbƒNƒXƒoƒbƒtƒ@‚ðÝ’è
+		// å…¥åŠ›ã‚¢ã‚»ãƒ³ãƒ–ãƒ©ã«ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ãƒãƒƒãƒ•ã‚¡ã‚’è¨­å®š
 		CRenderer::SetIndexBuffer(pIndexBuffer);
 
-		// ƒgƒ|ƒƒW‚ÌÝ’è
+		// ãƒˆãƒãƒ­ã‚¸ã®è¨­å®š
 		CRenderer::GetDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_LINESTRIP);
 
 		// 
@@ -208,16 +208,16 @@ void AXIS::Draw(void)
 
 		for (int i = 0; i < 3; i++)
 		{
-			// “ü—ÍƒAƒZƒ“ƒuƒ‰‚É’¸“_ƒoƒbƒtƒ@‚ðÝ’è
+			// å…¥åŠ›ã‚¢ã‚»ãƒ³ãƒ–ãƒ©ã«é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡ã‚’è¨­å®š
 			CRenderer::SetVertexBuffers(pVertexBuffer[i]);
 
-			// 3Dƒ}ƒgƒŠƒbƒNƒXÝ’è
+			// 3Dãƒžãƒˆãƒªãƒƒã‚¯ã‚¹è¨­å®š
 			{
 				world = XMMatrixIdentity();
 
-				world = XMMatrixScaling(Scaling.x, Scaling.y, Scaling.z);																						// Šg‘åk¬
-				world *= XMMatrixRotationRollPitchYaw(XMConvertToRadians(Rotation.x), XMConvertToRadians(Rotation.y), XMConvertToRadians(Rotation.z));			// ‰ñ“](ƒ[ƒ‹ƒsƒbƒ`ƒˆƒE)
-				//world *= XMMatrixTranslation(pos.x, pos.y, pos.z);																								// ˆÚ“®
+				world = XMMatrixScaling(Scaling.x, Scaling.y, Scaling.z);																						// æ‹¡å¤§ç¸®å°
+				world *= XMMatrixRotationRollPitchYaw(XMConvertToRadians(Rotation.x), XMConvertToRadians(Rotation.y), XMConvertToRadians(Rotation.z));			// å›žè»¢(ãƒ­ãƒ¼ãƒ«ãƒ”ãƒƒãƒãƒ¨ã‚¦)
+				//world *= XMMatrixTranslation(pos.x, pos.y, pos.z);																								// ç§»å‹•
 				world *= XMMatrixTranslation(Position.x, Position.y + 0.5f, Position.z);
 
 				const auto camera01 = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<CCamera>("camera");
@@ -236,7 +236,7 @@ void AXIS::Draw(void)
 			CRenderer::GetDeviceContext()->DrawIndexed(COUNT, 0, 0);
 		}
 
-		// ƒgƒ|ƒƒW‚ÌÝ’è
+		// ãƒˆãƒãƒ­ã‚¸ã®è¨­å®š
 		CRenderer::GetDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
 
 		CRenderer::Set_Shader();

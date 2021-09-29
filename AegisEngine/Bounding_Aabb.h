@@ -1,6 +1,6 @@
-/**
+ï»¿/**
  * @file Bounding_Aabb.h
- * @brief AABB‚Ìƒwƒbƒ_[ƒtƒ@ƒCƒ‹
+ * @brief AABBã®ãƒ˜ãƒƒãƒ€ãƒ¼ãƒ•ã‚¡ã‚¤ãƒ«
  */
 
 #pragma once
@@ -11,97 +11,97 @@
 #include	"Bounding.h"
 
  /**
- * @brief ƒoƒEƒ“ƒfƒBƒ“ƒOAABBƒNƒ‰ƒX
- * @details ‘SƒoƒEƒ“ƒfƒBƒ“ƒO‚ÌŠî’êƒNƒ‰ƒX
- * @note BOUNDINGƒNƒ‰ƒX}‚ğŒp³‚µ‚Ä‚¢‚Ü‚·
+ * @brief ãƒã‚¦ãƒ³ãƒ‡ã‚£ãƒ³ã‚°AABBã‚¯ãƒ©ã‚¹
+ * @details å…¨ãƒã‚¦ãƒ³ãƒ‡ã‚£ãƒ³ã‚°ã®åŸºåº•ã‚¯ãƒ©ã‚¹
+ * @note BOUNDINGã‚¯ãƒ©ã‚¹å›³ã‚’ç¶™æ‰¿ã—ã¦ã„ã¾ã™
  */
 class BOUNDING_AABB : public BOUNDING {
 private:
-	//! BOX‚Ì’¸“_ƒoƒbƒtƒ@
+	//! BOXã®é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡
 	unique_ptr<ID3D11Buffer, Release> pVertexBuffer;
-	//! Še•Ó‚Ì’·‚³
+	//! å„è¾ºã®é•·ã•
 	XMFLOAT3 Radius;
 
 	BoundingBox Aabb;
 
 public:
 	/**
-	* @brief ƒRƒ“ƒXƒgƒ‰ƒNƒ^
-	* @details ˆø”–³‚µƒRƒ“ƒXƒgƒ‰ƒNƒ^
+	* @brief ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
+	* @details å¼•æ•°ç„¡ã—ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
 	*/
 	BOUNDING_AABB() : Radius(XMFLOAT3(0.5f, 0.5f, 0.5f)) {}
 
 	/**
-	* @brief ƒfƒXƒgƒ‰ƒNƒ^
-	* @details ƒfƒXƒgƒ‰ƒNƒ^
+	* @brief ãƒ‡ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
+	* @details ãƒ‡ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
 	*/
 	~BOUNDING_AABB();
 
 	/**
-	* @brief ‰Šú‰»ŠÖ”
-	* @details ‰Šú‰»‚·‚éŠÖ”
+	* @brief åˆæœŸåŒ–é–¢æ•°
+	* @details åˆæœŸåŒ–ã™ã‚‹é–¢æ•°
 	*/
 	void Init() override;
 
 	/**
-	* @brief •`‰æŠÖ”
-	* @details •`‰æ‚·‚éŠÖ”
+	* @brief æç”»é–¢æ•°
+	* @details æç”»ã™ã‚‹é–¢æ•°
 	*/
 	void Draw() override;
 
 	/**
-	* @brief •`‰æ(Depth-pre-pass)ŠÖ”
-	* @details Depth-pre-pass‚ğ‚·‚éŠÖ”
+	* @brief æç”»(Depth-pre-pass)é–¢æ•°
+	* @details Depth-pre-passã‚’ã™ã‚‹é–¢æ•°
 	*/
 	void Draw_DPP() override {}
 
 	/**
-	* @brief XVŠÖ”
-	* @details XV‚·‚éŠÖ”
+	* @brief æ›´æ–°é–¢æ•°
+	* @details æ›´æ–°ã™ã‚‹é–¢æ•°
 	*/
 	void Update(float delta_time) override;
 
 	/**
-	* @brief I—¹ˆ—ŠÖ”
-	* @details I—¹ˆ—‚ğ‚·‚éŠÖ”
+	* @brief çµ‚äº†å‡¦ç†é–¢æ•°
+	* @details çµ‚äº†å‡¦ç†ã‚’ã™ã‚‹é–¢æ•°
 	*/
 	void Uninit() override;
 
 	/**
-	* @brief ƒCƒ“ƒXƒyƒNƒ^[‚Å‚Ì•`‰æŠÖ”
-	* @details ƒCƒ“ƒXƒyƒNƒ^[‚Å‚Ì•`‰æ‚ğ‚·‚éŠÖ”
+	* @brief ã‚¤ãƒ³ã‚¹ãƒšã‚¯ã‚¿ãƒ¼ã§ã®æç”»é–¢æ•°
+	* @details ã‚¤ãƒ³ã‚¹ãƒšã‚¯ã‚¿ãƒ¼ã§ã®æç”»ã‚’ã™ã‚‹é–¢æ•°
 	*/
 	void Draw_Inspector() override;
 
 	/**
-	* @brief ’¸“_ƒoƒbƒtƒ@‚ÌXVŠÖ”
-	* @details ’¸“_ƒoƒbƒtƒ@‚ÌXV‚ğ‚·‚éŠÖ”
+	* @brief é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡ã®æ›´æ–°é–¢æ•°
+	* @details é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡ã®æ›´æ–°ã‚’ã™ã‚‹é–¢æ•°
 	*/
 	void OverWrite() override;
 
 	/**
-	* @brief Še•Ó‚Ì’·‚³‚ğİ’è‚·‚éŠÖ”
-	* @param XMFLOAT3& ’·‚³
+	* @brief å„è¾ºã®é•·ã•ã‚’è¨­å®šã™ã‚‹é–¢æ•°
+	* @param XMFLOAT3& é•·ã•
 	*/
 	void Set_Radius(const XMFLOAT3& radius);
 
 	/**
-	* @brief Še•Ó‚Ì’·‚³‚ğİ’è‚·‚éŠÖ”
-	* @param XMFLOAT3* ’·‚³
+	* @brief å„è¾ºã®é•·ã•ã‚’è¨­å®šã™ã‚‹é–¢æ•°
+	* @param XMFLOAT3* é•·ã•
 	*/
 	void Set_Radius(const XMFLOAT3* radius);
 
 	/**
-	* @brief Še•Ó‚Ì’·‚³‚ğæ“¾‚·‚éŠÖ”
-	* @return XMFLOAT3* ’·‚³
-	* @details Še•Ó‚Ì’·‚³‚ğæ“¾‚·‚éŠÖ”
+	* @brief å„è¾ºã®é•·ã•ã‚’å–å¾—ã™ã‚‹é–¢æ•°
+	* @return XMFLOAT3* é•·ã•
+	* @details å„è¾ºã®é•·ã•ã‚’å–å¾—ã™ã‚‹é–¢æ•°
 	*/
 	XMFLOAT3* Get_Radius();
 
 	/**
-	* @brief ƒoƒEƒ“ƒfƒBƒ“ƒOAABB(“–‚½‚è”»’èê—p)‚ğæ“¾‚·‚éŠÖ”
-	* @return BoundingBox ƒoƒEƒ“ƒfƒBƒ“ƒOAABB(“–‚½‚è”»’èê—p)
-	* @details ƒoƒEƒ“ƒfƒBƒ“ƒOAABB(“–‚½‚è”»’èê—p)‚ğæ“¾‚·‚éŠÖ”
+	* @brief ãƒã‚¦ãƒ³ãƒ‡ã‚£ãƒ³ã‚°AABB(å½“ãŸã‚Šåˆ¤å®šå°‚ç”¨)ã‚’å–å¾—ã™ã‚‹é–¢æ•°
+	* @return BoundingBox ãƒã‚¦ãƒ³ãƒ‡ã‚£ãƒ³ã‚°AABB(å½“ãŸã‚Šåˆ¤å®šå°‚ç”¨)
+	* @details ãƒã‚¦ãƒ³ãƒ‡ã‚£ãƒ³ã‚°AABB(å½“ãŸã‚Šåˆ¤å®šå°‚ç”¨)ã‚’å–å¾—ã™ã‚‹é–¢æ•°
 	*/
 	const BoundingBox& Get_Collition();
 
@@ -113,7 +113,7 @@ public:
 	}
 
 	/**
-	* @brief ’¸“_ƒoƒbƒtƒ@‚ÌXVŠÖ”
+	* @brief é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡ã®æ›´æ–°é–¢æ•°
 	* @param BoundingBox AABB
 	*/
 	void OverWrite(BoundingBox aabb);

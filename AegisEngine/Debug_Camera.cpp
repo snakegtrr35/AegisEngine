@@ -1,4 +1,4 @@
-#include	"Renderer.h"
+ï»¿#include	"Renderer.h"
 #include	"Input.h"
 #include	"Debug_Camera.h"
 #include	"manager.h"
@@ -23,7 +23,7 @@ DEBUG_CAMERA::DEBUG_CAMERA()
 	Right = XMVectorSet(1.0f, 0.f, 0.f, 0.f);
 
 
-	// O‚Â‚ÌƒxƒNƒgƒ‹‚ğ‚’¼‚É‚·‚é
+	// ä¸‰ã¤ã®ãƒ™ã‚¯ãƒˆãƒ«ã‚’å‚ç›´ã«ã™ã‚‹
 	Right = XMVector3Cross(Up, Front);
 	Right = XMVector3Normalize(Right);
 
@@ -35,7 +35,7 @@ DEBUG_CAMERA::DEBUG_CAMERA()
 	//Pos = At - Front * Lenght;
 	Pos = At - (Front * Lenght - Up * 4.0f);
 
-	// ƒrƒ…[ƒ|[ƒg‚Ìİ’èİ’è
+	// ãƒ“ãƒ¥ãƒ¼ãƒãƒ¼ãƒˆã®è¨­å®šè¨­å®š
 	Viewport.left = 0;
 	Viewport.top = 0;
 	Viewport.right = SCREEN_WIDTH;
@@ -62,7 +62,7 @@ void DEBUG_CAMERA::Init()
 	Right = XMVectorSet(1.0f, 0.f, 0.f, 0.f);
 
 
-	// O‚Â‚ÌƒxƒNƒgƒ‹‚ğ‚’¼‚É‚·‚é
+	// ä¸‰ã¤ã®ãƒ™ã‚¯ãƒˆãƒ«ã‚’å‚ç›´ã«ã™ã‚‹
 	Right = XMVector3Cross(Up, Front);
 	Right = XMVector3Normalize(Right);
 
@@ -74,7 +74,7 @@ void DEBUG_CAMERA::Init()
 	//Pos = At - Front * Lenght;
 	Pos = At - (Front * Lenght - Up * 4.0f);
 
-	// ƒrƒ…[ƒ|[ƒg‚Ìİ’èİ’è
+	// ãƒ“ãƒ¥ãƒ¼ãƒãƒ¼ãƒˆã®è¨­å®šè¨­å®š
 	Viewport.left = 0;
 	Viewport.top = 0;
 	Viewport.right = SCREEN_WIDTH;
@@ -120,7 +120,7 @@ void DEBUG_CAMERA::Update(float delta_time)
 
 	r = DirectX::XMVector3Normalize(r);
 
-	// ‰ñ“]
+	// å›è»¢
 	if (flag2 && MOUSE::Get_Mouse()->Get_Move_Flag())
 	{
 		XMMATRIX mtxRotation;
@@ -161,7 +161,7 @@ void DEBUG_CAMERA::Update(float delta_time)
 		Pos = At - (Front * Lenght - Up * 4.0f);
 	}
 
-	// ˆÚ“®
+	// ç§»å‹•
 	if (MoveEnable)
 	{
 		if (KEYBOARD::Press_Keyboard(VK_W))
@@ -218,7 +218,7 @@ void DEBUG_CAMERA::Update(float delta_time)
 
 void DEBUG_CAMERA::Draw()
 {
-	// ƒrƒ…[ƒ|[ƒgİ’è
+	// ãƒ“ãƒ¥ãƒ¼ãƒãƒ¼ãƒˆè¨­å®š
 	D3D11_VIEWPORT dxViewport;
 	dxViewport.Width = (float)(Viewport.right - Viewport.left);
 	dxViewport.Height = (float)(Viewport.bottom - Viewport.top);
@@ -227,10 +227,10 @@ void DEBUG_CAMERA::Draw()
 	dxViewport.TopLeftX = (float)Viewport.left;
 	dxViewport.TopLeftY = (float)Viewport.top;
 
-	// ƒrƒ…[ƒ}ƒgƒŠƒNƒXİ’è
+	// ãƒ“ãƒ¥ãƒ¼ãƒãƒˆãƒªã‚¯ã‚¹è¨­å®š
 	m_ViewMatrix = XMMatrixLookAtLH(Pos, At, Up);
 
-	// ƒvƒƒWƒFƒNƒVƒ‡ƒ“ƒ}ƒgƒŠƒNƒXİ’è
+	// ãƒ—ãƒ­ã‚¸ã‚§ã‚¯ã‚·ãƒ§ãƒ³ãƒãƒˆãƒªã‚¯ã‚¹è¨­å®š
 	m_ProjectionMatrix = XMMatrixPerspectiveFovLH(XMConvertToRadians(Viewing_Angle), dxViewport.Width / dxViewport.Height, 0.001f, 1000.0f);
 }
 

@@ -1,6 +1,6 @@
-/**
+ï»¿/**
  * @file Mesh_Dome.h
- * @brief ƒƒbƒVƒ…ƒh[ƒ€ƒwƒbƒ_[ƒtƒ@ƒCƒ‹
+ * @brief ãƒ¡ãƒƒã‚·ãƒ¥ãƒ‰ãƒ¼ãƒ ãƒ˜ãƒƒãƒ€ãƒ¼ãƒ•ã‚¡ã‚¤ãƒ«
  */
 
 #pragma once
@@ -14,65 +14,65 @@ class TEXTURE;
 class MESH_DOOM :public GAME_OBJECT {
 private:
 
-	//! ”¼Œa
+	//! åŠå¾„
 	float								Radius;
 
-	//! ’¸“_”
+	//! é ‚ç‚¹æ•°
 	UINT	VertexNum;
 
-	//! ƒCƒ“ƒfƒbƒNƒX”
+	//! ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹æ•°
 	UINT								IndexNum;
 
-	//! ’¸“_ƒoƒbƒtƒ@
+	//! é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡
 	unique_ptr<ID3D11Buffer, Release>	VertexBuffer;	
 
-	//! ƒCƒ“ƒfƒbƒNƒXƒoƒbƒtƒ@
+	//! ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ãƒãƒƒãƒ•ã‚¡
 	unique_ptr<ID3D11Buffer, Release>	IndexBuffer;	
 
-	//! ƒeƒNƒXƒ`ƒƒ
+	//! ãƒ†ã‚¯ã‚¹ãƒãƒ£
 	unique_ptr<TEXTURE>					Texture;						
 
 public:
 
 	/**
-	* @brief ƒRƒ“ƒXƒgƒ‰ƒNƒ^
-	* @details ˆø”–³‚µƒRƒ“ƒXƒgƒ‰ƒNƒ^
+	* @brief ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
+	* @details å¼•æ•°ç„¡ã—ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
 	*/
 	MESH_DOOM();
 
 	/**
-	* @brief ƒfƒXƒgƒ‰ƒNƒ^
-	* @details ƒfƒXƒgƒ‰ƒNƒ^
+	* @brief ãƒ‡ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
+	* @details ãƒ‡ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
 	*/
 	~MESH_DOOM() { Uninit(); }
 
 	/**
-	* @brief ‰Šú‰»ŠÖ”
-	* @details ‰Šú‰»‚·‚éŠÖ”
+	* @brief åˆæœŸåŒ–é–¢æ•°
+	* @details åˆæœŸåŒ–ã™ã‚‹é–¢æ•°
 	*/
 	void Init() override;
 
 	/**
-	* @brief •`‰æŠÖ”
-	* @details •`‰æ‚·‚éŠÖ”
+	* @brief æç”»é–¢æ•°
+	* @details æç”»ã™ã‚‹é–¢æ•°
 	*/
 	void Draw() override;
 
 	/**
-	* @brief •`‰æ(Depth-pre-pass)ŠÖ”
-	* @details Depth-pre-pass‚ğ‚·‚éŠÖ”
+	* @brief æç”»(Depth-pre-pass)é–¢æ•°
+	* @details Depth-pre-passã‚’ã™ã‚‹é–¢æ•°
 	*/
 	void Draw_DPP() override;
 
 	/**
-	* @brief XVŠÖ”
-	* @details XV‚·‚éŠÖ”
+	* @brief æ›´æ–°é–¢æ•°
+	* @details æ›´æ–°ã™ã‚‹é–¢æ•°
 	*/
 	void Update(float delta_time) override;
 
 	/**
-	* @brief I—¹ˆ—ŠÖ”
-	* @details I—¹ˆ—‚ğ‚·‚éŠÖ”
+	* @brief çµ‚äº†å‡¦ç†é–¢æ•°
+	* @details çµ‚äº†å‡¦ç†ã‚’ã™ã‚‹é–¢æ•°
 	*/
 	void Uninit() override;
 

@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 
 #ifndef MODEL_MANEGER_H
 #define MODEL_MANEGER_H
@@ -12,7 +12,7 @@
 #include	<assimp/matrix4x4.h>
 
 struct MODEL_FILE {
-	string Path;		//! ƒ‚ƒfƒ‹ƒtƒ@ƒCƒ‹‚Ìƒtƒ@ƒCƒ‹ƒpƒX
+	string Path;		//! ãƒ¢ãƒ‡ãƒ«ãƒ•ã‚¡ã‚¤ãƒ«ã®ãƒ•ã‚¡ã‚¤ãƒ«ãƒ‘ã‚¹
 
 	MODEL_FILE() {}
 
@@ -23,8 +23,8 @@ struct MODEL_FILE {
 };
 
 struct MODEL_DATA {
-	MESHS Meshes;			//! ƒƒbƒVƒ…
-	UINT Cnt;				//! QÆ‰ñ”
+	MESHS Meshes;			//! ãƒ¡ãƒƒã‚·ãƒ¥
+	UINT Cnt;				//! å‚ç…§å›æ•°
 
 	MODEL_DATA() : Cnt(0) {}
 
@@ -41,10 +41,10 @@ private:
 
 	static unique_ptr<MODEL_MANEGER> ModelManager;
 
-	unordered_map<size_t, MODEL_FILE> ModelFile;			//! ƒ‚ƒfƒ‹‚Ìƒtƒ@ƒCƒ‹ƒf[ƒ^
-	unordered_map<size_t, MODEL_DATA> ModelData;			//! ƒ‚ƒfƒ‹ƒf[ƒ^
+	unordered_map<size_t, MODEL_FILE> ModelFile;			//! ãƒ¢ãƒ‡ãƒ«ã®ãƒ•ã‚¡ã‚¤ãƒ«ãƒ‡ãƒ¼ã‚¿
+	unordered_map<size_t, MODEL_DATA> ModelData;			//! ãƒ¢ãƒ‡ãƒ«ãƒ‡ãƒ¼ã‚¿
 
-	void Load(const bool flag);								// ƒ‚ƒfƒ‹‚Ì“Ç‚İ‚İ
+	void Load(const bool flag);								// ãƒ¢ãƒ‡ãƒ«ã®èª­ã¿è¾¼ã¿
 
 	void processNode(aiNode* node, const aiScene* scene, vector<MESHS>& mesh_map, vector<TEXTURE_S>& textures_loaded);
 	MESHS processMesh(aiMesh* mesh, aiNode* node, const aiScene* scene, vector<TEXTURE_S>& textures_loaded);

@@ -1,4 +1,4 @@
-#include	"Scene_Manager.h"
+﻿#include	"Scene_Manager.h"
 #include	"Scene.h"
 
 unique_ptr<SCENE> SCENE_MANAGER::pScene;

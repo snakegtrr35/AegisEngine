@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 
 #ifndef MODEL_H
 #define MODEL_H
@@ -15,66 +15,66 @@
 class MODEL : public COMPONENT {
 private:
 
-	//! ƒtƒ@ƒCƒ‹–¼
+	//! ãƒ•ã‚¡ã‚¤ãƒ«å
 	string FileName;
 
-	//! ƒtƒ@ƒCƒ‹–¼‚ÌƒnƒbƒVƒ…’l
+	//! ãƒ•ã‚¡ã‚¤ãƒ«åã®ãƒãƒƒã‚·ãƒ¥å€¤
 	size_t Key;
 
 public:
 
 	/**
-	* @brief ƒRƒ“ƒXƒgƒ‰ƒNƒ^
-	* @details ˆø”–³‚µƒRƒ“ƒXƒgƒ‰ƒNƒ^
+	* @brief ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
+	* @details å¼•æ•°ç„¡ã—ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
 	*/
 	MODEL();
 
 	/**
-	* @brief ƒfƒXƒgƒ‰ƒNƒ^
-	* @details ƒfƒXƒgƒ‰ƒNƒ^
+	* @brief ãƒ‡ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
+	* @details ãƒ‡ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
 	*/
 	~MODEL() { Uninit(); };
 
 	/**
-	* @brief ‰Šú‰»ŠÖ”
-	* @details ‰Šú‰»‚·‚éŠÖ”
+	* @brief åˆæœŸåŒ–é–¢æ•°
+	* @details åˆæœŸåŒ–ã™ã‚‹é–¢æ•°
 	*/
 	void Init() override;
 
 	/**
-	* @brief •`‰æŠÖ”
-	* @details •`‰æ‚·‚éŠÖ”
+	* @brief æç”»é–¢æ•°
+	* @details æç”»ã™ã‚‹é–¢æ•°
 	*/
 	void Draw() override;
 
 	/**
-	* @brief •`‰æ(Depth-pre-pass)ŠÖ”
-	* @details Depth-pre-pass‚ğ‚·‚éŠÖ”
+	* @brief æç”»(Depth-pre-pass)é–¢æ•°
+	* @details Depth-pre-passã‚’ã™ã‚‹é–¢æ•°
 	*/
 	void Draw_DPP() override;
 
 	/**
-	* @brief XVŠÖ”
-	* @details XV‚·‚éŠÖ”
+	* @brief æ›´æ–°é–¢æ•°
+	* @details æ›´æ–°ã™ã‚‹é–¢æ•°
 	*/
 	void Update(float delta_time) override;
 
 	/**
-	* @brief I—¹ˆ—ŠÖ”
-	* @details I—¹ˆ—‚ğ‚·‚éŠÖ”
+	* @brief çµ‚äº†å‡¦ç†é–¢æ•°
+	* @details çµ‚äº†å‡¦ç†ã‚’ã™ã‚‹é–¢æ•°
 	*/
 	void Uninit() override;
 
 	/**
-	* @brief ƒCƒ“ƒXƒyƒNƒ^[‚Å‚Ì•`‰æŠÖ”
-	* @details ƒCƒ“ƒXƒyƒNƒ^[‚Å‚Ì•`‰æ‚ğ‚·‚éŠÖ”
+	* @brief ã‚¤ãƒ³ã‚¹ãƒšã‚¯ã‚¿ãƒ¼ã§ã®æç”»é–¢æ•°
+	* @details ã‚¤ãƒ³ã‚¹ãƒšã‚¯ã‚¿ãƒ¼ã§ã®æç”»ã‚’ã™ã‚‹é–¢æ•°
 	*/
 	void Draw_Inspector() override;
 
-	// ƒ‚ƒfƒ‹–¼‚Ìİ’è
+	// ãƒ¢ãƒ‡ãƒ«åã®è¨­å®š
 	void Set_Model_Name(const string& file_name);	
 
-	// ƒ‚ƒfƒ‹–¼‚Ìæ“¾
+	// ãƒ¢ãƒ‡ãƒ«åã®å–å¾—
 	const string& Get_Model_Name();
 
 	template<class Archive>

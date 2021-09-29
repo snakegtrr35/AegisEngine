@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 
 #ifndef SCORE_H
 #define SCORE_H
@@ -11,14 +11,14 @@ class SCORE : public GAME_OBJECT {
 private:
 	SPRITE_ANIMATION* Number;
 
-	int Score;								// ƒXƒRƒA
-	int NowScore;							// Œ»İ‚ÌƒXƒRƒA
-	int OldScore;							// ‚ÌƒXƒRƒA
-	unsigned int Additional;				// ‘‰Á—Ê
-	unsigned char Digit;					// Œ…”
+	int Score;								// ã‚¹ã‚³ã‚¢
+	int NowScore;							// ç¾åœ¨ã®ã‚¹ã‚³ã‚¢
+	int OldScore;							// ã®ã‚¹ã‚³ã‚¢
+	unsigned int Additional;				// å¢—åŠ é‡
+	unsigned char Digit;					// æ¡æ•°
 
-	static const unsigned int MaxScore;		// ƒXƒRƒA‚ÌÅ‘å’l
-	unsigned short WaitFrame;				//	‘Ò‚¿ƒtƒŒ[ƒ€
+	static const unsigned int MaxScore;		// ã‚¹ã‚³ã‚¢ã®æœ€å¤§å€¤
+	unsigned short WaitFrame;				//	å¾…ã¡ãƒ•ãƒ¬ãƒ¼ãƒ 
 
 	bool Flag;
 

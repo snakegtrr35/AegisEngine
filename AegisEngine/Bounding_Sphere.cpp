@@ -1,4 +1,4 @@
-#include	"Bounding_Sphere.h"
+ï»¿#include	"Bounding_Sphere.h"
 #include	"camera.h"
 #include	"Debug_Camera.h"
 #include	"manager.h"
@@ -20,7 +20,7 @@ void BOUNDING_SHPERE::Init()
 		Sphere.Transform(Sphere, matrix);
 	}
 
-	// ’¸“_ƒoƒbƒtƒ@‚Ìİ’è
+	// é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡ã®è¨­å®š
 	if (nullptr == pVertexBuffer.get())
 	{
 		const UINT cnt = 20 * max((UINT)1, (UINT)Radius);
@@ -43,7 +43,7 @@ void BOUNDING_SHPERE::Init()
 			vertex[i].TexCoord = XMFLOAT2(0.0f, 0.0f);
 		}
 
-		// ’¸“_ƒoƒbƒtƒ@‚Ìİ’è
+		// é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡ã®è¨­å®š
 		{
 			ID3D11Buffer* buffer;
 
@@ -68,7 +68,7 @@ void BOUNDING_SHPERE::Init()
 		}
 	}
 
-	// ƒCƒ“ƒfƒbƒNƒXƒoƒbƒtƒ@‚Ìİ’è
+	// ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ãƒãƒƒãƒ•ã‚¡ã®è¨­å®š
 	if (nullptr == pIndexBuffer.get())
 	{
 		const UINT cnt = 20 * max((UINT)1, (UINT)Radius);
@@ -88,7 +88,7 @@ void BOUNDING_SHPERE::Init()
 			index_array[i * 2 + 1] = (WORD)((i + 1) % cnt);
 		}
 
-		// ƒCƒ“ƒfƒbƒNƒXƒoƒbƒtƒ@‚Ìİ’è
+		// ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ãƒãƒƒãƒ•ã‚¡ã®è¨­å®š
 		{
 			ID3D11Buffer* buffer;
 
@@ -119,13 +119,13 @@ void BOUNDING_SHPERE::Draw()
 {
 	//if (false == CManager::Get_Instance()->Get_ShadowMap()->Get_Enable())
 	{
-		// “ü—ÍƒAƒZƒ“ƒuƒ‰‚É’¸“_ƒoƒbƒtƒ@‚ğİ’è
+		// å…¥åŠ›ã‚¢ã‚»ãƒ³ãƒ–ãƒ©ã«é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡ã‚’è¨­å®š
 		CRenderer::SetVertexBuffers(pVertexBuffer.get());
 
-		// “ü—ÍƒAƒZƒ“ƒuƒ‰‚ÉƒCƒ“ƒfƒbƒNƒXƒoƒbƒtƒ@‚ğİ’è
+		// å…¥åŠ›ã‚¢ã‚»ãƒ³ãƒ–ãƒ©ã«ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ãƒãƒƒãƒ•ã‚¡ã‚’è¨­å®š
 		CRenderer::SetIndexBuffer(pIndexBuffer.get());
 
-		// ƒgƒ|ƒƒW‚Ìİ’è
+		// ãƒˆãƒãƒ­ã‚¸ã®è¨­å®š
 		CRenderer::GetDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_LINESTRIP);
 
 		CRenderer::Set_Shader(SHADER_INDEX_V::DEFAULT, SHADER_INDEX_P::NO_TEXTURE);
@@ -183,7 +183,7 @@ const BoundingSphere& BOUNDING_SHPERE::Get_Collition()
 
 void BOUNDING_SHPERE::Draw_Ring(const XMFLOAT3& rotation)
 {
-	// 3Dƒ}ƒgƒŠƒbƒNƒXİ’è
+	// 3Dãƒãƒˆãƒªãƒƒã‚¯ã‚¹è¨­å®š
 	{
 		XMFLOAT3 pos = *Owner.lock()->Get_Position();
 
@@ -215,7 +215,7 @@ void BOUNDING_SHPERE::OverWrite()
 {
 	Color = Default_Color;
 
-	// ’¸“_ƒoƒbƒtƒ@‚Ìİ’è
+	// é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡ã®è¨­å®š
 	{
 		const UINT cnt = 20 * max((UINT)1, (UINT)Radius);
 
@@ -237,7 +237,7 @@ void BOUNDING_SHPERE::OverWrite()
 			vertex[i].TexCoord = XMFLOAT2(0.0f, 0.0f);
 		}
 
-		// ’¸“_ƒoƒbƒtƒ@‚Ìİ’è
+		// é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡ã®è¨­å®š
 		{
 			ID3D11Buffer* buffer;
 
@@ -262,7 +262,7 @@ void BOUNDING_SHPERE::OverWrite()
 		}
 	}
 
-	// ƒCƒ“ƒfƒbƒNƒXƒoƒbƒtƒ@‚Ìİ’è
+	// ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ãƒãƒƒãƒ•ã‚¡ã®è¨­å®š
 	{
 		const UINT cnt = 20 * max((UINT)1, (UINT)Radius);
 
@@ -281,7 +281,7 @@ void BOUNDING_SHPERE::OverWrite()
 			index_array[i * 2 + 1] = (WORD)((i + 1) % cnt);
 		}
 
-		// ƒCƒ“ƒfƒbƒNƒXƒoƒbƒtƒ@‚Ìİ’è
+		// ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ãƒãƒƒãƒ•ã‚¡ã®è¨­å®š
 		{
 			ID3D11Buffer* buffer;
 
@@ -312,7 +312,7 @@ void BOUNDING_SHPERE::OverWrite()
 
 void BOUNDING_SHPERE::Draw_Inspector()
 {
-	ImGui::Text((char*)u8"ƒRƒŠƒWƒ‡ƒ“(‹…)");
+	ImGui::Text((char*)u8"ã‚³ãƒªã‚¸ãƒ§ãƒ³(çƒ)");
 
 	COMPONENT::Draw_Inspector();
 

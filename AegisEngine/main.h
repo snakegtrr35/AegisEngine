@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 
 #ifndef MAIN_H
 #define MAIN_H
@@ -17,11 +17,11 @@
 #pragma comment (lib, "winmm.lib")
 
 
-#define SCREEN_WIDTH	(1920)			// ƒEƒCƒ“ƒhƒE‚Ì•
-#define SCREEN_HEIGHT	(1080)			// ƒEƒCƒ“ƒhƒE‚Ì‚‚³
+#define SCREEN_WIDTH	(1920)			// ã‚¦ã‚¤ãƒ³ãƒ‰ã‚¦ã®å¹…
+#define SCREEN_HEIGHT	(1080)			// ã‚¦ã‚¤ãƒ³ãƒ‰ã‚¦ã®é«˜ã•
 
-//#define SCREEN_WIDTH	(1280)			// ƒEƒCƒ“ƒhƒE‚Ì•
-//#define SCREEN_HEIGHT	(720)			// ƒEƒCƒ“ƒhƒE‚Ì‚‚³
+//#define SCREEN_WIDTH	(1280)			// ã‚¦ã‚¤ãƒ³ãƒ‰ã‚¦ã®å¹…
+//#define SCREEN_HEIGHT	(720)			// ã‚¦ã‚¤ãƒ³ãƒ‰ã‚¦ã®é«˜ã•
 
 HWND GetWindow();
 

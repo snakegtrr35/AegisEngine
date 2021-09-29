@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 
 #ifndef  POLYGON_3D_H
 #define POLYGON_3D_H
@@ -14,10 +14,10 @@ struct POLYGOM {
 
 class POLYGON_3D : public GAME_OBJECT {
 private:
-	ID3D11Buffer* pVertexBuffer;		// ’¸“_ƒoƒbƒtƒ@
-	unique_ptr<TEXTURE> Texture;		// ƒeƒNƒXƒ`ƒƒ
+	ID3D11Buffer* pVertexBuffer;		// é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡
+	unique_ptr<TEXTURE> Texture;		// ãƒ†ã‚¯ã‚¹ãƒãƒ£
 
-	XMFLOAT3 XYZ;						// •‚Æ‚‚³‚Æ‰œs‚«
+	XMFLOAT3 XYZ;						// å¹…ã¨é«˜ã•ã¨å¥¥è¡Œã
 
 protected:
 
@@ -25,8 +25,8 @@ protected:
 public:
 	POLYGON_3D();
 	//========================================
-	// position : ’†SÀ•W
-	// wh : •‚Æ‚‚³
+	// position : ä¸­å¿ƒåº§æ¨™
+	// wh : å¹…ã¨é«˜ã•
 	//========================================
 	POLYGON_3D(XMFLOAT3 position, XMFLOAT3 xyz);
 	~POLYGON_3D();
@@ -37,10 +37,10 @@ public:
 	void Update(float delta_time) override;
 	void Uninit(void) override;
 
-	void SetPosition(const XMFLOAT3 position);					// ƒ|ƒWƒVƒ‡ƒ“‚Ìİ’è
-	void SetXYZ(const XMFLOAT3 xyz);							// •‚Æ‚‚³‚Ìİ’è
-	void SetScaling(XMFLOAT3 scaling);							// Šg‘åk¬‚Ì’l‚Ìİ’è
-	void SetTexture(const string& const file_name);			// ƒeƒNƒXƒ`ƒƒ‚Ìİ’è
+	void SetPosition(const XMFLOAT3 position);					// ãƒã‚¸ã‚·ãƒ§ãƒ³ã®è¨­å®š
+	void SetXYZ(const XMFLOAT3 xyz);							// å¹…ã¨é«˜ã•ã®è¨­å®š
+	void SetScaling(XMFLOAT3 scaling);							// æ‹¡å¤§ç¸®å°ã®å€¤ã®è¨­å®š
+	void SetTexture(const string& const file_name);			// ãƒ†ã‚¯ã‚¹ãƒãƒ£ã®è¨­å®š
 
 	XMFLOAT3* const Get_Position();
 	XMFLOAT3* const Get_Rotation();

@@ -1,4 +1,4 @@
-#include	"Collision.h"
+﻿#include	"Collision.h"
 
 bool Collision_HitCircle(const CIRCLE* pA, const CIRCLE* pB)
 {

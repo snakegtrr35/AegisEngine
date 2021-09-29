@@ -1,6 +1,6 @@
-/**
+ï»¿/**
  * @file Mesh_Cylinder.h
- * @brief ƒƒbƒVƒ…ƒVƒŠƒ“ƒ_[‚Ìƒwƒbƒ_[ƒtƒ@ƒCƒ‹
+ * @brief ãƒ¡ãƒƒã‚·ãƒ¥ã‚·ãƒªãƒ³ãƒ€ãƒ¼ã®ãƒ˜ãƒƒãƒ€ãƒ¼ãƒ•ã‚¡ã‚¤ãƒ«
  */
 
 #pragma once
@@ -19,51 +19,51 @@ private:
 	unsigned int	VertexNum;
 	unsigned int	IndexNum;
 
-	unique_ptr<ID3D11Buffer, Release>	VertexBuffer;	// ’¸“_ƒoƒbƒtƒ@
-	unique_ptr<ID3D11Buffer, Release>	IndexBuffer;	// ƒCƒ“ƒfƒbƒNƒXƒoƒbƒtƒ@
-	unique_ptr<TEXTURE> Texture;						// ƒeƒNƒXƒ`ƒƒ
+	unique_ptr<ID3D11Buffer, Release>	VertexBuffer;	// é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡
+	unique_ptr<ID3D11Buffer, Release>	IndexBuffer;	// ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ãƒãƒƒãƒ•ã‚¡
+	unique_ptr<TEXTURE> Texture;						// ãƒ†ã‚¯ã‚¹ãƒãƒ£
 
 public:
 
 	/**
-	* @brief ƒRƒ“ƒXƒgƒ‰ƒNƒ^
-	* @details ˆø”–³‚µƒRƒ“ƒXƒgƒ‰ƒNƒ^
+	* @brief ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
+	* @details å¼•æ•°ç„¡ã—ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
 	*/
 	MESH_CYlLINDER() : Radius(45.0f), CylinderLength(7) {}
 
 	/**
-	* @brief ƒfƒXƒgƒ‰ƒNƒ^
-	* @details ƒfƒXƒgƒ‰ƒNƒ^
+	* @brief ãƒ‡ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
+	* @details ãƒ‡ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
 	*/
 	~MESH_CYlLINDER() {}
 
 	/**
-	* @brief ‰Šú‰»ŠÖ”
-	* @details ‰Šú‰»‚·‚éŠÖ”
+	* @brief åˆæœŸåŒ–é–¢æ•°
+	* @details åˆæœŸåŒ–ã™ã‚‹é–¢æ•°
 	*/
 	void Init() override;
 
 	/**
-	* @brief •`‰æŠÖ”
-	* @details •`‰æ‚·‚éŠÖ”
+	* @brief æç”»é–¢æ•°
+	* @details æç”»ã™ã‚‹é–¢æ•°
 	*/
 	void Draw() override;
 
 	/**
-	* @brief •`‰æ(Depth-pre-pass)ŠÖ”
-	* @details Depth-pre-pass‚ğ‚·‚éŠÖ”
+	* @brief æç”»(Depth-pre-pass)é–¢æ•°
+	* @details Depth-pre-passã‚’ã™ã‚‹é–¢æ•°
 	*/
 	void Draw_DPP() override;
 
 	/**
-	* @brief XVŠÖ”
-	* @details XV‚·‚éŠÖ”
+	* @brief æ›´æ–°é–¢æ•°
+	* @details æ›´æ–°ã™ã‚‹é–¢æ•°
 	*/
 	void Update(float delta_time) override;
 
 	/**
-	* @brief I—¹ˆ—ŠÖ”
-	* @details I—¹ˆ—‚ğ‚·‚éŠÖ”
+	* @brief çµ‚äº†å‡¦ç†é–¢æ•°
+	* @details çµ‚äº†å‡¦ç†ã‚’ã™ã‚‹é–¢æ•°
 	*/
 	void Uninit() override;
 

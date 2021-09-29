@@ -1,4 +1,4 @@
-#include	"Game_Object.h"
+ï»¿#include	"Game_Object.h"
 #include	"Mesh_Field.h"
 #include	"camera.h"
 #include	"Debug_Camera.h"
@@ -13,15 +13,15 @@ MESH_FIELD::MESH_FIELD() : GridSize(XMFLOAT3(1.0f, 0.0f, 1.0f)), GridNum(XMINT2(
 	VertexBuffer.reset(nullptr);
 	IndexBuffer.reset(nullptr);
 
-	// ƒeƒNƒXƒ`ƒƒ‚Ì¶¬
+	// ãƒ†ã‚¯ã‚¹ãƒãƒ£ã®ç”Ÿæˆ
 	Texture = make_unique<TEXTURE>("UVCheckerMap01-512.png");
 };
 
 void MESH_FIELD::Init()
 {
-	// ’¸“_ƒoƒbƒtƒ@‚Ìì¬
+	// é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡ã®ä½œæˆ
 	{
-		// ’¸“_”
+		// é ‚ç‚¹æ•°
 		const WORD VertexNum = WORD((GridNum.x + 1) * (GridNum.y + 1));
 
 		VertexArray.resize(VertexNum);
@@ -32,7 +32,7 @@ void MESH_FIELD::Init()
 			XMFLOAT3 va, vb;
 			XMFLOAT3 vn;
 
-			// ’¸“_ƒoƒbƒtƒ@‚Ö‚Ì‘‚«‚İ
+			// é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡ã¸ã®æ›¸ãè¾¼ã¿
 			for (int z = 0; z < GridNum.y + 1; z++)
 			{
 				for (int x = 0; x < GridNum.x + 1; x++)
@@ -49,7 +49,7 @@ void MESH_FIELD::Init()
 				}
 			}
 
-			// ’¸“_ƒoƒbƒtƒ@‚Ö‚Ì‘‚«‚İ(Normal)
+			// é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡ã¸ã®æ›¸ãè¾¼ã¿(Normal)
 			for (int z = 1; z < GridNum.y; z++)
 			{
 				for (int x = 1; x < GridNum.x; x++)
@@ -62,7 +62,7 @@ void MESH_FIELD::Init()
 					vb.y = VertexArray[(x + 1) + (GridNum.x + 1) * z].Position.y - VertexArray[(x - 1) + (GridNum.x + 1) * z].Position.y;
 					vb.z = VertexArray[(x + 1) + (GridNum.x + 1) * z].Position.z - VertexArray[(x - 1) + (GridNum.x + 1) * z].Position.z;
 
-					// ŠOÏ
+					// å¤–ç©
 					vn.x = va.y * vb.z - va.z * vb.y;
 					vn.y = va.z * vb.x - va.x * vb.z;
 					vn.z = va.x * vb.y - va.y * vb.x;
@@ -78,7 +78,7 @@ void MESH_FIELD::Init()
 			}
 		}
 
-		// ’¸“_ƒoƒbƒtƒ@‚Ì¶¬
+		// é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡ã®ç”Ÿæˆ
 		{
 			ID3D11Buffer* buffer = nullptr;
 
@@ -99,7 +99,7 @@ void MESH_FIELD::Init()
 		}
 	}
 
-	// ƒCƒ“ƒfƒbƒNƒXƒoƒbƒtƒ@‚Ìì¬
+	// ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ãƒãƒƒãƒ•ã‚¡ã®ä½œæˆ
 	{
 		IndexNum = (2 + (GridNum.x * 2)) * GridNum.y + (GridNum.y - 1) * 2;
 
@@ -108,7 +108,7 @@ void MESH_FIELD::Init()
 		vector<WORD> indexArray;
 		indexArray.resize(IndexNum);
 
-		// ’¸“_ƒCƒ“ƒfƒbƒNƒXƒoƒbƒtƒ@‚Ö‚Ì‘‚«‚İ
+		// é ‚ç‚¹ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ãƒãƒƒãƒ•ã‚¡ã¸ã®æ›¸ãè¾¼ã¿
 		int indexNum = 0;
 		int indexFlapX = GridNum.x - 1;
 		int indexFlapZ = GridNum.y - 1;
@@ -119,7 +119,7 @@ void MESH_FIELD::Init()
 				indexArray[indexNum++] = WORD((GridNum.x + 1) * (z + 1) + x);
 				indexArray[indexNum++] = WORD((GridNum.x + 1) * z + x);
 
-				// k‘Şƒ|ƒŠƒSƒ“—p‚ÉƒCƒ“ƒfƒbƒNƒX‚Ì’Ç‰Á
+				// ç¸®é€€ãƒãƒªã‚´ãƒ³ç”¨ã«ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ã®è¿½åŠ 
 				if (x > indexFlapX && z < indexFlapZ)
 				{
 					indexArray[indexNum++] = WORD((GridNum.x + 1) * z + (GridNum.x + 1) - 1);
@@ -128,7 +128,7 @@ void MESH_FIELD::Init()
 			}
 		}
 
-		// ƒCƒ“ƒfƒbƒNƒXƒoƒbƒtƒ@‚Ì¶¬
+		// ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ãƒãƒƒãƒ•ã‚¡ã®ç”Ÿæˆ
 		{
 			ID3D11Buffer* buffer = nullptr;
 
@@ -167,7 +167,7 @@ void MESH_FIELD::Update(float delta_time)
 
 void MESH_FIELD::Draw()
 {
-	// 3Dƒ}ƒgƒŠƒbƒNƒXİ’è
+	// 3Dãƒãƒˆãƒªãƒƒã‚¯ã‚¹è¨­å®š
 	{
 		XMMATRIX world;
 
@@ -177,16 +177,16 @@ void MESH_FIELD::Draw()
 			//angle = 180.0f;
 		}
 
-		world = XMMatrixScaling(Scaling.x, Scaling.y, Scaling.z);																						// Šg‘åk¬
-		world *= XMMatrixRotationRollPitchYaw(XMConvertToRadians(Rotation.x), XMConvertToRadians(Rotation.y), XMConvertToRadians(Rotation.z + angle));			// ‰ñ“]
-		world *= XMMatrixTranslation(Position.x, Position.y, Position.z);																				// ˆÚ“®
+		world = XMMatrixScaling(Scaling.x, Scaling.y, Scaling.z);																						// æ‹¡å¤§ç¸®å°
+		world *= XMMatrixRotationRollPitchYaw(XMConvertToRadians(Rotation.x), XMConvertToRadians(Rotation.y), XMConvertToRadians(Rotation.z + angle));			// å›è»¢
+		world *= XMMatrixTranslation(Position.x, Position.y, Position.z);																				// ç§»å‹•
 
 		const auto camera01 = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<CCamera>("camera");
 		const auto camera02 = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
 
 		if (!camera01.expired() /*&& Empty_weak_ptr<CCamera>(camera01)*/)
 		{
-			// ƒVƒƒƒhƒEƒ}ƒbƒv—p‚Ì•`‰æ‚©?
+			// ã‚·ãƒ£ãƒ‰ã‚¦ãƒãƒƒãƒ—ç”¨ã®æç”»ã‹?
 			if (CManager::Get_Instance()->Get_ShadowMap()->Get_Enable())
 			{
 				XMMATRIX view = CManager::Get_Instance()->Get_ShadowMap()->Get_View();
@@ -207,7 +207,7 @@ void MESH_FIELD::Draw()
 		}
 		else
 		{
-			// ƒVƒƒƒhƒEƒ}ƒbƒv—p‚Ì•`‰æ‚©?
+			// ã‚·ãƒ£ãƒ‰ã‚¦ãƒãƒƒãƒ—ç”¨ã®æç”»ã‹?
 			if (CManager::Get_Instance()->Get_ShadowMap()->Get_Enable())
 			{
 				XMMATRIX view = CManager::Get_Instance()->Get_ShadowMap()->Get_View();
@@ -228,16 +228,16 @@ void MESH_FIELD::Draw()
 		}
 	}
 
-	// ’¸“_ƒoƒbƒtƒ@İ’è
+	// é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡è¨­å®š
 	CRenderer::SetVertexBuffers(VertexBuffer.get());
 
-	// ƒCƒ“ƒfƒbƒNƒXƒoƒbƒtƒ@İ’è
+	// ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ãƒãƒƒãƒ•ã‚¡è¨­å®š
 	CRenderer::SetIndexBuffer(IndexBuffer.get());
 
-	// ƒeƒNƒXƒ`ƒƒ‚Ìİ’è
+	// ãƒ†ã‚¯ã‚¹ãƒãƒ£ã®è¨­å®š
 	Texture->Set_Texture();
 
-	// ƒgƒ|ƒƒWİ’è
+	// ãƒˆãƒãƒ­ã‚¸è¨­å®š
 	CRenderer::GetDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
 
 	CRenderer::GetDeviceContext()->DrawIndexed(IndexNum, 0, 0);
@@ -247,7 +247,7 @@ void MESH_FIELD::Draw()
 
 void MESH_FIELD::Draw_DPP()
 {
-	// 3Dƒ}ƒgƒŠƒbƒNƒXİ’è
+	// 3Dãƒãƒˆãƒªãƒƒã‚¯ã‚¹è¨­å®š
 	{
 		XMMATRIX world = XMMatrixScaling(Scaling.x, Scaling.y, Scaling.z);
 		world *= XMMatrixRotationRollPitchYaw(XMConvertToRadians(Rotation.x), XMConvertToRadians(Rotation.y), XMConvertToRadians(Rotation.z));
@@ -266,13 +266,13 @@ void MESH_FIELD::Draw_DPP()
 		}
 	}
 
-	// ’¸“_ƒoƒbƒtƒ@İ’è
+	// é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡è¨­å®š
 	CRenderer::SetVertexBuffers(VertexBuffer.get());
 
-	// ƒCƒ“ƒfƒbƒNƒXƒoƒbƒtƒ@İ’è
+	// ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ãƒãƒƒãƒ•ã‚¡è¨­å®š
 	CRenderer::SetIndexBuffer(IndexBuffer.get());
 
-	// ƒgƒ|ƒƒWİ’è
+	// ãƒˆãƒãƒ­ã‚¸è¨­å®š
 	CRenderer::GetDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
 
 	CRenderer::GetDeviceContext()->DrawIndexed(IndexNum, 0, 0);
@@ -319,18 +319,18 @@ const float MESH_FIELD::Get_Height(const XMFLOAT3& position)
 	v02.y = p2.y - p0.y;
 	v02.z = p2.z - p0.z;
 
-	// ŠOÏ
+	// å¤–ç©
 	n.x = v01.y * v02.z - v01.z * v02.y;
 	n.y = v01.z * v02.x - v01.x * v02.z;
 	n.z = v01.x * v02.y - v01.y * v02.x;
 
-	// “àÏ
+	// å†…ç©
 	dvn = v.x * n.x + v.y * n.y + v.z * n.z;
 
-	// “àÏ
+	// å†…ç©
 	dp0n = p0.x * n.x + p0.y * n.y + p0.z * n.z;
 
-	// “àÏ
+	// å†…ç©
 	dpn = position.x * n.x + position.y * n.y + position.z * n.z;
 
 	t = (dp0n - dpn) / dvn;
@@ -343,7 +343,7 @@ const float MESH_FIELD::Get_Height(const XMFLOAT3& position)
 }
 
 //==============================
-// ƒeƒNƒXƒ`ƒƒ‚Ìİ’è
+// ãƒ†ã‚¯ã‚¹ãƒãƒ£ã®è¨­å®š
 //==============================
 void MESH_FIELD::SetTexture(const string& const file_name)
 {
@@ -372,7 +372,7 @@ void MESH_WALL::Init()
 	IndexNum = (2 + (GridNum.x * 2)) * GridNum.y + (GridNum.y - 1) * 2;
 	unsigned short* indexArray = new unsigned short[IndexNum];
 
-	// ’¸“_ƒoƒbƒtƒ@‚Ö‚Ì‘‚«‚İ
+	// é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡ã¸ã®æ›¸ãè¾¼ã¿
 	for (int z = 0; z < GridNum.y + 1; z++)
 	{
 		for (int x = 0; x < GridNum.x + 1; x++)
@@ -392,7 +392,7 @@ void MESH_WALL::Init()
 		}
 	}
 
-	// ’¸“_ƒoƒbƒtƒ@‚Ö‚Ì‘‚«‚İ(Normal)
+	// é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡ã¸ã®æ›¸ãè¾¼ã¿(Normal)
 	for (int z = 1; z < GridNum.y; z++)
 	{
 		for (int x = 1; x < GridNum.x; x++)
@@ -409,7 +409,7 @@ void MESH_WALL::Init()
 
 			XMFLOAT3 vn;
 
-			// ŠOÏ
+			// å¤–ç©
 			vn.x = va.y * vb.z - va.z * vb.y;
 			vn.y = va.z * vb.x - va.x * vb.z;
 			vn.z = va.x * vb.y - va.y * vb.x;
@@ -424,7 +424,7 @@ void MESH_WALL::Init()
 		}
 	}
 
-	// ’¸“_ƒCƒ“ƒfƒbƒNƒXƒoƒbƒtƒ@‚Ö‚Ì‘‚«‚İ
+	// é ‚ç‚¹ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ãƒãƒƒãƒ•ã‚¡ã¸ã®æ›¸ãè¾¼ã¿
 	int indexNum = 0;
 	int indexFlapX = GridNum.x - 1;
 	int indexFlapZ = GridNum.y - 1;
@@ -435,7 +435,7 @@ void MESH_WALL::Init()
 			indexArray[indexNum++] = WORD((GridNum.x + 1) * (z + 1) + x);
 			indexArray[indexNum++] = WORD((GridNum.x + 1) * z + x);
 
-			// k‘Şƒ|ƒŠƒSƒ“—p‚ÉƒCƒ“ƒfƒbƒNƒX‚Ì’Ç‰Á
+			// ç¸®é€€ãƒãƒªã‚´ãƒ³ç”¨ã«ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ã®è¿½åŠ 
 			if (x > indexFlapX && z < indexFlapZ)
 			{
 				indexArray[indexNum++] = WORD((GridNum.x + 1) * z + (GridNum.x + 1) - 1);
@@ -445,7 +445,7 @@ void MESH_WALL::Init()
 	}
 
 
-	// ’¸“_ƒoƒbƒtƒ@‚Ì¶¬
+	// é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡ã®ç”Ÿæˆ
 	{
 		D3D11_BUFFER_DESC bd;
 		ZeroMemory(&bd, sizeof(bd));
@@ -461,7 +461,7 @@ void MESH_WALL::Init()
 		CRenderer::GetDevice()->CreateBuffer(&bd, &sd, &VertexBuffer);
 	}
 
-	// ƒCƒ“ƒfƒbƒNƒXƒoƒbƒtƒ@‚Ì¶¬
+	// ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ãƒãƒƒãƒ•ã‚¡ã®ç”Ÿæˆ
 	{
 		D3D11_BUFFER_DESC bd;
 		ZeroMemory(&bd, sizeof(bd));
@@ -483,7 +483,7 @@ void MESH_WALL::Init()
 	Rotation = XMFLOAT3(0.0f, 0.0f, 0.0f);
 	Scaling = XMFLOAT3(1.0f, 1.0f, 1.0f);
 
-	// ƒeƒNƒXƒ`ƒƒ‚Ìİ’è
+	// ãƒ†ã‚¯ã‚¹ãƒãƒ£ã®è¨­å®š
 	Texture = new TEXTURE(string("field004.png"));
 }
 
@@ -503,20 +503,20 @@ void MESH_WALL::Update(float delta_time)
 void MESH_WALL::Draw()
 {
 	{
-		// 3Dƒ}ƒgƒŠƒbƒNƒXİ’è
+		// 3Dãƒãƒˆãƒªãƒƒã‚¯ã‚¹è¨­å®š
 		{
 			XMMATRIX world;
 
-			world = XMMatrixScaling(Scaling.x, Scaling.y, Scaling.z);																						// Šg‘åk¬
-			world *= XMMatrixRotationRollPitchYaw(XMConvertToRadians(Rotation.x), XMConvertToRadians(Rotation.y), XMConvertToRadians(Rotation.z));			// ‰ñ“]
-			world *= XMMatrixTranslation(Position.x, Position.y, Position.z);																				// ˆÚ“®
+			world = XMMatrixScaling(Scaling.x, Scaling.y, Scaling.z);																						// æ‹¡å¤§ç¸®å°
+			world *= XMMatrixRotationRollPitchYaw(XMConvertToRadians(Rotation.x), XMConvertToRadians(Rotation.y), XMConvertToRadians(Rotation.z));			// å›è»¢
+			world *= XMMatrixTranslation(Position.x, Position.y, Position.z);																				// ç§»å‹•
 
 			const auto camera01 = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<CCamera>("camera");
 			const auto camera02 = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
 
 			if (!camera01.expired() && Empty_weak_ptr<CCamera>(camera01))
 			{
-				// ƒVƒƒƒhƒEƒ}ƒbƒv—p‚Ì•`‰æ‚©?
+				// ã‚·ãƒ£ãƒ‰ã‚¦ãƒãƒƒãƒ—ç”¨ã®æç”»ã‹?
 				if (CManager::Get_Instance()->Get_ShadowMap()->Get_Enable())
 				{
 					XMMATRIX view = CManager::Get_Instance()->Get_ShadowMap()->Get_View();
@@ -537,7 +537,7 @@ void MESH_WALL::Draw()
 			}
 			else
 			{
-				// ƒVƒƒƒhƒEƒ}ƒbƒv—p‚Ì•`‰æ‚©?
+				// ã‚·ãƒ£ãƒ‰ã‚¦ãƒãƒƒãƒ—ç”¨ã®æç”»ã‹?
 				if (CManager::Get_Instance()->Get_ShadowMap()->Get_Enable())
 				{
 					XMMATRIX view = CManager::Get_Instance()->Get_ShadowMap()->Get_View();
@@ -558,16 +558,16 @@ void MESH_WALL::Draw()
 			}
 		}
 
-		// ’¸“_ƒoƒbƒtƒ@İ’è
+		// é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡è¨­å®š
 		CRenderer::SetVertexBuffers(VertexBuffer);
 
-		// ƒCƒ“ƒfƒbƒNƒXƒoƒbƒtƒ@İ’è
+		// ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ãƒãƒƒãƒ•ã‚¡è¨­å®š
 		CRenderer::SetIndexBuffer(IndexBuffer);
 
-		// ƒeƒNƒXƒ`ƒƒ‚Ìİ’è
+		// ãƒ†ã‚¯ã‚¹ãƒãƒ£ã®è¨­å®š
 		Texture->Set_Texture();
 
-		// ƒgƒ|ƒƒWİ’è
+		// ãƒˆãƒãƒ­ã‚¸è¨­å®š
 		CRenderer::GetDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
 
 		CRenderer::GetDeviceContext()->DrawIndexed(IndexNum, 0, 0);
@@ -582,7 +582,7 @@ void MESH_WALL::Draw()
 
 void MESH_WALL::Draw_DPP()
 {
-	// 3Dƒ}ƒgƒŠƒbƒNƒXİ’è
+	// 3Dãƒãƒˆãƒªãƒƒã‚¯ã‚¹è¨­å®š
 	{
 		XMMATRIX world = XMMatrixScaling(Scaling.x, Scaling.y, Scaling.z);
 		world *= XMMatrixRotationRollPitchYaw(XMConvertToRadians(Rotation.x), XMConvertToRadians(Rotation.y), XMConvertToRadians(Rotation.z));
@@ -601,13 +601,13 @@ void MESH_WALL::Draw_DPP()
 		}
 	}
 
-	// ’¸“_ƒoƒbƒtƒ@İ’è
+	// é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡è¨­å®š
 	CRenderer::SetVertexBuffers(VertexBuffer);
 
-	// ƒCƒ“ƒfƒbƒNƒXƒoƒbƒtƒ@İ’è
+	// ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ãƒãƒƒãƒ•ã‚¡è¨­å®š
 	CRenderer::SetIndexBuffer(IndexBuffer);
 
-	// ƒgƒ|ƒƒWİ’è
+	// ãƒˆãƒãƒ­ã‚¸è¨­å®š
 	CRenderer::GetDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
 
 	CRenderer::GetDeviceContext()->DrawIndexed(IndexNum, 0, 0);
@@ -655,18 +655,18 @@ const float MESH_WALL::Get_Height(const XMFLOAT3& position)
 	v02.y = p2.y - p0.y;
 	v02.z = p2.z - p0.z;
 
-	// ŠOÏ
+	// å¤–ç©
 	n.x = v01.y * v02.z - v01.z * v02.y;
 	n.y = v01.z * v02.x - v01.x * v02.z;
 	n.z = v01.x * v02.y - v01.y * v02.x;
 
-	// “àÏ
+	// å†…ç©
 	dvn = v.x * n.x + v.y * n.y + v.z * n.z;
 
-	// “àÏ
+	// å†…ç©
 	dp0n = p0.x * n.x + p0.y * n.y + p0.z * n.z;
 
-	// “àÏ
+	// å†…ç©
 	dpn = position.x * n.x + position.y * n.y + position.z * n.z;
 
 	t = (dp0n - dpn) / dvn;

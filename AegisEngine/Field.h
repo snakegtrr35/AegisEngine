@@ -1,6 +1,6 @@
-/**
+ï»¿/**
  * @file Field.h
- * @brief ƒtƒB[ƒ‹ƒh‚Ìƒwƒbƒ_[ƒtƒ@ƒCƒ‹
+ * @brief ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰ã®ãƒ˜ãƒƒãƒ€ãƒ¼ãƒ•ã‚¡ã‚¤ãƒ«
  */
 
 #pragma once
@@ -15,97 +15,97 @@
 class GAME_OBJECT;
 
 /**
-* @brief ƒtƒB[ƒ‹ƒhƒNƒ‰ƒX
-* @details ƒtƒB[ƒ‹ƒhƒNƒ‰ƒX
+* @brief ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰ã‚¯ãƒ©ã‚¹
+* @details ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰ã‚¯ãƒ©ã‚¹
 */
 class FIELD : public GAME_OBJECT {
 
-	//! ’¸“_ƒoƒbƒtƒ@
+	//! é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡
 	unique_ptr<ID3D11Buffer, Release> pVertexBuffer;
 
-	//! ƒCƒ“ƒXƒ^ƒ“ƒVƒ“ƒO—p‚Ìƒoƒbƒtƒ@
+	//! ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚·ãƒ³ã‚°ç”¨ã®ãƒãƒƒãƒ•ã‚¡
 	unique_ptr<ID3D11Buffer, Release> pInstanceBuffer;
 
-	//! ƒCƒ“ƒfƒbƒNƒXƒoƒbƒtƒ@
+	//! ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ãƒãƒƒãƒ•ã‚¡
 	unique_ptr<ID3D11Buffer, Release> pIndexBuffer;
 
-	//! ƒeƒNƒXƒ`ƒƒ
+	//! ãƒ†ã‚¯ã‚¹ãƒãƒ£
 	unique_ptr<TEXTURE> Texture;
 
-	//! •‚Æ‚‚³
+	//! å¹…ã¨é«˜ã•
 	XMFLOAT2 WH;
 
 public:
 
 	/**
-	* @brief ƒRƒ“ƒXƒgƒ‰ƒNƒ^
-	* @details ˆø”–³‚µƒRƒ“ƒXƒgƒ‰ƒNƒ^
+	* @brief ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
+	* @details å¼•æ•°ç„¡ã—ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
 	*/
 	FIELD();
 	
 	/**
-	* @brief ƒRƒ“ƒXƒgƒ‰ƒNƒ^
-	* @param position À•W
-	* @param wh ƒTƒCƒY
-	* @details ˆø”–³‚µƒRƒ“ƒXƒgƒ‰ƒNƒ^
+	* @brief ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
+	* @param position åº§æ¨™
+	* @param wh ã‚µã‚¤ã‚º
+	* @details å¼•æ•°ç„¡ã—ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
 	*/
 	FIELD(XMFLOAT3 position, XMFLOAT2 wh);
 
 	/**
-	* @brief ƒfƒXƒgƒ‰ƒNƒ^
-	* @details ƒfƒXƒgƒ‰ƒNƒ^
+	* @brief ãƒ‡ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
+	* @details ãƒ‡ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
 	*/
 	~FIELD();
 
 	/**
-	* @brief ‰Šú‰»ŠÖ”
-	* @details ‰Šú‰»‚·‚éŠÖ”
+	* @brief åˆæœŸåŒ–é–¢æ•°
+	* @details åˆæœŸåŒ–ã™ã‚‹é–¢æ•°
 	*/
 	void Init() override;
 
 	/**
-	* @brief •`‰æŠÖ”
-	* @details •`‰æ‚·‚éŠÖ”
+	* @brief æç”»é–¢æ•°
+	* @details æç”»ã™ã‚‹é–¢æ•°
 	*/
 	void Draw() override;
 
 	/**
-	* @brief •`‰æ(Depth-pre-pass)ŠÖ”
-	* @details Depth-pre-pass‚ğ‚·‚éŠÖ”
+	* @brief æç”»(Depth-pre-pass)é–¢æ•°
+	* @details Depth-pre-passã‚’ã™ã‚‹é–¢æ•°
 	*/
 	void Draw_DPP() override;
 
 	/**
-	* @brief XVŠÖ”
-	* @details XV‚·‚éŠÖ”
+	* @brief æ›´æ–°é–¢æ•°
+	* @details æ›´æ–°ã™ã‚‹é–¢æ•°
 	*/
 	void Update(float delta_time) override;
 
 	/**
-	* @brief I—¹ˆ—ŠÖ”
-	* @details I—¹ˆ—‚ğ‚·‚éŠÖ”
+	* @brief çµ‚äº†å‡¦ç†é–¢æ•°
+	* @details çµ‚äº†å‡¦ç†ã‚’ã™ã‚‹é–¢æ•°
 	*/
 	void Uninit() override;
 
 
 	/**
-	* @brief À•W‚Ìİ’èŠÖ”
-	* @param position À•W
-	* @details À•W‚Ìİ’è‚ğ‚·‚éŠÖ”
+	* @brief åº§æ¨™ã®è¨­å®šé–¢æ•°
+	* @param position åº§æ¨™
+	* @details åº§æ¨™ã®è¨­å®šã‚’ã™ã‚‹é–¢æ•°
 	*/
 	void SetPosition(const XMFLOAT3 position);
 
 	/**
-	* @brief ƒTƒCƒY‚Ìİ’èŠÖ”
-	* @param wh ƒTƒCƒY
-	* @details ƒTƒCƒY‚Ìİ’è‚ğ‚·‚éŠÖ”
+	* @brief ã‚µã‚¤ã‚ºã®è¨­å®šé–¢æ•°
+	* @param wh ã‚µã‚¤ã‚º
+	* @details ã‚µã‚¤ã‚ºã®è¨­å®šã‚’ã™ã‚‹é–¢æ•°
 	*/
 	void SetWH(const XMFLOAT2 wh);
 
 	/**
-	* @brief ƒeƒNƒXƒ`ƒƒ‚Ìİ’èŠÖ”
-	* @param file_name ƒeƒNƒXƒ`ƒƒ‚Ìİ’è(ƒeƒNƒXƒ`ƒƒ‚Ì–¼‘O)
-	* @details ƒeƒNƒXƒ`ƒƒ‚Ìİ’è‚ğ‚·‚éŠÖ”
+	* @brief ãƒ†ã‚¯ã‚¹ãƒãƒ£ã®è¨­å®šé–¢æ•°
+	* @param file_name ãƒ†ã‚¯ã‚¹ãƒãƒ£ã®è¨­å®š(ãƒ†ã‚¯ã‚¹ãƒãƒ£ã®åå‰)
+	* @details ãƒ†ã‚¯ã‚¹ãƒãƒ£ã®è¨­å®šã‚’ã™ã‚‹é–¢æ•°
 	*/
 	void SetTexture(const string& const file_name);
 

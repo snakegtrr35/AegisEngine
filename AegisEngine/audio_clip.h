@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #ifndef AUDIO_CLIP_H
 #define AUDIO_CLIP_H
@@ -9,14 +9,14 @@ static const int SOUND_SOURCE_MAX = 64;
 static const int SOUND_DATE_MAX = 128;
 
 //========================================
-// �T�E���h�Ǘ��ԍ�(�񋓌^)
+// サウンド管理番号(列挙型)
 //========================================
 enum class SOUND_INDEX {
-	SOUND_INDEX_BGM001 = 0,		// �^�C�g����BGM
-	SOUND_INDEX_BGM002,			// ���C�����j���[��BGM
-	SOUND_INDEX_BGM003,			// �Q�[������BGM
-	SOUND_INDEX_CLEAR,			// �N���A��BGM
-	SOUND_INDEX_GAMEOVER,		// �Q�[���I�[�o�[��BGM
+	SOUND_INDEX_BGM001 = 0,		// タイトルのBGM
+	SOUND_INDEX_BGM002,			// メインメニューのBGM
+	SOUND_INDEX_BGM003,			// ゲーム中のBGM
+	SOUND_INDEX_CLEAR,			// クリアのBGM
+	SOUND_INDEX_GAMEOVER,		// ゲームオーバーのBGM
 
 	SOUND_INDEX_82,
 
@@ -75,15 +75,15 @@ static const SOUND_FILE g_SoundFiles[] = {
 #endif // !UNICODE
 };
 
-// �ǂݍ��݃T�E���h��
+// 読み込みサウンド数
 static const int SOUND_FILE_COUNT = sizeof(g_SoundFiles) / sizeof(g_SoundFiles[0]);
 
-// �ǂݍ��݃T�E���h���ƃT�E���h�Ǘ��ԍ��񋓐��ɍ����������ꍇ�R���p�C���G���[�Ƃ���
+// 読み込みサウンド数とサウンド管理番号列挙数に差があった場合コンパイルエラーとする
 static_assert((int)SOUND_INDEX::SOUND_INDEX_MAX == SOUND_FILE_COUNT, "SOUND_INDEX_MAX != SOUND_FILE_COUNT");
 
 /**
-* @brief �T�E���h�N���X
-* @details �ʂ̃T�E���h�̃N���X
+* @brief サウンドクラス
+* @details 個別のサウンドのクラス
 */
 class CAudioClip {
 private:
@@ -129,8 +129,8 @@ public:
 };
 
 /**
-* @brief �T�E���h�N���X�Ǘ��N���X
-* @details �T�E���h�N���X���Ǘ����邽�߂̃N���X
+* @brief サウンドクラス管理クラス
+* @details サウンドクラスを管理するためのクラス
 */
 class AUDIO_MANAGER {
 private:
@@ -147,24 +147,24 @@ private:
 public:
 
 	/**
-	* @brief �}�b�v�ւ̒ǉ�������֐�
-	* @param index SOUND_INDEX(�T�E���h�Ǘ��ԍ�)
-	* @details index�Ԗڂ̃T�E���h�t�@�C�����}�b�v�ɒǉ�����
+	* @brief マップへの追加をする関数
+	* @param index SOUND_INDEX(サウンド管理番号)
+	* @details index番目のサウンドファイルをマップに追加する
 	*/
 	static void Add_Sound_Object(SOUND_INDEX index);
 
 	/**
-	* @brief �}�b�v�������̃T�E���h�̍Đ�����֐�
-	* @param index SOUND_INDEX(�T�E���h�Ǘ��ԍ�)
-	* @param flag ���[�v���邩���Ȃ����̃t���O
-	* @details �}�b�v��index�Ԗڂ̃T�E���h�t�@�C�����Đ�����
+	* @brief マップから特定のサウンドの再生する関数
+	* @param index SOUND_INDEX(サウンド管理番号)
+	* @param flag ループするかしないかのフラグ
+	* @details マップのindex番目のサウンドファイルを再生する
 	*/
 	static void Play_Sound_Object(SOUND_INDEX index, bool flag = false);
 
 	/**
-	* @brief �}�b�v����T�E���h���X�g�b�v����֐�
-	* @param index SOUND_INDEX(�T�E���h�Ǘ��ԍ�)�A�����������Ȃ��ꍇ�̓T�E���h�Ǘ��ԍ��̍ő�l�ɂȂ�
-	* @details �}�b�v��index�Ԗڂ̃T�E���h�t�@�C�����X�g�b�v����A�����������Ȃ��ꍇ�͑S�ẴT�E���h���X�g�b�v����
+	* @brief マップからサウンドをストップする関数
+	* @param index SOUND_INDEX(サウンド管理番号)、引数を書かない場合はサウンド管理番号の最大値になる
+	* @details マップのindex番目のサウンドファイルをストップする、引数を書かない場合は全てのサウンドをストップする
 	*/
 	static void Stop_Sound_Object(SOUND_INDEX index = SOUND_INDEX::SOUND_INDEX_MAX);
 

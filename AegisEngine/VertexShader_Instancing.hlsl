@@ -1,10 +1,10 @@
-#include    "Commom_Hlsl.hlsli"
+ï»¿#include    "Commom_Hlsl.hlsli"
 
 //*****************************************************************************
-// ’è”ƒoƒbƒtƒ@
+// å®šæ•°ãƒãƒƒãƒ•ã‚¡
 //*****************************************************************************
 
-// ƒ}ƒgƒŠƒNƒXƒoƒbƒtƒ@
+// ãƒãƒˆãƒªã‚¯ã‚¹ãƒãƒƒãƒ•ã‚¡
 cbuffer ConstantBuffer : register(b0)
 {
     matrix World;
@@ -13,7 +13,7 @@ cbuffer ConstantBuffer : register(b0)
 }
 
 
-// ƒVƒƒƒhƒEƒ}ƒbƒv—p‚Ìƒ}ƒgƒŠƒbƒNƒX
+// ã‚·ãƒ£ãƒ‰ã‚¦ãƒãƒƒãƒ—ç”¨ã®ãƒãƒˆãƒªãƒƒã‚¯ã‚¹
 cbuffer ShadowBuffer : register(b1)
 {
     matrix ShadowView;

@@ -1,4 +1,4 @@
-#include	"Game_Object.h"
+ï»¿#include	"Game_Object.h"
 #include	"Polygon_3D.h"
 #include	"texture.h"
 #include	"Input.h"
@@ -19,7 +19,7 @@ POLYGON_3D::POLYGON_3D()
 
 	XYZ = XMFLOAT3(0.5f, 0.5f, 0.5f);
 
-	// ƒeƒNƒXƒ`ƒƒ‚Ìİ’è
+	// ãƒ†ã‚¯ã‚¹ãƒãƒ£ã®è¨­å®š
 	//Texture = new TEXTURE(string("field004.png"));
 	Texture = make_unique<TEXTURE>(string("field004.png"));
 }
@@ -36,7 +36,7 @@ POLYGON_3D::POLYGON_3D(XMFLOAT3 position, XMFLOAT3 xyz)
 	Position = position;
 	XYZ = xyz;
 
-	// ƒeƒNƒXƒ`ƒƒ‚Ìİ’è
+	// ãƒ†ã‚¯ã‚¹ãƒãƒ£ã®è¨­å®š
 	//Texture = new TEXTURE(string("field004.png"));
 	Texture = make_unique<TEXTURE>(string("field004.png"));
 }
@@ -53,7 +53,7 @@ void POLYGON_3D::Init(void)
 
 	POLYGOM Polygon_3d;
 
-	// ³–Ê
+	// æ­£é¢
 	Polygon_3d.Vertex[0].Position = XMFLOAT3(-XYZ.x, XYZ.y, -XYZ.z);
 	Polygon_3d.Vertex[0].Normal = XMFLOAT3(0.0f, 0.0f, -1.0f);
 	Polygon_3d.Vertex[0].Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
@@ -74,7 +74,7 @@ void POLYGON_3D::Init(void)
 	Polygon_3d.Vertex[3].Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
 	Polygon_3d.Vertex[3].TexCoord = XMFLOAT2(1.0f, 1.0f);
 
-	// — –Ê
+	// è£é¢
 	Polygon_3d.Vertex[4].Position = XMFLOAT3(XYZ.x, XYZ.y, XYZ.z);
 	Polygon_3d.Vertex[4].Normal = XMFLOAT3(0.0f, 0.0f, 1.0f);
 	Polygon_3d.Vertex[4].Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
@@ -95,7 +95,7 @@ void POLYGON_3D::Init(void)
 	Polygon_3d.Vertex[7].Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
 	Polygon_3d.Vertex[7].TexCoord = XMFLOAT2(1.0f, 1.0f);
 
-	// ‰E–Ê
+	// å³é¢
 	Polygon_3d.Vertex[8].Position = XMFLOAT3(XYZ.x, XYZ.y, -XYZ.z);
 	Polygon_3d.Vertex[8].Normal = XMFLOAT3(1.0f, 0.0f, 0.0f);
 	Polygon_3d.Vertex[8].Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
@@ -116,7 +116,7 @@ void POLYGON_3D::Init(void)
 	Polygon_3d.Vertex[11].Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
 	Polygon_3d.Vertex[11].TexCoord = XMFLOAT2(1.0f, 1.0f);
 
-	// ¶–Ê
+	// å·¦é¢
 	Polygon_3d.Vertex[12].Position = XMFLOAT3(-XYZ.x, XYZ.y, XYZ.z);
 	Polygon_3d.Vertex[12].Normal = XMFLOAT3(-1.0f, 0.0f, 0.0f);
 	Polygon_3d.Vertex[12].Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
@@ -137,7 +137,7 @@ void POLYGON_3D::Init(void)
 	Polygon_3d.Vertex[15].Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
 	Polygon_3d.Vertex[15].TexCoord = XMFLOAT2(1.0f, 1.0f);
 
-	// ã–Ê
+	// ä¸Šé¢
 	Polygon_3d.Vertex[16].Position = XMFLOAT3(-XYZ.x, XYZ.y, XYZ.z);
 	Polygon_3d.Vertex[16].Normal = XMFLOAT3(0.0f, 1.0f, 0.0f);
 	Polygon_3d.Vertex[16].Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
@@ -158,7 +158,7 @@ void POLYGON_3D::Init(void)
 	Polygon_3d.Vertex[19].Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
 	Polygon_3d.Vertex[19].TexCoord = XMFLOAT2(1.0f, 1.0f);
 
-	// ‰º–Ê
+	// ä¸‹é¢
 	Polygon_3d.Vertex[20].Position = XMFLOAT3(-XYZ.x, -XYZ.y, -XYZ.z);
 	Polygon_3d.Vertex[20].Normal = XMFLOAT3(0.0f, -1.0f, 0.0f);
 	Polygon_3d.Vertex[20].Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
@@ -179,7 +179,7 @@ void POLYGON_3D::Init(void)
 	Polygon_3d.Vertex[23].Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
 	Polygon_3d.Vertex[23].TexCoord = XMFLOAT2(1.0f, 1.0f);
 
-	// ’¸“_ƒoƒbƒtƒ@‚Ìİ’è
+	// é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡ã®è¨­å®š
 	{
 		D3D11_BUFFER_DESC bd;
 		ZeroMemory(&bd, sizeof(D3D11_BUFFER_DESC));
@@ -191,7 +191,7 @@ void POLYGON_3D::Init(void)
 		bd.MiscFlags = 0;
 		bd.StructureByteStride = 0;
 
-		// ƒTƒuƒŠƒ\[ƒX‚Ìİ’è
+		// ã‚µãƒ–ãƒªã‚½ãƒ¼ã‚¹ã®è¨­å®š
 		D3D11_SUBRESOURCE_DATA srd;
 		ZeroMemory(&srd, sizeof(D3D11_SUBRESOURCE_DATA));
 
@@ -199,7 +199,7 @@ void POLYGON_3D::Init(void)
 		srd.SysMemPitch = 0;
 		srd.SysMemSlicePitch = 0;
 
-		// ’¸“_ƒoƒbƒtƒ@‚Ì¶¬
+		// é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡ã®ç”Ÿæˆ
 		hr = CRenderer::GetDevice()->CreateBuffer(&bd, &srd, &pVertexBuffer);
 
 		if (FAILED(hr))
@@ -212,7 +212,7 @@ void POLYGON_3D::Init(void)
 
 void POLYGON_3D::Draw(void)
 {
-	// 3Dƒ}ƒgƒŠƒbƒNƒXİ’è
+	// 3Dãƒãƒˆãƒªãƒƒã‚¯ã‚¹è¨­å®š
 	{
 		XMMATRIX world;
 
@@ -225,7 +225,7 @@ void POLYGON_3D::Draw(void)
 
 		if (!camera01.expired() && Empty_weak_ptr<CCamera>(camera01))
 		{
-			// ƒVƒƒƒhƒEƒ}ƒbƒv—p‚Ì•`‰æ‚©?
+			// ã‚·ãƒ£ãƒ‰ã‚¦ãƒãƒƒãƒ—ç”¨ã®æç”»ã‹?
 			if (CManager::Get_Instance()->Get_ShadowMap()->Get_Enable())
 			{
 				XMMATRIX view = CManager::Get_Instance()->Get_ShadowMap()->Get_View();
@@ -246,7 +246,7 @@ void POLYGON_3D::Draw(void)
 		}
 		else
 		{
-			// ƒVƒƒƒhƒEƒ}ƒbƒv—p‚Ì•`‰æ‚©?
+			// ã‚·ãƒ£ãƒ‰ã‚¦ãƒãƒƒãƒ—ç”¨ã®æç”»ã‹?
 			if (CManager::Get_Instance()->Get_ShadowMap()->Get_Enable())
 			{
 				XMMATRIX view = CManager::Get_Instance()->Get_ShadowMap()->Get_View();
@@ -267,13 +267,13 @@ void POLYGON_3D::Draw(void)
 		}
 	}
 
-	// “ü—ÍƒAƒZƒ“ƒuƒ‰‚É’¸“_ƒoƒbƒtƒ@‚ğİ’è.
+	// å…¥åŠ›ã‚¢ã‚»ãƒ³ãƒ–ãƒ©ã«é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡ã‚’è¨­å®š.
 	CRenderer::SetVertexBuffers(pVertexBuffer);
 
-	// ƒeƒNƒXƒ`ƒƒ‚Ìİ’è
+	// ãƒ†ã‚¯ã‚¹ãƒãƒ£ã®è¨­å®š
 	Texture->Set_Texture();
 
-	// ƒgƒ|ƒƒW‚Ìİ’è
+	// ãƒˆãƒãƒ­ã‚¸ã®è¨­å®š
 	CRenderer::GetDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
 
 	CRenderer::GetDeviceContext()->Draw(4 * 6, 0);
@@ -283,7 +283,7 @@ void POLYGON_3D::Draw(void)
 
 void POLYGON_3D::Draw_DPP(void)
 {
-	// 3Dƒ}ƒgƒŠƒbƒNƒXİ’è
+	// 3Dãƒãƒˆãƒªãƒƒã‚¯ã‚¹è¨­å®š
 	{
 		XMMATRIX world;
 
@@ -304,10 +304,10 @@ void POLYGON_3D::Draw_DPP(void)
 		}
 	}
 
-	// “ü—ÍƒAƒZƒ“ƒuƒ‰‚É’¸“_ƒoƒbƒtƒ@‚ğİ’è.
+	// å…¥åŠ›ã‚¢ã‚»ãƒ³ãƒ–ãƒ©ã«é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡ã‚’è¨­å®š.
 	CRenderer::SetVertexBuffers(pVertexBuffer);
 
-	// ƒgƒ|ƒƒW‚Ìİ’è
+	// ãƒˆãƒãƒ­ã‚¸ã®è¨­å®š
 	CRenderer::GetDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
 
 	CRenderer::GetDeviceContext()->Draw(4 * 6, 0);
@@ -326,7 +326,7 @@ void POLYGON_3D::Uninit(void)
 }
 
 //==============================
-// ƒ|ƒWƒVƒ‡ƒ“‚Ìİ’è
+// ãƒã‚¸ã‚·ãƒ§ãƒ³ã®è¨­å®š
 //==============================
 void POLYGON_3D::SetPosition(const XMFLOAT3 position)
 {
@@ -334,7 +334,7 @@ void POLYGON_3D::SetPosition(const XMFLOAT3 position)
 }
 
 //==============================
-// •‚Æ‚‚³‚Ìİ’è
+// å¹…ã¨é«˜ã•ã®è¨­å®š
 //==============================
 void POLYGON_3D::SetXYZ(const XMFLOAT3 xyz)
 {
@@ -342,7 +342,7 @@ void POLYGON_3D::SetXYZ(const XMFLOAT3 xyz)
 }
 
 //==============================
-// Šg‘åk¬‚Ì’l‚Ìİ’è
+// æ‹¡å¤§ç¸®å°ã®å€¤ã®è¨­å®š
 //==============================
 void POLYGON_3D::SetScaling(XMFLOAT3 scaling)
 {
@@ -350,7 +350,7 @@ void POLYGON_3D::SetScaling(XMFLOAT3 scaling)
 }
 
 //==============================
-// ƒeƒNƒXƒ`ƒƒ‚Ìİ’è
+// ãƒ†ã‚¯ã‚¹ãƒãƒ£ã®è¨­å®š
 //==============================
 void POLYGON_3D::SetTexture(const string& const file_name)
 {

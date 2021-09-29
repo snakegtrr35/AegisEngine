@@ -1,6 +1,6 @@
-/**
+ï»¿/**
  * @file Billboard.h
- * @brief ƒrƒ‹ƒ{[ƒhŠÖŒW‚Ìƒwƒbƒ_[ƒtƒ@ƒCƒ‹
+ * @brief ãƒ“ãƒ«ãƒœãƒ¼ãƒ‰é–¢ä¿‚ã®ãƒ˜ãƒƒãƒ€ãƒ¼ãƒ•ã‚¡ã‚¤ãƒ«
  */
 
 #pragma once
@@ -14,87 +14,87 @@ class GAME_OBJECT;
 class TEXTURE;
 
 /**
-* @brief ƒrƒ‹ƒ{[ƒhƒNƒ‰ƒX
-* @details ƒrƒ‹ƒ{[ƒhƒNƒ‰ƒX
+* @brief ãƒ“ãƒ«ãƒœãƒ¼ãƒ‰ã‚¯ãƒ©ã‚¹
+* @details ãƒ“ãƒ«ãƒœãƒ¼ãƒ‰ã‚¯ãƒ©ã‚¹
 */
 class BILL_BOARD : public GAME_OBJECT {
 protected:
 
-	//! ƒCƒ“ƒfƒbƒNƒXƒoƒbƒtƒ@
+	//! ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ãƒãƒƒãƒ•ã‚¡
 	static unique_ptr<ID3D11Buffer, Release> pIndexBuffer;
 
-	//! ’¸“_ƒoƒbƒtƒ@
+	//! é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡
 	unique_ptr<ID3D11Buffer, Release> pVertexBuffer;
 
-	//! ƒeƒNƒXƒ`ƒƒ
+	//! ãƒ†ã‚¯ã‚¹ãƒãƒ£
 	unique_ptr<TEXTURE> Texture;
 
-	//! •‚Æ‚‚³
+	//! å¹…ã¨é«˜ã•
 	XMFLOAT2 WH;
 
 public:
 
 	/**
-	* @brief ƒRƒ“ƒXƒgƒ‰ƒNƒ^
-	* @details ˆø”–³‚µƒRƒ“ƒXƒgƒ‰ƒNƒ^
+	* @brief ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
+	* @details å¼•æ•°ç„¡ã—ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
 	*/
 	BILL_BOARD();
 	
 	/**
-	* @brief ƒRƒ“ƒXƒgƒ‰ƒNƒ^
-	* @param position ’†SÀ•W
-	* @param wh ƒTƒCƒY
-	* @details ˆø”•t‚«ƒRƒ“ƒXƒgƒ‰ƒNƒ^
+	* @brief ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
+	* @param position ä¸­å¿ƒåº§æ¨™
+	* @param wh ã‚µã‚¤ã‚º
+	* @details å¼•æ•°ä»˜ãã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
 	*/
 	BILL_BOARD(XMFLOAT3 position, XMFLOAT2 wh);
 
 	/**
-	* @brief ƒfƒXƒgƒ‰ƒNƒ^
-	* @details ƒfƒXƒgƒ‰ƒNƒ^
+	* @brief ãƒ‡ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
+	* @details ãƒ‡ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
 	*/
 	virtual ~BILL_BOARD();
 
 	/**
-	* @brief ‰Šú‰»ŠÖ”
-	* @details ‰Šú‰»‚·‚éŠÖ”
+	* @brief åˆæœŸåŒ–é–¢æ•°
+	* @details åˆæœŸåŒ–ã™ã‚‹é–¢æ•°
 	*/
 	void Init() override;
 
 	/**
-	* @brief •`‰æŠÖ”
-	* @details •`‰æ‚·‚éŠÖ”
+	* @brief æç”»é–¢æ•°
+	* @details æç”»ã™ã‚‹é–¢æ•°
 	*/
 	void Draw() override;
 
 	/**
-	* @brief •`‰æ(Depth-pre-pass)ŠÖ”
-	* @details Depth-pre-pass‚ğ‚·‚éŠÖ”
+	* @brief æç”»(Depth-pre-pass)é–¢æ•°
+	* @details Depth-pre-passã‚’ã™ã‚‹é–¢æ•°
 	*/
 	void Draw_DPP() override;
 
 	/**
-	* @brief XVŠÖ”
-	* @details XV‚·‚éŠÖ”
+	* @brief æ›´æ–°é–¢æ•°
+	* @details æ›´æ–°ã™ã‚‹é–¢æ•°
 	*/
 	void Update(float delta_time) override;
 
 	/**
-	* @brief I—¹ˆ—ŠÖ”
-	* @details I—¹ˆ—‚ğ‚·‚éŠÖ”
+	* @brief çµ‚äº†å‡¦ç†é–¢æ•°
+	* @details çµ‚äº†å‡¦ç†ã‚’ã™ã‚‹é–¢æ•°
 	*/
 	void Uninit() override;
 
 	/**
-	* @brief •‚Æ‚‚³‚ğİ’è‚·‚éŠÖ”
-	* @param wh ƒTƒCƒY
-	* @details •‚Æ‚‚³‚ğİ’è‚·‚éŠÖ”
+	* @brief å¹…ã¨é«˜ã•ã‚’è¨­å®šã™ã‚‹é–¢æ•°
+	* @param wh ã‚µã‚¤ã‚º
+	* @details å¹…ã¨é«˜ã•ã‚’è¨­å®šã™ã‚‹é–¢æ•°
 	*/
 	void SetWH(const XMFLOAT2& wh);
 	
 	/**
-	* @brief ƒeƒNƒXƒ`ƒƒ‚ğİ’è‚·‚éŠÖ”
-	* @param file_name g—p‚·‚éƒeƒNƒXƒ`ƒƒ–¼
-	* @details ƒeƒNƒXƒ`ƒƒ(ƒNƒ‰ƒX)‚ğİ’è‚·‚éŠÖ”
+	* @brief ãƒ†ã‚¯ã‚¹ãƒãƒ£ã‚’è¨­å®šã™ã‚‹é–¢æ•°
+	* @param file_name ä½¿ç”¨ã™ã‚‹ãƒ†ã‚¯ã‚¹ãƒãƒ£å
+	* @details ãƒ†ã‚¯ã‚¹ãƒãƒ£(ã‚¯ãƒ©ã‚¹)ã‚’è¨­å®šã™ã‚‹é–¢æ•°
 	*/
 	void SetTexture(const string& const file_name);
 
@@ -108,126 +108,126 @@ CEREAL_REGISTER_POLYMORPHIC_RELATION(GAME_OBJECT, BILL_BOARD)
 //////////////////////////////////////////////////
 
 /**
-* @brief ƒrƒ‹ƒ{[ƒhƒAƒjƒ[ƒVƒ‡ƒ“ƒNƒ‰ƒX
-* @details ƒrƒ‹ƒ{[ƒhƒAƒjƒ[ƒVƒ‡ƒ“ƒNƒ‰ƒX
+* @brief ãƒ“ãƒ«ãƒœãƒ¼ãƒ‰ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ã‚¯ãƒ©ã‚¹
+* @details ãƒ“ãƒ«ãƒœãƒ¼ãƒ‰ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ã‚¯ãƒ©ã‚¹
 */
 class BILL_BOARD_ANIMATION : public BILL_BOARD {
 private:
 
-	//! ƒtƒŒ[ƒ€ƒJƒEƒ“ƒ^
+	//! ãƒ•ãƒ¬ãƒ¼ãƒ ã‚«ã‚¦ãƒ³ã‚¿
 	static int FrameCount;
 
-	//! ‘Ò‚¿ƒtƒŒ[ƒ€(Ÿ‚Ìƒpƒ^[ƒ“‚É‘JˆÚ‚·‚é‚Ü‚Å‚ÌƒJƒEƒ“ƒg)
+	//! å¾…ã¡ãƒ•ãƒ¬ãƒ¼ãƒ (æ¬¡ã®ãƒ‘ã‚¿ãƒ¼ãƒ³ã«é·ç§»ã™ã‚‹ã¾ã§ã®ã‚«ã‚¦ãƒ³ãƒˆ)
 	WORD WaitFrame;
 
-	//! ¶¬‚ÌƒtƒŒ[ƒ€
+	//! ç”Ÿæˆæ™‚ã®ãƒ•ãƒ¬ãƒ¼ãƒ 
 	WORD CreatCount;
 
-	//! Œ»İ‚ÌƒAƒjƒ[ƒVƒ‡ƒ“ƒpƒ^[ƒ“ƒJƒEƒ“ƒg
+	//! ç¾åœ¨ã®ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ãƒ‘ã‚¿ãƒ¼ãƒ³ã‚«ã‚¦ãƒ³ãƒˆ
 	WORD PatternCount;
 
-	//! ¶¬‚©‚ç‚ÌƒtƒŒ[ƒ€
+	//! ç”Ÿæˆæ™‚ã‹ã‚‰ã®ãƒ•ãƒ¬ãƒ¼ãƒ 
 	WORD Age;
 
-	//! ƒeƒNƒXƒ`ƒƒØ‚èæ‚èÀ•W(x)
+	//! ãƒ†ã‚¯ã‚¹ãƒãƒ£åˆ‡ã‚Šå–ã‚Šåº§æ¨™(x)
 	float Tx;
 
-	//! ƒeƒNƒXƒ`ƒƒØ‚èæ‚èÀ•W(y)
+	//! ãƒ†ã‚¯ã‚¹ãƒãƒ£åˆ‡ã‚Šå–ã‚Šåº§æ¨™(y)
 	float Ty;
 
-	//! ƒeƒNƒXƒ`ƒƒ‚ÌØ‚èæ‚è•
+	//! ãƒ†ã‚¯ã‚¹ãƒãƒ£ã®åˆ‡ã‚Šå–ã‚Šå¹…
 	float Tw;
 
-	//! ƒeƒNƒXƒ`ƒƒ‚ÌØ‚èæ‚è‚‚³
+	//! ãƒ†ã‚¯ã‚¹ãƒãƒ£ã®åˆ‡ã‚Šå–ã‚Šé«˜ã•
 	float Th;
 
-	//! ƒCƒ“ƒfƒbƒNƒXƒoƒbƒtƒ@
+	//! ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ãƒãƒƒãƒ•ã‚¡
 	BYTE  Pattern_Max_X;
 
-	//! ƒCƒ“ƒfƒbƒNƒXƒoƒbƒtƒ@
+	//! ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ãƒãƒƒãƒ•ã‚¡
 	BYTE  Pattern_Max_Y;
 
 	/**
-	* @brief •`‰æˆ—ŠÖ”
-	* @details ÀÛ‚É•`‰æˆ—‚ğ‚·‚éŠÖ”
+	* @brief æç”»å‡¦ç†é–¢æ•°
+	* @details å®Ÿéš›ã«æç”»å‡¦ç†ã‚’ã™ã‚‹é–¢æ•°
 	*/
 	void Draw(float tx = -1.0f, float ty = -1.0f);
 
 	/**
-	* @brief •`‰æ(Depth-pre-pass)ŠÖ”
-	* @details ÀÛ‚ÉDepth-pre-pass‚ğ‚·‚éŠÖ”
+	* @brief æç”»(Depth-pre-pass)é–¢æ•°
+	* @details å®Ÿéš›ã«Depth-pre-passã‚’ã™ã‚‹é–¢æ•°
 	*/
 	void Draw_DPP(float tx = -1.0f, float ty = -1.0f);
 
 public:
 
-	//! ƒeƒNƒXƒ`ƒƒØ‚èæ‚èÀ•Wiè“®j
+	//! ãƒ†ã‚¯ã‚¹ãƒãƒ£åˆ‡ã‚Šå–ã‚Šåº§æ¨™ï¼ˆæ‰‹å‹•ï¼‰
 	float Tx_Param, Ty_Param;	
 
 	/**
-	* @brief ƒRƒ“ƒXƒgƒ‰ƒNƒ^
-	* @details ˆø”–³‚µƒRƒ“ƒXƒgƒ‰ƒNƒ^
+	* @brief ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
+	* @details å¼•æ•°ç„¡ã—ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
 	*/
 	BILL_BOARD_ANIMATION();
 
 	/**
-	* @brief ƒRƒ“ƒXƒgƒ‰ƒNƒ^
-	* @param position ’†SÀ•W
-	* @param wh ƒTƒCƒY
-	* @details ˆø”•t‚«ƒRƒ“ƒXƒgƒ‰ƒNƒ^
+	* @brief ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
+	* @param position ä¸­å¿ƒåº§æ¨™
+	* @param wh ã‚µã‚¤ã‚º
+	* @details å¼•æ•°ä»˜ãã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
 	*/
 	BILL_BOARD_ANIMATION(XMFLOAT3 position, XMFLOAT2 wh);
 
 	/**
-	* @brief ƒfƒXƒgƒ‰ƒNƒ^
-	* @details ƒfƒXƒgƒ‰ƒNƒ^
+	* @brief ãƒ‡ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
+	* @details ãƒ‡ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
 	*/
 	~BILL_BOARD_ANIMATION();
 
 	/**
-	* @brief ‰Šú‰»ŠÖ”
-	* @details ‰Šú‰»‚·‚éŠÖ”
+	* @brief åˆæœŸåŒ–é–¢æ•°
+	* @details åˆæœŸåŒ–ã™ã‚‹é–¢æ•°
 	*/
 	void Init() override;
 
 	/**
-	* @brief •`‰æŠÖ”
-	* @details •`‰æ‚·‚éŠÖ”
+	* @brief æç”»é–¢æ•°
+	* @details æç”»ã™ã‚‹é–¢æ•°
 	*/
 	void Draw() override;
 
 	/**
-	* @brief •`‰æ(Depth-pre-pass)ŠÖ”
-	* @details Depth-pre-pass‚ğ‚·‚éŠÖ”
+	* @brief æç”»(Depth-pre-pass)é–¢æ•°
+	* @details Depth-pre-passã‚’ã™ã‚‹é–¢æ•°
 	*/
 	void Draw_DPP() override;
 
 	/**
-	* @brief XVŠÖ”
-	* @details XV‚·‚éŠÖ”
+	* @brief æ›´æ–°é–¢æ•°
+	* @details æ›´æ–°ã™ã‚‹é–¢æ•°
 	*/
 	void Update(float delta_time) override;
 
 	/**
-	* @brief I—¹ˆ—ŠÖ”
-	* @details I—¹ˆ—‚ğ‚·‚éŠÖ”
+	* @brief çµ‚äº†å‡¦ç†é–¢æ•°
+	* @details çµ‚äº†å‡¦ç†ã‚’ã™ã‚‹é–¢æ•°
 	*/
 	void Uninit() override;
 
 	/**
-	* @brief ƒpƒ‰ƒ[ƒ^[‚Ìİ’è‚·‚éŠÖ”
-	* @param wait_frame ŠÔ(ƒtƒŒ[ƒ€’PˆÊ)
-	* @param x  ƒAƒjƒ[ƒVƒ‡ƒ“ƒpƒ^[ƒ“”(‰¡‚Ì”)
-	* @param y  ƒAƒjƒ[ƒVƒ‡ƒ“ƒpƒ^[ƒ“”(c‚Ì”)
-	* @details ƒAƒjƒ[ƒVƒ‡ƒ“‚Ìƒpƒ‰ƒ[ƒ^[‚Ìİ’è‚·‚éŠÖ”
+	* @brief ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿ãƒ¼ã®è¨­å®šã™ã‚‹é–¢æ•°
+	* @param wait_frame æ™‚é–“(ãƒ•ãƒ¬ãƒ¼ãƒ å˜ä½)
+	* @param x  ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ãƒ‘ã‚¿ãƒ¼ãƒ³æ•°(æ¨ªã®æ•°)
+	* @param y  ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ãƒ‘ã‚¿ãƒ¼ãƒ³æ•°(ç¸¦ã®æ•°)
+	* @details ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ã®ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿ãƒ¼ã®è¨­å®šã™ã‚‹é–¢æ•°
 	*/
 	void SetParam(const WORD wait_frame, const BYTE x, const BYTE y);
 
 	/**
-	* @brief ƒeƒNƒXƒ`ƒƒØ‚èæ‚èÀ•W‚Ìİ’è‚·‚éŠÖ”
-	* @param tx_param ƒeƒNƒXƒ`ƒƒØ‚èæ‚è•iè“®j
-	* @param ty_param ƒeƒNƒXƒ`ƒƒØ‚èæ‚è‚‚³iè“®j
-	* @details ƒAƒjƒ[ƒVƒ‡ƒ“‚ÌƒeƒNƒXƒ`ƒƒØ‚èæ‚èÀ•W‚Ìİ’è‚·‚éŠÖ”
+	* @brief ãƒ†ã‚¯ã‚¹ãƒãƒ£åˆ‡ã‚Šå–ã‚Šåº§æ¨™ã®è¨­å®šã™ã‚‹é–¢æ•°
+	* @param tx_param ãƒ†ã‚¯ã‚¹ãƒãƒ£åˆ‡ã‚Šå–ã‚Šå¹…ï¼ˆæ‰‹å‹•ï¼‰
+	* @param ty_param ãƒ†ã‚¯ã‚¹ãƒãƒ£åˆ‡ã‚Šå–ã‚Šé«˜ã•ï¼ˆæ‰‹å‹•ï¼‰
+	* @details ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ã®ãƒ†ã‚¯ã‚¹ãƒãƒ£åˆ‡ã‚Šå–ã‚Šåº§æ¨™ã®è¨­å®šã™ã‚‹é–¢æ•°
 	*/
 	void Set_Param_Txy(const float tx_param = -1.0f, const float ty_param = -1.0f);
 

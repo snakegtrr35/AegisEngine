@@ -1,6 +1,6 @@
-/**
+ï»¿/**
  * @file Game_Object.h
- * @brief Game_Object‚Ìƒwƒbƒ_[ƒtƒ@ƒCƒ‹
+ * @brief Game_Objectã®ãƒ˜ãƒƒãƒ€ãƒ¼ãƒ•ã‚¡ã‚¤ãƒ«
  */
 
 #pragma once
@@ -11,215 +11,215 @@
 #include	"Component_Manager.h"
 
  /**
- * @brief ƒQ[ƒ€ƒIƒuƒWƒFƒNƒgƒNƒ‰ƒX
- * @details ƒQ[ƒ€ƒIƒuƒWƒFƒNƒgƒNƒ‰ƒX
+ * @brief ã‚²ãƒ¼ãƒ ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚¯ãƒ©ã‚¹
+ * @details ã‚²ãƒ¼ãƒ ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚¯ãƒ©ã‚¹
  */
 class GAME_OBJECT {
 private:
-	//! ƒQ[ƒ€ƒIƒuƒWƒFƒNƒg‚Ì–¼Ìˆê——(Ã“I‚È‚à‚Ì)
+	//! ã‚²ãƒ¼ãƒ ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®åç§°ä¸€è¦§(é™çš„ãªã‚‚ã®)
 	static unordered_set<string> Object_Name_Map;
 
 protected:
 
-	//! ƒIƒuƒWƒFƒNƒg‚Ì–¼‘O
+	//! ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®åå‰
 	string Object_Name;
 
-	//! íœ‚·‚é‚©‚Ìƒtƒ‰ƒO
+	//! å‰Šé™¤ã™ã‚‹ã‹ã®ãƒ•ãƒ©ã‚°
 	bool DestroyFlag;
 
-	//! À•W
+	//! åº§æ¨™
 	XMFLOAT3 Position;
 	
-	//! ‰ñ“]—Ê
+	//! å›è»¢é‡
 	XMFLOAT3 Rotation;
 
-	//! Šg‘åk¬’l
+	//! æ‹¡å¤§ç¸®å°å€¤
 	XMFLOAT3 Scaling;
 
-	//! ƒRƒ“ƒ|[ƒlƒ“ƒg
+	//! ã‚³ãƒ³ãƒãƒ¼ãƒãƒ³ãƒˆ
 	unique_ptr<COMPONENT_MANEGER, Delete> Component;
 
-	////! ƒNƒI[ƒ^ƒjƒIƒ“
+	////! ã‚¯ã‚ªãƒ¼ã‚¿ãƒ‹ã‚ªãƒ³
 	//XMVECTOR Quaternion;
-	////! ƒfƒoƒbƒO—p‚ÌƒNƒI[ƒ^ƒjƒIƒ“
+	////! ãƒ‡ãƒãƒƒã‚°ç”¨ã®ã‚¯ã‚ªãƒ¼ã‚¿ãƒ‹ã‚ªãƒ³
 	//XMVECTOR Edit_Quaternion;
-	////! ƒNƒI[ƒ^ƒjƒIƒ“—p‚Ì“ü‚ê•¨
+	////! ã‚¯ã‚ªãƒ¼ã‚¿ãƒ‹ã‚ªãƒ³ç”¨ã®å…¥ã‚Œç‰©
 	//XMFLOAT4 Q_num;
 
 #ifdef _DEBUG
-	//XMFLOAT3 Edit_Position;				//! ƒfƒoƒbƒO—p‚ÌÀ•W
-	//XMFLOAT3 Edit_Rotation;				//! ƒfƒoƒbƒO—p‚Ì‰ñ“]—Ê
-	//XMFLOAT3 Edit_Scaling;				//! ƒfƒoƒbƒO—p‚ÌŠg‘åk¬’l
+	//XMFLOAT3 Edit_Position;				//! ãƒ‡ãƒãƒƒã‚°ç”¨ã®åº§æ¨™
+	//XMFLOAT3 Edit_Rotation;				//! ãƒ‡ãƒãƒƒã‚°ç”¨ã®å›è»¢é‡
+	//XMFLOAT3 Edit_Scaling;				//! ãƒ‡ãƒãƒƒã‚°ç”¨ã®æ‹¡å¤§ç¸®å°å€¤
 
-	//XMFLOAT4 Edit_Q_num;				//! ƒfƒoƒbƒO—p‚ÌƒNƒI[ƒ^ƒjƒIƒ“—p‚Ì“ü‚ê•¨
+	//XMFLOAT4 Edit_Q_num;				//! ãƒ‡ãƒãƒƒã‚°ç”¨ã®ã‚¯ã‚ªãƒ¼ã‚¿ãƒ‹ã‚ªãƒ³ç”¨ã®å…¥ã‚Œç‰©
 #endif // _DEBUG
 
 public:
 	/**
-	* @brief ƒRƒ“ƒXƒgƒ‰ƒNƒ^
-	* @details ˆø”–³‚µƒRƒ“ƒXƒgƒ‰ƒNƒ^
+	* @brief ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
+	* @details å¼•æ•°ç„¡ã—ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
 	*/
 	GAME_OBJECT();
 
 	/**
-	* @brief ƒfƒXƒgƒ‰ƒNƒ^
-	* @details ƒfƒXƒgƒ‰ƒNƒ^
+	* @brief ãƒ‡ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
+	* @details ãƒ‡ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
 	*/
 	virtual ~GAME_OBJECT();
 
 	/**
-	* @brief ‰Šú‰»ŠÖ”
-	* @details ‰¼‘z‰Šú‰»ŠÖ”
+	* @brief åˆæœŸåŒ–é–¢æ•°
+	* @details ä»®æƒ³åˆæœŸåŒ–é–¢æ•°
 	*/
 	virtual void Init();
 
 	/**
-	* @brief •`‰æŠÖ”
-	* @details ‰¼‘z•`‰æŠÖ”
+	* @brief æç”»é–¢æ•°
+	* @details ä»®æƒ³æç”»é–¢æ•°
 	*/
 	virtual void Draw();
 
 	/**
-	* @brief •`‰æ(Depth-pre-pass)ŠÖ”
-	* @details ƒˆ‰¼‘zDepth-pre-passŠÖ”
+	* @brief æç”»(Depth-pre-pass)é–¢æ•°
+	* @details ç´”ç²‹ä»®æƒ³Depth-pre-passé–¢æ•°
 	*/
 	virtual void Draw_DPP() = 0;
 
 	/**
-	* @brief XVŠÖ”
-	* @details ‰¼‘zXVŠÖ”
+	* @brief æ›´æ–°é–¢æ•°
+	* @details ä»®æƒ³æ›´æ–°é–¢æ•°
 	*/
 	virtual void Update(float delta_time);
 
 	/**
-	* @brief I—¹ˆ—ŠÖ”
-	* @details ƒˆ‰¼‘zI—¹ˆ—ŠÖ”
+	* @brief çµ‚äº†å‡¦ç†é–¢æ•°
+	* @details ç´”ç²‹ä»®æƒ³çµ‚äº†å‡¦ç†é–¢æ•°
 	*/
 	virtual void Uninit() = 0;
 
 	/**
-	* @brief íœ—v¿ŠÖ”
-	* @details íœ‚ğ‚µ‚Ä‚à‚ç‚¤ˆ×‚ÌŠÖ”(íœƒtƒ‰ƒO‚ğ—§‚Ä‚é)
+	* @brief å‰Šé™¤è¦è«‹é–¢æ•°
+	* @details å‰Šé™¤ã‚’ã—ã¦ã‚‚ã‚‰ã†ç‚ºã®é–¢æ•°(å‰Šé™¤ãƒ•ãƒ©ã‚°ã‚’ç«‹ã¦ã‚‹)
 	*/
 	void Set_Destroy();
 
 	/**
-	* @brief íœ”»’èŠÖ”
-	* @return bool íœ”»’è‚Ìƒtƒ‰ƒO
-	* @details íœ‚ğ‚·‚é‚©”»’f‚·‚éŠÖ”(è“®‚Å‚ÍŒÄ‚Î‚È‚¢‚Å‰º‚³‚¢)
+	* @brief å‰Šé™¤åˆ¤å®šé–¢æ•°
+	* @return bool å‰Šé™¤åˆ¤å®šã®ãƒ•ãƒ©ã‚°
+	* @details å‰Šé™¤ã‚’ã™ã‚‹ã‹åˆ¤æ–­ã™ã‚‹é–¢æ•°(æ‰‹å‹•ã§ã¯å‘¼ã°ãªã„ã§ä¸‹ã•ã„)
 	*/
 	bool Destroy();
 
 	/**
-	* @brief –¼‘O‚ğæ“¾‚·‚éŠÖ”
-	* @return string ƒIƒuƒWƒFƒNƒg‚Ì–¼‘O
-	* @details ƒIƒuƒWƒFƒNƒg‚Ì–¼‘O‚ğæ“¾‚·‚éŠÖ”
+	* @brief åå‰ã‚’å–å¾—ã™ã‚‹é–¢æ•°
+	* @return string ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®åå‰
+	* @details ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®åå‰ã‚’å–å¾—ã™ã‚‹é–¢æ•°
 	*/
 	const string& Get_Object_Name() {
 		return Object_Name;
 	};
 
 	/**
-	* @brief –¼‘O‚ğİ’è‚·‚éŠÖ”
-	* @param name –¼‘O(string)
-	* @details ƒIƒuƒWƒFƒNƒg‚Ì–¼‘O‚ğİ’è‚·‚éŠÖ”
+	* @brief åå‰ã‚’è¨­å®šã™ã‚‹é–¢æ•°
+	* @param name åå‰(string)
+	* @details ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®åå‰ã‚’è¨­å®šã™ã‚‹é–¢æ•°
 	*/
 	void Set_Object_Name(const string& name);
 
 	/**
-	* @brief À•W‚ğæ“¾‚·‚éŠÖ”
-	* @return XMFLOAT3* À•W(XMFLOAT3*)
-	* @details@ƒIƒuƒWƒFƒNƒg‚ÌÀ•W‚ğæ“¾‚·‚éŠÖ”
+	* @brief åº§æ¨™ã‚’å–å¾—ã™ã‚‹é–¢æ•°
+	* @return XMFLOAT3* åº§æ¨™(XMFLOAT3*)
+	* @detailsã€€ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®åº§æ¨™ã‚’å–å¾—ã™ã‚‹é–¢æ•°
 	*/
 	XMFLOAT3* const Get_Position() {
 		return &Position;
 	};
 
 	/**
-	* @brief ‰ñ“]‚ğæ“¾‚·‚éŠÖ”
-	* @return XMFLOAT3* ‰ñ“](XMFLOAT3*)
-	* @details@ƒIƒuƒWƒFƒNƒg‚Ì‰ñ“]‚ğæ“¾‚·‚éŠÖ”
+	* @brief å›è»¢ã‚’å–å¾—ã™ã‚‹é–¢æ•°
+	* @return XMFLOAT3* å›è»¢(XMFLOAT3*)
+	* @detailsã€€ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®å›è»¢ã‚’å–å¾—ã™ã‚‹é–¢æ•°
 	*/
 	XMFLOAT3* const Get_Rotation() {
 		return &Rotation;
 	};
 
 	/**
-	* @brief ƒXƒP[ƒg‚ğæ“¾‚·‚éŠÖ”
-	* @return XMFLOAT3* ƒXƒP[ƒg(XMFLOAT3*)
-	* @details@ƒIƒuƒWƒFƒNƒg‚ÌƒXƒP[ƒg‚ğæ“¾‚·‚éŠÖ”
+	* @brief ã‚¹ã‚±ãƒ¼ãƒˆã‚’å–å¾—ã™ã‚‹é–¢æ•°
+	* @return XMFLOAT3* ã‚¹ã‚±ãƒ¼ãƒˆ(XMFLOAT3*)
+	* @detailsã€€ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®ã‚¹ã‚±ãƒ¼ãƒˆã‚’å–å¾—ã™ã‚‹é–¢æ•°
 	*/
 	XMFLOAT3* const Get_Scaling() {
 		return &Scaling;
 	};
 
 	/**
-	* @brief À•W‚ğİ’è‚·‚éŠÖ”
-	* @param position À•W(XMFLOAT3*)
-	* @details ƒIƒuƒWƒFƒNƒg‚ÌÀ•W‚ğİ’è‚·‚éŠÖ”
+	* @brief åº§æ¨™ã‚’è¨­å®šã™ã‚‹é–¢æ•°
+	* @param position åº§æ¨™(XMFLOAT3*)
+	* @details ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®åº§æ¨™ã‚’è¨­å®šã™ã‚‹é–¢æ•°
 	*/
 	void Set_Position(XMFLOAT3* position) {
 		Position = *position;
 	}
 
 	/**
-	* @brief À•W‚ğİ’è‚·‚éŠÖ”
-	* @param position À•W(XMFLOAT3)
-	* @details ƒIƒuƒWƒFƒNƒg‚ÌÀ•W‚ğİ’è‚·‚éŠÖ”
+	* @brief åº§æ¨™ã‚’è¨­å®šã™ã‚‹é–¢æ•°
+	* @param position åº§æ¨™(XMFLOAT3)
+	* @details ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®åº§æ¨™ã‚’è¨­å®šã™ã‚‹é–¢æ•°
 	*/
 	void Set_Position(XMFLOAT3& position) {
 		Position = position;
 	};
 
 	/**
-	* @brief ‰ñ“]‚ğİ’è‚·‚éŠÖ”
-	* @param position ‰ñ“]—Ê(XMFLOAT3*)
-	* @details ƒIƒuƒWƒFƒNƒg‚Ì‰ñ“]‚ğİ’è‚·‚éŠÖ”
+	* @brief å›è»¢ã‚’è¨­å®šã™ã‚‹é–¢æ•°
+	* @param position å›è»¢é‡(XMFLOAT3*)
+	* @details ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®å›è»¢ã‚’è¨­å®šã™ã‚‹é–¢æ•°
 	*/
 	void Set_Rotation(XMFLOAT3* rotation) {
 		Rotation = *rotation;
 	};
 
 	/**
-	* @brief ‰ñ“]‚ğİ’è‚·‚éŠÖ”
-	* @param position ‰ñ“]—Ê(XMFLOAT3)
-	* @details ƒIƒuƒWƒFƒNƒg‚Ì‰ñ“]‚ğİ’è‚·‚éŠÖ”
+	* @brief å›è»¢ã‚’è¨­å®šã™ã‚‹é–¢æ•°
+	* @param position å›è»¢é‡(XMFLOAT3)
+	* @details ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®å›è»¢ã‚’è¨­å®šã™ã‚‹é–¢æ•°
 	*/
 	void Set_Rotation(XMFLOAT3& rotation) {
 		Rotation = rotation;
 	};
 
 	/**
-	* @brief ƒXƒP[ƒ‹‚ğİ’è‚·‚éŠÖ”
-	* @param position ƒXƒP[ƒ‹(XMFLOAT3*)
-	* @details ƒIƒuƒWƒFƒNƒg‚ÌƒXƒP[ƒ‹‚ğİ’è‚·‚éŠÖ”
+	* @brief ã‚¹ã‚±ãƒ¼ãƒ«ã‚’è¨­å®šã™ã‚‹é–¢æ•°
+	* @param position ã‚¹ã‚±ãƒ¼ãƒ«(XMFLOAT3*)
+	* @details ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®ã‚¹ã‚±ãƒ¼ãƒ«ã‚’è¨­å®šã™ã‚‹é–¢æ•°
 	*/
 	void Set_Scaling(XMFLOAT3* scaling) {
 		Scaling = *scaling;
 	};
 
 	/**
-	* @brief ƒXƒP[ƒ‹‚ğİ’è‚·‚éŠÖ”
-	* @param position ƒXƒP[ƒ‹(XMFLOAT3)
-	* @details ƒIƒuƒWƒFƒNƒg‚ÌƒXƒP[ƒ‹‚ğİ’è‚·‚éŠÖ”
+	* @brief ã‚¹ã‚±ãƒ¼ãƒ«ã‚’è¨­å®šã™ã‚‹é–¢æ•°
+	* @param position ã‚¹ã‚±ãƒ¼ãƒ«(XMFLOAT3)
+	* @details ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®ã‚¹ã‚±ãƒ¼ãƒ«ã‚’è¨­å®šã™ã‚‹é–¢æ•°
 	*/
 	void Set_Scaling(XMFLOAT3& scaling) {
 		Scaling = scaling;
 	};
 
 	/**
-	* @brief ƒRƒ“ƒ|[ƒlƒ“ƒg‚ğæ“¾‚·‚éŠÖ”
-	* @return COMPONENT_MANEGER* À•W(COMPONENT_MANEGER*)
-	* @details ƒIƒuƒWƒFƒNƒg‚ÌƒRƒ“ƒ|[ƒlƒ“ƒg‚ğæ“¾‚·‚éŠÖ”
+	* @brief ã‚³ãƒ³ãƒãƒ¼ãƒãƒ³ãƒˆã‚’å–å¾—ã™ã‚‹é–¢æ•°
+	* @return COMPONENT_MANEGER* åº§æ¨™(COMPONENT_MANEGER*)
+	* @details ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®ã‚³ãƒ³ãƒãƒ¼ãƒãƒ³ãƒˆã‚’å–å¾—ã™ã‚‹é–¢æ•°
 	*/
 	COMPONENT_MANEGER* const Get_Component() {
 		return Component.get();
 	}
 
 	/**
-	* @brief ƒQ[ƒ€ƒIƒuƒWƒFƒNƒgƒl[ƒ€ƒ}ƒbƒv‚ğæ“¾‚·‚éŠÖ”
-	* @return unordered_set<string> ƒQ[ƒ€ƒIƒuƒWƒFƒNƒgƒl[ƒ€ƒ}ƒbƒv(unordered_set<string>)
-	* @details ƒQ[ƒ€ƒIƒuƒWƒFƒNƒgƒl[ƒ€ƒ}ƒbƒv‚ğæ“¾‚·‚éŠÖ”
+	* @brief ã‚²ãƒ¼ãƒ ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆãƒãƒ¼ãƒ ãƒãƒƒãƒ—ã‚’å–å¾—ã™ã‚‹é–¢æ•°
+	* @return unordered_set<string> ã‚²ãƒ¼ãƒ ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆãƒãƒ¼ãƒ ãƒãƒƒãƒ—(unordered_set<string>)
+	* @details ã‚²ãƒ¼ãƒ ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆãƒãƒ¼ãƒ ãƒãƒƒãƒ—ã‚’å–å¾—ã™ã‚‹é–¢æ•°
 	*/
 	static const unordered_set<string>& Get_Object_Name_Map() {
 		return Object_Name_Map;

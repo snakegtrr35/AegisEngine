@@ -1,10 +1,10 @@
-#pragma once
+ï»¿#pragma once
 
 #ifndef TEXYUTE_H
 #define TEXYUTE_H
 
 //========================================
-// ƒeƒNƒXƒ`ƒƒƒNƒ‰ƒX
+// ãƒ†ã‚¯ã‚¹ãƒãƒ£ã‚¯ãƒ©ã‚¹
 //========================================
 class TEXTURE {
 private:
@@ -17,9 +17,9 @@ public:
 	TEXTURE(const string& file_name);
 	~TEXTURE() {};
 
-	void Set_Texture();											// ƒeƒNƒXƒ`ƒƒ‚ğİ’è(Directx11)
-	void Set_Texture_Name(const string& file_name);				// ƒeƒNƒXƒ`ƒƒ–¼‚Ìİ’è
-	const string& Get_Texture_Name();							// ƒeƒNƒXƒ`ƒƒ–¼‚Ìæ“¾
+	void Set_Texture();											// ãƒ†ã‚¯ã‚¹ãƒãƒ£ã‚’è¨­å®š(Directx11)
+	void Set_Texture_Name(const string& file_name);				// ãƒ†ã‚¯ã‚¹ãƒãƒ£åã®è¨­å®š
+	const string& Get_Texture_Name();							// ãƒ†ã‚¯ã‚¹ãƒãƒ£åã®å–å¾—
 
 	XMINT2* const Get_WH();
 

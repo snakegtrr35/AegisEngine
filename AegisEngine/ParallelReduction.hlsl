@@ -1,8 +1,8 @@
-//
+Ôªø//
 // Copyright 2014 ADVANCED MICRO DEVICES, INC.  All Rights Reserved.
 //
 // AMD is granting you permission to use this software and documentation (if
-// any) (collectively, the ìMaterialsÅE pursuant to the terms and conditions
+// any) (collectively, the Ê∫∫aterials„Éª pursuant to the terms and conditions
 // of the Software License Agreement included with the Materials.  If you do
 // not have a copy of the Software License Agreement, contact your AMD
 // representative for a copy.
@@ -71,7 +71,7 @@ RWTexture2D<float4> g_DepthBounds      : register( u0 );
 groupshared float ldsZMin[NUM_THREADS];
 groupshared float ldsZMax[NUM_THREADS];
 
-// CalculateDepthBoundsCS Å® main
+// CalculateDepthBoundsCS ‚Üí main
 [numthreads(NUM_THREADS_1D,NUM_THREADS_1D,1)]
 void main(uint3 globalIdx : SV_DispatchThreadID, uint3 localIdx : SV_GroupThreadID, uint3 groupIdx : SV_GroupID)
 {

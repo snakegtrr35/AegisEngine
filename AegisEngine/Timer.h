@@ -1,6 +1,6 @@
-/**
+ï»¿/**
 * @file Timer.h
-* @brief ŠÔŠÖŒW‚ÌƒNƒ‰ƒX‚ª‚ ‚éƒwƒbƒ_[ƒtƒ@ƒCƒ‹
+* @brief æ™‚é–“é–¢ä¿‚ã®ã‚¯ãƒ©ã‚¹ãŒã‚ã‚‹ãƒ˜ãƒƒãƒ€ãƒ¼ãƒ•ã‚¡ã‚¤ãƒ«
 */
 
 #pragma once
@@ -9,14 +9,14 @@
 #define TIMER_H
 
 /**
-* @brief ƒ^ƒCƒ}[ƒNƒ‰ƒX
-* @details ƒQ[ƒ€‚ÌFPS‚ÉˆË‘¶‚µ‚È‚¢(‚Ù‚Ú)ƒ^ƒCƒ}[
+* @brief ã‚¿ã‚¤ãƒãƒ¼ã‚¯ãƒ©ã‚¹
+* @details ã‚²ãƒ¼ãƒ ã®FPSã«ä¾å­˜ã—ãªã„(ã»ã¼)ã‚¿ã‚¤ãƒãƒ¼
 */
 class TIMER {
 private:
-	static LARGE_INTEGER start;		//! ŠJnŠÔ‚ª“ü‚Á‚Ä‚¢‚é•Ï”
-	static LARGE_INTEGER end;		//! Œ»İŠÔ‚ª“ü‚Á‚Ä‚¢‚é•Ï”
-	static LARGE_INTEGER frep;		//! ƒ^ƒCƒ€ŠÖŒW‚Ì’l‚ª“ü‚Á‚Ä‚¢‚é•Ï”
+	static LARGE_INTEGER start;		//! é–‹å§‹æ™‚é–“ãŒå…¥ã£ã¦ã„ã‚‹å¤‰æ•°
+	static LARGE_INTEGER end;		//! ç¾åœ¨æ™‚é–“ãŒå…¥ã£ã¦ã„ã‚‹å¤‰æ•°
+	static LARGE_INTEGER frep;		//! ã‚¿ã‚¤ãƒ é–¢ä¿‚ã®å€¤ãŒå…¥ã£ã¦ã„ã‚‹å¤‰æ•°
 
 	static LARGE_INTEGER delta_start;		//!
 	static LARGE_INTEGER delta_end;			//!
@@ -33,7 +33,7 @@ public:
 	static double FPS;
 
 	/**
-	* @brief ‰Šú‰»‚ÌŠÖ”
+	* @brief åˆæœŸåŒ–ã®é–¢æ•°
 	*/
 	static void Init() {
 
@@ -52,8 +52,8 @@ public:
 	}
 
 	/**
-	* @brief ŠÔ‚Ìæ“¾ŠÖ”
-	* @return DWORD ƒQ[ƒ€ŠJn‚©‚ç‚ÌŒo‰ß
+	* @brief æ™‚é–“ã®å–å¾—é–¢æ•°
+	* @return DWORD ã‚²ãƒ¼ãƒ é–‹å§‹æ™‚ã‹ã‚‰ã®çµŒéæ™‚åˆ»
 	*/
 	static DWORD Get_Time() {
 		QueryPerformanceCounter(&end);
@@ -61,8 +61,8 @@ public:
 	}
 
 	/**
-	* @brief ŠÔ‚Ìæ“¾ŠÖ”(’PˆÊ •b)
-	* @return DWORD ƒQ[ƒ€ŠJn‚©‚ç‚ÌŒo‰ß(’PˆÊ •b)
+	* @brief æ™‚é–“ã®å–å¾—é–¢æ•°(å˜ä½ ç§’)
+	* @return DWORD ã‚²ãƒ¼ãƒ é–‹å§‹æ™‚ã‹ã‚‰ã®çµŒéæ™‚åˆ»(å˜ä½ ç§’)
 	*/
 	static DWORD Get_Time_Sec() {
 		QueryPerformanceCounter(&end);
@@ -70,9 +70,9 @@ public:
 	}
 
 	/**
-	* @brief ŠÔ‚Ìæ“¾ŠÖ”((’PˆÊ ƒ~ƒŠ•b))
-	* @param[in] digit ¬”“_ˆÈ‰º‚ÌŒ…”
-	* @return DWORD ƒQ[ƒ€ŠJn‚©‚ç‚ÌŒo‰ß(’PˆÊ ƒ~ƒŠ•b)
+	* @brief æ™‚é–“ã®å–å¾—é–¢æ•°((å˜ä½ ãƒŸãƒªç§’))
+	* @param[in] digit å°æ•°ç‚¹ä»¥ä¸‹ã®æ¡æ•°
+	* @return DWORD ã‚²ãƒ¼ãƒ é–‹å§‹æ™‚ã‹ã‚‰ã®çµŒéæ™‚åˆ»(å˜ä½ ãƒŸãƒªç§’)
 	*/
 	static DWORD Get_Time_Mili(const unsigned char digit = 1) {
 		QueryPerformanceCounter(&end);
@@ -95,7 +95,7 @@ public:
 		//if (0 == (cnt % 10))
 		{
 			time = ((delta_end.QuadPart - delta_start.QuadPart) * 1000.0 / frep.QuadPart) * 0.001;
-			//time = 1 / (((delta_end.QuadPart - delta_start.QuadPart) * 1000.0 / frep.QuadPart) * 0.001); //1ƒtƒŒ[ƒ€ƒŒ[ƒg(ms)
+			//time = 1 / (((delta_end.QuadPart - delta_start.QuadPart) * 1000.0 / frep.QuadPart) * 0.001); //1ãƒ•ãƒ¬ãƒ¼ãƒ ãƒ¬ãƒ¼ãƒˆ(ms)
 
 			{
 				double fps = 1.0 / time;
@@ -148,12 +148,12 @@ public:
 
 
 /**
-* @brief ƒNƒƒbƒNƒ^ƒCƒ}[ƒNƒ‰ƒX
-* @details ƒQ[ƒ€‚ÌFPS‚ÉˆË‘¶‚·‚éƒ^ƒCƒ}[
+* @brief ã‚¯ãƒ­ãƒƒã‚¯ã‚¿ã‚¤ãƒãƒ¼ã‚¯ãƒ©ã‚¹
+* @details ã‚²ãƒ¼ãƒ ã®FPSã«ä¾å­˜ã™ã‚‹ã‚¿ã‚¤ãƒãƒ¼
 */
 class CLOCK_TIMER {
 private:
-	static DWORD Time;		//! ƒ^ƒCƒ€‚ª“ü‚é•Ï”
+	static DWORD Time;		//! ã‚¿ã‚¤ãƒ ãŒå…¥ã‚‹å¤‰æ•°
 
 	CLOCK_TIMER() {}
 
@@ -162,21 +162,21 @@ protected:
 public:
 
 	/**
-	* @brief ‰Šú‰»‚ÌŠÖ”
+	* @brief åˆæœŸåŒ–ã®é–¢æ•°
 	*/
 	static void Init() {
 		Time = 0;
 	};
 
 	/**
-	* @brief ƒ^ƒCƒ}[‚ÌXVŠÖ”
+	* @brief ã‚¿ã‚¤ãƒãƒ¼ã®æ›´æ–°é–¢æ•°
 	*/
 	static void Update() {
 		Time++;
 	}
 
 	/**
-	* @brief ŠÔ‚Ìæ“¾ŠÖ”
+	* @brief æ™‚é–“ã®å–å¾—é–¢æ•°
 	*/
 	static const DWORD Get_Time() {
 		return Time;

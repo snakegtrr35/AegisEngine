@@ -1,4 +1,4 @@
-#include	"Input.h"
+﻿#include	"Input.h"
 
 //CINPUT* CINPUT::InputDevice = nullptr;
 RAWINPUTDEVICE CINPUT::device[2];
@@ -41,7 +41,7 @@ void CINPUT::onRawInput(WPARAM wParam, LPARAM lParam)
 	}
 	else if (raw->header.dwType == RIM_TYPEMOUSE)
 	{
-		// �}�E�X�ړ��ʂ̎擾
+		// マウス移動量の取得
 		{
 			POINT pos;
 

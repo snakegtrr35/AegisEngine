@@ -1,4 +1,4 @@
-#include	"Score.h"
+﻿#include	"Score.h"
 #include	"Sprite_Animation.h"
 #include	"manager.h"
 #include	"ShadowMap.h"

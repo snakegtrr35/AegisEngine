@@ -1,4 +1,4 @@
-#include	"Component_Manager.h"
+ï»¿#include	"Component_Manager.h"
 #include	"Component.h"
 
 #ifdef _DEBUG
@@ -47,7 +47,7 @@ void COMPONENT_MANEGER::Update(float delta_time)
 		}
 	}
 
-	//Conponent_List.remove_if([](auto& object) { return object->Destroy(); }); // ƒŠƒXƒg‚©‚çíœ
+	//Conponent_List.remove_if([](auto& object) { return object->Destroy(); }); // ãƒªã‚¹ãƒˆã‹ã‚‰å‰Šé™¤
 	Conponents.erase(std::remove_if(Conponents.begin(), Conponents.end(), [](auto& object) { return object->Destroy(); }), Conponents.end());
 }
 

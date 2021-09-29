@@ -1,6 +1,6 @@
-/**
+ï»¿/**
  * @file Bounding_Obb.h
- * @brief OBB‚Ìƒwƒbƒ_[ƒtƒ@ƒCƒ‹
+ * @brief OBBã®ãƒ˜ãƒƒãƒ€ãƒ¼ãƒ•ã‚¡ã‚¤ãƒ«
  */
 
 #pragma once
@@ -13,77 +13,77 @@
 // OBB
 class BOUNDING_OBB : public BOUNDING {
 private:
-	//! ’¸“_ƒoƒbƒtƒ@
+	//! é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡
 	unique_ptr<ID3D11Buffer, Release> pVertexBuffer;
 
 	//! OBB
 	BoundingOrientedBox Obb;
 
-	//! Še•Ó‚Ì’·‚³
+	//! å„è¾ºã®é•·ã•
 	XMFLOAT3 Radius;
 
-	//! ‰ñ“]—Ê(ƒNƒI[ƒ^ƒjƒIƒ“)
+	//! å›è»¢é‡(ã‚¯ã‚ªãƒ¼ã‚¿ãƒ‹ã‚ªãƒ³)
 	XMFLOAT4 Quaternion;
 
 public:
 	/**
-	* @brief ƒRƒ“ƒXƒgƒ‰ƒNƒ^
-	* @details ˆø”–³‚µƒRƒ“ƒXƒgƒ‰ƒNƒ^
+	* @brief ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
+	* @details å¼•æ•°ç„¡ã—ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
 	*/
 	BOUNDING_OBB() : Radius(XMFLOAT3(0.5f, 0.5f, 0.5f)), Quaternion(XMFLOAT4(0.f, 0.f, 0.f, 1.0f)) {}
 
 	/**
-	* @brief ƒfƒXƒgƒ‰ƒNƒ^
-	* @details ƒfƒXƒgƒ‰ƒNƒ^
+	* @brief ãƒ‡ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
+	* @details ãƒ‡ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
 	*/
 	~BOUNDING_OBB();
 
 	/**
-	* @brief ‰Šú‰»ŠÖ”
-	* @details ‰Šú‰»‚·‚éŠÖ”
+	* @brief åˆæœŸåŒ–é–¢æ•°
+	* @details åˆæœŸåŒ–ã™ã‚‹é–¢æ•°
 	*/
 	void Init() override;
 
 	/**
-	* @brief •`‰æŠÖ”
-	* @details •`‰æ‚·‚éŠÖ”
+	* @brief æç”»é–¢æ•°
+	* @details æç”»ã™ã‚‹é–¢æ•°
 	*/
 	void Draw() override;
 
 	/**
-	* @brief •`‰æ(Depth-pre-pass)ŠÖ”
-	* @details Depth-pre-pass‚ğ‚·‚éŠÖ”
+	* @brief æç”»(Depth-pre-pass)é–¢æ•°
+	* @details Depth-pre-passã‚’ã™ã‚‹é–¢æ•°
 	*/
 	void Draw_DPP() override {}
 
 	/**
-	* @brief XVŠÖ”
-	* @details XV‚·‚éŠÖ”
+	* @brief æ›´æ–°é–¢æ•°
+	* @details æ›´æ–°ã™ã‚‹é–¢æ•°
 	*/
 	void Update(float delta_time) override;
 
 	/**
-	* @brief I—¹ˆ—ŠÖ”
-	* @details I—¹ˆ—‚ğ‚·‚éŠÖ”
+	* @brief çµ‚äº†å‡¦ç†é–¢æ•°
+	* @details çµ‚äº†å‡¦ç†ã‚’ã™ã‚‹é–¢æ•°
 	*/
 	void Uninit() override;
 
 	/**
-	* @brief ƒCƒ“ƒXƒyƒNƒ^[‚Å‚Ì•`‰æŠÖ”
-	* @details ƒCƒ“ƒXƒyƒNƒ^[‚Å‚Ì•`‰æ‚ğ‚·‚éŠÖ”
+	* @brief ã‚¤ãƒ³ã‚¹ãƒšã‚¯ã‚¿ãƒ¼ã§ã®æç”»é–¢æ•°
+	* @details ã‚¤ãƒ³ã‚¹ãƒšã‚¯ã‚¿ãƒ¼ã§ã®æç”»ã‚’ã™ã‚‹é–¢æ•°
 	*/
 	void Draw_Inspector() override;
 
 	/**
-	* @brief ’¸“_ƒoƒbƒtƒ@‚ÌXVŠÖ”
-	* @details ’¸“_ƒoƒbƒtƒ@‚ÌXV‚ğ‚·‚éŠÖ”
+	* @brief é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡ã®æ›´æ–°é–¢æ•°
+	* @details é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡ã®æ›´æ–°ã‚’ã™ã‚‹é–¢æ•°
 	*/
 	void OverWrite() override;
 
 	/**
-	* @brief ƒoƒEƒ“ƒfƒBƒ“ƒOOBB(“–‚½‚è”»’èê—p)‚ğæ“¾‚·‚éŠÖ”
-	* @return BoundingOrientedBox& ƒoƒEƒ“ƒfƒBƒ“ƒOOBB(“–‚½‚è”»’èê—p)
-	* @details ƒoƒEƒ“ƒfƒBƒ“ƒOOBB(“–‚½‚è”»’èê—p)‚ğæ“¾‚·‚éŠÖ”
+	* @brief ãƒã‚¦ãƒ³ãƒ‡ã‚£ãƒ³ã‚°OBB(å½“ãŸã‚Šåˆ¤å®šå°‚ç”¨)ã‚’å–å¾—ã™ã‚‹é–¢æ•°
+	* @return BoundingOrientedBox& ãƒã‚¦ãƒ³ãƒ‡ã‚£ãƒ³ã‚°OBB(å½“ãŸã‚Šåˆ¤å®šå°‚ç”¨)
+	* @details ãƒã‚¦ãƒ³ãƒ‡ã‚£ãƒ³ã‚°OBB(å½“ãŸã‚Šåˆ¤å®šå°‚ç”¨)ã‚’å–å¾—ã™ã‚‹é–¢æ•°
 	*/
 	const BoundingOrientedBox& Get_Collition();
 

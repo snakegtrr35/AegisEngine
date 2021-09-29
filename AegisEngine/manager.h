@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 
 #ifndef MANAGER_H
 #define MANAGER_H
@@ -14,8 +14,8 @@ class CLUSTERED;
 class CManager {
 private:
 
-	//! ƒXƒ}[ƒgƒ|ƒCƒ“ƒ^—p‚ÌƒJƒXƒ^ƒ€ƒfƒŠ[ƒ^[
-	/*! Uninit() ‚ª‚ ‚é */
+	//! ã‚¹ãƒãƒ¼ãƒˆãƒã‚¤ãƒ³ã‚¿ç”¨ã®ã‚«ã‚¹ã‚¿ãƒ ãƒ‡ãƒªãƒ¼ã‚¿ãƒ¼
+	/*! Uninit() ãŒã‚ã‚‹ */
 	struct Uninit {
 		template<class T>
 		void operator()(T* p) const {
@@ -31,11 +31,11 @@ private:
 
 	unique_ptr<SHADOW_MAP, Delete> pShadowMap;
 #ifdef _DEBUG
-	unique_ptr<My_imgui, Delete> imgui;		// Imgui‚ÌƒNƒ‰ƒX
+	unique_ptr<My_imgui, Delete> imgui;		// Imguiã®ã‚¯ãƒ©ã‚¹
 	bool Play_Enable;
 #endif // _DEBUG
 
-	unique_ptr<CLUSTERED, Delete> cluster;		// CLUSTERED‚ÌƒNƒ‰ƒX
+	unique_ptr<CLUSTERED, Delete> cluster;		// CLUSTEREDã®ã‚¯ãƒ©ã‚¹
 
 	UINT ThreadCount;
 

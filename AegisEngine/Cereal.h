@@ -1,11 +1,11 @@
-#pragma once
+ï»¿#pragma once
 
 #ifndef CEREAL_H
 #define CEREAL_H
 
 namespace DirectX
 {
-	// ”ñN“üŒ^‚ÌƒVƒŠƒAƒ‰ƒCƒY’è‹`
+	// éä¾µå…¥å‹ã®ã‚·ãƒªã‚¢ãƒ©ã‚¤ã‚ºå®šç¾©
 
 	template<class Archive>
 	void serialize(Archive& archive, XMINT2& vector)

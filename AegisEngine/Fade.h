@@ -1,6 +1,6 @@
-/**
+ï»¿/**
  * @file Fade.h
- * @brief ƒtƒFƒCƒhŠÖŒW‚Ìƒwƒbƒ_[ƒtƒ@ƒCƒ‹
+ * @brief ãƒ•ã‚§ã‚¤ãƒ‰é–¢ä¿‚ã®ãƒ˜ãƒƒãƒ€ãƒ¼ãƒ•ã‚¡ã‚¤ãƒ«
  */
 
 #pragma once
@@ -11,127 +11,127 @@
 #include	"Sprite.h"
 
  /**
- * @brief ƒtƒFƒCƒhƒNƒ‰ƒX
- * @details ƒtƒFƒCƒhƒNƒ‰ƒX
+ * @brief ãƒ•ã‚§ã‚¤ãƒ‰ã‚¯ãƒ©ã‚¹
+ * @details ãƒ•ã‚§ã‚¤ãƒ‰ã‚¯ãƒ©ã‚¹
  */
 class FADE : public SPRITE {
 private:
 	
-	//! ƒtƒFƒCƒh‚ªI—¹‚µ‚½‚©‚ğ”»’è‚·‚éƒtƒ‰ƒO(g—p‚µ‚Ä‚¢‚È‚¢‚ÍfalseAƒtƒFƒCƒh‚ªI—¹‚µ‚½‚çtrue)
+	//! ãƒ•ã‚§ã‚¤ãƒ‰ãŒçµ‚äº†ã—ãŸã‹ã‚’åˆ¤å®šã™ã‚‹ãƒ•ãƒ©ã‚°(ä½¿ç”¨ã—ã¦ã„ãªã„æ™‚ã¯falseã€ãƒ•ã‚§ã‚¤ãƒ‰ãŒçµ‚äº†ã—ãŸã‚‰true)
 	static bool FadeEnable;
 
-	//! ƒtƒ@ƒCƒh‚ÌF
+	//! ãƒ•ã‚¡ã‚¤ãƒ‰ã®è‰²
 	XMFLOAT4 Color;
 
-	//! ƒTƒCƒY
+	//! ã‚µã‚¤ã‚º
 	XMFLOAT2 WH;
 
-	//! ƒtƒ@ƒCƒh‚Ì’·‚³(ƒtƒŒ[ƒ€’PˆÊ)
+	//! ãƒ•ã‚¡ã‚¤ãƒ‰ã®é•·ã•(ãƒ•ãƒ¬ãƒ¼ãƒ å˜ä½)
 	WORD Time;
 
-	//! ¶¬‚©‚ç‚ÌƒJƒEƒ“ƒg
+	//! ç”Ÿæˆæ™‚ã‹ã‚‰ã®ã‚«ã‚¦ãƒ³ãƒˆ
 	WORD Cnt;
 
-	//! ƒtƒ@ƒCƒh‚Ì“§–¾“x
+	//! ãƒ•ã‚¡ã‚¤ãƒ‰ã®é€æ˜åº¦
 	float AdditionalAlpha;
 
 	/**
-	* @brief ƒtƒ@ƒCƒh‚ªI—¹‚·‚é‚©‚ğ”»’è‚ğ‚·‚éŠÖ”
-	* @return bool ”»’èƒtƒ‰ƒO(I—¹‚·‚é‚È‚çtrue)
-	* @details ƒtƒ@ƒCƒh‚ªI—¹‚·‚é‚©‚Ìƒtƒ‰ƒO‚ğæ“¾‚·‚éŠÖ”
+	* @brief ãƒ•ã‚¡ã‚¤ãƒ‰ãŒçµ‚äº†ã™ã‚‹ã‹ã‚’åˆ¤å®šã‚’ã™ã‚‹é–¢æ•°
+	* @return bool åˆ¤å®šãƒ•ãƒ©ã‚°(çµ‚äº†ã™ã‚‹ãªã‚‰true)
+	* @details ãƒ•ã‚¡ã‚¤ãƒ‰ãŒçµ‚äº†ã™ã‚‹ã‹ã®ãƒ•ãƒ©ã‚°ã‚’å–å¾—ã™ã‚‹é–¢æ•°
 	*/
 	bool Get_FadeEnable();
 
 	/**
-	* @brief À•W‚ğİ’è‚·‚éŠÖ”
-	* @param position À•W(“ñŸŒ³À•W)
-	* @details À•W(“ñŸŒ³À•W)‚ğİ’è‚·‚éŠÖ”
+	* @brief åº§æ¨™ã‚’è¨­å®šã™ã‚‹é–¢æ•°
+	* @param position åº§æ¨™(äºŒæ¬¡å…ƒåº§æ¨™)
+	* @details åº§æ¨™(äºŒæ¬¡å…ƒåº§æ¨™)ã‚’è¨­å®šã™ã‚‹é–¢æ•°
 	*/
 	void Set_AdditionalAlpha(const WORD time, const float sign);
 
 public: 
 
 	/**
-	* @brief ƒRƒ“ƒXƒgƒ‰ƒNƒ^
-	* @details ˆø”–³‚µƒRƒ“ƒXƒgƒ‰ƒNƒ^
+	* @brief ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
+	* @details å¼•æ•°ç„¡ã—ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
 	*/
 	FADE();
 
 	/**
-	* @brief ƒfƒXƒgƒ‰ƒNƒ^
-	* @details ƒfƒXƒgƒ‰ƒNƒ^
+	* @brief ãƒ‡ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
+	* @details ãƒ‡ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
 	*/
 	~FADE();
 
 	/**
-	* @brief ‰Šú‰»ŠÖ”
-	* @details ‰Šú‰»‚·‚éŠÖ”
+	* @brief åˆæœŸåŒ–é–¢æ•°
+	* @details åˆæœŸåŒ–ã™ã‚‹é–¢æ•°
 	*/
 	void Init();
 
 	/**
-	* @brief •`‰æŠÖ”
-	* @details •`‰æ‚·‚éŠÖ”
+	* @brief æç”»é–¢æ•°
+	* @details æç”»ã™ã‚‹é–¢æ•°
 	*/
 	void Draw();
 
 	/**
-	* @brief •`‰æ(Depth-pre-pass)ŠÖ”
-	* @details Depth-pre-pass‚ğ‚·‚éŠÖ”
+	* @brief æç”»(Depth-pre-pass)é–¢æ•°
+	* @details Depth-pre-passã‚’ã™ã‚‹é–¢æ•°
 	*/
 	void Draw_DPP() {};
 
 	/**
-	* @brief XVŠÖ”
-	* @details XV‚·‚éŠÖ”
+	* @brief æ›´æ–°é–¢æ•°
+	* @details æ›´æ–°ã™ã‚‹é–¢æ•°
 	*/
 	void Update(float delta_time);
 
 	/**
-	* @brief I—¹ˆ—ŠÖ”
-	* @details I—¹ˆ—‚ğ‚·‚éŠÖ”
+	* @brief çµ‚äº†å‡¦ç†é–¢æ•°
+	* @details çµ‚äº†å‡¦ç†ã‚’ã™ã‚‹é–¢æ•°
 	*/
 	void Uninit();
 
 	/**
-	* @brief ƒtƒFƒCƒh‚ÌŠÔ‚ğİ’è‚·‚éŠÖ”
-	* @param WORD ŠÔ(ƒtƒŒ[ƒ€’PˆÊ)
-	* @details ƒtƒFƒCƒh‚É‚©‚©‚éŠÔ‚ğİ’è‚·‚éŠÖ”
+	* @brief ãƒ•ã‚§ã‚¤ãƒ‰ã®æ™‚é–“ã‚’è¨­å®šã™ã‚‹é–¢æ•°
+	* @param WORD æ™‚é–“(ãƒ•ãƒ¬ãƒ¼ãƒ å˜ä½)
+	* @details ãƒ•ã‚§ã‚¤ãƒ‰ã«ã‹ã‹ã‚‹æ™‚é–“ã‚’è¨­å®šã™ã‚‹é–¢æ•°
 	*/
 	void Set_Time(const WORD time);
 
 	/**
-	* @brief F‚ğİ’è‚·‚éŠÖ”
-	* @param XMFLOAT4 F
-	* @details ƒtƒFƒCƒh‚ÌF‚ğİ’è‚·‚éŠÖ”
+	* @brief è‰²ã‚’è¨­å®šã™ã‚‹é–¢æ•°
+	* @param XMFLOAT4 è‰²
+	* @details ãƒ•ã‚§ã‚¤ãƒ‰ã®è‰²ã‚’è¨­å®šã™ã‚‹é–¢æ•°
 	*/
 	void Set_Color(const XMFLOAT4& color);
 
 	/**
-	* @brief ƒtƒFƒCƒhƒAƒEƒg‚ğŠJn‚·‚éŠÖ”
-	* @param time ƒtƒFƒCƒh‚É‚©‚©‚éŠÔ(ƒtƒŒ[ƒ€’PˆÊ)
-	* @details ƒtƒFƒCƒhƒAƒEƒg‚ğŠJn‚·‚éŠÖ”
+	* @brief ãƒ•ã‚§ã‚¤ãƒ‰ã‚¢ã‚¦ãƒˆã‚’é–‹å§‹ã™ã‚‹é–¢æ•°
+	* @param time ãƒ•ã‚§ã‚¤ãƒ‰ã«ã‹ã‹ã‚‹æ™‚é–“(ãƒ•ãƒ¬ãƒ¼ãƒ å˜ä½)
+	* @details ãƒ•ã‚§ã‚¤ãƒ‰ã‚¢ã‚¦ãƒˆã‚’é–‹å§‹ã™ã‚‹é–¢æ•°
 	*/
 	static void Start_FadeOut(const WORD time);
 
 	/**
-	* @brief ƒtƒFƒCƒhƒCƒ“‚ğŠJn‚·‚éŠÖ”
-	* @param time ƒtƒFƒCƒh‚É‚©‚©‚éŠÔ(ƒtƒŒ[ƒ€’PˆÊ)
-	* @details ƒtƒFƒCƒhƒCƒ“‚ğŠJn‚·‚éŠÖ”
+	* @brief ãƒ•ã‚§ã‚¤ãƒ‰ã‚¤ãƒ³ã‚’é–‹å§‹ã™ã‚‹é–¢æ•°
+	* @param time ãƒ•ã‚§ã‚¤ãƒ‰ã«ã‹ã‹ã‚‹æ™‚é–“(ãƒ•ãƒ¬ãƒ¼ãƒ å˜ä½)
+	* @details ãƒ•ã‚§ã‚¤ãƒ‰ã‚¤ãƒ³ã‚’é–‹å§‹ã™ã‚‹é–¢æ•°
 	*/
 	static void Start_FadeIn(const WORD time);
 
 	/**
-	* @brief ƒtƒFƒCƒh‚ªI—¹‚µ‚½‚©‚ğæ“¾‚·‚éŠÖ”
-	* @return bool ƒtƒFƒCƒh‚ªI—¹‚µ‚½‚©‚ğ”»’è‚·‚éƒtƒ‰ƒO(ƒtƒFƒCƒh‚ªI—¹‚È‚çtrue)
-	* @details ƒtƒFƒCƒh‚ªI—¹‚µ‚½‚©‚ğ”»’è‚·‚éƒtƒ‰ƒO‚ğæ“¾‚·‚éŠÖ”
+	* @brief ãƒ•ã‚§ã‚¤ãƒ‰ãŒçµ‚äº†ã—ãŸã‹ã‚’å–å¾—ã™ã‚‹é–¢æ•°
+	* @return bool ãƒ•ã‚§ã‚¤ãƒ‰ãŒçµ‚äº†ã—ãŸã‹ã‚’åˆ¤å®šã™ã‚‹ãƒ•ãƒ©ã‚°(ãƒ•ã‚§ã‚¤ãƒ‰ãŒçµ‚äº†ãªã‚‰true)
+	* @details ãƒ•ã‚§ã‚¤ãƒ‰ãŒçµ‚äº†ã—ãŸã‹ã‚’åˆ¤å®šã™ã‚‹ãƒ•ãƒ©ã‚°ã‚’å–å¾—ã™ã‚‹é–¢æ•°
 	*/
 	static bool End_Fade();
 
 	///**
-	//* @brief À•W‚ğİ’è‚·‚éŠÖ”
-	//* @param position À•W(“ñŸŒ³À•W)
-	//* @details À•W(“ñŸŒ³À•W)‚ğİ’è‚·‚éŠÖ”
+	//* @brief åº§æ¨™ã‚’è¨­å®šã™ã‚‹é–¢æ•°
+	//* @param position åº§æ¨™(äºŒæ¬¡å…ƒåº§æ¨™)
+	//* @details åº§æ¨™(äºŒæ¬¡å…ƒåº§æ¨™)ã‚’è¨­å®šã™ã‚‹é–¢æ•°
 	//*/
 	//static void Set_Enable(const bool flag);
 

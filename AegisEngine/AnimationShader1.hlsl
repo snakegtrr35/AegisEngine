@@ -1,8 +1,8 @@
-//*****************************************************************************
-// ’è”ƒoƒbƒtƒ@
+ï»¿//*****************************************************************************
+// å®šæ•°ãƒãƒƒãƒ•ã‚¡
 //*****************************************************************************
 
-// ƒ}ƒgƒŠƒNƒXƒoƒbƒtƒ@
+// ãƒãƒˆãƒªã‚¯ã‚¹ãƒãƒƒãƒ•ã‚¡
 cbuffer WorldBuffer : register(b0)
 {
     matrix World;
@@ -21,7 +21,7 @@ cbuffer BoneMatrix : register(b3)
     matrix Bone[256];
 }
 
-// ƒ}ƒeƒŠƒAƒ‹ƒoƒbƒtƒ@
+// ãƒãƒ†ãƒªã‚¢ãƒ«ãƒãƒƒãƒ•ã‚¡
 struct MATERIAL
 {
     float4 Ambient;
@@ -29,7 +29,7 @@ struct MATERIAL
     float4 Specular;
     float4 Emission;
     float Shininess;
-    float3 Dummy; //16bit‹«ŠE—p
+    float3 Dummy; //16bitå¢ƒç•Œç”¨
 };
 
 cbuffer MaterialBuffer : register(b3)
@@ -38,7 +38,7 @@ cbuffer MaterialBuffer : register(b3)
 }
 
 
-// ƒ‰ƒCƒgƒoƒbƒtƒ@
+// ãƒ©ã‚¤ãƒˆãƒãƒƒãƒ•ã‚¡
 struct LIGHT
 {
     float4 Direction;

@@ -1,4 +1,4 @@
-#include	"Timer.h"
+﻿#include	"Timer.h"
 
 LARGE_INTEGER TIMER::start, TIMER::end, TIMER::frep;
 

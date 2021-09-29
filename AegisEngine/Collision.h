@@ -1,27 +1,27 @@
-#pragma once
+ï»¿#pragma once
 
 #ifndef COLLISION_H
 #define	COLLISION_H
 
-// ‰~
+// å††
 struct CIRCLE {
-	XMFLOAT2 Position;		// ’†SÀ•W
-	float Radius;			// ”¼Œa
+	XMFLOAT2 Position;		// ä¸­å¿ƒåº§æ¨™
+	float Radius;			// åŠå¾„
 };
 
-// ‹…
+// çƒ
 struct SPHERE {
-	XMFLOAT3 Position;		// ’†SÀ•W
-	float Radius;			// ”¼Œa
+	XMFLOAT3 Position;		// ä¸­å¿ƒåº§æ¨™
+	float Radius;			// åŠå¾„
 };
 
-// ƒJƒvƒZƒ‹
+// ã‚«ãƒ—ã‚»ãƒ«
 struct CAPSULE {
-	XMFLOAT3 Start_Position;	// ü•ª‚ÌŠJn“_
-	XMFLOAT3 End_Position;		// ü•ª‚ÌI—¹“_
-	float Radius;				// ”¼Œa
+	XMFLOAT3 Start_Position;	// ç·šåˆ†ã®é–‹å§‹ç‚¹
+	XMFLOAT3 End_Position;		// ç·šåˆ†ã®çµ‚äº†ç‚¹
+	float Radius;				// åŠå¾„
 
-	XMFLOAT3 Rotation;			// ‰ñ“]—Ê
+	XMFLOAT3 Rotation;			// å›è»¢é‡
 
 	CAPSULE() : Radius(0.5f), Start_Position(XMFLOAT3(0.f, -0.5f, 0.f)), End_Position(XMFLOAT3(0.f, 0.5f, 0.f)), Rotation(XMFLOAT3(0.f, 0.f, 0.f)) {}
 
@@ -34,7 +34,7 @@ struct CAPSULE {
 			Start_Position.y = position.y - height;
 			Start_Position.z = position.z;
 
-			// Œ³‚ÌÀ•W‚É–ß‚·
+			// å…ƒã®åº§æ¨™ã«æˆ»ã™
 			vector = XMLoadFloat3(&Start_Position);
 
 			XMStoreFloat3(&Start_Position, XMVector3Transform(vector, matrix));
@@ -45,7 +45,7 @@ struct CAPSULE {
 			End_Position.y = position.y + height;
 			End_Position.z = position.z;
 
-			// Œ³‚ÌÀ•W‚É–ß‚·
+			// å…ƒã®åº§æ¨™ã«æˆ»ã™
 			vector = XMLoadFloat3(&End_Position);
 
 			XMStoreFloat3(&End_Position, XMVector3Transform(vector, matrix));
@@ -78,28 +78,28 @@ struct CAPSULE {
 		XMMATRIX invers = XMMatrixRotationRollPitchYaw(XMConvertToRadians(-Rotation.x), XMConvertToRadians(-Rotation.y), XMConvertToRadians(-Rotation.z));
 
 		{
-			// ‰Šú‚ÌÀ•W‚É–ß‚µ‚ÄŒvZ
+			// åˆæœŸã®åº§æ¨™ã«æˆ»ã—ã¦è¨ˆç®—
 			vector = XMLoadFloat3(&Start_Position);
 
 			XMStoreFloat3(&Start_Position, XMVector3Transform(vector, invers));
 
 			Start_Position.y -= height;
 
-			// Œ³‚ÌÀ•W‚É–ß‚·
+			// å…ƒã®åº§æ¨™ã«æˆ»ã™
 			vector = XMLoadFloat3(&Start_Position);
 
 			XMStoreFloat3(&Start_Position, XMVector3Transform(vector, matrix));
 		}
 
 		{
-			// ‰Šú‚ÌÀ•W‚É–ß‚µ‚ÄŒvZ
+			// åˆæœŸã®åº§æ¨™ã«æˆ»ã—ã¦è¨ˆç®—
 			vector = XMLoadFloat3(&End_Position);
 
 			XMStoreFloat3(&End_Position, XMVector3Transform(vector, invers));
 
 			End_Position.y += height;
 
-			// Œ³‚ÌÀ•W‚É–ß‚·
+			// å…ƒã®åº§æ¨™ã«æˆ»ã™
 			vector = XMLoadFloat3(&End_Position);
 
 			XMStoreFloat3(&End_Position, XMVector3Transform(vector, matrix));
@@ -109,19 +109,19 @@ struct CAPSULE {
 
 // AABB
 struct AABB {
-	XMFLOAT3 Position;		// ’†SÀ•W
-	XMFLOAT3 Radius;		// ”¼Œa
+	XMFLOAT3 Position;		// ä¸­å¿ƒåº§æ¨™
+	XMFLOAT3 Radius;		// åŠå¾„
 };
 
 // OBB
 struct OBB {
-	XMFLOAT3 Position;		// ’†SÀ•W
-	XMFLOAT3 Radius;		// ”¼Œa
-	XMFLOAT3 Rotation;		// ‰ñ“]—Ê
+	XMFLOAT3 Position;		// ä¸­å¿ƒåº§æ¨™
+	XMFLOAT3 Radius;		// åŠå¾„
+	XMFLOAT3 Rotation;		// å›è»¢é‡
 
 };
 
-// ƒRƒŠƒWƒ‡ƒ“ƒNƒ‰ƒX
+// ã‚³ãƒªã‚¸ãƒ§ãƒ³ã‚¯ãƒ©ã‚¹
 class COLLISION  {
 protected:
 	
@@ -163,7 +163,7 @@ public:
 	//};
 };
 
-// ƒRƒŠƒWƒ‡ƒ“(‹…)
+// ã‚³ãƒªã‚¸ãƒ§ãƒ³(çƒ)
 class COLLISIION_SPHERE : public COLLISION {
 private:
 	SPHERE Sphere;
@@ -200,7 +200,7 @@ bool Collision_HitCircle(CIRCLE* const pA, CIRCLE* const pB);
 bool Collision_HitSphere(COLLISION* const pA, COLLISION* const pB);
 //bool Collision_HitSphere(const SPHERE* pA, const SPHERE* pB, short cnt);
 
-// ƒRƒŠƒWƒ‡ƒ“(AABB)
+// ã‚³ãƒªã‚¸ãƒ§ãƒ³(AABB)
 class COLLISIION_AABB : public COLLISION {
 private:
 	AABB Aabb;
@@ -231,7 +231,7 @@ public:
 
 bool Collision_HitAABB(COLLISION* const pA, COLLISION* const pB);
 
-// ƒRƒŠƒWƒ‡ƒ“(CAPSULE)
+// ã‚³ãƒªã‚¸ãƒ§ãƒ³(CAPSULE)
 class COLLISIION_CAPSULE : public COLLISION {
 private:
 	CAPSULE Capsule;

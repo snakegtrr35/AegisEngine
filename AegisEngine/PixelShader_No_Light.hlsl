@@ -1,10 +1,10 @@
-#include    "Commom_Hlsl.hlsli"
+ï»¿#include    "Commom_Hlsl.hlsli"
 
 //*****************************************************************************
-// ’è”ƒoƒbƒtƒ@
+// å®šæ•°ãƒãƒƒãƒ•ã‚¡
 //*****************************************************************************
 
-// ƒ}ƒeƒŠƒAƒ‹ƒoƒbƒtƒ@
+// ãƒãƒ†ãƒªã‚¢ãƒ«ãƒãƒƒãƒ•ã‚¡
 struct MATERIAL
 {
     float4 Ambient;
@@ -12,7 +12,7 @@ struct MATERIAL
     float4 Specular;
     float4 Emission;
     float Shininess;
-    float3 Dummy; //16bit‹«ŠE—p
+    float3 Dummy; //16bitå¢ƒç•Œç”¨
 };
 
 cbuffer MaterialBuffer : register(b3)
@@ -21,7 +21,7 @@ cbuffer MaterialBuffer : register(b3)
 }
 
 
-// ƒ‰ƒCƒgƒoƒbƒtƒ@
+// ãƒ©ã‚¤ãƒˆãƒãƒƒãƒ•ã‚¡
 struct LIGHT
 {
     float4      Direction;
@@ -39,14 +39,14 @@ cbuffer LightBuffer : register(b4)
 
 
 //*****************************************************************************
-// ƒOƒ[ƒoƒ‹•Ï”
+// ã‚°ãƒ­ãƒ¼ãƒãƒ«å¤‰æ•°
 //*****************************************************************************
 Texture2D g_Texture : register(t0);
 SamplerState g_SamplerState : register(s0);
 
 
 //=============================================================================
-// ƒsƒNƒZƒ‹ƒVƒF[ƒ_
+// ãƒ”ã‚¯ã‚»ãƒ«ã‚·ã‚§ãƒ¼ãƒ€
 //=============================================================================
 void main( PS_IN Input,
 
@@ -57,7 +57,7 @@ void main( PS_IN Input,
     if (outDiffuse.a <= 0.0)
         discard;
 
-    // ƒOƒŒ[ƒXƒP[ƒ‹
+    // ã‚°ãƒ¬ãƒ¼ã‚¹ã‚±ãƒ¼ãƒ«
     /*float Y = outDiffuse.r * 0.29891f + outDiffuse.g * 0.58661f + outDiffuse.b * 0.11448f;
 
     outDiffuse.r = Y;
@@ -66,13 +66,13 @@ void main( PS_IN Input,
 
     outDiffuse.b = Y;*/
 
-    // ƒlƒKƒeƒBƒuƒtƒBƒ‹ƒ^
+    // ãƒã‚¬ãƒ†ã‚£ãƒ–ãƒ•ã‚£ãƒ«ã‚¿
     /*float4 inverted_color = 1 - outDiffuse;
     inverted_color.a = outDiffuse.a;
     inverted_color.rgb *= inverted_color.a;
     outDiffuse = inverted_color;*/
 
-    // ƒZƒsƒA
+    // ã‚»ãƒ”ã‚¢
     /*outDiffuse = g_Texture.Sample(g_SamplerState, inTexCoord);
 
     if (outDiffuse.a <= 0.0)

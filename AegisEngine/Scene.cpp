@@ -1,4 +1,4 @@
-#include	"Scene.h"
+﻿#include	"Scene.h"
 #include	"Scene_Manager.h"
 
 list<shared_ptr<GAME_OBJECT>>	SCENE::GameObjects[(int)LAYER_NAME::MAX_LAYER];

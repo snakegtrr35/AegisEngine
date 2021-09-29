@@ -1,4 +1,4 @@
-//=======================================
+ï»¿//=======================================
 //
 //		FBXmodel.h
 //		name : Hiroto
@@ -49,7 +49,7 @@ struct BONE
 const constexpr UINT BONE_MAX = 256;
 
 
-/*** FBXmodelƒNƒ‰ƒX ***/
+/*** FBXmodelã‚¯ãƒ©ã‚¹ ***/
 class FBXmodel 
 {
 private:
