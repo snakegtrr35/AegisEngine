@@ -56,6 +56,8 @@ LIGHT CRenderer::m_Light;//
 IDXGIAdapter3* pAdapter = nullptr;
 DXGI_QUERY_VIDEO_MEMORY_INFO info;
 
+using namespace Aegis;
+
 bool CRenderer::Init()
 {
 	HRESULT hr = S_OK;

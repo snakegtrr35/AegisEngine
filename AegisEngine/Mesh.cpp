@@ -578,7 +578,7 @@ void MESH::Draw_DPP_Mesh_Animation(XMMATRIX& parent_matrix, unordered_map<string
 
 
 
-#include	"Library/DirectXTex/WICTextureLoader.h"
+#include	"external/DirectXTex/WICTextureLoader.h"
 
 MESHS::MESHS() : VertexBuffer(nullptr), IndexBuffer(nullptr)
 {

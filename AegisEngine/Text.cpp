@@ -3,6 +3,7 @@
 #include	"ShadowMap.h"
 #include	"Scene.h"
 
+using namespace Aegis;
 
 TEXTS::TEXTS()
 {

@@ -24,9 +24,9 @@
 using namespace DirectX;
 
 #include	"common.h"
-#include	"Color.h"
+#include	"include/engine/core/math/Color.h"
 
-#include	"Math.h"
+#include	"include/engine/core/math/Math.h"
 
 #ifndef IMGUI
 #define IMGUI

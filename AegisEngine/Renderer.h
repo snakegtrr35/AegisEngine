@@ -50,12 +50,12 @@ struct VERTEX_3D_NORMAL
 //! マテリアル構造体
 struct MATERIAL
 {
-	COLOR		Ambient;
-	COLOR		Diffuse;
-	COLOR		Specular;
-	COLOR		Emission;
-	float		Shininess;
-	float		Dummy[3];//16bit境界用
+	Aegis::COLOR Ambient;
+	Aegis::COLOR Diffuse;
+	Aegis::COLOR Specular;
+	Aegis::COLOR Emission;
+	float Shininess;
+	float Dummy[3];//16bit境界用
 };
 
 
@@ -79,11 +79,11 @@ struct DX11_SUBSET
 
 struct LIGHT
 {
-	XMFLOAT4	Direction;
-	XMFLOAT4	Position;
-	COLOR		Diffuse;
-	COLOR		Ambient;
-	COLOR		Specular;
+	XMFLOAT4 Direction;
+	XMFLOAT4 Position;
+	Aegis::COLOR Diffuse;
+	Aegis::COLOR Ambient;
+	Aegis::COLOR Specular;
 };
 
 typedef struct {

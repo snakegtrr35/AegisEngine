@@ -7,6 +7,8 @@ unique_ptr<ID3D11Buffer, Release>	LIGHTS::LightBuffer;
 
 LIGHT_BUFFER::LIGHT_BUFFER() : Enable(0), Position(0.f, 0.f, 0.f), Color(0.f, 0.f, 0.f, 0.f), Type((UINT)LIGHT_TYPE::NONE) {}
 
+using namespace Aegis;
+
 LIGHTS::LIGHTS()
 {
 	for (UINT i = 0; i < MAX_NUM_LIGHTS; i++)

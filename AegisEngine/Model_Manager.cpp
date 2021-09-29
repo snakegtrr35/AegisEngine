@@ -1,6 +1,6 @@
 #include	"Model_Manager.h"
 
-#include	"Library/DirectXTex/WICTextureLoader.h"
+#include	"external/DirectXTex/WICTextureLoader.h"
 
 unique_ptr<MODEL_MANEGER> MODEL_MANEGER::ModelManager;
 

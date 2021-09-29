@@ -5,6 +5,8 @@
 #include	"Scene.h"
 #include	"ShadowMap.h"
 
+using namespace Aegis;
+
 void BOUNDING_FRUSTUM::Init()
 {
 	{

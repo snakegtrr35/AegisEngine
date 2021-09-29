@@ -36,6 +36,8 @@
     <ClCompile Include="Debug_Camera.cpp" />
     <ClCompile Include="Effekseer.cpp" />
     <ClCompile Include="Enemy.cpp" />
+    <ClCompile Include="external\DirectXTex\DDSTextureLoader.cpp" />
+    <ClCompile Include="external\DirectXTex\WICTextureLoader.cpp" />
     <ClCompile Include="Fade.cpp" />
     <ClCompile Include="FBXmodel.cpp" />
     <ClCompile Include="Field.cpp" />
@@ -57,15 +59,13 @@
     <ClCompile Include="imgui\imgui_impl_win32.cpp" />
     <ClCompile Include="imgui\imgui_stdlib.cpp" />
     <ClCompile Include="imgui\imgui_widgets.cpp" />
+    <ClCompile Include="include\engine\core\math\Math.cpp" />
     <ClCompile Include="Input.cpp" />
     <ClCompile Include="Keyboard.cpp" />
-    <ClCompile Include="Library\DirectXTex\DDSTextureLoader.cpp" />
-    <ClCompile Include="Library\DirectXTex\WICTextureLoader.cpp" />
     <ClCompile Include="Light.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Main_Menu.cpp" />
     <ClCompile Include="manager.cpp" />
-    <ClCompile Include="Math.cpp" />
     <ClCompile Include="Menu_Component.cpp" />
     <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="Mesh_Cylinder.cpp" />
@@ -119,7 +119,6 @@
     <ClInclude Include="camera.h" />
     <ClInclude Include="Cereal.h" />
     <ClInclude Include="Collision.h" />
-    <ClInclude Include="Color.h" />
     <FxCompile Include="Commom_Hlsl.hlsli">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
@@ -136,6 +135,8 @@
     <ClInclude Include="Debug_Camera.h" />
     <ClInclude Include="Effekseer.h" />
     <ClInclude Include="Enemy.h" />
+    <ClInclude Include="external\DirectXTex\DDSTextureLoader.h" />
+    <ClInclude Include="external\DirectXTex\WICTextureLoader.h" />
     <ClInclude Include="Fade.h" />
     <ClInclude Include="FBXmodel.h" />
     <ClInclude Include="Field.h" />
@@ -159,10 +160,15 @@
     <ClInclude Include="imgui\imstb_rectpack.h" />
     <ClInclude Include="imgui\imstb_textedit.h" />
     <ClInclude Include="imgui\imstb_truetype.h" />
+    <ClInclude Include="include\engine\core\math\Color.h" />
+    <ClInclude Include="include\engine\core\math\Int2.h" />
+    <ClInclude Include="include\engine\core\math\Math.h" />
+    <ClInclude Include="include\engine\core\math\MathDef.h" />
+    <ClInclude Include="include\engine\core\math\Quaternion.h" />
+    <ClInclude Include="include\engine\core\math\Vector2.h" />
+    <ClInclude Include="include\engine\core\math\Vector3.h" />
     <ClInclude Include="Input.h" />
     <ClInclude Include="Keyboard.h" />
-    <ClInclude Include="Library\DirectXTex\DDSTextureLoader.h" />
-    <ClInclude Include="Library\DirectXTex\WICTextureLoader.h" />
     <ClInclude Include="Light.h" />
     <FxCompile Include="ClusterCS.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Compute</ShaderType>
@@ -186,7 +192,6 @@
     <ClInclude Include="main.h" />
     <ClInclude Include="Main_Menu.h" />
     <ClInclude Include="manager.h" />
-    <ClInclude Include="Math.h" />
     <ClInclude Include="Menu_Component.h" />
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="Mesh_Cylinder.h" />
@@ -329,6 +334,10 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Commom_Buffer.hlsli" />
+    <None Include="include\engine\core\math\Int2.cpp" />
+    <None Include="include\engine\core\math\Quaternion.cpp" />
+    <None Include="include\engine\core\math\Vector2.cpp" />
+    <None Include="include\engine\core\math\Vector3.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
@@ -387,16 +396,16 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>.\Library\ogg\vorbis\include;.\Library\ogg\opus\include;.\Library\Effekseer\include;.\Library\cereal;.\Library\assimp_vs2017_x64\include;$(IncludePath)</IncludePath>
-    <LibraryPath>.\Library\ogg\vorbis\lib;.\Library\ogg\opus\lib;.\Library\zlib;.\Library\assimp_vs2017_x64\lib;$(LibraryPath)</LibraryPath>
+    <IncludePath>.\external\ogg\vorbis\include;.\external\ogg\opus\include;.\external\Effekseer\include;.\external\cereal;.\external\assimp_vs2017_x64\include;$(IncludePath)</IncludePath>
+    <LibraryPath>.\external\ogg\vorbis\lib;.\external\ogg\opus\lib;.\external\zlib;.\external\assimp_vs2017_x64\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>.\Library\ogg\vorbis\include;.\Library\ogg\opus\include;.\Library\Effekseer\include;.\Library\cereal;.\Library\assimp_vs2017_x64\include;$(IncludePath)</IncludePath>
-    <LibraryPath>.\Library\ogg\vorbis\lib;.\Library\ogg\opus\lib;.\Library\zlib;.\Library\assimp_vs2017_x64\lib;$(LibraryPath)</LibraryPath>
+    <IncludePath>.\external\ogg\vorbis\include;.\external\ogg\opus\include;.\external\Effekseer\include;.\external\cereal;.\external\assimp_vs2017_x64\include;$(IncludePath)</IncludePath>
+    <LibraryPath>.\external\ogg\vorbis\lib;.\external\ogg\opus\lib;.\external\zlib;.\external\assimp_vs2017_x64\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>

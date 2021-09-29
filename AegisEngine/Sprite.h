@@ -72,7 +72,7 @@ protected:
 	XMFLOAT4 Size;
 
 	//!< カラー
-	COLOR Color;//!< 子スプライトのリスト
+	Aegis::COLOR Color;//!< 子スプライトのリスト
 
 	//!< 子スプライトのリスト
 	vector< unique_ptr<CHILD_DATE> > Children;
@@ -182,14 +182,14 @@ public:
 	* @param color カラー構造体
 	* @details 頂点カラー(カラー構造体)を設定する関数
 	*/
-	void SetColor(COLOR& const color);
+	void SetColor(Aegis::COLOR& const color);
 
 	/**
 	* @brief 頂点カラーを取得する関数
 	* @return COLOR 頂点カラー(カラー構造体)
 	* @details 頂点カラー(カラー構造体)を取得する関数
 	*/
-	COLOR& const GetColor();
+	Aegis::COLOR& const GetColor();
 
 	/**
 	* @brief サイズを設定する関数

@@ -9,7 +9,7 @@
 #include	"Scene.h"
 #include	"ShadowMap.h"
 
-#include	"Library/DirectXTex/DDSTextureLoader.h"
+#include	"external/DirectXTex/DDSTextureLoader.h"
 
 unique_ptr<ID3D11Buffer, Release> SKYBOX::VertexBuffer;
 unique_ptr<ID3D11Buffer, Release> SKYBOX::IndexBuffer;
