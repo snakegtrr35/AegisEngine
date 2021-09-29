@@ -14,6 +14,7 @@
 map<string, ::Effekseer::Effect*>	EFFEKSEER_MANAGER::Effects;
 map<string, ::Effekseer::Handle>	EFFEKSEER_MANAGER::Handles;
 
+using namespace Aegis;
 
 ::Effekseer::Matrix44 XMMATRIXToMatrix44(const XMMATRIX& matrix)
 {
@@ -298,7 +299,7 @@ void EFFEKSEER_MANAGER::Play(const string& handle_name, const string& effect_nam
 
 
 
-void EFFEKSEER_MANAGER::Play(const string& handle_name, const string& effect_name, const AeigisMath::VECTOR3& position)
+void EFFEKSEER_MANAGER::Play(const string& handle_name, const string& effect_name, const Vector3& position)
 {
 	// ロードしていないエフェクトの判定
 #ifdef _DEBUG
@@ -334,7 +335,7 @@ void EFFEKSEER_MANAGER::Set_Location(const string& handle_name, const XMFLOAT3& 
 	Manager->SetLocation(Handles[handle_name], Effekseer::Vector3D(position.x, position.y, position.z));
 }
 
-void EFFEKSEER_MANAGER::Set_Location(const string& handle_name, const AeigisMath::VECTOR3& position)
+void EFFEKSEER_MANAGER::Set_Location(const string& handle_name, const Vector3& position)
 {
 	Manager->SetLocation(Handles[handle_name], Effekseer::Vector3D(position.x, position.y, position.z));
 }
@@ -344,7 +345,7 @@ void EFFEKSEER_MANAGER::Set_Rotation(const string& handle_name, const XMFLOAT3& 
 	Manager->SetRotation(Handles[handle_name], Effekseer::Vector3D(axis.x, axis.y, axis.z), XMConvertToRadians(angle));
 }
 
-void EFFEKSEER_MANAGER::Set_Rotation(const string& handle_name, const AeigisMath::VECTOR3& axis, const float angle)
+void EFFEKSEER_MANAGER::Set_Rotation(const string& handle_name, const Vector3& axis, const float angle)
 {
 	Manager->SetRotation(Handles[handle_name], Effekseer::Vector3D(axis.x, axis.y, axis.z), XMConvertToRadians(angle));
 }
@@ -354,7 +355,7 @@ void EFFEKSEER_MANAGER::Set_Scale(const string& handle_name, const XMFLOAT3& sca
 	Manager->SetScale(Handles[handle_name], scale.x, scale.y, scale.z);
 }
 
-void EFFEKSEER_MANAGER::Set_Scale(const string& handle_name, const AeigisMath::VECTOR3& scale)
+void EFFEKSEER_MANAGER::Set_Scale(const string& handle_name, const Vector3& scale)
 {
 	Manager->SetScale(Handles[handle_name], scale.x, scale.y, scale.z);
 }

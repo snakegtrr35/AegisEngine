@@ -2,8 +2,8 @@
 #include	"Renderer.h"
 #include	"manager.h"
 
-#include	"Library/DirectXTex/WICTextureLoader.h"
-#include	"Library/DirectXTex/DDSTextureLoader.h"
+#include	"external/DirectXTex/WICTextureLoader.h"
+#include	"external/DirectXTex/DDSTextureLoader.h"
 
 unique_ptr<TEXTURE_MANEGER> TEXTURE_MANEGER::Texture_Manager;
 

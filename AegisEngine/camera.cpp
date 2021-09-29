@@ -108,18 +108,18 @@ void CCamera::Update(float delta_time)
 				angle = -2.0f;
 			}
 
-			AeigisMath::Quaternion q(AeigisMath::XMVECTORToVECTOR3(Right), angle);
+			Aegis::Quaternion q = RotateAxis(Aegis::Math::XMVECTORToVector3(Right), angle);
 
-			AeigisMath::VECTOR3 f = AeigisMath::VECTOR3::Transform(AeigisMath::XMVECTORToVECTOR3(Front), q);
+			Aegis::Vector3 f = Aegis::Vector3::Transform(Aegis::Math::XMVECTORToVector3(Front), q);
 
 			At = Pos + Front * Lenght_Z;//
 
-			Front = VECTOR3ToXMVECTOR(f);
+			Front = Aegis::Math::Vector3ToXMVECTOR(f);
 			Front = XMVector3Normalize(Front);
 
-			f = AeigisMath::VECTOR3::Transform(AeigisMath::XMVECTORToVECTOR3(Up), q);
+			f = Aegis::Vector3::Transform(Aegis::Math::XMVECTORToVector3(Up), q);
 
-			Up = VECTOR3ToXMVECTOR(f);
+			Up = Aegis::Math::Vector3ToXMVECTOR(f);
 			Up = XMVector3Normalize(Up);
 		}
 
@@ -136,18 +136,18 @@ void CCamera::Update(float delta_time)
 				angle = -2.0f;
 			}
 
-			AeigisMath::Quaternion q(AeigisMath::XMVECTORToVECTOR3(Up), angle);
+			Aegis::Quaternion q = RotateAxis(Aegis::Math::XMVECTORToVector3(Up), angle);
 
-			AeigisMath::VECTOR3 f = AeigisMath::VECTOR3::Transform(AeigisMath::XMVECTORToVECTOR3(Front), q);
+			Aegis::Vector3 f = Aegis::Vector3::Transform(Aegis::Math::XMVECTORToVector3(Front), q);
 
 			At = Pos + Front * Lenght_Z;//
 
-			Front = AeigisMath::VECTOR3ToXMVECTOR(f);
+			Front = Aegis::Math::Vector3ToXMVECTOR(f);
 			Front = XMVector3Normalize(Front);
 
-			f = AeigisMath::VECTOR3::Transform(AeigisMath::XMVECTORToVECTOR3(Right), q);
+			f = Aegis::Vector3::Transform(Aegis::Math::XMVECTORToVector3(Right), q);
 
-			Right = VECTOR3ToXMVECTOR(f);
+			Right = Aegis::Math::Vector3ToXMVECTOR(f);
 			Right = XMVector3Normalize(Right);
 		}
 

@@ -3,6 +3,7 @@
 #include	"manager.h"
 #include	"ShadowMap.h"
 
+using namespace Aegis;
 
 SPRITE_ANIMATION::SPRITE_ANIMATION()
 {

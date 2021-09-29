@@ -1,6 +1,6 @@
 #include	"Game_Object.h"
 #include	"ModelLoader.h"
-#include	"Library/DirectXTex/WICTextureLoader.h"
+#include	"external/DirectXTex/WICTextureLoader.h"
 
 #include	"manager.h"
 #include	"Scene.h"

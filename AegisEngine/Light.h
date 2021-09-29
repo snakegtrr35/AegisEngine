@@ -16,7 +16,7 @@ struct LIGHT_BUFFER {
 	UINT		Enable;
 	XMFLOAT3	Position;
 
-	COLOR		Color;
+	Aegis::COLOR		Color;
 
 	UINT		Type;
 	XMFLOAT3	Dummy;

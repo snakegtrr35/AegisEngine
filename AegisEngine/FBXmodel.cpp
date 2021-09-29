@@ -5,7 +5,7 @@
 #include	"ShadowMap.h"
 #include	"camera.h"
 
-#include	"Library/DirectXTex/WICTextureLoader.h"
+#include	"external/DirectXTex/WICTextureLoader.h"
 
 static string textype;
 static string directory;

@@ -4,6 +4,8 @@
 #include	"ShadowMap.h"
 #include	"Scene.h"
 
+using namespace Aegis;
+
 unique_ptr<ID3D11Buffer, Release> SPRITE::pIndexBuffer;		// インデックスバッファ
 
 SPRITE::SPRITE()

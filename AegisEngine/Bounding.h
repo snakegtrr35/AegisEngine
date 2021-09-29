@@ -23,9 +23,9 @@ protected:
 	//! BOXのインデックス数
 	static const char IndexNum_Box;
 	//! デフォルトのカラー
-	static COLOR Default_Color;
+	static Aegis::COLOR Default_Color;
 	//! 各バウンディングのカラー
-	COLOR Color;
+	Aegis::COLOR Color;
 
 public:
 	/**
@@ -87,7 +87,7 @@ public:
 	* @param COLOR カラー
 	* @details デフォルトカラーを設定する関数
 	*/
-	static void Set_Default_Color(const COLOR& color) {
+	static void Set_Default_Color(const Aegis::COLOR& color) {
 		Default_Color = color;
 	}
 
@@ -96,7 +96,7 @@ public:
 	* @return COLOR デフォルトカラー
 	* @details デフォルトカラーを取得する関数
 	*/
-	static COLOR Get_Default_Color() {
+	static Aegis::COLOR Get_Default_Color() {
 		return Default_Color;
 	}
 
@@ -105,7 +105,7 @@ public:
 	* @return COLOR カラー
 	* @details 個別の色を設定する関数
 	*/
-	void Set_Color(const COLOR& color) {
+	void Set_Color(const Aegis::COLOR& color) {
 		Color = color;
 	}
 
