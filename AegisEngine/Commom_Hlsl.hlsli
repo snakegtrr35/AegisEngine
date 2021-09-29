@@ -1,4 +1,4 @@
-﻿#ifndef COMMOM_HLSL_H
+#ifndef COMMOM_HLSL_H
 #define COMMOM_HLSL_H
 
 struct VS_IN {

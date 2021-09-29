@@ -1,6 +1,6 @@
-/**
+ï»¿/**
  * @file Sprite.h
- * @brief ƒXƒvƒ‰ƒCƒgŠÖŒW‚Ìƒwƒbƒ_[ƒtƒ@ƒCƒ‹
+ * @brief ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆé–¢ä¿‚ã®ãƒ˜ãƒƒãƒ€ãƒ¼ãƒ•ã‚¡ã‚¤ãƒ«
  */
 
 #pragma once
@@ -15,16 +15,16 @@
 #include	"Renderer.h"
 
 /**
- * qƒXƒvƒ‰ƒCƒgî•ñ
+ * å­ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆæƒ…å ±
  */
 struct CHILD_DATE {
-	//! qƒXƒvƒ‰ƒCƒg‚Ìƒ|ƒCƒ“ƒ^
+	//! å­ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆã®ãƒã‚¤ãƒ³ã‚¿
 	unique_ptr<SPRITE> Child;
 
-	////! ƒIƒtƒZƒbƒgˆÊ’u
+	////! ã‚ªãƒ•ã‚»ãƒƒãƒˆä½ç½®
 	//XMFLOAT3 Offset;
 
-	//! qƒXƒvƒ‰ƒCƒg‚Ì–¼‘O
+	//! å­ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆã®åå‰
 	string Name;
 
 	CHILD_DATE() : /*Offset(XMFLOAT3(0.f, 0.f, 0.f)),*/ Name("") {
@@ -42,211 +42,211 @@ struct CHILD_DATE {
 };
 
 /**
-* @brief ƒXƒvƒ‰ƒCƒgƒNƒ‰ƒX
-* @details ƒXƒvƒ‰ƒCƒgƒNƒ‰ƒX
+* @brief ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆã‚¯ãƒ©ã‚¹
+* @details ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆã‚¯ãƒ©ã‚¹
 */
 class SPRITE : public GAME_OBJECT {
 private:
 protected:
-	//! ’¸“_ƒoƒbƒtƒ@
+	//! é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡
 	unique_ptr<ID3D11Buffer, Release> pVertexBuffer;
 
-	//! ƒCƒ“ƒfƒbƒNƒXƒoƒbƒtƒ@
+	//! ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ãƒãƒƒãƒ•ã‚¡
 	static unique_ptr<ID3D11Buffer, Release> pIndexBuffer;
 
-	//! ’¸“_ƒf[ƒ^
+	//! é ‚ç‚¹ãƒ‡ãƒ¼ã‚¿
 	VERTEX_3D Vertex[4];
-	//! ƒeƒNƒXƒ`ƒƒ
+	//! ãƒ†ã‚¯ã‚¹ãƒãƒ£
 	unique_ptr<TEXTURE> Texture;
 
-	//! ƒ|ƒWƒVƒ‡ƒ“
+	//! ãƒã‚¸ã‚·ãƒ§ãƒ³
 	XMFLOAT2 Position;
 
 	/**
-	* ƒTƒCƒY
-	* x : ã
-	* y : ‰E
-	* z : ‰º
-	* w : ¶
+	* ã‚µã‚¤ã‚º
+	* x : ä¸Š
+	* y : å³
+	* z : ä¸‹
+	* w : å·¦
 	*/
 	XMFLOAT4 Size;
 
-	//!< ƒJƒ‰[
-	Aegis::COLOR Color;//!< qƒXƒvƒ‰ƒCƒg‚ÌƒŠƒXƒg
+	//!< ã‚«ãƒ©ãƒ¼
+	Aegis::COLOR Color;//!< å­ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆã®ãƒªã‚¹ãƒˆ
 
-	//!< qƒXƒvƒ‰ƒCƒg‚ÌƒŠƒXƒg
+	//!< å­ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆã®ãƒªã‚¹ãƒˆ
 	vector< unique_ptr<CHILD_DATE> > Children;
 
-	//!< ƒƒjƒ…[ƒCƒxƒ“ƒg(ƒŠƒXƒg)
+	//!< ãƒ¡ãƒ‹ãƒ¥ãƒ¼ã‚¤ãƒ™ãƒ³ãƒˆ(ãƒªã‚¹ãƒˆ)
 	list<MENU_COMPONENT*> MenuEvents;
 
-	//!< ƒXƒvƒ‰ƒCƒg‚Ì—LŒø–³Œøƒtƒ‰ƒO(ƒfƒtƒHƒ‹ƒg‚Í true )
+	//!< ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆã®æœ‰åŠ¹ç„¡åŠ¹ãƒ•ãƒ©ã‚°(ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆã¯ true )
 	bool Enable;
 
 
 	ID3D11ShaderResourceView* ShaderResourceView = nullptr;
 
 	/**
-	* @brief qƒXƒvƒ‰ƒCƒg‚Ì•`‰æŠÖ”
-	* @details qƒXƒvƒ‰ƒCƒg‚Ì•`‰æ‚·‚éŠÖ”
+	* @brief å­ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆã®æç”»é–¢æ•°
+	* @details å­ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆã®æç”»ã™ã‚‹é–¢æ•°
 	*/
 	void Draw_Child();
 
 	/**
-	* @brief qƒXƒvƒ‰ƒCƒg‚Ì•`‰æŠÖ”
-	* @details qƒXƒvƒ‰ƒCƒg‚Ì•`‰æ‚·‚éŠÖ”
+	* @brief å­ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆã®æç”»é–¢æ•°
+	* @details å­ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆã®æç”»ã™ã‚‹é–¢æ•°
 	*/
 	void Draw_DPP_Child();
 
 public:
 	/**
-	* @brief ƒRƒ“ƒXƒgƒ‰ƒNƒ^
-	* @details ˆø”–³‚µƒRƒ“ƒXƒgƒ‰ƒNƒ^
+	* @brief ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
+	* @details å¼•æ•°ç„¡ã—ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
 	*/
 	SPRITE();
 
 	/**
-	* @brief ƒRƒ“ƒXƒgƒ‰ƒNƒ^
-	* @param position ’†SÀ•W
-	* @param size ƒTƒCƒY
-	* @details ˆø”•t‚«ƒRƒ“ƒXƒgƒ‰ƒNƒ^
+	* @brief ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
+	* @param position ä¸­å¿ƒåº§æ¨™
+	* @param size ã‚µã‚¤ã‚º
+	* @details å¼•æ•°ä»˜ãã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
 	*/
 	SPRITE(XMFLOAT2 position, XMFLOAT4 size);
 
 	/**
-	* @brief ƒfƒXƒgƒ‰ƒNƒ^
-	* @details ƒfƒXƒgƒ‰ƒNƒ^
+	* @brief ãƒ‡ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
+	* @details ãƒ‡ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
 	*/
 	~SPRITE();
 
 	/**
-	* @brief ‰Šú‰»ŠÖ”
-	* @details ‰Šú‰»‚·‚éŠÖ”
+	* @brief åˆæœŸåŒ–é–¢æ•°
+	* @details åˆæœŸåŒ–ã™ã‚‹é–¢æ•°
 	*/
 	void Init();
 
 	/**
-	* @brief •`‰æŠÖ”
-	* @details •`‰æ‚·‚éŠÖ”
+	* @brief æç”»é–¢æ•°
+	* @details æç”»ã™ã‚‹é–¢æ•°
 	*/
 	void Draw();
 
 	/**
-	* @brief •`‰æ(Depth-pre-pass)ŠÖ”
-	* @details Depth-pre-pass‚ğ‚·‚éŠÖ”
+	* @brief æç”»(Depth-pre-pass)é–¢æ•°
+	* @details Depth-pre-passã‚’ã™ã‚‹é–¢æ•°
 	*/
 	void Draw_DPP();
 
 	/**
-	* @brief XVŠÖ”
-	* @details XV‚·‚éŠÖ”
+	* @brief æ›´æ–°é–¢æ•°
+	* @details æ›´æ–°ã™ã‚‹é–¢æ•°
 	*/
 	void Update(float delta_time);
 
 	/**
-	* @brief I—¹ˆ—ŠÖ”
-	* @details I—¹ˆ—‚ğ‚·‚éŠÖ”
+	* @brief çµ‚äº†å‡¦ç†é–¢æ•°
+	* @details çµ‚äº†å‡¦ç†ã‚’ã™ã‚‹é–¢æ•°
 	*/
 	void Uninit();
 
 	/**
-	* @brief À•W‚ğİ’è‚·‚éŠÖ”
-	* @param position À•W(“ñŸŒ³À•W)
-	* @details À•W(“ñŸŒ³À•W)‚ğİ’è‚·‚éŠÖ”
+	* @brief åº§æ¨™ã‚’è¨­å®šã™ã‚‹é–¢æ•°
+	* @param position åº§æ¨™(äºŒæ¬¡å…ƒåº§æ¨™)
+	* @details åº§æ¨™(äºŒæ¬¡å…ƒåº§æ¨™)ã‚’è¨­å®šã™ã‚‹é–¢æ•°
 	*/
 	void SetPosition(const XMFLOAT2& position);
 
 	/**
-	* @brief À•W‚ğæ“¾‚·‚éŠÖ”
-	* @return XMFLOAT2* À•W(“ñŸŒ³À•W)(ƒ|ƒCƒ“ƒ^)
-	* @details À•W(“ñŸŒ³À•W)‚ğæ“¾‚·‚éŠÖ”
+	* @brief åº§æ¨™ã‚’å–å¾—ã™ã‚‹é–¢æ•°
+	* @return XMFLOAT2* åº§æ¨™(äºŒæ¬¡å…ƒåº§æ¨™)(ãƒã‚¤ãƒ³ã‚¿)
+	* @details åº§æ¨™(äºŒæ¬¡å…ƒåº§æ¨™)ã‚’å–å¾—ã™ã‚‹é–¢æ•°
 	*/
 	XMFLOAT2* const GetPosition();
 
 	/**
-	* @brief •`‰æ‚Ì—LŒø–³Œø‚ğİ’è‚·‚éŠÖ”
-	* @param flag trur–”‚Ífalse
-	* @details •`‰æ‚Ì—LŒø–³Œø‚ğİ’è‚·‚éŠÖ”
+	* @brief æç”»ã®æœ‰åŠ¹ç„¡åŠ¹ã‚’è¨­å®šã™ã‚‹é–¢æ•°
+	* @param flag truråˆã¯false
+	* @details æç”»ã®æœ‰åŠ¹ç„¡åŠ¹ã‚’è¨­å®šã™ã‚‹é–¢æ•°
 	*/
 	void SetEnable(const bool flag);
 
 	/**
-	* @brief •`‰æ‚Ì—LŒø–³Œø‚ğæ“¾‚·‚éŠÖ”
-	* @return bool •`‰æ‚Ì—LŒø–³Œø‚Ìƒtƒ‰ƒO
-	* @details •`‰æ‚Ì—LŒø–³Œø‚ğæ“¾‚·‚éŠÖ”
+	* @brief æç”»ã®æœ‰åŠ¹ç„¡åŠ¹ã‚’å–å¾—ã™ã‚‹é–¢æ•°
+	* @return bool æç”»ã®æœ‰åŠ¹ç„¡åŠ¹ã®ãƒ•ãƒ©ã‚°
+	* @details æç”»ã®æœ‰åŠ¹ç„¡åŠ¹ã‚’å–å¾—ã™ã‚‹é–¢æ•°
 	*/
 	const bool GetEnable();
 
 	/**
-	* @brief ’¸“_ƒJƒ‰[‚ğİ’è‚·‚éŠÖ”
-	* @param color ƒJƒ‰[\‘¢‘Ì
-	* @details ’¸“_ƒJƒ‰[(ƒJƒ‰[\‘¢‘Ì)‚ğİ’è‚·‚éŠÖ”
+	* @brief é ‚ç‚¹ã‚«ãƒ©ãƒ¼ã‚’è¨­å®šã™ã‚‹é–¢æ•°
+	* @param color ã‚«ãƒ©ãƒ¼æ§‹é€ ä½“
+	* @details é ‚ç‚¹ã‚«ãƒ©ãƒ¼(ã‚«ãƒ©ãƒ¼æ§‹é€ ä½“)ã‚’è¨­å®šã™ã‚‹é–¢æ•°
 	*/
 	void SetColor(Aegis::COLOR& const color);
 
 	/**
-	* @brief ’¸“_ƒJƒ‰[‚ğæ“¾‚·‚éŠÖ”
-	* @return COLOR ’¸“_ƒJƒ‰[(ƒJƒ‰[\‘¢‘Ì)
-	* @details ’¸“_ƒJƒ‰[(ƒJƒ‰[\‘¢‘Ì)‚ğæ“¾‚·‚éŠÖ”
+	* @brief é ‚ç‚¹ã‚«ãƒ©ãƒ¼ã‚’å–å¾—ã™ã‚‹é–¢æ•°
+	* @return COLOR é ‚ç‚¹ã‚«ãƒ©ãƒ¼(ã‚«ãƒ©ãƒ¼æ§‹é€ ä½“)
+	* @details é ‚ç‚¹ã‚«ãƒ©ãƒ¼(ã‚«ãƒ©ãƒ¼æ§‹é€ ä½“)ã‚’å–å¾—ã™ã‚‹é–¢æ•°
 	*/
 	Aegis::COLOR& const GetColor();
 
 	/**
-	* @brief ƒTƒCƒY‚ğİ’è‚·‚éŠÖ”
-	* @param size x:ã y:‰E z:‰º w:¶
-	* @details ƒTƒCƒY(4•ûŒü)‚ğİ’è‚·‚éŠÖ”
+	* @brief ã‚µã‚¤ã‚ºã‚’è¨­å®šã™ã‚‹é–¢æ•°
+	* @param size x:ä¸Š y:å³ z:ä¸‹ w:å·¦
+	* @details ã‚µã‚¤ã‚º(4æ–¹å‘)ã‚’è¨­å®šã™ã‚‹é–¢æ•°
 	*/
 	void SetSize(const XMFLOAT4& size);
 
 	/**
-	* @brief ƒTƒCƒY‚ğæ“¾‚·‚éŠÖ”
-	* @return XMFLOAT4 ƒTƒCƒY(4•ûŒü)(x:ã y:‰E z:‰º w:¶)
-	* @details ƒTƒCƒY(4•ûŒü)‚ğ‚ğæ“¾‚·‚éŠÖ”
+	* @brief ã‚µã‚¤ã‚ºã‚’å–å¾—ã™ã‚‹é–¢æ•°
+	* @return XMFLOAT4 ã‚µã‚¤ã‚º(4æ–¹å‘)(x:ä¸Š y:å³ z:ä¸‹ w:å·¦)
+	* @details ã‚µã‚¤ã‚º(4æ–¹å‘)ã‚’ã‚’å–å¾—ã™ã‚‹é–¢æ•°
 	*/
 	XMFLOAT4* const GetSize();
 
 	/**
-	* @brief ƒeƒNƒXƒ`ƒƒ‚ğİ’è‚·‚éŠÖ”
-	* @param file_name g—p‚·‚éƒeƒNƒXƒ`ƒƒ–¼
-	* @details ƒeƒNƒXƒ`ƒƒ(ƒNƒ‰ƒX)‚ğİ’è‚·‚éŠÖ”
+	* @brief ãƒ†ã‚¯ã‚¹ãƒãƒ£ã‚’è¨­å®šã™ã‚‹é–¢æ•°
+	* @param file_name ä½¿ç”¨ã™ã‚‹ãƒ†ã‚¯ã‚¹ãƒãƒ£å
+	* @details ãƒ†ã‚¯ã‚¹ãƒãƒ£(ã‚¯ãƒ©ã‚¹)ã‚’è¨­å®šã™ã‚‹é–¢æ•°
 	*/
 	void SetTexture(const string& const file_name);
 
 	/**
-	* @brief ƒeƒNƒXƒ`ƒƒ‚ğæ“¾‚·‚éŠÖ”
-	* @return TEXTURE ƒeƒNƒXƒ`ƒƒƒNƒ‰ƒX
-	* @details ƒeƒNƒXƒ`ƒƒ(ƒNƒ‰ƒX)‚ğæ“¾‚·‚éŠÖ”
+	* @brief ãƒ†ã‚¯ã‚¹ãƒãƒ£ã‚’å–å¾—ã™ã‚‹é–¢æ•°
+	* @return TEXTURE ãƒ†ã‚¯ã‚¹ãƒãƒ£ã‚¯ãƒ©ã‚¹
+	* @details ãƒ†ã‚¯ã‚¹ãƒãƒ£(ã‚¯ãƒ©ã‚¹)ã‚’å–å¾—ã™ã‚‹é–¢æ•°
 	*/
 	TEXTURE* const GetTexture();
 
 	/**
-	* @brief qƒXƒvƒ‰ƒCƒg‚ğ’Ç‰Á‚·‚éŠÖ”
-	* @param name qƒXƒvƒ‰ƒCƒg‚Ì–¼‘O
-	* @param parent eƒXƒvƒ‰ƒCƒg‚Ìƒ|ƒCƒ“ƒ^
-	* @return SPRITE qƒXƒvƒ‰ƒCƒg‚Ìƒ|ƒCƒ“ƒ^
-	* @details qƒXƒvƒ‰ƒCƒg‚ğˆê‚Â’Ç‰Á‚·‚éŠÖ”
+	* @brief å­ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆã‚’è¿½åŠ ã™ã‚‹é–¢æ•°
+	* @param name å­ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆã®åå‰
+	* @param parent è¦ªã‚¹ãƒ—ãƒ©ã‚¤ãƒˆã®ãƒã‚¤ãƒ³ã‚¿
+	* @return SPRITE å­ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆã®ãƒã‚¤ãƒ³ã‚¿
+	* @details å­ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆã‚’ä¸€ã¤è¿½åŠ ã™ã‚‹é–¢æ•°
 	*/
 	SPRITE* Add_Child_Sptite(const string& name);
 
 	/**
-	* @brief qƒXƒvƒ‰ƒCƒg‚ğæ“¾‚·‚éŠÖ”
-	* @return list<CHILD_DATE> qƒXƒvƒ‰ƒCƒg‚ÌƒŠƒXƒg
-	* @details qƒXƒvƒ‰ƒCƒg‚ÌƒŠƒXƒg‚ğæ“¾‚·‚éŠÖ”
+	* @brief å­ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆã‚’å–å¾—ã™ã‚‹é–¢æ•°
+	* @return list<CHILD_DATE> å­ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆã®ãƒªã‚¹ãƒˆ
+	* @details å­ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆã®ãƒªã‚¹ãƒˆã‚’å–å¾—ã™ã‚‹é–¢æ•°
 	*/
 	vector< unique_ptr<CHILD_DATE> >* const Get_Child_Sptite();
 
 	/**
-	* @brief qƒXƒvƒ‰ƒCƒg‚ğæ“¾‚·‚éŠÖ”
-	* @return list<CHILD_DATE> qƒXƒvƒ‰ƒCƒg‚ÌƒŠƒXƒg
-	* @details qƒXƒvƒ‰ƒCƒg‚ÌƒŠƒXƒg‚ğæ“¾‚·‚éŠÖ”
+	* @brief å­ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆã‚’å–å¾—ã™ã‚‹é–¢æ•°
+	* @return list<CHILD_DATE> å­ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆã®ãƒªã‚¹ãƒˆ
+	* @details å­ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆã®ãƒªã‚¹ãƒˆã‚’å–å¾—ã™ã‚‹é–¢æ•°
 	*/
 	CHILD_DATE* const Get_Child_Sptite(const string& name);
 
 	/**
-	* @brief ƒƒjƒ…[ƒCƒxƒ“ƒg‚ğ’Ç‰Á‚·‚éŠÖ”
-	* @tparam T ’Ç‰Á‚·‚éƒƒjƒ…[ƒCƒxƒ“ƒg‚ÌƒNƒ‰ƒX–¼
-	* @return T ’Ç‰Á‚µ‚½ƒƒjƒ…[ƒCƒxƒ“ƒg‚Ìƒ|ƒCƒ“ƒ^
-	* @details ƒƒjƒ…[ƒCƒxƒ“ƒg‚ğˆê‚Â’Ç‰Á‚·‚éŠÖ”
+	* @brief ãƒ¡ãƒ‹ãƒ¥ãƒ¼ã‚¤ãƒ™ãƒ³ãƒˆã‚’è¿½åŠ ã™ã‚‹é–¢æ•°
+	* @tparam T è¿½åŠ ã™ã‚‹ãƒ¡ãƒ‹ãƒ¥ãƒ¼ã‚¤ãƒ™ãƒ³ãƒˆã®ã‚¯ãƒ©ã‚¹å
+	* @return T è¿½åŠ ã—ãŸãƒ¡ãƒ‹ãƒ¥ãƒ¼ã‚¤ãƒ™ãƒ³ãƒˆã®ãƒã‚¤ãƒ³ã‚¿
+	* @details ãƒ¡ãƒ‹ãƒ¥ãƒ¼ã‚¤ãƒ™ãƒ³ãƒˆã‚’ä¸€ã¤è¿½åŠ ã™ã‚‹é–¢æ•°
 	*/
 	template <typename T>
 	T* Add_Menu_Event()
@@ -269,34 +269,34 @@ public:
 	}
 
 	/**
-	* @brief qƒXƒvƒ‰ƒCƒg‚ÌÀ•W‚ğİ’è‚·‚éŠÖ”
-	* @param name İ’è‚·‚éqƒXƒvƒ‰ƒCƒg‚Ì–¼‘O
-	* @param position e‚ÌÀ•W(“ñŸŒ³À•W)
-	* @param offset ƒIƒtƒZƒbƒgˆÊ’u(“ñŸŒ³À•W)
-	* @details “Á’è‚ÌqƒXƒvƒ‰ƒCƒg‚ÌÀ•W(“ñŸŒ³À•WAeƒXƒvƒ‰ƒCƒg‚©‚çƒIƒtƒZƒbƒg‚³‚ê‚é)‚ğİ’è‚·‚éŠÖ”
+	* @brief å­ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆã®åº§æ¨™ã‚’è¨­å®šã™ã‚‹é–¢æ•°
+	* @param name è¨­å®šã™ã‚‹å­ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆã®åå‰
+	* @param position è¦ªã®åº§æ¨™(äºŒæ¬¡å…ƒåº§æ¨™)
+	* @param offset ã‚ªãƒ•ã‚»ãƒƒãƒˆä½ç½®(äºŒæ¬¡å…ƒåº§æ¨™)
+	* @details ç‰¹å®šã®å­ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆã®åº§æ¨™(äºŒæ¬¡å…ƒåº§æ¨™ã€è¦ªã‚¹ãƒ—ãƒ©ã‚¤ãƒˆã‹ã‚‰ã‚ªãƒ•ã‚»ãƒƒãƒˆã•ã‚Œã‚‹)ã‚’è¨­å®šã™ã‚‹é–¢æ•°
 	*/
 	void Set_Position_Child(const string& const name, const XMFLOAT2& position, const XMFLOAT2& offset);
 
 	/**
-	* @brief qƒXƒvƒ‰ƒCƒg‚Ì•`‰æ‚Ì—LŒø–³Œø‚ğİ’è‚·‚éŠÖ”
-	* @param flag •`‰æ‚Ì—LŒø–³Œø‚Ìƒtƒ‰ƒO
-	* @details ‘S‚Ä‚ÌqƒXƒvƒ‰ƒCƒg‚Ì•`‰æ‚Ì—LŒø–³Œø‚ğİ’è‚·‚éŠÖ”
+	* @brief å­ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆã®æç”»ã®æœ‰åŠ¹ç„¡åŠ¹ã‚’è¨­å®šã™ã‚‹é–¢æ•°
+	* @param flag æç”»ã®æœ‰åŠ¹ç„¡åŠ¹ã®ãƒ•ãƒ©ã‚°
+	* @details å…¨ã¦ã®å­ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆã®æç”»ã®æœ‰åŠ¹ç„¡åŠ¹ã‚’è¨­å®šã™ã‚‹é–¢æ•°
 	*/
 	void Set_Enable_Child(const bool flag);
 
 	/**
-	* @brief qƒXƒvƒ‰ƒCƒg‚Ì•`‰æ‚Ì—LŒø–³Œø‚ğİ’è‚·‚éŠÖ”
-	* @param name İ’è‚·‚éqƒXƒvƒ‰ƒCƒg‚Ì–¼‘O
-	* @param flag •`‰æ‚Ì—LŒø–³Œø‚Ìƒtƒ‰ƒO
-	* @details “Á’è‚ÌqƒXƒvƒ‰ƒCƒg‚Ì•`‰æ‚Ì—LŒø–³Œø‚ğİ’è‚·‚éŠÖ”
+	* @brief å­ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆã®æç”»ã®æœ‰åŠ¹ç„¡åŠ¹ã‚’è¨­å®šã™ã‚‹é–¢æ•°
+	* @param name è¨­å®šã™ã‚‹å­ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆã®åå‰
+	* @param flag æç”»ã®æœ‰åŠ¹ç„¡åŠ¹ã®ãƒ•ãƒ©ã‚°
+	* @details ç‰¹å®šã®å­ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆã®æç”»ã®æœ‰åŠ¹ç„¡åŠ¹ã‚’è¨­å®šã™ã‚‹é–¢æ•°
 	*/
 	void Set_Enable_Child(const string& const name, const bool flag);
 
 	/**
-	* @brief qƒXƒvƒ‰ƒCƒg‚Ì•`‰æ‚Ì—LŒø–³Œø‚ğæ“¾‚·‚éŠÖ”
-	* @param name qƒXƒvƒ‰ƒCƒg‚Ì–¼‘O
-	* @return bool •`‰æ‚Ì—LŒø–³Œø‚Ìƒtƒ‰ƒO
-	* @details “Á’è‚ÌqƒXƒvƒ‰ƒCƒg‚Ì•`‰æ‚Ì—LŒø–³Œø‚ğæ“¾‚·‚éŠÖ”
+	* @brief å­ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆã®æç”»ã®æœ‰åŠ¹ç„¡åŠ¹ã‚’å–å¾—ã™ã‚‹é–¢æ•°
+	* @param name å­ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆã®åå‰
+	* @return bool æç”»ã®æœ‰åŠ¹ç„¡åŠ¹ã®ãƒ•ãƒ©ã‚°
+	* @details ç‰¹å®šã®å­ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆã®æç”»ã®æœ‰åŠ¹ç„¡åŠ¹ã‚’å–å¾—ã™ã‚‹é–¢æ•°
 	*/
 	const bool Get_Enable_Child(const string& const name, vector< unique_ptr<CHILD_DATE> >* const children);
 	
@@ -305,10 +305,10 @@ public:
 	};
 
 	/**
-	* @brief ƒƒjƒ…[ƒCƒxƒ“ƒg‚ğæ“¾‚·‚éŠÖ”
-	* @tparam T æ“¾‚µ‚½‚¢ƒƒjƒ…[ƒCƒxƒ“ƒg‚ÌƒNƒ‰ƒX–¼
-	* @return T ƒƒjƒ…[ƒCƒxƒ“ƒg
-	* @details ƒƒjƒ…[ƒCƒxƒ“ƒg‚ğæ“¾‚·‚éŠÖ”
+	* @brief ãƒ¡ãƒ‹ãƒ¥ãƒ¼ã‚¤ãƒ™ãƒ³ãƒˆã‚’å–å¾—ã™ã‚‹é–¢æ•°
+	* @tparam T å–å¾—ã—ãŸã„ãƒ¡ãƒ‹ãƒ¥ãƒ¼ã‚¤ãƒ™ãƒ³ãƒˆã®ã‚¯ãƒ©ã‚¹å
+	* @return T ãƒ¡ãƒ‹ãƒ¥ãƒ¼ã‚¤ãƒ™ãƒ³ãƒˆ
+	* @details ãƒ¡ãƒ‹ãƒ¥ãƒ¼ã‚¤ãƒ™ãƒ³ãƒˆã‚’å–å¾—ã™ã‚‹é–¢æ•°
 	*/
 	template <typename T>
 	T* Get_Menu_Event()
@@ -323,10 +323,10 @@ public:
 	}
 
 	/**
-	* @brief ƒƒjƒ…[ƒCƒxƒ“ƒg‚ğ—LŒø–³Œø‚·‚éŠÖ”
-	* @tparam T —LŒø–³Œø‰»‚µ‚½‚¢ƒƒjƒ…[ƒCƒxƒ“ƒg‚ÌƒNƒ‰ƒX–¼
-	* @param flag trur–”‚Ífalse
-	* @details “Á’è‚Ìƒƒjƒ…[ƒCƒxƒ“ƒg‚ğ—LŒø–³Œø‰»‚·‚éŠÖ”
+	* @brief ãƒ¡ãƒ‹ãƒ¥ãƒ¼ã‚¤ãƒ™ãƒ³ãƒˆã‚’æœ‰åŠ¹ç„¡åŠ¹ã™ã‚‹é–¢æ•°
+	* @tparam T æœ‰åŠ¹ç„¡åŠ¹åŒ–ã—ãŸã„ãƒ¡ãƒ‹ãƒ¥ãƒ¼ã‚¤ãƒ™ãƒ³ãƒˆã®ã‚¯ãƒ©ã‚¹å
+	* @param flag truråˆã¯false
+	* @details ç‰¹å®šã®ãƒ¡ãƒ‹ãƒ¥ãƒ¼ã‚¤ãƒ™ãƒ³ãƒˆã‚’æœ‰åŠ¹ç„¡åŠ¹åŒ–ã™ã‚‹é–¢æ•°
 	*/
 	template <typename T>
 	void Menu_Event_Enable(const bool flag)

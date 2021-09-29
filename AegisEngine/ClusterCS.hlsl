@@ -1,4 +1,4 @@
-﻿#include "Commom_Hlsl.hlsli"
+#include "Commom_Hlsl.hlsli"
 
 #define MAX_NUM_LIGHTS 512
 #define LIGHT_TYPE_POINT 0          // ポイントライト

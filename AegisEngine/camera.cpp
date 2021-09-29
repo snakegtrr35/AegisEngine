@@ -1,4 +1,4 @@
-#include	"Renderer.h"
+ï»¿#include	"Renderer.h"
 #include	"manager.h"
 #include	"Scene.h"
 #include	"Input.h"
@@ -22,7 +22,7 @@ void CCamera::Init()
 	Right = XMVectorSet(1.0f, 0.0f, 0.0f, 0.0f);
 
 
-	// O‚Â‚ÌƒxƒNƒgƒ‹‚ğ‚’¼‚É‚·‚é
+	// ä¸‰ã¤ã®ãƒ™ã‚¯ãƒˆãƒ«ã‚’å‚ç›´ã«ã™ã‚‹
 	Right = XMVector3Cross(Up, Front);
 	Right = XMVector3Normalize(Right);
 
@@ -41,7 +41,7 @@ void CCamera::Init()
 		Pos = vec;
 	}
 
-	// ƒrƒ…[ƒ|[ƒgİ’è
+	// ãƒ“ãƒ¥ãƒ¼ãƒãƒ¼ãƒˆè¨­å®š
 	D3D11_VIEWPORT dxViewport;
 	dxViewport.Width = (float)SCREEN_WIDTH;
 	dxViewport.Height = (float)SCREEN_HEIGHT;
@@ -93,7 +93,7 @@ void CCamera::Update(float delta_time)
 
 	r = DirectX::XMVector3Normalize(r);
 
-	// ‰ñ“]
+	// å›è»¢
 	{
 		if (flag && MOUSE::Get_Mouse()->Get_Move_Y_Flag())
 		{
@@ -165,7 +165,7 @@ void CCamera::Update(float delta_time)
 	}
 
 
-	// ˆÚ“®
+	// ç§»å‹•
 	if (MoveEnable)
 	{
 		if (KEYBOARD::Press_Keyboard(VK_UP))
@@ -210,7 +210,7 @@ void CCamera::Draw()
 	RECT rect;
 	GetWindowRect(GetWindow(), &rect);
 
-	// ƒrƒ…[ƒ|[ƒgİ’è
+	// ãƒ“ãƒ¥ãƒ¼ãƒãƒ¼ãƒˆè¨­å®š
 	D3D11_VIEWPORT dxViewport;
 	dxViewport.Width = (float)(rect.right - rect.left);
 	dxViewport.Height = (float)(rect.bottom - rect.top);
@@ -219,10 +219,10 @@ void CCamera::Draw()
 	dxViewport.TopLeftX = (float)rect.left;
 	dxViewport.TopLeftY = (float)rect.top;
 
-	// ƒrƒ…[ƒ}ƒgƒŠƒNƒXİ’è
+	// ãƒ“ãƒ¥ãƒ¼ãƒãƒˆãƒªã‚¯ã‚¹è¨­å®š
 	m_ViewMatrix = XMMatrixLookAtLH(Pos, At, Up);
 
-	// ƒvƒƒWƒFƒNƒVƒ‡ƒ“ƒ}ƒgƒŠƒNƒXİ’è
+	// ãƒ—ãƒ­ã‚¸ã‚§ã‚¯ã‚·ãƒ§ãƒ³ãƒãƒˆãƒªã‚¯ã‚¹è¨­å®š
 	m_ProjectionMatrix = XMMatrixPerspectiveFovLH(XMConvertToRadians(Viewing_Angle), dxViewport.Width / dxViewport.Height, 0.001f, 1000.0f);
 }
 

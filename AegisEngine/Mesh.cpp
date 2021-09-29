@@ -1,4 +1,4 @@
-#include	"Mesh.h"
+ï»¿#include	"Mesh.h"
 
 MESH::MESH()
 {
@@ -112,7 +112,7 @@ bool MESH::SetupMesh(vector<VERTEX_3D>& vertices)
 		vbd.CPUAccessFlags = 0;
 		vbd.MiscFlags = 0;
 
-		// ƒTƒuƒŠƒ\[ƒX‚Ìİ’è
+		// ã‚µãƒ–ãƒªã‚½ãƒ¼ã‚¹ã®è¨­å®š
 		D3D11_SUBRESOURCE_DATA initData;
 		ZeroMemory(&initData, sizeof(D3D11_SUBRESOURCE_DATA));
 
@@ -133,7 +133,7 @@ bool MESH::SetupMesh(vector<VERTEX_3D>& vertices)
 		ibd.CPUAccessFlags = 0;
 		ibd.MiscFlags = 0;
 
-		// ƒTƒuƒŠƒ\[ƒX‚Ìİ’è
+		// ã‚µãƒ–ãƒªã‚½ãƒ¼ã‚¹ã®è¨­å®š
 		D3D11_SUBRESOURCE_DATA initData;
 		ZeroMemory(&initData, sizeof(D3D11_SUBRESOURCE_DATA));
 
@@ -162,17 +162,17 @@ void MESH::Draw_Mesh(XMMATRIX& parent_matrix)
 
 		CRenderer::GetDeviceContext()->PSSetShaderResources(0, 1, &Textures[0].Texture);
 
-		// 3Dƒ}ƒgƒŠƒbƒNƒXİ’è
+		// 3Dãƒãƒˆãƒªãƒƒã‚¯ã‚¹è¨­å®š
 		{
 			matrix = XMMatrixMultiply(Matrix, parent_matrix);
 
 			const auto camera01 = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<CCamera>("camera");
 			const auto camera02 = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
 
-			// •’Ê‚ÌƒJƒƒ‰‚©ƒfƒoƒbƒOƒJƒƒ‰‚©?
+			// æ™®é€šã®ã‚«ãƒ¡ãƒ©ã‹ãƒ‡ãƒãƒƒã‚°ã‚«ãƒ¡ãƒ©ã‹?
 			if (!camera01.expired() /*&& Empty_weak_ptr<CCamera>(camera01)*/)
 			{
-				// ƒVƒƒƒhƒEƒ}ƒbƒv—p‚Ì•`‰æ‚©?
+				// ã‚·ãƒ£ãƒ‰ã‚¦ãƒãƒƒãƒ—ç”¨ã®æç”»ã‹?
 				if (CManager::Get_Instance()->Get_ShadowMap()->Get_Enable())
 				{
 					XMMATRIX view = CManager::Get_Instance()->Get_ShadowMap()->Get_View();
@@ -189,7 +189,7 @@ void MESH::Draw_Mesh(XMMATRIX& parent_matrix)
 			}
 			else
 			{
-				// ƒVƒƒƒhƒEƒ}ƒbƒv—p‚Ì•`‰æ‚©?
+				// ã‚·ãƒ£ãƒ‰ã‚¦ãƒãƒƒãƒ—ç”¨ã®æç”»ã‹?
 				if (CManager::Get_Instance()->Get_ShadowMap()->Get_Enable())
 				{
 					XMMATRIX view = CManager::Get_Instance()->Get_ShadowMap()->Get_View();
@@ -227,14 +227,14 @@ void MESH::Draw_DPP_Mesh(XMMATRIX& parent_matrix)
 
 	if (!Indices.empty())
 	{
-		// 3Dƒ}ƒgƒŠƒbƒNƒXİ’è
+		// 3Dãƒãƒˆãƒªãƒƒã‚¯ã‚¹è¨­å®š
 		{
 			matrix = XMMatrixMultiply(Matrix, parent_matrix);
 
 			const auto camera01 = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<CCamera>("camera");
 			const auto camera02 = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
 
-			// •’Ê‚ÌƒJƒƒ‰‚©ƒfƒoƒbƒOƒJƒƒ‰
+			// æ™®é€šã®ã‚«ãƒ¡ãƒ©ã‹ãƒ‡ãƒãƒƒã‚°ã‚«ãƒ¡ãƒ©
 			if (!camera01.expired() && Empty_weak_ptr<CCamera>(camera01))
 			{
 				CRenderer::Set_MatrixBuffer(matrix, camera01.lock()->Get_Camera_View(), camera01.lock()->Get_Camera_Projection());
@@ -274,7 +274,7 @@ void MESH::Draw_Mesh_Animation(XMMATRIX& parent_matrix, unordered_map<string, An
 
 	CRenderer::GetDeviceContext()->PSSetShaderResources(0, 1, &Textures[0].Texture);
 
-	// 3Dƒ}ƒgƒŠƒbƒNƒXİ’è
+	// 3Dãƒãƒˆãƒªãƒƒã‚¯ã‚¹è¨­å®š
 	{
 		if ("none" == name2)
 		{
@@ -301,10 +301,10 @@ void MESH::Draw_Mesh_Animation(XMMATRIX& parent_matrix, unordered_map<string, An
 					auto camera01 = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<CCamera>("camera");
 					auto camera02 = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
 
-					// •’Ê‚ÌƒJƒƒ‰‚©ƒfƒoƒbƒOƒJƒƒ‰‚©?
+					// æ™®é€šã®ã‚«ãƒ¡ãƒ©ã‹ãƒ‡ãƒãƒƒã‚°ã‚«ãƒ¡ãƒ©ã‹?
 					if (!camera01.expired() && Empty_weak_ptr<CCamera>(camera01))
 					{
-						// ƒVƒƒƒhƒEƒ}ƒbƒv—p‚Ì•`‰æ‚©?
+						// ã‚·ãƒ£ãƒ‰ã‚¦ãƒãƒƒãƒ—ç”¨ã®æç”»ã‹?
 						if (CManager::Get_Instance()->Get_ShadowMap()->Get_Enable())
 						{
 							XMMATRIX view = CManager::Get_Instance()->Get_ShadowMap()->Get_View();
@@ -321,7 +321,7 @@ void MESH::Draw_Mesh_Animation(XMMATRIX& parent_matrix, unordered_map<string, An
 					}
 					else
 					{
-						// ƒVƒƒƒhƒEƒ}ƒbƒv—p‚Ì•`‰æ‚©?
+						// ã‚·ãƒ£ãƒ‰ã‚¦ãƒãƒƒãƒ—ç”¨ã®æç”»ã‹?
 						if (CManager::Get_Instance()->Get_ShadowMap()->Get_Enable())
 						{
 							XMMATRIX view = CManager::Get_Instance()->Get_ShadowMap()->Get_View();
@@ -395,10 +395,10 @@ void MESH::Draw_Mesh_Animation(XMMATRIX& parent_matrix, unordered_map<string, An
 			auto camera01 = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<CCamera>("camera");
 			auto camera02 = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
 
-			// •’Ê‚ÌƒJƒƒ‰‚©ƒfƒoƒbƒOƒJƒƒ‰‚©?
+			// æ™®é€šã®ã‚«ãƒ¡ãƒ©ã‹ãƒ‡ãƒãƒƒã‚°ã‚«ãƒ¡ãƒ©ã‹?
 			if (!camera01.expired() && Empty_weak_ptr<CCamera>(camera01))
 			{
-				// ƒVƒƒƒhƒEƒ}ƒbƒv—p‚Ì•`‰æ‚©?
+				// ã‚·ãƒ£ãƒ‰ã‚¦ãƒãƒƒãƒ—ç”¨ã®æç”»ã‹?
 				if (CManager::Get_Instance()->Get_ShadowMap()->Get_Enable())
 				{
 					XMMATRIX view = CManager::Get_Instance()->Get_ShadowMap()->Get_View();
@@ -415,7 +415,7 @@ void MESH::Draw_Mesh_Animation(XMMATRIX& parent_matrix, unordered_map<string, An
 			}
 			else
 			{
-				// ƒVƒƒƒhƒEƒ}ƒbƒv—p‚Ì•`‰æ‚©?
+				// ã‚·ãƒ£ãƒ‰ã‚¦ãƒãƒƒãƒ—ç”¨ã®æç”»ã‹?
 				if (CManager::Get_Instance()->Get_ShadowMap()->Get_Enable())
 				{
 					XMMATRIX view = CManager::Get_Instance()->Get_ShadowMap()->Get_View();
@@ -447,7 +447,7 @@ void MESH::Draw_DPP_Mesh_Animation(XMMATRIX& parent_matrix, unordered_map<string
 {
 	XMMATRIX world;
 
-	// 3Dƒ}ƒgƒŠƒbƒNƒXİ’è
+	// 3Dãƒãƒˆãƒªãƒƒã‚¯ã‚¹è¨­å®š
 	{
 		if ("none" == name2)
 		{
@@ -474,7 +474,7 @@ void MESH::Draw_DPP_Mesh_Animation(XMMATRIX& parent_matrix, unordered_map<string
 					auto camera01 = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<CCamera>("camera");
 					auto camera02 = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
 
-					// •’Ê‚ÌƒJƒƒ‰‚©ƒfƒoƒbƒOƒJƒƒ‰‚©?
+					// æ™®é€šã®ã‚«ãƒ¡ãƒ©ã‹ãƒ‡ãƒãƒƒã‚°ã‚«ãƒ¡ãƒ©ã‹?
 					if (!camera01.expired() && Empty_weak_ptr<CCamera>(camera01))
 					{
 						CRenderer::Set_MatrixBuffer(world, camera01.lock()->Get_Camera_View(), camera01.lock()->Get_Camera_Projection());
@@ -541,7 +541,7 @@ void MESH::Draw_DPP_Mesh_Animation(XMMATRIX& parent_matrix, unordered_map<string
 			auto camera01 = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<CCamera>("camera");
 			auto camera02 = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
 
-			// •’Ê‚ÌƒJƒƒ‰‚©ƒfƒoƒbƒOƒJƒƒ‰‚©?
+			// æ™®é€šã®ã‚«ãƒ¡ãƒ©ã‹ãƒ‡ãƒãƒƒã‚°ã‚«ãƒ¡ãƒ©ã‹?
 			if (!camera01.expired() && Empty_weak_ptr<CCamera>(camera01))
 			{
 				CRenderer::Set_MatrixBuffer(world, camera01.lock()->Get_Camera_View(), camera01.lock()->Get_Camera_Projection());
@@ -706,7 +706,7 @@ void MESHS::SetupMesh()
 {
 	HRESULT hr;
 
-	// ’¸“_ƒoƒbƒtƒ@‚Ì¶¬
+	// é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡ã®ç”Ÿæˆ
 	if(nullptr == VertexBuffer && !Vertices.empty())
 	{
 		D3D11_BUFFER_DESC desc;
@@ -716,7 +716,7 @@ void MESHS::SetupMesh()
 		desc.CPUAccessFlags = 0;
 		desc.MiscFlags = 0;
 
-		// ƒTƒuƒŠƒ\[ƒX‚Ìİ’è
+		// ã‚µãƒ–ãƒªã‚½ãƒ¼ã‚¹ã®è¨­å®š
 		D3D11_SUBRESOURCE_DATA initData;
 		ZeroMemory(&initData, sizeof(D3D11_SUBRESOURCE_DATA));
 
@@ -727,7 +727,7 @@ void MESHS::SetupMesh()
 			FAILDE_ASSERT;
 	}
 
-	// ƒCƒ“ƒfƒbƒNƒXƒoƒbƒtƒ@‚Ì¶¬
+	// ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ãƒãƒƒãƒ•ã‚¡ã®ç”Ÿæˆ
 	if (nullptr == IndexBuffer && !Indices.empty())
 	{
 		D3D11_BUFFER_DESC desc;
@@ -737,7 +737,7 @@ void MESHS::SetupMesh()
 		desc.CPUAccessFlags = 0;
 		desc.MiscFlags = 0;
 
-		// ƒTƒuƒŠƒ\[ƒX‚Ìİ’è
+		// ã‚µãƒ–ãƒªã‚½ãƒ¼ã‚¹ã®è¨­å®š
 		D3D11_SUBRESOURCE_DATA initData;
 		ZeroMemory(&initData, sizeof(D3D11_SUBRESOURCE_DATA));
 
@@ -768,17 +768,17 @@ void MESHS::Draw_Mesh(XMMATRIX& parent_matrix, const vector<TEXTURE_S>& textures
 			}
 		}
 
-		// 3Dƒ}ƒgƒŠƒbƒNƒXİ’è
+		// 3Dãƒãƒˆãƒªãƒƒã‚¯ã‚¹è¨­å®š
 		{
 			matrix = XMMatrixMultiply(XMFLOAT4X4ToXMMATRIX(Matrix), parent_matrix);
 
 			const auto camera01 = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<CCamera>("camera");
 			const auto camera02 = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
 
-			// •’Ê‚ÌƒJƒƒ‰‚©ƒfƒoƒbƒOƒJƒƒ‰‚©?
+			// æ™®é€šã®ã‚«ãƒ¡ãƒ©ã‹ãƒ‡ãƒãƒƒã‚°ã‚«ãƒ¡ãƒ©ã‹?
 			if (!camera01.expired())
 			{
-				// ƒVƒƒƒhƒEƒ}ƒbƒv—p‚Ì•`‰æ‚©?
+				// ã‚·ãƒ£ãƒ‰ã‚¦ãƒãƒƒãƒ—ç”¨ã®æç”»ã‹?
 				if (CManager::Get_Instance()->Get_ShadowMap()->Get_Enable())
 				{
 					XMMATRIX view = CManager::Get_Instance()->Get_ShadowMap()->Get_View();
@@ -795,7 +795,7 @@ void MESHS::Draw_Mesh(XMMATRIX& parent_matrix, const vector<TEXTURE_S>& textures
 			}
 			else
 			{
-				// ƒVƒƒƒhƒEƒ}ƒbƒv—p‚Ì•`‰æ‚©?
+				// ã‚·ãƒ£ãƒ‰ã‚¦ãƒãƒƒãƒ—ç”¨ã®æç”»ã‹?
 				if (CManager::Get_Instance()->Get_ShadowMap()->Get_Enable())
 				{
 					XMMATRIX view = CManager::Get_Instance()->Get_ShadowMap()->Get_View();

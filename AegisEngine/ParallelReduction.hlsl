@@ -1,4 +1,4 @@
-﻿//
+//
 // Copyright 2014 ADVANCED MICRO DEVICES, INC.  All Rights Reserved.
 //
 // AMD is granting you permission to use this software and documentation (if

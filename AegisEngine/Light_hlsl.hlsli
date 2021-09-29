@@ -1,4 +1,4 @@
-﻿#ifndef LIGHT_HLSL_H
+#ifndef LIGHT_HLSL_H
 #define LIGHT_HLSL_H
 
 #define MAX_NUM_LIGHTS 512

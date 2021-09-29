@@ -1,4 +1,4 @@
-#include	"Model_Manager.h"
+ï»¿#include	"Model_Manager.h"
 
 #include	"external/DirectXTex/WICTextureLoader.h"
 
@@ -32,7 +32,7 @@ void MODEL_MANEGER::Init()
 		}
 	}
 
-	// ‰æ‘œƒf[ƒ^‚Ì“Ç‚İ‚İ
+	// ç”»åƒãƒ‡ãƒ¼ã‚¿ã®èª­ã¿è¾¼ã¿
 	//ModelManager->Load(flag);
 }
 
@@ -46,11 +46,11 @@ void MODEL_MANEGER::Uninit()
 
 void MODEL_MANEGER::Load(const bool flag)
 {
-	// ƒoƒCƒiƒŠƒtƒ@ƒCƒ‹‚ª‚È‚¢
+	// ãƒã‚¤ãƒŠãƒªãƒ•ã‚¡ã‚¤ãƒ«ãŒãªã„
 	if (false == flag)
 	{
-		string path;			// ƒtƒ@ƒCƒ‹–¼(ƒpƒX•t‚«) 
-		string file_name;		// ƒtƒ@ƒCƒ‹–¼(ƒpƒX‚È‚µ)
+		string path;			// ãƒ•ã‚¡ã‚¤ãƒ«å(ãƒ‘ã‚¹ä»˜ã) 
+		string file_name;		// ãƒ•ã‚¡ã‚¤ãƒ«å(ãƒ‘ã‚¹ãªã—)
 		string type;
 		size_t key;
 		size_t pos;
@@ -58,13 +58,13 @@ void MODEL_MANEGER::Load(const bool flag)
 		std::filesystem::directory_iterator di = std::filesystem::directory_iterator("./asset/model");
 		for (auto file : di)
 		{
-			// ˆê‚Âˆê‚Â‚Ìƒtƒ@ƒCƒ‹–¼(ƒpƒX•t‚«)
+			// ä¸€ã¤ä¸€ã¤ã®ãƒ•ã‚¡ã‚¤ãƒ«å(ãƒ‘ã‚¹ä»˜ã)
 			path = file.path().string();
 
-			// ’uŠ·
+			// ç½®æ›
 			replace(path.begin(), path.end(), '\\', '/');
 
-			// fbxƒtƒ@ƒCƒ‹‚©”»’f
+			// fbxãƒ•ã‚¡ã‚¤ãƒ«ã‹åˆ¤æ–­
 			{
 				pos = path.find_last_of(".");
 
@@ -82,10 +82,10 @@ void MODEL_MANEGER::Load(const bool flag)
 
 			key = hash<string>()(file_name);//
 
-			//ƒeƒNƒXƒ`ƒƒ‚Ì“o˜^
+			//ãƒ†ã‚¯ã‚¹ãƒãƒ£ã®ç™»éŒ²
 			ModelFile[key].Path = path;
 
-			// ƒ‚ƒfƒ‹‚Ì“Ç‚İ‚İ
+			// ãƒ¢ãƒ‡ãƒ«ã®èª­ã¿è¾¼ã¿
 			if (ModelFile.find(key) != ModelFile.end())
 			{
 				MESHS Mesh;
@@ -111,10 +111,10 @@ void MODEL_MANEGER::Load(const bool flag)
 	}
 	else
 	{
-		// Œ»İ‚Í•’Ê‚Ìƒtƒ@ƒCƒ‹‚©‚ç“Ç‚İ‚ñ‚Å‚¢‚é‚ªA«—ˆ“I‚É‚ÍƒoƒCƒiƒŠƒtƒ@ƒCƒ‹‚Æ•’Ê‚Ìƒtƒ@ƒCƒ‹‚Ç‚¿‚ç‚©‚ç‚à“Ç‚İ‚ß‚é‚æ‚¤‚É‚·‚é
+		// ç¾åœ¨ã¯æ™®é€šã®ãƒ•ã‚¡ã‚¤ãƒ«ã‹ã‚‰èª­ã¿è¾¼ã‚“ã§ã„ã‚‹ãŒã€å°†æ¥çš„ã«ã¯ãƒã‚¤ãƒŠãƒªãƒ•ã‚¡ã‚¤ãƒ«ã¨æ™®é€šã®ãƒ•ã‚¡ã‚¤ãƒ«ã©ã¡ã‚‰ã‹ã‚‰ã‚‚èª­ã¿è¾¼ã‚ã‚‹ã‚ˆã†ã«ã™ã‚‹
 
-		string path;			// ƒtƒ@ƒCƒ‹–¼(ƒpƒX•t‚«) 
-		string file_name;		// ƒtƒ@ƒCƒ‹–¼(ƒpƒX‚È‚µ)
+		string path;			// ãƒ•ã‚¡ã‚¤ãƒ«å(ãƒ‘ã‚¹ä»˜ã) 
+		string file_name;		// ãƒ•ã‚¡ã‚¤ãƒ«å(ãƒ‘ã‚¹ãªã—)
 		string type;
 		size_t key;
 		size_t pos;
@@ -132,7 +132,7 @@ void MODEL_MANEGER::Load(const bool flag)
 			pos = path.find_last_of(".");
 			type = path.substr(pos + 1);
 
-			// ƒ‚ƒfƒ‹‚Ì“Ç‚İ‚İ
+			// ãƒ¢ãƒ‡ãƒ«ã®èª­ã¿è¾¼ã¿
 			{
 				MESHS Mesh;
 
@@ -182,10 +182,10 @@ void MODEL_MANEGER::Add(const string& file_name)
 {
 	size_t key = hash<string>()(file_name);
 
-	//ƒeƒNƒXƒ`ƒƒ‚Ì“o˜^
+	//ãƒ†ã‚¯ã‚¹ãƒãƒ£ã®ç™»éŒ²
 	ModelFile[key].Path = "./asset/model/" + file_name;
 
-	// ƒ‚ƒfƒ‹‚Ì“Ç‚İ‚İ
+	// ãƒ¢ãƒ‡ãƒ«ã®èª­ã¿è¾¼ã¿
 	if (ModelFile.find(key) != ModelFile.end())
 	{
 		MESHS Mesh;
@@ -216,12 +216,12 @@ const bool MODEL_MANEGER::Unload(const string& const file_name)
 #ifdef _DEBUG
 	if (0 != ModelData[first].Cnt)
 	{
-		// QÆ‚µ‚Ä‚¢‚é‚à‚Ì‚ª‚ ‚é
+		// å‚ç…§ã—ã¦ã„ã‚‹ã‚‚ã®ãŒã‚ã‚‹
 		return false;
 	}
 #endif // _DEBUG
 
-	// ƒ‚ƒfƒ‹‚Ìíœ
+	// ãƒ¢ãƒ‡ãƒ«ã®å‰Šé™¤
 
 	ModelData.erase(first);
 
@@ -275,12 +275,12 @@ MESHS MODEL_MANEGER::processMesh(aiMesh* mesh, aiNode* node, const aiScene* scen
 	// Walk through each of the mesh's vertices
 	for (UINT i = 0; i < mesh->mNumVertices; i++)
 	{
-		// ’¸“_ƒf[ƒ^‚Ìİ’è
+		// é ‚ç‚¹ãƒ‡ãƒ¼ã‚¿ã®è¨­å®š
 		vertices[i].Position.x = mesh->mVertices[i].x;
 		vertices[i].Position.y = mesh->mVertices[i].y;
 		vertices[i].Position.z = mesh->mVertices[i].z;
 
-		// ’¸“_ƒJƒ‰[‚Ìİ’è
+		// é ‚ç‚¹ã‚«ãƒ©ãƒ¼ã®è¨­å®š
 		if (mesh->HasVertexColors(i))
 		{
 			vertices[i].Diffuse.x = mesh->mColors[i]->r;
@@ -293,12 +293,12 @@ MESHS MODEL_MANEGER::processMesh(aiMesh* mesh, aiNode* node, const aiScene* scen
 			vertices[i].Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
 		}
 
-		// –@üƒxƒNƒgƒ‹‚Ìİ’è
+		// æ³•ç·šãƒ™ã‚¯ãƒˆãƒ«ã®è¨­å®š
 		vertices[i].Normal.x = mesh->mNormals[i].x;
 		vertices[i].Normal.y = mesh->mNormals[i].y;
 		vertices[i].Normal.z = mesh->mNormals[i].z;
 
-		// UVÀ•W‚Ìİ’è
+		// UVåº§æ¨™ã®è¨­å®š
 		if (mesh->mTextureCoords[0])
 		{
 			vertices[i].TexCoord.x = (float)mesh->mTextureCoords[0][i].x;
@@ -306,7 +306,7 @@ MESHS MODEL_MANEGER::processMesh(aiMesh* mesh, aiNode* node, const aiScene* scen
 		}
 	}
 
-	// ƒCƒ“ƒfƒbƒNƒX‚Ìİ’è
+	// ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ã®è¨­å®š
 	for (UINT i = 0; i < mesh->mNumFaces; i++)
 	{
 		aiFace face = mesh->mFaces[i];
@@ -317,7 +317,7 @@ MESHS MODEL_MANEGER::processMesh(aiMesh* mesh, aiNode* node, const aiScene* scen
 		}
 	}
 
-	// ƒeƒNƒXƒ`ƒƒ‚Ìİ’è
+	// ãƒ†ã‚¯ã‚¹ãƒãƒ£ã®è¨­å®š
 	if (mesh->mMaterialIndex >= 0)
 	{
 		aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
@@ -325,7 +325,7 @@ MESHS MODEL_MANEGER::processMesh(aiMesh* mesh, aiNode* node, const aiScene* scen
 		texture_name = loadMaterialTextures(material, aiTextureType_DIFFUSE, "texture_diffuse", scene, textures_loaded);
 	}
 
-	// ƒ}ƒgƒŠƒbƒNƒX‚Ìİ’è
+	// ãƒãƒˆãƒªãƒƒã‚¯ã‚¹ã®è¨­å®š
 	{
 		matrix = Covert_Matrix(&node->mTransformation);
 	}

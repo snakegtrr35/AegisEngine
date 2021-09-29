@@ -1,4 +1,4 @@
-#include	"Scene.h"
+Ôªø#include	"Scene.h"
 #include	"manager.h"
 #include	"Scene_Manager.h"
 
@@ -51,7 +51,7 @@ void ENEMY::Init()
 		Model->Set_Scaling(Scaling);
 	}
 
-	// ÉRÉìÉ|Å[ÉlÉìÉg
+	// „Ç≥„É≥„Éù„Éº„Éç„É≥„Éà
 	{
 		auto scene = CManager::Get_Instance()->Get_Scene();
 
@@ -113,25 +113,25 @@ void ENEMY::Update(float delta_time)
 		}
 	}
 
-	// à⁄ìÆ
+	// ÁßªÂãï
 	{
 		XMFLOAT3 move(0.f, 0.f, 0.f);
 
-		// ÉvÉåÉCÉÑÅ[Ç∆ÇÃãóó£ÇàÍíËÇ…Ç∑ÇÈ
+		// „Éó„É¨„Ç§„É§„Éº„Å®„ÅÆË∑ùÈõ¢„Çí‰∏ÄÂÆö„Å´„Åô„Çã
 		{
 			const auto player = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<PLAYER>("player");
 
 			float r = (Position.x - player.lock()->Get_Position()->x) * (Position.x - player.lock()->Get_Position()->x) + (Position.z - player.lock()->Get_Position()->z) * (Position.z - player.lock()->Get_Position()->z);
 			float abr = 8.0f;
 
-			// ó£Ç∑
+			// Èõ¢„Åô
 			if (r <= (abr * 1.2f) * (abr * 1.2f))
 			{
 				move.x -= vec.x * delta_time * 2.0f;
 				move.z -= vec.z * delta_time * 2.0f;
 			}
 
-			// à¯Ç´äÒÇπÇÈ
+			// Âºï„ÅçÂØÑ„Åõ„Çã
 			if (r >= (abr * 2.0f) * (abr * 2.0f))
 			{
 				move.x += vec.x * delta_time * 2.0f;
@@ -147,7 +147,7 @@ void ENEMY::Update(float delta_time)
 
 	if (0.5f <= Time)
 	{
-		// íeÇåÇÇ¬
+		// Âºæ„ÇíÊíÉ„Å§
 		if (Aegis::Math::Random_Bool(0.01))
 		{
 			XMVECTOR vector = XMLoadFloat3(&vec);
@@ -185,19 +185,19 @@ void ENEMY::Uninit(void)
 	SAFE_DELETE(Model);
 }
 
-// É|ÉWÉVÉáÉìÇÃê›íË
+// „Éù„Ç∏„Ç∑„Éß„É≥„ÅÆË®≠ÂÆö
 void ENEMY::SetPosition(const XMFLOAT3& position)
 {
 	Position = position;
 }
 
-// âÒì]ÇÃê›íË
+// ÂõûËª¢„ÅÆË®≠ÂÆö
 void ENEMY::SetRotation(const XMFLOAT3& rotation)
 {
 	Rotation = rotation;
 }
 
-// ägëÂèkè¨ÇÃílÇÃê›íË
+// Êã°Â§ßÁ∏ÆÂ∞è„ÅÆÂÄ§„ÅÆË®≠ÂÆö
 void ENEMY::SetScaling(const XMFLOAT3& scaling)
 {
 	Scaling = scaling;

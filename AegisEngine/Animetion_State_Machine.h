@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #ifndef  ANIMETION_STATE_MACHINE_H
 #define ANIMETION_STATE_MACHINE_H

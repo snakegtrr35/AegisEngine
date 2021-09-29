@@ -1,4 +1,4 @@
-#include	"Scene.h"
+ï»¿#include	"Scene.h"
 #include	"Game.h"
 #include	"Title.h"
 #include	"Result.h"
@@ -87,7 +87,7 @@ void GAME::Update(float delta_time)
 
 		SCENE::Update(delta_time);
 
-		// ƒ|[ƒY‰æ–Ê‚ÌØ‚è‘Ö‚¦
+		// ãƒãƒ¼ã‚ºç”»é¢ã®åˆ‡ã‚Šæ›¿ãˆ
 		if (KEYBOARD::Trigger_Keyboard(VK_Q))
 		{
 			vector<SPRITE*> sprites = Get_Game_Objects<SPRITE>();
@@ -113,7 +113,7 @@ void GAME::Update(float delta_time)
 			}
 		}
 
-		// ƒ|[ƒY‰æ–Ê‚Ì“ü—Íˆ—
+		// ãƒãƒ¼ã‚ºç”»é¢ã®å…¥åŠ›å‡¦ç†
 		if (true == Get_PauseEnable())
 		{
 			if (KEYBOARD::Trigger_Keyboard(VK_UP))
@@ -141,15 +141,15 @@ void GAME::Update(float delta_time)
 					switch (cnt)
 					{
 					case 0:
-						sprite->Set_Position_Child("select", *sprite->GetPosition(), XMFLOAT2(-165.0f, -110.0f));	// 1”Ô–Ú
+						sprite->Set_Position_Child("select", *sprite->GetPosition(), XMFLOAT2(-165.0f, -110.0f));	// 1ç•ªç›®
 						break;
 
 					case 1:
-						sprite->Set_Position_Child("select", *sprite->GetPosition(), XMFLOAT2(-165.0f, 0.0f));		// 2”Ô–Ú
+						sprite->Set_Position_Child("select", *sprite->GetPosition(), XMFLOAT2(-165.0f, 0.0f));		// 2ç•ªç›®
 						break;
 
 					case 2:
-						sprite->Set_Position_Child("select", *sprite->GetPosition(), XMFLOAT2(-165.0f, 105.0f));	// 3”Ô–Ú
+						sprite->Set_Position_Child("select", *sprite->GetPosition(), XMFLOAT2(-165.0f, 105.0f));	// 3ç•ªç›®
 						break;
 					}
 					break;
@@ -190,7 +190,7 @@ void GAME::Update(float delta_time)
 			}
 		}
 
-		// HP‚ÌUI
+		// HPã®UI
 		{
 			vector<SPRITE*> sprits = Get_Game_Objects<SPRITE>();
 
@@ -293,7 +293,7 @@ void GAME::Uninit()
 
 		string name(id.name());
 
-		// ’uŠ·
+		// ç½®æ›
 		Replace_String(name, "class ", "      ");
 		Replace_String(name, "*", " ");
 		name.erase(remove_if(name.begin(), name.end(), isspace), name.end());
@@ -323,7 +323,7 @@ void GAME::Load(SCENE* scene)
 
 		string name(id.name());
 
-		// ’uŠ·
+		// ç½®æ›
 		Replace_String(name, "class ", "      ");
 		Replace_String(name, "*", " ");
 		name.erase(remove_if(name.begin(), name.end(), isspace), name.end());
@@ -341,15 +341,15 @@ void GAME::Load(SCENE* scene)
 
 	if (false == flag)
 	{
-		// ƒJƒƒ‰
+		// ã‚«ãƒ¡ãƒ©
 		Add_Game_Object<DEBUG_CAMERA>(LAYER_NAME::BACKGROUND, "camera");
 
-		// ƒvƒŒƒCƒ„[
+		// ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼
 		{
 			PLAYER* player = Add_Game_Object<PLAYER>(LAYER_NAME::GAMEOBJECT, "player");
 		}
 
-		// ƒŒƒeƒBƒNƒ‹‰æ‘œ
+		// ãƒ¬ãƒ†ã‚£ã‚¯ãƒ«ç”»åƒ
 		{
 			XMFLOAT2 pos(SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.5f - 100.0f);
 			SPRITE* sprite = Add_Game_Object<SPRITE>(LAYER_NAME::UI, "reticle");
@@ -361,7 +361,7 @@ void GAME::Load(SCENE* scene)
 			sprite->SetSize(XMFLOAT4(400, 400, 400, 400));
 		}
 
-		// ƒƒbƒVƒ…ƒtƒB[ƒ‹ƒh
+		// ãƒ¡ãƒƒã‚·ãƒ¥ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰
 		{
 			MESH_FIELD* mf = Add_Game_Object<MESH_FIELD>(LAYER_NAME::BACKGROUND, "feild");
 
@@ -369,7 +369,7 @@ void GAME::Load(SCENE* scene)
 		}
 
 
-		// ƒƒbƒVƒ…ƒh[ƒ€
+		// ãƒ¡ãƒƒã‚·ãƒ¥ãƒ‰ãƒ¼ãƒ 
 		{
 			MESH_DOOM* pmd = Add_Game_Object<MESH_DOOM>(LAYER_NAME::BACKGROUND, "doom");
 			pmd->Init();
@@ -379,7 +379,7 @@ void GAME::Load(SCENE* scene)
 			pmd->Set_Scaling(scaling);
 		}
 
-		// “G
+		// æ•µ
 		{
 			string name("enemy");
 			string number;
@@ -398,7 +398,7 @@ void GAME::Load(SCENE* scene)
 			}
 		}
 
-		// ƒXƒRƒA
+		// ã‚¹ã‚³ã‚¢
 		{
 			XMFLOAT3 pos = XMFLOAT3(500.0f, 37.0f, 0.0f);
 
@@ -407,7 +407,7 @@ void GAME::Load(SCENE* scene)
 			score->Set_Additional(1);
 		}
 
-		// HP‚ÌUI
+		// HPã®UI
 		{
 			XMFLOAT2 pos(50.0f, SCREEN_HEIGHT * 0.5f);
 			SPRITE* sprite = Add_Game_Object<SPRITE>(LAYER_NAME::UI, "hp_ui");
@@ -434,7 +434,7 @@ void GAME::Load(SCENE* scene)
 			hp->SetSize(XMFLOAT4(Math::LerpEx(-485.0f, 170.0f, 100.0f, 0.0f, 100.0f), 25, 485, 25));
 		}
 
-		// ’e‚ÌUI
+		// å¼¾ã®UI
 		{
 			//XMFLOAT2 pos(SCREEN_WIDTH - 300.0f, SCREEN_HEIGHT - 70.0f);
 			XMFLOAT2 pos(SCREEN_WIDTH - 550.0f, SCREEN_HEIGHT - 70.0f);
@@ -452,7 +452,7 @@ void GAME::Load(SCENE* scene)
 			//sprite->Edit(string("30 / 30"));
 			sprite->Edit(string("infinite / 30"));
 
-			// ’e‚ÌƒAƒCƒRƒ“
+			// å¼¾ã®ã‚¢ã‚¤ã‚³ãƒ³
 			SPRITE* bullet_icon = sprite->Add_Child_Sptite("bullet_icon");
 
 			bullet_icon->SetTexture("bullet_icon.png");
@@ -464,7 +464,7 @@ void GAME::Load(SCENE* scene)
 			bullet_icon->SetSize(XMFLOAT4(50, 16, 50, 16));
 		}
 
-		// ƒ|[ƒY‰æ–Ê‚ÌUI
+		// ãƒãƒ¼ã‚ºç”»é¢ã®UI
 		{
 			XMFLOAT2 pos(SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.5f);
 			COLOR color = COLOR(1.0f, 1.0f, 1.0f, 0.85f);
@@ -487,16 +487,16 @@ void GAME::Load(SCENE* scene)
 
 			select->SetSize(XMFLOAT4(30, 30, 30, 30));
 
-			sprite->Set_Position_Child("select", *sprite->GetPosition(), XMFLOAT2(-165.0f, -110.0f));		// 1”Ô–Ú
+			sprite->Set_Position_Child("select", *sprite->GetPosition(), XMFLOAT2(-165.0f, -110.0f));		// 1ç•ªç›®
 
-			//sprite->Set_Position_Child("select", XMFLOAT2(-165.0f, 0.0f));		// 2”Ô–Ú
+			//sprite->Set_Position_Child("select", XMFLOAT2(-165.0f, 0.0f));		// 2ç•ªç›®
 
-			//sprite->Set_Position_Child("select", XMFLOAT2(-165.0f, 105.0f));		// 3”Ô–Ú
+			//sprite->Set_Position_Child("select", XMFLOAT2(-165.0f, 105.0f));		// 3ç•ªç›®
 		}
 	}
 
 	{
-		// ƒƒbƒVƒ…ƒtƒB[ƒ‹ƒh
+		// ãƒ¡ãƒƒã‚·ãƒ¥ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰
 		{
 			auto mf = scene->Get_Game_Object<MESH_FIELD>("feild");
 

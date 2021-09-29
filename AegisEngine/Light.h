@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 
 #ifndef LIGHT_H
 #define LIGHT_H
@@ -12,7 +12,7 @@ enum class LIGHT_TYPE : UINT {
 };
 
 struct LIGHT_BUFFER {
-	// ‹¤’Ê•”•ª
+	// å…±é€šéƒ¨åˆ†
 	UINT		Enable;
 	XMFLOAT3	Position;
 

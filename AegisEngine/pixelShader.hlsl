@@ -1,4 +1,4 @@
-﻿#include    "Commom_Hlsl.hlsli"
+#include    "Commom_Hlsl.hlsli"
 #include    "Light_Hlsl.hlsli"
 
 //*****************************************************************************

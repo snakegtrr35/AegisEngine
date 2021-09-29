@@ -1,4 +1,4 @@
-#ifdef _DEBUG
+ï»¿#ifdef _DEBUG
 
 #include	"imgui/imgui.h"
 #include	"imgui/imgui_impl_dx11.h"
@@ -635,7 +635,7 @@ void My_imgui::Init(HWND hWnd)
 	ImGuiIO& io = ImGui::GetIO();
 	io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard | ImGuiConfigFlags_DockingEnable;  // Enable Keyboard Controls
 
-	// u8‚ğg‚¦‚Î“ú–{Œê‚Ì•\¦‚Í‚Å‚«‚é
+	// u8ã‚’ä½¿ãˆã°æ—¥æœ¬èªã®è¡¨ç¤ºã¯ã§ãã‚‹
 	ImFontConfig config;
 
 	// Load a first font
@@ -672,17 +672,17 @@ void My_imgui::Init(HWND hWnd)
 	style.Colors[ImGuiCol_WindowBg] = color;
 
 	{
-		Component_Items.first.emplace_back((char*)u8"ƒRƒŠƒWƒ‡ƒ“ AABB");
-		Component_Items.second.emplace_back("ƒRƒŠƒWƒ‡ƒ“ AABB");
+		Component_Items.first.emplace_back((char*)u8"ã‚³ãƒªã‚¸ãƒ§ãƒ³ AABB");
+		Component_Items.second.emplace_back("ã‚³ãƒªã‚¸ãƒ§ãƒ³ AABB");
 
-		Component_Items.first.emplace_back((char*)u8"ƒRƒŠƒWƒ‡ƒ“ OBB");
-		Component_Items.second.emplace_back("ƒRƒŠƒWƒ‡ƒ“ OBB");
+		Component_Items.first.emplace_back((char*)u8"ã‚³ãƒªã‚¸ãƒ§ãƒ³ OBB");
+		Component_Items.second.emplace_back("ã‚³ãƒªã‚¸ãƒ§ãƒ³ OBB");
 
-		Component_Items.first.emplace_back((char*)u8"ƒRƒŠƒWƒ‡ƒ“ ‹…");
-		Component_Items.second.emplace_back("ƒRƒŠƒWƒ‡ƒ“ ‹…");
+		Component_Items.first.emplace_back((char*)u8"ã‚³ãƒªã‚¸ãƒ§ãƒ³ çƒ");
+		Component_Items.second.emplace_back("ã‚³ãƒªã‚¸ãƒ§ãƒ³ çƒ");
 
-		Component_Items.first.emplace_back((char*)u8"ƒRƒŠƒWƒ‡ƒ“ ƒJƒvƒZƒ‹");
-		Component_Items.second.emplace_back("ƒRƒŠƒWƒ‡ƒ“ ƒJƒvƒZƒ‹");
+		Component_Items.first.emplace_back((char*)u8"ã‚³ãƒªã‚¸ãƒ§ãƒ³ ã‚«ãƒ—ã‚»ãƒ«");
+		Component_Items.second.emplace_back("ã‚³ãƒªã‚¸ãƒ§ãƒ³ ã‚«ãƒ—ã‚»ãƒ«");
 
 		Component_Items.first.emplace_back((char*)u8"EEEE");
 		Component_Items.second.emplace_back("EEEE");
@@ -726,7 +726,7 @@ void My_imgui::Draw(void)
 
 	static bool show_app_style_editor = false;
 
-	// ƒƒjƒ…[ƒo[
+	// ãƒ¡ãƒ‹ãƒ¥ãƒ¼ãƒãƒ¼
 	{
 		if (ImGui::BeginMainMenuBar())
 		{
@@ -813,7 +813,7 @@ void My_imgui::Draw(void)
 				ImGui::Checkbox("Default Window", &show_default_window);
 
 				ImGui::Checkbox("Debug Draw Enable", &Debug_Draw_Enable);
-				ImGui::SameLine(); HelpMarker((char*)u8"ƒfƒoƒbƒO•\¦@—LŒø–³Œø\n");
+				ImGui::SameLine(); HelpMarker((char*)u8"ãƒ‡ãƒãƒƒã‚°è¡¨ç¤ºã€€æœ‰åŠ¹ç„¡åŠ¹\n");
 
 				ImGui::MenuItem("Setting", NULL, &Setting_Enable);
 
@@ -834,7 +834,7 @@ void My_imgui::Draw(void)
 		ImGui::End();
 	}
 
-	// ƒhƒbƒLƒ“ƒOƒXƒy[ƒX
+	// ãƒ‰ãƒƒã‚­ãƒ³ã‚°ã‚¹ãƒšãƒ¼ã‚¹
 	ImGui::DockSpaceOverViewport(ImGui::GetMainViewport(), ImGuiDockNodeFlags_PassthruCentralNode);
 
 	static string s = GAME_OBJECT::Get_Object_Name_Map().begin()->c_str();
@@ -842,7 +842,7 @@ void My_imgui::Draw(void)
 	old_name = s;
 
 	{
-		// ƒ‰ƒCƒg‚Ìİ’è
+		// ãƒ©ã‚¤ãƒˆã®è¨­å®š
 		{
 			ImGuiWindowFlags window_flag = ImGuiWindowFlags_NoResize;
 
@@ -857,23 +857,23 @@ void My_imgui::Draw(void)
 			ImGui::Begin("Directional Light", nullptr/*, window_flag*/);
 
 			ImGui::DragFloat4("Direction", vec4_Direction, 0.01f);
-			ImGui::SameLine(); HelpMarker((char*)u8"\"•½sŒõ\" Œü‚«\n");
+			ImGui::SameLine(); HelpMarker((char*)u8"\"å¹³è¡Œå…‰\" å‘ã\n");
 
 			ImGui::DragFloat4("Position", vec4_Position, 0.01f);
-			ImGui::SameLine(); HelpMarker((char*)u8"\"•½sŒõŒ¹‚ÌˆÊ’u\"");
+			ImGui::SameLine(); HelpMarker((char*)u8"\"å¹³è¡Œå…‰æºã®ä½ç½®\"");
 
 			ImGui::DragFloat4("Diffuse", vec4_Diffuse, 0.01f);
-			ImGui::SameLine(); HelpMarker((char*)u8"\"•½sŒõ\" ŠgU(’¼Ú)Œõ\n");
+			ImGui::SameLine(); HelpMarker((char*)u8"\"å¹³è¡Œå…‰\" æ‹¡æ•£(ç›´æ¥)å…‰\n");
 
 			ImGui::DragFloat4("Ambient", vec4_Ambient, 0.01f);
-			ImGui::SameLine(); HelpMarker((char*)u8"\"•½sŒõ\" ŠÂ‹«Œõ\n");
+			ImGui::SameLine(); HelpMarker((char*)u8"\"å¹³è¡Œå…‰\" ç’°å¢ƒå…‰\n");
 
 			ImGui::DragFloat4("Specular", vec4_Specular, 0.01f);
-			ImGui::SameLine(); HelpMarker((char*)u8"\"•½sŒõ\" ‹¾–ÊŒõ\n");
+			ImGui::SameLine(); HelpMarker((char*)u8"\"å¹³è¡Œå…‰\" é¡é¢å…‰\n");
 
 			ImGui::End();
 
-			// ƒ‰ƒCƒg‚Ìİ’è
+			// ãƒ©ã‚¤ãƒˆã®è¨­å®š
 			light->Direction = XMFLOAT4(vec4_Direction[0], vec4_Direction[1], vec4_Direction[2], vec4_Direction[3]);
 			light->Position = XMFLOAT4(vec4_Position[0], vec4_Position[1], vec4_Position[2], vec4_Position[3]);
 			light->Diffuse = COLOR(vec4_Diffuse[0], vec4_Diffuse[1], vec4_Diffuse[2], vec4_Diffuse[3]);
@@ -882,10 +882,10 @@ void My_imgui::Draw(void)
 			CRenderer::SetLight(light);
 		}
 
-		// ƒŒƒ“ƒ_ƒŠƒ“ƒOƒeƒNƒXƒ`ƒƒ
+		// ãƒ¬ãƒ³ãƒ€ãƒªãƒ³ã‚°ãƒ†ã‚¯ã‚¹ãƒãƒ£
 		{
-			// ƒ^ƒCƒgƒ‹ƒo[‚ ‚è‚Ìê‡Aimagey‚æ‚èWindowSize‚ªImVec2(17, 40)•ª‘å‚«‚¯‚ê‚Î’š“x‚¢‚¢
-			// ƒ^ƒCƒgƒ‹ƒo[‚È‚µ‚Ìê‡Aimagey‚æ‚èWindowSize‚ªImVec2(13, 16)•ª‘å‚«‚¯‚ê‚Î’š“x‚¢‚¢
+			// ã‚¿ã‚¤ãƒˆãƒ«ãƒãƒ¼ã‚ã‚Šã®å ´åˆã€imageyã‚ˆã‚ŠWindowSizeãŒImVec2(17, 40)åˆ†å¤§ãã‘ã‚Œã°ä¸åº¦ã„ã„
+			// ã‚¿ã‚¤ãƒˆãƒ«ãƒãƒ¼ãªã—ã®å ´åˆã€imageyã‚ˆã‚ŠWindowSizeãŒImVec2(13, 16)åˆ†å¤§ãã‘ã‚Œã°ä¸åº¦ã„ã„
 
 			ImGuiWindowFlags window_flags = ImGuiWindowFlags_NoResize;
 
@@ -902,7 +902,7 @@ void My_imgui::Draw(void)
 			}
 		}
 
-		// ƒIƒuƒWƒFƒNƒgˆê——
+		// ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆä¸€è¦§
 		{
 			ImGuiWindowFlags window_flag = ImGuiWindowFlags_NoTitleBar;
 			ImGuiTreeNodeFlags node_flags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_OpenOnDoubleClick;
@@ -926,7 +926,7 @@ void My_imgui::Draw(void)
 				int i = 0;
 				for (auto object : Object_Name_List)
 				{
-					// ƒ}ƒEƒXƒ{ƒ^ƒ“ : 0 = left, 1 = right, 2 = middle + extras
+					// ãƒã‚¦ã‚¹ãƒœã‚¿ãƒ³ : 0 = left, 1 = right, 2 = middle + extras
 					string str = object.c_str();
 
 					node_flags |= /*ImGuiTreeNodeFlags_Leaf |*/ ImGuiTreeNodeFlags_NoTreePushOnOpen; // ImGuiTreeNodeFlags_Bullet
@@ -990,11 +990,11 @@ void My_imgui::Draw(void)
 		}
 
 		{
-			ImGui::Text((char*)u8"GPUƒƒ‚ƒŠg—p—Ê %d byte", info.CurrentUsage);
+			ImGui::Text((char*)u8"GPUãƒ¡ãƒ¢ãƒªä½¿ç”¨é‡ %d byte", info.CurrentUsage);
 
-			ImGui::Text((char*)u8"1 %d ƒLƒƒoƒCƒg", info.CurrentUsage / 1000);
+			ImGui::Text((char*)u8"1 %d ã‚­ãƒ­ãƒã‚¤ãƒˆ", info.CurrentUsage / 1000);
 
-			ImGui::Text((char*)u8"1 %d ƒƒKƒoƒCƒg", info.CurrentUsage / 1000 / 1000);
+			ImGui::Text((char*)u8"1 %d ãƒ¡ã‚¬ãƒã‚¤ãƒˆ", info.CurrentUsage / 1000 / 1000);
 		}
 
 		{
@@ -1010,11 +1010,11 @@ void My_imgui::Draw(void)
 			}
 			else
 			{
-				ImGui::Text((char*)u8"ƒƒ‚ƒŠg—p—Ê %d byte", pmc.PrivateUsage);
+				ImGui::Text((char*)u8"ãƒ¡ãƒ¢ãƒªä½¿ç”¨é‡ %d byte", pmc.PrivateUsage);
 
-				ImGui::Text((char*)u8"1 ƒƒ‚ƒŠg—p—Ê %.3f ƒLƒƒoƒCƒg", float(pmc.PrivateUsage / 1024.0f));
+				ImGui::Text((char*)u8"1 ãƒ¡ãƒ¢ãƒªä½¿ç”¨é‡ %.3f ã‚­ãƒ­ãƒã‚¤ãƒˆ", float(pmc.PrivateUsage / 1024.0f));
 
-				ImGui::Text((char*)u8"2 ƒƒ‚ƒŠg—p—Ê %.3f ƒƒKƒoƒCƒg", float(pmc.PrivateUsage / 1024.0f / 1024.0f));
+				ImGui::Text((char*)u8"2 ãƒ¡ãƒ¢ãƒªä½¿ç”¨é‡ %.3f ãƒ¡ã‚¬ãƒã‚¤ãƒˆ", float(pmc.PrivateUsage / 1024.0f / 1024.0f));
 
 				CloseHandle(hProc);
 			}
@@ -1217,8 +1217,8 @@ void My_imgui::Draw(void)
 	}
 
 	{
-		// ƒ^ƒCƒgƒ‹ƒo[‚ ‚è‚Ìê‡Aimagey‚æ‚èWindowSize‚ªImVec2(17, 40)•ª‘å‚«‚¯‚ê‚Î’š“x‚¢‚¢
-		// ƒ^ƒCƒgƒ‹ƒo[‚È‚µ‚Ìê‡Aimagey‚æ‚èWindowSize‚ªImVec2(13, 16)•ª‘å‚«‚¯‚ê‚Î’š“x‚¢‚¢
+		// ã‚¿ã‚¤ãƒˆãƒ«ãƒãƒ¼ã‚ã‚Šã®å ´åˆã€imageyã‚ˆã‚ŠWindowSizeãŒImVec2(17, 40)åˆ†å¤§ãã‘ã‚Œã°ä¸åº¦ã„ã„
+		// ã‚¿ã‚¤ãƒˆãƒ«ãƒãƒ¼ãªã—ã®å ´åˆã€imageyã‚ˆã‚ŠWindowSizeãŒImVec2(13, 16)åˆ†å¤§ãã‘ã‚Œã°ä¸åº¦ã„ã„
 
 		ImGuiWindowFlags window_flags = ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoTitleBar;
 
@@ -1227,33 +1227,33 @@ void My_imgui::Draw(void)
 
 			printFile("asset");
 
-			ImGui::Text((char*)u8"ƒƒ‚ƒŠg—p—Ê");
+			ImGui::Text((char*)u8"ãƒ¡ãƒ¢ãƒªä½¿ç”¨é‡");
 
 			ImGui::Text((char*)u8"%s %s %s %s", ICON_FA_COG, ICON_FA_COGS, ICON_FA_COINS, ICON_FA_COLUMNS);
 
 			ImGui::End();
 		}
 
-		// ƒ‰ƒCƒg‚Ìİ’è(ƒfƒBƒŒƒNƒVƒ‡ƒiƒ‹ƒ‰ƒCƒg‚Å‚Í‚È‚¢)
+		// ãƒ©ã‚¤ãƒˆã®è¨­å®š(ãƒ‡ã‚£ãƒ¬ã‚¯ã‚·ãƒ§ãƒŠãƒ«ãƒ©ã‚¤ãƒˆã§ã¯ãªã„)
 		{
 			Light_Setting();
 		}
 
-		// ƒCƒ“ƒXƒyƒNƒ^[
+		// ã‚¤ãƒ³ã‚¹ãƒšã‚¯ã‚¿ãƒ¼
 		{
 			Draw_Inspector(s);
 		}
 
-		// ƒeƒNƒXƒ`ƒƒ‚ÉƒCƒ“ƒ|[ƒg
+		// ãƒ†ã‚¯ã‚¹ãƒãƒ£ã«ã‚¤ãƒ³ãƒãƒ¼ãƒˆ
 		Texture_Import();
 
-		// ƒeƒNƒXƒ`ƒƒ‚Ìíœ
+		// ãƒ†ã‚¯ã‚¹ãƒãƒ£ã®å‰Šé™¤
 		Texture_Delete();
 
-		// ƒ‚ƒfƒ‹‚ÉƒCƒ“ƒ|[ƒg
+		// ãƒ¢ãƒ‡ãƒ«ã«ã‚¤ãƒ³ãƒãƒ¼ãƒˆ
 		Model_Import();
 
-		// ƒ‚ƒfƒ‹‚Ìíœ
+		// ãƒ¢ãƒ‡ãƒ«ã®å‰Šé™¤
 		Model_Delete();
 
 		Setting();
@@ -1347,7 +1347,7 @@ void My_imgui::Draw_Inspector(const string& name)
 		static bool enable = true;
 		ImGui::Checkbox("Enable", &enable);
 
-		// 3DƒMƒYƒ‚
+		// 3Dã‚®ã‚ºãƒ¢
 		{
 			XMMATRIX mtr;
 
@@ -1420,7 +1420,7 @@ void My_imgui::Draw_Inspector(const string& name)
 
 		{
 			{
-				if (ImGui::BeginCombo((char*)u8"ƒRƒ“ƒ|[ƒlƒ“ƒg", item_current.get(), ImGuiComboFlags_NoArrowButton)) // The second parameter is the label previewed before opening the combo.
+				if (ImGui::BeginCombo((char*)u8"ã‚³ãƒ³ãƒãƒ¼ãƒãƒ³ãƒˆ", item_current.get(), ImGuiComboFlags_NoArrowButton)) // The second parameter is the label previewed before opening the combo.
 				{
 					for (int n = 0; n < Component_Items.first.size(); n++)
 					{
@@ -1490,9 +1490,9 @@ void EditTransform(const float* cameraView, float* cameraProjection, float* matr
 
 		ImGuizmo::DecomposeMatrixToComponents(matrix, Translation, Rotation, Scale);
 
-		ImGui::DragFloat3((char*)u8"ƒgƒ‰ƒ“ƒXƒtƒH[ƒ€", Translation, 0.01f);
-		ImGui::DragFloat3((char*)u8"‰ñ“]", Rotation, 0.1f);
-		ImGui::DragFloat3((char*)u8"ƒXƒP[ƒ‹", Scale, 0.01f);
+		ImGui::DragFloat3((char*)u8"ãƒˆãƒ©ãƒ³ã‚¹ãƒ•ã‚©ãƒ¼ãƒ ", Translation, 0.01f);
+		ImGui::DragFloat3((char*)u8"å›è»¢", Rotation, 0.1f);
+		ImGui::DragFloat3((char*)u8"ã‚¹ã‚±ãƒ¼ãƒ«", Scale, 0.01f);
 
 		ImGuizmo::RecomposeMatrixFromComponents(Translation, Rotation, Scale, matrix);
 
@@ -1520,7 +1520,7 @@ void EditTransform(const float* cameraView, float* cameraProjection, float* matr
 void My_imgui::Draw_Components(const vector<COMPONENT*>& components)
 {
 	ImGui::Spacing();
-	ImGui::Text((char*)u8"ƒRƒ“ƒ|[ƒlƒ“ƒg");
+	ImGui::Text((char*)u8"ã‚³ãƒ³ãƒãƒ¼ãƒãƒ³ãƒˆ");
 	ImGui::Spacing();
 
 	for (const auto& com : components)
@@ -1546,12 +1546,12 @@ void My_imgui::Texture_Import()
 
 		ImGui::SetNextWindowSize(ImVec2(360, 167), ImGuiCond_Appearing);
 
-		if(ImGui::Begin((char*)u8"ƒeƒNƒXƒ`ƒƒ ƒCƒ“ƒ|[ƒg", &Texture_Import_Enable, window_flags))
+		if(ImGui::Begin((char*)u8"ãƒ†ã‚¯ã‚¹ãƒãƒ£ ã‚¤ãƒ³ãƒãƒ¼ãƒˆ", &Texture_Import_Enable, window_flags))
 		{
 			ImGui::Indent(15.0f);
 
-			ImGui::InputText((char*)u8"ƒeƒNƒXƒ`ƒƒ–¼", &file_name);
-			ImGui::SameLine(); HelpMarker((char*)u8"‘Î‰ƒtƒH[ƒ}ƒbƒg‚Í 'png' 'jpg''dds'");
+			ImGui::InputText((char*)u8"ãƒ†ã‚¯ã‚¹ãƒãƒ£å", &file_name);
+			ImGui::SameLine(); HelpMarker((char*)u8"å¯¾å¿œãƒ•ã‚©ãƒ¼ãƒãƒƒãƒˆã¯ 'png' 'jpg''dds'");
 
 			ImGui::Spacing();
 			ImGui::Spacing();
@@ -1562,7 +1562,7 @@ void My_imgui::Texture_Import()
 
 			ImVec2 size(100, 40);
 
-			if (ImGui::Button((char*)u8"ƒCƒ“ƒ|[ƒg", size))
+			if (ImGui::Button((char*)u8"ã‚¤ãƒ³ãƒãƒ¼ãƒˆ", size))
 			{
 				check = Texture_File_Check(file_name);
 
@@ -1570,7 +1570,7 @@ void My_imgui::Texture_Import()
 				{
 					TEXTURE_MANEGER::Get_Instance()->Add(file_name);
 
-					ImGui::Text((char*)u8"ƒeƒNƒXƒ`ƒƒ‚ª“Ç‚İ‚Ü‚ê‚Ü‚µ‚½");
+					ImGui::Text((char*)u8"ãƒ†ã‚¯ã‚¹ãƒãƒ£ãŒèª­ã¿è¾¼ã¾ã‚Œã¾ã—ãŸ");
 				}
 				else
 				{
@@ -1584,7 +1584,7 @@ void My_imgui::Texture_Import()
 		{
 			ImGui::SetNextWindowPos(ImVec2(SCREEN_WIDTH * 0.5f - 120.0f, SCREEN_HEIGHT * 0.5f - 55.0f), ImGuiCond_Appearing);
 
-			if (ImGui::Begin((char*)u8"ƒGƒ‰[", &flag2, window_flags))
+			if (ImGui::Begin((char*)u8"ã‚¨ãƒ©ãƒ¼", &flag2, window_flags))
 			{
 				ImGui::Indent(20.0f);
 
@@ -1596,15 +1596,15 @@ void My_imgui::Texture_Import()
 				switch (check)
 				{
 					case -1:
-						ImGui::Text((char*)u8"ƒeƒNƒXƒ`ƒƒ–¼‚ª“ü—Í‚³‚ê‚Ä‚È‚¢‚Å‚·");
+						ImGui::Text((char*)u8"ãƒ†ã‚¯ã‚¹ãƒãƒ£åãŒå…¥åŠ›ã•ã‚Œã¦ãªã„ã§ã™");
 						break;
 
 					case -2:
-						ImGui::Text((char*)u8"Šù‚É“Ç‚İ‚ñ‚Å‚¢‚éƒeƒNƒXƒ`ƒƒ‚Å‚·");
+						ImGui::Text((char*)u8"æ—¢ã«èª­ã¿è¾¼ã‚“ã§ã„ã‚‹ãƒ†ã‚¯ã‚¹ãƒãƒ£ã§ã™");
 						break;
 
 					case -3:
-						ImGui::Text((char*)u8"ƒeƒNƒXƒ`ƒƒ‚ª‘¶İ‚µ‚È‚¢‚Å‚·");
+						ImGui::Text((char*)u8"ãƒ†ã‚¯ã‚¹ãƒãƒ£ãŒå­˜åœ¨ã—ãªã„ã§ã™");
 						break;
 
 					default:
@@ -1634,7 +1634,7 @@ const char My_imgui::Texture_File_Check(const string& file_name)
 {
 	if (file_name.empty())
 	{
-		// ƒeƒNƒXƒ`ƒƒ–¼‚ª“ü—Í‚³‚ê‚Ä‚¢‚È‚¢
+		// ãƒ†ã‚¯ã‚¹ãƒãƒ£åãŒå…¥åŠ›ã•ã‚Œã¦ã„ãªã„
 		return -1;
 	}
 
@@ -1642,11 +1642,11 @@ const char My_imgui::Texture_File_Check(const string& file_name)
 
 	if (TEXTURE_MANEGER::Get_Instance()->Get_TextureFile().find(file) != TEXTURE_MANEGER::Get_Instance()->Get_TextureFile().end())
 	{
-		// Šù‚É“Ç‚İ‚ñ‚Å‚¢‚éƒeƒNƒXƒ`ƒƒ
+		// æ—¢ã«èª­ã¿è¾¼ã‚“ã§ã„ã‚‹ãƒ†ã‚¯ã‚¹ãƒãƒ£
 		return -2;
 	}
 
-	// ƒtƒ@ƒCƒ‹‚ª‚ ‚é‚©‚Ì”»’è
+	// ãƒ•ã‚¡ã‚¤ãƒ«ãŒã‚ã‚‹ã‹ã®åˆ¤å®š
 	{
 		string path = "./asset/texture/";
 
@@ -1655,7 +1655,7 @@ const char My_imgui::Texture_File_Check(const string& file_name)
 		bool flag = std::filesystem::exists(path);
 		if (false == flag)
 		{
-			// ƒtƒ@ƒCƒ‹‚ª‘¶İ‚µ‚È‚¢
+			// ãƒ•ã‚¡ã‚¤ãƒ«ãŒå­˜åœ¨ã—ãªã„
 			return -3;
 		}
 	}
@@ -1678,11 +1678,11 @@ void My_imgui::Texture_Delete()
 
 		ImGui::SetNextWindowSize(ImVec2(360, 167), ImGuiCond_Appearing);
 
-		if(ImGui::Begin((char*)u8"ƒeƒNƒXƒ`ƒƒ íœ", &Texture_Delete_Enable, window_flags))
+		if(ImGui::Begin((char*)u8"ãƒ†ã‚¯ã‚¹ãƒãƒ£ å‰Šé™¤", &Texture_Delete_Enable, window_flags))
 		{
 			ImGui::Indent(15.0f);
 
-			ImGui::InputText((char*)u8"ƒeƒNƒXƒ`ƒƒ–¼", &file_name);
+			ImGui::InputText((char*)u8"ãƒ†ã‚¯ã‚¹ãƒãƒ£å", &file_name);
 
 			ImGui::Spacing();
 			ImGui::Spacing();
@@ -1693,7 +1693,7 @@ void My_imgui::Texture_Delete()
 
 			ImVec2 size(100, 40);
 
-			if (ImGui::Button((char*)u8"íœ", size))
+			if (ImGui::Button((char*)u8"å‰Šé™¤", size))
 			{
 				check = Texture_File_Check(file_name);
 
@@ -1701,7 +1701,7 @@ void My_imgui::Texture_Delete()
 				{
 					TEXTURE_MANEGER::Get_Instance()->Unload(file_name);
 
-					ImGui::Text((char*)u8"ƒeƒNƒXƒ`ƒƒ‚ªíœ‚³‚ê‚Ü‚µ‚½");
+					ImGui::Text((char*)u8"ãƒ†ã‚¯ã‚¹ãƒãƒ£ãŒå‰Šé™¤ã•ã‚Œã¾ã—ãŸ");
 				}
 				else
 				{
@@ -1715,7 +1715,7 @@ void My_imgui::Texture_Delete()
 			{
 				ImGui::SetNextWindowPos(ImVec2(SCREEN_WIDTH * 0.5f - 120.0f, SCREEN_HEIGHT * 0.5f - 55.0f), ImGuiCond_Appearing);
 
-				if (ImGui::Begin((char*)u8"ƒGƒ‰[", &flag2, window_flags))
+				if (ImGui::Begin((char*)u8"ã‚¨ãƒ©ãƒ¼", &flag2, window_flags))
 				{
 					ImGui::Indent(20.0f);
 
@@ -1727,11 +1727,11 @@ void My_imgui::Texture_Delete()
 					switch (check)
 					{
 						case -1:
-							ImGui::Text((char*)u8"ƒeƒNƒXƒ`ƒƒ–¼‚ª“ü—Í‚³‚ê‚Ä‚È‚¢‚Å‚·");
+							ImGui::Text((char*)u8"ãƒ†ã‚¯ã‚¹ãƒãƒ£åãŒå…¥åŠ›ã•ã‚Œã¦ãªã„ã§ã™");
 							break;
 
 						case -3:
-							ImGui::Text((char*)u8"ƒeƒNƒXƒ`ƒƒ‚ª‘¶İ‚µ‚È‚¢‚Å‚·");
+							ImGui::Text((char*)u8"ãƒ†ã‚¯ã‚¹ãƒãƒ£ãŒå­˜åœ¨ã—ãªã„ã§ã™");
 							break;
 
 						default:
@@ -1771,12 +1771,12 @@ void My_imgui::Model_Import()
 
 		ImGui::SetNextWindowSize(ImVec2(360, 167), ImGuiCond_Appearing);
 
-		ImGui::Begin((char*)u8"ƒ‚ƒfƒ‹ ƒCƒ“ƒ|[ƒg", &Model_Import_Enable, window_flags);
+		ImGui::Begin((char*)u8"ãƒ¢ãƒ‡ãƒ« ã‚¤ãƒ³ãƒãƒ¼ãƒˆ", &Model_Import_Enable, window_flags);
 		{
 			ImGui::Indent(15.0f);
 
-			ImGui::InputText((char*)u8"ƒ‚ƒfƒ‹–¼", &file_name);
-			ImGui::SameLine(); HelpMarker((char*)u8"‘Î‰ƒtƒH[ƒ}ƒbƒg‚Í 'fbx'");
+			ImGui::InputText((char*)u8"ãƒ¢ãƒ‡ãƒ«å", &file_name);
+			ImGui::SameLine(); HelpMarker((char*)u8"å¯¾å¿œãƒ•ã‚©ãƒ¼ãƒãƒƒãƒˆã¯ 'fbx'");
 
 			ImGui::Spacing();
 			ImGui::Spacing();
@@ -1787,7 +1787,7 @@ void My_imgui::Model_Import()
 
 			ImVec2 size(100, 40);
 
-			if (ImGui::Button((char*)u8"ƒCƒ“ƒ|[ƒg", size))
+			if (ImGui::Button((char*)u8"ã‚¤ãƒ³ãƒãƒ¼ãƒˆ", size))
 			{
 				check = Model_File_Check(file_name);
 
@@ -1795,7 +1795,7 @@ void My_imgui::Model_Import()
 				{
 					MODEL_MANEGER::Get_Instance()->Add(file_name);
 
-					ImGui::Text((char*)u8"ƒ‚ƒfƒ‹‚ª“Ç‚İ‚Ü‚ê‚Ü‚µ‚½");
+					ImGui::Text((char*)u8"ãƒ¢ãƒ‡ãƒ«ãŒèª­ã¿è¾¼ã¾ã‚Œã¾ã—ãŸ");
 				}
 				else
 				{
@@ -1809,7 +1809,7 @@ void My_imgui::Model_Import()
 		{
 			ImGui::SetNextWindowPos(ImVec2(SCREEN_WIDTH * 0.5f - 120.0f, SCREEN_HEIGHT * 0.5f - 55.0f), ImGuiCond_Appearing);
 
-			if (ImGui::Begin((char*)u8"ƒGƒ‰[", &flag2, window_flags))
+			if (ImGui::Begin((char*)u8"ã‚¨ãƒ©ãƒ¼", &flag2, window_flags))
 			{
 				ImGui::Indent(20.0f);
 
@@ -1821,15 +1821,15 @@ void My_imgui::Model_Import()
 				switch (check)
 				{
 					case -1:
-						ImGui::Text((char*)u8"ƒ‚ƒfƒ‹–¼‚ª“ü—Í‚³‚ê‚Ä‚È‚¢‚Å‚·");
+						ImGui::Text((char*)u8"ãƒ¢ãƒ‡ãƒ«åãŒå…¥åŠ›ã•ã‚Œã¦ãªã„ã§ã™");
 						break;
 
 					case -2:
-						ImGui::Text((char*)u8"Šù‚É“Ç‚İ‚ñ‚Å‚¢‚éƒ‚ƒfƒ‹‚Å‚·");
+						ImGui::Text((char*)u8"æ—¢ã«èª­ã¿è¾¼ã‚“ã§ã„ã‚‹ãƒ¢ãƒ‡ãƒ«ã§ã™");
 						break;
 
 					case -3:
-						ImGui::Text((char*)u8"ƒ‚ƒfƒ‹‚ª‘¶İ‚µ‚È‚¢‚Å‚·");
+						ImGui::Text((char*)u8"ãƒ¢ãƒ‡ãƒ«ãŒå­˜åœ¨ã—ãªã„ã§ã™");
 						break;
 
 					default:
@@ -1859,7 +1859,7 @@ const char My_imgui::Model_File_Check(const string& file_name)
 {
 	if (file_name.empty())
 	{
-		// ƒ‚ƒfƒ‹–¼‚ª“ü—Í‚³‚ê‚Ä‚¢‚È‚¢
+		// ãƒ¢ãƒ‡ãƒ«åãŒå…¥åŠ›ã•ã‚Œã¦ã„ãªã„
 		return -1;
 	}
 
@@ -1867,11 +1867,11 @@ const char My_imgui::Model_File_Check(const string& file_name)
 
 	if (MODEL_MANEGER::Get_Instance()->Get_ModelFile().find(file) != MODEL_MANEGER::Get_Instance()->Get_ModelFile().end())
 	{
-		// Šù‚É“Ç‚İ‚ñ‚Å‚¢‚éƒ‚ƒfƒ‹
+		// æ—¢ã«èª­ã¿è¾¼ã‚“ã§ã„ã‚‹ãƒ¢ãƒ‡ãƒ«
 		return -2;
 	}
 
-	// ƒtƒ@ƒCƒ‹‚ª‚ ‚é‚©‚Ì”»’è
+	// ãƒ•ã‚¡ã‚¤ãƒ«ãŒã‚ã‚‹ã‹ã®åˆ¤å®š
 	{
 		string path = "./asset/model/";
 
@@ -1880,7 +1880,7 @@ const char My_imgui::Model_File_Check(const string& file_name)
 		bool flag = std::filesystem::exists(path);
 		if (false == flag)
 		{
-			// ƒtƒ@ƒCƒ‹‚ª‘¶İ‚µ‚È‚¢
+			// ãƒ•ã‚¡ã‚¤ãƒ«ãŒå­˜åœ¨ã—ãªã„
 			return -3;
 		}
 	}
@@ -1903,11 +1903,11 @@ void My_imgui::Model_Delete()
 
 		ImGui::SetNextWindowSize(ImVec2(360, 167), ImGuiCond_Appearing);
 
-		ImGui::Begin((char*)u8"ƒ‚ƒfƒ‹ íœ", &Model_Delete_Enable, window_flags);
+		ImGui::Begin((char*)u8"ãƒ¢ãƒ‡ãƒ« å‰Šé™¤", &Model_Delete_Enable, window_flags);
 		{
 			ImGui::Indent(15.0f);
 
-			ImGui::InputText((char*)u8"ƒ‚ƒfƒ‹–¼", &file_name);
+			ImGui::InputText((char*)u8"ãƒ¢ãƒ‡ãƒ«å", &file_name);
 
 			ImGui::Spacing();
 			ImGui::Spacing();
@@ -1918,7 +1918,7 @@ void My_imgui::Model_Delete()
 
 			ImVec2 size(100, 40);
 
-			if (ImGui::Button((char*)u8"íœ", size))
+			if (ImGui::Button((char*)u8"å‰Šé™¤", size))
 			{
 				check = Texture_File_Check(file_name);
 
@@ -1926,7 +1926,7 @@ void My_imgui::Model_Delete()
 				{
 					TEXTURE_MANEGER::Get_Instance()->Unload(file_name);
 
-					ImGui::Text((char*)u8"ƒ‚ƒfƒ‹‚ªíœ‚³‚ê‚Ü‚µ‚½");
+					ImGui::Text((char*)u8"ãƒ¢ãƒ‡ãƒ«ãŒå‰Šé™¤ã•ã‚Œã¾ã—ãŸ");
 				}
 				else
 				{
@@ -1941,7 +1941,7 @@ void My_imgui::Model_Delete()
 			{
 				ImGui::SetNextWindowPos(ImVec2(SCREEN_WIDTH * 0.5f - 120.0f, SCREEN_HEIGHT * 0.5f - 55.0f), ImGuiCond_Appearing);
 
-				ImGui::Begin((char*)u8"ƒGƒ‰[", &flag2, window_flags);
+				ImGui::Begin((char*)u8"ã‚¨ãƒ©ãƒ¼", &flag2, window_flags);
 
 				ImGui::Indent(20.0f);
 
@@ -1953,11 +1953,11 @@ void My_imgui::Model_Delete()
 				switch (check)
 				{
 				case -1:
-					ImGui::Text((char*)u8"ƒ‚ƒfƒ‹–¼‚ª“ü—Í‚³‚ê‚Ä‚È‚¢‚Å‚·");
+					ImGui::Text((char*)u8"ãƒ¢ãƒ‡ãƒ«åãŒå…¥åŠ›ã•ã‚Œã¦ãªã„ã§ã™");
 					break;
 
 				case -3:
-					ImGui::Text((char*)u8"ƒ‚ƒfƒ‹‚ª‘¶İ‚µ‚È‚¢‚Å‚·");
+					ImGui::Text((char*)u8"ãƒ¢ãƒ‡ãƒ«ãŒå­˜åœ¨ã—ãªã„ã§ã™");
 					break;
 
 				default:
@@ -1994,7 +1994,7 @@ void My_imgui::Setting()
 		{
 			ImGuiColorEditFlags flag = ImGuiColorEditFlags_DisplayRGB | ImGuiColorEditFlags_InputRGB | ImGuiColorEditFlags_PickerHueWheel;
 
-			ImGui::ColorPicker3((char*)u8"ƒJƒ‰[", color, flag);
+			ImGui::ColorPicker3((char*)u8"ã‚«ãƒ©ãƒ¼", color, flag);
 		}
 
 		ImGui::End();
@@ -2011,8 +2011,8 @@ void My_imgui::Setting()
 
 void My_imgui::File()
 {
-	// ƒ^ƒCƒgƒ‹ƒo[‚ ‚è‚Ìê‡Aimagey‚æ‚èWindowSize‚ªImVec2(17, 40)•ª‘å‚«‚¯‚ê‚Î’š“x‚¢‚¢
-	// ƒ^ƒCƒgƒ‹ƒo[‚È‚µ‚Ìê‡Aimagey‚æ‚èWindowSize‚ªImVec2(13, 16)•ª‘å‚«‚¯‚ê‚Î’š“x‚¢‚¢
+	// ã‚¿ã‚¤ãƒˆãƒ«ãƒãƒ¼ã‚ã‚Šã®å ´åˆã€imageyã‚ˆã‚ŠWindowSizeãŒImVec2(17, 40)åˆ†å¤§ãã‘ã‚Œã°ä¸åº¦ã„ã„
+	// ã‚¿ã‚¤ãƒˆãƒ«ãƒãƒ¼ãªã—ã®å ´åˆã€imageyã‚ˆã‚ŠWindowSizeãŒImVec2(13, 16)åˆ†å¤§ãã‘ã‚Œã°ä¸åº¦ã„ã„
 
 	//ImGuiWindowFlags window_flags = ImGuiWindowFlags_NoResize;
 
@@ -2057,7 +2057,7 @@ void My_imgui::File()
 
 void My_imgui::Light_Setting()
 {
-	// ƒ‰ƒCƒg‚Ìİ’è(ƒfƒBƒŒƒNƒVƒ‡ƒiƒ‹ƒ‰ƒCƒg‚Å‚Í‚È‚¢)
+	// ãƒ©ã‚¤ãƒˆã®è¨­å®š(ãƒ‡ã‚£ãƒ¬ã‚¯ã‚·ãƒ§ãƒŠãƒ«ãƒ©ã‚¤ãƒˆã§ã¯ãªã„)
 
 	auto light_manager = CManager::Get_Instance()->Get_Scene()->Get_Light_Manager();
 	auto lights = light_manager->Get_Lights();
@@ -2098,9 +2098,9 @@ void My_imgui::Light_Setting()
 						{
 							vector<const char*> Items;
 
-							Items.emplace_back((char*)u8"ƒ|ƒCƒ“ƒgƒ‰ƒCƒg");
-							Items.emplace_back((char*)u8"ƒXƒ|ƒbƒgƒ‰ƒCƒg");
-							Items.emplace_back((char*)u8"–³Œø");
+							Items.emplace_back((char*)u8"ãƒã‚¤ãƒ³ãƒˆãƒ©ã‚¤ãƒˆ");
+							Items.emplace_back((char*)u8"ã‚¹ãƒãƒƒãƒˆãƒ©ã‚¤ãƒˆ");
+							Items.emplace_back((char*)u8"ç„¡åŠ¹");
 
 
 							const char* item_current;
@@ -2123,7 +2123,7 @@ void My_imgui::Light_Setting()
 							bool is_selected = false;
 
 							{
-								if (ImGui::BeginCombo((char*)u8"ƒ‰ƒCƒg‚Ìí—Ş", item_current, ImGuiComboFlags_NoArrowButton))
+								if (ImGui::BeginCombo((char*)u8"ãƒ©ã‚¤ãƒˆã®ç¨®é¡", item_current, ImGuiComboFlags_NoArrowButton))
 								{
 									for (int n = 0; n < Items.size(); n++)
 									{
@@ -2197,13 +2197,13 @@ void My_imgui::Add_Component(GAME_OBJECT* object, const string s)
 		return;
 	}
 
-	if (string::npos != s.find("‹…"))
+	if (string::npos != s.find("çƒ"))
 	{
 		comp->Add_Component<BOUNDING_SHPERE>(scene->Get_Game_Object(object));
 		return;
 	}
 
-	if (string::npos != s.find("ƒJƒvƒZƒ‹"))
+	if (string::npos != s.find("ã‚«ãƒ—ã‚»ãƒ«"))
 	{
 		comp->Add_Component<BOUNDING_CAPSULE>(scene->Get_Game_Object(object));
 		return;
@@ -2229,12 +2229,12 @@ void My_imgui::Delete_Component(GAME_OBJECT* object, const string s)
 		component = comp->Get_Component<BOUNDING_OBB>();
 	}
 
-	if (string::npos != s.find("‹…"))
+	if (string::npos != s.find("çƒ"))
 	{
 		component = comp->Get_Component<BOUNDING_SHPERE>();
 	}
 
-	if (string::npos != s.find("ƒJƒvƒZƒ‹"))
+	if (string::npos != s.find("ã‚«ãƒ—ã‚»ãƒ«"))
 	{
 		component = comp->Get_Component<BOUNDING_CAPSULE>();
 	}
@@ -2251,14 +2251,14 @@ void ImGui::DrawRect(const ImVec2& size, const ImVec4& color, const char* text, 
 	const ImVec2 pos = ImGui::GetCurrentWindow()->DC.CursorPos;
 	const ImRect bb(pos, pos + size);
 
-	// ˜gü‚Ì•`‰æ
+	// æ ç·šã®æç”»
 	{
 		const ImU32 col = ImGui::GetColorU32(frame_color);
 
 		draw_list->AddRect(bb.Min, bb.Max, col, 0.0f, ImDrawCornerFlags_All, frame_size);
 	}
 
-	// ‹éŒ`‚Ì•`‰æ
+	// çŸ©å½¢ã®æç”»
 	{
 		if (nullptr == text) text = "";
 		const ImVec2 label_size = ImGui::CalcTextSize(text, NULL, true);

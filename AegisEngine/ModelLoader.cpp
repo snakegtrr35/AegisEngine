@@ -1,4 +1,4 @@
-#include	"Game_Object.h"
+ï»¿#include	"Game_Object.h"
 #include	"ModelLoader.h"
 #include	"external/DirectXTex/WICTextureLoader.h"
 
@@ -45,7 +45,7 @@ bool CMODEL::Load(const string& filename)
 
 	processNode(pScene->mRootNode, pScene, Meshes.Get());
 
-	// ƒAƒjƒ[ƒVƒ‡ƒ“î•ñ‚Ìİ’è
+	// ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³æƒ…å ±ã®è¨­å®š
 	{
 		Anim animation;
 
@@ -133,7 +133,7 @@ bool CMODEL::Reload(const string& filename)
 				animation.push_back(createAnimation(anim[i]));
 			}
 
-			// 1”Ô–Ú‚ÌƒƒbƒVƒ…‚ÉƒAƒjƒ[ƒVƒ‡ƒ“î•ñ‚ğ•Û‘¶‚·‚é
+			// 1ç•ªç›®ã®ãƒ¡ãƒƒã‚·ãƒ¥ã«ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³æƒ…å ±ã‚’ä¿å­˜ã™ã‚‹
 			//Meshes.begin()->second.SetAnimation(animation);
 			//Meshes.SetAnimation(animation);
 		}
@@ -164,7 +164,7 @@ void CMODEL::Draw()
 
 	XMMATRIX transform = XMMatrixTranslation(Position.x, Position.y, Position.z);
 
-	// ƒNƒH[ƒ^ƒjƒIƒ“
+	// ã‚¯ã‚©ãƒ¼ã‚¿ãƒ‹ã‚ªãƒ³
 	if(0.0f != (Rotation.x + 0.0001f) && 0.0f != (Rotation.y + 0.0001f) && 0.0f != (Rotation.z + 0.0001f))
 	{
 		//XMVECTOR Quaternion = XMQuaternionIdentity();
@@ -238,7 +238,7 @@ void CMODEL::Draw()
 
 	if (Meshes.GetAnime())
 	{
-		// ƒAƒjƒ[ƒVƒ‡ƒ“
+		// ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³
 		for (auto mesh : Meshes.Get())
 		{
 			auto anime = Meshes.Get_Anime();
@@ -258,7 +258,7 @@ void CMODEL::Draw()
 	}
 	else
 	{
-		// •’Ê‚Ì•`‰æ
+		// æ™®é€šã®æç”»
 		for (auto mesh : Meshes.Get())
 		{
 			for (auto& i : mesh.second.Get())
@@ -339,7 +339,7 @@ void CMODEL::Draw_DPP()
 
 	if (Meshes.GetAnime())
 	{
-		// ƒAƒjƒ[ƒVƒ‡ƒ“
+		// ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³
 		for (auto mesh : Meshes.Get())
 		{
 			auto anime = Meshes.Get_Anime();
@@ -359,7 +359,7 @@ void CMODEL::Draw_DPP()
 	}
 	else
 	{
-		// •’Ê‚Ì•`‰æ
+		// æ™®é€šã®æç”»
 		for (auto mesh : Meshes.Get())
 		{
 			for (auto i : mesh.second.Get())
@@ -434,12 +434,12 @@ MESH CMODEL::processMesh(aiMesh* mesh, aiNode* node, const aiScene* scene)
 	// Walk through each of the mesh's vertices
 	for (UINT i = 0; i < mesh->mNumVertices; i++)
 	{
-		// ’¸“_ƒf[ƒ^‚Ìİ’è
+		// é ‚ç‚¹ãƒ‡ãƒ¼ã‚¿ã®è¨­å®š
 		vertices[i].Position.x = mesh->mVertices[i].x;
 		vertices[i].Position.y = mesh->mVertices[i].y;
 		vertices[i].Position.z = mesh->mVertices[i].z;
 
-		// ’¸“_ƒJƒ‰[‚Ìİ’è
+		// é ‚ç‚¹ã‚«ãƒ©ãƒ¼ã®è¨­å®š
 		if (mesh->HasVertexColors(i))
 		{
 			vertices[i].Diffuse.x = mesh->mColors[i]->r;
@@ -452,12 +452,12 @@ MESH CMODEL::processMesh(aiMesh* mesh, aiNode* node, const aiScene* scene)
 			vertices[i].Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
 		}
 
-		// –@üƒxƒNƒgƒ‹‚Ìİ’è
+		// æ³•ç·šãƒ™ã‚¯ãƒˆãƒ«ã®è¨­å®š
 		vertices[i].Normal.x = mesh->mNormals[i].x;
 		vertices[i].Normal.y = mesh->mNormals[i].y;
 		vertices[i].Normal.z = mesh->mNormals[i].z;
 
-		// UVÀ•W‚Ìİ’è
+		// UVåº§æ¨™ã®è¨­å®š
 		if (mesh->mTextureCoords[0])
 		{
 			vertices[i].TexCoord.x = (float)mesh->mTextureCoords[0][i].x;
@@ -465,7 +465,7 @@ MESH CMODEL::processMesh(aiMesh* mesh, aiNode* node, const aiScene* scene)
 		}
 	}
 
-	// ƒCƒ“ƒfƒbƒNƒX‚Ìİ’è
+	// ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ã®è¨­å®š
 	for (UINT i = 0; i < mesh->mNumFaces; i++)
 	{
 		aiFace face = mesh->mFaces[i];
@@ -474,7 +474,7 @@ MESH CMODEL::processMesh(aiMesh* mesh, aiNode* node, const aiScene* scene)
 			indices.emplace_back(face.mIndices[j]);
 	}
 
-	// ƒeƒNƒXƒ`ƒƒ‚Ìİ’è
+	// ãƒ†ã‚¯ã‚¹ãƒãƒ£ã®è¨­å®š
 	if (mesh->mMaterialIndex >= 0)
 	{
 		aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
@@ -483,7 +483,7 @@ MESH CMODEL::processMesh(aiMesh* mesh, aiNode* node, const aiScene* scene)
 		textures.insert(textures.end(), diffuseMaps.begin(), diffuseMaps.end());
 	}
 
-	// ƒ}ƒgƒŠƒbƒNƒX‚Ìİ’è
+	// ãƒãƒˆãƒªãƒƒã‚¯ã‚¹ã®è¨­å®š
 	{
 		matrix = Covert_Matrix(&node->mTransformation);
 	}
@@ -603,12 +603,12 @@ ID3D11ShaderResourceView* CMODEL::getTextureFromModel(const aiScene* scene, int 
 }
 
 
-// ƒAƒjƒ[ƒVƒ‡ƒ“î•ñ‚ğì¬
+// ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³æƒ…å ±ã‚’ä½œæˆ
 Anim createAnimation(const aiAnimation* anim)
 {
 	Anim animation;
 
-	// ŠK‘wƒAƒjƒ[ƒVƒ‡ƒ“
+	// éšå±¤ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³
 	aiNodeAnim** node_anim = anim->mChannels;
 	for (UINT i = 0; i < anim->mNumChannels; ++i)
 	{
@@ -618,28 +618,28 @@ Anim createAnimation(const aiAnimation* anim)
 	return animation;
 }
 
-// ƒm[ƒh‚É•t‚·‚éƒAƒjƒ[ƒVƒ‡ƒ“î•ñ‚ğì¬
+// ãƒãƒ¼ãƒ‰ã«ä»˜éšã™ã‚‹ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³æƒ…å ±ã‚’ä½œæˆ
 NodeAnim createNodeAnim(const aiNodeAnim * anim)
 {
 	NodeAnim animation;
 
 	animation.node_name = anim->mNodeName.C_Str();
 
-	// •½sˆÚ“®
+	// å¹³è¡Œç§»å‹•
 	for (UINT i = 0; i < anim->mNumPositionKeys; ++i)
 	{
 		animation.translate.push_back(fromAssimp(anim->mPositionKeys[i]));
 	}
 	animation.translate.begin()->time = anim->mNumPositionKeys;
 
-	// ƒXƒP[ƒŠƒ“ƒO
+	// ã‚¹ã‚±ãƒ¼ãƒªãƒ³ã‚°
 	for (UINT i = 0; i < anim->mNumScalingKeys; ++i)
 	{
 		animation.scaling.push_back(fromAssimp(anim->mScalingKeys[i]));
 	}
 	animation.scaling.begin()->time = anim->mNumScalingKeys;
 
-	// ‰ñ“]
+	// å›è»¢
 	for (UINT i = 0; i < anim->mNumRotationKeys; ++i)
 	{
 		animation.rotation.push_back(fromAssimp(anim->mRotationKeys[i]));
@@ -677,7 +677,7 @@ QuatKey fromAssimp(const aiQuatKey& key)
 //{
 //	aiMatrix4x4 mtr = *matrix;
 //
-//	aiTransposeMatrix4(&mtr);		// “]’us—ñ DirectX—p‚É‚·‚é
+//	aiTransposeMatrix4(&mtr);		// è»¢ç½®è¡Œåˆ— DirectXç”¨ã«ã™ã‚‹
 //
 //	return XMLoadFloat4x4((XMFLOAT4X4*)& mtr);
 //}

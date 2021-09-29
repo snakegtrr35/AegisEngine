@@ -1,4 +1,4 @@
-#include	"Light.h"
+ï»¿#include	"Light.h"
 #include	"Renderer.h"
 
 array<LIGHT_BUFFER, MAX_NUM_LIGHTS> LIGHTS::Lights;
@@ -29,7 +29,7 @@ LIGHTS::LIGHTS()
 
 bool LIGHTS::Init()
 {
-	// ’è”ƒoƒbƒtƒ@¶¬
+	// å®šæ•°ãƒãƒƒãƒ•ã‚¡ç”Ÿæˆ
 	{
 		ID3D11Buffer* buffer = nullptr;
 

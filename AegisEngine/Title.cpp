@@ -1,4 +1,4 @@
-#include	"Scene.h"
+ï»¿#include	"Scene.h"
 #include	"Title.h"
 #include	"Input.h"
 #include	"manager.h"
@@ -79,7 +79,7 @@ void TITLE::Update(float delta_time)
 	{
 		SCENE::Update(delta_time);
 
-		// ƒƒjƒ…[‚Ì‘I‘ğ‘€ì
+		// ãƒ¡ãƒ‹ãƒ¥ãƒ¼ã®é¸æŠæ“ä½œ
 		{
 			static short cnt = 0;
 
@@ -108,19 +108,19 @@ void TITLE::Update(float delta_time)
 					switch (cnt)
 					{
 					case 0:
-						sprite->Set_Position_Child("arrow", *sprite->GetPosition(), XMFLOAT2(0.0f, 65.0f + 0.0f));		// 1”Ô–Ú
+						sprite->Set_Position_Child("arrow", *sprite->GetPosition(), XMFLOAT2(0.0f, 65.0f + 0.0f));		// 1ç•ªç›®
 						break;
 
 					case 1:
-						sprite->Set_Position_Child("arrow", *sprite->GetPosition(), XMFLOAT2(0.0f, 65.0f + 140.0f));	// 2”Ô–Ú
+						sprite->Set_Position_Child("arrow", *sprite->GetPosition(), XMFLOAT2(0.0f, 65.0f + 140.0f));	// 2ç•ªç›®
 						break;
 
 					case 2:
-						sprite->Set_Position_Child("arrow", *sprite->GetPosition(), XMFLOAT2(0.0f, 65.0f + 270.0f));	// 3”Ô–Ú
+						sprite->Set_Position_Child("arrow", *sprite->GetPosition(), XMFLOAT2(0.0f, 65.0f + 270.0f));	// 3ç•ªç›®
 						break;
 
 						//case 3:
-						//	sprite->Set_Position_Child("arrow", XMFLOAT2(0.0f, 65.0f + 410.0f));	// 4”Ô–Ú
+						//	sprite->Set_Position_Child("arrow", XMFLOAT2(0.0f, 65.0f + 410.0f));	// 4ç•ªç›®
 						//	break;
 					}
 
@@ -175,7 +175,7 @@ void TITLE::Uninit()
 
 		string name(id.name());
 
-		// ’uŠ·
+		// ç½®æ›
 		Replace_String(name, "class ", "      ");
 		Replace_String(name, "*", " ");
 		name.erase(remove_if(name.begin(), name.end(), isspace), name.end());
@@ -205,7 +205,7 @@ void TITLE::Load(SCENE* scene)
 
 		string name(id.name());
 
-		// ’uŠ·
+		// ç½®æ›
 		Replace_String(name, "class ", "      ");
 		Replace_String(name, "*", " ");
 		name.erase(remove_if(name.begin(), name.end(), isspace), name.end());
@@ -223,7 +223,7 @@ void TITLE::Load(SCENE* scene)
 
 	if (false == flag)
 	{
-		// ƒ^ƒCƒgƒ‹‰æ–Ê
+		// ã‚¿ã‚¤ãƒˆãƒ«ç”»é¢
 		{
 			XMFLOAT2 pos(SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.5f);
 

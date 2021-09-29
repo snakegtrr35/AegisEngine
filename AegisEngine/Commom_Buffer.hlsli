@@ -1,4 +1,4 @@
-﻿#ifndef COMMOM_BUFFER_H
+#ifndef COMMOM_BUFFER_H
 #define COMMOM_BUFFER_H
 
 //*****************************************************************************

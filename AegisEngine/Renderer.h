@@ -1,11 +1,11 @@
-#pragma once
+ï»¿#pragma once
 
 #ifndef RENDER_H
 #define RENDER_H
 
 #include	"main.h"
 
-//! ’¸“_\‘¢‘Ì
+//! é ‚ç‚¹æ§‹é€ ä½“
 struct VERTEX_3D
 {
     XMFLOAT3 Position;
@@ -26,7 +26,7 @@ struct VERTEX_3D
 	}
 };
 
-//! ’¸“_\‘¢‘Ì
+//! é ‚ç‚¹æ§‹é€ ä½“
 struct VERTEX_3D_NORMAL
 {
 	XMFLOAT3 Position;
@@ -47,7 +47,7 @@ struct VERTEX_3D_NORMAL
 	}
 };
 
-//! ƒ}ƒeƒŠƒAƒ‹\‘¢‘Ì
+//! ãƒãƒ†ãƒªã‚¢ãƒ«æ§‹é€ ä½“
 struct MATERIAL
 {
 	Aegis::COLOR Ambient;
@@ -55,13 +55,13 @@ struct MATERIAL
 	Aegis::COLOR Specular;
 	Aegis::COLOR Emission;
 	float Shininess;
-	float Dummy[3];//16bit‹«ŠE—p
+	float Dummy[3];//16bitå¢ƒç•Œç”¨
 };
 
 
 
 
-//! ƒ}ƒeƒŠƒAƒ‹\‘¢‘Ì
+//! ãƒãƒ†ãƒªã‚¢ãƒ«æ§‹é€ ä½“
 struct DX11_MODEL_MATERIAL
 {
 	MATERIAL		Material;
@@ -69,7 +69,7 @@ struct DX11_MODEL_MATERIAL
 };
 
 
-//! •`‰æƒTƒuƒZƒbƒg\‘¢‘Ì
+//! æç”»ã‚µãƒ–ã‚»ãƒƒãƒˆæ§‹é€ ä½“
 struct DX11_SUBSET
 {
 	unsigned short	StartIndex;
@@ -132,7 +132,7 @@ struct CONSTANT {
 };
 
 struct CONSTANT_02 {
-	XMFLOAT4 Camera_Pos;	// ƒJƒƒ‰‚ÌÀ•W
+	XMFLOAT4 Camera_Pos;	// ã‚«ãƒ¡ãƒ©ã®åº§æ¨™
 };
 
 enum INPUTLAYOUT {
@@ -143,21 +143,21 @@ enum INPUTLAYOUT {
 };
 
 /**
-* @brief Directx‚ÌƒfƒoƒCƒXƒNƒ‰ƒX
-* @details Directx11‚ÌƒfƒoƒCƒXƒNƒ‰ƒX
+* @brief Directxã®ãƒ‡ãƒã‚¤ã‚¹ã‚¯ãƒ©ã‚¹
+* @details Directx11ã®ãƒ‡ãƒã‚¤ã‚¹ã‚¯ãƒ©ã‚¹
 */
 class CRenderer {
 private:
 
-	//! DirectX‚Ìƒtƒ…[ƒ`ƒƒ[ƒŒƒxƒ‹
+	//! DirectXã®ãƒ•ãƒ¥ãƒ¼ãƒãƒ£ãƒ¼ãƒ¬ãƒ™ãƒ«
 	static D3D_FEATURE_LEVEL									m_FeatureLevel;
-	//! DirectX11‚ÌƒfƒoƒCƒX
+	//! DirectX11ã®ãƒ‡ãƒã‚¤ã‚¹
 	static ID3D11Device*										m_D3DDevice;
-	//! DirectX11‚ÌƒfƒoƒCƒXƒRƒ“ƒeƒLƒXƒg
+	//! DirectX11ã®ãƒ‡ãƒã‚¤ã‚¹ã‚³ãƒ³ãƒ†ã‚­ã‚¹ãƒˆ
 	static ID3D11DeviceContext*									m_ImmediateContext;
-	//! ƒXƒƒbƒvƒ`ƒFƒCƒ“
+	//! ã‚¹ãƒ¯ãƒƒãƒ—ãƒã‚§ã‚¤ãƒ³
 	static IDXGISwapChain1*										m_SwapChain;
-	//! ƒŒƒ“ƒ_[ƒ^[ƒQƒbƒgƒrƒ…[
+	//! ãƒ¬ãƒ³ãƒ€ãƒ¼ã‚¿ãƒ¼ã‚²ãƒƒãƒˆãƒ“ãƒ¥ãƒ¼
 	static ID3D11RenderTargetView*								m_RenderTargetView;
 
 	static unique_ptr < ID3D11RenderTargetView, Release>		RenderTargetView_16bit;
@@ -166,22 +166,22 @@ private:
 	static unique_ptr<ID3D11RenderTargetView, Release>			RenderTargetView[3];
 	static unique_ptr<ID3D11ShaderResourceView, Release>		ShaderResourceView[3];
 
-	//! ƒfƒvƒXƒXƒeƒ“ƒVƒ‹
+	//! ãƒ‡ãƒ—ã‚¹ã‚¹ãƒ†ãƒ³ã‚·ãƒ«
 	static ID3D11DepthStencilView*								m_DepthStencilView;
-	//! Direct2D‚ÌƒfƒoƒCƒX
+	//! Direct2Dã®ãƒ‡ãƒã‚¤ã‚¹
 	static ID2D1Device*											m_D2DDevice;
-	//! Direct2D‚ÌƒfƒoƒCƒXƒRƒ“ƒeƒLƒXƒg
+	//! Direct2Dã®ãƒ‡ãƒã‚¤ã‚¹ã‚³ãƒ³ãƒ†ã‚­ã‚¹ãƒˆ
 	static ID2D1DeviceContext*									m_D2DDeviceContext;
-	//! Direct2D‚Ìƒ^[ƒQƒbƒgƒrƒbƒgƒ}ƒbƒv
+	//! Direct2Dã®ã‚¿ãƒ¼ã‚²ãƒƒãƒˆãƒ“ãƒƒãƒˆãƒãƒƒãƒ—
 	static ID2D1Bitmap1*										m_D2DTargetBitmap;
 	//! Dxgi
 	static IDXGIDevice1*										m_dxgiDev;
 
-	//! ƒeƒLƒXƒgƒtƒH[ƒ}ƒbƒg
+	//! ãƒ†ã‚­ã‚¹ãƒˆãƒ•ã‚©ãƒ¼ãƒãƒƒãƒˆ
 	static IDWriteTextFormat*									m_DwriteTextFormat;
-	//! ƒeƒLƒXƒgƒŒƒCƒAƒEƒg
+	//! ãƒ†ã‚­ã‚¹ãƒˆãƒ¬ã‚¤ã‚¢ã‚¦ãƒˆ
 	static IDWriteTextLayout*									m_TextLayout;
-	//! Direct2D‚Ìƒ‰ƒCƒgƒtƒ@ƒNƒgƒŠ[
+	//! Direct2Dã®ãƒ©ã‚¤ãƒˆãƒ•ã‚¡ã‚¯ãƒˆãƒªãƒ¼
 	static IDWriteFactory*										m_DwriteFactory;
 
 	static unordered_map<SHADER_INDEX_V, ID3D11VertexShader*>	m_VertexShader;
@@ -193,36 +193,36 @@ private:
 
 	static unique_ptr<ID3D11SamplerState, Release>				m_SamplerState;
 
-	//! ’¸“_ƒŒƒCƒAƒEƒg
+	//! é ‚ç‚¹ãƒ¬ã‚¤ã‚¢ã‚¦ãƒˆ
 	static ID3D11InputLayout*									m_VertexLayout[3];
-	//! ƒ}ƒeƒŠƒAƒ‹ƒoƒbƒtƒ@
+	//! ãƒãƒ†ãƒªã‚¢ãƒ«ãƒãƒƒãƒ•ã‚¡
 	static ID3D11Buffer*										m_MaterialBuffer;
-	//! ƒ‰ƒCƒgƒoƒbƒtƒ@
+	//! ãƒ©ã‚¤ãƒˆãƒãƒƒãƒ•ã‚¡
 	static ID3D11Buffer*										m_LightBuffer;
-	//! ƒ{[ƒ“î•ñƒoƒbƒtƒ@
+	//! ãƒœãƒ¼ãƒ³æƒ…å ±ãƒãƒƒãƒ•ã‚¡
 	static ID3D11Buffer*										m_Bone_Matrix_Buffer;
-	//! ƒRƒ“ƒXƒ^ƒ“ƒgƒoƒbƒtƒ@
+	//! ã‚³ãƒ³ã‚¹ã‚¿ãƒ³ãƒˆãƒãƒƒãƒ•ã‚¡
 	static ID3D11Buffer*										m_ConstantBuffer;
 	
 	static ID3D11Buffer*										m_ConstantBuffer_02;
 
-	//! ƒXƒ^ƒ“ƒoƒCƒ‚[ƒhƒtƒ‰ƒO
+	//! ã‚¹ã‚¿ãƒ³ãƒã‚¤ãƒ¢ãƒ¼ãƒ‰ãƒ•ãƒ©ã‚°
 	static bool													Stand_By_Enable;
 
-	// ƒ‰ƒCƒg
+	// ãƒ©ã‚¤ãƒˆ
 	static LIGHT m_Light;//
 
 	/**
-	* @brief Direct3D‚Ì‰Šú‰»
-	* @return bool ¬Œ÷‚È‚ç true ¸”s‚È‚ç false
-	* @details Direct3D‚Ì‰Šú‰»‚·‚é
+	* @brief Direct3Dã®åˆæœŸåŒ–
+	* @return bool æˆåŠŸãªã‚‰ true å¤±æ•—ãªã‚‰ false
+	* @details Direct3Dã®åˆæœŸåŒ–ã™ã‚‹
 	*/
 	static bool Init3D();
 
 	/**
-	* @brief Direct2D‚Ì‰Šú‰»
-	* @return bool ¬Œ÷‚È‚ç true ¸”s‚È‚ç false
-	* @details Direct2D‚Ì‰Šú‰»‚·‚é
+	* @brief Direct2Dã®åˆæœŸåŒ–
+	* @return bool æˆåŠŸãªã‚‰ true å¤±æ•—ãªã‚‰ false
+	* @details Direct2Dã®åˆæœŸåŒ–ã™ã‚‹
 	*/
 	static bool Init2D();
 
@@ -232,7 +232,7 @@ public:
 	static void Begin();
 	static void End();
 
-	// ©‘O
+	// è‡ªå‰
 	static void SetBlendState(D3D11_BLEND_DESC* blend_state = nullptr, bool flag = false);
 	static void GetAddBlendState(D3D11_BLEND_DESC& blend_state);
 	static void GetSubtractBlendState(D3D11_BLEND_DESC& blend_state);
@@ -241,19 +241,19 @@ public:
 	static void Change_Window_Mode();
 
 	/**
-	* @brief 2D—p‚Ìƒ[ƒ‹ƒhƒ}ƒgƒŠƒbƒNƒXİ’è
-	* @param[in] scaling@Šg‘åk¬‚Ìƒ}ƒgƒŠƒbƒNƒX
-	* @param[in] rotation@‰ñ“]‚Ìƒ}ƒgƒŠƒbƒNƒX
-	* @details 2D—p‚Ìƒ[ƒ‹ƒhƒ}ƒgƒŠƒbƒNƒXİ’è‚ğİ’è‚·‚é
+	* @brief 2Dç”¨ã®ãƒ¯ãƒ¼ãƒ«ãƒ‰ãƒãƒˆãƒªãƒƒã‚¯ã‚¹è¨­å®š
+	* @param[in] scalingã€€æ‹¡å¤§ç¸®å°ã®ãƒãƒˆãƒªãƒƒã‚¯ã‚¹
+	* @param[in] rotationã€€å›è»¢ã®ãƒãƒˆãƒªãƒƒã‚¯ã‚¹
+	* @details 2Dç”¨ã®ãƒ¯ãƒ¼ãƒ«ãƒ‰ãƒãƒˆãƒªãƒƒã‚¯ã‚¹è¨­å®šã‚’è¨­å®šã™ã‚‹
 	*/
 	static void SetWorldViewProjection2D(const XMFLOAT3& scaling = XMFLOAT3(1.0f, 1.0f, 1.0f), const XMFLOAT3& rotation = XMFLOAT3(0.0f, 0.0f, 0.0f));
 
 	/**
-	* @brief ƒRƒ“ƒXƒ^ƒ“ƒgƒoƒbƒtƒ@İ’è
-	* @param[in] world@ƒ[ƒ‹ƒhƒ}ƒgƒŠƒbƒNƒX
-	* @param[in] view@ƒrƒ…[ƒ}ƒgƒŠƒbƒNƒX
-	* @param[in] projection@ƒvƒƒWƒFƒNƒVƒ‡ƒ“ƒ}ƒgƒŠƒbƒNƒX
-	* @details ƒRƒ“ƒXƒ^ƒ“ƒgƒoƒbƒtƒ@‚ğİ’è‚·‚é
+	* @brief ã‚³ãƒ³ã‚¹ã‚¿ãƒ³ãƒˆãƒãƒƒãƒ•ã‚¡è¨­å®š
+	* @param[in] worldã€€ãƒ¯ãƒ¼ãƒ«ãƒ‰ãƒãƒˆãƒªãƒƒã‚¯ã‚¹
+	* @param[in] viewã€€ãƒ“ãƒ¥ãƒ¼ãƒãƒˆãƒªãƒƒã‚¯ã‚¹
+	* @param[in] projectionã€€ãƒ—ãƒ­ã‚¸ã‚§ã‚¯ã‚·ãƒ§ãƒ³ãƒãƒˆãƒªãƒƒã‚¯ã‚¹
+	* @details ã‚³ãƒ³ã‚¹ã‚¿ãƒ³ãƒˆãƒãƒƒãƒ•ã‚¡ã‚’è¨­å®šã™ã‚‹
 	*/
 	static void Set_MatrixBuffer(const XMMATRIX world, const XMMATRIX view, const XMMATRIX projection);
 
@@ -277,113 +277,113 @@ public:
 	}
 
 	/**
-	* @brief ƒ}ƒeƒŠƒAƒ‹İ’è
-	* @param[in] Material@ƒ}ƒeƒŠƒAƒ‹
-	* @details ƒ}ƒeƒŠƒAƒ‹İ’è‚ğİ’è‚·‚é
+	* @brief ãƒãƒ†ãƒªã‚¢ãƒ«è¨­å®š
+	* @param[in] Materialã€€ãƒãƒ†ãƒªã‚¢ãƒ«
+	* @details ãƒãƒ†ãƒªã‚¢ãƒ«è¨­å®šã‚’è¨­å®šã™ã‚‹
 	*/
 	static void SetMaterial(MATERIAL Material);
 
 	/**
-	* @brief ƒfƒBƒŒƒNƒVƒ‡ƒiƒ‹ƒ‰ƒCƒgİ’è
-	* @param[in] Light@ƒfƒBƒŒƒNƒVƒ‡ƒiƒ‹ƒ‰ƒCƒg
-	* @details ƒfƒBƒŒƒNƒVƒ‡ƒiƒ‹ƒ‰ƒCƒgİ’è‚ğİ’è‚·‚é
+	* @brief ãƒ‡ã‚£ãƒ¬ã‚¯ã‚·ãƒ§ãƒŠãƒ«ãƒ©ã‚¤ãƒˆè¨­å®š
+	* @param[in] Lightã€€ãƒ‡ã‚£ãƒ¬ã‚¯ã‚·ãƒ§ãƒŠãƒ«ãƒ©ã‚¤ãƒˆ
+	* @details ãƒ‡ã‚£ãƒ¬ã‚¯ã‚·ãƒ§ãƒŠãƒ«ãƒ©ã‚¤ãƒˆè¨­å®šã‚’è¨­å®šã™ã‚‹
 	*/
 	static void SetLight(LIGHT* Light);
 
 	/**
-	* @brief ƒfƒBƒŒƒNƒVƒ‡ƒiƒ‹ƒ‰ƒCƒg‚Ì‰Šú‰»
-	* @details ƒfƒBƒŒƒNƒVƒ‡ƒiƒ‹ƒ‰ƒCƒgİ’è‚ğ‰Šú‰»‚·‚é
+	* @brief ãƒ‡ã‚£ãƒ¬ã‚¯ã‚·ãƒ§ãƒŠãƒ«ãƒ©ã‚¤ãƒˆã®åˆæœŸåŒ–
+	* @details ãƒ‡ã‚£ãƒ¬ã‚¯ã‚·ãƒ§ãƒŠãƒ«ãƒ©ã‚¤ãƒˆè¨­å®šã‚’åˆæœŸåŒ–ã™ã‚‹
 	*/
 	static void Light_Identity();
 
 	/**
-	* @brief	ƒ‰ƒXƒ^ƒ‰ƒCƒYƒXƒe[ƒg‚Ìİ’è
+	* @brief	ãƒ©ã‚¹ã‚¿ãƒ©ã‚¤ã‚ºã‚¹ãƒ†ãƒ¼ãƒˆã®è¨­å®š
 	* @details 
 	*/
 	static void Set_RasterizerState();
 
 	/**
-	* @brief ’¸“_ƒoƒbƒtƒ@‚Ìİ’è
-	* @details ’¸“_ƒoƒbƒtƒ@İ’è‚ğİ’è‚·‚é
+	* @brief é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡ã®è¨­å®š
+	* @details é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡è¨­å®šã‚’è¨­å®šã™ã‚‹
 	*/
 	static void SetVertexBuffers( ID3D11Buffer* VertexBuffer );
 
 	/**
-	* @brief ’¸“_ƒoƒbƒtƒ@‚Ìİ’è(ƒCƒ“ƒXƒ^ƒ“ƒVƒ“ƒO—p)
-	* @details ƒCƒ“ƒXƒ^ƒ“ƒVƒ“ƒO—p‚Ì’¸“_ƒoƒbƒtƒ@İ’è‚ğİ’è‚·‚é
+	* @brief é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡ã®è¨­å®š(ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚·ãƒ³ã‚°ç”¨)
+	* @details ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚·ãƒ³ã‚°ç”¨ã®é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡è¨­å®šã‚’è¨­å®šã™ã‚‹
 	*/
 	static void SetVertexBuffers(ID3D11Buffer* IndexBuffer, ID3D11Buffer* InstancingBuffer, UINT size);
 
 	/**
-	* @brief ƒCƒ“ƒfƒbƒNƒXƒoƒbƒtƒ@‚Ìİ’è
-	* @details ƒCƒ“ƒfƒbƒNƒXƒoƒbƒtƒ@İ’è‚ğİ’è‚·‚é
+	* @brief ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ãƒãƒƒãƒ•ã‚¡ã®è¨­å®š
+	* @details ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ãƒãƒƒãƒ•ã‚¡è¨­å®šã‚’è¨­å®šã™ã‚‹
 	*/
 	static void SetIndexBuffer( ID3D11Buffer* IndexBuffer );
 
 	static void DrawIndexed( unsigned int IndexCount, unsigned int StartIndexLocation, int BaseVertexLocation );
 
 	/**
-	* @brief ƒfƒoƒCƒX3D‚Ìæ“¾
-	* @return ID3D11Device* ƒfƒoƒCƒX‚Ìƒ|ƒCƒ“ƒ^
-	* @details ƒfƒoƒCƒX3D‚Ìæ“¾‚·‚é
+	* @brief ãƒ‡ãƒã‚¤ã‚¹3Dã®å–å¾—
+	* @return ID3D11Device* ãƒ‡ãƒã‚¤ã‚¹ã®ãƒã‚¤ãƒ³ã‚¿
+	* @details ãƒ‡ãƒã‚¤ã‚¹3Dã®å–å¾—ã™ã‚‹
 	*/
 	static ID3D11Device* GetDevice(){ return m_D3DDevice; }
 
 	/**
-	* @brief ƒfƒoƒCƒXƒRƒ“ƒeƒLƒXƒg3D‚Ìæ“¾
-	* @return ID3D11DeviceContext* ƒfƒoƒCƒXƒRƒ“ƒeƒLƒXƒg‚Ìƒ|ƒCƒ“ƒ^
-	* @details ƒfƒoƒCƒXƒRƒ“ƒeƒLƒXƒg3D‚Ìæ“¾‚·‚é
+	* @brief ãƒ‡ãƒã‚¤ã‚¹ã‚³ãƒ³ãƒ†ã‚­ã‚¹ãƒˆ3Dã®å–å¾—
+	* @return ID3D11DeviceContext* ãƒ‡ãƒã‚¤ã‚¹ã‚³ãƒ³ãƒ†ã‚­ã‚¹ãƒˆã®ãƒã‚¤ãƒ³ã‚¿
+	* @details ãƒ‡ãƒã‚¤ã‚¹ã‚³ãƒ³ãƒ†ã‚­ã‚¹ãƒˆ3Dã®å–å¾—ã™ã‚‹
 	*/
 	static ID3D11DeviceContext* GetDeviceContext( void ){ return m_ImmediateContext; }
 
 	/**
-	* @brief ƒfƒoƒCƒX2D‚Ìæ“¾
-	* @return ID2D1Device* ƒfƒoƒCƒX‚Ìƒ|ƒCƒ“ƒ^
-	* @details ƒfƒoƒCƒX2D‚Ìæ“¾‚·‚é
+	* @brief ãƒ‡ãƒã‚¤ã‚¹2Dã®å–å¾—
+	* @return ID2D1Device* ãƒ‡ãƒã‚¤ã‚¹ã®ãƒã‚¤ãƒ³ã‚¿
+	* @details ãƒ‡ãƒã‚¤ã‚¹2Dã®å–å¾—ã™ã‚‹
 	*/
 	static ID2D1Device* Get2DDevice() { return m_D2DDevice; }
 
 	/**
-	* @brief ƒfƒoƒCƒXƒRƒ“ƒeƒLƒXƒg2D‚Ìæ“¾
-	* @return ID2D1DeviceContext* ƒfƒoƒCƒXƒRƒ“ƒeƒLƒXƒg‚Ìƒ|ƒCƒ“ƒ^
-	* @details ƒfƒoƒCƒXƒRƒ“ƒeƒLƒXƒg2D‚Ìæ“¾‚·‚é
+	* @brief ãƒ‡ãƒã‚¤ã‚¹ã‚³ãƒ³ãƒ†ã‚­ã‚¹ãƒˆ2Dã®å–å¾—
+	* @return ID2D1DeviceContext* ãƒ‡ãƒã‚¤ã‚¹ã‚³ãƒ³ãƒ†ã‚­ã‚¹ãƒˆã®ãƒã‚¤ãƒ³ã‚¿
+	* @details ãƒ‡ãƒã‚¤ã‚¹ã‚³ãƒ³ãƒ†ã‚­ã‚¹ãƒˆ2Dã®å–å¾—ã™ã‚‹
 	*/
 	static ID2D1DeviceContext* Get2DDeviceContext(void) { return m_D2DDeviceContext; }
 
 	/**
-	* @brief ƒeƒLƒXƒgƒtƒH[ƒ}ƒbƒg‚Ìì¬
-	* @param[in] TEXT_FOMAT ƒeƒLƒXƒgƒtƒH[ƒ}ƒbƒg
-	* @return HRESULT –ß‚è’l
-	* @details ƒeƒLƒXƒgƒtƒH[ƒ}ƒbƒg‚Ìì¬‚·‚é
+	* @brief ãƒ†ã‚­ã‚¹ãƒˆãƒ•ã‚©ãƒ¼ãƒãƒƒãƒˆã®ä½œæˆ
+	* @param[in] TEXT_FOMAT ãƒ†ã‚­ã‚¹ãƒˆãƒ•ã‚©ãƒ¼ãƒãƒƒãƒˆ
+	* @return HRESULT æˆ»ã‚Šå€¤
+	* @details ãƒ†ã‚­ã‚¹ãƒˆãƒ•ã‚©ãƒ¼ãƒãƒƒãƒˆã®ä½œæˆã™ã‚‹
 	*/
 	static HRESULT Create_TextFormat(const TEXT_FOMAT& fomat);
 
 	/**
-	* @brief ƒeƒLƒXƒgƒtƒH[ƒ}ƒbƒg‚Ìæ“¾
-	* @return IDWriteTextFormat* ƒeƒLƒXƒgƒtƒH[ƒ}ƒbƒg‚Ìƒ|ƒCƒ“ƒ^
-	* @details ƒeƒLƒXƒgƒtƒH[ƒ}ƒbƒg‚Ìæ“¾‚·‚é
+	* @brief ãƒ†ã‚­ã‚¹ãƒˆãƒ•ã‚©ãƒ¼ãƒãƒƒãƒˆã®å–å¾—
+	* @return IDWriteTextFormat* ãƒ†ã‚­ã‚¹ãƒˆãƒ•ã‚©ãƒ¼ãƒãƒƒãƒˆã®ãƒã‚¤ãƒ³ã‚¿
+	* @details ãƒ†ã‚­ã‚¹ãƒˆãƒ•ã‚©ãƒ¼ãƒãƒƒãƒˆã®å–å¾—ã™ã‚‹
 	*/
 	static IDWriteTextFormat* GetTextFormat() { return m_DwriteTextFormat; }
 
 	/**
-	* @brief ƒeƒLƒXƒgƒŒƒCƒAƒEƒg‚ğì¬
-	* @param TEXT_LAYOUT ƒeƒLƒXƒgƒŒƒCƒAƒEƒg
-	* @return HRESULT –ß‚è’l
-	* @details ƒeƒLƒXƒgƒŒƒCƒAƒEƒg‚ğì¬‚·‚é
+	* @brief ãƒ†ã‚­ã‚¹ãƒˆãƒ¬ã‚¤ã‚¢ã‚¦ãƒˆã‚’ä½œæˆ
+	* @param TEXT_LAYOUT ãƒ†ã‚­ã‚¹ãƒˆãƒ¬ã‚¤ã‚¢ã‚¦ãƒˆ
+	* @return HRESULT æˆ»ã‚Šå€¤
+	* @details ãƒ†ã‚­ã‚¹ãƒˆãƒ¬ã‚¤ã‚¢ã‚¦ãƒˆã‚’ä½œæˆã™ã‚‹
 	*/
 	static HRESULT Create_TextLayout(const TEXT_LAYOUT& layout);
 
 	/**
-	* @brief ƒeƒLƒXƒgƒŒƒCƒAƒEƒg‚ğæ“¾
-	* @return IDWriteTextLayout* ƒeƒLƒXƒgƒŒƒCƒAƒEƒg‚Ìƒ|ƒCƒ“ƒ^
-	* @details ƒeƒLƒXƒgƒŒƒCƒAƒEƒg‚ğæ“¾‚·‚é
+	* @brief ãƒ†ã‚­ã‚¹ãƒˆãƒ¬ã‚¤ã‚¢ã‚¦ãƒˆã‚’å–å¾—
+	* @return IDWriteTextLayout* ãƒ†ã‚­ã‚¹ãƒˆãƒ¬ã‚¤ã‚¢ã‚¦ãƒˆã®ãƒã‚¤ãƒ³ã‚¿
+	* @details ãƒ†ã‚­ã‚¹ãƒˆãƒ¬ã‚¤ã‚¢ã‚¦ãƒˆã‚’å–å¾—ã™ã‚‹
 	*/
 	static IDWriteTextLayout* GetTextLayout() { return m_TextLayout; }
 
 	/**
-	* @brief ƒ_ƒCƒŒƒNƒgƒtƒ@ƒNƒgƒŠ‚ğæ“¾
-	* @return IDWriteFactory* ƒ_ƒCƒŒƒNƒgƒtƒ@ƒNƒgƒŠ‚Ìƒ|ƒCƒ“ƒ^
-	* @details ƒ_ƒCƒŒƒNƒgƒtƒ@ƒNƒgƒŠ‚ğæ“¾‚·‚é
+	* @brief ãƒ€ã‚¤ãƒ¬ã‚¯ãƒˆãƒ•ã‚¡ã‚¯ãƒˆãƒªã‚’å–å¾—
+	* @return IDWriteFactory* ãƒ€ã‚¤ãƒ¬ã‚¯ãƒˆãƒ•ã‚¡ã‚¯ãƒˆãƒªã®ãƒã‚¤ãƒ³ã‚¿
+	* @details ãƒ€ã‚¤ãƒ¬ã‚¯ãƒˆãƒ•ã‚¡ã‚¯ãƒˆãƒªã‚’å–å¾—ã™ã‚‹
 	*/
 	static IDWriteFactory* GetFactory() { return m_DwriteFactory; }
 
@@ -391,7 +391,7 @@ public:
 
 	static void Set_InputLayout(const INPUTLAYOUT v_index = INPUTLAYOUT::DEFAULT);
 
-	// ©‘O
+	// è‡ªå‰
 	static void CreateRenderTexture();
 	static void SetPass_Rendring();
 

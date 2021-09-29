@@ -1,4 +1,4 @@
-#include	"Texture_Manager.h"
+ï»¿#include	"Texture_Manager.h"
 #include	"Renderer.h"
 #include	"manager.h"
 
@@ -33,10 +33,10 @@ bool TEXTURE_MANEGER::Init()
 		}
 	}
 
-	// ƒfƒtƒHƒ‹ƒg‚Ì‰æ‘œƒf[ƒ^‚Ì“Ç‚İ‚İ
+	// ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆã®ç”»åƒãƒ‡ãƒ¼ã‚¿ã®èª­ã¿è¾¼ã¿
 	Texture_Manager->Default_Load(flag);
 
-	// ‰æ‘œƒf[ƒ^‚Ì“Ç‚İ‚İ
+	// ç”»åƒãƒ‡ãƒ¼ã‚¿ã®èª­ã¿è¾¼ã¿
 	Texture_Manager->Load(flag);
 
 #ifdef _DEBUG
@@ -80,8 +80,8 @@ void TEXTURE_MANEGER::Update()
 #ifdef _DEBUG
 	Load_Check();
 
-	wstring path;			// ƒtƒ@ƒCƒ‹–¼(ƒpƒX•t‚«)
-	wstring file_name;		// ƒtƒ@ƒCƒ‹–¼(ƒpƒX‚È‚µ)
+	wstring path;			// ãƒ•ã‚¡ã‚¤ãƒ«å(ãƒ‘ã‚¹ä»˜ã)
+	wstring file_name;		// ãƒ•ã‚¡ã‚¤ãƒ«å(ãƒ‘ã‚¹ãªã—)
 	wstring type;
 	size_t pos;
 	size_t first;			// 
@@ -93,7 +93,7 @@ void TEXTURE_MANEGER::Update()
 		path = L"./asset/texture/" + file_name;
 
 		{
-			// ƒtƒ@ƒCƒ‹‚ªXV‚³‚ê‚½
+			// ãƒ•ã‚¡ã‚¤ãƒ«ãŒæ›´æ–°ã•ã‚ŒãŸ
 			wstring name;
 			HRESULT hr;
 			ID3D11ShaderResourceView* ShaderResourceView;
@@ -110,7 +110,7 @@ void TEXTURE_MANEGER::Update()
 					return;
 				}
 			}
-			else	// jpg ‚© png
+			else	// jpg ã‹ png
 			{
 				hr = CreateWICTextureFromFile(CRenderer::GetDevice(), CRenderer::GetDeviceContext(), path.c_str(), nullptr, &ShaderResourceView, nullptr, nullptr);
 				if (FAILED(hr))
@@ -132,8 +132,8 @@ void TEXTURE_MANEGER::Default_Load(const bool flag)
 {
 	int width, height;
 
-	string path;			// ƒtƒ@ƒCƒ‹–¼(ƒpƒX•t‚«) 
-	string file_name;		// ƒtƒ@ƒCƒ‹–¼(ƒpƒX‚È‚µ)
+	string path;			// ãƒ•ã‚¡ã‚¤ãƒ«å(ãƒ‘ã‚¹ä»˜ã) 
+	string file_name;		// ãƒ•ã‚¡ã‚¤ãƒ«å(ãƒ‘ã‚¹ãªã—)
 	string type;
 	size_t first;			// 
 	size_t pos;
@@ -144,10 +144,10 @@ void TEXTURE_MANEGER::Default_Load(const bool flag)
 	std::filesystem::directory_iterator e = std::filesystem::directory_iterator("./asset/Default/texture");
 	for (auto file : e) {
 
-		// ˆê‚Âˆê‚Â‚Ìƒtƒ@ƒCƒ‹–¼(ƒpƒX•t‚«)
+		// ä¸€ã¤ä¸€ã¤ã®ãƒ•ã‚¡ã‚¤ãƒ«å(ãƒ‘ã‚¹ä»˜ã)
 		path = file.path().string();
 
-		// ’uŠ·
+		// ç½®æ›
 		replace(path.begin(), path.end(), '\\', '/');
 
 		pos = path.find_last_of("/");
@@ -156,23 +156,23 @@ void TEXTURE_MANEGER::Default_Load(const bool flag)
 
 		first = hash<string>()(file_name);//
 
-		// ƒoƒCƒiƒŠƒtƒ@ƒCƒ‹‚ª‚È‚¢
+		// ãƒã‚¤ãƒŠãƒªãƒ•ã‚¡ã‚¤ãƒ«ãŒãªã„
 		if (false == flag)
 		{
-			// ƒeƒNƒXƒ`ƒƒ‚Ì“o˜^
+			// ãƒ†ã‚¯ã‚¹ãƒãƒ£ã®ç™»éŒ²
 			Default_Texture_File[first] = path;
 
 			TextureData[first].Cnt = 0;
 		}
 
-		// ƒeƒNƒXƒ`ƒƒ‚Ì“Ç‚İ‚İ
+		// ãƒ†ã‚¯ã‚¹ãƒãƒ£ã®èª­ã¿è¾¼ã¿
 		{
 			pos = file_name.find_last_of(".");
 			type = file_name.substr(pos + 1);
 
 			HRESULT hr;
 
-			// char ‚©‚ç wchar_t ‚Ö‚Ì•ÏŠ·
+			// char ã‹ã‚‰ wchar_t ã¸ã®å¤‰æ›
 			name = stringTowstring(path);
 
 			if ("dds" == type)	// dds
@@ -184,7 +184,7 @@ void TEXTURE_MANEGER::Default_Load(const bool flag)
 					return;
 				}
 			}
-			else	// jpg ‚© png
+			else	// jpg ã‹ png
 			{
 				hr = CreateWICTextureFromFile(CRenderer::GetDevice(), CRenderer::GetDeviceContext(), name.c_str(), nullptr, &ShaderResourceView, &width, &height);
 				if (FAILED(hr))
@@ -203,14 +203,14 @@ void TEXTURE_MANEGER::Default_Load(const bool flag)
 
 void TEXTURE_MANEGER::Load(const bool flag)
 {
-	// ƒoƒCƒiƒŠƒtƒ@ƒCƒ‹‚ª‚È‚¢
+	// ãƒã‚¤ãƒŠãƒªãƒ•ã‚¡ã‚¤ãƒ«ãŒãªã„
 	if (false == flag)
 	{
 
 		int width, height;
 
-		string path;			// ƒtƒ@ƒCƒ‹–¼(ƒpƒX•t‚«) 
-		string file_name;		// ƒtƒ@ƒCƒ‹–¼(ƒpƒX‚È‚µ)
+		string path;			// ãƒ•ã‚¡ã‚¤ãƒ«å(ãƒ‘ã‚¹ä»˜ã) 
+		string file_name;		// ãƒ•ã‚¡ã‚¤ãƒ«å(ãƒ‘ã‚¹ãªã—)
 		string type;
 		size_t first;			// 
 		size_t pos;
@@ -218,10 +218,10 @@ void TEXTURE_MANEGER::Load(const bool flag)
 		std::filesystem::directory_iterator e = std::filesystem::directory_iterator("./asset/texture");
 		for (auto file : e)
 		{
-			// ˆê‚Âˆê‚Â‚Ìƒtƒ@ƒCƒ‹–¼(ƒpƒX•t‚«)
+			// ä¸€ã¤ä¸€ã¤ã®ãƒ•ã‚¡ã‚¤ãƒ«å(ãƒ‘ã‚¹ä»˜ã)
 			path = file.path().string();
 
-			// ’uŠ·
+			// ç½®æ›
 			replace(path.begin(), path.end(), '\\', '/');
 
 			pos = path.find_last_of("/");
@@ -230,13 +230,13 @@ void TEXTURE_MANEGER::Load(const bool flag)
 
 			first = hash<string>()(file_name);//
 
-			//ƒoƒCƒiƒŠƒtƒ@ƒCƒ‹‚ª‚È‚¢
+			//ãƒã‚¤ãƒŠãƒªãƒ•ã‚¡ã‚¤ãƒ«ãŒãªã„
 			{
-				//ƒeƒNƒXƒ`ƒƒ‚Ì“o˜^
+				//ãƒ†ã‚¯ã‚¹ãƒãƒ£ã®ç™»éŒ²
 				TextureFile[first].Path = path;
 			}
 
-			// ƒeƒNƒXƒ`ƒƒ‚Ì“Ç‚İ‚İ
+			// ãƒ†ã‚¯ã‚¹ãƒãƒ£ã®èª­ã¿è¾¼ã¿
 			if (TextureFile.find(first) != TextureFile.end())
 			{
 				ID3D11ShaderResourceView* ShaderResourceView;
@@ -246,7 +246,7 @@ void TEXTURE_MANEGER::Load(const bool flag)
 				pos = file_name.find_last_of(".");
 				type = file_name.substr(pos + 1);
 
-				// char ‚©‚ç wchar_t ‚Ö‚Ì•ÏŠ·
+				// char ã‹ã‚‰ wchar_t ã¸ã®å¤‰æ›
 				name = stringTowstring(path);
 
 				if ("dds" == type)	// dds
@@ -258,7 +258,7 @@ void TEXTURE_MANEGER::Load(const bool flag)
 						return;
 					}
 				}
-				else	// jpg ‚© png
+				else	// jpg ã‹ png
 				{
 					hr = CreateWICTextureFromFile(CRenderer::GetDevice(), CRenderer::GetDeviceContext(), name.c_str(), nullptr, &ShaderResourceView, &width, &height);
 					if (FAILED(hr))
@@ -278,8 +278,8 @@ void TEXTURE_MANEGER::Load(const bool flag)
 	else
 	{
 		int width, height;
-		string path;			// ƒtƒ@ƒCƒ‹–¼(ƒpƒX•t‚«) 
-		string file_name;		// ƒtƒ@ƒCƒ‹–¼(ƒpƒX‚È‚µ)
+		string path;			// ãƒ•ã‚¡ã‚¤ãƒ«å(ãƒ‘ã‚¹ä»˜ã) 
+		string file_name;		// ãƒ•ã‚¡ã‚¤ãƒ«å(ãƒ‘ã‚¹ãªã—)
 		string type;
 		size_t first;
 		size_t pos;
@@ -301,7 +301,7 @@ void TEXTURE_MANEGER::Load(const bool flag)
 			pos = path.find_last_of(".");
 			type = path.substr(pos + 1);
 
-			// char ‚©‚ç wchar_t ‚Ö‚Ì•ÏŠ·
+			// char ã‹ã‚‰ wchar_t ã¸ã®å¤‰æ›
 			name = stringTowstring(path);
 
 			if ("dds" == type)	// dds
@@ -313,7 +313,7 @@ void TEXTURE_MANEGER::Load(const bool flag)
 					return;
 				}
 			}
-			else	// jpg ‚© png
+			else	// jpg ã‹ png
 			{
 				hr = CreateWICTextureFromFile(CRenderer::GetDevice(), CRenderer::GetDeviceContext(), name.c_str(), nullptr, &ShaderResourceView, &width, &height);
 				if (FAILED(hr))
@@ -335,7 +335,7 @@ void TEXTURE_MANEGER::Add(const string& file_name)
 {
 	int width, height;
 
-	string path;	// ƒtƒ@ƒCƒ‹–¼
+	string path;	// ãƒ•ã‚¡ã‚¤ãƒ«å
 	string type;
 	size_t first;			// 
 	size_t pos;
@@ -345,7 +345,7 @@ void TEXTURE_MANEGER::Add(const string& file_name)
 
 		path = file_name.substr(pos + 1);
 
-		// ƒeƒNƒXƒ`ƒƒ‚Ì“Ç‚İ‚İ
+		// ãƒ†ã‚¯ã‚¹ãƒãƒ£ã®èª­ã¿è¾¼ã¿
 		{
 			ID3D11ShaderResourceView* ShaderResourceView;
 			HRESULT hr;
@@ -354,7 +354,7 @@ void TEXTURE_MANEGER::Add(const string& file_name)
 			pos = path.find_last_of(".");
 			type = path.substr(pos + 1);
 
-			// char ‚©‚ç wchar_t ‚Ö‚Ì•ÏŠ·
+			// char ã‹ã‚‰ wchar_t ã¸ã®å¤‰æ›
 			name = stringTowstring("asset/texture/" + path);
 
 			if ("dds" == type)	// dds
@@ -366,7 +366,7 @@ void TEXTURE_MANEGER::Add(const string& file_name)
 					return;
 				}
 			}
-			else	// jpg ‚© png
+			else	// jpg ã‹ png
 			{
 				hr = CreateWICTextureFromFile(CRenderer::GetDevice(), CRenderer::GetDeviceContext(), name.c_str(), nullptr, &ShaderResourceView, &width, &height);
 				if (FAILED(hr))
@@ -393,7 +393,7 @@ const bool TEXTURE_MANEGER::Unload(const string& const file_name)
 #ifdef _DEBUG
 	if (0 != TextureData[first].Cnt)
 	{
-		// QÆ‚µ‚Ä‚¢‚é‚à‚Ì‚ª‚ ‚é
+		// å‚ç…§ã—ã¦ã„ã‚‹ã‚‚ã®ãŒã‚ã‚‹
 		return false;
 	}
 #endif // _DEBUG
@@ -419,7 +419,7 @@ void TEXTURE_MANEGER::Load_Check()
 	{
 		fps = 0.0;
 
-		// ó‹µ‚ğXV
+		// çŠ¶æ³ã‚’æ›´æ–°
 		Monitor->readChanges();
 	}
 }

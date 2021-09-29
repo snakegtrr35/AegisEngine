@@ -1,4 +1,4 @@
-#include	"Effekseer.h"
+ï»¿#include	"Effekseer.h"
 #include	"Renderer.h"
 #include	"manager.h"
 #include	"Scene.h"
@@ -37,7 +37,7 @@ using namespace Aegis;
 bool EFFEKSEER_MANAGER::Init()
 {
 	{
-		// •`‰æ—pƒCƒ“ƒXƒ^ƒ“ƒX‚Ì¶¬
+		// æç”»ç”¨ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã®ç”Ÿæˆ
 		Renderer = ::EffekseerRendererDX11::Renderer::Create(CRenderer::GetDevice(), CRenderer::GetDeviceContext(), 2000);
 		if (nullptr == Renderer)
 		{
@@ -46,47 +46,47 @@ bool EFFEKSEER_MANAGER::Init()
 	}
 
 	{
-		// ƒGƒtƒFƒNƒgŠÇ——pƒCƒ“ƒXƒ^ƒ“ƒX‚Ì¶¬
+		// ã‚¨ãƒ•ã‚§ã‚¯ãƒˆç®¡ç†ç”¨ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã®ç”Ÿæˆ
 		Manager = ::Effekseer::Manager::Create(2048);
 		if (nullptr == Manager)
 		{
 			return false;
 		}
 
-		// •`‰æ—pƒCƒ“ƒXƒ^ƒ“ƒX‚©‚ç•`‰æ‹@”\‚ğİ’è
+		// æç”»ç”¨ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã‹ã‚‰æç”»æ©Ÿèƒ½ã‚’è¨­å®š
 		Manager->SetSpriteRenderer(Renderer->CreateSpriteRenderer());
 		Manager->SetRibbonRenderer(Renderer->CreateRibbonRenderer());
 		Manager->SetRingRenderer(Renderer->CreateRingRenderer());
 		Manager->SetTrackRenderer(Renderer->CreateTrackRenderer());
 		Manager->SetModelRenderer(Renderer->CreateModelRenderer());
 
-		// À•WŒn‚Ìw’è( LH‚Å¶èŒn )
+		// åº§æ¨™ç³»ã®æŒ‡å®š( LHã§å·¦æ‰‹ç³» )
 		Manager->SetCoordinateSystem(Effekseer::CoordinateSystem::LH);
-		// •`‰æ—pƒCƒ“ƒXƒ^ƒ“ƒX‚©‚çƒeƒNƒXƒ`ƒƒ‚Ì“Ç‹@”\‚ğİ’è
+		// æç”»ç”¨ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã‹ã‚‰ãƒ†ã‚¯ã‚¹ãƒãƒ£ã®èª­è¾¼æ©Ÿèƒ½ã‚’è¨­å®š
 		Manager->SetTextureLoader(Renderer->CreateTextureLoader());
-		// “Æ©Šg’£‰Â”\AŒ»İ‚Íƒtƒ@ƒCƒ‹‚©‚ç“Ç‚İ‚ñ‚Å‚¢‚éB
+		// ç‹¬è‡ªæ‹¡å¼µå¯èƒ½ã€ç¾åœ¨ã¯ãƒ•ã‚¡ã‚¤ãƒ«ã‹ã‚‰èª­ã¿è¾¼ã‚“ã§ã„ã‚‹ã€‚
 		Manager->SetModelLoader(Renderer->CreateModelLoader());
 
-		//// ƒJƒŠƒ“ƒO‚ğs‚¤”ÍˆÍ‚ğİ’è
-		//// ”ÍˆÍ“à‚ÉƒGƒtƒFƒNƒg‚ª‘¶İ‚·‚é‚ÆƒJƒŠƒ“ƒO‚ª‚‘¬‚ÉÀs‚³‚ê‚é
-		//// layerCount‚ª‘å‚«‚¢‚Ù‚¤‚ª‚‘¬‚ÉƒJƒŠƒ“ƒO‚ğs‚¤‚ªƒƒ‚ƒŠ‚àÁ”ï‚·‚éBÅ‘å6’ö“xB
+		//// ã‚«ãƒªãƒ³ã‚°ã‚’è¡Œã†ç¯„å›²ã‚’è¨­å®š
+		//// ç¯„å›²å†…ã«ã‚¨ãƒ•ã‚§ã‚¯ãƒˆãŒå­˜åœ¨ã™ã‚‹ã¨ã‚«ãƒªãƒ³ã‚°ãŒé«˜é€Ÿã«å®Ÿè¡Œã•ã‚Œã‚‹
+		//// layerCountãŒå¤§ãã„ã»ã†ãŒé«˜é€Ÿã«ã‚«ãƒªãƒ³ã‚°ã‚’è¡Œã†ãŒãƒ¡ãƒ¢ãƒªã‚‚æ¶ˆè²»ã™ã‚‹ã€‚æœ€å¤§6ç¨‹åº¦ã€‚
 		//Manager->CreateCullingWorld(500.0f, 500.0f, 500.0f, 5);
 
 	}
 
 	{
-		// ‰¹Ä¶—pƒCƒ“ƒXƒ^ƒ“ƒX‚Ì¶¬
+		// éŸ³å†ç”Ÿç”¨ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã®ç”Ÿæˆ
 		Sound = ::EffekseerSound::Sound::Create(AUDIO_MANAGER::Get_Xaudio(), 16, 16);
 		if (nullptr == Sound)
 		{
 			return false;
 		}
 
-		// ‰¹Ä¶—pƒCƒ“ƒXƒ^ƒ“ƒX‚©‚çÄ¶‹@”\‚ğw’è
+		// éŸ³å†ç”Ÿç”¨ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã‹ã‚‰å†ç”Ÿæ©Ÿèƒ½ã‚’æŒ‡å®š
 		Manager->SetSoundPlayer(Sound->CreateSoundPlayer());
 
-		// ‰¹Ä¶—pƒCƒ“ƒXƒ^ƒ“ƒX‚©‚çƒTƒEƒ“ƒhƒf[ƒ^‚Ì“Ç‹@”\‚ğİ’è
-		// “Æ©Šg’£‰Â”\AŒ»İ‚Íƒtƒ@ƒCƒ‹‚©‚ç“Ç‚İ‚ñ‚Å‚¢‚éB
+		// éŸ³å†ç”Ÿç”¨ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã‹ã‚‰ã‚µã‚¦ãƒ³ãƒ‰ãƒ‡ãƒ¼ã‚¿ã®èª­è¾¼æ©Ÿèƒ½ã‚’è¨­å®š
+		// ç‹¬è‡ªæ‹¡å¼µå¯èƒ½ã€ç¾åœ¨ã¯ãƒ•ã‚¡ã‚¤ãƒ«ã‹ã‚‰èª­ã¿è¾¼ã‚“ã§ã„ã‚‹ã€‚
 		Manager->SetSoundLoader(Sound->CreateSoundLoader());
 	}
 
@@ -103,10 +103,10 @@ bool EFFEKSEER_MANAGER::Init()
 
 void EFFEKSEER_MANAGER::Uninit()
 {
-	// ƒGƒtƒFƒNƒg‚Ì’â~
+	// ã‚¨ãƒ•ã‚§ã‚¯ãƒˆã®åœæ­¢
 	Manager->StopAllEffects();
 
-	// ƒGƒtƒFƒNƒg‚Ì”jŠü
+	// ã‚¨ãƒ•ã‚§ã‚¯ãƒˆã®ç ´æ£„
 	for (auto effect : Effects)
 	{
 		if (nullptr != effect.second)
@@ -126,18 +126,18 @@ void EFFEKSEER_MANAGER::Uninit()
 
 void EFFEKSEER_MANAGER::Draw()
 {
-	// ƒGƒtƒFƒNƒg‚Ì•`‰æŠJnˆ—‚ğs‚¤B
+	// ã‚¨ãƒ•ã‚§ã‚¯ãƒˆã®æç”»é–‹å§‹å‡¦ç†ã‚’è¡Œã†ã€‚
 	Renderer->BeginRendering();
 
 
-	//// ‹‘Ì“à‚É‘¶İ‚·‚éƒGƒtƒFƒNƒg‚ğŒvZ‚·‚éB
-	//// ƒJƒŠƒ“ƒO‚Ìİ’è‚ª‚È‚¢ƒGƒtƒFƒNƒg‚Íí‚É•`‰æ‚³‚ê‚éB
+	//// è¦–éŒä½“å†…ã«å­˜åœ¨ã™ã‚‹ã‚¨ãƒ•ã‚§ã‚¯ãƒˆã‚’è¨ˆç®—ã™ã‚‹ã€‚
+	//// ã‚«ãƒªãƒ³ã‚°ã®è¨­å®šãŒãªã„ã‚¨ãƒ•ã‚§ã‚¯ãƒˆã¯å¸¸ã«æç”»ã•ã‚Œã‚‹ã€‚
 	//Manager->CalcCulling(Renderer->GetCameraProjectionMatrix(), false);
 
-	// ƒGƒtƒFƒNƒg‚Ì•`‰æ‚ğs‚¤B
+	// ã‚¨ãƒ•ã‚§ã‚¯ãƒˆã®æç”»ã‚’è¡Œã†ã€‚
 	Manager->Draw();
 
-	// ƒGƒtƒFƒNƒg‚Ì•`‰æI—¹ˆ—‚ğs‚¤B
+	// ã‚¨ãƒ•ã‚§ã‚¯ãƒˆã®æç”»çµ‚äº†å‡¦ç†ã‚’è¡Œã†ã€‚
 	Renderer->EndRendering();
 }
 
@@ -153,7 +153,7 @@ void EFFEKSEER_MANAGER::Update(float delta_time)
 
 	Set();
 
-	// ƒGƒtƒFƒNƒg‚ÌXVˆ—‚ğs‚¤
+	// ã‚¨ãƒ•ã‚§ã‚¯ãƒˆã®æ›´æ–°å‡¦ç†ã‚’è¡Œã†
 	Manager->Update();
 }
 
@@ -238,7 +238,7 @@ void EFFEKSEER_MANAGER::Set()
 
 			::Effekseer::Matrix44 matrix = XMMATRIXToMatrix44(mtr);
 
-			// “Š‰es—ñ‚ğİ’è
+			// æŠ•å½±è¡Œåˆ—ã‚’è¨­å®š
 			Renderer->SetProjectionMatrix(matrix);
 		}
 
@@ -256,11 +256,11 @@ void EFFEKSEER_MANAGER::Set()
 
 			::Effekseer::Matrix44 matrix = XMMATRIXToMatrix44(mtr);
 
-			// ƒJƒƒ‰s—ñ‚ğİ’è
+			// ã‚«ãƒ¡ãƒ©è¡Œåˆ—ã‚’è¨­å®š
 			Renderer->SetCameraMatrix(matrix);
 		}
 
-		// 3DƒTƒEƒ“ƒh—pƒŠƒXƒi[İ’è‚ÌXV
+		// 3Dã‚µã‚¦ãƒ³ãƒ‰ç”¨ãƒªã‚¹ãƒŠãƒ¼è¨­å®šã®æ›´æ–°
 		Sound->SetListener(position, at, up);
 	}
 }
@@ -278,11 +278,11 @@ void EFFEKSEER_MANAGER::Play(const string& name)
 
 void EFFEKSEER_MANAGER::Play(const string& handle_name, const string& effect_name, const XMFLOAT3& position)
 {
-	// ƒ[ƒh‚µ‚Ä‚¢‚È‚¢ƒGƒtƒFƒNƒg‚Ì”»’è
+	// ãƒ­ãƒ¼ãƒ‰ã—ã¦ã„ãªã„ã‚¨ãƒ•ã‚§ã‚¯ãƒˆã®åˆ¤å®š
 #ifdef _DEBUG
 	if (Effects.find(effect_name) == Effects.end())
 	{
-		string text("‘¶İ‚µ‚È‚¢ƒGƒtƒFƒNƒg‚Å‚·\n");
+		string text("å­˜åœ¨ã—ãªã„ã‚¨ãƒ•ã‚§ã‚¯ãƒˆã§ã™\n");
 		string t(effect_name.c_str());
 		text += t;
 
@@ -301,11 +301,11 @@ void EFFEKSEER_MANAGER::Play(const string& handle_name, const string& effect_nam
 
 void EFFEKSEER_MANAGER::Play(const string& handle_name, const string& effect_name, const Vector3& position)
 {
-	// ƒ[ƒh‚µ‚Ä‚¢‚È‚¢ƒGƒtƒFƒNƒg‚Ì”»’è
+	// ãƒ­ãƒ¼ãƒ‰ã—ã¦ã„ãªã„ã‚¨ãƒ•ã‚§ã‚¯ãƒˆã®åˆ¤å®š
 #ifdef _DEBUG
 	if (Effects.find(effect_name) == Effects.end())
 	{
-		string text("‘¶İ‚µ‚È‚¢ƒGƒtƒFƒNƒg‚Å‚·\n");
+		string text("å­˜åœ¨ã—ãªã„ã‚¨ãƒ•ã‚§ã‚¯ãƒˆã§ã™\n");
 		string t(effect_name.c_str());
 		text += t;
 

@@ -1,4 +1,4 @@
-#include	"Bounding_Frustum.h"
+ï»¿#include	"Bounding_Frustum.h"
 #include	"camera.h"
 #include	"Debug_Camera.h"
 #include	"manager.h"
@@ -28,7 +28,7 @@ void BOUNDING_FRUSTUM::Init()
 	if (nullptr != pIndexBuffer.get())
 		pIndexBuffer.reset(nullptr);
 
-	// ’¸“_ƒoƒbƒtƒ@‚Ìİ’è
+	// é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡ã®è¨­å®š
 	if (nullptr == pVertexBuffer.get())
 	{
 		const char VertexNum = 8;
@@ -54,7 +54,7 @@ void BOUNDING_FRUSTUM::Init()
 			Vertex[i].TexCoord = XMFLOAT2(0.0f, 0.0f);
 		}
 
-		// ’¸“_ƒoƒbƒtƒ@‚Ìİ’è
+		// é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡ã®è¨­å®š
 		{
 			ID3D11Buffer* buffer;
 
@@ -79,7 +79,7 @@ void BOUNDING_FRUSTUM::Init()
 		}
 	}
 
-	// ƒCƒ“ƒfƒbƒNƒXƒoƒbƒtƒ@‚Ìİ’è
+	// ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ãƒãƒƒãƒ•ã‚¡ã®è¨­å®š
 	if (nullptr == pIndexBuffer.get())
 	{
 		ID3D11Buffer* buffer;
@@ -126,19 +126,19 @@ void BOUNDING_FRUSTUM::Draw()
 {
 	if (false == CManager::Get_Instance()->Get_ShadowMap()->Get_Enable())
 	{
-		// “ü—ÍƒAƒZƒ“ƒuƒ‰‚É’¸“_ƒoƒbƒtƒ@‚ğİ’è
+		// å…¥åŠ›ã‚¢ã‚»ãƒ³ãƒ–ãƒ©ã«é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡ã‚’è¨­å®š
 		CRenderer::SetVertexBuffers(pVertexBuffer.get());
 
-		// “ü—ÍƒAƒZƒ“ƒuƒ‰‚ÉƒCƒ“ƒfƒbƒNƒXƒoƒbƒtƒ@‚ğİ’è
+		// å…¥åŠ›ã‚¢ã‚»ãƒ³ãƒ–ãƒ©ã«ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ãƒãƒƒãƒ•ã‚¡ã‚’è¨­å®š
 		CRenderer::SetIndexBuffer(pIndexBuffer.get());
 
-		// ƒgƒ|ƒƒW‚Ìİ’è
+		// ãƒˆãƒãƒ­ã‚¸ã®è¨­å®š
 		CRenderer::GetDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_LINESTRIP);
 
 		CRenderer::Set_Shader(SHADER_INDEX_V::DEFAULT, SHADER_INDEX_P::NO_TEXTURE);
 
 		{
-			// 3Dƒ}ƒgƒŠƒbƒNƒXİ’è
+			// 3Dãƒãƒˆãƒªãƒƒã‚¯ã‚¹è¨­å®š
 			{
 				XMMATRIX world = XMMatrixIdentity();
 
@@ -229,7 +229,7 @@ void BOUNDING_FRUSTUM::Uninit()
 
 void BOUNDING_FRUSTUM::OverWrite()
 {
-	// ’¸“_ƒoƒbƒtƒ@‚Ìİ’è
+	// é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡ã®è¨­å®š
 	{
 		const char VertexNum = 8;
 
@@ -254,7 +254,7 @@ void BOUNDING_FRUSTUM::OverWrite()
 			Vertex[i].TexCoord = XMFLOAT2(0.0f, 0.0f);
 		}
 
-		// ’¸“_ƒoƒbƒtƒ@‚Ìİ’è
+		// é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡ã®è¨­å®š
 		{
 			ID3D11Buffer* buffer;
 
@@ -279,7 +279,7 @@ void BOUNDING_FRUSTUM::OverWrite()
 		}
 	}
 
-	// ƒCƒ“ƒfƒbƒNƒXƒoƒbƒtƒ@‚Ìİ’è
+	// ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ãƒãƒƒãƒ•ã‚¡ã®è¨­å®š
 	{
 		ID3D11Buffer* buffer;
 
@@ -340,7 +340,7 @@ void BOUNDING_FRUSTUM::Aabb_Cale(BOUNDING_AABB& aabb_)
 
 	for (int i = 0; i < points.size(); i++)
 	{
-		// Å‘å’l
+		// æœ€å¤§å€¤
 		if (max.x < points[i].x || 0 == i)
 		{
 			max.x = points[i].x;
@@ -356,7 +356,7 @@ void BOUNDING_FRUSTUM::Aabb_Cale(BOUNDING_AABB& aabb_)
 			max.z = points[i].z;
 		}
 
-		// Å¬’l
+		// æœ€å°å€¤
 		if (points[i].x < min.x || 0 == i)
 		{
 			min.x = points[i].x;

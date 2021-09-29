@@ -1,4 +1,4 @@
-#include "FBXmodel.h"
+ï»¿#include "FBXmodel.h"
 
 #include	"manager.h"
 #include	"Scene.h"
@@ -53,7 +53,7 @@ bool FBXmodel::Load(const string& FileName)
 {
 	HRESULT hr;
 
-	//ƒ‚ƒfƒ‹‚Ì“Ç‚İ‚İ
+	//ãƒ¢ãƒ‡ãƒ«ã®èª­ã¿è¾¼ã¿
 	m_Scene = aiImportFile(FileName.c_str(), aiProcess_Triangulate | aiProcess_LimitBoneWeights | aiProcess_ConvertToLeftHanded | aiProcessPreset_TargetRealtime_MaxQuality);
 	
 	if (nullptr == m_Scene)
@@ -125,7 +125,7 @@ bool FBXmodel::Load(const string& FileName)
 		}
 
 
-		//’¸“_ƒoƒbƒtƒ@¶¬
+		//é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡ç”Ÿæˆ
 		ID3D11Buffer* vertex_Buffer;
 		{
 			D3D11_BUFFER_DESC bd;
@@ -153,7 +153,7 @@ bool FBXmodel::Load(const string& FileName)
 		}
 		
 
-		// ƒCƒ“ƒfƒbƒNƒXƒoƒbƒtƒ@¶¬
+		// ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ãƒãƒƒãƒ•ã‚¡ç”Ÿæˆ
 		UINT index_Num;
 		ID3D11Buffer* index_Beffer;
 		{
@@ -199,7 +199,7 @@ bool FBXmodel::Load(const string& FileName)
 
 		m_Meshes.emplace_back(temp_mesh);
 
-		// ƒeƒNƒXƒ`ƒƒ‚Ìİ’è
+		// ãƒ†ã‚¯ã‚¹ãƒãƒ£ã®è¨­å®š
 		if (mesh->mMaterialIndex >= 0)
 		{
 			aiMaterial* material = m_Scene->mMaterials[mesh->mMaterialIndex];
@@ -221,7 +221,7 @@ bool FBXmodel::Load(const string& FileName)
 		vertex.clear();
 	}
 
-	// ’è”ƒoƒbƒtƒ@ì¬
+	// å®šæ•°ãƒãƒƒãƒ•ã‚¡ä½œæˆ
 	{
 		ID3D11Buffer* buffer = nullptr;
 
@@ -383,12 +383,12 @@ void FBXmodel::DrawMesh(const aiNode* Node, const XMMATRIX& Matrix)
 	{
 		UINT m = Node->mMeshes[n];
 
-		// 3Dƒ}ƒgƒŠƒbƒNƒXİ’è
+		// 3Dãƒãƒˆãƒªãƒƒã‚¯ã‚¹è¨­å®š
 		{
-			// •’Ê‚ÌƒJƒƒ‰‚©ƒfƒoƒbƒOƒJƒƒ‰‚©?
+			// æ™®é€šã®ã‚«ãƒ¡ãƒ©ã‹ãƒ‡ãƒãƒƒã‚°ã‚«ãƒ¡ãƒ©ã‹?
 			if (!camera01.expired() /*&& Empty_weak_ptr<CCamera>(camera01)*/)
 			{
-				// ƒVƒƒƒhƒEƒ}ƒbƒv—p‚Ì•`‰æ‚©?
+				// ã‚·ãƒ£ãƒ‰ã‚¦ãƒãƒƒãƒ—ç”¨ã®æç”»ã‹?
 				if (CManager::Get_Instance()->Get_ShadowMap()->Get_Enable())
 				{
 					CRenderer::Set_MatrixBuffer(world, view, proj);
@@ -406,7 +406,7 @@ void FBXmodel::DrawMesh(const aiNode* Node, const XMMATRIX& Matrix)
 			}
 			else
 			{
-				// ƒVƒƒƒhƒEƒ}ƒbƒv—p‚Ì•`‰æ‚©?
+				// ã‚·ãƒ£ãƒ‰ã‚¦ãƒãƒƒãƒ—ç”¨ã®æç”»ã‹?
 				if (CManager::Get_Instance()->Get_ShadowMap()->Get_Enable())
 				{
 					CRenderer::Set_MatrixBuffer(world, view, proj);
@@ -425,12 +425,12 @@ void FBXmodel::DrawMesh(const aiNode* Node, const XMMATRIX& Matrix)
 			}
 		}
 
-		// ƒeƒNƒXƒ`ƒƒ‚Ìİ’è
+		// ãƒ†ã‚¯ã‚¹ãƒãƒ£ã®è¨­å®š
 		{
 			CRenderer::GetDeviceContext()->PSSetShaderResources(0, 1, &Textures[0].Texture);
 		}
 
-		// ’¸“_ƒoƒbƒtƒ@‚Ìİ’è
+		// é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡ã®è¨­å®š
 		{
 			const UINT stride = sizeof(ANIME_VERTEX);
 			const UINT offset = 0;
@@ -438,7 +438,7 @@ void FBXmodel::DrawMesh(const aiNode* Node, const XMMATRIX& Matrix)
 			CRenderer::GetDeviceContext()->IASetVertexBuffers(0, 1, vb, &stride, &offset);
 		}
 
-		// ƒCƒ“ƒfƒbƒNƒXƒoƒbƒtƒ@‚Ìİ’è
+		// ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ãƒãƒƒãƒ•ã‚¡ã®è¨­å®š
 		{
 			CRenderer::SetIndexBuffer(m_Meshes[m].IndexBuffer);
 		}
@@ -469,9 +469,9 @@ void FBXmodel::DrawMesh_DPP(const aiNode* Node, const XMMATRIX& Matrix)
 	{
 		UINT m = Node->mMeshes[n];
 
-		// 3Dƒ}ƒgƒŠƒbƒNƒXİ’è
+		// 3Dãƒãƒˆãƒªãƒƒã‚¯ã‚¹è¨­å®š
 		{
-			// •’Ê‚ÌƒJƒƒ‰‚©ƒfƒoƒbƒOƒJƒƒ‰‚©?
+			// æ™®é€šã®ã‚«ãƒ¡ãƒ©ã‹ãƒ‡ãƒãƒƒã‚°ã‚«ãƒ¡ãƒ©ã‹?
 			if (!camera01.expired() && Empty_weak_ptr<CCamera>(camera01))
 			{
 				CRenderer::Set_MatrixBuffer(world, camera01.lock()->Get_Camera_View(), camera01.lock()->Get_Camera_Projection());
@@ -482,7 +482,7 @@ void FBXmodel::DrawMesh_DPP(const aiNode* Node, const XMMATRIX& Matrix)
 			}
 		}
 
-		// ’¸“_ƒoƒbƒtƒ@‚Ìİ’è
+		// é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡ã®è¨­å®š
 		{
 			const UINT stride = sizeof(ANIME_VERTEX);
 			const UINT offset = 0;
@@ -490,7 +490,7 @@ void FBXmodel::DrawMesh_DPP(const aiNode* Node, const XMMATRIX& Matrix)
 			CRenderer::GetDeviceContext()->IASetVertexBuffers(0, 1, vb, &stride, &offset);
 		}
 
-		// ƒCƒ“ƒfƒbƒNƒXƒoƒbƒtƒ@‚Ìİ’è
+		// ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ãƒãƒƒãƒ•ã‚¡ã®è¨­å®š
 		{
 			CRenderer::SetIndexBuffer(m_Meshes[m].IndexBuffer);
 		}

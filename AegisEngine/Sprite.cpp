@@ -1,4 +1,4 @@
-#include	"Game_Object.h"
+ï»¿#include	"Game_Object.h"
 #include	"Sprite.h"
 #include	"manager.h"
 #include	"ShadowMap.h"
@@ -6,7 +6,7 @@
 
 using namespace Aegis;
 
-unique_ptr<ID3D11Buffer, Release> SPRITE::pIndexBuffer;		// ƒCƒ“ƒfƒbƒNƒXƒoƒbƒtƒ@
+unique_ptr<ID3D11Buffer, Release> SPRITE::pIndexBuffer;		// ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ãƒãƒƒãƒ•ã‚¡
 
 SPRITE::SPRITE()
 {
@@ -22,7 +22,7 @@ SPRITE::SPRITE()
 
 	Enable = true;
 
-	// ƒeƒNƒXƒ`ƒƒ‚Ìİ’è
+	// ãƒ†ã‚¯ã‚¹ãƒãƒ£ã®è¨­å®š
 	Texture.reset(new TEXTURE(string("number.png")));
 }
 
@@ -40,7 +40,7 @@ SPRITE::SPRITE(XMFLOAT2 position, XMFLOAT4 size)
 
 	Enable = true;
 
-	// ƒeƒNƒXƒ`ƒƒ‚Ìİ’è
+	// ãƒ†ã‚¯ã‚¹ãƒãƒ£ã®è¨­å®š
 	Texture.reset(new TEXTURE(string("number.png")));
 }
 
@@ -51,7 +51,7 @@ SPRITE::~SPRITE()
 
 void SPRITE::Init(void)
 {
-	// ’¸“_ƒoƒbƒtƒ@‚Ìİ’è
+	// é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡ã®è¨­å®š
 	if (nullptr == pVertexBuffer.get())
 	{
 		HRESULT hr;
@@ -67,7 +67,7 @@ void SPRITE::Init(void)
 		bd.MiscFlags = 0;
 		bd.StructureByteStride = 0;
 
-		// ƒTƒuƒŠƒ\[ƒX‚Ìİ’è
+		// ã‚µãƒ–ãƒªã‚½ãƒ¼ã‚¹ã®è¨­å®š
 		D3D11_SUBRESOURCE_DATA srd;
 		ZeroMemory(&srd, sizeof(D3D11_SUBRESOURCE_DATA));
 
@@ -75,7 +75,7 @@ void SPRITE::Init(void)
 		srd.SysMemPitch = 0;
 		srd.SysMemSlicePitch = 0;
 
-		// ’¸“_ƒoƒbƒtƒ@‚Ì¶¬
+		// é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡ã®ç”Ÿæˆ
 		hr = CRenderer::GetDevice()->CreateBuffer(&bd, &srd, &pVB);
 
 		if (FAILED(hr))
@@ -86,7 +86,7 @@ void SPRITE::Init(void)
 		pVertexBuffer.reset(pVB);
 	}
 
-	// ƒCƒ“ƒfƒbƒNƒXƒoƒbƒtƒ@‚Ìİ’è
+	// ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ãƒãƒƒãƒ•ã‚¡ã®è¨­å®š
 	if (nullptr == pIndexBuffer.get())
 	{
 		HRESULT hr;
@@ -151,7 +151,7 @@ void SPRITE::Draw(void)
 			Vertex[3].Diffuse = XMFLOAT4(Color.r, Color.g, Color.b, Color.a);
 			Vertex[3].TexCoord = XMFLOAT2(1.0f, 1.0f);
 
-			// ’¸“_ƒoƒbƒtƒ@‚Ì‘‚«Š·‚¦
+			// é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡ã®æ›¸ãæ›ãˆ
 			{
 				D3D11_MAPPED_SUBRESOURCE msr;
 				CRenderer::GetDeviceContext()->Map(pVertexBuffer.get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &msr);
@@ -159,15 +159,15 @@ void SPRITE::Draw(void)
 				CRenderer::GetDeviceContext()->Unmap(pVertexBuffer.get(), 0);
 			}
 
-			// “ü—ÍƒAƒZƒ“ƒuƒ‰‚É’¸“_ƒoƒbƒtƒ@‚ğİ’è
+			// å…¥åŠ›ã‚¢ã‚»ãƒ³ãƒ–ãƒ©ã«é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡ã‚’è¨­å®š
 			CRenderer::SetVertexBuffers(pVertexBuffer.get());
 
-			// “ü—ÍƒAƒZƒ“ƒuƒ‰‚ÉƒCƒ“ƒfƒbƒNƒXƒoƒbƒtƒ@‚ğİ’è
+			// å…¥åŠ›ã‚¢ã‚»ãƒ³ãƒ–ãƒ©ã«ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ãƒãƒƒãƒ•ã‚¡ã‚’è¨­å®š
 			CRenderer::SetIndexBuffer(pIndexBuffer.get());
 
 			if (nullptr == ShaderResourceView)
 			{
-				// ƒeƒNƒXƒ`ƒƒ‚Ìİ’è
+				// ãƒ†ã‚¯ã‚¹ãƒãƒ£ã®è¨­å®š
 				Texture->Set_Texture();
 			}
 			else
@@ -175,7 +175,7 @@ void SPRITE::Draw(void)
 				CRenderer::GetDeviceContext()->PSSetShaderResources(0, 1, &ShaderResourceView);
 			}
 
-			// 2Dƒ}ƒgƒŠƒbƒNƒXİ’è
+			// 2Dãƒãƒˆãƒªãƒƒã‚¯ã‚¹è¨­å®š
 			CRenderer::SetWorldViewProjection2D(Scaling);
 
 			if (flag)
@@ -220,7 +220,7 @@ void SPRITE::Draw_DPP()
 		Vertex[3].Diffuse = XMFLOAT4(Color.r, Color.g, Color.b, Color.a);
 		Vertex[3].TexCoord = XMFLOAT2(1.0f, 1.0f);
 
-		// ’¸“_ƒoƒbƒtƒ@‚Ì‘‚«Š·‚¦
+		// é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡ã®æ›¸ãæ›ãˆ
 		{
 			D3D11_MAPPED_SUBRESOURCE msr;
 			CRenderer::GetDeviceContext()->Map(pVertexBuffer.get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &msr);
@@ -228,14 +228,14 @@ void SPRITE::Draw_DPP()
 			CRenderer::GetDeviceContext()->Unmap(pVertexBuffer.get(), 0);
 		}
 
-		// “ü—ÍƒAƒZƒ“ƒuƒ‰‚É’¸“_ƒoƒbƒtƒ@‚ğİ’è
+		// å…¥åŠ›ã‚¢ã‚»ãƒ³ãƒ–ãƒ©ã«é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡ã‚’è¨­å®š
 		CRenderer::SetVertexBuffers(pVertexBuffer.get());
 
-		// “ü—ÍƒAƒZƒ“ƒuƒ‰‚ÉƒCƒ“ƒfƒbƒNƒXƒoƒbƒtƒ@‚ğİ’è
+		// å…¥åŠ›ã‚¢ã‚»ãƒ³ãƒ–ãƒ©ã«ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ãƒãƒƒãƒ•ã‚¡ã‚’è¨­å®š
 		CRenderer::SetIndexBuffer(pIndexBuffer.get());
 
 
-		// 2Dƒ}ƒgƒŠƒbƒNƒXİ’è
+		// 2Dãƒãƒˆãƒªãƒƒã‚¯ã‚¹è¨­å®š
 		CRenderer::SetWorldViewProjection2D(Scaling);
 
 		CRenderer::DrawIndexed(6, 0, 0);

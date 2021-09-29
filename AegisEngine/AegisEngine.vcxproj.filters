@@ -588,12 +588,6 @@
     <FxCompile Include="ParallelReduction.hlsl">
       <Filter>リソース ファイル\NewFilter1</Filter>
     </FxCompile>
-    <FxCompile Include="TilingCommonHeader.h">
-      <Filter>リソース ファイル\NewFilter1</Filter>
-    </FxCompile>
-    <FxCompile Include="TilingForward.hlsl">
-      <Filter>リソース ファイル\NewFilter1</Filter>
-    </FxCompile>
     <FxCompile Include="VertexShader_Animation_Depth_Pre_Pass.hlsl">
       <Filter>リソース ファイル\NewFilter1</Filter>
     </FxCompile>

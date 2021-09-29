@@ -1,6 +1,6 @@
-/**
+ï»¿/**
  * @file Bounding.h
- * @brief ƒoƒEƒ“ƒfƒBƒ“ƒOŠÖŒW‚Ìƒwƒbƒ_[ƒtƒ@ƒCƒ‹
+ * @brief ãƒã‚¦ãƒ³ãƒ‡ã‚£ãƒ³ã‚°é–¢ä¿‚ã®ãƒ˜ãƒƒãƒ€ãƒ¼ãƒ•ã‚¡ã‚¤ãƒ«
  */
 
 #pragma once
@@ -12,98 +12,98 @@
 #include	"Component.h"
 
  /**
- * @brief ƒoƒEƒ“ƒfƒBƒ“ƒOƒNƒ‰ƒX
- * @details ‘SƒoƒEƒ“ƒfƒBƒ“ƒO‚ÌŠî’êƒNƒ‰ƒX
+ * @brief ãƒã‚¦ãƒ³ãƒ‡ã‚£ãƒ³ã‚°ã‚¯ãƒ©ã‚¹
+ * @details å…¨ãƒã‚¦ãƒ³ãƒ‡ã‚£ãƒ³ã‚°ã®åŸºåº•ã‚¯ãƒ©ã‚¹
  */
 class BOUNDING : public COMPONENT {
 private:
 protected:
-	//! BOX‚ÌƒCƒ“ƒfƒbƒNƒXƒoƒbƒtƒ@
+	//! BOXã®ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ãƒãƒƒãƒ•ã‚¡
 	static unique_ptr<ID3D11Buffer, Release> pIndexBuffer_BOX;
-	//! BOX‚ÌƒCƒ“ƒfƒbƒNƒX”
+	//! BOXã®ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹æ•°
 	static const char IndexNum_Box;
-	//! ƒfƒtƒHƒ‹ƒg‚ÌƒJƒ‰[
+	//! ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆã®ã‚«ãƒ©ãƒ¼
 	static Aegis::COLOR Default_Color;
-	//! ŠeƒoƒEƒ“ƒfƒBƒ“ƒO‚ÌƒJƒ‰[
+	//! å„ãƒã‚¦ãƒ³ãƒ‡ã‚£ãƒ³ã‚°ã®ã‚«ãƒ©ãƒ¼
 	Aegis::COLOR Color;
 
 public:
 	/**
-	* @brief ƒRƒ“ƒXƒgƒ‰ƒNƒ^
-	* @details ˆø”–³‚µƒRƒ“ƒXƒgƒ‰ƒNƒ^
+	* @brief ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
+	* @details å¼•æ•°ç„¡ã—ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
 	*/
 	BOUNDING() : Color(Default_Color) {}
 
 	/**
-	* @brief ƒfƒXƒgƒ‰ƒNƒ^
-	* @details ƒfƒXƒgƒ‰ƒNƒ^
+	* @brief ãƒ‡ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
+	* @details ãƒ‡ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
 	*/
 	virtual ~BOUNDING() {}
 
 	/**
-	* @brief ‰Šú‰»ŠÖ”
-	* @details ‰Šú‰»‚·‚éŠÖ”
+	* @brief åˆæœŸåŒ–é–¢æ•°
+	* @details åˆæœŸåŒ–ã™ã‚‹é–¢æ•°
 	*/
 	void Init() override {}
 
 	/**
-	* @brief •`‰æŠÖ”
-	* @details •`‰æ‚·‚éŠÖ”
+	* @brief æç”»é–¢æ•°
+	* @details æç”»ã™ã‚‹é–¢æ•°
 	*/
 	void Draw() override {}
 
 	/**
-	* @brief •`‰æ(Depth-pre-pass)ŠÖ”
-	* @details Depth-pre-pass‚ğ‚·‚éŠÖ”
+	* @brief æç”»(Depth-pre-pass)é–¢æ•°
+	* @details Depth-pre-passã‚’ã™ã‚‹é–¢æ•°
 	*/
 	void Draw_DPP() override {}
 
 	/**
-	* @brief XVŠÖ”
-	* @details XV‚·‚éŠÖ”
+	* @brief æ›´æ–°é–¢æ•°
+	* @details æ›´æ–°ã™ã‚‹é–¢æ•°
 	*/
 	void Update(float delta_time) override {}
 
 	/**
-	* @brief I—¹ˆ—ŠÖ”
-	* @details I—¹ˆ—‚ğ‚·‚éŠÖ”
+	* @brief çµ‚äº†å‡¦ç†é–¢æ•°
+	* @details çµ‚äº†å‡¦ç†ã‚’ã™ã‚‹é–¢æ•°
 	*/
 	void Uninit() override {}
 
 	/**
-	* @brief ƒCƒ“ƒXƒyƒNƒ^[‚Å‚Ì•`‰æŠÖ”
-	* @details ƒCƒ“ƒXƒyƒNƒ^[‚Å‚Ì•`‰æ‚ğ‚·‚éŠÖ”
+	* @brief ã‚¤ãƒ³ã‚¹ãƒšã‚¯ã‚¿ãƒ¼ã§ã®æç”»é–¢æ•°
+	* @details ã‚¤ãƒ³ã‚¹ãƒšã‚¯ã‚¿ãƒ¼ã§ã®æç”»ã‚’ã™ã‚‹é–¢æ•°
 	*/
 	void Draw_Inspector() override {};
 
 	/**
-	* @brief ’¸“_ƒoƒbƒtƒ@‚ÌXVŠÖ”
-	* @details ’¸“_ƒoƒbƒtƒ@‚ÌXV‚ğ‚·‚éŠÖ”
+	* @brief é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡ã®æ›´æ–°é–¢æ•°
+	* @details é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡ã®æ›´æ–°ã‚’ã™ã‚‹é–¢æ•°
 	*/
 	virtual void OverWrite() = 0;
 
 	/**
-	* @brief ƒfƒtƒHƒ‹ƒgƒJƒ‰[‚ğİ’è‚·‚éŠÖ”
-	* @param COLOR ƒJƒ‰[
-	* @details ƒfƒtƒHƒ‹ƒgƒJƒ‰[‚ğİ’è‚·‚éŠÖ”
+	* @brief ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆã‚«ãƒ©ãƒ¼ã‚’è¨­å®šã™ã‚‹é–¢æ•°
+	* @param COLOR ã‚«ãƒ©ãƒ¼
+	* @details ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆã‚«ãƒ©ãƒ¼ã‚’è¨­å®šã™ã‚‹é–¢æ•°
 	*/
 	static void Set_Default_Color(const Aegis::COLOR& color) {
 		Default_Color = color;
 	}
 
 	/**
-	* @brief ƒfƒtƒHƒ‹ƒgƒJƒ‰[‚ğæ“¾‚·‚éŠÖ”
-	* @return COLOR ƒfƒtƒHƒ‹ƒgƒJƒ‰[
-	* @details ƒfƒtƒHƒ‹ƒgƒJƒ‰[‚ğæ“¾‚·‚éŠÖ”
+	* @brief ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆã‚«ãƒ©ãƒ¼ã‚’å–å¾—ã™ã‚‹é–¢æ•°
+	* @return COLOR ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆã‚«ãƒ©ãƒ¼
+	* @details ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆã‚«ãƒ©ãƒ¼ã‚’å–å¾—ã™ã‚‹é–¢æ•°
 	*/
 	static Aegis::COLOR Get_Default_Color() {
 		return Default_Color;
 	}
 
 	/**
-	* @brief ƒJƒ‰[‚ğİ’è‚·‚éŠÖ”
-	* @return COLOR ƒJƒ‰[
-	* @details ŒÂ•Ê‚ÌF‚ğİ’è‚·‚éŠÖ”
+	* @brief ã‚«ãƒ©ãƒ¼ã‚’è¨­å®šã™ã‚‹é–¢æ•°
+	* @return COLOR ã‚«ãƒ©ãƒ¼
+	* @details å€‹åˆ¥ã®è‰²ã‚’è¨­å®šã™ã‚‹é–¢æ•°
 	*/
 	void Set_Color(const Aegis::COLOR& color) {
 		Color = color;

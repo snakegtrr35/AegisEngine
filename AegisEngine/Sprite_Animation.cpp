@@ -1,4 +1,4 @@
-#include	"Game_Object.h"
+﻿#include	"Game_Object.h"
 #include	"Sprite_Animation.h"
 #include	"manager.h"
 #include	"ShadowMap.h"
@@ -95,7 +95,7 @@ void SPRITE_ANIMATION::Draw2(float tx, float ty)
 
 	XMINT2* wh = Texture->Get_WH();
 
-	// UV���W�v�Z
+	// UV座標計算
 	float u[2], v[2];
 	u[0] = (float)(Tx / wh->x);
 	v[0] = (float)(Ty / wh->y);
@@ -122,24 +122,24 @@ void SPRITE_ANIMATION::Draw2(float tx, float ty)
 	Vertex[3].Diffuse = XMFLOAT4(Color.r, Color.g, Color.b, Color.a);
 	Vertex[3].TexCoord = XMFLOAT2(u[1], v[1]);
 
-	// ���_�o�b�t�@�̏�������
+	// 頂点バッファの書き換え
 	{
 		D3D11_MAPPED_SUBRESOURCE msr;
 		CRenderer::GetDeviceContext()->Map(pVertexBuffer.get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &msr);
-		memcpy(msr.pData, Vertex, sizeof(VERTEX_3D) * 4); // 4���_���R�s�[
+		memcpy(msr.pData, Vertex, sizeof(VERTEX_3D) * 4); // 4頂点分コピー
 		CRenderer::GetDeviceContext()->Unmap(pVertexBuffer.get(), 0);
 	}
 
-	// ���̓A�Z���u���ɒ��_�o�b�t�@��ݒ�
+	// 入力アセンブラに頂点バッファを設定
 	CRenderer::SetVertexBuffers(pVertexBuffer.get());
 
-	// ���̓A�Z���u���ɃC���f�b�N�X�o�b�t�@��ݒ�
+	// 入力アセンブラにインデックスバッファを設定
 	CRenderer::SetIndexBuffer(pIndexBuffer.get());
 
-	// �e�N�X�`���̐ݒ�
+	// テクスチャの設定
 	Texture->Set_Texture();
 
-	// 2D�}�g���b�N�X�ݒ�
+	// 2Dマトリックス設定
 	CRenderer::SetWorldViewProjection2D(Scaling);
 
 	CRenderer::Set_Shader(SHADER_INDEX_V::DEFAULT, SHADER_INDEX_P::NO_LIGHT);
@@ -172,7 +172,7 @@ void SPRITE_ANIMATION::Draw_DPP2(float tx, float ty)
 
 	XMINT2* wh = Texture->Get_WH();
 
-	// UV���W�v�Z
+	// UV座標計算
 	float u[2], v[2];
 	u[0] = (float)(Tx / wh->x);
 	v[0] = (float)(Ty / wh->y);
@@ -199,21 +199,21 @@ void SPRITE_ANIMATION::Draw_DPP2(float tx, float ty)
 	Vertex[3].Diffuse = XMFLOAT4(Color.r, Color.g, Color.b, Color.a);
 	Vertex[3].TexCoord = XMFLOAT2(u[1], v[0]);
 
-	// ���_�o�b�t�@�̏�������
+	// 頂点バッファの書き換え
 	{
 		D3D11_MAPPED_SUBRESOURCE msr;
 		CRenderer::GetDeviceContext()->Map(pVertexBuffer.get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &msr);
-		memcpy(msr.pData, Vertex, sizeof(VERTEX_3D) * 4); // 4���_���R�s�[
+		memcpy(msr.pData, Vertex, sizeof(VERTEX_3D) * 4); // 4頂点分コピー
 		CRenderer::GetDeviceContext()->Unmap(pVertexBuffer.get(), 0);
 	}
 
-	// ���̓A�Z���u���ɒ��_�o�b�t�@��ݒ�
+	// 入力アセンブラに頂点バッファを設定
 	CRenderer::SetVertexBuffers(pVertexBuffer.get());
 
-	// ���̓A�Z���u���ɃC���f�b�N�X�o�b�t�@��ݒ�
+	// 入力アセンブラにインデックスバッファを設定
 	CRenderer::SetIndexBuffer(pIndexBuffer.get());
 
-	// 2D�}�g���b�N�X�ݒ�
+	// 2Dマトリックス設定
 	CRenderer::SetWorldViewProjection2D(Scaling);
 
 	CRenderer::DrawIndexed(6, 0, 0);
@@ -242,11 +242,11 @@ void SPRITE_ANIMATION::Uninit(void)
 {
 }
 
-// �e�N�X�`���A�j���[�V�����̃p�����[�^�[�̐ݒ�
+// テクスチャアニメーションのパラメーターの設定
 //
-// ����:wait_frame ... �҂��t���[��
-//      tw ... �e�N�X�`���؂��萔�ix�j
-//      th ... �e�N�X�`���؂��萔�iy�j
+// 引数:wait_frame ... 待ちフレーム
+//      tw ... テクスチャ切り取り数（x）
+//      th ... テクスチャ切り取り数（y）
 void SPRITE_ANIMATION::SetParam(const float& wait_frame, const unsigned char& x, const unsigned char& y)
 {
 	WaitFrame = wait_frame;
@@ -259,10 +259,10 @@ void SPRITE_ANIMATION::SetParam(const float& wait_frame, const unsigned char& x,
 	Th = (float)(wh->y / Pattern_Max_Y);
 }
 
-// �e�N�X�`���A�j���[�V�����̃e�N�X�`���؂�����W�̐ݒ�
+// テクスチャアニメーションのテクスチャ切り取り座標の設定
 //
-// ����:tx_param ... �e�N�X�`���؂��蕝�i�蓮�j
-//      ty_param ... �e�N�X�`���؂��荂���i�蓮�j
+// 引数:tx_param ... テクスチャ切り取り幅（手動）
+//      ty_param ... テクスチャ切り取り高さ（手動）
 void SPRITE_ANIMATION::Set_Param_Txy(const float& tx_param, const float& ty_param)
 {
 	Tx_Param = tx_param;

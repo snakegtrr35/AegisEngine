@@ -1,4 +1,4 @@
-#include	"Game_Object.h"
+ï»¿#include	"Game_Object.h"
 #include	"Skybox.h"
 
 #include	"camera.h"
@@ -29,7 +29,7 @@ SKYBOX::~SKYBOX(){ Uninit(); }
 
 void SKYBOX::Init()
 {
-	// ’¸“_ƒoƒbƒtƒ@‚Ìì¬
+	// é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡ã®ä½œæˆ
 	if(nullptr == VertexBuffer.get())
 	{
 		vector<VERTEX_3D> vertex_array;
@@ -39,31 +39,31 @@ void SKYBOX::Init()
 			vertex.Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
 		}
 
-		// ‰Eã‰œ
+		// å³ä¸Šå¥¥
 		vertex_array[0].Position = XMFLOAT3(-1.0f, 1.0f, 1.0f);
 
-		// ¶ã‰œ
+		// å·¦ä¸Šå¥¥
 		vertex_array[1].Position = XMFLOAT3(1.0f, 1.0f, 1.0f);
 
-		// ‰E‰º‰œ
+		// å³ä¸‹å¥¥
 		vertex_array[2].Position = XMFLOAT3(-1.0f, -1.0f, 1.0f);
 
-		// ¶‰º‰œ
+		// å·¦ä¸‹å¥¥
 		vertex_array[3].Position = XMFLOAT3(1.0f, -1.0f, 1.0f);
 
-		// ‰Eã‘O
+		// å³ä¸Šå‰
 		vertex_array[4].Position = XMFLOAT3(-1.0f, 1.0f, -1.0f);
 
-		// ¶ã‘O
+		// å·¦ä¸Šå‰
 		vertex_array[5].Position = XMFLOAT3(1.0f, 1.0f, -1.0f);
 
-		// ‰E‰º‘O
+		// å³ä¸‹å‰
 		vertex_array[6].Position = XMFLOAT3(-1.0f, -1.0f, -1.0f);
 
-		// ¶‰º‘O
+		// å·¦ä¸‹å‰
 		vertex_array[7].Position = XMFLOAT3(1.0f, -1.0f, -1.0f);
 
-		// ’¸“_ƒoƒbƒtƒ@‚Ì¶¬
+		// é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡ã®ç”Ÿæˆ
 		{
 			ID3D11Buffer* buffer = nullptr;
 
@@ -84,7 +84,7 @@ void SKYBOX::Init()
 		}
 	}
 
-	// ƒCƒ“ƒfƒbƒNƒXƒoƒbƒtƒ@‚Ìì¬
+	// ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ãƒãƒƒãƒ•ã‚¡ã®ä½œæˆ
 	if (nullptr == IndexBuffer.get())
 	{
 		const vector<WORD> index_array = {	// Front Face
@@ -106,7 +106,7 @@ void SKYBOX::Init()
 											1, 5, 3,
 											5, 7, 3 };
 
-		// ƒCƒ“ƒfƒbƒNƒXƒoƒbƒtƒ@‚Ì¶¬
+		// ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ãƒãƒƒãƒ•ã‚¡ã®ç”Ÿæˆ
 		{
 			ID3D11Buffer* buffer = nullptr;
 
@@ -139,7 +139,7 @@ void SKYBOX::Draw()
 {
 	if (CManager::Get_Instance()->Get_ShadowMap()->Get_Enable()) return;
 
-	// 3Dƒ}ƒgƒŠƒbƒNƒXİ’è
+	// 3Dãƒãƒˆãƒªãƒƒã‚¯ã‚¹è¨­å®š
 	{
 		XMMATRIX world = XMMatrixScaling(Scaling.x, Scaling.y, Scaling.z);
 		world *= XMMatrixRotationRollPitchYaw(XMConvertToRadians(Rotation.x), XMConvertToRadians(Rotation.y), XMConvertToRadians(Rotation.z));
@@ -162,16 +162,16 @@ void SKYBOX::Draw()
 		}
 	}
 
-	// ’¸“_ƒoƒbƒtƒ@İ’è
+	// é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡è¨­å®š
 	CRenderer::SetVertexBuffers(VertexBuffer.get());
 
-	// ƒCƒ“ƒfƒbƒNƒXƒoƒbƒtƒ@İ’è
+	// ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ãƒãƒƒãƒ•ã‚¡è¨­å®š
 	CRenderer::SetIndexBuffer(IndexBuffer.get());
 
-	// ƒeƒNƒXƒ`ƒƒ‚Ìİ’è
+	// ãƒ†ã‚¯ã‚¹ãƒãƒ£ã®è¨­å®š
 	CRenderer::GetDeviceContext()->PSSetShaderResources(0, 1, &Srv);
 
-	// ƒgƒ|ƒƒWİ’è
+	// ãƒˆãƒãƒ­ã‚¸è¨­å®š
 	CRenderer::GetDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 	CRenderer::Set_Shader(SHADER_INDEX_V::SKYBOX, SHADER_INDEX_P::SKYBOX);

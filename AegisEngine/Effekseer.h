@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #ifndef EFFEKSEER_H
 #define EFFEKSEER_H
