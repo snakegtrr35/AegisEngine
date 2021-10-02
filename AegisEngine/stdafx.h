@@ -78,7 +78,6 @@ using namespace DirectX;
 #include	<string>
 #include	<variant>
 #include	<functional>
-#include	<random>
 #include	<fstream>
 #include	<algorithm>
 #include	<functional>
@@ -89,7 +88,8 @@ using namespace DirectX;
 #include	<thread>
 #include	<mutex>
 
-#include	<time.h>
+#include	<cstdint>
+#include	<ctime>
 
 #endif // !INCLUDE
 

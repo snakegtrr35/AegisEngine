@@ -60,6 +60,8 @@
     <ClCompile Include="imgui\imgui_stdlib.cpp" />
     <ClCompile Include="imgui\imgui_widgets.cpp" />
     <ClCompile Include="include\engine\core\math\Math.cpp" />
+    <ClCompile Include="include\engine\core\random\Random.cpp" />
+    <ClCompile Include="include\engine\core\uuid\uuid.cpp" />
     <ClCompile Include="Input.cpp" />
     <ClCompile Include="Keyboard.cpp" />
     <ClCompile Include="Light.cpp" />
@@ -137,6 +139,7 @@
     <ClInclude Include="Enemy.h" />
     <ClInclude Include="external\DirectXTex\DDSTextureLoader.h" />
     <ClInclude Include="external\DirectXTex\WICTextureLoader.h" />
+    <ClInclude Include="external\stduuid-1.0\include\uuid.h" />
     <ClInclude Include="Fade.h" />
     <ClInclude Include="FBXmodel.h" />
     <ClInclude Include="Field.h" />
@@ -167,6 +170,10 @@
     <ClInclude Include="include\engine\core\math\Quaternion.h" />
     <ClInclude Include="include\engine\core\math\Vector2.h" />
     <ClInclude Include="include\engine\core\math\Vector3.h" />
+    <ClInclude Include="include\engine\core\random\Random.h" />
+    <ClInclude Include="include\engine\core\random\Xorshift.h" />
+    <ClInclude Include="include\engine\core\uuid\uuid.h" />
+    <ClInclude Include="include\engine\core\uuid\uuid_utility.h" />
     <ClInclude Include="Input.h" />
     <ClInclude Include="Keyboard.h" />
     <ClInclude Include="Light.h" />
@@ -387,7 +394,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>.\external\ogg\vorbis\include;.\external\ogg\opus\include;.\external\Effekseer\include;.\external\cereal;.\external\assimp_vs2017_x64\include;$(IncludePath)</IncludePath>
+    <IncludePath>.\external\stduuid-1.0\include;.\external\ogg\vorbis\include;.\external\ogg\opus\include;.\external\Effekseer\include;.\external\cereal;.\external\assimp_vs2017_x64\include;$(IncludePath)</IncludePath>
     <LibraryPath>.\external\ogg\vorbis\lib;.\external\ogg\opus\lib;.\external\zlib;.\external\assimp_vs2017_x64\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -395,7 +402,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>.\external\ogg\vorbis\include;.\external\ogg\opus\include;.\external\Effekseer\include;.\external\cereal;.\external\assimp_vs2017_x64\include;$(IncludePath)</IncludePath>
+    <IncludePath>.\external\stduuid-1.0\include;.\external\ogg\vorbis\include;.\external\ogg\opus\include;.\external\Effekseer\include;.\external\cereal;.\external\assimp_vs2017_x64\include;$(IncludePath)</IncludePath>
     <LibraryPath>.\external\ogg\vorbis\lib;.\external\ogg\opus\lib;.\external\zlib;.\external\assimp_vs2017_x64\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -421,7 +428,7 @@
       <PreprocessorDefinitions>_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
-      <ForcedIncludeFiles>stdafx.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <ForcedIncludeFiles>stdafx.h;Math.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
       <DisableSpecificWarnings>4227;%(DisableSpecificWarnings)</DisableSpecificWarnings>
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>

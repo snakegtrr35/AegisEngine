@@ -13,7 +13,7 @@ namespace Aegis
 		static constexpr float NaN = std::numeric_limits<float>::quiet_NaN();
 		static constexpr float Inf = std::numeric_limits<float>::infinity();
 		static constexpr float Epsilon = std::numeric_limits<float>::epsilon();
-		static constexpr float PI = 3.141592654f;
+		static constexpr float PI = 3.1415926535897931f;
 		static constexpr float PI2 = PI * 2.0f;
 		static constexpr float INV_PI = 1.0f / PI;
 		static constexpr float PIDIV2 = PI * 0.5f;

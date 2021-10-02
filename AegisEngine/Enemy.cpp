@@ -15,6 +15,7 @@
 
 #include	"audio_clip.h"
 #include	"Math.h"
+#include	"include/engine/core/random/Random.h"
 
 static void Create_Bullet(XMFLOAT3& position, const XMFLOAT3& front);
 
@@ -148,7 +149,7 @@ void ENEMY::Update(float delta_time)
 	if (0.5f <= Time)
 	{
 		// 弾を撃つ
-		if (Aegis::Math::Random_Bool(0.01))
+		if(Aegis::Random::GetRandomfloat() <= 0.01f)
 		{
 			XMVECTOR vector = XMLoadFloat3(&vec);
 			vector = XMVector3Normalize(vector);

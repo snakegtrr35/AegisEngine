@@ -90,6 +90,15 @@
     <Filter Include="include\engine\core\math">
       <UniqueIdentifier>{b7b3beb5-0c00-4d6e-a18c-0b5dca4f5b03}</UniqueIdentifier>
     </Filter>
+    <Filter Include="include\engine\core\random">
+      <UniqueIdentifier>{10633f62-881e-4903-a8a8-ef0f6ed13e91}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="external\stduuid">
+      <UniqueIdentifier>{22fcf66f-e797-4b6c-9ca0-496aa29b1d80}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\engine\core\uuid">
+      <UniqueIdentifier>{b2a00294-b552-4de1-9823-38d44b8bc606}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="imgui\imgui.cpp">
@@ -307,6 +316,12 @@
     </ClCompile>
     <ClCompile Include="external\DirectXTex\WICTextureLoader.cpp">
       <Filter>external\DirectXTex</Filter>
+    </ClCompile>
+    <ClCompile Include="include\engine\core\random\Random.cpp">
+      <Filter>include\engine\core\random</Filter>
+    </ClCompile>
+    <ClCompile Include="include\engine\core\uuid\uuid.cpp">
+      <Filter>include\engine\core\uuid</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -564,6 +579,21 @@
     </ClInclude>
     <ClInclude Include="external\DirectXTex\WICTextureLoader.h">
       <Filter>external\DirectXTex</Filter>
+    </ClInclude>
+    <ClInclude Include="include\engine\core\random\Random.h">
+      <Filter>include\engine\core\random</Filter>
+    </ClInclude>
+    <ClInclude Include="include\engine\core\random\Xorshift.h">
+      <Filter>include\engine\core\random</Filter>
+    </ClInclude>
+    <ClInclude Include="external\stduuid-1.0\include\uuid.h">
+      <Filter>external\stduuid</Filter>
+    </ClInclude>
+    <ClInclude Include="include\engine\core\uuid\uuid.h">
+      <Filter>include\engine\core\uuid</Filter>
+    </ClInclude>
+    <ClInclude Include="include\engine\core\uuid\uuid_utility.h">
+      <Filter>include\engine\core\uuid</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

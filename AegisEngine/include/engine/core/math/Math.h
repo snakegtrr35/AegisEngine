@@ -18,23 +18,6 @@ namespace Aegis
 {
 	namespace Math
 	{
-		// 乱数関係の関数
-
-		// 一様乱数
-		inline const int Get_Random(const int min, const int max);
-		inline const float Get_Random(const float min, const float max);
-		inline const double Get_Random(const double min, const double max);
-
-		// trueとfalseという2つの値を確率分布させる関数
-		// 確率( probability )でtrueが生成され、確率( 1.0 - probability )でfalseが生成される
-		/**
-		* @brief 確率分布
-		* @param probability 確率( probability )
-		* @return bool true 又は false
-		* @details 確率( probability )でtrueが生成され、確率( 1.0 - probability )でfalseが生成される関数
-		*/
-		const bool Random_Bool(const float probability);
-
 		/**
 		* @brief 線形補間
 		* @param y1 最小値の時の値
