@@ -184,9 +184,9 @@ void BOUNDING_FRUSTUM::Update(float delta_time)
 	{
 		//XMStoreFloat3(&r, XMLoadFloat3(camera->Get_Rotation()) );
 
-		Position.x = camera.lock()->Get_Position()->x;
-		Position.y = camera.lock()->Get_Position()->y;
-		Position.z = camera.lock()->Get_Position()->z;
+		Position.x = camera.lock()->Get_Transform().Get_Position()->x;
+		Position.y = camera.lock()->Get_Transform().Get_Position()->y;
+		Position.z = camera.lock()->Get_Transform().Get_Position()->z;
 
 		XMFLOAT3 vec;
 		XMStoreFloat3(&vec, *camera.lock()->Get_Front());
@@ -209,7 +209,7 @@ void BOUNDING_FRUSTUM::Update(float delta_time)
 			r.y = atan(vec.x / vec.z) + XM_PI;
 		}*/
 
-		Rotation = *camera.lock()->Get_Rotation();
+		Rotation = *camera.lock()->Get_Transform().Get_Rotation();
 	}
 
 	XMMATRIX matrix = XMMatrixRotationRollPitchYaw(XMConvertToRadians(Rotation.x), XMConvertToRadians(Rotation.y), XMConvertToRadians(Rotation.z));

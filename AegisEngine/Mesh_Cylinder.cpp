@@ -1,4 +1,4 @@
-﻿#include	"Game_Object.h"
+﻿#include	"GameObject.h"
 #include	"Mesh_Cylinder.h"
 #include	"camera.h"
 #include	"Debug_Camera.h"
@@ -104,11 +104,6 @@ void MESH_CYlLINDER::Init()
 	SAFE_DELETE_ARRAY(vertexArray);
 	SAFE_DELETE_ARRAY(indexArray);
 
-	// トランスフォーム初期化
-	Position	= XMFLOAT3(0.0f, 0.0f, 0.0f);
-	Rotation	= XMFLOAT3(0.0f, 0.0f, 0.0f);
-	Scaling		= XMFLOAT3(1.0f, 1.0f, 1.0f);
-
 	// テクスチャの設定
 	Texture.reset(new TEXTURE(string("field004.png")));
 }
@@ -127,9 +122,13 @@ void MESH_CYlLINDER::Draw()
 		{
 			XMMATRIX world;
 
-			world = XMMatrixScaling(Scaling.x, Scaling.y, Scaling.z);
-			world *= XMMatrixRotationRollPitchYaw(Rotation.x, Rotation.y, Rotation.z);
-			world *= XMMatrixTranslation(Position.x, Position.y, Position.z);
+			XMFLOAT3 position = *Get_Transform().Get_Position();
+			XMFLOAT3 rotate = *Get_Transform().Get_Rotation();
+			XMFLOAT3 scale = *Get_Transform().Get_Scaling();
+
+			world = XMMatrixScaling(scale.x, scale.y, scale.z);
+			world *= XMMatrixRotationRollPitchYaw(XMConvertToRadians(rotate.x), XMConvertToRadians(rotate.y), XMConvertToRadians(rotate.z));
+			world *= XMMatrixTranslation(position.x, position.y, position.z);
 
 			const auto camera01 = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<CCamera>("camera");
 			const auto camera02 = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
@@ -168,9 +167,13 @@ void MESH_CYlLINDER::Draw_DPP()
 	{
 		XMMATRIX world;
 
-		world = XMMatrixScaling(Scaling.x, Scaling.y, Scaling.z);
-		world *= XMMatrixRotationRollPitchYaw(Rotation.x, Rotation.y, Rotation.z);
-		world *= XMMatrixTranslation(Position.x, Position.y, Position.z);
+		XMFLOAT3 position = *Get_Transform().Get_Position();
+		XMFLOAT3 rotate = *Get_Transform().Get_Rotation();
+		XMFLOAT3 scale = *Get_Transform().Get_Scaling();
+
+		world = XMMatrixScaling(scale.x, scale.y, scale.z);
+		world *= XMMatrixRotationRollPitchYaw(XMConvertToRadians(rotate.x), XMConvertToRadians(rotate.y), XMConvertToRadians(rotate.z));
+		world *= XMMatrixTranslation(position.x, position.y, position.z);
 
 		const auto camera01 = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<CCamera>("camera");
 		const auto camera02 = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");

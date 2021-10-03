@@ -1,4 +1,4 @@
-﻿#include	"Game_Object.h"
+﻿#include	"GameObject.h"
 #include	"Mesh_Dome.h"
 #include	"camera.h"
 #include	"Debug_Camera.h"
@@ -151,9 +151,13 @@ void MESH_DOOM::Draw()
 	{
 		XMMATRIX world;
 
-		world = XMMatrixScaling(Scaling.x, Scaling.y, Scaling.z);																						// 拡大縮小
-		world *= XMMatrixRotationRollPitchYaw(XMConvertToRadians(Rotation.x), XMConvertToRadians(Rotation.y), XMConvertToRadians(Rotation.z));			// 回転
-		world *= XMMatrixTranslation(Position.x, Position.y, Position.z);																				// 移動
+		XMFLOAT3 position = *Get_Transform().Get_Position();
+		XMFLOAT3 rotate = *Get_Transform().Get_Rotation();
+		XMFLOAT3 scale = *Get_Transform().Get_Scaling();
+
+		world = XMMatrixScaling(scale.x, scale.y, scale.z);
+		world *= XMMatrixRotationRollPitchYaw(XMConvertToRadians(rotate.x), XMConvertToRadians(rotate.y), XMConvertToRadians(rotate.z));
+		world *= XMMatrixTranslation(position.x, position.y, position.z);
 
 		auto camera01 = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<CCamera>("camera");
 		auto camera02 = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");

@@ -17,7 +17,7 @@ void BOUNDING_AABB::Init()
 
 		if (false == Owner.expired())
 		{
-			pos = *Owner.lock()->Get_Position();
+			pos = *Owner.lock()->Get_Transform().Get_Position();
 		}
 
 		Aabb = BoundingBox(XMFLOAT3(0.f, 0.f, 0.f), Radius);
@@ -181,7 +181,7 @@ void BOUNDING_AABB::OverWrite()
 	{
 		Color = Default_Color;
 
-		XMFLOAT3 pos = *Owner.lock()->Get_Position();
+		XMFLOAT3 pos = *Owner.lock()->Get_Transform().Get_Position();
 
 		Aabb = BoundingBox(XMFLOAT3(0.f, 0.f, 0.f), Radius);
 

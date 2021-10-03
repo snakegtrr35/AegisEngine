@@ -3,7 +3,7 @@
 #ifndef SCENE_H
 #define SCENE_H
 
-#include	"Game_Object.h"
+#include	"GameObject.h"
 #include	"Light.h"
 
 

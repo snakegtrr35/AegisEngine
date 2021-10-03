@@ -37,9 +37,9 @@ public:
 	void Update(float delta_time) override;
 	void Uninit(void) override;
 
-	void SetPosition(const XMFLOAT3 position);					// ポジションの設定
+	void SetPosition(XMFLOAT3& position);					// ポジションの設定
 	void SetXYZ(const XMFLOAT3 xyz);							// 幅と高さの設定
-	void SetScaling(XMFLOAT3 scaling);							// 拡大縮小の値の設定
+	void SetScaling(XMFLOAT3& scaling);							// 拡大縮小の値の設定
 	void SetTexture(const string& const file_name);			// テクスチャの設定
 
 	XMFLOAT3* const Get_Position();

@@ -1,6 +1,6 @@
-/**
+ï»¿/**
  * @file Math.h
- * @brief ZpŠÖŒW‚Ìƒwƒbƒ_[ƒtƒ@ƒCƒ‹
+ * @brief ç®—è¡“é–¢ä¿‚ã®ãƒ˜ãƒƒãƒ€ãƒ¼ãƒ•ã‚¡ã‚¤ãƒ«
  */
 
 #pragma once
@@ -19,23 +19,23 @@ namespace Aegis
 	namespace Math
 	{
 		/**
-		* @brief üŒ`•âŠÔ
-		* @param y1 Å¬’l‚Ì‚Ì’l
-		* @param y2 Å‘å’l‚Ì‚Ì’l
-		* @param tx •âŠÔ‚µ‚½‚¢’l
-		* @param x1 üŒ`‚ÌÅ¬’l(ƒfƒtƒHƒ‹ƒg‚Å0.0f)
-		* @param x2 üŒ`‚ÌÅ‘å’l(ƒfƒtƒHƒ‹ƒg‚Å1.0f)
-		* @return float •âŠÔ‚µ‚½’l
-		* @details üŒ`•âŠÔ‚ğs‚¢ŠÖ”
+		* @brief ç·šå½¢è£œé–“
+		* @param y1 æœ€å°å€¤ã®æ™‚ã®å€¤
+		* @param y2 æœ€å¤§å€¤ã®æ™‚ã®å€¤
+		* @param tx è£œé–“ã—ãŸã„å€¤
+		* @param x1 ç·šå½¢ã®æœ€å°å€¤(ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆã§0.0f)
+		* @param x2 ç·šå½¢ã®æœ€å¤§å€¤(ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆã§1.0f)
+		* @return float è£œé–“ã—ãŸå€¤
+		* @details ç·šå½¢è£œé–“ã‚’è¡Œã„é–¢æ•°
 		*/
 		float LerpEx(const float y1, const float y2, const float tx, const float x1 = 0.f, const float x2 = 1.0f);
 
-		// •Ï”‚Ìƒ‹[ƒvˆ—
+		// å¤‰æ•°ã®ãƒ«ãƒ¼ãƒ—å‡¦ç†
 		short Loop_Plus(short tx, short max);
 		short Loop_Minus(short tx, short max);
 
 
-		// ‘ŠŒİ•ÏŠ·ŠÖ”
+		// ç›¸äº’å¤‰æ›é–¢æ•°
 
 		inline XMVECTOR Vector3ToXMVECTOR(const Vector3& vector)
 		{
@@ -65,7 +65,7 @@ namespace Aegis
 			return Quaternion(vec.x, vec.y, vec.z, vec.w);
 		}
 
-		//ƒNƒH[ƒ^ƒjƒIƒ“‚ğ‰ñ“]s—ñ‚É‚·‚é
+		//ã‚¯ã‚©ãƒ¼ã‚¿ãƒ‹ã‚ªãƒ³ã‚’å›è»¢è¡Œåˆ—ã«ã™ã‚‹
 		inline XMMATRIX QuaternionToMatrix(Quaternion& q) {
 			//MATRIX ret;
 			XMFLOAT4X4 ret;
@@ -96,7 +96,7 @@ namespace Aegis
 			return XMLoadFloat4x4(&ret);
 		}
 
-		//‰ñ“]s—ñ‚ğƒNƒH[ƒ^ƒjƒIƒ“‚É‚·‚é
+		//å›è»¢è¡Œåˆ—ã‚’ã‚¯ã‚©ãƒ¼ã‚¿ãƒ‹ã‚ªãƒ³ã«ã™ã‚‹
 		inline Quaternion MatrixToQuaternion(XMMATRIX& mat) {
 			Quaternion q;
 

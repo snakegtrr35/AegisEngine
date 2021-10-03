@@ -44,8 +44,6 @@ DEBUG_CAMERA::DEBUG_CAMERA()
 	Rotate = 90.0f;
 
 	RotateEnable = MoveEnable = true;
-
-	Rotation = XMFLOAT3(0, 0, 0);
 }
 
 void DEBUG_CAMERA::Init()
@@ -83,8 +81,6 @@ void DEBUG_CAMERA::Init()
 	Rotate = 90.0f;
 
 	RotateEnable = MoveEnable = true;
-
-	Rotation = XMFLOAT3(0, 0, 0);
 }
 
 void DEBUG_CAMERA::Uninit()
@@ -133,7 +129,7 @@ void DEBUG_CAMERA::Update(float delta_time)
 		Up = XMVector3TransformNormal(Up, mtxRotation);
 		Up = XMVector3Normalize(Up);
 
-		Rotation.x += (point.y * delta_time * 20.0f);
+		Get_Transform().Get_Rotation()->x += (point.y * delta_time * 20.0f);
 	}
 
 	if (flag2 && MOUSE::Get_Mouse()->Get_Move_Flag())
@@ -152,7 +148,7 @@ void DEBUG_CAMERA::Update(float delta_time)
 		Right = XMVector3TransformNormal(Right, mtxRotation);
 		Right = XMVector3Normalize(Right);
 
-		Rotation.y += (point.x * delta_time * 20.0f);
+		Get_Transform().Get_Rotation()->y += (point.x * delta_time * 20.0f);
 	}
 
 	if (flag)
@@ -207,7 +203,7 @@ void DEBUG_CAMERA::Update(float delta_time)
 		Pos = At - (Front * Lenght - Up * 4.0f);
 	}
 
-	XMStoreFloat3(&Position, Pos);
+	XMStoreFloat3(Get_Transform().Get_Position(), Pos);
 	XMStoreFloat3(&A, At);
 
 	XMStoreFloat3(&F, Front);

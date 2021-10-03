@@ -39,9 +39,11 @@ void SCORE::Draw(void)
 
 		XMFLOAT2 pos;
 
+		XMFLOAT3 position = *Get_Transform().Get_Position();
+
 		for (i = Digit - 1; 0 <= i; i--)
 		{
-			pos = XMFLOAT2(Position.x + wh.x * i, Position.y);
+			pos = XMFLOAT2(position.x + wh.x * i, position.y);
 
 			number = score % 10;
 			Number->Set_Param_Txy(wh.x * number, 1.0f);
@@ -62,9 +64,11 @@ void SCORE::Draw_DPP(void)
 
 	XMFLOAT2 pos;
 
+	XMFLOAT3 position = *Get_Transform().Get_Position();
+
 	for (i = Digit - 1; 0 <= i; i--)
 	{
-		pos = XMFLOAT2(Position.x + wh.x * i, Position.y);
+		pos = XMFLOAT2(position.x + wh.x * i, position.y);
 
 		number = score % 10;
 		Number->Set_Param_Txy(wh.x * number, 1.0f);

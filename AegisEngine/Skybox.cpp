@@ -1,4 +1,4 @@
-﻿#include	"Game_Object.h"
+﻿#include	"GameObject.h"
 #include	"Skybox.h"
 
 #include	"camera.h"
@@ -21,8 +21,6 @@ static ID3D11ShaderResourceView* Srv = nullptr;
 SKYBOX::SKYBOX()
 {
 	//Texture = make_unique<TEXTURE>("");
-
-	Scaling = XMFLOAT3(1.0f, 1.0f, 1.0f);
 }
 
 SKYBOX::~SKYBOX(){ Uninit(); }
@@ -141,9 +139,13 @@ void SKYBOX::Draw()
 
 	// 3Dマトリックス設定
 	{
-		XMMATRIX world = XMMatrixScaling(Scaling.x, Scaling.y, Scaling.z);
-		world *= XMMatrixRotationRollPitchYaw(XMConvertToRadians(Rotation.x), XMConvertToRadians(Rotation.y), XMConvertToRadians(Rotation.z));
-		world *= XMMatrixTranslation(Position.x, Position.y, Position.z);
+		XMFLOAT3 position = *Get_Transform().Get_Position();
+		XMFLOAT3 rotate = *Get_Transform().Get_Rotation();
+		XMFLOAT3 scale = *Get_Transform().Get_Scaling();
+
+		XMMATRIX world = XMMatrixScaling(scale.x, scale.y, scale.z);
+		world *= XMMatrixRotationRollPitchYaw(XMConvertToRadians(rotate.x), XMConvertToRadians(rotate.y), XMConvertToRadians(rotate.z));
+		world *= XMMatrixTranslation(position.x, position.y, position.z);
 
 		const auto camera01 = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<CCamera>("camera");
 		const auto camera02 = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");

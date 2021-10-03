@@ -73,7 +73,7 @@ void CCamera::Update(float delta_time)
 
 			//At = Front * Lenght + Pos;
 
-			Pos = XMLoadFloat3(player->Get_Position());
+			Pos = XMLoadFloat3(player->Get_Transform().Get_Position());
 		}
 	}
 
@@ -202,7 +202,7 @@ void CCamera::Update(float delta_time)
 	XMFLOAT4 pos;
 	XMStoreFloat4(&pos, Pos);
 
-	XMStoreFloat3(&Position, Pos);
+	XMStoreFloat3(Get_Transform().Get_Position(), Pos);
 }
 
 void CCamera::Draw()

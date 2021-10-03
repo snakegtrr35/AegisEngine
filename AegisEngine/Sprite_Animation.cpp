@@ -1,4 +1,4 @@
-﻿#include	"Game_Object.h"
+﻿#include	"GameObject.h"
 #include	"Sprite_Animation.h"
 #include	"manager.h"
 #include	"ShadowMap.h"
@@ -140,7 +140,7 @@ void SPRITE_ANIMATION::Draw2(float tx, float ty)
 	Texture->Set_Texture();
 
 	// 2Dマトリックス設定
-	CRenderer::SetWorldViewProjection2D(Scaling);
+	CRenderer::SetWorldViewProjection2D(*Get_Transform().Get_Scaling());
 
 	CRenderer::Set_Shader(SHADER_INDEX_V::DEFAULT, SHADER_INDEX_P::NO_LIGHT);
 
@@ -214,7 +214,7 @@ void SPRITE_ANIMATION::Draw_DPP2(float tx, float ty)
 	CRenderer::SetIndexBuffer(pIndexBuffer.get());
 
 	// 2Dマトリックス設定
-	CRenderer::SetWorldViewProjection2D(Scaling);
+	CRenderer::SetWorldViewProjection2D(*Get_Transform().Get_Scaling());
 
 	CRenderer::DrawIndexed(6, 0, 0);
 }

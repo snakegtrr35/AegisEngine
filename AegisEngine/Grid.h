@@ -4,7 +4,7 @@
 #define CUBE_H
 
 #include	"Renderer.h"
-#include	"Game_Object.h"
+#include	"GameObject.h"
 
 class GRID : public GAME_OBJECT {
 private:

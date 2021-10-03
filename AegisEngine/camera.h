@@ -3,7 +3,7 @@
 #ifndef CAMERA_H
 #define CAMERA_H
 
-#include	"Game_Object.h"
+#include	"GameObject.h"
 
 class CCamera : public GAME_OBJECT{
 private:

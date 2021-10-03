@@ -3,7 +3,7 @@
 #ifndef SCORE_H
 #define SCORE_H
 
-#include	"Game_Object.h"
+#include	"GameObject.h"
 
 class SPRITE_ANIMATION;
 

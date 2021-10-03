@@ -1,7 +1,7 @@
-#include	"Math.h"
+ï»¿#include	"Math.h"
 #include	<random>
 
-static random_device rnd;							// ”ñŒˆ’è“I‚È—”¶¬Ší
+static random_device rnd;							// éæ±ºå®šçš„ãªä¹±æ•°ç”Ÿæˆå™¨
 
 using namespace std;
 
@@ -11,24 +11,24 @@ namespace Aegis
 	{
 		inline const int Get_Random(int min, int max)
 		{
-			mt19937_64 mt(rnd());								//  ƒƒ‹ƒZƒ“ƒkEƒcƒCƒXƒ^‚Ì64ƒrƒbƒg”ÅAˆø”‚Í‰ŠúƒV[ƒh’l
-			uniform_int_distribution<> rand(min, max);			// [min, max] ”ÍˆÍ‚Ìˆê—l—”
+			mt19937_64 mt(rnd());								//  ãƒ¡ãƒ«ã‚»ãƒ³ãƒŒãƒ»ãƒ„ã‚¤ã‚¹ã‚¿ã®64ãƒ“ãƒƒãƒˆç‰ˆã€å¼•æ•°ã¯åˆæœŸã‚·ãƒ¼ãƒ‰å€¤
+			uniform_int_distribution<> rand(min, max);			// [min, max] ç¯„å›²ã®ä¸€æ§˜ä¹±æ•°
 
 			return rand(mt);
 		}
 
 		inline const float Get_Random(float min, float max)
 		{
-			mt19937_64 mt(rnd());								//  ƒƒ‹ƒZƒ“ƒkEƒcƒCƒXƒ^‚Ì64ƒrƒbƒg”ÅAˆø”‚Í‰ŠúƒV[ƒh’l
-			uniform_real_distribution<> rand(min, max);			// [min, max] ”ÍˆÍ‚Ìˆê—l—”
+			mt19937_64 mt(rnd());								//  ãƒ¡ãƒ«ã‚»ãƒ³ãƒŒãƒ»ãƒ„ã‚¤ã‚¹ã‚¿ã®64ãƒ“ãƒƒãƒˆç‰ˆã€å¼•æ•°ã¯åˆæœŸã‚·ãƒ¼ãƒ‰å€¤
+			uniform_real_distribution<> rand(min, max);			// [min, max] ç¯„å›²ã®ä¸€æ§˜ä¹±æ•°
 
 			return rand(mt);
 		}
 
 		inline const double Get_Random(double min, double max)
 		{
-			mt19937_64 mt(rnd());								//  ƒƒ‹ƒZƒ“ƒkEƒcƒCƒXƒ^‚Ì64ƒrƒbƒg”ÅAˆø”‚Í‰ŠúƒV[ƒh’l
-			uniform_real_distribution<> rand(min, max);			// [min, max] ”ÍˆÍ‚Ìˆê—l—”
+			mt19937_64 mt(rnd());								//  ãƒ¡ãƒ«ã‚»ãƒ³ãƒŒãƒ»ãƒ„ã‚¤ã‚¹ã‚¿ã®64ãƒ“ãƒƒãƒˆç‰ˆã€å¼•æ•°ã¯åˆæœŸã‚·ãƒ¼ãƒ‰å€¤
+			uniform_real_distribution<> rand(min, max);			// [min, max] ç¯„å›²ã®ä¸€æ§˜ä¹±æ•°
 
 			return rand(mt);
 		}
@@ -36,7 +36,7 @@ namespace Aegis
 
 		const bool Random_Bool(const float probability)
 		{
-			mt19937_64 mt(rnd());							//  ƒƒ‹ƒZƒ“ƒkEƒcƒCƒXƒ^‚Ì64ƒrƒbƒg”ÅAˆø”‚Í‰ŠúƒV[ƒh’l
+			mt19937_64 mt(rnd());							//  ãƒ¡ãƒ«ã‚»ãƒ³ãƒŒãƒ»ãƒ„ã‚¤ã‚¹ã‚¿ã®64ãƒ“ãƒƒãƒˆç‰ˆã€å¼•æ•°ã¯åˆæœŸã‚·ãƒ¼ãƒ‰å€¤
 			bernoulli_distribution uid(probability);
 
 			return uid(mt);

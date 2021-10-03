@@ -1,4 +1,4 @@
-﻿#include	"Game_Object.h"
+﻿#include	"GameObject.h"
 #include	"Mesh_Field.h"
 #include	"camera.h"
 #include	"Debug_Camera.h"
@@ -177,9 +177,13 @@ void MESH_FIELD::Draw()
 			//angle = 180.0f;
 		}
 
-		world = XMMatrixScaling(Scaling.x, Scaling.y, Scaling.z);																						// 拡大縮小
-		world *= XMMatrixRotationRollPitchYaw(XMConvertToRadians(Rotation.x), XMConvertToRadians(Rotation.y), XMConvertToRadians(Rotation.z + angle));			// 回転
-		world *= XMMatrixTranslation(Position.x, Position.y, Position.z);																				// 移動
+		XMFLOAT3 position = *Get_Transform().Get_Position();
+		XMFLOAT3 rotate = *Get_Transform().Get_Rotation();
+		XMFLOAT3 scale = *Get_Transform().Get_Scaling();
+
+		world = XMMatrixScaling(scale.x, scale.y, scale.z);
+		world *= XMMatrixRotationRollPitchYaw(XMConvertToRadians(rotate.x), XMConvertToRadians(rotate.y), XMConvertToRadians(rotate.z));
+		world *= XMMatrixTranslation(position.x, position.y, position.z);
 
 		const auto camera01 = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<CCamera>("camera");
 		const auto camera02 = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
@@ -249,9 +253,13 @@ void MESH_FIELD::Draw_DPP()
 {
 	// 3Dマトリックス設定
 	{
-		XMMATRIX world = XMMatrixScaling(Scaling.x, Scaling.y, Scaling.z);
-		world *= XMMatrixRotationRollPitchYaw(XMConvertToRadians(Rotation.x), XMConvertToRadians(Rotation.y), XMConvertToRadians(Rotation.z));
-		world *= XMMatrixTranslation(Position.x, Position.y, Position.z);
+		XMFLOAT3 position = *Get_Transform().Get_Position();
+		XMFLOAT3 rotate = *Get_Transform().Get_Rotation();
+		XMFLOAT3 scale = *Get_Transform().Get_Scaling();
+
+		XMMATRIX world = XMMatrixScaling(scale.x, scale.y, scale.z);
+		world *= XMMatrixRotationRollPitchYaw(XMConvertToRadians(rotate.x), XMConvertToRadians(rotate.y), XMConvertToRadians(rotate.z));
+		world *= XMMatrixTranslation(position.x, position.y, position.z);
 
 		const auto camera01 = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<CCamera>("camera");
 		const auto camera02 = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
@@ -479,10 +487,6 @@ void MESH_WALL::Init()
 
 	delete[] indexArray;
 
-	Position = XMFLOAT3(0.0f, 0.0f, 0.0f);
-	Rotation = XMFLOAT3(0.0f, 0.0f, 0.0f);
-	Scaling = XMFLOAT3(1.0f, 1.0f, 1.0f);
-
 	// テクスチャの設定
 	Texture = new TEXTURE(string("field004.png"));
 }
@@ -507,9 +511,13 @@ void MESH_WALL::Draw()
 		{
 			XMMATRIX world;
 
-			world = XMMatrixScaling(Scaling.x, Scaling.y, Scaling.z);																						// 拡大縮小
-			world *= XMMatrixRotationRollPitchYaw(XMConvertToRadians(Rotation.x), XMConvertToRadians(Rotation.y), XMConvertToRadians(Rotation.z));			// 回転
-			world *= XMMatrixTranslation(Position.x, Position.y, Position.z);																				// 移動
+			XMFLOAT3 position = *Get_Transform().Get_Position();
+			XMFLOAT3 rotate = *Get_Transform().Get_Rotation();
+			XMFLOAT3 scale = *Get_Transform().Get_Scaling();
+
+			XMMATRIX matrix = XMMatrixScaling(scale.x, scale.y, scale.z);
+			matrix *= XMMatrixRotationRollPitchYaw(XMConvertToRadians(rotate.x), XMConvertToRadians(rotate.y), XMConvertToRadians(rotate.z));
+			matrix *= XMMatrixTranslation(position.x, position.y, position.z);
 
 			const auto camera01 = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<CCamera>("camera");
 			const auto camera02 = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
@@ -584,20 +592,24 @@ void MESH_WALL::Draw_DPP()
 {
 	// 3Dマトリックス設定
 	{
-		XMMATRIX world = XMMatrixScaling(Scaling.x, Scaling.y, Scaling.z);
-		world *= XMMatrixRotationRollPitchYaw(XMConvertToRadians(Rotation.x), XMConvertToRadians(Rotation.y), XMConvertToRadians(Rotation.z));
-		world *= XMMatrixTranslation(Position.x, Position.y, Position.z);
+		XMFLOAT3 position = *Get_Transform().Get_Position();
+		XMFLOAT3 rotate = *Get_Transform().Get_Rotation();
+		XMFLOAT3 scale = *Get_Transform().Get_Scaling();
+
+		XMMATRIX matrix = XMMatrixScaling(scale.x, scale.y, scale.z);
+		matrix *= XMMatrixRotationRollPitchYaw(XMConvertToRadians(rotate.x), XMConvertToRadians(rotate.y), XMConvertToRadians(rotate.z));
+		matrix *= XMMatrixTranslation(position.x, position.y, position.z);
 
 		const auto camera01 = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<CCamera>("camera");
 		const auto camera02 = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
 
 		if (!camera01.expired() && Empty_weak_ptr<CCamera>(camera01))
 		{
-			CRenderer::Set_MatrixBuffer(world, camera01.lock()->Get_Camera_View(), camera01.lock()->Get_Camera_Projection());
+			CRenderer::Set_MatrixBuffer(matrix, camera01.lock()->Get_Camera_View(), camera01.lock()->Get_Camera_Projection());
 		}
 		else
 		{
-			CRenderer::Set_MatrixBuffer(world, camera02.lock()->Get_Camera_View(), camera02.lock()->Get_Camera_Projection());
+			CRenderer::Set_MatrixBuffer(matrix, camera02.lock()->Get_Camera_View(), camera02.lock()->Get_Camera_Projection());
 		}
 	}
 

@@ -1,5 +1,5 @@
 ﻿#include	"ShadowMap.h"
-#include	"Game_Object.h"
+#include	"GameObject.h"
 
 #include	"manager.h"
 #include	"Scene.h"
@@ -338,7 +338,7 @@ void SHADOW_MAP::Update()
 
 	if (!Target.expired())
 	{
-		XMFLOAT3* at = Target.lock()->Get_Position();
+		XMFLOAT3* at = Target.lock()->Get_Transform().Get_Position();
 
 		XMFLOAT3 pos;
 		pos.x = at->x + LightPos.x;

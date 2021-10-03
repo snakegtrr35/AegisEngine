@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #ifndef INCLUDE_UUID_H
 #define INCLUDE_UUID_H
@@ -18,15 +18,15 @@ namespace Aegis
 		[[nodiscard]]
 		static uuid GetUuid() noexcept;
 
+		static void ReSeed(std::uint64_t seed) noexcept;
+
 	private:
+
+		static std::mutex lock_mutex;
+		static uuids::uuid_random_generator<XorShift32> gen;
 
 		Uuid();
 		~Uuid();
-
-		static Uuid Insrance;
-		static std::mutex mutex;
-
-		static uuids::uuid_random_generator<XorShift32> gen;
 	};
 }
 

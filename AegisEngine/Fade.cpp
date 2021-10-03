@@ -1,4 +1,4 @@
-﻿#include	"Game_Object.h"
+﻿#include	"GameObject.h"
 #include	"Fade.h"
 #include	"Scene.h"
 #include	"manager.h"
@@ -65,7 +65,7 @@ void FADE::Draw()
 	CRenderer::SetIndexBuffer(pIndexBuffer.get());
 
 	// 2Dマトリックス設定
-	CRenderer::SetWorldViewProjection2D(Scaling);
+	CRenderer::SetWorldViewProjection2D(*Get_Transform().Get_Scaling());
 
 	CRenderer::Set_Shader(SHADER_INDEX_V::DEFAULT, SHADER_INDEX_P::NO_TEXTURE);
 

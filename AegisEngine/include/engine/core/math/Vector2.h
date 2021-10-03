@@ -1,4 +1,4 @@
-#ifndef _MATH_VECTOR2_H_
+﻿#ifndef _MATH_VECTOR2_H_
 #define _MATH_VECTOR2_H_
 
 namespace Aegis

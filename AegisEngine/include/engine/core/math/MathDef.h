@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #ifndef _MATH_MATHDEF_H_
 #define _MATH_MATHDEF_H_

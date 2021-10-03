@@ -1,4 +1,4 @@
-﻿#include	"Game_Object.h"
+﻿#include	"GameObject.h"
 #include	"Sprite.h"
 #include	"manager.h"
 #include	"ShadowMap.h"
@@ -16,8 +16,6 @@ SPRITE::SPRITE()
 
 	Size = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
 
-	Scaling = XMFLOAT3(1.0f, 1.0f, 1.0f);
-
 	Color = COLOR(1.0f, 1.0f, 1.0f, 1.0f);
 
 	Enable = true;
@@ -29,8 +27,6 @@ SPRITE::SPRITE()
 SPRITE::SPRITE(XMFLOAT2 position, XMFLOAT4 size)
 {
 	Texture = nullptr;
-
-	Scaling = XMFLOAT3(1.0f, 1.0f, 1.0f);
 
 	Position = position;
 
@@ -176,7 +172,7 @@ void SPRITE::Draw(void)
 			}
 
 			// 2Dマトリックス設定
-			CRenderer::SetWorldViewProjection2D(Scaling);
+			CRenderer::SetWorldViewProjection2D(*Get_Transform().Get_Scaling());
 
 			if (flag)
 			{
@@ -236,7 +232,7 @@ void SPRITE::Draw_DPP()
 
 
 		// 2Dマトリックス設定
-		CRenderer::SetWorldViewProjection2D(Scaling);
+		CRenderer::SetWorldViewProjection2D(*Get_Transform().Get_Scaling());
 
 		CRenderer::DrawIndexed(6, 0, 0);
 	}

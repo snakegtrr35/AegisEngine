@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #ifndef _RANDOM_XORSHIFT_H_
 #define _RANDOM_XORSHIFT_H_

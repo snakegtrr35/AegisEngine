@@ -4,7 +4,7 @@
 #define XYZ_AXIS_H
 
 #include	"Renderer.h"
-#include	"Game_Object.h"
+#include	"GameObject.h"
 
 class TEXTURE;
 

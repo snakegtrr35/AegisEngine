@@ -49,7 +49,7 @@
       </ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="Game.cpp" />
-    <ClCompile Include="Game_Object.cpp" />
+    <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="Grid.cpp" />
     <ClCompile Include="imgui\imgui.cpp" />
     <ClCompile Include="imgui\ImGuizmo.cpp" />
@@ -150,7 +150,7 @@
       </ExcludedFromBuild>
     </ClInclude>
     <ClInclude Include="Game.h" />
-    <ClInclude Include="Game_Object.h" />
+    <ClInclude Include="GameObject.h" />
     <ClInclude Include="Grid.h" />
     <ClInclude Include="imgui\IconsFontAwesome5_c.h" />
     <ClInclude Include="imgui\imconfig.h" />
@@ -243,6 +243,7 @@
     </FxCompile>
     <ClInclude Include="Timer.h" />
     <ClInclude Include="Title.h" />
+    <ClInclude Include="Transform.h" />
     <ClInclude Include="Xbox.h" />
     <ClInclude Include="XYZ_Axis.h" />
     <FxCompile Include="VertexShader_Skybox.hlsl">

@@ -8,7 +8,7 @@
 void BOUNDING_SHPERE::Init()
 {
 	{
-		XMFLOAT3 pos = *Owner.lock()->Get_Position();
+		XMFLOAT3 pos = *Owner.lock()->Get_Transform().Get_Position();
 
 		Sphere = BoundingSphere(XMFLOAT3(0.f, 0.f, 0.f), Radius);
 
@@ -145,7 +145,7 @@ void BOUNDING_SHPERE::Update(float delta_time)
 	OverWrite();
 
 	{
-		XMFLOAT3 pos = *Owner.lock()->Get_Position();
+		XMFLOAT3 pos = *Owner.lock()->Get_Transform().Get_Position();
 
 		Sphere = BoundingSphere(XMFLOAT3(0.f, 0.f, 0.f), Radius);
 
@@ -185,7 +185,7 @@ void BOUNDING_SHPERE::Draw_Ring(const XMFLOAT3& rotation)
 {
 	// 3Dマトリックス設定
 	{
-		XMFLOAT3 pos = *Owner.lock()->Get_Position();
+		XMFLOAT3 pos = *Owner.lock()->Get_Transform().Get_Position();
 
 		XMMATRIX world= XMMatrixScaling(Scaling.x, Scaling.y, Scaling.z);
 		world *= XMMatrixRotationRollPitchYaw(XMConvertToRadians(rotation.x), XMConvertToRadians(rotation.y), XMConvertToRadians(rotation.z));

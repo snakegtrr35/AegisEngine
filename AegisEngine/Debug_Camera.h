@@ -3,7 +3,7 @@
 #ifndef DEBUG_CAMERA_H
 #define DEBUG_CAMERA_H
 
-#include	"Game_Object.h"
+#include	"GameObject.h"
 
 class DEBUG_CAMERA : public GAME_OBJECT {
 private:
@@ -119,7 +119,7 @@ public:
 	template<typename Archive>
 	void serialize(Archive& ar)
 	{
-		XMStoreFloat3(&Position, Pos);
+		XMStoreFloat3(Get_Transform().Get_Position(), Pos);
 		XMStoreFloat3(&A, At);
 
 		ar(cereal::base_class<GAME_OBJECT>(this));
@@ -133,7 +133,7 @@ public:
 
 		ar(Viewport);
 
-		Pos = XMLoadFloat3(&Position);
+		Pos = XMLoadFloat3(Get_Transform().Get_Position());
 		At = XMLoadFloat3(&A);
 
 		Front = XMLoadFloat3(&F);

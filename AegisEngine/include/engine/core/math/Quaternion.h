@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 
 #ifndef _MATH_QUATERNION_H_
 #define _MATH_QUATERNION_H_ 
@@ -17,8 +17,8 @@ namespace Aegis
 
 		Quaternion() noexcept = default;
 
-		// ‚±‚ê‚É‚æ‚èAƒNƒH[ƒ^ƒjƒIƒ“ƒRƒ“ƒ|[ƒlƒ“ƒg‚ª’¼Úİ’è‚³‚ê‚Ü‚·-
-		// ² / Šp“x‚É‚Íg—p‚µ‚È‚¢‚Å‚­‚¾‚³‚¢
+		// ã“ã‚Œã«ã‚ˆã‚Šã€ã‚¯ã‚©ãƒ¼ã‚¿ãƒ‹ã‚ªãƒ³ã‚³ãƒ³ãƒãƒ¼ãƒãƒ³ãƒˆãŒç›´æ¥è¨­å®šã•ã‚Œã¾ã™-
+		// è»¸ / è§’åº¦ã«ã¯ä½¿ç”¨ã—ãªã„ã§ãã ã•ã„
 		Quaternion(float _x, float _y, float _z, float _w) noexcept;
 
 		Quaternion(const Quaternion&) = default;
@@ -27,8 +27,8 @@ namespace Aegis
 		Quaternion(Quaternion&&) = default;
 		Quaternion& operator=(Quaternion&&) = default;
 
-		// ²‚ÆŠp“x‚©‚çCQuaternion‚ğ\’z‚µ‚Ü‚·
-		// ²‚Í‚·‚Å‚É³‹K‰»‚³‚ê‚Ä‚¢‚é‚Æ‘z’è‚³‚ê‚Ü‚·‚ªAŠp“x‚ÍƒfƒBƒOƒŠ[‚Å‚·
+		// è»¸ã¨è§’åº¦ã‹ã‚‰CQuaternionã‚’æ§‹ç¯‰ã—ã¾ã™
+		// è»¸ã¯ã™ã§ã«æ­£è¦åŒ–ã•ã‚Œã¦ã„ã‚‹ã¨æƒ³å®šã•ã‚Œã¾ã™ãŒã€è§’åº¦ã¯ãƒ‡ã‚£ã‚°ãƒªãƒ¼ã§ã™
 		/*Quaternion RotateAxis(const Vector3& axis, const float angle)
 		{
 			float scalar = sin(Math::DegreeToRadian(angle) / 2.0f);
@@ -38,7 +38,7 @@ namespace Aegis
 			w = cos(angle / 2.0f);
 		}*/
 
-		// “à•”ƒRƒ“ƒ|[ƒlƒ“ƒg‚ğ’¼Úİ’è‚µ‚Ü‚·
+		// å†…éƒ¨ã‚³ãƒ³ãƒãƒ¼ãƒãƒ³ãƒˆã‚’ç›´æ¥è¨­å®šã—ã¾ã™
 		void Set(float _x, float _y, float _z, float _w)
 		{
 			x = _x;
@@ -54,7 +54,7 @@ namespace Aegis
 			z *= -1.0f;
 		}
 
-		// ‚±ƒNƒH[ƒ^ƒjƒIƒ“³‹K‰»‚·‚é
+		// ã“ã‚¯ã‚©ãƒ¼ã‚¿ãƒ‹ã‚ªãƒ³æ­£è¦åŒ–ã™ã‚‹
 		void Normalize()
 		{
 			float length = sqrt(x * x + y * y + z * z + w * w);
@@ -64,7 +64,7 @@ namespace Aegis
 			w /= length;
 		}
 
-		// ’ñ‹Ÿ‚³‚ê‚½ƒNƒH[ƒ^ƒjƒIƒ“‚ğ³‹K‰»‚·‚é
+		// æä¾›ã•ã‚ŒãŸã‚¯ã‚©ãƒ¼ã‚¿ãƒ‹ã‚ªãƒ³ã‚’æ­£è¦åŒ–ã™ã‚‹
 		Quaternion Normalize(const Quaternion& q)
 		{
 			Quaternion retVal = q;
@@ -72,16 +72,16 @@ namespace Aegis
 			return retVal;
 		}
 
-		// üŒ`•âŠÔ
+		// ç·šå½¢è£œé–“
 		Quaternion Lerp(const Quaternion& a, const Quaternion& b, float t);
 
-		// 2‚Â‚ÌƒNƒH[ƒ^ƒjƒIƒ“ŠÔ‚ÌƒhƒbƒgÏia Dot bj
+		// 2ã¤ã®ã‚¯ã‚©ãƒ¼ã‚¿ãƒ‹ã‚ªãƒ³é–“ã®ãƒ‰ãƒƒãƒˆç©ï¼ˆa Dot bï¼‰
 		float Dot(const Quaternion& a, const Quaternion& b)
 		{
 			return a.x * b.x + a.y * b.y + a.z * b.z + a.w * b.w;
 		}
 
-		// ‹…–ÊüŒ`•âŠÔ
+		// çƒé¢ç·šå½¢è£œé–“
 		Quaternion Slerp(const Quaternion& a, const Quaternion& b, float f)
 		{
 			float rawCosm = Quaternion::Dot(a, b);
@@ -123,8 +123,8 @@ namespace Aegis
 			return retVal;
 		}
 
-		// ˜AŒ‹‚·‚é
-		// q‰ñ“]Ap‰ñ“]
+		// é€£çµã™ã‚‹
+		// qå›è»¢ã€på›è»¢
 		Quaternion Concatenate(const Quaternion& q, const Quaternion& p);
 
 		static Quaternion Euler(const float x, const float y, const float z)

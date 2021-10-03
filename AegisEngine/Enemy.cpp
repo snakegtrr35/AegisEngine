@@ -47,9 +47,9 @@ void ENEMY::Init()
 
 		Model->Load(name);
 
-		Model->Set_Position(Position);
-		Model->Set_Rotation(Rotation);
-		Model->Set_Scaling(Scaling);
+		Model->Get_Transform().Set_Position(Get_Transform().Get_Position());
+		Model->Get_Transform().Set_Rotation(Get_Transform().Get_Rotation());
+		Model->Get_Transform().Set_Scaling(Get_Transform().Get_Scaling());
 	}
 
 	// コンポーネント
@@ -91,10 +91,10 @@ void ENEMY::Update(float delta_time)
 		XMFLOAT3 position(0.f, 0.f, 0.f);
 		if (!player.expired())
 		{
-			position = *player.lock()->Get_Position();
+			position = *player.lock()->Get_Transform().Get_Position();
 		}
 
-		vec = (position - Position);
+		vec = (position - *Get_Transform().Get_Position());
 		{
 
 			XMFLOAT3 rotate(0.f, 0.f, 0.f);
@@ -122,7 +122,7 @@ void ENEMY::Update(float delta_time)
 		{
 			const auto player = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<PLAYER>("player");
 
-			float r = (Position.x - player.lock()->Get_Position()->x) * (Position.x - player.lock()->Get_Position()->x) + (Position.z - player.lock()->Get_Position()->z) * (Position.z - player.lock()->Get_Position()->z);
+			float r = (Get_Transform().Get_Position()->x - player.lock()->Get_Transform().Get_Position()->x) * (Get_Transform().Get_Position()->x - player.lock()->Get_Transform().Get_Position()->x) + (Get_Transform().Get_Position()->z - player.lock()->Get_Transform().Get_Position()->z) * (Get_Transform().Get_Position()->z - player.lock()->Get_Transform().Get_Position()->z);
 			float abr = 8.0f;
 
 			// 離す
@@ -140,8 +140,8 @@ void ENEMY::Update(float delta_time)
 			}
 		}
 
-		Position.x += move.x;
-		Position.z += move.z;
+		Get_Transform().Get_Position()->x += move.x;
+		Get_Transform().Get_Position()->z += move.z;
 
 
 	}
@@ -157,7 +157,7 @@ void ENEMY::Update(float delta_time)
 			XMFLOAT3 rotate;
 			XMStoreFloat3(&rotate, vector * 2.0f);
 
-			XMFLOAT3 position = Position;
+			XMFLOAT3 position = *Get_Transform().Get_Position();
 
 			position.x += rotate.x * 2;
 			position.z += rotate.z * 2;
@@ -173,9 +173,9 @@ void ENEMY::Update(float delta_time)
 		Time += delta_time;
 	}
 
-	Model->Set_Position(Position);
-	Model->Set_Rotation(Rotation);
-	Model->Set_Scaling(Scaling);
+	Model->Get_Transform().Set_Position(Get_Transform().Get_Position());
+	Model->Get_Transform().Set_Rotation(Get_Transform().Get_Rotation());
+	Model->Get_Transform().Set_Scaling(Get_Transform().Get_Scaling());
 
 
 	GAME_OBJECT::Update(delta_time);
@@ -187,21 +187,21 @@ void ENEMY::Uninit(void)
 }
 
 // ポジションの設定
-void ENEMY::SetPosition(const XMFLOAT3& position)
+void ENEMY::SetPosition(XMFLOAT3& position)
 {
-	Position = position;
+	Get_Transform().Set_Position(position);
 }
 
 // 回転の設定
-void ENEMY::SetRotation(const XMFLOAT3& rotation)
+void ENEMY::SetRotation(XMFLOAT3& rotation)
 {
-	Rotation = rotation;
+	Get_Transform().Set_Rotation(rotation);
 }
 
 // 拡大縮小の値の設定
-void ENEMY::SetScaling(const XMFLOAT3& scaling)
+void ENEMY::SetScaling(XMFLOAT3& scaling)
 {
-	Scaling = scaling;
+	Get_Transform().Set_Scaling(scaling);
 }
 
 void Create_Bullet(XMFLOAT3& position, const XMFLOAT3& front)
@@ -214,6 +214,6 @@ void Create_Bullet(XMFLOAT3& position, const XMFLOAT3& front)
 
 	bullet->Init();
 
-	bullet->Set_Position(position);
+	bullet->Get_Transform().Set_Position(position);
 	bullet->Set_Move_Vector(front);
 }

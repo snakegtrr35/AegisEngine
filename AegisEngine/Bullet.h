@@ -3,7 +3,7 @@
 #ifndef BULLET_H
 #define BULLET_H
 
-//#include	"Game_Object.h"
+//#include	"GameObject.h"
 
 class GAME_OBJECT;
 class CMODEL;

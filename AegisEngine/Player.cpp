@@ -1,4 +1,4 @@
-﻿#include	"Game_Object.h"
+﻿#include	"GameObject.h"
 #include	"Player.h"
 
 #include	"manager.h"
@@ -52,9 +52,13 @@ void PLAYER::Init(void)
 void PLAYER::Draw(void)
 {
 	{
-		XMMATRIX matrix= XMMatrixScaling(Scaling.x, Scaling.y, Scaling.z);
-		matrix *= XMMatrixRotationRollPitchYaw(XMConvertToRadians(Rotation.x), XMConvertToRadians(Rotation.y), XMConvertToRadians(Rotation.z));
-		matrix *= XMMatrixTranslation(Position.x, Position.y, Position.z);
+		XMFLOAT3 position = *Get_Transform().Get_Position();
+		XMFLOAT3 rotate = *Get_Transform().Get_Rotation();
+		XMFLOAT3 scale = *Get_Transform().Get_Scaling();
+
+		XMMATRIX matrix= XMMatrixScaling(scale.x, scale.y, scale.z);
+		matrix *= XMMatrixRotationRollPitchYaw(XMConvertToRadians(rotate.x), XMConvertToRadians(rotate.y), XMConvertToRadians(rotate.z));
+		matrix *= XMMatrixTranslation(position.x, position.y, position.z);
 
 		Model->Draw();
 		//Model->Draw(matrix);
@@ -66,9 +70,13 @@ void PLAYER::Draw(void)
 void PLAYER::Draw_DPP(void)
 {
 	{
-		XMMATRIX matrix = XMMatrixScaling(Scaling.x, Scaling.y, Scaling.z);
-		matrix *= XMMatrixRotationRollPitchYaw(XMConvertToRadians(Rotation.x), XMConvertToRadians(Rotation.y), XMConvertToRadians(Rotation.z));
-		matrix *= XMMatrixTranslation(Position.x, Position.y, Position.z);
+		XMFLOAT3 position = *Get_Transform().Get_Position();
+		XMFLOAT3 rotate = *Get_Transform().Get_Rotation();
+		XMFLOAT3 scale = *Get_Transform().Get_Scaling();
+
+		XMMATRIX matrix = XMMatrixScaling(scale.x, scale.y, scale.z);
+		matrix *= XMMatrixRotationRollPitchYaw(XMConvertToRadians(rotate.x), XMConvertToRadians(rotate.y), XMConvertToRadians(rotate.z));
+		matrix *= XMMatrixTranslation(position.x, position.y, position.z);
 
 		Model->Draw_DPP();
 		//Model->Draw_DPP(matrix);
@@ -80,7 +88,7 @@ void PLAYER::Update(float delta_time)
 	const auto camera = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
 
 	XMVECTOR* vec = camera.lock()->Get_At();
-	XMFLOAT3 rotate = *camera.lock()->Get_Rotation();
+	XMFLOAT3 rotate = *camera.lock()->Get_Transform().Get_Rotation();
 
 	XMVECTOR front_vec = *camera.lock()->Get_Front();
 	XMFLOAT3 front;
@@ -92,23 +100,23 @@ void PLAYER::Update(float delta_time)
 
 	XMStoreFloat3(&pos, *vec);
 
-	Position = pos;
+	Get_Transform().Set_Position(pos);
 
 	// カメラに合わせた回転
-	Rotation.y = rotate.y + 0.0f;
+	Get_Transform().Get_Rotation()->y = rotate.y + 0.0f;
 
 	// モデルの更新
 	{
-		Model->Set_Position(Position);
-		Model->Set_Rotation(Rotation);
-		Model->Set_Scaling(Scaling);
+		Model->Get_Transform().Set_Position(Get_Transform().Get_Position());
+		Model->Get_Transform().Set_Rotation(Get_Transform().Get_Rotation());
+		Model->Get_Transform().Set_Scaling(Get_Transform().Get_Scaling());
 
 		Model->Update(delta_time);
 	}
 
 	if (KEYBOARD::Trigger_Keyboard(VK_SPACE))
 	{
-		XMFLOAT3 pos = Position + front * 2.0f;
+		XMFLOAT3 pos = *Get_Transform().Get_Position() + front * 2.0f;
 		pos.y += 1.0;
 
 		Create_Bullet(pos, front * 2.0f);
@@ -122,14 +130,14 @@ void PLAYER::Uninit(void)
 	SAFE_DELETE(Model);
 }
 
-void PLAYER::SetPosition(const XMFLOAT3 position)
+void PLAYER::SetPosition(XMFLOAT3& position)
 {
-	Position = position;
+	Get_Transform().Set_Position(position);
 }
 
-void PLAYER::SetScaling(const XMFLOAT3 scaling)
+void PLAYER::SetScaling(XMFLOAT3& scaling)
 {
-	Scaling = scaling;
+	Get_Transform().Set_Scaling(scaling);
 }
 
 void Create_Bullet(XMFLOAT3& position, const XMFLOAT3& front)
@@ -153,6 +161,6 @@ void Create_Bullet(XMFLOAT3& position, const XMFLOAT3& front)
 
 	bullet->Init();
 
-	bullet->Set_Position(position);
+	bullet->Get_Transform().Set_Position(position);
 	bullet->Set_Move_Vector(front);
 }

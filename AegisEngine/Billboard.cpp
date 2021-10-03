@@ -1,4 +1,4 @@
-﻿#include	"Game_Object.h"
+﻿#include	"GameObject.h"
 #include	"Billboard.h"
 
 #include	"camera.h"
@@ -24,7 +24,7 @@ BILL_BOARD::BILL_BOARD() : pVertexBuffer(nullptr), Texture(nullptr), WH(XMFLOAT2
 //==============================
 BILL_BOARD::BILL_BOARD(XMFLOAT3 position, XMFLOAT2 wh) : pVertexBuffer(nullptr), Texture(nullptr), WH(wh)
 {
-	Position = position;
+	Get_Transform().Set_Position(position);
 
 	// テクスチャの設定
 	Texture = make_unique<TEXTURE>();
@@ -174,9 +174,13 @@ void BILL_BOARD::Draw()
 
 		world = XMMatrixMultiply(world, mtxViewInv);
 
-		world *= XMMatrixScaling(Scaling.x, Scaling.y, Scaling.z);
-		world *= XMMatrixRotationRollPitchYaw(Rotation.x, Rotation.y, Rotation.z);
-		world *= XMMatrixTranslation(Position.x, Position.y, Position.z);
+		XMFLOAT3 position = *Get_Transform().Get_Position();
+		XMFLOAT3 rotate = *Get_Transform().Get_Rotation();
+		XMFLOAT3 scale = *Get_Transform().Get_Scaling();
+
+		world *= XMMatrixScaling(scale.x, scale.y, scale.z);
+		world *= XMMatrixRotationRollPitchYaw(XMConvertToRadians(rotate.x), XMConvertToRadians(rotate.y), XMConvertToRadians(rotate.z));
+		world *= XMMatrixTranslation(position.x, position.y, position.z);
 
 		if (!camera01.expired() && Empty_weak_ptr<CCamera>(camera01))
 		{
@@ -275,9 +279,13 @@ void BILL_BOARD::Draw_DPP()
 
 		world = XMMatrixMultiply(world, mtxViewInv);
 
-		world *= XMMatrixScaling(Scaling.x, Scaling.y, Scaling.z);
-		world *= XMMatrixRotationRollPitchYaw(Rotation.x, Rotation.y, Rotation.z);
-		world *= XMMatrixTranslation(Position.x, Position.y, Position.z);
+		XMFLOAT3 position = *Get_Transform().Get_Position();
+		XMFLOAT3 rotate = *Get_Transform().Get_Rotation();
+		XMFLOAT3 scale = *Get_Transform().Get_Scaling();
+
+		world *= XMMatrixScaling(scale.x, scale.y, scale.z);
+		world *= XMMatrixRotationRollPitchYaw(XMConvertToRadians(rotate.x), XMConvertToRadians(rotate.y), XMConvertToRadians(rotate.z));
+		world *= XMMatrixTranslation(position.x, position.y, position.z);
 
 
 		if (!camera01.expired() && Empty_weak_ptr<CCamera>(camera01))
@@ -327,7 +335,7 @@ BILL_BOARD_ANIMATION::BILL_BOARD_ANIMATION() : WaitFrame(0.f), CreatCount(0), Pa
 
 BILL_BOARD_ANIMATION::BILL_BOARD_ANIMATION(XMFLOAT3 position, XMFLOAT2 wh) : WaitFrame(0.f), CreatCount(0), PatternCount(0), Age(0), Tx(0.f), Ty(0.f), Tw(0.f), Th(0.f), Tx_Param(-1.0f), Ty_Param(-1.0f), Pattern_Max_X(0), Pattern_Max_Y(0)
 {
-	Position = position;
+	Get_Transform().Set_Position(position);
 
 	WH = wh;
 
@@ -459,9 +467,13 @@ void BILL_BOARD_ANIMATION::Draw(float tx, float ty)
 
 		world = XMMatrixMultiply(world, mtxViewInv);
 
-		world *= XMMatrixScaling(Scaling.x, Scaling.y, Scaling.z);
-		world *= XMMatrixRotationRollPitchYaw(Rotation.x, Rotation.y, Rotation.z);
-		world *= XMMatrixTranslation(Position.x, Position.y, Position.z);
+		XMFLOAT3 position = *Get_Transform().Get_Position();
+		XMFLOAT3 rotate = *Get_Transform().Get_Rotation();
+		XMFLOAT3 scale = *Get_Transform().Get_Scaling();
+
+		world *= XMMatrixScaling(scale.x, scale.y, scale.z);
+		world *= XMMatrixRotationRollPitchYaw(XMConvertToRadians(rotate.x), XMConvertToRadians(rotate.y), XMConvertToRadians(rotate.z));
+		world *= XMMatrixTranslation(position.x, position.y, position.z);
 
 		if (!camera01.expired() && Empty_weak_ptr<CCamera>(camera01))
 		{
@@ -588,9 +600,13 @@ void BILL_BOARD_ANIMATION::Draw_DPP(float tx, float ty)
 
 		world = XMMatrixMultiply(world, mtxViewInv);
 
-		world *= XMMatrixScaling(Scaling.x, Scaling.y, Scaling.z);
-		world *= XMMatrixRotationRollPitchYaw(Rotation.x, Rotation.y, Rotation.z);
-		world *= XMMatrixTranslation(Position.x, Position.y, Position.z);
+		XMFLOAT3 position = *Get_Transform().Get_Position();
+		XMFLOAT3 rotate = *Get_Transform().Get_Rotation();
+		XMFLOAT3 scale = *Get_Transform().Get_Scaling();
+
+		world *= XMMatrixScaling(scale.x, scale.y, scale.z);
+		world *= XMMatrixRotationRollPitchYaw(XMConvertToRadians(rotate.x), XMConvertToRadians(rotate.y), XMConvertToRadians(rotate.z));
+		world *= XMMatrixTranslation(position.x, position.y, position.z);
 
 		if (!camera01.expired() && Empty_weak_ptr<CCamera>(camera01))
 		{

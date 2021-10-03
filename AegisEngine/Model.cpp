@@ -26,9 +26,9 @@ void MODEL::Draw()
 		}
 	}
 
-	const auto pos = *(Owner.lock()->Get_Position());
-	const auto rota = *(Owner.lock()->Get_Rotation());
-	const auto scale = *(Owner.lock()->Get_Scaling());
+	const auto pos = *(Owner.lock()->Get_Transform().Get_Position());
+	const auto rota = *(Owner.lock()->Get_Transform().Get_Rotation());
+	const auto scale = *(Owner.lock()->Get_Transform().Get_Scaling());
 
 	XMMATRIX matrix = XMMatrixScaling(Scaling.x, Scaling.y, Scaling.z);
 	matrix *= XMMatrixRotationRollPitchYaw(XMConvertToRadians(Rotation.x), XMConvertToRadians(Rotation.y), XMConvertToRadians(Rotation.z));

@@ -8,7 +8,7 @@
 #ifndef  SPRITE_H
 #define SPRITE_H
 
-#include	"Game_Object.h"
+#include	"GameObject.h"
 
 #include	"texture.h"
 #include	"Menu_Component.h"

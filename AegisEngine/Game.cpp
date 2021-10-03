@@ -376,7 +376,7 @@ void GAME::Load(SCENE* scene)
 
 			XMFLOAT3 scaling = XMFLOAT3(2.0f, 2.0f, 2.0f);
 
-			pmd->Set_Scaling(scaling);
+			pmd->Get_Transform().Set_Scaling(scaling);
 		}
 
 		// 敵
@@ -403,7 +403,7 @@ void GAME::Load(SCENE* scene)
 			XMFLOAT3 pos = XMFLOAT3(500.0f, 37.0f, 0.0f);
 
 			SCORE* score = Add_Game_Object<SCORE>(LAYER_NAME::UI, "score");
-			score->Set_Position(&pos);
+			score->Get_Transform().Set_Position(&pos);
 			score->Set_Additional(1);
 		}
 
@@ -538,14 +538,18 @@ void GAME::Load(SCENE* scene)
 				{
 					ENEMY* e = Add_Game_Object<ENEMY>(LAYER_NAME::GAMEOBJECT, name + number);
 
-					e->SetPosition(XMFLOAT3((float)(-10.0f + i * 5.0f), 0.0f, 10.0f));
-					e->SetRotation(XMFLOAT3(0.0f, 0.0f, 0.0f));
+					XMFLOAT3 vec((float)(-10.0f + i * 5.0f), 0.0f, 10.0f);
+					e->Get_Transform().Set_Position(vec);
+					vec = XMFLOAT3(0.0f, 0.0f, 0.0f);
+					e->Get_Transform().Set_Rotation(vec);
 
 					continue;
 				}
 
-				enemy.lock()->SetPosition(XMFLOAT3((float)(-10.0f + i * 5.0f), 0.0f, 10.0f));
-				enemy.lock()->SetRotation(XMFLOAT3(0.0f, 0.0f, 0.0f));
+				XMFLOAT3 vec((float)(-10.0f + i * 5.0f), 0.0f, 10.0f);
+				enemy.lock()->Get_Transform().Set_Position(vec);
+				vec = XMFLOAT3(0.0f, 0.0f, 0.0f);
+				enemy.lock()->Get_Transform().Set_Rotation(vec);
 
 				number.clear();
 			}

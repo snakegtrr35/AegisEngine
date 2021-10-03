@@ -143,7 +143,7 @@
     <ClCompile Include="Bullet.cpp">
       <Filter>ソース ファイル\GameObject</Filter>
     </ClCompile>
-    <ClCompile Include="Game_Object.cpp">
+    <ClCompile Include="GameObject.cpp">
       <Filter>ソース ファイル\GameObject</Filter>
     </ClCompile>
     <ClCompile Include="ModelLoader.cpp">
@@ -427,7 +427,7 @@
     <ClInclude Include="Mesh.h">
       <Filter>ソース ファイル\GameObject</Filter>
     </ClInclude>
-    <ClInclude Include="Game_Object.h">
+    <ClInclude Include="GameObject.h">
       <Filter>ソース ファイル\GameObject</Filter>
     </ClInclude>
     <ClInclude Include="Field.h">
@@ -594,6 +594,9 @@
     </ClInclude>
     <ClInclude Include="include\engine\core\uuid\uuid_utility.h">
       <Filter>include\engine\core\uuid</Filter>
+    </ClInclude>
+    <ClInclude Include="Transform.h">
+      <Filter>ソース ファイル\GameObject</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

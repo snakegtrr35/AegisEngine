@@ -1,4 +1,4 @@
-﻿#include	"Game_Object.h"
+﻿#include	"GameObject.h"
 #include	"ModelLoader.h"
 #include	"external/DirectXTex/WICTextureLoader.h"
 
@@ -146,26 +146,30 @@ void CMODEL::Draw()
 {
 	const auto camera = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<CCamera>("camera");
 
+	XMFLOAT3 position = *Get_Transform().Get_Position();
+	XMFLOAT3 rotate = *Get_Transform().Get_Rotation();
+	XMFLOAT3 scale = *Get_Transform().Get_Scaling();
+
 	if (!camera.expired() && Empty_weak_ptr<CCamera>(camera))
 	{
-		if (false == camera.lock()->Get_Visibility(Position))
+		if (false == camera.lock()->Get_Visibility(position))
 		{
 			return;
 		}
 	}
 
 	XMMATRIX matrix = XMMatrixIdentity();
-	XMMATRIX scaling = XMMatrixScaling(Scaling.x, Scaling.y, Scaling.z);
-	XMMATRIX rotation  = XMMatrixRotationRollPitchYaw(XMConvertToRadians(Rotation.x), XMConvertToRadians(Rotation.y), XMConvertToRadians(Rotation.z));
+	XMMATRIX scaling = XMMatrixScaling(scale.x, scale.y, scale.z);
+	XMMATRIX rotation  = XMMatrixRotationRollPitchYaw(XMConvertToRadians(rotate.x), XMConvertToRadians(rotate.y), XMConvertToRadians(rotate.z));
 
 	{
 		if( false == XMQuaternionEqual(XMVectorSet(0.f, 0.f, 0.f, 0.f), Quaternion) ) rotation = XMMatrixRotationQuaternion(Quaternion);
 	}
 
-	XMMATRIX transform = XMMatrixTranslation(Position.x, Position.y, Position.z);
+	XMMATRIX transform = XMMatrixTranslation(position.x, position.y, position.z);
 
 	// クォータニオン
-	if(0.0f != (Rotation.x + 0.0001f) && 0.0f != (Rotation.y + 0.0001f) && 0.0f != (Rotation.z + 0.0001f))
+	if(0.0f != (position.x + 0.0001f) && 0.0f != (position.y + 0.0001f) && 0.0f != (position.z + 0.0001f))
 	{
 		//XMVECTOR Quaternion = XMQuaternionIdentity();
 
@@ -275,18 +279,22 @@ void CMODEL::Draw_DPP()
 {
 	const auto camera = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<CCamera>("camera");
 
+	XMFLOAT3 position = *Get_Transform().Get_Position();
+	XMFLOAT3 rotate = *Get_Transform().Get_Rotation();
+	XMFLOAT3 scale = *Get_Transform().Get_Scaling();
+
 	if (!camera.expired() && Empty_weak_ptr<CCamera>(camera))
 	{
-		if (false == camera.lock()->Get_Visibility(Position))
+		if (false == camera.lock()->Get_Visibility(position))
 		{
 			return;
 		}
 	}
 
 	XMMATRIX matrix = XMMatrixIdentity();
-	XMMATRIX scaling = XMMatrixScaling(Scaling.x, Scaling.y, Scaling.z);
-	XMMATRIX rotation = XMMatrixRotationRollPitchYaw(XMConvertToRadians(Rotation.x), XMConvertToRadians(Rotation.y), XMConvertToRadians(Rotation.z));
-	XMMATRIX transform = XMMatrixTranslation(Position.x, Position.y, Position.z);
+	XMMATRIX scaling = XMMatrixScaling(scale.x, scale.y, scale.z);
+	XMMATRIX rotation = XMMatrixRotationRollPitchYaw(XMConvertToRadians(rotate.x), XMConvertToRadians(rotate.y), XMConvertToRadians(rotate.z));
+	XMMATRIX transform = XMMatrixTranslation(position.x, position.y, position.z);
 
 	matrix = XMMatrixMultiply(matrix, scaling);
 	matrix = XMMatrixMultiply(matrix, rotation);

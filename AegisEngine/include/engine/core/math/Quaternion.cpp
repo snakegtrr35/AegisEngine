@@ -1,4 +1,4 @@
-#include "Quaternion.h"
+ï»¿#include "Quaternion.h"
 #include "Vector3.h"
 #include "MathDef.h"
 
@@ -9,7 +9,7 @@ namespace Aegis
 	Quaternion::Quaternion(float _x, float _y, float _z, float _w) noexcept : x(_x), y(_y), z(_z), w(_w)
 	{}
 
-	Quaternion Lerp(const Quaternion& a, const Quaternion& b, float t)
+	Quaternion Quaternion::Lerp(const Quaternion& a, const Quaternion& b, float t)
 	{
 		Quaternion retVal;
 		retVal.x = Math::Lerp(a.x, b.x, t);
@@ -24,7 +24,7 @@ namespace Aegis
 	{
 		Quaternion retVal;
 
-		// ƒxƒNƒgƒ‹¬•ª‚Íps * qv + qs * pv + pv x qv
+		// ãƒ™ã‚¯ãƒˆãƒ«æˆåˆ†ã¯ps * qv + qs * pv + pv x qv
 		Vector3 qv(q.x, q.y, q.z);
 		Vector3 pv(p.x, p.y, p.z);
 		Vector3 newVec = p.w * qv + q.w * pv + Vector3::Cross(pv, qv);
@@ -32,8 +32,8 @@ namespace Aegis
 		retVal.y = newVec.y;
 		retVal.z = newVec.z;
 
-		// ƒXƒJƒ‰[ƒRƒ“ƒ|[ƒlƒ“ƒg‚ÍŸ‚Ì‚Æ‚¨‚è‚Å‚·B
-		// ps * qs - pvB qv
+		// ã‚¹ã‚«ãƒ©ãƒ¼ã‚³ãƒ³ãƒãƒ¼ãƒãƒ³ãƒˆã¯æ¬¡ã®ã¨ãŠã‚Šã§ã™ã€‚
+		// ps * qs - pvã€‚ qv
 		retVal.w = p.w * q.w - Vector3::Dot(pv, qv);
 
 		return retVal;

@@ -14,7 +14,7 @@ BOUNDING_OBB::~BOUNDING_OBB()
 void BOUNDING_OBB::Init()
 {
 	{
-		XMFLOAT3 pos = *Owner.lock()->Get_Position();
+		XMFLOAT3 pos = *Owner.lock()->Get_Transform().Get_Position();
 
 		Obb = BoundingOrientedBox(XMFLOAT3(0.f, 0.f, 0.f), Radius, Quaternion);
 
@@ -135,7 +135,7 @@ void BOUNDING_OBB::Draw()
 
 		// 3Dマトリックス設定
 		{
-			XMFLOAT3 pos = *Owner.lock()->Get_Position();
+			XMFLOAT3 pos = *Owner.lock()->Get_Transform().Get_Position();
 
 			const auto camera01 = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<CCamera>("camera");
 			const auto camera02 = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
@@ -177,7 +177,7 @@ void BOUNDING_OBB::Uninit()
 void BOUNDING_OBB::OverWrite()
 {
 	{
-		XMFLOAT3 pos = *Owner.lock()->Get_Position();
+		XMFLOAT3 pos = *Owner.lock()->Get_Transform().Get_Position();
 
 		Obb = BoundingOrientedBox(XMFLOAT3(0.f, 0.f, 0.f), Radius, Quaternion);
 

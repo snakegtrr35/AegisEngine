@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #ifndef _MATH_INT2_H_
 #define _MATH_INT2_H_

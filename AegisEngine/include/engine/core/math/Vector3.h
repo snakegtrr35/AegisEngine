@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 
 #ifndef _MATH_VECTOR3_H_
 #define _MATH_VECTOR3_H_
@@ -190,7 +190,7 @@ namespace Aegis
 			return v - 2.0f * Vector3::Dot(v, n) * n;
 		}
 
-		// ƒNƒH[ƒ^ƒjƒIƒ“‚É‚æ‚éVector3‚Ì•ÏŠ·
+		// ã‚¯ã‚©ãƒ¼ã‚¿ãƒ‹ã‚ªãƒ³ã«ã‚ˆã‚‹Vector3ã®å¤‰æ›
 		static Vector3 Transform(const Vector3& v, const Quaternion& q)
 		{
 			// v + 2.0 * Cross(q.xyz, Cross(q.xyz,v) + q.w * v);

@@ -1,4 +1,7 @@
-#pragma once
+﻿#pragma once
+
+#ifndef _INCLEDE_RANDOM_H_
+#define _INCLEDE_RANDOM_H_
 
 #include	<memory>
 #include	<mutex>
@@ -40,3 +43,4 @@ namespace Aegis
 		XorShift64 random64;
 	};
 }
+#endif // !_INCLEDE_RANDOM_H_

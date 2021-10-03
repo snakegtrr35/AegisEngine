@@ -1393,7 +1393,7 @@ void My_imgui::Draw_Inspector(const string& name)
 								mat44._41, mat44._42, mat44._43,mat44._44
 			};
 
-			mtr = XMMatrixTranslation(object->Get_Position()->x, object->Get_Position()->y, object->Get_Position()->z);
+			mtr = XMMatrixTranslation(object->Get_Transform().Get_Position()->x, object->Get_Transform().Get_Position()->y, object->Get_Transform().Get_Position()->z);
 			XMStoreFloat4x4(&mat44, mtr);
 
 			static float pos[16] = { mat44._11, mat44._12, mat44._13,mat44._14,
@@ -1404,8 +1404,8 @@ void My_imgui::Draw_Inspector(const string& name)
 
 			if (flag)
 			{
-				mtr = XMMatrixScaling(object->Get_Scaling()->x, object->Get_Scaling()->y, object->Get_Scaling()->z);
-				mtr *= XMMatrixTranslation(object->Get_Position()->x, object->Get_Position()->y, object->Get_Position()->z);
+				mtr = XMMatrixScaling(object->Get_Transform().Get_Scaling()->x, object->Get_Transform().Get_Scaling()->y, object->Get_Transform().Get_Scaling()->z);
+				mtr *= XMMatrixTranslation(object->Get_Transform().Get_Position()->x, object->Get_Transform().Get_Position()->y, object->Get_Transform().Get_Position()->z);
 				XMStoreFloat4x4(&mat44, mtr);
 
 				pos[0] = mat44._11, pos[1] = mat44._12, pos[2] = mat44._13, pos[3] = mat44._14;
@@ -1483,10 +1483,10 @@ void EditTransform(const float* cameraView, float* cameraProjection, float* matr
 		mCurrentGizmoOperation = ImGuizmo::SCALE;
 
 	{
-		float	Translation[3] = { object->Get_Position()->x, object->Get_Position()->y, object->Get_Position()->z };
-		float	Rotation[3] = { object->Get_Rotation()->x, object->Get_Rotation()->y, object->Get_Rotation()->z };
-		float	R[3] = { object->Get_Rotation()->x, object->Get_Rotation()->y, object->Get_Rotation()->z };
-		float	Scale[3] = { object->Get_Scaling()->x, object->Get_Scaling()->y, object->Get_Scaling()->z };
+		float	Translation[3] = { object->Get_Transform().Get_Position()->x, object->Get_Transform().Get_Position()->y, object->Get_Transform().Get_Position()->z };
+		float	Rotation[3] = { object->Get_Transform().Get_Rotation()->x, object->Get_Transform().Get_Rotation()->y, object->Get_Transform().Get_Rotation()->z };
+		float	R[3] = { object->Get_Transform().Get_Rotation()->x, object->Get_Transform().Get_Rotation()->y, object->Get_Transform().Get_Rotation()->z };
+		float	Scale[3] = { object->Get_Transform().Get_Scaling()->x, object->Get_Transform().Get_Scaling()->y, object->Get_Transform().Get_Scaling()->z };
 
 		ImGuizmo::DecomposeMatrixToComponents(matrix, Translation, Rotation, Scale);
 
@@ -1502,13 +1502,13 @@ void EditTransform(const float* cameraView, float* cameraProjection, float* matr
 			XMFLOAT3 vec2/*(Rotation[0], Rotation[1], Rotation[2])*/;
 			XMFLOAT3 vec3(Scale[0], Scale[1], Scale[2]);
 
-			object->Set_Position(vec1);
+			object->Get_Transform().Set_Position(vec1);
 			//object->Set_Rotation(vec2);
-			object->Set_Scaling(vec3);
+			object->Get_Transform().Set_Scaling(vec3);
 
 			ImGui::DragFloat3("Rotation", R, 0.2f, -180.f, 180.f);
 			vec2 = XMFLOAT3(R[0], R[1], R[2]);
-			object->Set_Rotation(vec2);
+			object->Get_Transform().Set_Rotation(vec2);
 		}
 	}
 

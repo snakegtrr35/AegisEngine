@@ -18,9 +18,8 @@
 
 BULLET::BULLET() : MoveVector(XMFLOAT3(0.0f, 0.0f, 0.0f))
 {
-	Position = XMFLOAT3(0.0f, 0.0f, 0.0f);
-
-	Scaling = XMFLOAT3(0.1f, 0.1f, 0.1f);
+	XMFLOAT3 Scaling = XMFLOAT3(0.1f, 0.1f, 0.1f);
+	Get_Transform().Set_Scaling(Scaling);
 
 	Model = make_unique<CMODEL>();
 
@@ -29,9 +28,10 @@ BULLET::BULLET() : MoveVector(XMFLOAT3(0.0f, 0.0f, 0.0f))
 
 BULLET::BULLET(XMFLOAT3& position, XMFLOAT3& move_vector) : MoveVector(move_vector)
 {
-	Position = position;
+	Get_Transform().Set_Position(position);
 
-	Scaling = XMFLOAT3(0.1f, 0.1f, 0.1f);
+	XMFLOAT3 Scaling = XMFLOAT3(0.1f, 0.1f, 0.1f);
+	Get_Transform().Set_Scaling(Scaling);
 
 	Model = make_unique<CMODEL>();
 
@@ -73,9 +73,9 @@ void BULLET::Draw_DPP()
 
 void BULLET::Update(float delta_time)
 {
-	Position.x += MoveVector.x * delta_time * 5.0f;
-	Position.y += MoveVector.y * delta_time * 5.0f;
-	Position.z += MoveVector.z * delta_time * 5.0f;
+	Get_Transform().Get_Position()->x += MoveVector.x * delta_time * 5.0f;
+	Get_Transform().Get_Position()->y += MoveVector.y * delta_time * 5.0f;
+	Get_Transform().Get_Position()->z += MoveVector.z * delta_time * 5.0f;
 
 	if (HP <= 0)
 	{
@@ -92,7 +92,7 @@ void BULLET::Update(float delta_time)
 				const int x = std::stoi(str);
 
 				BILL_BOARD_ANIMATION* bba = CManager::Get_Instance()->Get_Scene()->Add_Game_Object<BILL_BOARD_ANIMATION>(LAYER_NAME::EFFECT, "explosion" + to_string(x));
-				bba->Set_Position(&Position);
+				bba->Get_Transform().Set_Position(Get_Transform().Get_Position());
 				bba->SetWH(XMFLOAT2(1.0f, 1.0f));
 				bba->SetParam(6, 4, 4);
 				bba->Init();
@@ -135,7 +135,7 @@ void BULLET::Update(float delta_time)
 						const int x = std::stoi(str);
 
 						BILL_BOARD_ANIMATION* bba = CManager::Get_Instance()->Get_Scene()->Add_Game_Object<BILL_BOARD_ANIMATION>(LAYER_NAME::EFFECT, "explosion" + to_string(x));
-						bba->Set_Position(&Position);
+						bba->Get_Transform().Set_Position(Get_Transform().Get_Position());
 						bba->SetWH(XMFLOAT2(1.0f, 1.0f));
 						bba->SetParam(6, 4, 4);
 						bba->Init();
@@ -170,7 +170,7 @@ void BULLET::Update(float delta_time)
 							const int x = std::stoi(str);
 
 							BILL_BOARD_ANIMATION* bba = CManager::Get_Instance()->Get_Scene()->Add_Game_Object<BILL_BOARD_ANIMATION>(LAYER_NAME::EFFECT, "explosion" + to_string(x));
-							bba->Set_Position(&Position);
+							bba->Get_Transform().Set_Position(Get_Transform().Get_Position());
 							bba->SetWH(XMFLOAT2(1.0f, 1.0f));
 							bba->SetParam(6, 4, 4);
 							bba->Init();
@@ -189,9 +189,9 @@ void BULLET::Update(float delta_time)
 		}
 	}
 
-	Model->Set_Position(Position);
-	Model->Set_Rotation(Rotation);
-	Model->Set_Scaling(Scaling);
+	Model->Get_Transform().Set_Position(Get_Transform().Get_Position());
+	Model->Get_Transform().Set_Rotation(Get_Transform().Get_Rotation());
+	Model->Get_Transform().Set_Scaling(Get_Transform().Get_Scaling());
 
 	GAME_OBJECT::Update(delta_time);
 }

@@ -29,8 +29,8 @@ void BOUNDING_CAPSULE::Draw()
 	//XMFLOAT3 p(pos.x, pos.y, pos.z);
 
 	{
-		XMFLOAT3 pos = *Owner.lock()->Get_Position();
-		XMFLOAT3 rota = *Owner.lock()->Get_Rotation();
+		XMFLOAT3 pos = *Owner.lock()->Get_Transform().Get_Position();
+		XMFLOAT3 rota = *Owner.lock()->Get_Transform().Get_Rotation();
 
 		pos = pos + Position;
 		rota = rota + Rotation;

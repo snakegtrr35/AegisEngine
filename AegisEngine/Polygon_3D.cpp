@@ -1,4 +1,4 @@
-﻿#include	"Game_Object.h"
+﻿#include	"GameObject.h"
 #include	"Polygon_3D.h"
 #include	"texture.h"
 #include	"Input.h"
@@ -29,11 +29,7 @@ POLYGON_3D::POLYGON_3D(XMFLOAT3 position, XMFLOAT3 xyz)
 	pVertexBuffer = nullptr;
 	Texture = nullptr;
 
-	Scaling = XMFLOAT3(1.0f, 1.0f, 1.0f);
-
-	Rotation = XMFLOAT3(0.0f, 0.0f, 0.0f);
-
-	Position = position;
+	Get_Transform().Set_Position(position);
 	XYZ = xyz;
 
 	// テクスチャの設定
@@ -216,9 +212,13 @@ void POLYGON_3D::Draw(void)
 	{
 		XMMATRIX world;
 
-		world = XMMatrixScaling(Scaling.x , Scaling.y, Scaling.z);
-		world *= XMMatrixRotationRollPitchYaw( XMConvertToRadians(Rotation.x), XMConvertToRadians(Rotation.y), XMConvertToRadians(Rotation.z) );
-		world *= XMMatrixTranslation(Position.x, Position.y, Position.z);
+		XMFLOAT3 position = *Get_Transform().Get_Position();
+		XMFLOAT3 rotate = *Get_Transform().Get_Rotation();
+		XMFLOAT3 scale = *Get_Transform().Get_Scaling();
+
+		XMMATRIX matrix = XMMatrixScaling(scale.x, scale.y, scale.z);
+		matrix *= XMMatrixRotationRollPitchYaw(XMConvertToRadians(rotate.x), XMConvertToRadians(rotate.y), XMConvertToRadians(rotate.z));
+		matrix *= XMMatrixTranslation(position.x, position.y, position.z);
 
 		const auto camera01 = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<CCamera>("camera");
 		const auto camera02 = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
@@ -287,9 +287,13 @@ void POLYGON_3D::Draw_DPP(void)
 	{
 		XMMATRIX world;
 
-		world = XMMatrixScaling(Scaling.x, Scaling.y, Scaling.z);
-		world *= XMMatrixRotationRollPitchYaw(XMConvertToRadians(Rotation.x), XMConvertToRadians(Rotation.y), XMConvertToRadians(Rotation.z));
-		world *= XMMatrixTranslation(Position.x, Position.y, Position.z);
+		XMFLOAT3 position = *Get_Transform().Get_Position();
+		XMFLOAT3 rotate = *Get_Transform().Get_Rotation();
+		XMFLOAT3 scale = *Get_Transform().Get_Scaling();
+
+		XMMATRIX matrix = XMMatrixScaling(scale.x, scale.y, scale.z);
+		matrix *= XMMatrixRotationRollPitchYaw(XMConvertToRadians(rotate.x), XMConvertToRadians(rotate.y), XMConvertToRadians(rotate.z));
+		matrix *= XMMatrixTranslation(position.x, position.y, position.z);
 
 		const auto camera01 = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<CCamera>("camera");
 		const auto camera02 = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
@@ -328,9 +332,9 @@ void POLYGON_3D::Uninit(void)
 //==============================
 // ポジションの設定
 //==============================
-void POLYGON_3D::SetPosition(const XMFLOAT3 position)
+void POLYGON_3D::SetPosition(XMFLOAT3& position)
 {
-	Position = position;
+	Get_Transform().Set_Position(position);
 }
 
 //==============================
@@ -344,9 +348,9 @@ void POLYGON_3D::SetXYZ(const XMFLOAT3 xyz)
 //==============================
 // 拡大縮小の値の設定
 //==============================
-void POLYGON_3D::SetScaling(XMFLOAT3 scaling)
+void POLYGON_3D::SetScaling(XMFLOAT3& scaling)
 {
-	Scaling = scaling;
+	Get_Transform().Set_Scaling(scaling);
 }
 
 //==============================
@@ -359,15 +363,15 @@ void POLYGON_3D::SetTexture(const string& const file_name)
 
 XMFLOAT3* const POLYGON_3D::Get_Position()
 {
-	return &Position;
+	return Get_Transform().Get_Position();
 }
 
 XMFLOAT3* const POLYGON_3D::Get_Rotation()
 {
-	return &Rotation;
+	return Get_Transform().Get_Rotation();
 }
 
 XMFLOAT3* const POLYGON_3D::Get_Scaling()
 {
-	return &Scaling;
+	return Get_Transform().Get_Scaling();
 }

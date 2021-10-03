@@ -4,7 +4,7 @@
 #define COMPONENT_H
 
 class GAME_OBJECT;
-//#include	"Game_Object.h"
+//#include	"GameObject.h"
 //#include	"manager.h"
 
 // コンポーネントクラス

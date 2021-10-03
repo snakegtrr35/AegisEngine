@@ -1,4 +1,4 @@
-﻿#include	"Game_Object.h"
+﻿#include	"GameObject.h"
 #include	"Bill.h"
 #include	"ModelLoader.h"
 #include	"Component.h"
@@ -62,9 +62,9 @@ void BILL::Draw_DPP()
 
 void BILL::Update(float delta_time)
 {
-	Model->Set_Position(Position);
-	Model->Set_Rotation(Rotation);
-	Model->Set_Scaling(Scaling);
+	Model->Get_Transform().Set_Position(Get_Transform().Get_Position());
+	Model->Get_Transform().Set_Rotation(Get_Transform().Get_Rotation());
+	Model->Get_Transform().Set_Scaling(Get_Transform().Get_Scaling());
 
 	Model->Update(delta_time);
 

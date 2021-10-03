@@ -93,7 +93,7 @@ public:
 	* @param position 座標
 	* @details 座標の設定をする関数
 	*/
-	void SetPosition(const XMFLOAT3 position);
+	void SetPosition(XMFLOAT3& position);
 
 	/**
 	* @brief サイズの設定関数

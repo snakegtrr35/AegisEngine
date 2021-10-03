@@ -145,7 +145,10 @@ void EFFEKSEER_MANAGER::Update(float delta_time)
 {
 	auto player = CManager::Get_Instance()->Get_Scene()->Get_Game_Object("player");
 
-	if(nullptr != player) Set_Location("test", XMFLOAT3(player->Get_Position()->x, player->Get_Position()->y, player->Get_Position()->z));
+	XMFLOAT3* position = player->Get_Transform().Get_Position();
+
+	if(nullptr != player)
+		Set_Location("test", XMFLOAT3(position->x, position->y, position->z));
 
 	//Manager->SetLocation(Handles["test"], Effekseer::Vector3D(player->Get_Position()->x, player->Get_Position()->y, player->Get_Position()->z));
 	Manager->SetScale(Handles["test"], 0.5f, 0.5f, 0.5f);
@@ -184,9 +187,9 @@ void EFFEKSEER_MANAGER::Set()
 
 		if (!camera.expired() && Empty_weak_ptr<CCamera>(camera))
 		{
-			position.X = camera.lock()->Get_Position()->x;
-			position.Y = camera.lock()->Get_Position()->y;
-			position.Z = camera.lock()->Get_Position()->z;
+			position.X = camera.lock()->Get_Transform().Get_Position()->x;
+			position.Y = camera.lock()->Get_Transform().Get_Position()->y;
+			position.Z = camera.lock()->Get_Transform().Get_Position()->z;
 
 			XMFLOAT3 vec;
 			XMStoreFloat3(&vec, *camera.lock()->Get_At());
@@ -205,9 +208,9 @@ void EFFEKSEER_MANAGER::Set()
 		}
 		else
 		{
-			position.X = D_camera.lock()->Get_Position()->x;
-			position.Y = D_camera.lock()->Get_Position()->y;
-			position.Z = D_camera.lock()->Get_Position()->z;
+			position.X = D_camera.lock()->Get_Transform().Get_Position()->x;
+			position.Y = D_camera.lock()->Get_Transform().Get_Position()->y;
+			position.Z = D_camera.lock()->Get_Transform().Get_Position()->z;
 
 			XMFLOAT3 vec;
 			XMStoreFloat3(&vec, *D_camera.lock()->Get_At());
@@ -271,7 +274,9 @@ void EFFEKSEER_MANAGER::Play(const string& name)
 
 	auto player = CManager::Get_Instance()->Get_Scene()->Get_Game_Object("player");
 
-	Handles[name] = Manager->Play(Effects[name], player->Get_Position()->x, player->Get_Position()->y, player->Get_Position()->z);
+	XMFLOAT3* position = player->Get_Transform().Get_Position();
+
+	Handles[name] = Manager->Play(Effects[name], position->x, position->y, position->z);
 
 	//Effects[name].Handle = Manager->Play(Effects[name].Effect, 0, 0, 0);
 }

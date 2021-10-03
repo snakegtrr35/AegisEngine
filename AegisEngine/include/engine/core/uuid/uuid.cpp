@@ -1,9 +1,8 @@
-#include "uuid.h"
+﻿#include "uuid.h"
 
 namespace Aegis
 {
-	Uuid Uuid::Insrance;
-	std::mutex Uuid::mutex;
+	std::mutex Uuid::lock_mutex;
 
 	uuids::uuid_random_generator<XorShift32> Uuid::gen;
 
@@ -22,7 +21,19 @@ namespace Aegis
 
 	uuid Uuid::GetUuid() noexcept
 	{
-		std::lock_guard<std::mutex> lock(mutex);
+		std::lock_guard<std::mutex> lock(lock_mutex);
 		return gen();
+	}
+
+	void Uuid::ReSeed(std::uint64_t seed) noexcept
+	{
+		std::lock_guard<std::mutex> lock(lock_mutex);
+
+		XorShift32 generator;
+		generator.seed(seed);
+
+		uuids::uuid_random_generator<XorShift32> temp_gen{ generator };
+
+		gen = temp_gen;
 	}
 }
