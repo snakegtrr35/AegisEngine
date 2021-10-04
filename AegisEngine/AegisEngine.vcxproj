@@ -176,6 +176,7 @@
     <ClInclude Include="include\engine\core\uuid\uuid_utility.h" />
     <ClInclude Include="Input.h" />
     <ClInclude Include="Keyboard.h" />
+    <ClInclude Include="KeyCode.h" />
     <ClInclude Include="Light.h" />
     <FxCompile Include="ClusterCS.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Compute</ShaderType>

@@ -5,6 +5,9 @@
 
 #include <array>
 
+#undef min
+#undef max
+
 namespace Aegis
 {
 	inline constexpr float FloatFromBits(const std::uint32_t i, const float min = 0.f, const float max = 1.0f) noexcept

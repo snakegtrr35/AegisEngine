@@ -14,9 +14,13 @@
 
 #include	<stdio.h>
 #include	<stdlib.h>
-#define NOMINMAX
-#include	<windows.h>
-#undef NOMINMAX
+
+//#define NOMINMAX
+//#include	<windows.h>
+
+#undef min
+#undef max
+
 #include	<assert.h>
 
 #include	<DirectXMath.h>

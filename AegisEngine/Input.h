@@ -3,9 +3,9 @@
 #ifndef INPUT_H
 #define INPUT_H
 
+#include	"Keyboard.h"
 #include	"main.h"
 #include	"Mouse.h"
-#include	"Keyboard.h"
 #include	"Xbox.h"
 
 #include <Commctrl.h>

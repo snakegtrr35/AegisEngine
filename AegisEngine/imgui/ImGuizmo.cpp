@@ -27,6 +27,9 @@
 #include "imgui_internal.h"
 #include "ImGuizmo.h"
 
+#undef min
+#undef max
+
 // includes patches for multiview from
 // https://github.com/CedricGuillemet/ImGuizmo/issues/15
 

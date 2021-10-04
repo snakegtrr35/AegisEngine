@@ -3,6 +3,9 @@
 #ifndef MESH_H
 #define MESH_H
 
+#undef min
+#undef max
+
 #include	<assimp/Importer.hpp>
 #include	<assimp/cimport.h>
 #include	<assimp/scene.h>

@@ -3,6 +3,8 @@
 #ifndef MODEL_LOADER_H
 #define MODEL_LOADER_H
 
+#undef min
+#undef max
 
 #include	<assimp/Importer.hpp>
 #include	<assimp/cimport.h>

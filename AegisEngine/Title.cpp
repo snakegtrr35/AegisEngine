@@ -83,7 +83,7 @@ void TITLE::Update(float delta_time)
 		{
 			static short cnt = 0;
 
-			if (KEYBOARD::Trigger_Keyboard(VK_UP))
+			if (KEYBOARD::Trigger_Keyboard(BYTE(Aegis::KeyCode::UP)))
 			{
 				cnt--;
 				cnt = Aegis::Math::Loop_Minus(cnt, 3);
@@ -91,7 +91,7 @@ void TITLE::Update(float delta_time)
 				AUDIO_MANAGER::Play_Sound_Object(SOUND_INDEX::SOUND_INDEX_SENTAKU, false);
 			}
 
-			if (KEYBOARD::Trigger_Keyboard(VK_DOWN))
+			if (KEYBOARD::Trigger_Keyboard(BYTE(Aegis::KeyCode::DOWN)))
 			{
 				cnt++;
 				cnt = Aegis::Math::Loop_Plus(cnt, 3);

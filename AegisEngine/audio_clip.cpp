@@ -1,6 +1,9 @@
 ﻿#include "main.h"
 #include "audio_clip.h"
 
+#define NOMINMAX
+#include	<windows.h>
+
 #include <opusfile.h>
 #include <vorbis/vorbisfile.h>
 // libopusとopusfileをリンク

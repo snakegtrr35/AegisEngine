@@ -3,7 +3,7 @@
 #ifndef KEYBOARD_H
 #define KEYBOARD_H
 
-#include	<Windows.h>
+#include	"KeyCode.h"
 
 // 0～9
 #define VK_0 0x30

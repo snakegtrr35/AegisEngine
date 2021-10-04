@@ -9,6 +9,9 @@
 #ifndef FBXmodel_H
 #define FBXmodel_H
 
+#undef min
+#undef max
+
 #include	<assimp/Importer.hpp>
 #include	<assimp/cimport.h>
 #include	<assimp/scene.h>

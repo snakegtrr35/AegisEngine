@@ -6,6 +6,9 @@
 #include	"Component.h"
 #include	"Mesh.h"
 
+#undef min
+#undef max
+
 #include	<assimp/Importer.hpp>
 #include	<assimp/cimport.h>
 #include	<assimp/scene.h>

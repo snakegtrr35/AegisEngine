@@ -1,5 +1,9 @@
 ﻿#include	"Keyboard.h"
 
+#define WIN32_LEAN_AND_MEAN
+#define NOMINMAX
+#include	<windows.h>
+
 BYTE KEYBOARD::KeyTable[256];
 BYTE KEYBOARD::Old_Key_Table[256];
 
