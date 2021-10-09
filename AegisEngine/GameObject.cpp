@@ -6,7 +6,7 @@
 
 unordered_set<string> GAME_OBJECT::Object_Name_Map;
 
-GAME_OBJECT::GAME_OBJECT() : Object_Name("none"), DestroyFlag(false)
+GAME_OBJECT::GAME_OBJECT() : Object_Name("none"), DestroyFlag(false), Uuid(Aegis::Uuid::GetUuid())
 {
 	Component.reset(new COMPONENT_MANEGER());
 }

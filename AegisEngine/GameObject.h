@@ -10,6 +10,7 @@
 
 #include	"Component_Manager.h"
 #include	"Transform.h"
+#include	"include/engine/core/uuid/uuid.h"
 
  /**
  * @brief ゲームオブジェクトクラス
@@ -41,6 +42,8 @@ protected:
 
 	//! コンポーネント
 	unique_ptr<COMPONENT_MANEGER, Delete> Component;
+
+	Aegis::uuid Uuid;
 
 	////! クオータニオン
 	//XMVECTOR Quaternion;
@@ -237,6 +240,8 @@ public:
 	void serialize( Archive& ar)
 	{
 		ar(Object_Name);
+
+		ar(Uuid);
 
 		//ar(Position);
 		//
