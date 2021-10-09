@@ -85,6 +85,58 @@ void GAME::Update(float delta_time)
 	{
 		sprite_anime.reset(nullptr);
 
+		if(Flag)
+		{
+			Flag = false;
+
+			{
+				COLOR color = COLOR(0.0f, 1.0f, 1.0f, 1.0f);
+			
+				auto hp = this->Get_Game_Object<SPRITE>("hp_ui");
+			
+				hp.lock()->SetColor(color);
+			
+				auto children = hp.lock()->Get_Child_Sptite();
+			
+				for (const auto& child : *children)
+				{
+					if (string("hp") == child->Name)
+					{
+						child->Child->SetColor(color);
+					}
+				}
+			}
+
+			string name("enemy");
+			string number;
+		
+			for (int i = 0; i < 5; i++)
+			{
+				number = to_string(i);
+		
+				auto enemy = this->Get_Game_Object<ENEMY>(name + number);
+		
+				if (enemy.expired())
+				{
+					ENEMY* e = Add_Game_Object<ENEMY>(LAYER_NAME::GAMEOBJECT, name + number);
+		
+					XMFLOAT3 vec((float)(-10.0f + i * 5.0f), 0.0f, 10.0f);
+					e->Get_Transform().Set_Position(vec);
+					vec = XMFLOAT3(0.0f, 0.0f, 0.0f);
+					e->Get_Transform().Set_Rotation(vec);
+		
+					continue;
+				}
+		
+				XMFLOAT3 vec((float)(-10.0f + i * 5.0f), 0.0f, 10.0f);
+				enemy.lock()->Get_Transform().Set_Position(vec);
+				vec = XMFLOAT3(0.0f, 0.0f, 0.0f);
+				enemy.lock()->Get_Transform().Set_Rotation(vec);
+		
+				number.clear();
+			}
+		}
+
 		SCENE::Update(delta_time);
 
 		// ポーズ画面の切り替え
@@ -284,30 +336,30 @@ void GAME::Uninit()
 		this->Delete_Game_Objects<BILL_BOARD_ANIMATION>();
 	}
 
-#ifdef _DEBUG
-	static bool flag = true;
-
-	if (flag)
-	{
-		const type_info& id = typeid(*this);
-
-		string name(id.name());
-
-		// 置換
-		Replace_String(name, "class ", "      ");
-		Replace_String(name, "*", " ");
-		name.erase(remove_if(name.begin(), name.end(), isspace), name.end());
-
-		std::ofstream file(name + ".dat", std::ios::binary);
-
-		bool f = file.is_open();
-
-		cereal::BinaryOutputArchive archive(file);
-		archive(*this);
-
-		flag = false;
-	}
-#endif // _DEBUG
+//#ifdef _DEBUG
+//	static bool flag = true;
+//
+//	if (flag)
+//	{
+//		const type_info& id = typeid(*this);
+//
+//		string name(id.name());
+//
+//		// 置換
+//		Replace_String(name, "class ", "      ");
+//		Replace_String(name, "*", " ");
+//		name.erase(remove_if(name.begin(), name.end(), isspace), name.end());
+//
+//		std::ofstream file(name + ".dat", std::ios::binary);
+//
+//		bool f = file.is_open();
+//
+//		cereal::BinaryOutputArchive archive(file);
+//		archive(*this);
+//
+//		flag = false;
+//	}
+//#endif // _DEBUG
 
 	SCENE::Uninit();
 
@@ -365,14 +417,14 @@ void GAME::Load(SCENE* scene)
 		{
 			MESH_FIELD* mf = Add_Game_Object<MESH_FIELD>(LAYER_NAME::BACKGROUND, "feild");
 
-			//mf->SetTexture("asphalt01-pattern.jpg");
+			mf->SetTexture("asphalt01-pattern.jpg");
 		}
 
 
 		// メッシュドーム
 		{
 			MESH_DOOM* pmd = Add_Game_Object<MESH_DOOM>(LAYER_NAME::BACKGROUND, "doom");
-			pmd->Init();
+			//pmd->Init();
 
 			XMFLOAT3 scaling = XMFLOAT3(2.0f, 2.0f, 2.0f);
 
@@ -384,15 +436,41 @@ void GAME::Load(SCENE* scene)
 			string name("enemy");
 			string number;
 
+			//for (int i = 0; i < 5; i++)
+			//{
+			//	number = to_string(i);
+			//
+			//	ENEMY* enemy = Add_Game_Object<ENEMY>(LAYER_NAME::GAMEOBJECT, name + number);
+			//	/*enemy->SetPosition(XMFLOAT3((float)(-10.0f + i * 5.0f), 0.0f, 10.0f));
+			//	enemy->SetRotation(XMFLOAT3(0.0f, 0.0f, 0.0f));
+			//
+			//	auto component = enemy->Get_Component();*/
+			//
+			//	number.clear();
+			//}
+
 			for (int i = 0; i < 5; i++)
 			{
 				number = to_string(i);
 
-				ENEMY* enemy = Add_Game_Object<ENEMY>(LAYER_NAME::GAMEOBJECT, name + number);
-				/*enemy->SetPosition(XMFLOAT3((float)(-10.0f + i * 5.0f), 0.0f, 10.0f));
-				enemy->SetRotation(XMFLOAT3(0.0f, 0.0f, 0.0f));
+				auto enemy = Add_Game_Object<ENEMY>(LAYER_NAME::GAMEOBJECT, name + number);
 
-				auto component = enemy->Get_Component();*/
+				if (enemy)
+				{
+					//ENEMY* e = Add_Game_Object<ENEMY>(LAYER_NAME::GAMEOBJECT, name + number);
+
+					XMFLOAT3 vec((float)(-10.0f + i * 5.0f), 0.0f, 10.0f);
+					enemy->Get_Transform().Set_Position(vec);
+					vec = XMFLOAT3(0.0f, 0.0f, 0.0f);
+					enemy->Get_Transform().Set_Rotation(vec);
+
+					continue;
+				}
+
+				XMFLOAT3 vec((float)(-10.0f + i * 5.0f), 0.0f, 10.0f);
+				enemy->Get_Transform().Set_Position(vec);
+				vec = XMFLOAT3(0.0f, 0.0f, 0.0f);
+				enemy->Get_Transform().Set_Rotation(vec);
 
 				number.clear();
 			}
@@ -497,66 +575,90 @@ void GAME::Load(SCENE* scene)
 
 	{
 		// メッシュフィールド
-		{
-			auto mf = scene->Get_Game_Object<MESH_FIELD>("feild");
+		//{
+		//	auto mf = scene->Get_Game_Object<MESH_FIELD>("feild");
+		//
+		//	if (!mf.expired())
+		//	{
+		//		mf.lock()->SetTexture("asphalt01-pattern.jpg");
+		//	}
+		//}
 
-			if (!mf.expired())
-			{
-				mf.lock()->SetTexture("asphalt01-pattern.jpg");
-			}
-		}
+		//{
+		//	COLOR color = COLOR(0.0f, 1.0f, 1.0f, 1.0f);
+		//
+		//	auto hp = scene->Get_Game_Object<SPRITE>("hp_ui");
+		//
+		//	hp.lock()->SetColor(color);
+		//
+		//	auto children = hp.lock()->Get_Child_Sptite();
+		//
+		//	for (const auto& child : *children)
+		//	{
+		//		if (string("hp") == child->Name)
+		//		{
+		//			child->Child->SetColor(color);
+		//		}
+		//	}
+		//}
 
-		{
-			COLOR color = COLOR(0.0f, 1.0f, 1.0f, 1.0f);
-
-			auto hp = scene->Get_Game_Object<SPRITE>("hp_ui");
-
-			hp.lock()->SetColor(color);
-
-			auto children = hp.lock()->Get_Child_Sptite();
-
-			for (const auto& child : *children)
-			{
-				if (string("hp") == child->Name)
-				{
-					child->Child->SetColor(color);
-				}
-			}
-		}
-
-		{
-			string name("enemy");
-			string number;
-
-			for (int i = 0; i < 5; i++)
-			{
-				number = to_string(i);
-
-				auto enemy = scene->Get_Game_Object<ENEMY>(name + number);
-
-				if (enemy.expired())
-				{
-					ENEMY* e = Add_Game_Object<ENEMY>(LAYER_NAME::GAMEOBJECT, name + number);
-
-					XMFLOAT3 vec((float)(-10.0f + i * 5.0f), 0.0f, 10.0f);
-					e->Get_Transform().Set_Position(vec);
-					vec = XMFLOAT3(0.0f, 0.0f, 0.0f);
-					e->Get_Transform().Set_Rotation(vec);
-
-					continue;
-				}
-
-				XMFLOAT3 vec((float)(-10.0f + i * 5.0f), 0.0f, 10.0f);
-				enemy.lock()->Get_Transform().Set_Position(vec);
-				vec = XMFLOAT3(0.0f, 0.0f, 0.0f);
-				enemy.lock()->Get_Transform().Set_Rotation(vec);
-
-				number.clear();
-			}
-		}
+		//{
+		//	string name("enemy");
+		//	string number;
+		//
+		//	for (int i = 0; i < 5; i++)
+		//	{
+		//		number = to_string(i);
+		//
+		//		auto enemy = scene->Get_Game_Object<ENEMY>(name + number);
+		//
+		//		if (enemy.expired())
+		//		{
+		//			ENEMY* e = Add_Game_Object<ENEMY>(LAYER_NAME::GAMEOBJECT, name + number);
+		//
+		//			XMFLOAT3 vec((float)(-10.0f + i * 5.0f), 0.0f, 10.0f);
+		//			e->Get_Transform().Set_Position(vec);
+		//			vec = XMFLOAT3(0.0f, 0.0f, 0.0f);
+		//			e->Get_Transform().Set_Rotation(vec);
+		//
+		//			continue;
+		//		}
+		//
+		//		XMFLOAT3 vec((float)(-10.0f + i * 5.0f), 0.0f, 10.0f);
+		//		enemy.lock()->Get_Transform().Set_Position(vec);
+		//		vec = XMFLOAT3(0.0f, 0.0f, 0.0f);
+		//		enemy.lock()->Get_Transform().Set_Rotation(vec);
+		//
+		//		number.clear();
+		//	}
+		//}
 	}
 
 	scene->SCENE::Init();
+
+#ifdef _DEBUG
+
+	if (false == flag)
+	{
+		const type_info& id = typeid(*scene);
+
+		string name(id.name());
+
+		// 置換
+		Replace_String(name, "class ", "      ");
+		Replace_String(name, "*", " ");
+		name.erase(remove_if(name.begin(), name.end(), isspace), name.end());
+
+		std::ofstream file(name + ".dat", std::ios::binary);
+
+		bool f = file.is_open();
+
+		cereal::BinaryOutputArchive archive(file);
+		archive(*scene);
+
+		flag = false;
+	}
+#endif // _DEBUG
 
 	scene->SetLockLoad();
 }

@@ -46,6 +46,37 @@ void RESULT::Draw()
 {
 	if (false == GetLockLoad())
 	{
+		if (Flag)
+		{
+			Flag = false;
+
+			{
+				auto result = this->Get_Game_Object<SPRITE>("result");
+
+				if (!result.expired())
+				{
+					XMFLOAT2 pos(SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.5f);
+
+					result.lock()->SetPosition(pos);
+
+					result.lock()->SetSize(XMFLOAT4(SCREEN_HEIGHT * 0.5f, SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.5f, SCREEN_WIDTH * 0.5f));
+
+					if (RESULT::Clear_Flag)
+					{
+						result.lock()->SetTexture(string("game_clear.png"));
+
+						//AUDIO_MANAGER::Play_Sound_Object(SOUND_INDEX::SOUND_INDEX_CLEAR, false);
+					}
+					else
+					{
+						result.lock()->SetTexture(string("game_over.png"));
+
+						//AUDIO_MANAGER::Play_Sound_Object(SOUND_INDEX::SOUND_INDEX_GAMEOVER, false);
+					}
+				}
+			}
+		}
+
 		SCENE::Draw();
 	}
 	else
@@ -87,6 +118,7 @@ void RESULT::Update(float delta_time)
 		if (FADE::End_Fade())
 		{
 			SCENE_MANAGER::Set_Scene<TITLE>();
+			Flag = true;
 		}
 
 	}
@@ -166,25 +198,25 @@ void RESULT::Load(SCENE* scene)
 		result->SetSize(XMFLOAT4(SCREEN_HEIGHT * 0.5f, SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.5f, SCREEN_WIDTH * 0.5f));
 	}
 	
-	{
-		auto result = scene->Get_Game_Object<SPRITE>("result");
-
-		if (!result.expired())
-		{
-			if (RESULT::Clear_Flag)
-			{
-				result.lock()->SetTexture(string("game_clear.png"));
-
-				//AUDIO_MANAGER::Play_Sound_Object(SOUND_INDEX::SOUND_INDEX_CLEAR, false);
-			}
-			else
-			{
-				result.lock()->SetTexture(string("game_over.png"));
-
-				//AUDIO_MANAGER::Play_Sound_Object(SOUND_INDEX::SOUND_INDEX_GAMEOVER, false);
-			}
-		}
-	}
+	//{
+	//	auto result = scene->Get_Game_Object<SPRITE>("result");
+	//
+	//	if (!result.expired())
+	//	{
+	//		if (RESULT::Clear_Flag)
+	//		{
+	//			result.lock()->SetTexture(string("game_clear.png"));
+	//
+	//			//AUDIO_MANAGER::Play_Sound_Object(SOUND_INDEX::SOUND_INDEX_CLEAR, false);
+	//		}
+	//		else
+	//		{
+	//			result.lock()->SetTexture(string("game_over.png"));
+	//
+	//			//AUDIO_MANAGER::Play_Sound_Object(SOUND_INDEX::SOUND_INDEX_GAMEOVER, false);
+	//		}
+	//	}
+	//}
 
 	scene->SCENE::Init();
 
