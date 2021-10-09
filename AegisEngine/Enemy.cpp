@@ -163,9 +163,9 @@ void ENEMY::Update(float delta_time)
 			position.z += rotate.z * 2;
 
 
-			Create_Bullet(position, rotate);
-
-			AUDIO_MANAGER::Play_Sound_Object(SOUND_INDEX::SOUND_INDEX_SHOT, false);
+			//Create_Bullet(position, rotate);
+			//
+			//AUDIO_MANAGER::Play_Sound_Object(SOUND_INDEX::SOUND_INDEX_SHOT, false);
 		}
 	}
 	else
@@ -212,7 +212,7 @@ void Create_Bullet(XMFLOAT3& position, const XMFLOAT3& front)
 
 	auto bullet = scene->Add_Game_Object<BULLET>( LAYER_NAME::GAMEOBJECT, "bullet" + to_string(bullets.size() + 1) );
 
-	bullet->Init();
+	//bullet->Init();
 
 	bullet->Get_Transform().Set_Position(position);
 	bullet->Set_Move_Vector(front);

@@ -128,7 +128,7 @@ void FADE::Start_FadeOut(const WORD time)
 
 		pFade = CManager::Get_Instance()->Get_Scene()->Add_Game_Object<FADE>(LAYER_NAME::UI, "fade");
 
-		pFade->Init();
+		//pFade->Init();
 
 		pFade->Set_Time((WORD)time);
 		pFade->Set_Color(XMFLOAT4(0.f, 0.f, 0.f, 0.f));
@@ -145,7 +145,7 @@ void FADE::Start_FadeIn(const WORD time)
 
 		pFade = CManager::Get_Instance()->Get_Scene()->Add_Game_Object<FADE>(LAYER_NAME::UI, "fade");
 
-		pFade->Init();
+		//pFade->Init();
 
 		pFade->Set_Time((WORD)time);
 		pFade->Set_Color(XMFLOAT4(0.f, 0.f, 0.f, 1.0f));

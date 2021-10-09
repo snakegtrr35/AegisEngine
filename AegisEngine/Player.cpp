@@ -159,8 +159,6 @@ void Create_Bullet(XMFLOAT3& position, const XMFLOAT3& front)
 
 	auto bullet = scene->Add_Game_Object<BULLET>(LAYER_NAME::GAMEOBJECT, "bullet" + to_string(cnt));
 
-	bullet->Init();
-
 	bullet->Get_Transform().Set_Position(position);
 	bullet->Set_Move_Vector(front);
 }

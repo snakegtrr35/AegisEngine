@@ -81,23 +81,23 @@ void BULLET::Update(float delta_time)
 	{
 		CManager::Get_Instance()->Get_Scene()->Destroy_Game_Object(this);
 
-		// ビルボード
-		{
-			auto name = this->Get_Object_Name();
-
-			string str(name);
-			ExtratNum(str);
-			if (false == str.empty())
-			{
-				const int x = std::stoi(str);
-
-				BILL_BOARD_ANIMATION* bba = CManager::Get_Instance()->Get_Scene()->Add_Game_Object<BILL_BOARD_ANIMATION>(LAYER_NAME::EFFECT, "explosion" + to_string(x));
-				bba->Get_Transform().Set_Position(Get_Transform().Get_Position());
-				bba->SetWH(XMFLOAT2(1.0f, 1.0f));
-				bba->SetParam(6, 4, 4);
-				bba->Init();
-			}
-		}
+		//// ビルボード
+		//{
+		//	auto name = this->Get_Object_Name();
+		//
+		//	string str(name);
+		//	ExtratNum(str);
+		//	if (false == str.empty())
+		//	{
+		//		const int x = std::stoi(str);
+		//
+		//		BILL_BOARD_ANIMATION* bba = CManager::Get_Instance()->Get_Scene()->Add_Game_Object<BILL_BOARD_ANIMATION>(LAYER_NAME::EFFECT, "explosion" + to_string(x));
+		//		bba->Get_Transform().Set_Position(Get_Transform().Get_Position());
+		//		bba->SetWH(XMFLOAT2(1.0f, 1.0f));
+		//		bba->SetParam(6, 4, 4);
+		//		//bba->Init();
+		//	}
+		//}
 
 		return;
 	}
@@ -138,7 +138,7 @@ void BULLET::Update(float delta_time)
 						bba->Get_Transform().Set_Position(Get_Transform().Get_Position());
 						bba->SetWH(XMFLOAT2(1.0f, 1.0f));
 						bba->SetParam(6, 4, 4);
-						bba->Init();
+						//bba->Init();
 					}
 				}
 
@@ -173,7 +173,7 @@ void BULLET::Update(float delta_time)
 							bba->Get_Transform().Set_Position(Get_Transform().Get_Position());
 							bba->SetWH(XMFLOAT2(1.0f, 1.0f));
 							bba->SetParam(6, 4, 4);
-							bba->Init();
+							//bba->Init();
 						}
 					}
 
