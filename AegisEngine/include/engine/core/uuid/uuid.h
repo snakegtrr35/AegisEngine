@@ -18,7 +18,7 @@ namespace Aegis
 		[[nodiscard]]
 		static uuid GetUuid() noexcept;
 
-		static void ReSeed(std::uint64_t seed) noexcept;
+		static void ReSeed(std::uint64_t sedd) noexcept;
 
 	private:
 

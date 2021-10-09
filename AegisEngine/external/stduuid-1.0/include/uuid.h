@@ -576,8 +576,10 @@ namespace uuids
          return from_string(str.data(), str.size());
       }
 
+      std::array<value_type, 16> data{ { 0 } }; // シリアライズの為の公開
+
    private:
-      std::array<value_type, 16> data{ { 0 } };
+      //std::array<value_type, 16> data{ { 0 } };
 
       friend bool operator==(uuid const & lhs, uuid const & rhs) noexcept;
       friend bool operator<(uuid const & lhs, uuid const & rhs) noexcept;
