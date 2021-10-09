@@ -1483,28 +1483,70 @@ void EditTransform(const float* cameraView, float* cameraProjection, float* matr
 		mCurrentGizmoOperation = ImGuizmo::SCALE;
 
 	{
-		float	Translation[3] = { object->Get_Transform().Get_Position()->x, object->Get_Transform().Get_Position()->y, object->Get_Transform().Get_Position()->z };
-		float	Rotation[3] = { object->Get_Transform().Get_Rotation()->x, object->Get_Transform().Get_Rotation()->y, object->Get_Transform().Get_Rotation()->z };
-		float	R[3] = { object->Get_Transform().Get_Rotation()->x, object->Get_Transform().Get_Rotation()->y, object->Get_Transform().Get_Rotation()->z };
-		float	Scale[3] = { object->Get_Transform().Get_Scaling()->x, object->Get_Transform().Get_Scaling()->y, object->Get_Transform().Get_Scaling()->z };
+		std::array<float, 3> Translation{ object->Get_Transform().Get_Position()->x, object->Get_Transform().Get_Position()->y, object->Get_Transform().Get_Position()->z };
+		const std::array<float, 3> Translation_Ans{ object->Get_Transform().Get_Position()->x, object->Get_Transform().Get_Position()->y, object->Get_Transform().Get_Position()->z };
+			  
+		std::array<float, 3>  Rotation = { object->Get_Transform().Get_Rotation()->x, object->Get_Transform().Get_Rotation()->y, object->Get_Transform().Get_Rotation()->z };
+		const std::array<float, 3>  Rotation_Ans = { object->Get_Transform().Get_Rotation()->x, object->Get_Transform().Get_Rotation()->y, object->Get_Transform().Get_Rotation()->z };
+			  
+		float R[3] = { object->Get_Transform().Get_Rotation()->x, object->Get_Transform().Get_Rotation()->y, object->Get_Transform().Get_Rotation()->z };
 
-		ImGuizmo::DecomposeMatrixToComponents(matrix, Translation, Rotation, Scale);
+		std::array<float, 3>  Scale = { object->Get_Transform().Get_Scaling()->x, object->Get_Transform().Get_Scaling()->y, object->Get_Transform().Get_Scaling()->z };
+		const std::array<float, 3>  Scale_Ans = { object->Get_Transform().Get_Scaling()->x, object->Get_Transform().Get_Scaling()->y, object->Get_Transform().Get_Scaling()->z };
 
-		ImGui::DragFloat3((char*)u8"トランスフォーム", Translation, 0.01f);
-		ImGui::DragFloat3((char*)u8"回転", Rotation, 0.1f);
-		ImGui::DragFloat3((char*)u8"スケール", Scale, 0.01f);
+		//ImGuizmo::DecomposeMatrixToComponents(matrix, Translation, Rotation, Scale);
 
-		ImGuizmo::RecomposeMatrixFromComponents(Translation, Rotation, Scale, matrix);
+		ImGui::DragFloat3((char*)u8"トランスフォーム", (float*)object->Get_Transform().Get_Position(), 0.01f);
+		ImGui::DragFloat3((char*)u8"回転", (float*)object->Get_Transform().Get_Rotation(), 0.1f);
+		ImGui::DragFloat3((char*)u8"スケール", (float*)object->Get_Transform().Get_Scaling(), 0.01f);
+
+		ImGuizmo::DecomposeMatrixToComponents(matrix, Translation.data(), Rotation.data(), Scale.data());
+
+		//ImGuizmo::RecomposeMatrixFromComponents(Translation, Rotation, Scale, matrix);
+		ImGuizmo::RecomposeMatrixFromComponents(Translation.data(), Rotation.data(), Scale.data(), matrix);
+
+		switch (mCurrentGizmoOperation)
+		{
+			case ImGuizmo::TRANSLATE:
+			{
+				if (Translation_Ans != Translation)
+				{
+					XMFLOAT3 vec(Translation[0], Translation[1], Translation[2]);
+					object->Get_Transform().Set_Position(vec);
+				}
+			}
+			break;
+		case ImGuizmo::ROTATE:
+			{
+				if (Rotation_Ans != Rotation)
+				{
+					XMFLOAT3 vec(Rotation[0], Rotation[1], Rotation[2]);
+					object->Get_Transform().Set_Position(vec);
+				}
+			}
+			break;
+		case ImGuizmo::SCALE:
+			{
+				if (Scale_Ans != Scale)
+				{
+					XMFLOAT3 vec(Scale[0], Scale[1], Scale[2]);
+					object->Get_Transform().Set_Position(vec);
+				}
+			}
+			break;
+		default:
+			break;
+		}
 
 		if (enable)
 		{
-			XMFLOAT3 vec1(Translation[0], Translation[1], Translation[2]);
+			//XMFLOAT3 vec1(Translation[0], Translation[1], Translation[2]);
 			XMFLOAT3 vec2/*(Rotation[0], Rotation[1], Rotation[2])*/;
-			XMFLOAT3 vec3(Scale[0], Scale[1], Scale[2]);
+			//XMFLOAT3 vec3(Scale[0], Scale[1], Scale[2]);
 
-			object->Get_Transform().Set_Position(vec1);
+			//object->Get_Transform().Set_Position(vec1);
 			//object->Set_Rotation(vec2);
-			object->Get_Transform().Set_Scaling(vec3);
+			//object->Get_Transform().Set_Scaling(vec3);
 
 			ImGui::DragFloat3("Rotation", R, 0.2f, -180.f, 180.f);
 			vec2 = XMFLOAT3(R[0], R[1], R[2]);
