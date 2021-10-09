@@ -39,7 +39,8 @@ class SCENE {
 private:
 
 protected:
-	static list<shared_ptr<GAME_OBJECT>> GameObjects[(int)LAYER_NAME::MAX_LAYER];
+	static std::vector<shared_ptr<GAME_OBJECT>> GameObjects[(int)LAYER_NAME::MAX_LAYER];
+	static std::vector<shared_ptr<GAME_OBJECT>> AddGameObjects[(int)LAYER_NAME::MAX_LAYER];
 
 	static bool PauseEnable;
 
@@ -59,7 +60,8 @@ public:
 
 		object->Set_Object_Name(name);
 
-		GameObjects[(int)layer].emplace_back(object);
+		//GameObjects[(int)layer].emplace_back(object);
+		AddGameObjects[(int)layer].emplace_back(object);
 
 		return object.get();
 	}
@@ -70,23 +72,16 @@ public:
 	{
 		for (int i = 0; i < (int)LAYER_NAME::MAX_LAYER; i++)
 		{
-			for (auto object : GameObjects[i])
+			for (const auto& object : GameObjects[i])
 			{
-				if (!GameObjects[i].empty())
+				if (typeid(T) == typeid(*object.get()))
 				{
-					if (typeid(T) == typeid(*object.get()))
+					if (name == object.get()->Get_Object_Name())
 					{
-						if (name == object.get()->Get_Object_Name())
-						{
-							weak_ptr<T> obj(static_pointer_cast<T>(object));
+						weak_ptr<T> obj(static_pointer_cast<T>(object));
 
-							return  obj;
-						}
+						return  obj;
 					}
-				}
-				else
-				{
-					continue;
 				}
 			}
 		}
@@ -101,18 +96,11 @@ public:
 	{
 		for (int i = 0; i < (int)LAYER_NAME::MAX_LAYER; i++)
 		{
-			for (auto object = GameObjects[i].begin(); object != GameObjects[i].end(); object++)
+			for (const auto& object : GameObjects[i])
 			{
-				if (!GameObjects[i].empty())
+				if (name == object.get()->Get_Object_Name())
 				{
-					if (name == object->get()->Get_Object_Name())
-					{
-						return object->get();
-					}
-				}
-				else
-				{
-					continue;
+					return object.get();
 				}
 			}
 		}
@@ -125,20 +113,13 @@ public:
 	{
 		for (int i = 0; i < (int)LAYER_NAME::MAX_LAYER; i++)
 		{
-			for (auto object = GameObjects[i].begin(); object != GameObjects[i].end(); object++)
+			for (const auto& object : GameObjects[i])
 			{
-				if (!GameObjects[i].empty())
+				if (me == object.get())
 				{
-					if (me == object->get())
-					{
-						weak_ptr<GAME_OBJECT> obj(*object);
+					weak_ptr<GAME_OBJECT> obj(object);
 
-						return  obj;
-					}
-				}
-				else
-				{
-					continue;
+					return  obj;
 				}
 			}
 		}
@@ -153,18 +134,11 @@ public:
 		vector<T*> objects;
 		for (int i = 0; i < (int)LAYER_NAME::MAX_LAYER; i++)
 		{
-			for (auto object = GameObjects[i].begin(); object != GameObjects[i].end(); object++)
+			for (const auto& object : GameObjects[i])
 			{
-				if (!GameObjects[i].empty())
+				if (typeid(T) == typeid(*object.get()))
 				{
-					if (typeid(T) == typeid(*object->get()))
-					{
-						objects.emplace_back((T*)object->get());
-					}
-				}
-				else
-				{
-					continue;
+					objects.emplace_back(static_cast<T*>(object.get()));
 				}
 			}
 		}
@@ -177,16 +151,9 @@ public:
 		vector<GAME_OBJECT*> objects;
 		for (int i = 0; i < (int)LAYER_NAME::MAX_LAYER; i++)
 		{
-			for (auto object = GameObjects[i].begin(); object != GameObjects[i].end(); object++)
+			for (const auto& object : GameObjects[i])
 			{
-				if (!GameObjects[i].empty())
-				{
-					objects.push_back(object->get());
-				}
-				else
-				{
-					continue;
-				}
+				objects.push_back(object.get());
 			}
 		}
 		return objects;
@@ -198,21 +165,21 @@ public:
 	{
 		for (int i = 0; i < (int)LAYER_NAME::MAX_LAYER; i++)
 		{
-			if (!GameObjects[i].empty())
+			for (const auto& object : GameObjects[i])
 			{
-				for (auto object = GameObjects[i].begin(); object != GameObjects[i].end(); object++)
+				if (typeid(T) == typeid(*object.get()))
 				{
-					if (typeid(T) == typeid(*object->get()))
-					{
-						object->get()->Set_Destroy();
-					}
+					object.get()->Set_Destroy();
 				}
 			}
 		}
 
 		for (int i = 0; i < (int)LAYER_NAME::MAX_LAYER; i++)
 		{
-			GameObjects[i].remove_if([](auto& object) { return object->Destroy(); }); // リストから削除
+			//GameObjects[i].remove_if([](auto& object) { return object->Destroy(); });
+			// リストから削除
+			auto result = std::remove_if(GameObjects[i].begin(), GameObjects[i].end(), [](auto& object) { return object->Destroy(); });
+			GameObjects[i].erase(result, GameObjects[i].end());
 		}
 	}
 
@@ -229,12 +196,23 @@ public:
 	* @details 詳細な説明
 	*/
 	virtual void Init(void) {
+
 		for (int i = 0; i < (int)LAYER_NAME::MAX_LAYER; i++)
 		{
-			for (auto object = GameObjects[i].begin(); object != GameObjects[i].end(); object++)
+			if (!AddGameObjects[i].empty())
 			{
-				object->get()->Init();
+				GameObjects[i].reserve(GameObjects[i].size() + AddGameObjects[i].size());
+				std::copy(AddGameObjects[i].begin(), AddGameObjects[i].end(),
+					std::back_inserter(GameObjects[i]));
+
+				AddGameObjects[i].clear();
 			}
+
+			for (const auto& object : GameObjects[i])
+			{
+				object.get()->Init();
+			}
+
 			Light_Manager.Init();
 		}
 
@@ -251,9 +229,9 @@ public:
 	virtual void Draw(void) {
 		for (int i = 0; i < (int)LAYER_NAME::MAX_LAYER; i++)
 		{
-			for (auto object = GameObjects[i].begin(); object != GameObjects[i].end(); object++)
+			for (const auto& object : GameObjects[i])
 			{
-				object->get()->Draw();
+				object.get()->Draw();
 			}
 		}
 	};
@@ -265,9 +243,9 @@ public:
 	virtual void Draw_DPP(void) {
 		for (int i = (int)LAYER_NAME::MAX_LAYER - 1; (int)LAYER_NAME::BACKGROUND <= i; i--)
 		{
-			for (auto object = GameObjects[i].begin(); object != GameObjects[i].end(); object++)
+			for (const auto& object : GameObjects[i])
 			{
-				object->get()->Draw_DPP();
+				object.get()->Draw_DPP();
 			}
 		}
 	};
@@ -287,21 +265,56 @@ public:
 					object->get()->Update(delta_time);
 			}
 
+			if (!AddGameObjects[(int)LAYER_NAME::UI].empty())
+			{
+				GameObjects[(int)LAYER_NAME::UI].reserve(GameObjects[(int)LAYER_NAME::UI].size() + AddGameObjects[(int)LAYER_NAME::UI].size());
+				std::copy(AddGameObjects[(int)LAYER_NAME::UI].begin(), AddGameObjects[(int)LAYER_NAME::UI].end(),
+					std::back_inserter(GameObjects[(int)LAYER_NAME::UI]));
+
+				for (const auto& object : AddGameObjects[(int)LAYER_NAME::UI])
+				{
+					if (object)
+						object.get()->Init();
+				}
+
+				AddGameObjects[(int)LAYER_NAME::UI].clear();
+			}
+
 			for (int i = 0; i < (int)LAYER_NAME::MAX_LAYER; i++)
 			{
-				GameObjects[i].remove_if([](auto& object) { return object->Destroy(); }); // リストから削除
+				//GameObjects[i].remove_if([](auto& object) { return object->Destroy(); });
+				// リストから削除
+				auto result = std::remove_if(GameObjects[i].begin(), GameObjects[i].end(), [](auto& object) { return object->Destroy(); } );
+				GameObjects[i].erase(result, GameObjects[i].end());
 			}
 		}
 		else	// ポーズ中ではない
 		{
 			for (int i = 0; i < (int)LAYER_NAME::MAX_LAYER; i++)
 			{
-				for (auto object = GameObjects[i].begin(); object != GameObjects[i].end(); object++)
+				for (const auto& object : GameObjects[i])
 				{
-					object->get()->Update(delta_time);
+					object.get()->Update(delta_time);
 				}
 
-				GameObjects[i].remove_if([](auto& object) { return object->Destroy(); }); // リストから削除
+				if (!AddGameObjects[i].empty())
+				{
+					GameObjects[i].reserve(GameObjects[i].size() + AddGameObjects[i].size());
+					std::copy(AddGameObjects[i].begin(), AddGameObjects[i].end(), std::back_inserter(GameObjects[i]));
+
+					for (const auto& object : AddGameObjects[i])
+					{
+						if (object)
+							object.get()->Init();
+					}
+
+					AddGameObjects[i].clear();
+				}
+
+				//GameObjects[i].remove_if([](auto& object) { return object->Destroy(); });
+				// リストから削除
+				auto result = std::remove_if(GameObjects[i].begin(), GameObjects[i].end(), [](auto& object) { return object->Destroy(); });
+				GameObjects[i].erase(result, GameObjects[i].end());
 			}
 		}
 	};
@@ -316,9 +329,9 @@ public:
 	virtual void Uninit(void) {
 		for (int i = 0; i < (int)LAYER_NAME::MAX_LAYER; i++)
 		{
-			for (auto object = GameObjects[i].begin(); object != GameObjects[i].end(); object++)
+			for (auto object : GameObjects[i])
 			{
-				object->reset();
+				object.reset();
 			}
 			GameObjects[i].clear();
 		}
@@ -398,7 +411,12 @@ public:
 	{
 		for (int i = 0; i < (int)LAYER_NAME::MAX_LAYER; i++)
 		{
-			if(!GameObjects[i].empty()) GameObjects[i].remove_if([](auto& object) { return object->Destroy(); }); // リストから削除
+			if(!GameObjects[i].empty())
+				//GameObjects[i].remove_if([](auto& object) { return object->Destroy(); });
+				// リストから削除
+				//std::remove_if(GameObjects[i].begin(), GameObjects[i].end(), [](auto& object) { return object->Destroy(); });
+				auto result = std::remove_if(GameObjects[i].begin(), GameObjects[i].end(), [](auto& object) { return object->Destroy(); });
+				//GameObjects[i].erase(result, GameObjects[i].end());
 		}
 
 		ar(GameObjects);

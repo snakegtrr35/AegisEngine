@@ -1,7 +1,9 @@
 ﻿#include	"Scene.h"
 #include	"Scene_Manager.h"
 
-list<shared_ptr<GAME_OBJECT>>	SCENE::GameObjects[(int)LAYER_NAME::MAX_LAYER];
+std::vector<shared_ptr<GAME_OBJECT>>	SCENE::GameObjects[(int)LAYER_NAME::MAX_LAYER];
+std::vector<shared_ptr<GAME_OBJECT>>	SCENE::AddGameObjects[(int)LAYER_NAME::MAX_LAYER];
+
 bool							SCENE::PauseEnable = false;
 LIGHTS							SCENE::Light_Manager;
 std::mutex						SCENE::Load_Mutex;
