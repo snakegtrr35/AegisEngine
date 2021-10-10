@@ -45,9 +45,6 @@
     <Filter Include="ソース ファイル\System\Clustered">
       <UniqueIdentifier>{b0bb7ab5-4d54-4096-896d-c4d09202ba2f}</UniqueIdentifier>
     </Filter>
-    <Filter Include="リソース ファイル\NewFilter1">
-      <UniqueIdentifier>{f2e29b43-ef72-4b28-b0b5-b8270fcc76a2}</UniqueIdentifier>
-    </Filter>
     <Filter Include="ソース ファイル\System\Component">
       <UniqueIdentifier>{e35aa352-d0a8-4569-b5b3-661f7c5d142a}</UniqueIdentifier>
     </Filter>
@@ -98,6 +95,12 @@
     </Filter>
     <Filter Include="include\engine\core\uuid">
       <UniqueIdentifier>{b2a00294-b552-4de1-9823-38d44b8bc606}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="リソース ファイル\External">
+      <UniqueIdentifier>{16efcbb4-0af8-4dc0-ba90-8e11e8b97844}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="リソース ファイル\ComputeShader">
+      <UniqueIdentifier>{9215fda8-516a-4764-bc73-ca48b2505b72}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -618,18 +621,6 @@
     <FxCompile Include="VertexShader_ShadowMap_Anime.hlsl">
       <Filter>リソース ファイル\VertexShader</Filter>
     </FxCompile>
-    <FxCompile Include="CommonHeader.h">
-      <Filter>リソース ファイル\NewFilter1</Filter>
-    </FxCompile>
-    <FxCompile Include="ParallelReduction.hlsl">
-      <Filter>リソース ファイル\NewFilter1</Filter>
-    </FxCompile>
-    <FxCompile Include="VertexShader_Animation_Depth_Pre_Pass.hlsl">
-      <Filter>リソース ファイル\NewFilter1</Filter>
-    </FxCompile>
-    <FxCompile Include="VertexShader_Depth_Pre_Pass.hlsl">
-      <Filter>リソース ファイル\NewFilter1</Filter>
-    </FxCompile>
     <FxCompile Include="VertexShader_Instancing.hlsl">
       <Filter>リソース ファイル\VertexShader</Filter>
     </FxCompile>
@@ -654,14 +645,20 @@
     <FxCompile Include="VertexShader_Skybox.hlsl">
       <Filter>リソース ファイル\VertexShader</Filter>
     </FxCompile>
-    <FxCompile Include="FXAA.hlsl">
-      <Filter>リソース ファイル</Filter>
-    </FxCompile>
     <FxCompile Include="pixelShader _PostEffect.hlsl">
       <Filter>リソース ファイル\PixelShader</Filter>
     </FxCompile>
+    <FxCompile Include="VertexShader_Depth_Pre_Pass.hlsl">
+      <Filter>リソース ファイル\VertexShader</Filter>
+    </FxCompile>
+    <FxCompile Include="VertexShader_Animation_Depth_Pre_Pass.hlsl">
+      <Filter>リソース ファイル\VertexShader</Filter>
+    </FxCompile>
+    <FxCompile Include="FXAA.hlsl">
+      <Filter>リソース ファイル\External</Filter>
+    </FxCompile>
     <FxCompile Include="ClusterCS.hlsl">
-      <Filter>リソース ファイル</Filter>
+      <Filter>リソース ファイル\ComputeShader</Filter>
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
@@ -675,9 +672,6 @@
     </Image>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Commom_Buffer.hlsli">
-      <Filter>リソース ファイル</Filter>
-    </None>
     <None Include="include\engine\core\math\Int2.cpp">
       <Filter>include\engine\core\math</Filter>
     </None>

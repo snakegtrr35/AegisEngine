@@ -127,11 +127,6 @@
       <FileType>Document</FileType>
     </FxCompile>
     <ClInclude Include="common.h" />
-    <FxCompile Include="CommonHeader.h">
-      <FileType>Document</FileType>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
-    </FxCompile>
     <ClInclude Include="Component.h" />
     <ClInclude Include="Component_Manager.h" />
     <ClInclude Include="Debug_Camera.h" />
@@ -259,10 +254,6 @@
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="ParallelReduction.hlsl">
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Compute</ShaderType>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Compute</ShaderType>
-    </FxCompile>
     <FxCompile Include="PixelShader_No_Light.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
@@ -333,7 +324,6 @@
     <Image Include="..\AegisEngine.ico" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Commom_Buffer.hlsli" />
     <None Include="include\engine\core\math\Int2.cpp" />
     <None Include="include\engine\core\math\Quaternion.cpp" />
     <None Include="include\engine\core\math\Vector2.cpp" />
