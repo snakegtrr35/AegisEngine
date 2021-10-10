@@ -3,10 +3,9 @@
 これは自作のゲームエンジンです。  
 これは就職作品として、開発しています。
 
-## License
+## ライセンス License
 [![MIT license](https://img.shields.io/badge/License-MIT-blue.svg)](https://github.com/snakegtrr35/AegisEngine/blob/master/LICENSE)
 
-## ライセンス License
 The MIT License (MIT)
 
 Copyright (c) 2019 snakegtrr35
