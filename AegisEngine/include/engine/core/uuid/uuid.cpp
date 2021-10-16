@@ -25,7 +25,7 @@ namespace Aegis
 		return gen();
 	}
 
-	void Uuid::ReSeed(std::uint64_t seed) noexcept
+	void Uuid::ReSeed(uint32 seed) noexcept
 	{
 		std::lock_guard<std::mutex> lock(lock_mutex);
 

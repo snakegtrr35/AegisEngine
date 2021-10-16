@@ -6,10 +6,15 @@ namespace Aegis
 {
 	const Quaternion Identity(0.0f, 0.0f, 0.0f, 1.0f);
 
-	Quaternion::Quaternion(float _x, float _y, float _z, float _w) noexcept : x(_x), y(_y), z(_z), w(_w)
-	{}
+	Quaternion::Quaternion(float32 _x, float32 _y, float32 _z, float32 _w) noexcept
+	{
+		x = _x;
+		y = _y;
+		z = _z;
+		w = _w;
+	}
 
-	Quaternion Quaternion::Lerp(const Quaternion& a, const Quaternion& b, float t)
+	Quaternion Quaternion::Lerp(const Quaternion& a, const Quaternion& b, float32 t)
 	{
 		Quaternion retVal;
 		retVal.x = Math::Lerp(a.x, b.x, t);

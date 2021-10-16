@@ -6,7 +6,7 @@ namespace Aegis
 	const Vector2 Vector2::One(1.0f, 1.0f);
 	const Vector2 Vector2::Minus(-1.0f, -1.0f);
 
-	inline Vector2::Vector2(const float _x, const float _y)
+	inline Vector2::Vector2(const float32 _x, const float32 _y)
 	{
 		x = _x;
 		y = _y;
@@ -17,12 +17,12 @@ namespace Aegis
 		return Vector2(a.x + b.x, a.y + b.y);
 	}
 
-	inline Vector2 operator+(const Vector2& Vector, float scalar)
+	inline Vector2 operator+(const Vector2& Vector, float32 scalar)
 	{
 		return Vector2(Vector.x + scalar, Vector.y + scalar);
 	}
 
-	inline Vector2 operator+(float scalar, const Vector2& Vector)
+	inline Vector2 operator+(float32 scalar, const Vector2& Vector)
 	{
 		return Vector2(Vector.x + scalar, Vector.y + scalar);
 	}
@@ -32,12 +32,12 @@ namespace Aegis
 		return Vector2(a.x - b.x, a.y - b.y);
 	}
 
-	inline Vector2 operator-(const Vector2& Vector, float scalar)
+	inline Vector2 operator-(const Vector2& Vector, float32 scalar)
 	{
 		return Vector2(Vector.x - scalar, Vector.y - scalar);
 	}
 
-	inline Vector2 operator-(float scalar, const Vector2& Vector)
+	inline Vector2 operator-(float32 scalar, const Vector2& Vector)
 	{
 		return Vector2(Vector.x - scalar, Vector.y - scalar);
 	}
@@ -47,12 +47,12 @@ namespace Aegis
 		return Vector2(a.x * b.x, a.y * b.y);
 	}
 
-	inline Vector2 operator*(const Vector2& Vector, float scalar)
+	inline Vector2 operator*(const Vector2& Vector, float32 scalar)
 	{
 		return Vector2(Vector.x * scalar, Vector.y * scalar);
 	}
 
-	inline Vector2 operator*(float scalar, const Vector2& Vector)
+	inline Vector2 operator*(float32 scalar, const Vector2& Vector)
 	{
 		return Vector2(Vector.x * scalar, Vector.y * scalar);
 	}
@@ -62,12 +62,12 @@ namespace Aegis
 		return Vector2(a.x / b.x, a.y / b.y);
 	}
 
-	inline Vector2 operator/(const Vector2& Vector, float scalar)
+	inline Vector2 operator/(const Vector2& Vector, float32 scalar)
 	{
 		return Vector2(Vector.x / scalar, Vector.y / scalar);
 	}
 
-	inline Vector2 operator/(float scalar, const Vector2& Vector)
+	inline Vector2 operator/(float32 scalar, const Vector2& Vector)
 	{
 		return Vector2(Vector.x / scalar, Vector.y / scalar);
 	}

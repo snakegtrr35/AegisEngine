@@ -9,13 +9,13 @@ namespace Aegis
 	//! 色構造体
 	struct COLOR
 	{
-		float r;
-		float g;
-		float b;
-		float a;
+		float32 r;
+		float32 g;
+		float32 b;
+		float32 a;
 
 		COLOR() : r(1.0f), g(1.0f), b(1.0f), a(1.0f) {}
-		COLOR(float _r, float _g, float _b, float _a = 1.0f)
+		COLOR(float32 _r, float32 _g, float32 _b, float32 _a = 1.0f)
 		{
 			r = _r;
 			g = _g;

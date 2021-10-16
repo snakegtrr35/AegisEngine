@@ -19,21 +19,21 @@ namespace Aegis
 		static Random* GetInsrance() noexcept;
 
 		[[nodiscard]]
-		static std::uint32_t GetRandomUint() noexcept;
+		static uint32 GetRandomUint() noexcept;
 		[[nodiscard]]
 		static float GetRandomfloat() noexcept;
 		[[nodiscard]]
 		static float Range(const float min, const float max) noexcept;
 		[[nodiscard]]
-		static std::uint64_t GetRandomUlong() noexcept;
+		static uint64 GetRandomUlong() noexcept;
 
-		static void ReSeed(std::uint64_t seed) noexcept;
+		static void ReSeed(uint64 seed) noexcept;
 
-		static void ReSeed64(std::uint64_t seed) noexcept;
+		static void ReSeed64(uint64 seed) noexcept;
 
 	private:
 
-		Random(std::uint64_t seed = ::time(nullptr));
+		Random(uint64 seed = ::time(nullptr));
 		~Random();
 
 		static Random Insrance;

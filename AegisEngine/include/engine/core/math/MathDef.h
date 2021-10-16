@@ -16,7 +16,7 @@ namespace Aegis
 		static constexpr float PI = 3.1415926535897931f;
 		static constexpr float PI2 = PI * 2.0f;
 		static constexpr float INV_PI = 1.0f / PI;
-		static constexpr float PIDIV2 = PI * 0.5f;
+		static constexpr float PI_DIV2 = PI * 0.5f;
 
 		inline constexpr float DegreeToRadian(float degree) { return degree * (PI / 180.0f); }
 		inline constexpr float RadianToDegree(float radian) { return radian * (180.0f / PI); }

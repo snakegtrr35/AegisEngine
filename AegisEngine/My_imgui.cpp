@@ -559,13 +559,13 @@ static const ImWchar glyphRangesJapanese[] = {
 	0xFF0E, 0xFF3B, 0xFF3D, 0xFF5D, 0xFF61, 0xFF9F, 0xFFE3, 0xFFE3, 0xFFE5, 0xFFE5, 0xFFFF, 0xFFFF, 0,
 };
 
-extern float radius;
+extern float32 radius;
 
 static string old_name;
 
 extern double fps;
 
-void EditTransform(const float* cameraView, float* cameraProjection, float* matrix, bool enable, GAME_OBJECT* object);
+void EditTransform(const float32* cameraView, float32* cameraProjection, float32* matrix, bool enable, GAME_OBJECT* object);
 
 #include	<dxgi1_4.h>
 extern DXGI_QUERY_VIDEO_MEMORY_INFO info;
@@ -848,11 +848,11 @@ void My_imgui::Draw(void)
 
 			LIGHT* light = CRenderer::Get_Light();
 
-			float vec4_Direction[] = { light->Direction.x, light->Direction.y, light->Direction.z, light->Direction.w };
-			float vec4_Position[] = { light->Position.x, light->Position.y, light->Position.z, light->Position.w };
-			float vec4_Diffuse[] = { light->Diffuse.r, light->Diffuse.g, light->Diffuse.b, light->Diffuse.a };
-			float vec4_Ambient[] = { light->Ambient.r, light->Ambient.g, light->Ambient.b, light->Ambient.a };
-			float vec4_Specular[] = { light->Specular.r, light->Specular.g, light->Specular.b, light->Specular.a };
+			float32 vec4_Direction[] = { light->Direction.x, light->Direction.y, light->Direction.z, light->Direction.w };
+			float32 vec4_Position[] = { light->Position.x, light->Position.y, light->Position.z, light->Position.w };
+			float32 vec4_Diffuse[] = { light->Diffuse.r, light->Diffuse.g, light->Diffuse.b, light->Diffuse.a };
+			float32 vec4_Ambient[] = { light->Ambient.r, light->Ambient.g, light->Ambient.b, light->Ambient.a };
+			float32 vec4_Specular[] = { light->Specular.r, light->Specular.g, light->Specular.b, light->Specular.a };
 
 			ImGui::Begin("Directional Light", nullptr/*, window_flag*/);
 
@@ -923,7 +923,7 @@ void My_imgui::Draw(void)
 			ImGui::Unindent(ImGui::GetTreeNodeToLabelSpacing());
 
 			{
-				int i = 0;
+				int32 i = 0;
 				for (auto object : Object_Name_List)
 				{
 					// マウスボタン : 0 = left, 1 = right, 2 = middle + extras
@@ -1012,9 +1012,9 @@ void My_imgui::Draw(void)
 			{
 				ImGui::Text((char*)u8"メモリ使用量 %d byte", pmc.PrivateUsage);
 
-				ImGui::Text((char*)u8"1 メモリ使用量 %.3f キロバイト", float(pmc.PrivateUsage / 1024.0f));
+				ImGui::Text((char*)u8"1 メモリ使用量 %.3f キロバイト", float32(pmc.PrivateUsage / 1024.0f));
 
-				ImGui::Text((char*)u8"2 メモリ使用量 %.3f メガバイト", float(pmc.PrivateUsage / 1024.0f / 1024.0f));
+				ImGui::Text((char*)u8"2 メモリ使用量 %.3f メガバイト", float32(pmc.PrivateUsage / 1024.0f / 1024.0f));
 
 				CloseHandle(hProc);
 			}
@@ -1047,7 +1047,7 @@ void My_imgui::Draw(void)
 	{
 		static std::vector<std::string> names = { "Bobby", "Beatrice", "Betty", "Brianna", "Barry", "Bernard", "Bibi", "Blaine", "Bryn" };
 
-		static int cnt = 0;
+		static int32 cnt = 0;
 
 		if (ImGui::Begin("Drag Test"))
 		{
@@ -1107,7 +1107,7 @@ void My_imgui::Draw(void)
 						// Our buttons are both drag sources and drag targets here!
 						if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_None))
 						{
-							ImGui::SetDragDropPayload("DND_DEMO_CELL", &cnt, sizeof(int));    // Set payload to carry the index of our item (could be anything)
+							ImGui::SetDragDropPayload("DND_DEMO_CELL", &cnt, sizeof(int32));    // Set payload to carry the index of our item (could be anything)
 							//{ ImGui::Text("%s", names[cnt].c_str()); }
 							{
 								ImGui::Text("%s", tex_name.c_str());
@@ -1140,7 +1140,7 @@ void My_imgui::Draw(void)
 				Mode_Move,
 				Mode_Swap
 			};
-			static int mode = 0;
+			static int32 mode = 0;
 			if (ImGui::RadioButton("Copy", mode == Mode_Copy)) { mode = Mode_Copy; } ImGui::SameLine();
 			if (ImGui::RadioButton("Move", mode == Mode_Move)) { mode = Mode_Move; } ImGui::SameLine();
 			if (ImGui::RadioButton("Swap", mode == Mode_Swap)) { mode = Mode_Swap; }
@@ -1158,9 +1158,9 @@ void My_imgui::Draw(void)
 				{
 					if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("DND_DEMO_CELL"))
 					{
-						//IM_ASSERT(payload->DataSize == sizeof(int));
+						//IM_ASSERT(payload->DataSize == sizeof(int32));
 						//IM_ASSERT(payload->DataSize == sizeof(char*));
-						//int payload_n = *(const int*)payload->Data;
+						//int32 payload_n = *(const int32*)payload->Data;
 
 						string str = reinterpret_cast<char*>(payload->Data);
 
@@ -1207,7 +1207,7 @@ void My_imgui::Draw(void)
 
 		ImGui::Begin("PLAY", nullptr, flag);
 
-		static int radio = 1;
+		static int32 radio = 1;
 		ImGui::RadioButton("PLAT", &radio, 1); ImGui::SameLine();
 		ImGui::RadioButton("STOP", &radio, 0);
 
@@ -1368,7 +1368,7 @@ void My_imgui::Draw_Inspector(const string& name)
 			XMFLOAT4X4 mat44;
 			XMStoreFloat4x4(&mat44, mtr);
 
-			float view[16] = { mat44._11, mat44._12, mat44._13,mat44._14,
+			float32 view[16] = { mat44._11, mat44._12, mat44._13,mat44._14,
 								mat44._21, mat44._22, mat44._23,mat44._24,
 								mat44._31, mat44._32, mat44._33,mat44._34,
 								mat44._41, mat44._42, mat44._43,mat44._44
@@ -1387,7 +1387,7 @@ void My_imgui::Draw_Inspector(const string& name)
 
 			XMStoreFloat4x4(&mat44, mtr);
 
-			float pro[16] = { mat44._11, mat44._12, mat44._13,mat44._14,
+			float32 pro[16] = { mat44._11, mat44._12, mat44._13,mat44._14,
 								mat44._21, mat44._22, mat44._23,mat44._24,
 								mat44._31, mat44._32, mat44._33,mat44._34,
 								mat44._41, mat44._42, mat44._43,mat44._44
@@ -1396,7 +1396,7 @@ void My_imgui::Draw_Inspector(const string& name)
 			mtr = XMMatrixTranslation(object->Get_Transform().Get_Position()->x, object->Get_Transform().Get_Position()->y, object->Get_Transform().Get_Position()->z);
 			XMStoreFloat4x4(&mat44, mtr);
 
-			static float pos[16] = { mat44._11, mat44._12, mat44._13,mat44._14,
+			static float32 pos[16] = { mat44._11, mat44._12, mat44._13,mat44._14,
 									mat44._21, mat44._22, mat44._23,mat44._24,
 									mat44._31, mat44._32, mat44._33,mat44._34,
 									mat44._41, mat44._42, mat44._43,mat44._44
@@ -1422,7 +1422,7 @@ void My_imgui::Draw_Inspector(const string& name)
 			{
 				if (ImGui::BeginCombo((char*)u8"コンポーネント", item_current.get(), ImGuiComboFlags_NoArrowButton)) // The second parameter is the label previewed before opening the combo.
 				{
-					for (int n = 0; n < Component_Items.first.size(); n++)
+					for (int32 n = 0; n < Component_Items.first.size(); n++)
 					{
 						bool is_selected = (item_current.get() == Component_Items.first.at(n).c_str());
 						//if (ImGui::Selectable(Component_Items.first.at(n), is_selected))
@@ -1468,10 +1468,10 @@ void My_imgui::Draw_Inspector(const string& name)
 	}
 }
 
-void EditTransform(const float* cameraView, float* cameraProjection, float* matrix, bool enable, GAME_OBJECT* object)
+void EditTransform(const float32* cameraView, float32* cameraProjection, float32* matrix, bool enable, GAME_OBJECT* object)
 {
 	static ImGuizmo::OPERATION mCurrentGizmoOperation(ImGuizmo::TRANSLATE);
-	float snap[3] = { 0.001f, 0.001f, 0.001f };
+	float32 snap[3] = { 0.001f, 0.001f, 0.001f };
 
 	if (ImGui::RadioButton("Translate", mCurrentGizmoOperation == ImGuizmo::TRANSLATE))
 		mCurrentGizmoOperation = ImGuizmo::TRANSLATE;
@@ -1483,22 +1483,22 @@ void EditTransform(const float* cameraView, float* cameraProjection, float* matr
 		mCurrentGizmoOperation = ImGuizmo::SCALE;
 
 	{
-		std::array<float, 3> Translation{ object->Get_Transform().Get_Position()->x, object->Get_Transform().Get_Position()->y, object->Get_Transform().Get_Position()->z };
-		const std::array<float, 3> Translation_Ans{ object->Get_Transform().Get_Position()->x, object->Get_Transform().Get_Position()->y, object->Get_Transform().Get_Position()->z };
+		std::array<float32, 3> Translation{ object->Get_Transform().Get_Position()->x, object->Get_Transform().Get_Position()->y, object->Get_Transform().Get_Position()->z };
+		const std::array<float32, 3> Translation_Ans{ object->Get_Transform().Get_Position()->x, object->Get_Transform().Get_Position()->y, object->Get_Transform().Get_Position()->z };
 			  
-		std::array<float, 3>  Rotation = { object->Get_Transform().Get_Rotation()->x, object->Get_Transform().Get_Rotation()->y, object->Get_Transform().Get_Rotation()->z };
-		const std::array<float, 3>  Rotation_Ans = { object->Get_Transform().Get_Rotation()->x, object->Get_Transform().Get_Rotation()->y, object->Get_Transform().Get_Rotation()->z };
+		std::array<float32, 3>  Rotation = { object->Get_Transform().Get_Rotation()->x, object->Get_Transform().Get_Rotation()->y, object->Get_Transform().Get_Rotation()->z };
+		const std::array<float32, 3>  Rotation_Ans = { object->Get_Transform().Get_Rotation()->x, object->Get_Transform().Get_Rotation()->y, object->Get_Transform().Get_Rotation()->z };
 			  
-		float R[3] = { object->Get_Transform().Get_Rotation()->x, object->Get_Transform().Get_Rotation()->y, object->Get_Transform().Get_Rotation()->z };
+		float32 R[3] = { object->Get_Transform().Get_Rotation()->x, object->Get_Transform().Get_Rotation()->y, object->Get_Transform().Get_Rotation()->z };
 
-		std::array<float, 3>  Scale = { object->Get_Transform().Get_Scaling()->x, object->Get_Transform().Get_Scaling()->y, object->Get_Transform().Get_Scaling()->z };
-		const std::array<float, 3>  Scale_Ans = { object->Get_Transform().Get_Scaling()->x, object->Get_Transform().Get_Scaling()->y, object->Get_Transform().Get_Scaling()->z };
+		std::array<float32, 3>  Scale = { object->Get_Transform().Get_Scaling()->x, object->Get_Transform().Get_Scaling()->y, object->Get_Transform().Get_Scaling()->z };
+		const std::array<float32, 3>  Scale_Ans = { object->Get_Transform().Get_Scaling()->x, object->Get_Transform().Get_Scaling()->y, object->Get_Transform().Get_Scaling()->z };
 
 		//ImGuizmo::DecomposeMatrixToComponents(matrix, Translation, Rotation, Scale);
 
-		ImGui::DragFloat3((char*)u8"トランスフォーム", (float*)object->Get_Transform().Get_Position(), 0.01f);
-		ImGui::DragFloat3((char*)u8"回転", (float*)object->Get_Transform().Get_Rotation(), 0.1f);
-		ImGui::DragFloat3((char*)u8"スケール", (float*)object->Get_Transform().Get_Scaling(), 0.01f);
+		ImGui::DragFloat3((char*)u8"トランスフォーム", (float32*)object->Get_Transform().Get_Position(), 0.01f);
+		ImGui::DragFloat3((char*)u8"回転", (float32*)object->Get_Transform().Get_Rotation(), 0.1f);
+		ImGui::DragFloat3((char*)u8"スケール", (float32*)object->Get_Transform().Get_Scaling(), 0.01f);
 
 		ImGuizmo::DecomposeMatrixToComponents(matrix, Translation.data(), Rotation.data(), Scale.data());
 
@@ -2029,7 +2029,7 @@ void My_imgui::Setting()
 {
 	if (Setting_Enable)
 	{
-		float color[] = { BOUNDING::Get_Default_Color().r, BOUNDING::Get_Default_Color().g, BOUNDING::Get_Default_Color().b };
+		float32 color[] = { BOUNDING::Get_Default_Color().r, BOUNDING::Get_Default_Color().g, BOUNDING::Get_Default_Color().b };
 
 		ImGui::Begin("Setting", &Setting_Enable);
 
@@ -2116,7 +2116,7 @@ void My_imgui::Light_Setting()
 
 		ImGui::Unindent(ImGui::GetTreeNodeToLabelSpacing());
 
-		for (int i = 0; i < lights->size(); i++)
+		for (int32 i = 0; i < lights->size(); i++)
 		{
 			// Disable the default open on single-click behavior and pass in Selected flag according to our selection state.
 
@@ -2127,8 +2127,8 @@ void My_imgui::Light_Setting()
 				{
 					{
 						bool flag = lights->at(i).Enable;
-						float Position[3] = { lights->at(i).Position.x, lights->at(i).Position.y, lights->at(i).Position.z };
-						float Color[3] = { lights->at(i).Color.r, lights->at(i).Color.g, lights->at(i).Color.b };
+						float32 Position[3] = { lights->at(i).Position.x, lights->at(i).Position.y, lights->at(i).Position.z };
+						float32 Color[3] = { lights->at(i).Color.r, lights->at(i).Color.g, lights->at(i).Color.b };
 
 						UINT Type = lights->at(i).Type;//
 
@@ -2167,7 +2167,7 @@ void My_imgui::Light_Setting()
 							{
 								if (ImGui::BeginCombo((char*)u8"ライトの種類", item_current, ImGuiComboFlags_NoArrowButton))
 								{
-									for (int n = 0; n < Items.size(); n++)
+									for (int32 n = 0; n < Items.size(); n++)
 									{
 										//bool is_selected = (item_current == Items[n]);
 										if (ImGui::Selectable(Items[n], is_selected))
@@ -2286,7 +2286,7 @@ void My_imgui::Delete_Component(GAME_OBJECT* object, const string s)
 	component->SetDestroy();
 }
 
-void ImGui::DrawRect(const ImVec2& size, const ImVec4& color, const char* text, const ImVec4& text_color, const float frame_size, const ImVec4& frame_color)
+void ImGui::DrawRect(const ImVec2& size, const ImVec4& color, const char* text, const ImVec4& text_color, const float32 frame_size, const ImVec4& frame_color)
 {
 	ImDrawList* draw_list = ImGui::GetWindowDrawList();
 	ImGuiStyle& style = ImGui::GetStyle();

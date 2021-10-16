@@ -28,9 +28,6 @@
 using namespace DirectX;
 
 #include	"common.h"
-#include	"include/engine/core/math/Color.h"
-
-#include	"include/engine/core/math/Math.h"
 
 #ifndef IMGUI
 #define IMGUI
@@ -98,5 +95,9 @@ using namespace DirectX;
 #endif // !INCLUDE
 
 using namespace std;
+
+#include "include\engine\core\utility\TypeDefine.h"
+
+#include	"include/engine/core/math/Math.h"
 
 #endif // !STDAFX_H

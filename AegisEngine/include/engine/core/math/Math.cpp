@@ -9,7 +9,7 @@ namespace Aegis
 {
 	namespace Math
 	{
-		inline const int Get_Random(int min, int max)
+		inline const int32 Get_Random(int32 min, int32 max)
 		{
 			mt19937_64 mt(rnd());								//  メルセンヌ・ツイスタの64ビット版、引数は初期シード値
 			uniform_int_distribution<> rand(min, max);			// [min, max] 範囲の一様乱数
@@ -17,7 +17,7 @@ namespace Aegis
 			return rand(mt);
 		}
 
-		inline const float Get_Random(float min, float max)
+		inline const float32 Get_Random(float32 min, float32 max)
 		{
 			mt19937_64 mt(rnd());								//  メルセンヌ・ツイスタの64ビット版、引数は初期シード値
 			uniform_real_distribution<> rand(min, max);			// [min, max] 範囲の一様乱数
@@ -25,7 +25,7 @@ namespace Aegis
 			return rand(mt);
 		}
 
-		inline const double Get_Random(double min, double max)
+		inline const float64 Get_Random(float64 min, float64 max)
 		{
 			mt19937_64 mt(rnd());								//  メルセンヌ・ツイスタの64ビット版、引数は初期シード値
 			uniform_real_distribution<> rand(min, max);			// [min, max] 範囲の一様乱数
@@ -34,7 +34,7 @@ namespace Aegis
 		}
 
 
-		const bool Random_Bool(const float probability)
+		const bool Random_Bool(const float32 probability)
 		{
 			mt19937_64 mt(rnd());							//  メルセンヌ・ツイスタの64ビット版、引数は初期シード値
 			bernoulli_distribution uid(probability);
@@ -43,9 +43,9 @@ namespace Aegis
 		}
 
 
-		float LerpEx(const float y1, const float y2, const float tx, const float x1, const float x2)
+		float32 LerpEx(const float32 y1, const float32 y2, const float32 tx, const float32 x1, const float32 x2)
 		{
-			float dx, dy;
+			float32 dx, dy;
 
 			dx = x2 - x1;
 			dy = y2 - y1;
@@ -65,10 +65,10 @@ namespace Aegis
 		}
 	}
 
-	Quaternion RotateAxis(const Vector3& axis, const float angle)
+	Quaternion RotateAxis(const Vector3& axis, const float32 angle)
 	{
 		Quaternion quat;
-		float scalar = sin(Math::DegreeToRadian(angle) / 2.0f);
+		float32 scalar = sin(Math::DegreeToRadian(angle) / 2.0f);
 		quat.x = axis.x * scalar;
 		quat.y = axis.y * scalar;
 		quat.z = axis.z * scalar;

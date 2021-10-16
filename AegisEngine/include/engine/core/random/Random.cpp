@@ -5,7 +5,7 @@ namespace Aegis
 	Random Random::Insrance;
 	std::mutex Random::mutex;
 
-	Random::Random(std::uint64_t seed) :
+	Random::Random(uint64 seed) :
 		random(seed), random64(seed)
 	{
 	}
@@ -19,7 +19,7 @@ namespace Aegis
 		return &Insrance;
 	}
 
-	std::uint32_t Random::GetRandomUint() noexcept
+	uint32 Random::GetRandomUint() noexcept
 	{
 		std::lock_guard<std::mutex> lock(mutex);
 		return Random::GetInsrance()->random();
@@ -37,19 +37,19 @@ namespace Aegis
 		return FloatFromBits(Random::GetInsrance()->random(), min, max);
 	}
 
-	std::uint64_t Random::GetRandomUlong() noexcept
+	uint64 Random::GetRandomUlong() noexcept
 	{
 		std::lock_guard<std::mutex> lock(mutex);
 		return Random::GetInsrance()->random64();
 	}
 
-	void Random::ReSeed(std::uint64_t seed) noexcept
+	void Random::ReSeed(uint64 seed) noexcept
 	{
 		std::lock_guard<std::mutex> lock(mutex);
 		Random::GetInsrance()->random = XorShift32(seed);
 	}
 
-	void Random::ReSeed64(std::uint64_t seed) noexcept
+	void Random::ReSeed64(uint64 seed) noexcept
 	{
 		std::lock_guard<std::mutex> lock(mutex);
 		Random::GetInsrance()->random64 = XorShift64(seed);
