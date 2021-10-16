@@ -288,7 +288,7 @@ void MESH_FIELD::Draw_DPP()
 
 const float MESH_FIELD::Get_Height(const XMFLOAT3& position)
 {
-	int x, z;
+	float x, z;
 
 	XMFLOAT3 p0, p1, p2, v01, v02, n, v, hp, va = XMFLOAT3(0.f, 0.f, 0.f), vb;
 
@@ -509,7 +509,7 @@ void MESH_WALL::Draw()
 	{
 		// 3Dマトリックス設定
 		{
-			XMMATRIX world;
+			XMMATRIX world(XMMatrixIdentity());
 
 			XMFLOAT3 position = *Get_Transform().Get_Position();
 			XMFLOAT3 rotate = *Get_Transform().Get_Rotation();

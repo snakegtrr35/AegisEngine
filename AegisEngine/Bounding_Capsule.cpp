@@ -257,7 +257,7 @@ void BOUNDING_CAPSULE::Init_Ring()
 {
 	// 頂点バッファの設定
 	{
-		const UINT cnt = 10 * (UINT)Radius;
+		const int cnt = 10 * (UINT)Radius;
 
 		vector<VERTEX_3D> Vertex;
 		VERTEX_3D vertex;
@@ -302,7 +302,7 @@ void BOUNDING_CAPSULE::Init_Ring()
 
 	// インデックスバッファの設定
 	{
-		const UINT cnt = 10 * (UINT)Radius;
+		const int cnt = 10 * (UINT)Radius;
 
 		IndexNum_Ring = cnt * 2;
 		vector<WORD> Index;

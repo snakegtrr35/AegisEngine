@@ -210,7 +210,7 @@ void POLYGON_3D::Draw(void)
 {
 	// 3Dマトリックス設定
 	{
-		XMMATRIX world;
+		XMMATRIX world(XMMatrixIdentity());
 
 		XMFLOAT3 position = *Get_Transform().Get_Position();
 		XMFLOAT3 rotate = *Get_Transform().Get_Rotation();
@@ -285,7 +285,7 @@ void POLYGON_3D::Draw_DPP(void)
 {
 	// 3Dマトリックス設定
 	{
-		XMMATRIX world;
+		XMMATRIX world(XMMatrixIdentity());
 
 		XMFLOAT3 position = *Get_Transform().Get_Position();
 		XMFLOAT3 rotate = *Get_Transform().Get_Rotation();

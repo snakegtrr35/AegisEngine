@@ -328,12 +328,12 @@ void BILL_BOARD::SetTexture(const string& const file_name)
 
 int BILL_BOARD_ANIMATION::FrameCount = 0;
 
-BILL_BOARD_ANIMATION::BILL_BOARD_ANIMATION() : WaitFrame(0.f), CreatCount(0), PatternCount(0), Age(0), Tx(0.f), Ty(0.f), Tw(0.f), Th(0.f), Tx_Param(-1.0f), Ty_Param(-1.0f), Pattern_Max_X(0), Pattern_Max_Y(0)
+BILL_BOARD_ANIMATION::BILL_BOARD_ANIMATION() : WaitFrame(0), CreatCount(0), PatternCount(0), Age(0), Tx(0.f), Ty(0.f), Tw(0.f), Th(0.f), Tx_Param(-1.0f), Ty_Param(-1.0f), Pattern_Max_X(0), Pattern_Max_Y(0)
 {
 	Texture->Set_Texture_Name("Explosion.png");
 }
 
-BILL_BOARD_ANIMATION::BILL_BOARD_ANIMATION(XMFLOAT3 position, XMFLOAT2 wh) : WaitFrame(0.f), CreatCount(0), PatternCount(0), Age(0), Tx(0.f), Ty(0.f), Tw(0.f), Th(0.f), Tx_Param(-1.0f), Ty_Param(-1.0f), Pattern_Max_X(0), Pattern_Max_Y(0)
+BILL_BOARD_ANIMATION::BILL_BOARD_ANIMATION(XMFLOAT3 position, XMFLOAT2 wh) : WaitFrame(0), CreatCount(0), PatternCount(0), Age(0), Tx(0.f), Ty(0.f), Tw(0.f), Th(0.f), Tx_Param(-1.0f), Ty_Param(-1.0f), Pattern_Max_X(0), Pattern_Max_Y(0)
 {
 	Get_Transform().Set_Position(position);
 
