@@ -166,30 +166,30 @@ void TITLE::Update(float delta_time)
 void TITLE::Uninit()
 {
 
-#ifdef _DEBUG
-	static bool flag = true;
-
-	if (flag)
-	{
-		const type_info& id = typeid(*this);
-
-		string name(id.name());
-
-		// 置換
-		Replace_String(name, "class ", "      ");
-		Replace_String(name, "*", " ");
-		name.erase(remove_if(name.begin(), name.end(), isspace), name.end());
-
-		std::ofstream file(name + ".dat", std::ios::binary);
-
-		bool f = file.is_open();
-
-		cereal::BinaryOutputArchive archive(file);
-		archive(*this);
-
-		flag = false;
-	}
-#endif // _DEBUG
+//#ifdef _DEBUG
+//	static bool flag = true;
+//
+//	if (flag)
+//	{
+//		const type_info& id = typeid(*this);
+//
+//		string name(id.name());
+//
+//		// 置換
+//		Replace_String(name, "class ", "      ");
+//		Replace_String(name, "*", " ");
+//		name.erase(remove_if(name.begin(), name.end(), isspace), name.end());
+//
+//		std::ofstream file(name + ".dat", std::ios::binary);
+//
+//		bool f = file.is_open();
+//
+//		cereal::BinaryOutputArchive archive(file);
+//		archive(*this);
+//
+//		flag = false;
+//	}
+//#endif // _DEBUG
 
 	SCENE::Uninit();
 
@@ -248,6 +248,29 @@ void TITLE::Load(SCENE* scene)
 	}
 
 	scene->SCENE::Init();
+
+#ifdef _DEBUG
+	if (false == flag)
+	{
+		const type_info& id = typeid(*scene);
+
+		string name(id.name());
+
+		// 置換
+		Replace_String(name, "class ", "      ");
+		Replace_String(name, "*", " ");
+		name.erase(remove_if(name.begin(), name.end(), isspace), name.end());
+
+		std::ofstream file(name + ".dat", std::ios::binary);
+
+		bool f = file.is_open();
+
+		cereal::BinaryOutputArchive archive(file);
+		archive(*scene);
+
+		flag = false;
+	}
+#endif // _DEBUG
 
 	scene->SetLockLoad();
 }

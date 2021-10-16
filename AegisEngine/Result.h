@@ -11,7 +11,6 @@ class SCENE;
 */
 class RESULT : public SCENE {
 private:
-	bool Flag = true;
 
 protected:
 

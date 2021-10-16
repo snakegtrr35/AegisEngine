@@ -11,7 +11,6 @@ class SCENE;
 */
 class GAME : public SCENE {
 private:
-	bool Flag = true;
 
 protected:
 
