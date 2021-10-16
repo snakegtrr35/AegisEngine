@@ -11,7 +11,10 @@
 #include	"Enemy.h"
 #include	"Score.h"
 #include	"Mesh_Field.h"
+
 #include	"Mesh_Dome.h"
+#include	"Skybox.h"
+
 #include	"Player.h"
 #include	"camera.h"
 #include	"Debug_Camera.h"
@@ -84,58 +87,6 @@ void GAME::Update(float delta_time)
 	if (false == GetLockLoad())
 	{
 		sprite_anime.reset(nullptr);
-
-		if(Flag)
-		{
-			Flag = false;
-
-			{
-				COLOR color = COLOR(0.0f, 1.0f, 1.0f, 1.0f);
-			
-				auto hp = this->Get_Game_Object<SPRITE>("hp_ui");
-			
-				hp.lock()->SetColor(color);
-			
-				auto children = hp.lock()->Get_Child_Sptite();
-			
-				for (const auto& child : *children)
-				{
-					if (string("hp") == child->Name)
-					{
-						child->Child->SetColor(color);
-					}
-				}
-			}
-
-			string name("enemy");
-			string number;
-		
-			for (int i = 0; i < 5; i++)
-			{
-				number = to_string(i);
-		
-				auto enemy = this->Get_Game_Object<ENEMY>(name + number);
-		
-				if (enemy.expired())
-				{
-					ENEMY* e = Add_Game_Object<ENEMY>(LAYER_NAME::GAMEOBJECT, name + number);
-		
-					XMFLOAT3 vec((float)(-10.0f + i * 5.0f), 0.0f, 10.0f);
-					e->Get_Transform().Set_Position(vec);
-					vec = XMFLOAT3(0.0f, 0.0f, 0.0f);
-					e->Get_Transform().Set_Rotation(vec);
-		
-					continue;
-				}
-		
-				XMFLOAT3 vec((float)(-10.0f + i * 5.0f), 0.0f, 10.0f);
-				enemy.lock()->Get_Transform().Set_Position(vec);
-				vec = XMFLOAT3(0.0f, 0.0f, 0.0f);
-				enemy.lock()->Get_Transform().Set_Rotation(vec);
-		
-				number.clear();
-			}
-		}
 
 		SCENE::Update(delta_time);
 
@@ -302,6 +253,7 @@ void GAME::Update(float delta_time)
 				auto enemys = Get_Game_Objects<ENEMY>();
 
 				if (enemys.empty())
+				//if (KEYBOARD::Trigger_Keyboard(VK_SPACE))
 				{
 					if (flag)
 					{
@@ -413,22 +365,30 @@ void GAME::Load(SCENE* scene)
 			sprite->SetSize(XMFLOAT4(400, 400, 400, 400));
 		}
 
+		//// メッシュドーム
+		//{
+		//	MESH_DOOM* pmd = Add_Game_Object<MESH_DOOM>(LAYER_NAME::BACKGROUND, "doom");
+		//	//pmd->Init();
+		//
+		//	XMFLOAT3 scaling = XMFLOAT3(2.0f, 2.0f, 2.0f);
+		//
+		//	pmd->Get_Transform().Set_Scaling(scaling);
+		//}
+
+		// スカイボックス
+		{
+			SKYBOX* skybox = Add_Game_Object<SKYBOX>(LAYER_NAME::BACKGROUND, "skybox");
+
+			XMFLOAT3 scaling = XMFLOAT3(100.0f, 100.0f, 100.0f);
+
+			skybox->Get_Transform().Set_Scaling(scaling);
+		}
+
 		// メッシュフィールド
 		{
 			MESH_FIELD* mf = Add_Game_Object<MESH_FIELD>(LAYER_NAME::BACKGROUND, "feild");
 
 			mf->SetTexture("asphalt01-pattern.jpg");
-		}
-
-
-		// メッシュドーム
-		{
-			MESH_DOOM* pmd = Add_Game_Object<MESH_DOOM>(LAYER_NAME::BACKGROUND, "doom");
-			//pmd->Init();
-
-			XMFLOAT3 scaling = XMFLOAT3(2.0f, 2.0f, 2.0f);
-
-			pmd->Get_Transform().Set_Scaling(scaling);
 		}
 
 		// 敵
@@ -635,6 +595,67 @@ void GAME::Load(SCENE* scene)
 	}
 
 	scene->SCENE::Init();
+
+	{
+		// メッシュフィールド
+		{
+			auto mf = scene->Get_Game_Object<MESH_FIELD>("feild");
+		
+			if (!mf.expired())
+			{
+				mf.lock()->SetTexture("asphalt01-pattern.jpg");
+			}
+		}
+
+		{
+			COLOR color = COLOR(0.0f, 1.0f, 1.0f, 1.0f);
+		
+			auto hp = scene->Get_Game_Object<SPRITE>("hp_ui");
+		
+			hp.lock()->SetColor(color);
+		
+			auto children = hp.lock()->Get_Child_Sptite();
+		
+			for (const auto& child : *children)
+			{
+				if (string("hp") == child->Name)
+				{
+					child->Child->SetColor(color);
+				}
+			}
+		}
+
+		{
+			string name("enemy");
+			string number;
+		
+			for (int i = 0; i < 5; i++)
+			{
+				number = to_string(i);
+		
+				auto enemy = scene->Get_Game_Object<ENEMY>(name + number);
+		
+				if (enemy.expired())
+				{
+					ENEMY* e = Add_Game_Object<ENEMY>(LAYER_NAME::GAMEOBJECT, name + number);
+		
+					XMFLOAT3 vec((float)(-10.0f + i * 5.0f), 0.0f, 10.0f);
+					e->Get_Transform().Set_Position(vec);
+					vec = XMFLOAT3(0.0f, 0.0f, 0.0f);
+					e->Get_Transform().Set_Rotation(vec);
+		
+					continue;
+				}
+		
+				XMFLOAT3 vec((float)(-10.0f + i * 5.0f), 0.0f, 10.0f);
+				enemy.lock()->Get_Transform().Set_Position(vec);
+				vec = XMFLOAT3(0.0f, 0.0f, 0.0f);
+				enemy.lock()->Get_Transform().Set_Rotation(vec);
+		
+				number.clear();
+			}
+		}
+	}
 
 #ifdef _DEBUG
 

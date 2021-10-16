@@ -4,6 +4,8 @@
 これは就職作品として、開発しています。
 
 ## ライセンス License
+[![MIT license](https://img.shields.io/badge/License-MIT-blue.svg)](https://github.com/snakegtrr35/AegisEngine/blob/master/LICENSE)
+
 The MIT License (MIT)
 
 Copyright (c) 2019 snakegtrr35

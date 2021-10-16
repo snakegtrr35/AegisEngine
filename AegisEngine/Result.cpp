@@ -46,37 +46,6 @@ void RESULT::Draw()
 {
 	if (false == GetLockLoad())
 	{
-		if (Flag)
-		{
-			Flag = false;
-
-			{
-				auto result = this->Get_Game_Object<SPRITE>("result");
-
-				if (!result.expired())
-				{
-					XMFLOAT2 pos(SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.5f);
-
-					result.lock()->SetPosition(pos);
-
-					result.lock()->SetSize(XMFLOAT4(SCREEN_HEIGHT * 0.5f, SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.5f, SCREEN_WIDTH * 0.5f));
-
-					if (RESULT::Clear_Flag)
-					{
-						result.lock()->SetTexture(string("game_clear.png"));
-
-						//AUDIO_MANAGER::Play_Sound_Object(SOUND_INDEX::SOUND_INDEX_CLEAR, false);
-					}
-					else
-					{
-						result.lock()->SetTexture(string("game_over.png"));
-
-						//AUDIO_MANAGER::Play_Sound_Object(SOUND_INDEX::SOUND_INDEX_GAMEOVER, false);
-					}
-				}
-			}
-		}
-
 		SCENE::Draw();
 	}
 	else
@@ -118,7 +87,6 @@ void RESULT::Update(float delta_time)
 		if (FADE::End_Fade())
 		{
 			SCENE_MANAGER::Set_Scene<TITLE>();
-			Flag = true;
 		}
 
 	}
@@ -131,30 +99,30 @@ void RESULT::Update(float delta_time)
 void RESULT::Uninit()
 {
 
-#ifdef _DEBUG
-	static bool flag = true;
-
-	if (flag)
-	{
-		const type_info& id = typeid(*this);
-
-		string name(id.name());
-
-		// 置換
-		Replace_String(name, "class ", "      ");
-		Replace_String(name, "*", " ");
-		name.erase(remove_if(name.begin(), name.end(), isspace), name.end());
-
-		std::ofstream file(name + ".dat", std::ios::binary);
-
-		bool f = file.is_open();
-
-		cereal::BinaryOutputArchive archive(file);
-		archive(*this);
-
-		flag = false;
-	}
-#endif // _DEBUG
+//#ifdef _DEBUG
+//	static bool flag = true;
+//
+//	if (flag)
+//	{
+//		const type_info& id = typeid(*this);
+//
+//		string name(id.name());
+//
+//		// 置換
+//		Replace_String(name, "class ", "      ");
+//		Replace_String(name, "*", " ");
+//		name.erase(remove_if(name.begin(), name.end(), isspace), name.end());
+//
+//		std::ofstream file(name + ".dat", std::ios::binary);
+//
+//		bool f = file.is_open();
+//
+//		cereal::BinaryOutputArchive archive(file);
+//		archive(*this);
+//
+//		flag = false;
+//	}
+//#endif // _DEBUG
 
 	SCENE::Uninit();
 
@@ -219,6 +187,45 @@ void RESULT::Load(SCENE* scene)
 	//}
 
 	scene->SCENE::Init();
+
+	{
+		auto result = scene->Get_Game_Object<SPRITE>("result");
+	
+		if (!result.expired())
+		{
+			if (RESULT::Clear_Flag)
+			{
+				result.lock()->SetTexture(string("game_clear.png"));
+			}
+			else
+			{
+				result.lock()->SetTexture(string("game_over.png"));
+			}
+		}
+	}
+
+#ifdef _DEBUG
+	if (false == flag)
+	{
+		const type_info& id = typeid(*scene);
+
+		string name(id.name());
+
+		// 置換
+		Replace_String(name, "class ", "      ");
+		Replace_String(name, "*", " ");
+		name.erase(remove_if(name.begin(), name.end(), isspace), name.end());
+
+		std::ofstream file(name + ".dat", std::ios::binary);
+
+		bool f = file.is_open();
+
+		cereal::BinaryOutputArchive archive(file);
+		archive(*scene);
+
+		flag = false;
+	}
+#endif // _DEBUG
 
 	scene->SetLockLoad();
 }
