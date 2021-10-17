@@ -22,6 +22,8 @@
 
 #include	"Skybox.h"
 
+using namespace Aegis;
+
 static unique_ptr<SPRITE_ANIMATION> sprite_anime;
 
 void MAIN_MENU::Init()
@@ -29,8 +31,8 @@ void MAIN_MENU::Init()
 	{
 		sprite_anime = make_unique<SPRITE_ANIMATION>();
 
-		sprite_anime->SetPosition(XMFLOAT2(SCREEN_WIDTH * 0.5, SCREEN_HEIGHT * 0.5));
-		sprite_anime->SetSize(XMFLOAT4(SCREEN_HEIGHT * 0.5, SCREEN_WIDTH * 0.5, SCREEN_HEIGHT * 0.5, SCREEN_WIDTH * 0.5));
+		sprite_anime->SetPosition(Vector2(SCREEN_WIDTH * 0.5, SCREEN_HEIGHT * 0.5));
+		sprite_anime->SetSize(Vector4(SCREEN_HEIGHT * 0.5, SCREEN_WIDTH * 0.5, SCREEN_HEIGHT * 0.5, SCREEN_WIDTH * 0.5));
 
 		sprite_anime->SetTexture("Load.png");
 
@@ -210,12 +212,12 @@ void MAIN_MENU::Load(SCENE* scene)
 
 		//// テキスト画像
 		//{
-		//	XMFLOAT2 pos(50.0f, 50.0f);
+		//	Vector2 pos(50.0f, 50.0f);
 		//	auto text = Add_Game_Object<TEXTS>(LAYER_NAME::UI, "text1");
 
 		//	text->SetPosition(pos);
 
-		//	text->SetSize(XMFLOAT4(20, 20, 20, 20));
+		//	text->SetSize(Vector4(20, 20, 20, 20));
 
 		//	text->Edit("Hello HELL World!!!地球の未来にご奉仕するにゃん！");
 		//}
@@ -224,13 +226,13 @@ void MAIN_MENU::Load(SCENE* scene)
 
 		//// 画像
 		//{
-		//	XMFLOAT2 pos(300, 300);
+		//	Vector2 pos(300, 300);
 
 		//	SPRITE* s = Add_Game_Object<SPRITE>(LAYER_NAME::UI, "depth");
 
 		//	s->SetPosition(pos);
 
-		//	s->SetSize(XMFLOAT4(128, 128, 128, 128));
+		//	s->SetSize(Vector4(128, 128, 128, 128));
 
 		//	s->Set_Object_Name("depth");
 		//}
@@ -240,11 +242,11 @@ void MAIN_MENU::Load(SCENE* scene)
 		//{
 		//	auto text = Add_Game_Object<TEXTS>(LAYER_NAME::UI);
 
-		//	XMFLOAT2 pos(100.0f, 300.0f);
+		//	Vector2 pos(100.0f, 300.0f);
 
 		//	text->SetPosition(pos);
 
-		//	text->SetSize(XMFLOAT4(20, 20, 20, 20));
+		//	text->SetSize(Vector4(20, 20, 20, 20));
 
 		//	text->Set_Object_Name(string("delta_time"));
 
@@ -256,11 +258,11 @@ void MAIN_MENU::Load(SCENE* scene)
 		/*{
 			auto text = Add_Game_Object<TEXTS>(LAYER_NAME::UI, "fps");
 
-			XMFLOAT2 pos(100.0f, 340.0f);
+			Vector2 pos(100.0f, 340.0f);
 
 			text->SetPosition(pos);
 
-			text->SetSize(XMFLOAT4(20, 20, 20, 20));
+			text->SetSize(Vector4(20, 20, 20, 20));
 
 			text->Edit("0.000");
 		}*/

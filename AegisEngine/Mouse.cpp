@@ -5,6 +5,8 @@
 #include	"Mouse.h"
 #include	<algorithm>
 
+using namespace Aegis;
+
 unique_ptr<MOUSE> MOUSE::pMouse = nullptr;
 
 void MOUSE::Init(void)
@@ -26,7 +28,7 @@ void MOUSE::Update(void)
 	{
 		GetCursorPos(&pMouse->ScreenPoint);
 
-		pMouse->ScreenPosition = XMFLOAT2((float)pMouse->ScreenPoint.x, (float)pMouse->ScreenPoint.y);
+		pMouse->ScreenPosition = Vector2((float)pMouse->ScreenPoint.x, (float)pMouse->ScreenPoint.y);
 	}
 }
 
@@ -35,7 +37,7 @@ void MOUSE::Uninit(void)
 	pMouse.reset(nullptr);
 }
 
-XMFLOAT2& const MOUSE::Get_Screen_Position()
+Vector2& const MOUSE::Get_Screen_Position()
 {
 	return ScreenPosition;
 }
@@ -71,9 +73,9 @@ void  MOUSE::Set_Position(POINT& pos)
 	Pos.y += pos.y;
 }
 
-const XMFLOAT2 MOUSE::Get_Position()
+const Vector2 MOUSE::Get_Position()
 {
-	XMFLOAT2 pos;
+	Vector2 pos;
 
 	pos.x = Pos.x - OldPos.x;
 	pos.y = Pos.y - OldPos.y;

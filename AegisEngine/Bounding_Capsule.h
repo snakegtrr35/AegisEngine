@@ -41,13 +41,13 @@ private:
 	float Height;
 
 	//! 描画(実装)
-	void Draw_Body(const XMFLOAT3& position, const XMFLOAT3& rotation);
+	void Draw_Body(const Aegis::Vector3& position, const Aegis::Vector3& rotation);
 
 	//! 本体の描画
-	void Draw_Semicircle(const XMFLOAT3& position, const XMFLOAT3& rotation);
+	void Draw_Semicircle(const Aegis::Vector3& position, const Aegis::Vector3& rotation);
 
 	//! 中心の円部分の描画
-	void Draw_Ring(const XMFLOAT3& position, const XMFLOAT3& rotation);
+	void Draw_Ring(const Aegis::Vector3& position, const Aegis::Vector3& rotation);
 
 	// !本体の初期化
 	void Init_Body();

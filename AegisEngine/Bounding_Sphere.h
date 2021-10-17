@@ -29,7 +29,7 @@ private:
 	BoundingSphere Sphere;
 
 	//! 実際の描画
-	void Draw_Ring(const XMFLOAT3& rotation);
+	void Draw_Ring(const Aegis::Vector3& rotation);
 
 public:
 	/**

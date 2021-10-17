@@ -2,6 +2,7 @@
 #include	"Texture_Manager.h"
 #include	"Renderer.h"
 
+using namespace Aegis;
 
 TEXTURE::TEXTURE() : FileName("none"), File(hash<string>()(FileName))
 {
@@ -44,7 +45,7 @@ const string& TEXTURE::Get_Texture_Name(void)
 	return FileName;
 }
 
-XMINT2* const TEXTURE::Get_WH()
+Aegis::Int2* const TEXTURE::Get_WH()
 {
 	return TEXTURE_MANEGER::Get_Instance()->Get_WH(File);
 }

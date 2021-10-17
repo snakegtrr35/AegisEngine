@@ -5,6 +5,8 @@
 #include	"Scene.h"
 #include	"ShadowMap.h"
 
+using namespace Aegis;
+
 BOUNDING_AABB::~BOUNDING_AABB()
 {
 	Uninit();
@@ -13,14 +15,14 @@ BOUNDING_AABB::~BOUNDING_AABB()
 void BOUNDING_AABB::Init()
 {
 	{
-		XMFLOAT3 pos = XMFLOAT3();
+		Vector3 pos = Vector3();
 
 		if (false == Owner.expired())
 		{
 			pos = *Owner.lock()->Get_Transform().Get_Position();
 		}
 
-		Aabb = BoundingBox(XMFLOAT3(0.f, 0.f, 0.f), Radius);
+		Aabb = BoundingBox(Vector3(0.f, 0.f, 0.f), Radius);
 
 		XMMATRIX matrix = XMMatrixScaling(Scaling.x, Scaling.y, Scaling.z);
 		matrix *= XMMatrixTranslation(Position.x + pos.x, Position.y + pos.y, Position.z + pos.z);
@@ -31,7 +33,7 @@ void BOUNDING_AABB::Init()
 	// 頂点バッファの設定
 	if (nullptr == pVertexBuffer.get())
 	{
-		XMFLOAT3 corners[BoundingBox::CORNER_COUNT];
+		Vector3 corners[BoundingBox::CORNER_COUNT];
 
 		Aabb.GetCorners(corners);
 
@@ -56,9 +58,9 @@ void BOUNDING_AABB::Init()
 
 		for (char i = 0; i < BoundingBox::CORNER_COUNT; i++)
 		{
-			Vertex[i].Normal = XMFLOAT3(1.0f, 0.0f, 0.0f);
-			Vertex[i].Diffuse = XMFLOAT4(Color.r, Color.g, Color.b, Color.a);
-			Vertex[i].TexCoord = XMFLOAT2(0.0f, 0.0f);
+			Vertex[i].Normal = Vector3(1.0f, 0.0f, 0.0f);
+			Vertex[i].Diffuse = Vector4(Color.r, Color.g, Color.b, Color.a);
+			Vertex[i].TexCoord = Vector2(0.0f, 0.0f);
 		}
 
 		// 頂点バッファの設定
@@ -181,9 +183,9 @@ void BOUNDING_AABB::OverWrite()
 	{
 		Color = Default_Color;
 
-		XMFLOAT3 pos = *Owner.lock()->Get_Transform().Get_Position();
+		Vector3 pos = *Owner.lock()->Get_Transform().Get_Position();
 
-		Aabb = BoundingBox(XMFLOAT3(0.f, 0.f, 0.f), Radius);
+		Aabb = BoundingBox(Vector3(0.f, 0.f, 0.f), Radius);
 
 		XMMATRIX matrix = XMMatrixScaling(Scaling.x, Scaling.y, Scaling.z);
 		matrix *= XMMatrixTranslation(Position.x + pos.x, Position.y + pos.y, Position.z + pos.z);
@@ -191,7 +193,7 @@ void BOUNDING_AABB::OverWrite()
 		Aabb.Transform(Aabb, matrix);
 
 		VERTEX_3D Vertex[BoundingBox::CORNER_COUNT];
-		XMFLOAT3 corners[BoundingBox::CORNER_COUNT];
+		Vector3 corners[BoundingBox::CORNER_COUNT];
 
 		Aabb.GetCorners(corners);
 
@@ -214,9 +216,9 @@ void BOUNDING_AABB::OverWrite()
 
 		for (char i = 0; i < BoundingBox::CORNER_COUNT; i++)
 		{
-			Vertex[i].Diffuse = XMFLOAT4(Color.r, Color.g, Color.b, Color.a);
-			Vertex[i].Normal = XMFLOAT3(1.0f, 0.0f, 0.0f);
-			Vertex[i].TexCoord = XMFLOAT2(0.0f, 0.0f);
+			Vertex[i].Diffuse = Vector4(Color.r, Color.g, Color.b, Color.a);
+			Vertex[i].Normal = Vector3(1.0f, 0.0f, 0.0f);
+			Vertex[i].TexCoord = Vector2(0.0f, 0.0f);
 		}
 
 		// 頂点バッファの書き換え
@@ -229,17 +231,17 @@ void BOUNDING_AABB::OverWrite()
 	}
 }
 
-void BOUNDING_AABB::Set_Radius(const XMFLOAT3& radius)
+void BOUNDING_AABB::Set_Radius(const Vector3& radius)
 {
 	Radius = radius;
 }
 
-void BOUNDING_AABB::Set_Radius(const XMFLOAT3* radius)
+void BOUNDING_AABB::Set_Radius(const Vector3* radius)
 {
 	Radius = *radius;
 }
 
-XMFLOAT3* BOUNDING_AABB::Get_Radius()
+Vector3* BOUNDING_AABB::Get_Radius()
 {
 	return &Radius;
 }
@@ -259,7 +261,7 @@ void BOUNDING_AABB::OverWrite(BoundingBox aabb)
 	{
 
 		VERTEX_3D Vertex[BoundingBox::CORNER_COUNT];
-		XMFLOAT3 corners[BoundingBox::CORNER_COUNT];
+		Vector3 corners[BoundingBox::CORNER_COUNT];
 
 		Aabb.GetCorners(corners);
 
@@ -282,9 +284,9 @@ void BOUNDING_AABB::OverWrite(BoundingBox aabb)
 
 		for (char i = 0; i < BoundingBox::CORNER_COUNT; i++)
 		{
-			Vertex[i].Diffuse = XMFLOAT4(Color.r, Color.g, Color.b, Color.a);
-			Vertex[i].Normal = XMFLOAT3(1.0f, 0.0f, 0.0f);
-			Vertex[i].TexCoord = XMFLOAT2(0.0f, 0.0f);
+			Vertex[i].Diffuse = Vector4(Color.r, Color.g, Color.b, Color.a);
+			Vertex[i].Normal = Vector3(1.0f, 0.0f, 0.0f);
+			Vertex[i].TexCoord = Vector2(0.0f, 0.0f);
 		}
 
 		// 頂点バッファの書き換え
@@ -315,9 +317,9 @@ void BOUNDING_AABB::Draw_Inspector()
 	ImGui::DragFloat3("Scaling##AABB", scale, 0.01f);
 	ImGui::DragFloat3("Radius##AABB", radius, 0.01f, 0.01f, 1000.0f);
 
-	Position = XMFLOAT3(position[0], position[1], position[2]);
-	Scaling = XMFLOAT3(scale[0], scale[1], scale[2]);
-	Radius = XMFLOAT3(radius[0], radius[1], radius[2]);
+	Position = Vector3(position[0], position[1], position[2]);
+	Scaling = Vector3(scale[0], scale[1], scale[2]);
+	Radius = Vector3(radius[0], radius[1], radius[2]);
 
 	OverWrite();
 }

@@ -1,5 +1,7 @@
 ﻿#include	"Xbox.h"
 
+using namespace Aegis;
+
 CONTROLER_STATE XBOX::Controllers[MAX_CONTROLLERS];
 CONTROLER_STATE XBOX::Old_Controllers[MAX_CONTROLLERS];
 
@@ -154,33 +156,33 @@ bool XBOX::Release(const int any_button, const unsigned char number)
 //========================================
 // 左スティック
 //========================================
-XMINT2 const XBOX::LeftStick(const unsigned char number)
+Int2 const XBOX::LeftStick(const unsigned char number)
 {
 	if (Controllers[number].ConnectEnable)
 	{
-		XMINT2 stick;
+		Int2 stick;
 
 		stick.x = Controllers[number].state.Gamepad.sThumbLX;
 		stick.y = Controllers[number].state.Gamepad.sThumbLY;
 
 		return stick;
 	}
-	return XMINT2(0, 0);
+	return Int2(0, 0);
 }
 
 //========================================
 // 右スティック
 //========================================
-XMINT2 const XBOX::RightStick(const unsigned char number)
+Int2 const XBOX::RightStick(const unsigned char number)
 {
 	if (Controllers[number].ConnectEnable)
 	{
-		XMINT2 stick;
+		Int2 stick;
 
 		stick.x = Controllers[number].state.Gamepad.sThumbRX;
 		stick.y = Controllers[number].state.Gamepad.sThumbRY;
 
 		return stick;
 	}
-	return XMINT2(0, 0);
+	return Int2(0, 0);
 }

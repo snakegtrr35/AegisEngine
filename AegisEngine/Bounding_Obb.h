@@ -20,17 +20,17 @@ private:
 	BoundingOrientedBox Obb;
 
 	//! 各辺の長さ
-	XMFLOAT3 Radius;
+	Aegis::Vector3 Radius;
 
 	//! 回転量(クオータニオン)
-	XMFLOAT4 Quaternion;
+	Aegis::Vector4 Quaternion;
 
 public:
 	/**
 	* @brief コンストラクタ
 	* @details 引数無しコンストラクタ
 	*/
-	BOUNDING_OBB() : Radius(XMFLOAT3(0.5f, 0.5f, 0.5f)), Quaternion(XMFLOAT4(0.f, 0.f, 0.f, 1.0f)) {}
+	BOUNDING_OBB() : Radius(Aegis::Vector3(0.5f, 0.5f, 0.5f)), Quaternion(Aegis::Vector4(0.f, 0.f, 0.f, 1.0f)) {}
 
 	/**
 	* @brief デストラクタ

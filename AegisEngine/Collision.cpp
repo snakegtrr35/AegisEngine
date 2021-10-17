@@ -1,5 +1,7 @@
 ﻿#include	"Collision.h"
 
+using namespace Aegis;
+
 bool Collision_HitCircle(const CIRCLE* pA, const CIRCLE* pB)
 {
 	float abr = pA->Radius + pB->Radius;

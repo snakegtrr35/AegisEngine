@@ -5,12 +5,14 @@
 #include	"Scene.h"
 #include	"ShadowMap.h"
 
+using namespace Aegis;
+
 void BOUNDING_SHPERE::Init()
 {
 	{
-		XMFLOAT3 pos = *Owner.lock()->Get_Transform().Get_Position();
+		Vector3 pos = *Owner.lock()->Get_Transform().Get_Position();
 
-		Sphere = BoundingSphere(XMFLOAT3(0.f, 0.f, 0.f), Radius);
+		Sphere = BoundingSphere(Vector3(0.f, 0.f, 0.f), Radius);
 
 		XMMATRIX matrix;
 
@@ -33,14 +35,14 @@ void BOUNDING_SHPERE::Init()
 			vertex.emplace_back(VERTEX_3D());
 		}
 
-		const float angle = XM_2PI / cnt;
+		const float angle = Math::PI2 / cnt;
 
 		for (UINT i = 0; i < cnt; i++)
 		{
-			vertex[i].Position = XMFLOAT3(cosf(angle * i) * Radius, sinf(angle * i) * Radius, 0.0f);
-			vertex[i].Normal = XMFLOAT3(0.0f, 0.0f, 0.0f);
-			vertex[i].Diffuse = XMFLOAT4(Color.r, Color.g, Color.b, Color.a);
-			vertex[i].TexCoord = XMFLOAT2(0.0f, 0.0f);
+			vertex[i].Position = Vector3(cosf(angle * i) * Radius, sinf(angle * i) * Radius, 0.0f);
+			vertex[i].Normal = Vector3(0.0f, 0.0f, 0.0f);
+			vertex[i].Diffuse = Vector4(Color.r, Color.g, Color.b, Color.a);
+			vertex[i].TexCoord = Vector2(0.0f, 0.0f);
 		}
 
 		// 頂点バッファの設定
@@ -130,11 +132,11 @@ void BOUNDING_SHPERE::Draw()
 
 		CRenderer::Set_Shader(SHADER_INDEX_V::DEFAULT, SHADER_INDEX_P::NO_TEXTURE);
 
-		Draw_Ring(XMFLOAT3(0.f, 0.f, 0.f));
+		Draw_Ring(Vector3(0.f, 0.f, 0.f));
 
-		Draw_Ring(XMFLOAT3(0.f, 90.0f, 0.f));
+		Draw_Ring(Vector3(0.f, 90.0f, 0.f));
 
-		Draw_Ring(XMFLOAT3(90.0f, 0.f, 0.f));
+		Draw_Ring(Vector3(90.0f, 0.f, 0.f));
 
 		CRenderer::Set_Shader();
 	}
@@ -145,9 +147,9 @@ void BOUNDING_SHPERE::Update(float delta_time)
 	OverWrite();
 
 	{
-		XMFLOAT3 pos = *Owner.lock()->Get_Transform().Get_Position();
+		Vector3 pos = *Owner.lock()->Get_Transform().Get_Position();
 
-		Sphere = BoundingSphere(XMFLOAT3(0.f, 0.f, 0.f), Radius);
+		Sphere = BoundingSphere(Vector3(0.f, 0.f, 0.f), Radius);
 
 		XMMATRIX matrix;
 
@@ -181,11 +183,11 @@ const BoundingSphere& BOUNDING_SHPERE::Get_Collition()
 	return Sphere;
 }
 
-void BOUNDING_SHPERE::Draw_Ring(const XMFLOAT3& rotation)
+void BOUNDING_SHPERE::Draw_Ring(const Vector3& rotation)
 {
 	// 3Dマトリックス設定
 	{
-		XMFLOAT3 pos = *Owner.lock()->Get_Transform().Get_Position();
+		Vector3 pos = *Owner.lock()->Get_Transform().Get_Position();
 
 		XMMATRIX world= XMMatrixScaling(Scaling.x, Scaling.y, Scaling.z);
 		world *= XMMatrixRotationRollPitchYaw(XMConvertToRadians(rotation.x), XMConvertToRadians(rotation.y), XMConvertToRadians(rotation.z));
@@ -227,14 +229,14 @@ void BOUNDING_SHPERE::OverWrite()
 			vertex.emplace_back(VERTEX_3D());
 		}
 
-		const float angle = XM_2PI / cnt;
+		const float angle = Math::PI2 / cnt;
 
 		for (UINT i = 0; i < cnt; i++)
 		{
-			vertex[i].Position = XMFLOAT3(cosf(angle * i) * Radius, sinf(angle * i) * Radius, 0.0f);
-			vertex[i].Normal = XMFLOAT3(0.0f, 0.0f, 0.0f);
-			vertex[i].Diffuse = XMFLOAT4(Color.r, Color.g, Color.b, Color.a);
-			vertex[i].TexCoord = XMFLOAT2(0.0f, 0.0f);
+			vertex[i].Position = Vector3(cosf(angle * i) * Radius, sinf(angle * i) * Radius, 0.0f);
+			vertex[i].Normal = Vector3(0.0f, 0.0f, 0.0f);
+			vertex[i].Diffuse = Vector4(Color.r, Color.g, Color.b, Color.a);
+			vertex[i].TexCoord = Vector2(0.0f, 0.0f);
 		}
 
 		// 頂点バッファの設定
@@ -323,8 +325,8 @@ void BOUNDING_SHPERE::Draw_Inspector()
 	ImGui::DragFloat3("Scaling##SPHERE", scale, 0.01f);
 	ImGui::DragFloat("Radius##SPHERE", &Radius, 0.01f, 0.01f, 1000.0f);
 
-	Position = XMFLOAT3(position[0], position[1], position[2]);
-	Scaling = XMFLOAT3(scale[0], scale[1], scale[2]);
+	Position = Vector3(position[0], position[1], position[2]);
+	Scaling = Vector3(scale[0], scale[1], scale[2]);
 
 	OverWrite();
 }

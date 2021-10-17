@@ -8,6 +8,8 @@
 #include	"Scene.h"
 #include	"ShadowMap.h"
 
+using namespace Aegis;
+
 MESH_DOOM::MESH_DOOM() : Radius(500.0f)
 {
 	VertexBuffer.reset(nullptr);
@@ -38,10 +40,10 @@ void MESH_DOOM::Init()
 			phi = 0.0f;
 			for (int x = 0; x < cornerNum + 1; x++)
 			{
-				vertexArray[x + (cornerNum + 1) * y].Position = XMFLOAT3(Radius * sinf(theta) * cosf(phi), Radius * cosf(theta), Radius * sinf(theta) * sinf(phi));
-				vertexArray[x + (cornerNum + 1) * y].Normal = XMFLOAT3(0.0f, 1.0f, 0.0f);
-				vertexArray[x + (cornerNum + 1) * y].Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
-				vertexArray[x + (cornerNum + 1) * y].TexCoord = XMFLOAT2(-phi / XM_2PI, -theta / XM_PI);
+				vertexArray[x + (cornerNum + 1) * y].Position = Vector3(Radius * sinf(theta) * cosf(phi), Radius * cosf(theta), Radius * sinf(theta) * sinf(phi));
+				vertexArray[x + (cornerNum + 1) * y].Normal = Vector3(0.0f, 1.0f, 0.0f);
+				vertexArray[x + (cornerNum + 1) * y].Diffuse = Vector4(1.0f, 1.0f, 1.0f, 1.0f);
+				vertexArray[x + (cornerNum + 1) * y].TexCoord = Vector2(-phi / XM_2PI, -theta / XM_PI);
 
 				phi -= addAngle;
 			}
@@ -151,9 +153,9 @@ void MESH_DOOM::Draw()
 	{
 		XMMATRIX world;
 
-		XMFLOAT3 position = *Get_Transform().Get_Position();
-		XMFLOAT3 rotate = *Get_Transform().Get_Rotation();
-		XMFLOAT3 scale = *Get_Transform().Get_Scaling();
+		Vector3 position = *Get_Transform().Get_Position();
+		Vector3 rotate = *Get_Transform().Get_Rotation();
+		Vector3 scale = *Get_Transform().Get_Scaling();
 
 		world = XMMatrixScaling(scale.x, scale.y, scale.z);
 		world *= XMMatrixRotationRollPitchYaw(XMConvertToRadians(rotate.x), XMConvertToRadians(rotate.y), XMConvertToRadians(rotate.z));

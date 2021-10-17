@@ -21,7 +21,7 @@ public:
 	void Set_Texture_Name(const string& file_name);				// テクスチャ名の設定
 	const string& Get_Texture_Name();							// テクスチャ名の取得
 
-	XMINT2* const Get_WH();
+	Aegis::Int2* const Get_WH();
 
 	template<typename Archive>
 	void serialize(Archive& ar)

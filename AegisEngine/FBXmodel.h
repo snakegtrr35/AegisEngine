@@ -24,10 +24,10 @@ const constexpr BYTE BONE_NUM = 4;
 
 struct ANIME_VERTEX
 {
-	XMFLOAT3 Position;
-	XMFLOAT3 Normal;
-	XMFLOAT4 Diffuse;
-	XMFLOAT2 TexCoord;
+	Aegis::Vector3 Position;
+	Aegis::Vector3 Normal;
+	Aegis::Vector4 Diffuse;
+	Aegis::Vector2 TexCoord;
 	UINT bone_Index[BONE_NUM];
 	float weight[BONE_NUM];
 

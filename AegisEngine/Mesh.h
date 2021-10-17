@@ -53,12 +53,12 @@ struct MESH_SUBSET
 
 struct VectorKey {
 	unsigned int time;
-	XMFLOAT3 value;
+	Aegis::Vector3 value;
 };
 
 struct QuatKey {
 	unsigned int time;
-	XMFLOAT4 value;
+	Aegis::Vector4 value;
 };
 
 struct NodeAnim {

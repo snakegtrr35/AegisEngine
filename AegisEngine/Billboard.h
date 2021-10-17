@@ -30,7 +30,7 @@ protected:
 	unique_ptr<TEXTURE> Texture;
 
 	//! 幅と高さ
-	XMFLOAT2 WH;
+	Aegis::Vector2 WH;
 
 public:
 
@@ -46,7 +46,7 @@ public:
 	* @param wh サイズ
 	* @details 引数付きコンストラクタ
 	*/
-	BILL_BOARD(XMFLOAT3 position, XMFLOAT2 wh);
+	BILL_BOARD(Aegis::Vector3 position, Aegis::Vector2 wh);
 
 	/**
 	* @brief デストラクタ
@@ -89,7 +89,7 @@ public:
 	* @param wh サイズ
 	* @details 幅と高さを設定する関数
 	*/
-	void SetWH(const XMFLOAT2& wh);
+	void SetWH(const Aegis::Vector2& wh);
 	
 	/**
 	* @brief テクスチャを設定する関数
@@ -176,7 +176,7 @@ public:
 	* @param wh サイズ
 	* @details 引数付きコンストラクタ
 	*/
-	BILL_BOARD_ANIMATION(XMFLOAT3 position, XMFLOAT2 wh);
+	BILL_BOARD_ANIMATION(Aegis::Vector3 position, Aegis::Vector2 wh);
 
 	/**
 	* @brief デストラクタ

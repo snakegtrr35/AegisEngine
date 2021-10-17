@@ -8,6 +8,8 @@
 
 #include	"Renderer.h"
 
+using namespace Aegis;
+
 Anim createAnimation(const aiAnimation* anim);
 NodeAnim createNodeAnim(const aiNodeAnim* anim);
 
@@ -146,9 +148,9 @@ void CMODEL::Draw()
 {
 	const auto camera = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<CCamera>("camera");
 
-	XMFLOAT3 position = *Get_Transform().Get_Position();
-	XMFLOAT3 rotate = *Get_Transform().Get_Rotation();
-	XMFLOAT3 scale = *Get_Transform().Get_Scaling();
+	Vector3 position = *Get_Transform().Get_Position();
+	Vector3 rotate = *Get_Transform().Get_Rotation();
+	Vector3 scale = *Get_Transform().Get_Scaling();
 
 	if (!camera.expired() && Empty_weak_ptr<CCamera>(camera))
 	{
@@ -214,7 +216,7 @@ void CMODEL::Draw()
 			{
 				camera_pos = *camera01.lock()->Get_Pos();
 
-				XMFLOAT4 pos;
+				Vector4 pos;
 				XMStoreFloat4(&pos, camera_pos);
 				camera_pos = XMLoadFloat4(&pos);
 			}
@@ -222,7 +224,7 @@ void CMODEL::Draw()
 			{
 				camera_pos = *camera02.lock()->Get_Pos();
 
-				XMFLOAT4 pos;
+				Vector4 pos;
 				XMStoreFloat4(&pos, camera_pos);
 				camera_pos = XMLoadFloat4(&pos);
 			}
@@ -279,9 +281,9 @@ void CMODEL::Draw_DPP()
 {
 	const auto camera = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<CCamera>("camera");
 
-	XMFLOAT3 position = *Get_Transform().Get_Position();
-	XMFLOAT3 rotate = *Get_Transform().Get_Rotation();
-	XMFLOAT3 scale = *Get_Transform().Get_Scaling();
+	Vector3 position = *Get_Transform().Get_Position();
+	Vector3 rotate = *Get_Transform().Get_Rotation();
+	Vector3 scale = *Get_Transform().Get_Scaling();
 
 	if (!camera.expired() && Empty_weak_ptr<CCamera>(camera))
 	{
@@ -316,7 +318,7 @@ void CMODEL::Draw_DPP()
 			{
 				camera_pos = *camera01.lock()->Get_Pos();
 
-				XMFLOAT4 pos;
+				Vector4 pos;
 				XMStoreFloat4(&pos, camera_pos);
 				//pos.w = 1.0f;
 				camera_pos = XMLoadFloat4(&pos);
@@ -326,7 +328,7 @@ void CMODEL::Draw_DPP()
 			{
 				camera_pos = *camera02.lock()->Get_Pos();
 
-				XMFLOAT4 pos;
+				Vector4 pos;
 				XMStoreFloat4(&pos, camera_pos);
 				//pos.w = 1.0f;
 				camera_pos = XMLoadFloat4(&pos);
@@ -457,7 +459,7 @@ MESH CMODEL::processMesh(aiMesh* mesh, aiNode* node, const aiScene* scene)
 		}
 		else
 		{
-			vertices[i].Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+			vertices[i].Diffuse = Vector4(1.0f, 1.0f, 1.0f, 1.0f);
 		}
 
 		// 法線ベクトルの設定

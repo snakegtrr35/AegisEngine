@@ -9,9 +9,11 @@
 #include	"Scene.h"
 #include	"ShadowMap.h"
 
+using namespace Aegis;
+
 unique_ptr<ID3D11Buffer, Release> BILL_BOARD::pIndexBuffer = nullptr;		// インデックスバッファ
 
-BILL_BOARD::BILL_BOARD() : pVertexBuffer(nullptr), Texture(nullptr), WH(XMFLOAT2(1.0f, 1.0f))
+BILL_BOARD::BILL_BOARD() : pVertexBuffer(nullptr), Texture(nullptr), WH(Vector2(1.0f, 1.0f))
 {
 	// テクスチャの設定
 	Texture = make_unique<TEXTURE>();
@@ -22,7 +24,7 @@ BILL_BOARD::BILL_BOARD() : pVertexBuffer(nullptr), Texture(nullptr), WH(XMFLOAT2
 // position : 中心座標
 // wh : 幅と高さ
 //==============================
-BILL_BOARD::BILL_BOARD(XMFLOAT3 position, XMFLOAT2 wh) : pVertexBuffer(nullptr), Texture(nullptr), WH(wh)
+BILL_BOARD::BILL_BOARD(Vector3 position, Vector2 wh) : pVertexBuffer(nullptr), Texture(nullptr), WH(wh)
 {
 	Get_Transform().Set_Position(position);
 
@@ -102,25 +104,25 @@ void BILL_BOARD::Draw()
 	{
 		VERTEX_3D vertex[4];
 
-		vertex[0].Position = XMFLOAT3(-WH.x, WH.y, 0.0f);
-		vertex[0].Normal = XMFLOAT3(0.0f, 0.0f, 1.0f);
-		vertex[0].Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
-		vertex[0].TexCoord = XMFLOAT2(0.0f, 0.0f);
+		vertex[0].Position = Vector3(-WH.x, WH.y, 0.0f);
+		vertex[0].Normal = Vector3(0.0f, 0.0f, 1.0f);
+		vertex[0].Diffuse = Vector4(1.0f, 1.0f, 1.0f, 1.0f);
+		vertex[0].TexCoord = Vector2(0.0f, 0.0f);
 
-		vertex[1].Position = XMFLOAT3(WH.x, WH.y, 0.0f);
-		vertex[1].Normal = XMFLOAT3(0.0f, 0.0f, 1.0f);
-		vertex[1].Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
-		vertex[1].TexCoord = XMFLOAT2(1.0f, 0.0f);
+		vertex[1].Position = Vector3(WH.x, WH.y, 0.0f);
+		vertex[1].Normal = Vector3(0.0f, 0.0f, 1.0f);
+		vertex[1].Diffuse = Vector4(1.0f, 1.0f, 1.0f, 1.0f);
+		vertex[1].TexCoord = Vector2(1.0f, 0.0f);
 
-		vertex[2].Position = XMFLOAT3(-WH.x, -WH.y, 0.0f);
-		vertex[2].Normal = XMFLOAT3(0.0f, 0.0f, 1.0f);
-		vertex[2].Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
-		vertex[2].TexCoord = XMFLOAT2(0.0f, 1.0f);
+		vertex[2].Position = Vector3(-WH.x, -WH.y, 0.0f);
+		vertex[2].Normal = Vector3(0.0f, 0.0f, 1.0f);
+		vertex[2].Diffuse = Vector4(1.0f, 1.0f, 1.0f, 1.0f);
+		vertex[2].TexCoord = Vector2(0.0f, 1.0f);
 
-		vertex[3].Position = XMFLOAT3(WH.x, -WH.y, 0.0f);
-		vertex[3].Normal = XMFLOAT3(0.0f, 0.0f, 1.0f);
-		vertex[3].Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
-		vertex[3].TexCoord = XMFLOAT2(1.0f, 1.0f);
+		vertex[3].Position = Vector3(WH.x, -WH.y, 0.0f);
+		vertex[3].Normal = Vector3(0.0f, 0.0f, 1.0f);
+		vertex[3].Diffuse = Vector4(1.0f, 1.0f, 1.0f, 1.0f);
+		vertex[3].TexCoord = Vector2(1.0f, 1.0f);
 
 		// 頂点バッファの書き換え
 		{
@@ -174,9 +176,9 @@ void BILL_BOARD::Draw()
 
 		world = XMMatrixMultiply(world, mtxViewInv);
 
-		XMFLOAT3 position = *Get_Transform().Get_Position();
-		XMFLOAT3 rotate = *Get_Transform().Get_Rotation();
-		XMFLOAT3 scale = *Get_Transform().Get_Scaling();
+		Vector3 position = *Get_Transform().Get_Position();
+		Vector3 rotate = *Get_Transform().Get_Rotation();
+		Vector3 scale = *Get_Transform().Get_Scaling();
 
 		world *= XMMatrixScaling(scale.x, scale.y, scale.z);
 		world *= XMMatrixRotationRollPitchYaw(XMConvertToRadians(rotate.x), XMConvertToRadians(rotate.y), XMConvertToRadians(rotate.z));
@@ -210,25 +212,25 @@ void BILL_BOARD::Draw_DPP()
 	{
 		VERTEX_3D vertex[4];
 
-		vertex[0].Position = XMFLOAT3(-WH.x, WH.y, 0.0f);
-		vertex[0].Normal = XMFLOAT3(0.0f, 0.0f, 1.0f);
-		vertex[0].Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
-		vertex[0].TexCoord = XMFLOAT2(0.0f, 0.0f);
+		vertex[0].Position = Vector3(-WH.x, WH.y, 0.0f);
+		vertex[0].Normal = Vector3(0.0f, 0.0f, 1.0f);
+		vertex[0].Diffuse = Vector4(1.0f, 1.0f, 1.0f, 1.0f);
+		vertex[0].TexCoord = Vector2(0.0f, 0.0f);
 
-		vertex[1].Position = XMFLOAT3(WH.x, WH.y, 0.0f);
-		vertex[1].Normal = XMFLOAT3(0.0f, 0.0f, 1.0f);
-		vertex[1].Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
-		vertex[1].TexCoord = XMFLOAT2(1.0f, 0.0f);
+		vertex[1].Position = Vector3(WH.x, WH.y, 0.0f);
+		vertex[1].Normal = Vector3(0.0f, 0.0f, 1.0f);
+		vertex[1].Diffuse = Vector4(1.0f, 1.0f, 1.0f, 1.0f);
+		vertex[1].TexCoord = Vector2(1.0f, 0.0f);
 
-		vertex[2].Position = XMFLOAT3(-WH.x, -WH.y, 0.0f);
-		vertex[2].Normal = XMFLOAT3(0.0f, 0.0f, 1.0f);
-		vertex[2].Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
-		vertex[2].TexCoord = XMFLOAT2(0.0f, 1.0f);
+		vertex[2].Position = Vector3(-WH.x, -WH.y, 0.0f);
+		vertex[2].Normal = Vector3(0.0f, 0.0f, 1.0f);
+		vertex[2].Diffuse = Vector4(1.0f, 1.0f, 1.0f, 1.0f);
+		vertex[2].TexCoord = Vector2(0.0f, 1.0f);
 
-		vertex[3].Position = XMFLOAT3(WH.x, -WH.y, 0.0f);
-		vertex[3].Normal = XMFLOAT3(0.0f, 0.0f, 1.0f);
-		vertex[3].Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
-		vertex[3].TexCoord = XMFLOAT2(1.0f, 1.0f);
+		vertex[3].Position = Vector3(WH.x, -WH.y, 0.0f);
+		vertex[3].Normal = Vector3(0.0f, 0.0f, 1.0f);
+		vertex[3].Diffuse = Vector4(1.0f, 1.0f, 1.0f, 1.0f);
+		vertex[3].TexCoord = Vector2(1.0f, 1.0f);
 
 		// 頂点バッファの書き換え
 		{
@@ -279,9 +281,9 @@ void BILL_BOARD::Draw_DPP()
 
 		world = XMMatrixMultiply(world, mtxViewInv);
 
-		XMFLOAT3 position = *Get_Transform().Get_Position();
-		XMFLOAT3 rotate = *Get_Transform().Get_Rotation();
-		XMFLOAT3 scale = *Get_Transform().Get_Scaling();
+		Vector3 position = *Get_Transform().Get_Position();
+		Vector3 rotate = *Get_Transform().Get_Rotation();
+		Vector3 scale = *Get_Transform().Get_Scaling();
 
 		world *= XMMatrixScaling(scale.x, scale.y, scale.z);
 		world *= XMMatrixRotationRollPitchYaw(XMConvertToRadians(rotate.x), XMConvertToRadians(rotate.y), XMConvertToRadians(rotate.z));
@@ -313,7 +315,7 @@ void BILL_BOARD::Uninit()
 }
 
 // 幅と高さの設定
-void BILL_BOARD::SetWH(const XMFLOAT2& wh)
+void BILL_BOARD::SetWH(const Vector2& wh)
 {
 	WH = wh;
 };
@@ -333,7 +335,7 @@ BILL_BOARD_ANIMATION::BILL_BOARD_ANIMATION() : WaitFrame(0), CreatCount(0), Patt
 	Texture->Set_Texture_Name("Explosion.png");
 }
 
-BILL_BOARD_ANIMATION::BILL_BOARD_ANIMATION(XMFLOAT3 position, XMFLOAT2 wh) : WaitFrame(0), CreatCount(0), PatternCount(0), Age(0), Tx(0.f), Ty(0.f), Tw(0.f), Th(0.f), Tx_Param(-1.0f), Ty_Param(-1.0f), Pattern_Max_X(0), Pattern_Max_Y(0)
+BILL_BOARD_ANIMATION::BILL_BOARD_ANIMATION(Vector3 position, Vector2 wh) : WaitFrame(0), CreatCount(0), PatternCount(0), Age(0), Tx(0.f), Ty(0.f), Tw(0.f), Th(0.f), Tx_Param(-1.0f), Ty_Param(-1.0f), Pattern_Max_X(0), Pattern_Max_Y(0)
 {
 	Get_Transform().Set_Position(position);
 
@@ -395,25 +397,25 @@ void BILL_BOARD_ANIMATION::Draw(float tx, float ty)
 		u[1] = (Tx + Tw) / wh->x;
 		v[1] = (Ty + Th) / wh->y;
 
-		vertex[0].Position = XMFLOAT3(-WH.x, WH.y, 0.0f);
-		vertex[0].Normal = XMFLOAT3(0.0f, 0.0f, -1.0f);
-		vertex[0].Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
-		vertex[0].TexCoord = XMFLOAT2(u[0], v[0]);
+		vertex[0].Position = Vector3(-WH.x, WH.y, 0.0f);
+		vertex[0].Normal = Vector3(0.0f, 0.0f, -1.0f);
+		vertex[0].Diffuse = Vector4(1.0f, 1.0f, 1.0f, 1.0f);
+		vertex[0].TexCoord = Vector2(u[0], v[0]);
 
-		vertex[1].Position = XMFLOAT3(WH.x, WH.y, 0.0f);
-		vertex[1].Normal = XMFLOAT3(0.0f, 0.0f, -1.0f);
-		vertex[1].Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
-		vertex[1].TexCoord = XMFLOAT2(u[1], v[0]);
+		vertex[1].Position = Vector3(WH.x, WH.y, 0.0f);
+		vertex[1].Normal = Vector3(0.0f, 0.0f, -1.0f);
+		vertex[1].Diffuse = Vector4(1.0f, 1.0f, 1.0f, 1.0f);
+		vertex[1].TexCoord = Vector2(u[1], v[0]);
 
-		vertex[2].Position = XMFLOAT3(-WH.x, -WH.y, 0.0f);
-		vertex[2].Normal = XMFLOAT3(0.0f, 0.0f, -1.0f);
-		vertex[2].Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
-		vertex[2].TexCoord = XMFLOAT2(u[0], v[1]);
+		vertex[2].Position = Vector3(-WH.x, -WH.y, 0.0f);
+		vertex[2].Normal = Vector3(0.0f, 0.0f, -1.0f);
+		vertex[2].Diffuse = Vector4(1.0f, 1.0f, 1.0f, 1.0f);
+		vertex[2].TexCoord = Vector2(u[0], v[1]);
 
-		vertex[3].Position = XMFLOAT3(WH.x, -WH.y, 0.0f);
-		vertex[3].Normal = XMFLOAT3(0.0f, 0.0f, -1.0f);
-		vertex[3].Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
-		vertex[3].TexCoord = XMFLOAT2(u[1], v[1]);
+		vertex[3].Position = Vector3(WH.x, -WH.y, 0.0f);
+		vertex[3].Normal = Vector3(0.0f, 0.0f, -1.0f);
+		vertex[3].Diffuse = Vector4(1.0f, 1.0f, 1.0f, 1.0f);
+		vertex[3].TexCoord = Vector2(u[1], v[1]);
 
 		// 頂点バッファの書き換え
 		{
@@ -467,9 +469,9 @@ void BILL_BOARD_ANIMATION::Draw(float tx, float ty)
 
 		world = XMMatrixMultiply(world, mtxViewInv);
 
-		XMFLOAT3 position = *Get_Transform().Get_Position();
-		XMFLOAT3 rotate = *Get_Transform().Get_Rotation();
-		XMFLOAT3 scale = *Get_Transform().Get_Scaling();
+		Vector3 position = *Get_Transform().Get_Position();
+		Vector3 rotate = *Get_Transform().Get_Rotation();
+		Vector3 scale = *Get_Transform().Get_Scaling();
 
 		world *= XMMatrixScaling(scale.x, scale.y, scale.z);
 		world *= XMMatrixRotationRollPitchYaw(XMConvertToRadians(rotate.x), XMConvertToRadians(rotate.y), XMConvertToRadians(rotate.z));
@@ -531,25 +533,25 @@ void BILL_BOARD_ANIMATION::Draw_DPP(float tx, float ty)
 		u[1] = (Tx + Tw) / wh->x;
 		v[1] = (Ty + Th) / wh->y;
 
-		vertex[0].Position = XMFLOAT3(-WH.x, WH.y, 0.0f);
-		vertex[0].Normal = XMFLOAT3(0.0f, 0.0f, -1.0f);
-		vertex[0].Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
-		vertex[0].TexCoord = XMFLOAT2(u[0], v[0]);
+		vertex[0].Position = Vector3(-WH.x, WH.y, 0.0f);
+		vertex[0].Normal = Vector3(0.0f, 0.0f, -1.0f);
+		vertex[0].Diffuse = Vector4(1.0f, 1.0f, 1.0f, 1.0f);
+		vertex[0].TexCoord = Vector2(u[0], v[0]);
 
-		vertex[1].Position = XMFLOAT3(WH.x, WH.y, 0.0f);
-		vertex[1].Normal = XMFLOAT3(0.0f, 0.0f, -1.0f);
-		vertex[1].Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
-		vertex[1].TexCoord = XMFLOAT2(u[1], v[0]);
+		vertex[1].Position = Vector3(WH.x, WH.y, 0.0f);
+		vertex[1].Normal = Vector3(0.0f, 0.0f, -1.0f);
+		vertex[1].Diffuse = Vector4(1.0f, 1.0f, 1.0f, 1.0f);
+		vertex[1].TexCoord = Vector2(u[1], v[0]);
 
-		vertex[2].Position = XMFLOAT3(-WH.x, -WH.y, 0.0f);
-		vertex[2].Normal = XMFLOAT3(0.0f, 0.0f, -1.0f);
-		vertex[2].Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
-		vertex[2].TexCoord = XMFLOAT2(u[0], v[1]);
+		vertex[2].Position = Vector3(-WH.x, -WH.y, 0.0f);
+		vertex[2].Normal = Vector3(0.0f, 0.0f, -1.0f);
+		vertex[2].Diffuse = Vector4(1.0f, 1.0f, 1.0f, 1.0f);
+		vertex[2].TexCoord = Vector2(u[0], v[1]);
 
-		vertex[3].Position = XMFLOAT3(WH.x, -WH.y, 0.0f);
-		vertex[3].Normal = XMFLOAT3(0.0f, 0.0f, -1.0f);
-		vertex[3].Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
-		vertex[3].TexCoord = XMFLOAT2(u[1], v[1]);
+		vertex[3].Position = Vector3(WH.x, -WH.y, 0.0f);
+		vertex[3].Normal = Vector3(0.0f, 0.0f, -1.0f);
+		vertex[3].Diffuse = Vector4(1.0f, 1.0f, 1.0f, 1.0f);
+		vertex[3].TexCoord = Vector2(u[1], v[1]);
 
 		// 頂点バッファの書き換え
 		{
@@ -600,9 +602,9 @@ void BILL_BOARD_ANIMATION::Draw_DPP(float tx, float ty)
 
 		world = XMMatrixMultiply(world, mtxViewInv);
 
-		XMFLOAT3 position = *Get_Transform().Get_Position();
-		XMFLOAT3 rotate = *Get_Transform().Get_Rotation();
-		XMFLOAT3 scale = *Get_Transform().Get_Scaling();
+		Vector3 position = *Get_Transform().Get_Position();
+		Vector3 rotate = *Get_Transform().Get_Rotation();
+		Vector3 scale = *Get_Transform().Get_Scaling();
 
 		world *= XMMatrixScaling(scale.x, scale.y, scale.z);
 		world *= XMMatrixRotationRollPitchYaw(XMConvertToRadians(rotate.x), XMConvertToRadians(rotate.y), XMConvertToRadians(rotate.z));

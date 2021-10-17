@@ -7,16 +7,18 @@
 
 #include	"external/DirectXTex/WICTextureLoader.h"
 
+using namespace Aegis;
+
 static string textype;
 static string directory;
 
 XMMATRIX aiMatrixToMatrix(aiMatrix4x4 matrix)
 {
 	XMMATRIX m;
-	m.r[0] = XMLoadFloat4(&XMFLOAT4(matrix.a1, matrix.a2, matrix.a3, matrix.a4));
-	m.r[1] = XMLoadFloat4(&XMFLOAT4(matrix.b1, matrix.b2, matrix.b3, matrix.b4));
-	m.r[2] = XMLoadFloat4(&XMFLOAT4(matrix.c1, matrix.c2, matrix.c3, matrix.c4));
-	m.r[3] = XMLoadFloat4(&XMFLOAT4(matrix.d1, matrix.d2, matrix.d3, matrix.d4));
+	m.r[0] = XMLoadFloat4(&Vector4(matrix.a1, matrix.a2, matrix.a3, matrix.a4));
+	m.r[1] = XMLoadFloat4(&Vector4(matrix.b1, matrix.b2, matrix.b3, matrix.b4));
+	m.r[2] = XMLoadFloat4(&Vector4(matrix.c1, matrix.c2, matrix.c3, matrix.c4));
+	m.r[3] = XMLoadFloat4(&Vector4(matrix.d1, matrix.d2, matrix.d3, matrix.d4));
 
 	return m;
 }
@@ -92,11 +94,11 @@ bool FBXmodel::Load(const string& FileName)
 		{
 			ANIME_VERTEX anime_vertex;
 
-			anime_vertex.Position = XMFLOAT3(mesh->mVertices[i].x, mesh->mVertices[i].y, mesh->mVertices[i].z);
+			anime_vertex.Position = Vector3(mesh->mVertices[i].x, mesh->mVertices[i].y, mesh->mVertices[i].z);
 
-			anime_vertex.Normal = XMFLOAT3(mesh->mNormals[i].x, mesh->mNormals[i].y, mesh->mNormals[i].z);
+			anime_vertex.Normal = Vector3(mesh->mNormals[i].x, mesh->mNormals[i].y, mesh->mNormals[i].z);
 
-			anime_vertex.Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+			anime_vertex.Diffuse = Vector4(1.0f, 1.0f, 1.0f, 1.0f);
 
 			if (mesh->mTextureCoords[0])
 			{

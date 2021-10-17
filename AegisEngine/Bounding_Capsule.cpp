@@ -5,6 +5,8 @@
 #include	"Scene.h"
 #include	"ShadowMap.h"
 
+using namespace Aegis;
+
 void BOUNDING_CAPSULE::Init()
 {
 	Radius = 3.0f;
@@ -21,16 +23,16 @@ void BOUNDING_CAPSULE::Draw()
 {
 	if (CManager::Get_Instance()->Get_ShadowMap()->Get_Enable()) return;
 
-	//XMFLOAT3 pos(Position.x, Position.y, Position.z);
-	//XMFLOAT3 rotation(Rotation.x, Rotation.y, Rotation.z);
+	//Vector3 pos(Position.x, Position.y, Position.z);
+	//Vector3 rotation(Rotation.x, Rotation.y, Rotation.z);
 
 	//CRenderer::Set_Shader(SHADER_INDEX_V::DEFAULT, SHADER_INDEX_P::NO_TEXTURE);
 
-	//XMFLOAT3 p(pos.x, pos.y, pos.z);
+	//Vector3 p(pos.x, pos.y, pos.z);
 
 	{
-		XMFLOAT3 pos = *Owner.lock()->Get_Transform().Get_Position();
-		XMFLOAT3 rota = *Owner.lock()->Get_Transform().Get_Rotation();
+		Vector3 pos = *Owner.lock()->Get_Transform().Get_Position();
+		Vector3 rota = *Owner.lock()->Get_Transform().Get_Rotation();
 
 		pos = pos + Position;
 		rota = rota + Rotation;
@@ -88,15 +90,15 @@ void BOUNDING_CAPSULE::Init_Body()
 		VERTEX_3D vertex;
 		Vertex.reserve(vertex_num * 2 + 1);
 
-		const float angle = XM_PI / (vertex_num - 1);
+		const float angle = Math::PI / (vertex_num - 1);
 
 		// 上の半円
 		for (int i = 0; i < vertex_num; i++)
 		{
-			vertex.Position = XMFLOAT3(cosf(angle * i) * Radius, sinf(angle * i) * Radius + Height - Radius, 0.f);
-			vertex.Normal = XMFLOAT3(0.f, 0.f, 0.f);
-			vertex.Diffuse = XMFLOAT4(Color.r, Color.g, Color.b, Color.a);
-			vertex.TexCoord = XMFLOAT2(0.f, 0.f);
+			vertex.Position = Vector3(cosf(angle * i) * Radius, sinf(angle * i) * Radius + Height - Radius, 0.f);
+			vertex.Normal = Vector3(0.f, 0.f, 0.f);
+			vertex.Diffuse = Vector4(Color.r, Color.g, Color.b, Color.a);
+			vertex.TexCoord = Vector2(0.f, 0.f);
 
 			Vertex.emplace_back(vertex);
 		}
@@ -104,19 +106,19 @@ void BOUNDING_CAPSULE::Init_Body()
 		// 下の半円
 		for (int i = 0; i < vertex_num; i++)
 		{
-			vertex.Position = XMFLOAT3(cosf(angle * (i + vertex_num - 1)) * Radius, sinf(angle * (i + vertex_num - 1)) * Radius - Height + Radius, 0.f);
-			vertex.Normal = XMFLOAT3(0.f, 0.f, 0.f);
-			vertex.Diffuse = XMFLOAT4(Color.r, Color.g, Color.b, Color.a);
-			vertex.TexCoord = XMFLOAT2(0.f, 0.f);
+			vertex.Position = Vector3(cosf(angle * (i + vertex_num - 1)) * Radius, sinf(angle * (i + vertex_num - 1)) * Radius - Height + Radius, 0.f);
+			vertex.Normal = Vector3(0.f, 0.f, 0.f);
+			vertex.Diffuse = Vector4(Color.r, Color.g, Color.b, Color.a);
+			vertex.TexCoord = Vector2(0.f, 0.f);
 
 			Vertex.emplace_back(vertex);
 		}
 
 		// 最後の点
-		vertex.Position = XMFLOAT3(cosf(0) * Radius, sinf(0) * Radius + Height - Radius, 0.f);
-		vertex.Normal = XMFLOAT3(0.f, 0.f, 0.f);
-		vertex.Diffuse = XMFLOAT4(Color.r, Color.g, Color.b, Color.a);
-		vertex.TexCoord = XMFLOAT2(0.f, 0.f);
+		vertex.Position = Vector3(cosf(0) * Radius, sinf(0) * Radius + Height - Radius, 0.f);
+		vertex.Normal = Vector3(0.f, 0.f, 0.f);
+		vertex.Diffuse = Vector4(Color.r, Color.g, Color.b, Color.a);
+		vertex.TexCoord = Vector2(0.f, 0.f);
 
 		Vertex.emplace_back(vertex);
 
@@ -156,15 +158,15 @@ void BOUNDING_CAPSULE::Init_Body()
 		VERTEX_3D vertex;
 		Vertex.reserve(vertex_num * 2 + 1);
 
-		const float angle = XM_PI / (vertex_num - 1);
+		const float angle = Math::PI / (vertex_num - 1);
 
 		// 上の半円
 		for (int i = 0; i < vertex_num; i++)
 		{
-			vertex.Position = XMFLOAT3(0.f, sinf(angle * i) * Radius + Height - Radius, cosf(angle * i) * Radius);
-			vertex.Normal = XMFLOAT3(0.f, 0.f, 0.f);
-			vertex.Diffuse = XMFLOAT4(Color.r, Color.g, Color.b, Color.a);
-			vertex.TexCoord = XMFLOAT2(0.f, 0.f);
+			vertex.Position = Vector3(0.f, sinf(angle * i) * Radius + Height - Radius, cosf(angle * i) * Radius);
+			vertex.Normal = Vector3(0.f, 0.f, 0.f);
+			vertex.Diffuse = Vector4(Color.r, Color.g, Color.b, Color.a);
+			vertex.TexCoord = Vector2(0.f, 0.f);
 
 			Vertex.emplace_back(vertex);
 		}
@@ -172,19 +174,19 @@ void BOUNDING_CAPSULE::Init_Body()
 		// 下の半円
 		for (int i = 0; i < vertex_num; i++)
 		{
-			vertex.Position = XMFLOAT3(0.f, sinf(angle * (i + vertex_num - 1)) * Radius - Height + Radius, cosf(angle * (i + vertex_num - 1)) * Radius);
-			vertex.Normal = XMFLOAT3(0.f, 0.f, 0.f);
-			vertex.Diffuse = XMFLOAT4(Color.r, Color.g, Color.b, Color.a);
-			vertex.TexCoord = XMFLOAT2(0.f, 0.f);
+			vertex.Position = Vector3(0.f, sinf(angle * (i + vertex_num - 1)) * Radius - Height + Radius, cosf(angle * (i + vertex_num - 1)) * Radius);
+			vertex.Normal = Vector3(0.f, 0.f, 0.f);
+			vertex.Diffuse = Vector4(Color.r, Color.g, Color.b, Color.a);
+			vertex.TexCoord = Vector2(0.f, 0.f);
 
 			Vertex.emplace_back(vertex);
 		}
 
 		// 最後の点
-		vertex.Position = XMFLOAT3(0.f, sinf(0) * Radius + Height - Radius, cosf(0) * Radius);
-		vertex.Normal = XMFLOAT3(0.f, 0.f, 0.f);
-		vertex.Diffuse = XMFLOAT4(Color.r, Color.g, Color.b, Color.a);
-		vertex.TexCoord = XMFLOAT2(0.f, 0.f);
+		vertex.Position = Vector3(0.f, sinf(0) * Radius + Height - Radius, cosf(0) * Radius);
+		vertex.Normal = Vector3(0.f, 0.f, 0.f);
+		vertex.Diffuse = Vector4(Color.r, Color.g, Color.b, Color.a);
+		vertex.TexCoord = Vector2(0.f, 0.f);
 
 		Vertex.emplace_back(vertex);
 
@@ -263,14 +265,14 @@ void BOUNDING_CAPSULE::Init_Ring()
 		VERTEX_3D vertex;
 		Vertex.reserve(cnt);
 
-		const float angle = XM_2PI / cnt;
+		const float angle = Math::PI2 / cnt;
 
 		for (int i = 0; i < cnt; i++)
 		{
-			vertex.Position = XMFLOAT3(cosf(angle * i) * Radius, 0.f, sinf(angle * i) * Radius);
-			vertex.Normal = XMFLOAT3(0.f, 0.f, 0.f);
-			vertex.Diffuse = XMFLOAT4(Color.r, Color.g, Color.b, Color.a);
-			vertex.TexCoord = XMFLOAT2(0.f, 0.f);
+			vertex.Position = Vector3(cosf(angle * i) * Radius, 0.f, sinf(angle * i) * Radius);
+			vertex.Normal = Vector3(0.f, 0.f, 0.f);
+			vertex.Diffuse = Vector4(Color.r, Color.g, Color.b, Color.a);
+			vertex.TexCoord = Vector2(0.f, 0.f);
 
 			Vertex.emplace_back(vertex);
 		}
@@ -340,7 +342,7 @@ void BOUNDING_CAPSULE::Init_Ring()
 	}
 }
 
-void BOUNDING_CAPSULE::Draw_Body(const XMFLOAT3& position, const XMFLOAT3& rotation)
+void BOUNDING_CAPSULE::Draw_Body(const Vector3& position, const Vector3& rotation)
 {
 	CRenderer::Set_Shader(SHADER_INDEX_V::DEFAULT, SHADER_INDEX_P::NO_TEXTURE);
 
@@ -371,7 +373,7 @@ void BOUNDING_CAPSULE::Draw_Body(const XMFLOAT3& position, const XMFLOAT3& rotat
 	CRenderer::Set_Shader();
 }
 
-void BOUNDING_CAPSULE::Draw_Semicircle(const XMFLOAT3& position, const XMFLOAT3& rotation)
+void BOUNDING_CAPSULE::Draw_Semicircle(const Vector3& position, const Vector3& rotation)
 {
 	// トポロジの設定
 	CRenderer::GetDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_LINESTRIP);
@@ -399,7 +401,7 @@ void BOUNDING_CAPSULE::Draw_Semicircle(const XMFLOAT3& position, const XMFLOAT3&
 	CRenderer::GetDeviceContext()->DrawIndexed(IndexNum, 0, 0);
 }
 
-void BOUNDING_CAPSULE::Draw_Ring(const XMFLOAT3& position, const XMFLOAT3& rotation)
+void BOUNDING_CAPSULE::Draw_Ring(const Vector3& position, const Vector3& rotation)
 {
 	// 入力アセンブラに頂点バッファを設定
 	CRenderer::SetVertexBuffers(pVertexBuffer_Ring.get());
@@ -456,9 +458,9 @@ void BOUNDING_CAPSULE::Draw_Inspector()
 	ImGui::DragFloat("Radius##CAPSULE", &Radius, 0.01f, 0.01f, 1000.0f);
 	ImGui::DragFloat("Height##CAPSULE", &Height, 0.01f, Radius, 1000.0f);
 
-	Position = XMFLOAT3(position[0], position[1], position[2]);
-	Scaling = XMFLOAT3(scale[0], scale[1], scale[2]);
-	Rotation = XMFLOAT3(Rotate[0], Rotate[1], Rotate[2]);
+	Position = Vector3(position[0], position[1], position[2]);
+	Scaling = Vector3(scale[0], scale[1], scale[2]);
+	Rotation = Vector3(Rotate[0], Rotate[1], Rotate[2]);
 
 	if (Height < Radius) Height = Radius;
 

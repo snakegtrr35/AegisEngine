@@ -25,7 +25,7 @@ SPRITE_ANIMATION::SPRITE_ANIMATION()
 	SetTexture(string("Explosion.png"));
 }
 
-SPRITE_ANIMATION::SPRITE_ANIMATION(XMFLOAT2 position, XMFLOAT4 size)
+SPRITE_ANIMATION::SPRITE_ANIMATION(Vector2 position, Vector4 size)
 {
 	WaitFrame = 0.f;
 	CreatCount = 0;
@@ -102,25 +102,25 @@ void SPRITE_ANIMATION::Draw2(float tx, float ty)
 	u[1] = (float)((Tx + Tw) / wh->x);
 	v[1] = (float)((Ty + Th) / wh->y);
 
-	Vertex[0].Position = XMFLOAT3(Position.x - Size.w, Position.y - Size.x, 0.0f);
-	Vertex[0].Normal = XMFLOAT3(0.0f, 0.0f, -1.0f);
-	Vertex[0].Diffuse = XMFLOAT4(Color.r, Color.g, Color.b, Color.a);
-	Vertex[0].TexCoord = XMFLOAT2(u[0], v[0]);
+	Vertex[0].Position = Vector3(Position.x - Size.w, Position.y - Size.x, 0.0f);
+	Vertex[0].Normal = Vector3(0.0f, 0.0f, -1.0f);
+	Vertex[0].Diffuse = Vector4(Color.r, Color.g, Color.b, Color.a);
+	Vertex[0].TexCoord = Vector2(u[0], v[0]);
 
-	Vertex[1].Position = XMFLOAT3(Position.x + Size.y, Position.y - Size.x, 0.0f);
-	Vertex[1].Normal = XMFLOAT3(0.0f, 0.0f, -1.0f);
-	Vertex[1].Diffuse = XMFLOAT4(Color.r, Color.g, Color.b, Color.a);
-	Vertex[1].TexCoord = XMFLOAT2(u[1], v[0]);
+	Vertex[1].Position = Vector3(Position.x + Size.y, Position.y - Size.x, 0.0f);
+	Vertex[1].Normal = Vector3(0.0f, 0.0f, -1.0f);
+	Vertex[1].Diffuse = Vector4(Color.r, Color.g, Color.b, Color.a);
+	Vertex[1].TexCoord = Vector2(u[1], v[0]);
 
-	Vertex[2].Position = XMFLOAT3(Position.x - Size.w, Position.y + Size.z, 0.0f);
-	Vertex[2].Normal = XMFLOAT3(0.0f, 0.0f, -1.0f);
-	Vertex[2].Diffuse = XMFLOAT4(Color.r, Color.g, Color.b, Color.a);
-	Vertex[2].TexCoord = XMFLOAT2(u[0], v[1]);
+	Vertex[2].Position = Vector3(Position.x - Size.w, Position.y + Size.z, 0.0f);
+	Vertex[2].Normal = Vector3(0.0f, 0.0f, -1.0f);
+	Vertex[2].Diffuse = Vector4(Color.r, Color.g, Color.b, Color.a);
+	Vertex[2].TexCoord = Vector2(u[0], v[1]);
 
-	Vertex[3].Position = XMFLOAT3(Position.x + Size.y, Position.y + Size.z, 0.0f);
-	Vertex[3].Normal = XMFLOAT3(0.0f, 0.0f, -1.0f);
-	Vertex[3].Diffuse = XMFLOAT4(Color.r, Color.g, Color.b, Color.a);
-	Vertex[3].TexCoord = XMFLOAT2(u[1], v[1]);
+	Vertex[3].Position = Vector3(Position.x + Size.y, Position.y + Size.z, 0.0f);
+	Vertex[3].Normal = Vector3(0.0f, 0.0f, -1.0f);
+	Vertex[3].Diffuse = Vector4(Color.r, Color.g, Color.b, Color.a);
+	Vertex[3].TexCoord = Vector2(u[1], v[1]);
 
 	// 頂点バッファの書き換え
 	{
@@ -179,25 +179,25 @@ void SPRITE_ANIMATION::Draw_DPP2(float tx, float ty)
 	u[1] = (float)((Tx + Tw) / wh->x);
 	v[1] = (float)((Ty + Th) / wh->y);
 
-	Vertex[0].Position = XMFLOAT3(Position.x - Size.w, Position.y - Size.x, 0.0f);
-	Vertex[0].Normal = XMFLOAT3(0.0f, 0.0f, -1.0f);
-	Vertex[0].Diffuse = XMFLOAT4(Color.r, Color.g, Color.b, Color.a);
-	Vertex[0].TexCoord = XMFLOAT2(u[0], v[1]);
+	Vertex[0].Position = Vector3(Position.x - Size.w, Position.y - Size.x, 0.0f);
+	Vertex[0].Normal = Vector3(0.0f, 0.0f, -1.0f);
+	Vertex[0].Diffuse = Vector4(Color.r, Color.g, Color.b, Color.a);
+	Vertex[0].TexCoord = Vector2(u[0], v[1]);
 
-	Vertex[1].Position = XMFLOAT3(Position.x + Size.y, Position.y - Size.x, 0.0f);
-	Vertex[1].Normal = XMFLOAT3(0.0f, 0.0f, -1.0f);
-	Vertex[1].Diffuse = XMFLOAT4(Color.r, Color.g, Color.b, Color.a);
-	Vertex[1].TexCoord = XMFLOAT2(u[1], v[1]);
+	Vertex[1].Position = Vector3(Position.x + Size.y, Position.y - Size.x, 0.0f);
+	Vertex[1].Normal = Vector3(0.0f, 0.0f, -1.0f);
+	Vertex[1].Diffuse = Vector4(Color.r, Color.g, Color.b, Color.a);
+	Vertex[1].TexCoord = Vector2(u[1], v[1]);
 
-	Vertex[2].Position = XMFLOAT3(Position.x - Size.w, Position.y + Size.z, 0.0f);
-	Vertex[2].Normal = XMFLOAT3(0.0f, 0.0f, -1.0f);
-	Vertex[2].Diffuse = XMFLOAT4(Color.r, Color.g, Color.b, Color.a);
-	Vertex[2].TexCoord = XMFLOAT2(u[0], v[0]);
+	Vertex[2].Position = Vector3(Position.x - Size.w, Position.y + Size.z, 0.0f);
+	Vertex[2].Normal = Vector3(0.0f, 0.0f, -1.0f);
+	Vertex[2].Diffuse = Vector4(Color.r, Color.g, Color.b, Color.a);
+	Vertex[2].TexCoord = Vector2(u[0], v[0]);
 
-	Vertex[3].Position = XMFLOAT3(Position.x + Size.y, Position.y + Size.z, 0.0f);
-	Vertex[3].Normal = XMFLOAT3(0.0f, 0.0f, -1.0f);
-	Vertex[3].Diffuse = XMFLOAT4(Color.r, Color.g, Color.b, Color.a);
-	Vertex[3].TexCoord = XMFLOAT2(u[1], v[0]);
+	Vertex[3].Position = Vector3(Position.x + Size.y, Position.y + Size.z, 0.0f);
+	Vertex[3].Normal = Vector3(0.0f, 0.0f, -1.0f);
+	Vertex[3].Diffuse = Vector4(Color.r, Color.g, Color.b, Color.a);
+	Vertex[3].TexCoord = Vector2(u[1], v[0]);
 
 	// 頂点バッファの書き換え
 	{

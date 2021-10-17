@@ -7,8 +7,11 @@ namespace Aegis
 {
 	class Int2 : public DirectX::XMINT2 {
 	public:
-		Int2() noexcept;
-		Int2(int32 _x, int32 _y) noexcept;
+		Int2() noexcept : DirectX::XMINT2(0, 0)
+		{}
+
+		Int2(int32 _x, int32 _y) noexcept : DirectX::XMINT2(_x, _y)
+		{}
 
 		Int2(const Int2&) = default;
 

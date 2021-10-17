@@ -76,7 +76,7 @@ void TEXTS::Text_Draw(const string& text)
 
 		sprite.Set(shader_resource_view);
 
-		sprite.SetPosition(XMFLOAT2(Position.x + (Size.w * i * 2), Position.y));
+		sprite.SetPosition(Vector2(Position.x + (Size.w * i * 2), Position.y));
 
 		sprite.Draw();
 
@@ -109,7 +109,7 @@ void TEXTS::Text_Draw_DPP(const string& text)
 
 		sprite.Set(shader_resource_view);
 
-		sprite.SetPosition(XMFLOAT2(Position.x + (Size.w * i * 2), Position.y));
+		sprite.SetPosition(Vector2(Position.x + (Size.w * i * 2), Position.y));
 
 		sprite.Draw_DPP();
 

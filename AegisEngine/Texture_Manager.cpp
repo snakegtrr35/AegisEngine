@@ -5,6 +5,8 @@
 #include	"external/DirectXTex/WICTextureLoader.h"
 #include	"external/DirectXTex/DDSTextureLoader.h"
 
+using namespace Aegis;
+
 unique_ptr<TEXTURE_MANEGER> TEXTURE_MANEGER::Texture_Manager;
 
 bool TEXTURE_MANEGER::Init()
@@ -443,7 +445,7 @@ void TEXTURE_MANEGER::Sub_ReferenceCnt(const size_t file)
 #endif // _DEBUG
 }
 
-XMINT2* const TEXTURE_MANEGER::Get_WH(const size_t file)
+Int2* const TEXTURE_MANEGER::Get_WH(const size_t file)
 {
 	if (TextureData.find(file) != TextureData.end())
 	{

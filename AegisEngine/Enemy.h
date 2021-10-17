@@ -23,9 +23,9 @@ public:
 	void Update(float delta_time) override;
 	void Uninit() override;
 
-	void SetPosition(XMFLOAT3& position);					// ポジションの設定
-	void SetRotation(XMFLOAT3& position);					// 回転の設定
-	void SetScaling(XMFLOAT3& scaling);					// 拡大縮小の値の設定
+	void SetPosition(Aegis::Vector3& position);					// ポジションの設定
+	void SetRotation(Aegis::Vector3& position);					// 回転の設定
+	void SetScaling(Aegis::Vector3& scaling);					// 拡大縮小の値の設定
 
 	template<typename Archive>
 	void serialize(Archive& ar)

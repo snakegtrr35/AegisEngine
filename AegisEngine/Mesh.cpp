@@ -1,5 +1,7 @@
 ﻿#include	"Mesh.h"
 
+using namespace Aegis;
+
 MESH::MESH()
 {
 	VertexBuffer = nullptr;
@@ -284,12 +286,12 @@ void MESH::Draw_Mesh_Animation(XMMATRIX& parent_matrix, unordered_map<string, An
 				{
 					unsigned int f = frame % i.translate.begin()->time;
 
-					XMFLOAT3 pos = i.translate[f].value;
+					Vector3 pos = i.translate[f].value;
 					XMMATRIX trans = XMMatrixTranslation(pos.x, pos.y, pos.z);
 
 					f = frame % i.rotation.begin()->time;
 
-					XMFLOAT4 rotation = i.rotation[f].value;
+					Vector4 rotation = i.rotation[f].value;
 					XMVECTOR quat = XMLoadFloat4(&rotation);
 
 					world = XMMatrixRotationQuaternion(quat);
@@ -352,12 +354,12 @@ void MESH::Draw_Mesh_Animation(XMMATRIX& parent_matrix, unordered_map<string, An
 				{
 					unsigned int f = frame % i.translate.begin()->time;
 
-					XMFLOAT3 pos = i.translate[f].value;
+					Vector3 pos = i.translate[f].value;
 					trans1 = XMMatrixTranslation(pos.x, pos.y, pos.z);
 
 					f = frame % i.rotation.begin()->time;
 
-					XMFLOAT4 rotation = i.rotation[f].value;
+					Vector4 rotation = i.rotation[f].value;
 					quat1 = XMLoadFloat4(&rotation);
 
 					break;
@@ -370,12 +372,12 @@ void MESH::Draw_Mesh_Animation(XMMATRIX& parent_matrix, unordered_map<string, An
 				{
 					unsigned int f = frame % i.translate.begin()->time;
 
-					XMFLOAT3 pos = i.translate[f].value;
+					Vector3 pos = i.translate[f].value;
 					trans2 = XMMatrixTranslation(pos.x, pos.y, pos.z);
 
 					f = frame % i.rotation.begin()->time;
 
-					XMFLOAT4 rotation = i.rotation[f].value;
+					Vector4 rotation = i.rotation[f].value;
 					quat2 = XMLoadFloat4(&rotation);
 
 					break;
@@ -457,12 +459,12 @@ void MESH::Draw_DPP_Mesh_Animation(XMMATRIX& parent_matrix, unordered_map<string
 				{
 					unsigned int f = frame % i.translate.begin()->time;
 
-					XMFLOAT3 pos = i.translate[f].value;
+					Vector3 pos = i.translate[f].value;
 					XMMATRIX trans = XMMatrixTranslation(pos.x, pos.y, pos.z);
 
 					f = frame % i.rotation.begin()->time;
 
-					XMFLOAT4 rotation = i.rotation[f].value;
+					Vector4 rotation = i.rotation[f].value;
 					XMVECTOR quat = XMLoadFloat4(&rotation);
 
 					world = XMMatrixRotationQuaternion(quat);
@@ -499,12 +501,12 @@ void MESH::Draw_DPP_Mesh_Animation(XMMATRIX& parent_matrix, unordered_map<string
 				{
 					unsigned int f = frame % i.translate.begin()->time;
 
-					XMFLOAT3 pos = i.translate[f].value;
+					Vector3 pos = i.translate[f].value;
 					trans1 = XMMatrixTranslation(pos.x, pos.y, pos.z);
 
 					f = frame % i.rotation.begin()->time;
 
-					XMFLOAT4 rotation = i.rotation[f].value;
+					Vector4 rotation = i.rotation[f].value;
 					quat1 = XMLoadFloat4(&rotation);
 
 					break;
@@ -517,12 +519,12 @@ void MESH::Draw_DPP_Mesh_Animation(XMMATRIX& parent_matrix, unordered_map<string
 				{
 					unsigned int f = frame % i.translate.begin()->time;
 
-					XMFLOAT3 pos = i.translate[f].value;
+					Vector3 pos = i.translate[f].value;
 					trans2 = XMMatrixTranslation(pos.x, pos.y, pos.z);
 
 					f = frame % i.rotation.begin()->time;
 
-					XMFLOAT4 rotation = i.rotation[f].value;
+					Vector4 rotation = i.rotation[f].value;
 					quat2 = XMLoadFloat4(&rotation);
 
 					break;

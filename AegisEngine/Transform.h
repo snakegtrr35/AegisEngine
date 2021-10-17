@@ -9,11 +9,11 @@ namespace Aegis
 	{
 	protected:
 		//! 座標
-		XMFLOAT3 Position;
+		Vector3 Position;
 		//! 回転量
-		XMFLOAT3 Rotation;
+		Vector3 Rotation;
 		//! 拡大縮小値
-		XMFLOAT3 Scaling;
+		Vector3 Scaling;
 
 	public:
 
@@ -22,7 +22,7 @@ namespace Aegis
 		* @details 引数無しコンストラクタ
 		*/
 		Transform() :
-		Position(XMFLOAT3(0.f, 0.f, 0.f)), Rotation(XMFLOAT3(0.f, 0.f, 0.f)), Scaling(XMFLOAT3(1.0f, 1.0f, 1.0f))
+		Position(Vector3(0.f, 0.f, 0.f)), Rotation(Vector3(0.f, 0.f, 0.f)), Scaling(Vector3(1.0f, 1.0f, 1.0f))
 		{}
 
 		/**
@@ -33,82 +33,82 @@ namespace Aegis
 
 		/**
 		* @brief 座標を取得する関数
-		* @return XMFLOAT3* 座標(XMFLOAT3*)
+		* @return Vector3* 座標(Vector3*)
 		* @details　オブジェクトの座標を取得する関数
 		*/
-		XMFLOAT3* const Get_Position() {
+		Vector3* const Get_Position() {
 			return &Position;
 		};
 
 		/**
 		* @brief 回転を取得する関数
-		* @return XMFLOAT3* 回転(XMFLOAT3*)
+		* @return Vector3* 回転(Vector3*)
 		* @details　オブジェクトの回転を取得する関数
 		*/
-		XMFLOAT3* const Get_Rotation() {
+		Vector3* const Get_Rotation() {
 			return &Rotation;
 		};
 
 		/**
 		* @brief スケートを取得する関数
-		* @return XMFLOAT3* スケート(XMFLOAT3*)
+		* @return Vector3* スケート(Vector3*)
 		* @details　オブジェクトのスケートを取得する関数
 		*/
-		XMFLOAT3* const Get_Scaling() {
+		Vector3* const Get_Scaling() {
 			return &Scaling;
 		};
 
 		/**
 		* @brief 座標を設定する関数
-		* @param position 座標(XMFLOAT3*)
+		* @param position 座標(Vector3*)
 		* @details オブジェクトの座標を設定する関数
 		*/
-		void Set_Position(XMFLOAT3* position) {
+		void Set_Position(Vector3* position) {
 			Position = *position;
 		}
 
 		/**
 		* @brief 座標を設定する関数
-		* @param position 座標(XMFLOAT3)
+		* @param position 座標(Vector3)
 		* @details オブジェクトの座標を設定する関数
 		*/
-		void Set_Position(XMFLOAT3& position) {
+		void Set_Position(Vector3& position) {
 			Position = position;
 		};
 
 		/**
 		* @brief 回転を設定する関数
-		* @param position 回転量(XMFLOAT3*)
+		* @param position 回転量(Vector3*)
 		* @details オブジェクトの回転を設定する関数
 		*/
-		void Set_Rotation(XMFLOAT3* rotation) {
+		void Set_Rotation(Vector3* rotation) {
 			Rotation = *rotation;
 		};
 
 		/**
 		* @brief 回転を設定する関数
-		* @param position 回転量(XMFLOAT3)
+		* @param position 回転量(Vector3)
 		* @details オブジェクトの回転を設定する関数
 		*/
-		void Set_Rotation(XMFLOAT3& rotation) {
+		void Set_Rotation(Vector3& rotation) {
 			Rotation = rotation;
 		};
 
 		/**
 		* @brief スケールを設定する関数
-		* @param position スケール(XMFLOAT3*)
+		* @param position スケール(Vector3*)
 		* @details オブジェクトのスケールを設定する関数
 		*/
-		void Set_Scaling(XMFLOAT3* scaling) {
+		void Set_Scaling(Vector3* scaling) {
 			Scaling = *scaling;
 		};
 
 		/**
 		* @brief スケールを設定する関数
-		* @param position スケール(XMFLOAT3)
+		* @param position スケール(Vector3)
 		* @details オブジェクトのスケールを設定する関数
 		*/
-		void Set_Scaling(XMFLOAT3& scaling) {
+		void Set_Scaling(Vector3& scaling) {
 			Scaling = scaling;
 		};
 

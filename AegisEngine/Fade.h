@@ -21,10 +21,10 @@ private:
 	static bool FadeEnable;
 
 	//! ファイドの色
-	XMFLOAT4 Color;
+	Aegis::Vector4 Color;
 
 	//! サイズ
-	XMFLOAT2 WH;
+	Aegis::Vector2 WH;
 
 	//! ファイドの長さ(フレーム単位)
 	WORD Time;
@@ -102,10 +102,10 @@ public:
 
 	/**
 	* @brief 色を設定する関数
-	* @param XMFLOAT4 色
+	* @param Vector4 色
 	* @details フェイドの色を設定する関数
 	*/
-	void Set_Color(const XMFLOAT4& color);
+	void Set_Color(const Aegis::Vector4& color);
 
 	/**
 	* @brief フェイドアウトを開始する関数

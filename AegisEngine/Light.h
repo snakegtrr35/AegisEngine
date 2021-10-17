@@ -14,12 +14,12 @@ enum class LIGHT_TYPE : UINT {
 struct LIGHT_BUFFER {
 	// 共通部分
 	UINT		Enable;
-	XMFLOAT3	Position;
+	Aegis::Vector3	Position;
 
 	Aegis::COLOR		Color;
 
 	UINT		Type;
-	XMFLOAT3	Dummy;
+	Aegis::Vector3	Dummy;
 
 	LIGHT_BUFFER();
 };

@@ -12,6 +12,8 @@
 #include	"Scene_Manager.h"
 #include	"Title.h"
 
+using namespace Aegis;
+
 bool RESULT::Clear_Flag = true;
 static bool flag = true;
 
@@ -23,8 +25,8 @@ void RESULT::Init()
 	{
 		sprite_anime = make_unique<SPRITE_ANIMATION>();
 
-		sprite_anime->SetPosition(XMFLOAT2(SCREEN_WIDTH * 0.5, SCREEN_HEIGHT * 0.5));
-		sprite_anime->SetSize(XMFLOAT4(SCREEN_HEIGHT * 0.5, SCREEN_WIDTH * 0.5, SCREEN_HEIGHT * 0.5, SCREEN_WIDTH * 0.5));
+		sprite_anime->SetPosition(Vector2(SCREEN_WIDTH * 0.5, SCREEN_HEIGHT * 0.5));
+		sprite_anime->SetSize(Vector4(SCREEN_HEIGHT * 0.5, SCREEN_WIDTH * 0.5, SCREEN_HEIGHT * 0.5, SCREEN_WIDTH * 0.5));
 
 		sprite_anime->SetTexture("Load.png");
 
@@ -157,13 +159,13 @@ void RESULT::Load(SCENE* scene)
 	if (false == flag)
 	{
 		// リザルト画面
-		XMFLOAT2 pos(SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.5f);
+		Vector2 pos(SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.5f);
 
 		SPRITE* result = Add_Game_Object<SPRITE>(LAYER_NAME::UI, "result");
 
 		result->SetPosition(pos);
 
-		result->SetSize(XMFLOAT4(SCREEN_HEIGHT * 0.5f, SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.5f, SCREEN_WIDTH * 0.5f));
+		result->SetSize(Vector4(SCREEN_HEIGHT * 0.5f, SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.5f, SCREEN_WIDTH * 0.5f));
 	}
 	
 	//{

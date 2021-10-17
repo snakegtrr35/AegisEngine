@@ -7,6 +7,8 @@
 
 #include	"Scene_Manager.h"
 
+using namespace Aegis;
+
 static LIGHTS g_Light;
 
 bool CLUSTERED::Init()
@@ -189,8 +191,8 @@ void CLUSTERED::Update()
 	{
 		CLSTER_BUFFER buffer = {};
 
-		XMFLOAT3 a = XMFLOAT3(m_Max - m_Min);
-		XMFLOAT3 scale = a / XMFLOAT3(float(CLUSTERED_X), float(CLUSTERED_Y), float(CLUSTERED_Z));
+		Vector3 a = Vector3(m_Max - m_Min);
+		Vector3 scale = a / Vector3(float(CLUSTERED_X), float(CLUSTERED_Y), float(CLUSTERED_Z));
 
 		buffer.Scale = scale;
 
@@ -209,8 +211,8 @@ void CLUSTERED::Draw()
 		{
 			CLSTER_BUFFER buffer = {};
 
-			XMFLOAT3 a = XMFLOAT3(m_Max - m_Min);
-			XMFLOAT3 scale = a / XMFLOAT3(float(CLUSTERED_X), float(CLUSTERED_Y), float(CLUSTERED_Z));
+			Vector3 a = Vector3(m_Max - m_Min);
+			Vector3 scale = a / Vector3(float(CLUSTERED_X), float(CLUSTERED_Y), float(CLUSTERED_Z));
 
 			buffer.Scale = scale;
 
@@ -291,13 +293,13 @@ void CLUSTERED::Light_Culling()
 {
 }
 
-void CLUSTERED::Cale_Cluster(XMFLOAT3& max, XMFLOAT3& min)
+void CLUSTERED::Cale_Cluster(Vector3& max, Vector3& min)
 {
 	m_Frustum.Update(0.f);
 
 	BoundingFrustum Frustum = m_Frustum.Get_Collition();
 
-	vector<XMFLOAT3> points = {};
+	vector<Vector3> points = {};
 	points.resize(8);
 
 	Frustum.GetCorners(points.data());

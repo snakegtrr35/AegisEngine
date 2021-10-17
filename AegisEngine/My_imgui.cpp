@@ -874,8 +874,8 @@ void My_imgui::Draw(void)
 			ImGui::End();
 
 			// ライトの設定
-			light->Direction = XMFLOAT4(vec4_Direction[0], vec4_Direction[1], vec4_Direction[2], vec4_Direction[3]);
-			light->Position = XMFLOAT4(vec4_Position[0], vec4_Position[1], vec4_Position[2], vec4_Position[3]);
+			light->Direction = Vector4(vec4_Direction[0], vec4_Direction[1], vec4_Direction[2], vec4_Direction[3]);
+			light->Position = Vector4(vec4_Position[0], vec4_Position[1], vec4_Position[2], vec4_Position[3]);
 			light->Diffuse = COLOR(vec4_Diffuse[0], vec4_Diffuse[1], vec4_Diffuse[2], vec4_Diffuse[3]);
 			light->Ambient = COLOR(vec4_Ambient[0], vec4_Ambient[1], vec4_Ambient[2], vec4_Ambient[3]);
 			light->Specular = COLOR(vec4_Specular[0], vec4_Specular[1], vec4_Specular[2], vec4_Specular[3]);
@@ -1511,7 +1511,7 @@ void EditTransform(const float32* cameraView, float32* cameraProjection, float32
 			{
 				if (Translation_Ans != Translation)
 				{
-					XMFLOAT3 vec(Translation[0], Translation[1], Translation[2]);
+					Vector3 vec(Translation[0], Translation[1], Translation[2]);
 					object->Get_Transform().Set_Position(vec);
 				}
 			}
@@ -1520,7 +1520,7 @@ void EditTransform(const float32* cameraView, float32* cameraProjection, float32
 			{
 				if (Rotation_Ans != Rotation)
 				{
-					XMFLOAT3 vec(Rotation[0], Rotation[1], Rotation[2]);
+					Vector3 vec(Rotation[0], Rotation[1], Rotation[2]);
 					object->Get_Transform().Set_Position(vec);
 				}
 			}
@@ -1529,7 +1529,7 @@ void EditTransform(const float32* cameraView, float32* cameraProjection, float32
 			{
 				if (Scale_Ans != Scale)
 				{
-					XMFLOAT3 vec(Scale[0], Scale[1], Scale[2]);
+					Vector3 vec(Scale[0], Scale[1], Scale[2]);
 					object->Get_Transform().Set_Position(vec);
 				}
 			}
@@ -1540,16 +1540,16 @@ void EditTransform(const float32* cameraView, float32* cameraProjection, float32
 
 		if (enable)
 		{
-			//XMFLOAT3 vec1(Translation[0], Translation[1], Translation[2]);
-			XMFLOAT3 vec2/*(Rotation[0], Rotation[1], Rotation[2])*/;
-			//XMFLOAT3 vec3(Scale[0], Scale[1], Scale[2]);
+			//Vector3 vec1(Translation[0], Translation[1], Translation[2]);
+			Vector3 vec2/*(Rotation[0], Rotation[1], Rotation[2])*/;
+			//Vector3 vec3(Scale[0], Scale[1], Scale[2]);
 
 			//object->Get_Transform().Set_Position(vec1);
 			//object->Set_Rotation(vec2);
 			//object->Get_Transform().Set_Scaling(vec3);
 
 			ImGui::DragFloat3("Rotation", R, 0.2f, -180.f, 180.f);
-			vec2 = XMFLOAT3(R[0], R[1], R[2]);
+			vec2 = Vector3(R[0], R[1], R[2]);
 			object->Get_Transform().Set_Rotation(vec2);
 		}
 	}
@@ -2203,7 +2203,7 @@ void My_imgui::Light_Setting()
 						////
 
 						lights->at(i).Enable = flag;
-						lights->at(i).Position = XMFLOAT3(Position[0], Position[1], Position[2]);
+						lights->at(i).Position = Vector3(Position[0], Position[1], Position[2]);
 						lights->at(i).Color = COLOR(Color[0], Color[1], Color[2], 0.0f);
 					}
 

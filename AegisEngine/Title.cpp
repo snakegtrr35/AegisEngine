@@ -13,6 +13,8 @@
 #include	"Main_Menu.h"
 #include	"Game.h"
 
+using namespace Aegis;
+
 static bool flag = false;
 
 static unique_ptr<SPRITE_ANIMATION> sprite_anime = nullptr;
@@ -22,8 +24,8 @@ void TITLE::Init()
 	{
 		sprite_anime = make_unique<SPRITE_ANIMATION>();
 
-		sprite_anime->SetPosition(XMFLOAT2(SCREEN_WIDTH * 0.5, SCREEN_HEIGHT * 0.5));
-		sprite_anime->SetSize(XMFLOAT4(SCREEN_HEIGHT * 0.5, SCREEN_WIDTH * 0.5, SCREEN_HEIGHT * 0.5, SCREEN_WIDTH * 0.5));
+		sprite_anime->SetPosition(Vector2(SCREEN_WIDTH * 0.5, SCREEN_HEIGHT * 0.5));
+		sprite_anime->SetSize(Vector4(SCREEN_HEIGHT * 0.5, SCREEN_WIDTH * 0.5, SCREEN_HEIGHT * 0.5, SCREEN_WIDTH * 0.5));
 
 		sprite_anime->SetTexture("Load.png");
 
@@ -108,19 +110,19 @@ void TITLE::Update(float delta_time)
 					switch (cnt)
 					{
 					case 0:
-						sprite->Set_Position_Child("arrow", *sprite->GetPosition(), XMFLOAT2(0.0f, 65.0f + 0.0f));		// 1番目
+						sprite->Set_Position_Child("arrow", *sprite->GetPosition(), Vector2(0.0f, 65.0f + 0.0f));		// 1番目
 						break;
 
 					case 1:
-						sprite->Set_Position_Child("arrow", *sprite->GetPosition(), XMFLOAT2(0.0f, 65.0f + 140.0f));	// 2番目
+						sprite->Set_Position_Child("arrow", *sprite->GetPosition(), Vector2(0.0f, 65.0f + 140.0f));	// 2番目
 						break;
 
 					case 2:
-						sprite->Set_Position_Child("arrow", *sprite->GetPosition(), XMFLOAT2(0.0f, 65.0f + 270.0f));	// 3番目
+						sprite->Set_Position_Child("arrow", *sprite->GetPosition(), Vector2(0.0f, 65.0f + 270.0f));	// 3番目
 						break;
 
 						//case 3:
-						//	sprite->Set_Position_Child("arrow", XMFLOAT2(0.0f, 65.0f + 410.0f));	// 4番目
+						//	sprite->Set_Position_Child("arrow", Vector2(0.0f, 65.0f + 410.0f));	// 4番目
 						//	break;
 					}
 
@@ -225,13 +227,13 @@ void TITLE::Load(SCENE* scene)
 	{
 		// タイトル画面
 		{
-			XMFLOAT2 pos(SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.5f);
+			Vector2 pos(SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.5f);
 
 			SPRITE* title = scene->Add_Game_Object<SPRITE>(LAYER_NAME::UI, "title");
 
 			title->SetPosition(pos);
 
-			title->SetSize(XMFLOAT4(SCREEN_HEIGHT * 0.5f, SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.5f, SCREEN_WIDTH * 0.5f));
+			title->SetSize(Vector4(SCREEN_HEIGHT * 0.5f, SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.5f, SCREEN_WIDTH * 0.5f));
 
 			title->SetTexture(string("title.png"));
 
@@ -239,9 +241,9 @@ void TITLE::Load(SCENE* scene)
 
 			arrow->SetTexture(string("arrow.png"));
 
-			title->Set_Position_Child("arrow", *title->GetPosition(), XMFLOAT2(0.0f, 65.0f + 140.0f));
+			title->Set_Position_Child("arrow", *title->GetPosition(), Vector2(0.0f, 65.0f + 140.0f));
 
-			arrow->SetSize(XMFLOAT4(40.0f, 330.0f, 40.0f, 330.0f));
+			arrow->SetSize(Vector4(40.0f, 330.0f, 40.0f, 330.0f));
 
 			arrow->Set_Object_Name("arrow");
 		}

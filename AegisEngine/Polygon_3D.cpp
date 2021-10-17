@@ -8,6 +8,8 @@
 #include	"ShadowMap.h"
 #include	"Scene.h"
 
+using namespace Aegis;
+
 static float roll = 0.0f;
 static float pichi = 0.0f;
 static float yaw = 0.0f;
@@ -17,14 +19,14 @@ POLYGON_3D::POLYGON_3D()
 	pVertexBuffer = nullptr;
 	Texture.reset(nullptr);
 
-	XYZ = XMFLOAT3(0.5f, 0.5f, 0.5f);
+	XYZ = Vector3(0.5f, 0.5f, 0.5f);
 
 	// テクスチャの設定
 	//Texture = new TEXTURE(string("field004.png"));
 	Texture = make_unique<TEXTURE>(string("field004.png"));
 }
 
-POLYGON_3D::POLYGON_3D(XMFLOAT3 position, XMFLOAT3 xyz)
+POLYGON_3D::POLYGON_3D(Vector3 position, Vector3 xyz)
 {
 	pVertexBuffer = nullptr;
 	Texture = nullptr;
@@ -50,130 +52,130 @@ void POLYGON_3D::Init(void)
 	POLYGOM Polygon_3d;
 
 	// 正面
-	Polygon_3d.Vertex[0].Position = XMFLOAT3(-XYZ.x, XYZ.y, -XYZ.z);
-	Polygon_3d.Vertex[0].Normal = XMFLOAT3(0.0f, 0.0f, -1.0f);
-	Polygon_3d.Vertex[0].Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
-	Polygon_3d.Vertex[0].TexCoord = XMFLOAT2(0.0f, 0.0f);
+	Polygon_3d.Vertex[0].Position = Vector3(-XYZ.x, XYZ.y, -XYZ.z);
+	Polygon_3d.Vertex[0].Normal = Vector3(0.0f, 0.0f, -1.0f);
+	Polygon_3d.Vertex[0].Diffuse = Vector4(1.0f, 1.0f, 1.0f, 1.0f);
+	Polygon_3d.Vertex[0].TexCoord = Vector2(0.0f, 0.0f);
 
-	Polygon_3d.Vertex[1].Position = XMFLOAT3(XYZ.x, XYZ.y, -XYZ.z);
-	Polygon_3d.Vertex[1].Normal = XMFLOAT3(0.0f, 0.0f, -1.0f);
-	Polygon_3d.Vertex[1].Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
-	Polygon_3d.Vertex[1].TexCoord = XMFLOAT2(1.0f, 0.0f);
+	Polygon_3d.Vertex[1].Position = Vector3(XYZ.x, XYZ.y, -XYZ.z);
+	Polygon_3d.Vertex[1].Normal = Vector3(0.0f, 0.0f, -1.0f);
+	Polygon_3d.Vertex[1].Diffuse = Vector4(1.0f, 1.0f, 1.0f, 1.0f);
+	Polygon_3d.Vertex[1].TexCoord = Vector2(1.0f, 0.0f);
 
-	Polygon_3d.Vertex[2].Position = XMFLOAT3(-XYZ.x, -XYZ.y, -XYZ.z);
-	Polygon_3d.Vertex[2].Normal = XMFLOAT3(0.0f, 0.0f, -1.0f);
-	Polygon_3d.Vertex[2].Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
-	Polygon_3d.Vertex[2].TexCoord = XMFLOAT2(0.0f, 1.0f);
+	Polygon_3d.Vertex[2].Position = Vector3(-XYZ.x, -XYZ.y, -XYZ.z);
+	Polygon_3d.Vertex[2].Normal = Vector3(0.0f, 0.0f, -1.0f);
+	Polygon_3d.Vertex[2].Diffuse = Vector4(1.0f, 1.0f, 1.0f, 1.0f);
+	Polygon_3d.Vertex[2].TexCoord = Vector2(0.0f, 1.0f);
 
-	Polygon_3d.Vertex[3].Position = XMFLOAT3(XYZ.x, -XYZ.y, -XYZ.z);
-	Polygon_3d.Vertex[3].Normal = XMFLOAT3(0.0f, 0.0f, -1.0f);
-	Polygon_3d.Vertex[3].Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
-	Polygon_3d.Vertex[3].TexCoord = XMFLOAT2(1.0f, 1.0f);
+	Polygon_3d.Vertex[3].Position = Vector3(XYZ.x, -XYZ.y, -XYZ.z);
+	Polygon_3d.Vertex[3].Normal = Vector3(0.0f, 0.0f, -1.0f);
+	Polygon_3d.Vertex[3].Diffuse = Vector4(1.0f, 1.0f, 1.0f, 1.0f);
+	Polygon_3d.Vertex[3].TexCoord = Vector2(1.0f, 1.0f);
 
 	// 裏面
-	Polygon_3d.Vertex[4].Position = XMFLOAT3(XYZ.x, XYZ.y, XYZ.z);
-	Polygon_3d.Vertex[4].Normal = XMFLOAT3(0.0f, 0.0f, 1.0f);
-	Polygon_3d.Vertex[4].Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
-	Polygon_3d.Vertex[4].TexCoord = XMFLOAT2(0.0f, 0.0f);
+	Polygon_3d.Vertex[4].Position = Vector3(XYZ.x, XYZ.y, XYZ.z);
+	Polygon_3d.Vertex[4].Normal = Vector3(0.0f, 0.0f, 1.0f);
+	Polygon_3d.Vertex[4].Diffuse = Vector4(1.0f, 1.0f, 1.0f, 1.0f);
+	Polygon_3d.Vertex[4].TexCoord = Vector2(0.0f, 0.0f);
 
-	Polygon_3d.Vertex[5].Position = XMFLOAT3(-XYZ.x, XYZ.y, XYZ.z);
-	Polygon_3d.Vertex[5].Normal = XMFLOAT3(0.0f, 0.0f, 1.0f);
-	Polygon_3d.Vertex[5].Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
-	Polygon_3d.Vertex[5].TexCoord = XMFLOAT2(1.0f, 0.0f);
+	Polygon_3d.Vertex[5].Position = Vector3(-XYZ.x, XYZ.y, XYZ.z);
+	Polygon_3d.Vertex[5].Normal = Vector3(0.0f, 0.0f, 1.0f);
+	Polygon_3d.Vertex[5].Diffuse = Vector4(1.0f, 1.0f, 1.0f, 1.0f);
+	Polygon_3d.Vertex[5].TexCoord = Vector2(1.0f, 0.0f);
 
-	Polygon_3d.Vertex[6].Position = XMFLOAT3(XYZ.x, -XYZ.y, XYZ.z);
-	Polygon_3d.Vertex[6].Normal = XMFLOAT3(0.0f, 0.0f, 1.0f);
-	Polygon_3d.Vertex[6].Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
-	Polygon_3d.Vertex[6].TexCoord = XMFLOAT2(0.0f, 1.0f);
+	Polygon_3d.Vertex[6].Position = Vector3(XYZ.x, -XYZ.y, XYZ.z);
+	Polygon_3d.Vertex[6].Normal = Vector3(0.0f, 0.0f, 1.0f);
+	Polygon_3d.Vertex[6].Diffuse = Vector4(1.0f, 1.0f, 1.0f, 1.0f);
+	Polygon_3d.Vertex[6].TexCoord = Vector2(0.0f, 1.0f);
 
-	Polygon_3d.Vertex[7].Position = XMFLOAT3(-XYZ.x, -XYZ.y, XYZ.z);
-	Polygon_3d.Vertex[7].Normal = XMFLOAT3(0.0f, 0.0f, 1.0f);
-	Polygon_3d.Vertex[7].Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
-	Polygon_3d.Vertex[7].TexCoord = XMFLOAT2(1.0f, 1.0f);
+	Polygon_3d.Vertex[7].Position = Vector3(-XYZ.x, -XYZ.y, XYZ.z);
+	Polygon_3d.Vertex[7].Normal = Vector3(0.0f, 0.0f, 1.0f);
+	Polygon_3d.Vertex[7].Diffuse = Vector4(1.0f, 1.0f, 1.0f, 1.0f);
+	Polygon_3d.Vertex[7].TexCoord = Vector2(1.0f, 1.0f);
 
 	// 右面
-	Polygon_3d.Vertex[8].Position = XMFLOAT3(XYZ.x, XYZ.y, -XYZ.z);
-	Polygon_3d.Vertex[8].Normal = XMFLOAT3(1.0f, 0.0f, 0.0f);
-	Polygon_3d.Vertex[8].Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
-	Polygon_3d.Vertex[8].TexCoord = XMFLOAT2(0.0f, 0.0f);
+	Polygon_3d.Vertex[8].Position = Vector3(XYZ.x, XYZ.y, -XYZ.z);
+	Polygon_3d.Vertex[8].Normal = Vector3(1.0f, 0.0f, 0.0f);
+	Polygon_3d.Vertex[8].Diffuse = Vector4(1.0f, 1.0f, 1.0f, 1.0f);
+	Polygon_3d.Vertex[8].TexCoord = Vector2(0.0f, 0.0f);
 
-	Polygon_3d.Vertex[9].Position = XMFLOAT3(XYZ.x, XYZ.y, XYZ.z);
-	Polygon_3d.Vertex[9].Normal = XMFLOAT3(1.0f, 0.0f, 0.0f);
-	Polygon_3d.Vertex[9].Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
-	Polygon_3d.Vertex[9].TexCoord = XMFLOAT2(1.0f, 0.0f);
+	Polygon_3d.Vertex[9].Position = Vector3(XYZ.x, XYZ.y, XYZ.z);
+	Polygon_3d.Vertex[9].Normal = Vector3(1.0f, 0.0f, 0.0f);
+	Polygon_3d.Vertex[9].Diffuse = Vector4(1.0f, 1.0f, 1.0f, 1.0f);
+	Polygon_3d.Vertex[9].TexCoord = Vector2(1.0f, 0.0f);
 
-	Polygon_3d.Vertex[10].Position = XMFLOAT3(XYZ.x, -XYZ.y, -XYZ.z);
-	Polygon_3d.Vertex[10].Normal = XMFLOAT3(1.0f, 0.0f, 0.0f);
-	Polygon_3d.Vertex[10].Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
-	Polygon_3d.Vertex[10].TexCoord = XMFLOAT2(0.0f, 1.0f);
+	Polygon_3d.Vertex[10].Position = Vector3(XYZ.x, -XYZ.y, -XYZ.z);
+	Polygon_3d.Vertex[10].Normal = Vector3(1.0f, 0.0f, 0.0f);
+	Polygon_3d.Vertex[10].Diffuse = Vector4(1.0f, 1.0f, 1.0f, 1.0f);
+	Polygon_3d.Vertex[10].TexCoord = Vector2(0.0f, 1.0f);
 
-	Polygon_3d.Vertex[11].Position = XMFLOAT3(XYZ.x, -XYZ.y, XYZ.z);
-	Polygon_3d.Vertex[11].Normal = XMFLOAT3(1.0f, 0.0f, 0.0f);
-	Polygon_3d.Vertex[11].Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
-	Polygon_3d.Vertex[11].TexCoord = XMFLOAT2(1.0f, 1.0f);
+	Polygon_3d.Vertex[11].Position = Vector3(XYZ.x, -XYZ.y, XYZ.z);
+	Polygon_3d.Vertex[11].Normal = Vector3(1.0f, 0.0f, 0.0f);
+	Polygon_3d.Vertex[11].Diffuse = Vector4(1.0f, 1.0f, 1.0f, 1.0f);
+	Polygon_3d.Vertex[11].TexCoord = Vector2(1.0f, 1.0f);
 
 	// 左面
-	Polygon_3d.Vertex[12].Position = XMFLOAT3(-XYZ.x, XYZ.y, XYZ.z);
-	Polygon_3d.Vertex[12].Normal = XMFLOAT3(-1.0f, 0.0f, 0.0f);
-	Polygon_3d.Vertex[12].Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
-	Polygon_3d.Vertex[12].TexCoord = XMFLOAT2(0.0f, 0.0f);
+	Polygon_3d.Vertex[12].Position = Vector3(-XYZ.x, XYZ.y, XYZ.z);
+	Polygon_3d.Vertex[12].Normal = Vector3(-1.0f, 0.0f, 0.0f);
+	Polygon_3d.Vertex[12].Diffuse = Vector4(1.0f, 1.0f, 1.0f, 1.0f);
+	Polygon_3d.Vertex[12].TexCoord = Vector2(0.0f, 0.0f);
 
-	Polygon_3d.Vertex[13].Position = XMFLOAT3(-XYZ.x, XYZ.y, -XYZ.z);
-	Polygon_3d.Vertex[13].Normal = XMFLOAT3(-1.0f, 0.0f, 0.0f);
-	Polygon_3d.Vertex[13].Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
-	Polygon_3d.Vertex[13].TexCoord = XMFLOAT2(1.0f, 0.0f);
+	Polygon_3d.Vertex[13].Position = Vector3(-XYZ.x, XYZ.y, -XYZ.z);
+	Polygon_3d.Vertex[13].Normal = Vector3(-1.0f, 0.0f, 0.0f);
+	Polygon_3d.Vertex[13].Diffuse = Vector4(1.0f, 1.0f, 1.0f, 1.0f);
+	Polygon_3d.Vertex[13].TexCoord = Vector2(1.0f, 0.0f);
 
-	Polygon_3d.Vertex[14].Position = XMFLOAT3(-XYZ.x, -XYZ.y, XYZ.z);
-	Polygon_3d.Vertex[14].Normal = XMFLOAT3(-1.0f, 0.0f, 0.0f);
-	Polygon_3d.Vertex[14].Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
-	Polygon_3d.Vertex[14].TexCoord = XMFLOAT2(0.0f, 1.0f);
+	Polygon_3d.Vertex[14].Position = Vector3(-XYZ.x, -XYZ.y, XYZ.z);
+	Polygon_3d.Vertex[14].Normal = Vector3(-1.0f, 0.0f, 0.0f);
+	Polygon_3d.Vertex[14].Diffuse = Vector4(1.0f, 1.0f, 1.0f, 1.0f);
+	Polygon_3d.Vertex[14].TexCoord = Vector2(0.0f, 1.0f);
 
-	Polygon_3d.Vertex[15].Position = XMFLOAT3(-XYZ.x, -XYZ.y, -XYZ.z);
-	Polygon_3d.Vertex[15].Normal = XMFLOAT3(-1.0f, 0.0f, 0.0f);
-	Polygon_3d.Vertex[15].Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
-	Polygon_3d.Vertex[15].TexCoord = XMFLOAT2(1.0f, 1.0f);
+	Polygon_3d.Vertex[15].Position = Vector3(-XYZ.x, -XYZ.y, -XYZ.z);
+	Polygon_3d.Vertex[15].Normal = Vector3(-1.0f, 0.0f, 0.0f);
+	Polygon_3d.Vertex[15].Diffuse = Vector4(1.0f, 1.0f, 1.0f, 1.0f);
+	Polygon_3d.Vertex[15].TexCoord = Vector2(1.0f, 1.0f);
 
 	// 上面
-	Polygon_3d.Vertex[16].Position = XMFLOAT3(-XYZ.x, XYZ.y, XYZ.z);
-	Polygon_3d.Vertex[16].Normal = XMFLOAT3(0.0f, 1.0f, 0.0f);
-	Polygon_3d.Vertex[16].Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
-	Polygon_3d.Vertex[16].TexCoord = XMFLOAT2(0.0f, 0.0f);
+	Polygon_3d.Vertex[16].Position = Vector3(-XYZ.x, XYZ.y, XYZ.z);
+	Polygon_3d.Vertex[16].Normal = Vector3(0.0f, 1.0f, 0.0f);
+	Polygon_3d.Vertex[16].Diffuse = Vector4(1.0f, 1.0f, 1.0f, 1.0f);
+	Polygon_3d.Vertex[16].TexCoord = Vector2(0.0f, 0.0f);
 
-	Polygon_3d.Vertex[17].Position = XMFLOAT3(XYZ.x, XYZ.y, XYZ.z);
-	Polygon_3d.Vertex[17].Normal = XMFLOAT3(0.0f, 1.0f, 0.0f);
-	Polygon_3d.Vertex[17].Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
-	Polygon_3d.Vertex[17].TexCoord = XMFLOAT2(1.0f, 0.0f);
+	Polygon_3d.Vertex[17].Position = Vector3(XYZ.x, XYZ.y, XYZ.z);
+	Polygon_3d.Vertex[17].Normal = Vector3(0.0f, 1.0f, 0.0f);
+	Polygon_3d.Vertex[17].Diffuse = Vector4(1.0f, 1.0f, 1.0f, 1.0f);
+	Polygon_3d.Vertex[17].TexCoord = Vector2(1.0f, 0.0f);
 
-	Polygon_3d.Vertex[18].Position = XMFLOAT3(-XYZ.x, XYZ.y, -XYZ.z);
-	Polygon_3d.Vertex[18].Normal = XMFLOAT3(0.0f, 1.0f, 0.0f);
-	Polygon_3d.Vertex[18].Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
-	Polygon_3d.Vertex[18].TexCoord = XMFLOAT2(0.0f, 1.0f);
+	Polygon_3d.Vertex[18].Position = Vector3(-XYZ.x, XYZ.y, -XYZ.z);
+	Polygon_3d.Vertex[18].Normal = Vector3(0.0f, 1.0f, 0.0f);
+	Polygon_3d.Vertex[18].Diffuse = Vector4(1.0f, 1.0f, 1.0f, 1.0f);
+	Polygon_3d.Vertex[18].TexCoord = Vector2(0.0f, 1.0f);
 
-	Polygon_3d.Vertex[19].Position = XMFLOAT3(XYZ.x, XYZ.y, -XYZ.z);
-	Polygon_3d.Vertex[19].Normal = XMFLOAT3(0.0f, 1.0f, 0.0f);
-	Polygon_3d.Vertex[19].Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
-	Polygon_3d.Vertex[19].TexCoord = XMFLOAT2(1.0f, 1.0f);
+	Polygon_3d.Vertex[19].Position = Vector3(XYZ.x, XYZ.y, -XYZ.z);
+	Polygon_3d.Vertex[19].Normal = Vector3(0.0f, 1.0f, 0.0f);
+	Polygon_3d.Vertex[19].Diffuse = Vector4(1.0f, 1.0f, 1.0f, 1.0f);
+	Polygon_3d.Vertex[19].TexCoord = Vector2(1.0f, 1.0f);
 
 	// 下面
-	Polygon_3d.Vertex[20].Position = XMFLOAT3(-XYZ.x, -XYZ.y, -XYZ.z);
-	Polygon_3d.Vertex[20].Normal = XMFLOAT3(0.0f, -1.0f, 0.0f);
-	Polygon_3d.Vertex[20].Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
-	Polygon_3d.Vertex[20].TexCoord = XMFLOAT2(0.0f, 0.0f);
+	Polygon_3d.Vertex[20].Position = Vector3(-XYZ.x, -XYZ.y, -XYZ.z);
+	Polygon_3d.Vertex[20].Normal = Vector3(0.0f, -1.0f, 0.0f);
+	Polygon_3d.Vertex[20].Diffuse = Vector4(1.0f, 1.0f, 1.0f, 1.0f);
+	Polygon_3d.Vertex[20].TexCoord = Vector2(0.0f, 0.0f);
 
-	Polygon_3d.Vertex[21].Position = XMFLOAT3(XYZ.x, -XYZ.y, -XYZ.z);
-	Polygon_3d.Vertex[21].Normal = XMFLOAT3(0.0f, -1.0f, 0.0f);
-	Polygon_3d.Vertex[21].Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
-	Polygon_3d.Vertex[21].TexCoord = XMFLOAT2(1.0f, 0.0f);
+	Polygon_3d.Vertex[21].Position = Vector3(XYZ.x, -XYZ.y, -XYZ.z);
+	Polygon_3d.Vertex[21].Normal = Vector3(0.0f, -1.0f, 0.0f);
+	Polygon_3d.Vertex[21].Diffuse = Vector4(1.0f, 1.0f, 1.0f, 1.0f);
+	Polygon_3d.Vertex[21].TexCoord = Vector2(1.0f, 0.0f);
 
-	Polygon_3d.Vertex[22].Position = XMFLOAT3(-XYZ.x, -XYZ.y, XYZ.z);
-	Polygon_3d.Vertex[22].Normal = XMFLOAT3(0.0f, -1.0f, 0.0f);
-	Polygon_3d.Vertex[22].Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
-	Polygon_3d.Vertex[22].TexCoord = XMFLOAT2(0.0f, 1.0f);
+	Polygon_3d.Vertex[22].Position = Vector3(-XYZ.x, -XYZ.y, XYZ.z);
+	Polygon_3d.Vertex[22].Normal = Vector3(0.0f, -1.0f, 0.0f);
+	Polygon_3d.Vertex[22].Diffuse = Vector4(1.0f, 1.0f, 1.0f, 1.0f);
+	Polygon_3d.Vertex[22].TexCoord = Vector2(0.0f, 1.0f);
 
-	Polygon_3d.Vertex[23].Position = XMFLOAT3(XYZ.x, -XYZ.y, XYZ.z);
-	Polygon_3d.Vertex[23].Normal = XMFLOAT3(0.0f, -1.0f, 0.0f);
-	Polygon_3d.Vertex[23].Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
-	Polygon_3d.Vertex[23].TexCoord = XMFLOAT2(1.0f, 1.0f);
+	Polygon_3d.Vertex[23].Position = Vector3(XYZ.x, -XYZ.y, XYZ.z);
+	Polygon_3d.Vertex[23].Normal = Vector3(0.0f, -1.0f, 0.0f);
+	Polygon_3d.Vertex[23].Diffuse = Vector4(1.0f, 1.0f, 1.0f, 1.0f);
+	Polygon_3d.Vertex[23].TexCoord = Vector2(1.0f, 1.0f);
 
 	// 頂点バッファの設定
 	{
@@ -212,9 +214,9 @@ void POLYGON_3D::Draw(void)
 	{
 		XMMATRIX world(XMMatrixIdentity());
 
-		XMFLOAT3 position = *Get_Transform().Get_Position();
-		XMFLOAT3 rotate = *Get_Transform().Get_Rotation();
-		XMFLOAT3 scale = *Get_Transform().Get_Scaling();
+		Vector3 position = *Get_Transform().Get_Position();
+		Vector3 rotate = *Get_Transform().Get_Rotation();
+		Vector3 scale = *Get_Transform().Get_Scaling();
 
 		XMMATRIX matrix = XMMatrixScaling(scale.x, scale.y, scale.z);
 		matrix *= XMMatrixRotationRollPitchYaw(XMConvertToRadians(rotate.x), XMConvertToRadians(rotate.y), XMConvertToRadians(rotate.z));
@@ -287,9 +289,9 @@ void POLYGON_3D::Draw_DPP(void)
 	{
 		XMMATRIX world(XMMatrixIdentity());
 
-		XMFLOAT3 position = *Get_Transform().Get_Position();
-		XMFLOAT3 rotate = *Get_Transform().Get_Rotation();
-		XMFLOAT3 scale = *Get_Transform().Get_Scaling();
+		Vector3 position = *Get_Transform().Get_Position();
+		Vector3 rotate = *Get_Transform().Get_Rotation();
+		Vector3 scale = *Get_Transform().Get_Scaling();
 
 		XMMATRIX matrix = XMMatrixScaling(scale.x, scale.y, scale.z);
 		matrix *= XMMatrixRotationRollPitchYaw(XMConvertToRadians(rotate.x), XMConvertToRadians(rotate.y), XMConvertToRadians(rotate.z));
@@ -332,7 +334,7 @@ void POLYGON_3D::Uninit(void)
 //==============================
 // ポジションの設定
 //==============================
-void POLYGON_3D::SetPosition(XMFLOAT3& position)
+void POLYGON_3D::SetPosition(Vector3& position)
 {
 	Get_Transform().Set_Position(position);
 }
@@ -340,7 +342,7 @@ void POLYGON_3D::SetPosition(XMFLOAT3& position)
 //==============================
 // 幅と高さの設定
 //==============================
-void POLYGON_3D::SetXYZ(const XMFLOAT3 xyz)
+void POLYGON_3D::SetXYZ(const Vector3 xyz)
 {
 	XYZ = xyz;
 }
@@ -348,7 +350,7 @@ void POLYGON_3D::SetXYZ(const XMFLOAT3 xyz)
 //==============================
 // 拡大縮小の値の設定
 //==============================
-void POLYGON_3D::SetScaling(XMFLOAT3& scaling)
+void POLYGON_3D::SetScaling(Vector3& scaling)
 {
 	Get_Transform().Set_Scaling(scaling);
 }
@@ -361,17 +363,17 @@ void POLYGON_3D::SetTexture(const string& const file_name)
 	Texture->Set_Texture_Name(file_name);
 }
 
-XMFLOAT3* const POLYGON_3D::Get_Position()
+Vector3* const POLYGON_3D::Get_Position()
 {
 	return Get_Transform().Get_Position();
 }
 
-XMFLOAT3* const POLYGON_3D::Get_Rotation()
+Vector3* const POLYGON_3D::Get_Rotation()
 {
 	return Get_Transform().Get_Rotation();
 }
 
-XMFLOAT3* const POLYGON_3D::Get_Scaling()
+Vector3* const POLYGON_3D::Get_Scaling()
 {
 	return Get_Transform().Get_Scaling();
 }

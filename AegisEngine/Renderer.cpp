@@ -511,7 +511,7 @@ bool CRenderer::Init()
 
 	// ライト初期化
 	ZeroMemory(&m_Light, sizeof(m_Light));
-	m_Light.Position = XMFLOAT4(20.0f, 20.0f, -20.0f, 0.0f);
+	m_Light.Position = Vector4(20.0f, 20.0f, -20.0f, 0.0f);
 	m_Light.Direction = m_Light.Position * -1.0f;
 	m_Light.Diffuse = COLOR(1.0f, 1.0f, 1.0f, 1.0f);
 	m_Light.Ambient = COLOR(1.0f, 1.0f, 1.0f, 1.0f);
@@ -1290,6 +1290,8 @@ void CRenderer::Begin()
 static unique_ptr<SPRITE> sprite;
 static bool flag = true;
 
+using namespace Aegis;
+
 void CRenderer::End_Draw()
 {
 	if (flag)
@@ -1298,8 +1300,8 @@ void CRenderer::End_Draw()
 
 		sprite = make_unique<SPRITE>();
 
-		sprite.get()->SetPosition(XMFLOAT2(SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.5f));
-		sprite.get()->SetSize(XMFLOAT4(SCREEN_HEIGHT * 0.5f, SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.5f, SCREEN_WIDTH * 0.5f));
+		sprite.get()->SetPosition(Vector2(SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.5f));
+		sprite.get()->SetSize(Vector4(SCREEN_HEIGHT * 0.5f, SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.5f, SCREEN_WIDTH * 0.5f));
 
 		sprite.get()->Set(ShaderResourceView[0].get());
 		//te.get()->Set(ShaderResourceView_16bit.get());
@@ -1450,7 +1452,7 @@ void CRenderer::Light_Identity()
 {
 	// ライト初期化
 	LIGHT light;
-	light.Direction = XMFLOAT4(0.0f, 0.0f, 1.0f, 0.0f);
+	light.Direction = Vector4(0.0f, 0.0f, 1.0f, 0.0f);
 	light.Diffuse = COLOR(1.0f, 1.0f, 1.0f, 1.0f);
 	light.Ambient = COLOR(0.5f, 0.5f, 0.5f, 1.0f);
 	light.Specular = COLOR(1.0f, 1.0f, 1.0f, 1.0f);

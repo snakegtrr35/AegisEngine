@@ -5,6 +5,7 @@
 #include	"Scene.h"
 #include	"ShadowMap.h"
 
+using namespace Aegis;
 
 BOUNDING_OBB::~BOUNDING_OBB()
 {
@@ -14,9 +15,9 @@ BOUNDING_OBB::~BOUNDING_OBB()
 void BOUNDING_OBB::Init()
 {
 	{
-		XMFLOAT3 pos = *Owner.lock()->Get_Transform().Get_Position();
+		Vector3 pos = *Owner.lock()->Get_Transform().Get_Position();
 
-		Obb = BoundingOrientedBox(XMFLOAT3(0.f, 0.f, 0.f), Radius, Quaternion);
+		Obb = BoundingOrientedBox(Vector3(0.f, 0.f, 0.f), Radius, Quaternion);
 
 		XMMATRIX matrix = XMMatrixScaling(Scaling.x, Scaling.y, Scaling.z);
 		matrix *= XMMatrixTranslation(Position.x + pos.x, Position.y + pos.y, Position.z + pos.z);
@@ -28,7 +29,7 @@ void BOUNDING_OBB::Init()
 	if (nullptr == pVertexBuffer.get())
 	{
 		VERTEX_3D Vertex[BoundingBox::CORNER_COUNT];
-		XMFLOAT3 corners[BoundingBox::CORNER_COUNT];
+		Vector3 corners[BoundingBox::CORNER_COUNT];
 
 		Obb.GetCorners(corners);
 
@@ -51,9 +52,9 @@ void BOUNDING_OBB::Init()
 
 		for (char i = 0; i < BoundingBox::CORNER_COUNT; i++)
 		{
-			Vertex[i].Normal = XMFLOAT3(1.0f, 0.0f, 0.0f);
-			Vertex[i].Diffuse = XMFLOAT4(Color.r, Color.g, Color.b, Color.a);
-			Vertex[i].TexCoord = XMFLOAT2(0.0f, 0.0f);
+			Vertex[i].Normal = Vector3(1.0f, 0.0f, 0.0f);
+			Vertex[i].Diffuse = Vector4(Color.r, Color.g, Color.b, Color.a);
+			Vertex[i].TexCoord = Vector2(0.0f, 0.0f);
 		}
 
 		// 頂点バッファの設定
@@ -135,7 +136,7 @@ void BOUNDING_OBB::Draw()
 
 		// 3Dマトリックス設定
 		{
-			XMFLOAT3 pos = *Owner.lock()->Get_Transform().Get_Position();
+			Vector3 pos = *Owner.lock()->Get_Transform().Get_Position();
 
 			const auto camera01 = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<CCamera>("camera");
 			const auto camera02 = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
@@ -177,9 +178,9 @@ void BOUNDING_OBB::Uninit()
 void BOUNDING_OBB::OverWrite()
 {
 	{
-		XMFLOAT3 pos = *Owner.lock()->Get_Transform().Get_Position();
+		Vector3 pos = *Owner.lock()->Get_Transform().Get_Position();
 
-		Obb = BoundingOrientedBox(XMFLOAT3(0.f, 0.f, 0.f), Radius, Quaternion);
+		Obb = BoundingOrientedBox(Vector3(0.f, 0.f, 0.f), Radius, Quaternion);
 
 		XMMATRIX matrix = XMMatrixScaling(Scaling.x, Scaling.y, Scaling.z);
 		matrix *= XMMatrixTranslation(Position.x + pos.x, Position.y + pos.y, Position.z + pos.z);
@@ -192,7 +193,7 @@ void BOUNDING_OBB::OverWrite()
 		Color = Default_Color;
 
 		VERTEX_3D Vertex[BoundingBox::CORNER_COUNT];
-		XMFLOAT3 corners[BoundingBox::CORNER_COUNT];
+		Vector3 corners[BoundingBox::CORNER_COUNT];
 
 		Obb.GetCorners(corners);
 
@@ -215,9 +216,9 @@ void BOUNDING_OBB::OverWrite()
 
 		for (char i = 0; i < BoundingBox::CORNER_COUNT; i++)
 		{
-			Vertex[i].Diffuse = XMFLOAT4(Color.r, Color.g, Color.b, Color.a);
-			Vertex[i].Normal = XMFLOAT3(1.0f, 0.0f, 0.0f);
-			Vertex[i].TexCoord = XMFLOAT2(0.0f, 0.0f);
+			Vertex[i].Diffuse = Vector4(Color.r, Color.g, Color.b, Color.a);
+			Vertex[i].Normal = Vector3(1.0f, 0.0f, 0.0f);
+			Vertex[i].TexCoord = Vector2(0.0f, 0.0f);
 		}
 
 		// 頂点バッファの書き換え
@@ -253,10 +254,10 @@ void BOUNDING_OBB::Draw_Inspector()
 	ImGui::DragFloat3("Scaling##OBB", scale, 0.01f);
 	ImGui::DragFloat3("Radius##OBB", radius, 0.01f, 0.01f, 1000.0f);
 
-	Position = XMFLOAT3(position[0], position[1], position[2]);
-	Rotation = XMFLOAT3(rotation[0], rotation[1], rotation[2]);
-	Scaling = XMFLOAT3(scale[0], scale[1], scale[2]);
-	Radius = XMFLOAT3(radius[0], radius[1], radius[2]);
+	Position = Vector3(position[0], position[1], position[2]);
+	Rotation = Vector3(rotation[0], rotation[1], rotation[2]);
+	Scaling = Vector3(scale[0], scale[1], scale[2]);
+	Radius = Vector3(radius[0], radius[1], radius[2]);
 
 	{
 		XMVECTOR quat = XMQuaternionRotationRollPitchYaw(XMConvertToRadians(Rotation.x), XMConvertToRadians(Rotation.y), XMConvertToRadians(Rotation.z));

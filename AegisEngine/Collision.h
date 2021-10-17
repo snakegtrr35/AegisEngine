@@ -5,27 +5,27 @@
 
 // 円
 struct CIRCLE {
-	XMFLOAT2 Position;		// 中心座標
+	Aegis::Vector2 Position;		// 中心座標
 	float Radius;			// 半径
 };
 
 // 球
 struct SPHERE {
-	XMFLOAT3 Position;		// 中心座標
+	Aegis::Vector3 Position;		// 中心座標
 	float Radius;			// 半径
 };
 
 // カプセル
 struct CAPSULE {
-	XMFLOAT3 Start_Position;	// 線分の開始点
-	XMFLOAT3 End_Position;		// 線分の終了点
+	Aegis::Vector3 Start_Position;	// 線分の開始点
+	Aegis::Vector3 End_Position;		// 線分の終了点
 	float Radius;				// 半径
 
-	XMFLOAT3 Rotation;			// 回転量
+	Aegis::Vector3 Rotation;			// 回転量
 
-	CAPSULE() : Radius(0.5f), Start_Position(XMFLOAT3(0.f, -0.5f, 0.f)), End_Position(XMFLOAT3(0.f, 0.5f, 0.f)), Rotation(XMFLOAT3(0.f, 0.f, 0.f)) {}
+	CAPSULE() : Radius(0.5f), Start_Position(Aegis::Vector3(0.f, -0.5f, 0.f)), End_Position(Aegis::Vector3(0.f, 0.5f, 0.f)), Rotation(Aegis::Vector3(0.f, 0.f, 0.f)) {}
 
-	void Transform(const XMFLOAT3& position, const float height) {
+	void Transform(const Aegis::Vector3& position, const float height) {
 		XMVECTOR vector;
 		XMMATRIX matrix = XMMatrixRotationRollPitchYaw(XMConvertToRadians(Rotation.x), XMConvertToRadians(Rotation.y), XMConvertToRadians(Rotation.z));
 
@@ -52,7 +52,7 @@ struct CAPSULE {
 		}
 	}
 
-	void Rotate(const XMFLOAT3& rotation) {
+	void Rotate(const Aegis::Vector3& rotation) {
 		XMVECTOR vector;
 		XMMATRIX matrix = XMMatrixRotationRollPitchYaw(XMConvertToRadians(rotation.x - Rotation.x), XMConvertToRadians(rotation.y - Rotation.y), XMConvertToRadians(rotation.z - Rotation.z));
 
@@ -109,15 +109,15 @@ struct CAPSULE {
 
 // AABB
 struct AABB {
-	XMFLOAT3 Position;		// 中心座標
-	XMFLOAT3 Radius;		// 半径
+	Aegis::Vector3 Position;		// 中心座標
+	Aegis::Vector3 Radius;		// 半径
 };
 
 // OBB
 struct OBB {
-	XMFLOAT3 Position;		// 中心座標
-	XMFLOAT3 Radius;		// 半径
-	XMFLOAT3 Rotation;		// 回転量
+	Aegis::Vector3 Position;		// 中心座標
+	Aegis::Vector3 Radius;		// 半径
+	Aegis::Vector3 Rotation;		// 回転量
 
 };
 
@@ -185,7 +185,7 @@ public:
 		return &Sphere;
 	}
 
-	void Set_Position(const XMFLOAT3& position) {
+	void Set_Position(const Aegis::Vector3& position) {
 		Sphere.Position = position;
 	}
 
@@ -220,11 +220,11 @@ public:
 		return &Aabb;
 	};
 
-	void Set_Position(const XMFLOAT3& position) {
+	void Set_Position(const Aegis::Vector3& position) {
 		Aabb.Position = position;
 	};
 
-	void Set_Radius(const XMFLOAT3& radius) {
+	void Set_Radius(const Aegis::Vector3& radius) {
 		Aabb.Radius = radius;
 	};
 };
@@ -242,7 +242,7 @@ public:
 
 	COLLISIION_CAPSULE() : Height(1.0f) {}
 
-	COLLISIION_CAPSULE(XMFLOAT3 position, float radius, float height) : Height(height) {
+	COLLISIION_CAPSULE(Aegis::Vector3 position, float radius, float height) : Height(height) {
 		Capsule.Radius = radius;
 
 		Capsule.Start_Position.x = position.x;
@@ -281,20 +281,20 @@ public:
 		return Height;
 	};
 
-	void Set_Rotation(const XMFLOAT3& rotation) {
+	void Set_Rotation(const Aegis::Vector3& rotation) {
 		Capsule.Rotate(rotation);
 	}
 
-	XMFLOAT3 Get_Rotation() {
+	Aegis::Vector3 Get_Rotation() {
 		return Capsule.Rotation;
 	}
 
-	void Set_Position(const XMFLOAT3& position) {
+	void Set_Position(const Aegis::Vector3& position) {
 		Capsule.Transform(position, Height);
 	}
 
-	XMFLOAT3 Get_Position() {
-		XMFLOAT3 pos = Capsule.Start_Position;
+	Aegis::Vector3 Get_Position() {
+		Aegis::Vector3 pos = Capsule.Start_Position;
 
 		pos.y += Height;
 

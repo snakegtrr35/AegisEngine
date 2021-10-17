@@ -5,6 +5,8 @@
 #include	"Scene.h"
 #include	"Player.h"
 
+using namespace Aegis;
+
 UINT SHADOW_MAP::WIDTH = 2048;
 UINT SHADOW_MAP::HEIGHT = 2048;
 
@@ -13,7 +15,7 @@ static ID3D11DepthStencilState* m_DepthStateEnable;
 
 SHADOW_MAP::SHADOW_MAP()
 {
-	LightPos = XMFLOAT3(15.0f, 15.0f, -15.0f);
+	LightPos = Vector3(15.0f, 15.0f, -15.0f);
 
 	Enable = false;
 
@@ -338,9 +340,9 @@ void SHADOW_MAP::Update()
 
 	if (!Target.expired())
 	{
-		XMFLOAT3* at = Target.lock()->Get_Transform().Get_Position();
+		Vector3* at = Target.lock()->Get_Transform().Get_Position();
 
-		XMFLOAT3 pos;
+		Vector3 pos;
 		pos.x = at->x + LightPos.x;
 		pos.y = at->y + LightPos.y;
 		pos.z = at->z + LightPos.z;
@@ -373,7 +375,7 @@ void SHADOW_MAP::Set_SamplerState()
 	CRenderer::GetDeviceContext()->PSSetSamplers(1, 1, &samp);
 }
 
-void SHADOW_MAP::Set_LightPos(const XMFLOAT3& pos)
+void SHADOW_MAP::Set_LightPos(const Vector3& pos)
 {
 	LightPos = pos;
 }
@@ -388,7 +390,7 @@ const bool SHADOW_MAP::Target_Enable()
 	return !Target.expired();
 }
 
-void SHADOW_MAP::Set_Light(const XMFLOAT3& pos)
+void SHADOW_MAP::Set_Light(const Vector3& pos)
 {
 	Light.Direction.x = -pos.x;
 	Light.Direction.y = -pos.y;

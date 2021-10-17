@@ -8,7 +8,9 @@
 #include	"Scene.h"
 #include	"ShadowMap.h"
 
-MESH_FIELD::MESH_FIELD() : GridSize(XMFLOAT3(1.0f, 0.0f, 1.0f)), GridNum(XMINT2(10, 10))
+using namespace Aegis;
+
+MESH_FIELD::MESH_FIELD() : GridSize(Vector3(1.0f, 0.0f, 1.0f)), GridNum(Int2(10, 10))
 {
 	VertexBuffer.reset(nullptr);
 	IndexBuffer.reset(nullptr);
@@ -27,10 +29,10 @@ void MESH_FIELD::Init()
 		VertexArray.resize(VertexNum);
 
 		{
-			XMFLOAT3 position;
+			Vector3 position;
 			float legth = 0.0f;
-			XMFLOAT3 va, vb;
-			XMFLOAT3 vn;
+			Vector3 va, vb;
+			Vector3 vn;
 
 			// 頂点バッファへの書き込み
 			for (int z = 0; z < GridNum.y + 1; z++)
@@ -43,9 +45,9 @@ void MESH_FIELD::Init()
 					position.z = 0.5f * (float)GridNum.y * GridSize.z - (float)z * GridSize.z;
 
 					VertexArray[x + (GridNum.x + 1) * z].Position = position;
-					VertexArray[x + (GridNum.y + 1) * z].Normal = XMFLOAT3(0.0f, 1.0f, 0.0f);
-					VertexArray[x + (GridNum.x + 1) * z].Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
-					VertexArray[x + (GridNum.x + 1) * z].TexCoord = XMFLOAT2((float)x, (float)z);
+					VertexArray[x + (GridNum.y + 1) * z].Normal = Vector3(0.0f, 1.0f, 0.0f);
+					VertexArray[x + (GridNum.x + 1) * z].Diffuse = Vector4(1.0f, 1.0f, 1.0f, 1.0f);
+					VertexArray[x + (GridNum.x + 1) * z].TexCoord = Vector2((float)x, (float)z);
 				}
 			}
 
@@ -177,9 +179,9 @@ void MESH_FIELD::Draw()
 			//angle = 180.0f;
 		}
 
-		XMFLOAT3 position = *Get_Transform().Get_Position();
-		XMFLOAT3 rotate = *Get_Transform().Get_Rotation();
-		XMFLOAT3 scale = *Get_Transform().Get_Scaling();
+		Vector3 position = *Get_Transform().Get_Position();
+		Vector3 rotate = *Get_Transform().Get_Rotation();
+		Vector3 scale = *Get_Transform().Get_Scaling();
 
 		world = XMMatrixScaling(scale.x, scale.y, scale.z);
 		world *= XMMatrixRotationRollPitchYaw(XMConvertToRadians(rotate.x), XMConvertToRadians(rotate.y), XMConvertToRadians(rotate.z));
@@ -253,9 +255,9 @@ void MESH_FIELD::Draw_DPP()
 {
 	// 3Dマトリックス設定
 	{
-		XMFLOAT3 position = *Get_Transform().Get_Position();
-		XMFLOAT3 rotate = *Get_Transform().Get_Rotation();
-		XMFLOAT3 scale = *Get_Transform().Get_Scaling();
+		Vector3 position = *Get_Transform().Get_Position();
+		Vector3 rotate = *Get_Transform().Get_Rotation();
+		Vector3 scale = *Get_Transform().Get_Scaling();
 
 		XMMATRIX world = XMMatrixScaling(scale.x, scale.y, scale.z);
 		world *= XMMatrixRotationRollPitchYaw(XMConvertToRadians(rotate.x), XMConvertToRadians(rotate.y), XMConvertToRadians(rotate.z));
@@ -286,15 +288,15 @@ void MESH_FIELD::Draw_DPP()
 	CRenderer::GetDeviceContext()->DrawIndexed(IndexNum, 0, 0);
 }
 
-const float MESH_FIELD::Get_Height(const XMFLOAT3& position)
+const float MESH_FIELD::Get_Height(const Vector3& position)
 {
 	float x, z;
 
-	XMFLOAT3 p0, p1, p2, v01, v02, n, v, hp, va = XMFLOAT3(0.f, 0.f, 0.f), vb;
+	Vector3 p0, p1, p2, v01, v02, n, v, hp, va = Vector3(0.f, 0.f, 0.f), vb;
 
 	float dp0n, dvn, dpn, t;
 
-	v = XMFLOAT3(0.0f, -10.0f, 0.0f);
+	v = Vector3(0.0f, -10.0f, 0.0f);
 
 	x = (position.x +  (GridSize.x * GridNum.x) * 0.5f) / GridSize.x;
 	z = (-position.z + (GridSize.z * GridNum.y) * 0.5f) / GridSize.z;
@@ -368,8 +370,8 @@ MESH_WALL::MESH_WALL()
 	IndexBuffer = VertexBuffer = nullptr;
 	Texture = nullptr;
 
-	GridSize = XMFLOAT3(1.0f, 0.0f, 1.0f);
-	GridNum = XMINT2(10, 5);
+	GridSize = Vector3(1.0f, 0.0f, 1.0f);
+	GridNum = Int2(10, 5);
 };
 
 void MESH_WALL::Init()
@@ -385,7 +387,7 @@ void MESH_WALL::Init()
 	{
 		for (int x = 0; x < GridNum.x + 1; x++)
 		{
-			XMFLOAT3 position;
+			Vector3 position;
 
 			position.x = -0.5f * (float)GridNum.x * GridSize.x + (float)x * GridSize.x;
 			position.y = 0.0f;
@@ -393,10 +395,10 @@ void MESH_WALL::Init()
 
 			VertexArray[x + (GridNum.x + 1) * z].Position = position;
 
-			VertexArray[x + (GridNum.y + 1) * z].Normal = XMFLOAT3(0.0f, 1.0f, 0.0f);
+			VertexArray[x + (GridNum.y + 1) * z].Normal = Vector3(0.0f, 1.0f, 0.0f);
 
-			VertexArray[x + (GridNum.x + 1) * z].Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
-			VertexArray[x + (GridNum.x + 1) * z].TexCoord = XMFLOAT2((float)x, (float)z);
+			VertexArray[x + (GridNum.x + 1) * z].Diffuse = Vector4(1.0f, 1.0f, 1.0f, 1.0f);
+			VertexArray[x + (GridNum.x + 1) * z].TexCoord = Vector2((float)x, (float)z);
 		}
 	}
 
@@ -405,7 +407,7 @@ void MESH_WALL::Init()
 	{
 		for (int x = 1; x < GridNum.x; x++)
 		{
-			XMFLOAT3 va, vb;
+			Vector3 va, vb;
 
 			va.x = VertexArray[(z - 1) * GridNum.y + x].Position.x - VertexArray[(z + 1) * GridNum.x + x].Position.x;
 			va.y = VertexArray[(z - 1) * GridNum.y + x].Position.y - VertexArray[(z + 1) * GridNum.x + x].Position.y;
@@ -415,7 +417,7 @@ void MESH_WALL::Init()
 			vb.y = VertexArray[(x + 1) + (GridNum.x + 1) * z].Position.y - VertexArray[(x - 1) + (GridNum.x + 1) * z].Position.y;
 			vb.z = VertexArray[(x + 1) + (GridNum.x + 1) * z].Position.z - VertexArray[(x - 1) + (GridNum.x + 1) * z].Position.z;
 
-			XMFLOAT3 vn;
+			Vector3 vn;
 
 			// 外積
 			vn.x = va.y * vb.z - va.z * vb.y;
@@ -511,9 +513,9 @@ void MESH_WALL::Draw()
 		{
 			XMMATRIX world(XMMatrixIdentity());
 
-			XMFLOAT3 position = *Get_Transform().Get_Position();
-			XMFLOAT3 rotate = *Get_Transform().Get_Rotation();
-			XMFLOAT3 scale = *Get_Transform().Get_Scaling();
+			Vector3 position = *Get_Transform().Get_Position();
+			Vector3 rotate = *Get_Transform().Get_Rotation();
+			Vector3 scale = *Get_Transform().Get_Scaling();
 
 			XMMATRIX matrix = XMMatrixScaling(scale.x, scale.y, scale.z);
 			matrix *= XMMatrixRotationRollPitchYaw(XMConvertToRadians(rotate.x), XMConvertToRadians(rotate.y), XMConvertToRadians(rotate.z));
@@ -592,9 +594,9 @@ void MESH_WALL::Draw_DPP()
 {
 	// 3Dマトリックス設定
 	{
-		XMFLOAT3 position = *Get_Transform().Get_Position();
-		XMFLOAT3 rotate = *Get_Transform().Get_Rotation();
-		XMFLOAT3 scale = *Get_Transform().Get_Scaling();
+		Vector3 position = *Get_Transform().Get_Position();
+		Vector3 rotate = *Get_Transform().Get_Rotation();
+		Vector3 scale = *Get_Transform().Get_Scaling();
 
 		XMMATRIX matrix = XMMatrixScaling(scale.x, scale.y, scale.z);
 		matrix *= XMMatrixRotationRollPitchYaw(XMConvertToRadians(rotate.x), XMConvertToRadians(rotate.y), XMConvertToRadians(rotate.z));
@@ -625,15 +627,15 @@ void MESH_WALL::Draw_DPP()
 	CRenderer::GetDeviceContext()->DrawIndexed(IndexNum, 0, 0);
 }
 
-const float MESH_WALL::Get_Height(const XMFLOAT3& position)
+const float MESH_WALL::Get_Height(const Vector3& position)
 {
 	int x, z;
 
-	XMFLOAT3 p0, p1, p2, v01, v02, n, v, hp, va = XMFLOAT3(0.f, 0.f, 0.f), vb;
+	Vector3 p0, p1, p2, v01, v02, n, v, hp, va = Vector3(0.f, 0.f, 0.f), vb;
 
 	float dp0n, dvn, dpn, t;
 
-	v = XMFLOAT3(0.0f, -10.0f, 0.0f);
+	v = Vector3(0.0f, -10.0f, 0.0f);
 
 	x = (position.x + (GridSize.x * GridNum.x) * 0.5f) / GridSize.x;
 	z = (-position.z + (GridSize.z * GridNum.y) * 0.5f) / GridSize.z;

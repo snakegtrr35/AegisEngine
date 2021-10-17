@@ -7,6 +7,8 @@
 #include	"Scene.h"
 #include	"ShadowMap.h"
 
+using namespace Aegis;
+
 void MESH_CYlLINDER::Init()
 {
 	int cornerNum = (int)Radius * CylinderLength * 10;
@@ -28,10 +30,10 @@ void MESH_CYlLINDER::Init()
 
 		for (int x = 0; x < cornerNum + 1; x++)
 		{
-			vertexArray[x + (cornerNum + 1) * y].Position	= XMFLOAT3(Radius * cosf(theta), (float)CylinderLength - (float)y, Radius * sinf(theta));
-			vertexArray[x + (cornerNum + 1) * y].Normal		= XMFLOAT3(0.0f, 1.0f, 0.0f);
-			vertexArray[x + (cornerNum + 1) * y].Diffuse	= XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
-			vertexArray[x + (cornerNum + 1) * y].TexCoord	= XMFLOAT2(-theta / (2.0f * XM_PI / (float)CylinderLength), (float)y / CylinderLength);
+			vertexArray[x + (cornerNum + 1) * y].Position	= Vector3(Radius * cosf(theta), (float)CylinderLength - (float)y, Radius * sinf(theta));
+			vertexArray[x + (cornerNum + 1) * y].Normal		= Vector3(0.0f, 1.0f, 0.0f);
+			vertexArray[x + (cornerNum + 1) * y].Diffuse	= Vector4(1.0f, 1.0f, 1.0f, 1.0f);
+			vertexArray[x + (cornerNum + 1) * y].TexCoord	= Vector2(-theta / (2.0f * XM_PI / (float)CylinderLength), (float)y / CylinderLength);
 
 			theta -= addAngle;
 		}
@@ -122,9 +124,9 @@ void MESH_CYlLINDER::Draw()
 		{
 			XMMATRIX world;
 
-			XMFLOAT3 position = *Get_Transform().Get_Position();
-			XMFLOAT3 rotate = *Get_Transform().Get_Rotation();
-			XMFLOAT3 scale = *Get_Transform().Get_Scaling();
+			Vector3 position = *Get_Transform().Get_Position();
+			Vector3 rotate = *Get_Transform().Get_Rotation();
+			Vector3 scale = *Get_Transform().Get_Scaling();
 
 			world = XMMatrixScaling(scale.x, scale.y, scale.z);
 			world *= XMMatrixRotationRollPitchYaw(XMConvertToRadians(rotate.x), XMConvertToRadians(rotate.y), XMConvertToRadians(rotate.z));
@@ -167,9 +169,9 @@ void MESH_CYlLINDER::Draw_DPP()
 	{
 		XMMATRIX world;
 
-		XMFLOAT3 position = *Get_Transform().Get_Position();
-		XMFLOAT3 rotate = *Get_Transform().Get_Rotation();
-		XMFLOAT3 scale = *Get_Transform().Get_Scaling();
+		Vector3 position = *Get_Transform().Get_Position();
+		Vector3 rotate = *Get_Transform().Get_Rotation();
+		Vector3 scale = *Get_Transform().Get_Scaling();
 
 		world = XMMatrixScaling(scale.x, scale.y, scale.z);
 		world *= XMMatrixRotationRollPitchYaw(XMConvertToRadians(rotate.x), XMConvertToRadians(rotate.y), XMConvertToRadians(rotate.z));

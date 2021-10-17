@@ -35,7 +35,7 @@ void BOUNDING_FRUSTUM::Init()
 
 		VERTEX_3D Vertex[VertexNum];
 
-		XMFLOAT3 corners[BoundingFrustum::CORNER_COUNT];
+		Vector3 corners[BoundingFrustum::CORNER_COUNT];
 		Frustum.GetCorners(corners);
 
 		Vertex[0].Position = corners[1];
@@ -49,9 +49,9 @@ void BOUNDING_FRUSTUM::Init()
 
 		for (char i = 0; i < VertexNum; i++)
 		{
-			Vertex[i].Normal = XMFLOAT3(1.0f, 0.0f, 0.0f);
-			Vertex[i].Diffuse = XMFLOAT4(Color.r, Color.g, Color.b, Color.a);
-			Vertex[i].TexCoord = XMFLOAT2(0.0f, 0.0f);
+			Vertex[i].Normal = Vector3(1.0f, 0.0f, 0.0f);
+			Vertex[i].Diffuse = Vector4(Color.r, Color.g, Color.b, Color.a);
+			Vertex[i].TexCoord = Vector2(0.0f, 0.0f);
 		}
 
 		// 頂点バッファの設定
@@ -176,7 +176,7 @@ void BOUNDING_FRUSTUM::Update(float delta_time)
 	BoundingFrustum::CreateFromMatrix(Frustum, XMMatrixPerspectiveFovLH(XMConvertToRadians(80.0f + 35.0f), float(SCREEN_WIDTH / SCREEN_HEIGHT), 0.001f, 1000.0f));
 	Frustum.Origin.z = 0.0f;
 
-	XMFLOAT3 r;
+	Vector3 r;
 
 	const auto camera = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
 
@@ -188,7 +188,7 @@ void BOUNDING_FRUSTUM::Update(float delta_time)
 		Position.y = camera.lock()->Get_Transform().Get_Position()->y;
 		Position.z = camera.lock()->Get_Transform().Get_Position()->z;
 
-		XMFLOAT3 vec;
+		Vector3 vec;
 		XMStoreFloat3(&vec, *camera.lock()->Get_Front());
 
 		/*if (vec.z >= 0.0f)
@@ -235,7 +235,7 @@ void BOUNDING_FRUSTUM::OverWrite()
 
 		VERTEX_3D Vertex[VertexNum];
 
-		XMFLOAT3 corners[BoundingFrustum::CORNER_COUNT];
+		Vector3 corners[BoundingFrustum::CORNER_COUNT];
 		Frustum.GetCorners(corners);
 
 		Vertex[0].Position = corners[1];
@@ -249,9 +249,9 @@ void BOUNDING_FRUSTUM::OverWrite()
 
 		for (char i = 0; i < VertexNum; i++)
 		{
-			Vertex[i].Normal = XMFLOAT3(1.0f, 0.0f, 0.0f);
-			Vertex[i].Diffuse = XMFLOAT4(Color.r, Color.g, Color.b, Color.a);
-			Vertex[i].TexCoord = XMFLOAT2(0.0f, 0.0f);
+			Vertex[i].Normal = Vector3(1.0f, 0.0f, 0.0f);
+			Vertex[i].Diffuse = Vector4(Color.r, Color.g, Color.b, Color.a);
+			Vertex[i].TexCoord = Vector2(0.0f, 0.0f);
 		}
 
 		// 頂点バッファの設定
@@ -328,9 +328,9 @@ const BoundingFrustum& BOUNDING_FRUSTUM::Get_Collition()
 
 void BOUNDING_FRUSTUM::Aabb_Cale(BOUNDING_AABB& aabb_)
 {
-	XMFLOAT3 max = {}, min = {};
+	Vector3 max = {}, min = {};
 
-	std::vector<XMFLOAT3> points = {};
+	std::vector<Vector3> points = {};
 	points.resize(8);
 
 	Frustum.GetCorners(points.data());

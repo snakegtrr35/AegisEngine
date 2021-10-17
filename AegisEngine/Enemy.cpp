@@ -17,7 +17,9 @@
 #include	"Math.h"
 #include	"include/engine/core/random/Random.h"
 
-static void Create_Bullet(XMFLOAT3& position, const XMFLOAT3& front);
+using namespace Aegis;
+
+static void Create_Bullet(Vector3& position, const Vector3& front);
 
 ENEMY::ENEMY()
 {
@@ -31,11 +33,11 @@ ENEMY::~ENEMY()
 
 void ENEMY::Init()
 {
-	/*Position = XMFLOAT3(3.0f, 1.0f, 3.0f);
+	/*Position = Vector3(3.0f, 1.0f, 3.0f);
 
-	Rotation = XMFLOAT3(0.0f, 0.0f, 0.0f);
+	Rotation = Vector3(0.0f, 0.0f, 0.0f);
 
-	Scaling = XMFLOAT3(1.0f, 1.0f, 1.0f);*/
+	Scaling = Vector3(1.0f, 1.0f, 1.0f);*/
 
 	Time = 0.f;
 
@@ -60,8 +62,8 @@ void ENEMY::Init()
 		{
 			auto aabb = Get_Component()->Add_Component<BOUNDING_AABB>(scene->Get_Game_Object(this));
 
-			aabb->Set_Radius(XMFLOAT3(0.5f, 1.0f, 0.5f));
-			aabb->Set_Position(XMFLOAT3(0.f, 0.5f, 0.f));
+			aabb->Set_Radius(Vector3(0.5f, 1.0f, 0.5f));
+			aabb->Set_Position(Vector3(0.f, 0.5f, 0.f));
 		}
 	}
 
@@ -82,13 +84,13 @@ void ENEMY::Draw_DPP()
 
 void ENEMY::Update(float delta_time)
 {
-	XMFLOAT3 vec;
+	Vector3 vec;
 	{
 		auto scene = CManager::Get_Instance()->Get_Scene();
 
 		auto player = scene->Get_Game_Object<PLAYER>("player");
 
-		XMFLOAT3 position(0.f, 0.f, 0.f);
+		Vector3 position(0.f, 0.f, 0.f);
 		if (!player.expired())
 		{
 			position = *player.lock()->Get_Transform().Get_Position();
@@ -97,7 +99,7 @@ void ENEMY::Update(float delta_time)
 		vec = (position - *Get_Transform().Get_Position());
 		{
 
-			XMFLOAT3 rotate(0.f, 0.f, 0.f);
+			Vector3 rotate(0.f, 0.f, 0.f);
 			{
 				if (vec.z >= 0.0f)
 				{
@@ -116,7 +118,7 @@ void ENEMY::Update(float delta_time)
 
 	// 移動
 	{
-		XMFLOAT3 move(0.f, 0.f, 0.f);
+		Vector3 move(0.f, 0.f, 0.f);
 
 		// プレイヤーとの距離を一定にする
 		{
@@ -154,10 +156,10 @@ void ENEMY::Update(float delta_time)
 			XMVECTOR vector = XMLoadFloat3(&vec);
 			vector = XMVector3Normalize(vector);
 
-			XMFLOAT3 rotate;
+			Vector3 rotate;
 			XMStoreFloat3(&rotate, vector * 2.0f);
 
-			XMFLOAT3 position = *Get_Transform().Get_Position();
+			Vector3 position = *Get_Transform().Get_Position();
 
 			position.x += rotate.x * 2;
 			position.z += rotate.z * 2;
@@ -187,24 +189,24 @@ void ENEMY::Uninit(void)
 }
 
 // ポジションの設定
-void ENEMY::SetPosition(XMFLOAT3& position)
+void ENEMY::SetPosition(Vector3& position)
 {
 	Get_Transform().Set_Position(position);
 }
 
 // 回転の設定
-void ENEMY::SetRotation(XMFLOAT3& rotation)
+void ENEMY::SetRotation(Vector3& rotation)
 {
 	Get_Transform().Set_Rotation(rotation);
 }
 
 // 拡大縮小の値の設定
-void ENEMY::SetScaling(XMFLOAT3& scaling)
+void ENEMY::SetScaling(Vector3& scaling)
 {
 	Get_Transform().Set_Scaling(scaling);
 }
 
-void Create_Bullet(XMFLOAT3& position, const XMFLOAT3& front)
+void Create_Bullet(Vector3& position, const Vector3& front)
 {
 	auto scene = CManager::Get_Instance()->Get_Scene();
 

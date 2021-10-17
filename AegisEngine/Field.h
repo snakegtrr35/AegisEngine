@@ -33,7 +33,7 @@ class FIELD : public GAME_OBJECT {
 	unique_ptr<TEXTURE> Texture;
 
 	//! 幅と高さ
-	XMFLOAT2 WH;
+	Aegis::Vector2 WH;
 
 public:
 
@@ -49,7 +49,7 @@ public:
 	* @param wh サイズ
 	* @details 引数無しコンストラクタ
 	*/
-	FIELD(XMFLOAT3 position, XMFLOAT2 wh);
+	FIELD(Aegis::Vector3 position, Aegis::Vector2 wh);
 
 	/**
 	* @brief デストラクタ
@@ -93,14 +93,14 @@ public:
 	* @param position 座標
 	* @details 座標の設定をする関数
 	*/
-	void SetPosition(XMFLOAT3& position);
+	void SetPosition(Aegis::Vector3& position);
 
 	/**
 	* @brief サイズの設定関数
 	* @param wh サイズ
 	* @details サイズの設定をする関数
 	*/
-	void SetWH(const XMFLOAT2 wh);
+	void SetWH(const Aegis::Vector2 wh);
 
 	/**
 	* @brief テクスチャの設定関数

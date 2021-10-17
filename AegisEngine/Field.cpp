@@ -7,6 +7,8 @@
 #include	"Scene.h"
 #include	"ShadowMap.h"
 
+using namespace Aegis;
+
 static const UINT g_InstanceNum = 40 * 40 * 40;
 
 FIELD::FIELD()
@@ -18,7 +20,7 @@ FIELD::FIELD()
 	Texture.reset(new TEXTURE(string("UVCheckerMap01-512.png")));
 }
 
-FIELD::FIELD(XMFLOAT3 position, XMFLOAT2 wh)
+FIELD::FIELD(Vector3 position, Vector2 wh)
 {
 	HRESULT hr;
 
@@ -29,25 +31,25 @@ FIELD::FIELD(XMFLOAT3 position, XMFLOAT2 wh)
 
 	VERTEX_3D Vertex[4];
 
-	Vertex[0].Position = XMFLOAT3(1.0f, 0.0f, -1.0f);
-	Vertex[0].Normal = XMFLOAT3(0.0f, 1.0f, 0.0f);
-	Vertex[0].Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
-	Vertex[0].TexCoord = XMFLOAT2(0.0f, 0.0f);
+	Vertex[0].Position = Vector3(1.0f, 0.0f, -1.0f);
+	Vertex[0].Normal = Vector3(0.0f, 1.0f, 0.0f);
+	Vertex[0].Diffuse = Vector4(1.0f, 1.0f, 1.0f, 1.0f);
+	Vertex[0].TexCoord = Vector2(0.0f, 0.0f);
 
-	Vertex[1].Position = XMFLOAT3(-1.0f, 0.0f, -1.0f);
-	Vertex[1].Normal = XMFLOAT3(0.0f, 1.0f, 0.0f);
-	Vertex[1].Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
-	Vertex[1].TexCoord = XMFLOAT2(1.0f, 0.0f);
+	Vertex[1].Position = Vector3(-1.0f, 0.0f, -1.0f);
+	Vertex[1].Normal = Vector3(0.0f, 1.0f, 0.0f);
+	Vertex[1].Diffuse = Vector4(1.0f, 1.0f, 1.0f, 1.0f);
+	Vertex[1].TexCoord = Vector2(1.0f, 0.0f);
 
-	Vertex[2].Position = XMFLOAT3(1.0f, 0.0f, 1.0f);
-	Vertex[2].Normal = XMFLOAT3(0.0f, 1.0f, 0.0f);
-	Vertex[2].Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
-	Vertex[2].TexCoord = XMFLOAT2(0.0f, 1.0f);
+	Vertex[2].Position = Vector3(1.0f, 0.0f, 1.0f);
+	Vertex[2].Normal = Vector3(0.0f, 1.0f, 0.0f);
+	Vertex[2].Diffuse = Vector4(1.0f, 1.0f, 1.0f, 1.0f);
+	Vertex[2].TexCoord = Vector2(0.0f, 1.0f);
 
-	Vertex[3].Position = XMFLOAT3(-1.0f, 0.0f, 1.0f);
-	Vertex[3].Normal = XMFLOAT3(0.0f, 1.0f, 0.0f);
-	Vertex[3].Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
-	Vertex[3].TexCoord = XMFLOAT2(1.0f, 1.0f);
+	Vertex[3].Position = Vector3(-1.0f, 0.0f, 1.0f);
+	Vertex[3].Normal = Vector3(0.0f, 1.0f, 0.0f);
+	Vertex[3].Diffuse = Vector4(1.0f, 1.0f, 1.0f, 1.0f);
+	Vertex[3].TexCoord = Vector2(1.0f, 1.0f);
 
 	// 頂点バッファの設定
 	{
@@ -89,16 +91,16 @@ FIELD::FIELD(XMFLOAT3 position, XMFLOAT2 wh)
 	//	vector<XMMATRIX> instMatrix;
 	//	instMatrix.reserve(g_InstanceNum);
 
-	//	XMFLOAT3 position[g_InstanceNum], rotation, scale;
+	//	Vector3 position[g_InstanceNum], rotation, scale;
 
 	//	for (int y = 0; y < g_InstanceNum; y++)
 	//	{
-	//		position[y] = XMFLOAT3(10.0f, (y * 5) - 10.0f, 0.f);
+	//		position[y] = Vector3(10.0f, (y * 5) - 10.0f, 0.f);
 	//	}
 
-	//	rotation = XMFLOAT3(0.0f, 0.0f, 0.0f);
+	//	rotation = Vector3(0.0f, 0.0f, 0.0f);
 
-	//	scale = XMFLOAT3(1.0f, 1.0f, 1.0f);
+	//	scale = Vector3(1.0f, 1.0f, 1.0f);
 
 	//	for (int i = 0; i < g_InstanceNum; i++)
 	//	{
@@ -187,25 +189,25 @@ void FIELD::Init()
 	HRESULT hr;
 	VERTEX_3D Vertex[4];
 
-	Vertex[0].Position = XMFLOAT3(1.0f, 0.0f, -1.0f);
-	Vertex[0].Normal = XMFLOAT3(0.0f, 1.0f, 0.0f);
-	Vertex[0].Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
-	Vertex[0].TexCoord = XMFLOAT2(0.0f, 0.0f);
+	Vertex[0].Position = Vector3(1.0f, 0.0f, -1.0f);
+	Vertex[0].Normal = Vector3(0.0f, 1.0f, 0.0f);
+	Vertex[0].Diffuse = Vector4(1.0f, 1.0f, 1.0f, 1.0f);
+	Vertex[0].TexCoord = Vector2(0.0f, 0.0f);
 
-	Vertex[1].Position = XMFLOAT3(-1.0f, 0.0f, -1.0f);
-	Vertex[1].Normal = XMFLOAT3(0.0f, 1.0f, 0.0f);
-	Vertex[1].Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
-	Vertex[1].TexCoord = XMFLOAT2(1.0f, 0.0f);
+	Vertex[1].Position = Vector3(-1.0f, 0.0f, -1.0f);
+	Vertex[1].Normal = Vector3(0.0f, 1.0f, 0.0f);
+	Vertex[1].Diffuse = Vector4(1.0f, 1.0f, 1.0f, 1.0f);
+	Vertex[1].TexCoord = Vector2(1.0f, 0.0f);
 
-	Vertex[2].Position = XMFLOAT3(1.0f, 0.0f, 1.0f);
-	Vertex[2].Normal = XMFLOAT3(0.0f, 1.0f, 0.0f);
-	Vertex[2].Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
-	Vertex[2].TexCoord = XMFLOAT2(0.0f, 1.0f);
+	Vertex[2].Position = Vector3(1.0f, 0.0f, 1.0f);
+	Vertex[2].Normal = Vector3(0.0f, 1.0f, 0.0f);
+	Vertex[2].Diffuse = Vector4(1.0f, 1.0f, 1.0f, 1.0f);
+	Vertex[2].TexCoord = Vector2(0.0f, 1.0f);
 
-	Vertex[3].Position = XMFLOAT3(-1.0f, 0.0f, 1.0f);
-	Vertex[3].Normal = XMFLOAT3(0.0f, 1.0f, 0.0f);
-	Vertex[3].Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
-	Vertex[3].TexCoord = XMFLOAT2(1.0f, 1.0f);
+	Vertex[3].Position = Vector3(-1.0f, 0.0f, 1.0f);
+	Vertex[3].Normal = Vector3(0.0f, 1.0f, 0.0f);
+	Vertex[3].Diffuse = Vector4(1.0f, 1.0f, 1.0f, 1.0f);
+	Vertex[3].TexCoord = Vector2(1.0f, 1.0f);
 
 
 	// 頂点バッファの設定
@@ -248,7 +250,7 @@ void FIELD::Init()
 		vector<XMMATRIX> instMatrix;
 		instMatrix.reserve(g_InstanceNum);
 
-		XMFLOAT3 position[g_InstanceNum], rotation, scale;
+		Vector3 position[g_InstanceNum], rotation, scale;
 
 		int i = 0;
 		for (int y = 0; y < 40; y++)
@@ -257,14 +259,14 @@ void FIELD::Init()
 			{
 				for (int z = 0; z < 40; z++, i++)
 				{
-					position[i] = XMFLOAT3(x * 3.0f + 10.0f, (y * 1) - 20.0f, (z * 3.0f) - 20.0f);
+					position[i] = Vector3(x * 3.0f + 10.0f, (y * 1) - 20.0f, (z * 3.0f) - 20.0f);
 				}
 			}
 		}
 
-		rotation = XMFLOAT3(0.0f, 0.0f, 0.0f);
+		rotation = Vector3(0.0f, 0.0f, 0.0f);
 
-		scale = XMFLOAT3(1.0f, 1.0f, 1.0f);
+		scale = Vector3(1.0f, 1.0f, 1.0f);
 
 		for (int i = 0; i < g_InstanceNum; i++)
 		{
@@ -355,9 +357,9 @@ void FIELD::Draw()
 
 	// 3Dマトリックス設定
 	{
-		XMFLOAT3 position = *Get_Transform().Get_Position();
-		XMFLOAT3 rotate = *Get_Transform().Get_Rotation();
-		XMFLOAT3 scale = *Get_Transform().Get_Scaling();
+		Vector3 position = *Get_Transform().Get_Position();
+		Vector3 rotate = *Get_Transform().Get_Rotation();
+		Vector3 scale = *Get_Transform().Get_Scaling();
 
 		XMMATRIX world = XMMatrixScaling(scale.x, scale.y, scale.z);
 		world *= XMMatrixRotationRollPitchYaw(XMConvertToRadians(rotate.x), XMConvertToRadians(rotate.y), XMConvertToRadians(rotate.z));
@@ -471,7 +473,7 @@ void FIELD::Uninit()
 //==============================
 // ポジションの設定
 //==============================
-void FIELD::SetPosition(XMFLOAT3& position)
+void FIELD::SetPosition(Vector3& position)
 {
 	Get_Transform().Set_Position(position);
 }
@@ -479,7 +481,7 @@ void FIELD::SetPosition(XMFLOAT3& position)
 //==============================
 // 幅と高さの設定
 //==============================
-void FIELD::SetWH(const XMFLOAT2 wh)
+void FIELD::SetWH(const Vector2 wh)
 {
 	WH = wh;
 }

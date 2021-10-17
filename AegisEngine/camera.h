@@ -24,7 +24,7 @@ private:
 	static float Lenght_Z;
 	static float Lenght_Y;
 
-	XMFLOAT3 Velocity;
+	Aegis::Vector3 Velocity;
 
 	RECT Viewport;
 
@@ -83,7 +83,7 @@ public:
 		return Viewing_Angle;
 	};
 
-	bool Get_Visibility(const XMFLOAT3& position);
+	bool Get_Visibility(const Aegis::Vector3& position);
 
 	void Set_Move_Enable(const bool flag) {
 		MoveEnable = flag;

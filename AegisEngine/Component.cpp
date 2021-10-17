@@ -2,6 +2,8 @@
 
 #include	"imgui/imgui.h"
 
+using namespace Aegis;
+
 void COMPONENT::Draw_Inspector()
 {
 	if (ImGui::IsMouseClicked(1))
@@ -69,49 +71,49 @@ bool COMPONENT::Get_Draw_Enable()
 	return Draw_Enable;
 }
 
-XMFLOAT3* const COMPONENT::Get_Position()
+Vector3* const COMPONENT::Get_Position()
 {
 	return &Position;
 };
 
-XMFLOAT3* const COMPONENT::Get_Rotation()
+Vector3* const COMPONENT::Get_Rotation()
 {
 	return &Rotation;
 };
 
-XMFLOAT3* const COMPONENT::Get_Scaling()
+Vector3* const COMPONENT::Get_Scaling()
 {
 	return &Scaling;
 };
 
 
 
-void COMPONENT::Set_Position(XMFLOAT3* const position)
+void COMPONENT::Set_Position(Vector3* const position)
 {
 	Position = *position;
 }
 
-void COMPONENT::Set_Position(const XMFLOAT3& position)
+void COMPONENT::Set_Position(const Vector3& position)
 {
 	Position = position;
 };
 
-void COMPONENT::Set_Rotation(XMFLOAT3* const rotation)
+void COMPONENT::Set_Rotation(Vector3* const rotation)
 {
 	Rotation = *rotation;
 };
 
-void COMPONENT::Set_Rotation(const XMFLOAT3& rotation)
+void COMPONENT::Set_Rotation(const Vector3& rotation)
 {
 	Rotation = rotation;
 };
 
-void COMPONENT::Set_Scaling(XMFLOAT3* scaling)
+void COMPONENT::Set_Scaling(Vector3* scaling)
 {
 	Scaling = *scaling;
 };
 
-void COMPONENT::Set_Scaling(const XMFLOAT3& scaling)
+void COMPONENT::Set_Scaling(const Vector3& scaling)
 {
 	Scaling = scaling;
 };

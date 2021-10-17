@@ -16,9 +16,11 @@
 
 #include	<sstream>
 
-BULLET::BULLET() : MoveVector(XMFLOAT3(0.0f, 0.0f, 0.0f))
+using namespace Aegis;
+
+BULLET::BULLET() : MoveVector(Vector3(0.0f, 0.0f, 0.0f))
 {
-	XMFLOAT3 Scaling = XMFLOAT3(0.1f, 0.1f, 0.1f);
+	Vector3 Scaling = Vector3(0.1f, 0.1f, 0.1f);
 	Get_Transform().Set_Scaling(Scaling);
 
 	Model = make_unique<CMODEL>();
@@ -26,11 +28,11 @@ BULLET::BULLET() : MoveVector(XMFLOAT3(0.0f, 0.0f, 0.0f))
 	HP = 200;
 }
 
-BULLET::BULLET(XMFLOAT3& position, XMFLOAT3& move_vector) : MoveVector(move_vector)
+BULLET::BULLET(Vector3& position, Vector3& move_vector) : MoveVector(move_vector)
 {
 	Get_Transform().Set_Position(position);
 
-	XMFLOAT3 Scaling = XMFLOAT3(0.1f, 0.1f, 0.1f);
+	Vector3 Scaling = Vector3(0.1f, 0.1f, 0.1f);
 	Get_Transform().Set_Scaling(Scaling);
 
 	Model = make_unique<CMODEL>();
@@ -54,7 +56,7 @@ void BULLET::Init()
 
 	sphere->Set_Radius(1.0f);
 
-	sphere->Set_Scaling(XMFLOAT3(0.11f, 0.11f, 0.11f));
+	sphere->Set_Scaling(Vector3(0.11f, 0.11f, 0.11f));
 
 	GAME_OBJECT::Init();
 }
@@ -93,7 +95,7 @@ void BULLET::Update(float delta_time)
 		//
 		//		BILL_BOARD_ANIMATION* bba = CManager::Get_Instance()->Get_Scene()->Add_Game_Object<BILL_BOARD_ANIMATION>(LAYER_NAME::EFFECT, "explosion" + to_string(x));
 		//		bba->Get_Transform().Set_Position(Get_Transform().Get_Position());
-		//		bba->SetWH(XMFLOAT2(1.0f, 1.0f));
+		//		bba->SetWH(Vector2(1.0f, 1.0f));
 		//		bba->SetParam(6, 4, 4);
 		//		//bba->Init();
 		//	}
@@ -136,7 +138,7 @@ void BULLET::Update(float delta_time)
 
 						BILL_BOARD_ANIMATION* bba = CManager::Get_Instance()->Get_Scene()->Add_Game_Object<BILL_BOARD_ANIMATION>(LAYER_NAME::EFFECT, "explosion" + to_string(x));
 						bba->Get_Transform().Set_Position(Get_Transform().Get_Position());
-						bba->SetWH(XMFLOAT2(1.0f, 1.0f));
+						bba->SetWH(Vector2(1.0f, 1.0f));
 						bba->SetParam(6, 4, 4);
 						//bba->Init();
 					}
@@ -171,7 +173,7 @@ void BULLET::Update(float delta_time)
 
 							BILL_BOARD_ANIMATION* bba = CManager::Get_Instance()->Get_Scene()->Add_Game_Object<BILL_BOARD_ANIMATION>(LAYER_NAME::EFFECT, "explosion" + to_string(x));
 							bba->Get_Transform().Set_Position(Get_Transform().Get_Position());
-							bba->SetWH(XMFLOAT2(1.0f, 1.0f));
+							bba->SetWH(Vector2(1.0f, 1.0f));
 							bba->SetParam(6, 4, 4);
 							//bba->Init();
 						}
@@ -201,7 +203,7 @@ void BULLET::Uninit()
 	Model.reset(nullptr);
 }
 
-void BULLET::Set_Move_Vector(const XMFLOAT3 move_vector)
+void BULLET::Set_Move_Vector(const Vector3 move_vector)
 {
 	MoveVector = move_vector;
 }

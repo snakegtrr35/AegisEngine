@@ -16,7 +16,7 @@ private:
 	};
 
 	struct CONSTANT_LIGHT {
-		XMFLOAT4 Direction;
+		Aegis::Vector4 Direction;
 	};
 
 	//! デプスステンシルビュー
@@ -36,7 +36,7 @@ private:
 
 	unique_ptr <ID3D11Buffer, Release>					LightBuffer;
 	//! 
-	XMFLOAT3											LightPos;
+	Aegis::Vector3											LightPos;
 	//!
 	CONSTANT_LIGHT										Light;
 
@@ -55,7 +55,7 @@ private:
 	static UINT WIDTH;
 	static UINT HEIGHT;
 
-	void Set_LightPos(const XMFLOAT3& pos);
+	void Set_LightPos(const Aegis::Vector3& pos);
 
 public:
 
@@ -70,7 +70,7 @@ public:
 
 	void Set_SamplerState();
 
-	void Set_Light(const XMFLOAT3& pos);
+	void Set_Light(const Aegis::Vector3& pos);
 
 	XMMATRIX& Get_View() {
 		return ViewMatrix;
@@ -84,7 +84,7 @@ public:
 		return Enable;
 	}
 
-	XMFLOAT3 Get_LightPos() {
+	Aegis::Vector3 Get_LightPos() {
 		return LightPos;
 	}
 

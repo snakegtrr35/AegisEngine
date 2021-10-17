@@ -11,6 +11,8 @@
 
 #include	"external/DirectXTex/DDSTextureLoader.h"
 
+using namespace Aegis;
+
 unique_ptr<ID3D11Buffer, Release> SKYBOX::VertexBuffer;
 unique_ptr<ID3D11Buffer, Release> SKYBOX::IndexBuffer;
 
@@ -34,32 +36,32 @@ void SKYBOX::Init()
 		vertex_array.resize(8);
 		for (auto& vertex : vertex_array)
 		{
-			vertex.Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+			vertex.Diffuse = Vector4(1.0f, 1.0f, 1.0f, 1.0f);
 		}
 
 		// 右上奥
-		vertex_array[0].Position = XMFLOAT3(-1.0f, 1.0f, 1.0f);
+		vertex_array[0].Position = Vector3(-1.0f, 1.0f, 1.0f);
 
 		// 左上奥
-		vertex_array[1].Position = XMFLOAT3(1.0f, 1.0f, 1.0f);
+		vertex_array[1].Position = Vector3(1.0f, 1.0f, 1.0f);
 
 		// 右下奥
-		vertex_array[2].Position = XMFLOAT3(-1.0f, -1.0f, 1.0f);
+		vertex_array[2].Position = Vector3(-1.0f, -1.0f, 1.0f);
 
 		// 左下奥
-		vertex_array[3].Position = XMFLOAT3(1.0f, -1.0f, 1.0f);
+		vertex_array[3].Position = Vector3(1.0f, -1.0f, 1.0f);
 
 		// 右上前
-		vertex_array[4].Position = XMFLOAT3(-1.0f, 1.0f, -1.0f);
+		vertex_array[4].Position = Vector3(-1.0f, 1.0f, -1.0f);
 
 		// 左上前
-		vertex_array[5].Position = XMFLOAT3(1.0f, 1.0f, -1.0f);
+		vertex_array[5].Position = Vector3(1.0f, 1.0f, -1.0f);
 
 		// 右下前
-		vertex_array[6].Position = XMFLOAT3(-1.0f, -1.0f, -1.0f);
+		vertex_array[6].Position = Vector3(-1.0f, -1.0f, -1.0f);
 
 		// 左下前
-		vertex_array[7].Position = XMFLOAT3(1.0f, -1.0f, -1.0f);
+		vertex_array[7].Position = Vector3(1.0f, -1.0f, -1.0f);
 
 		// 頂点バッファの生成
 		{
@@ -139,9 +141,9 @@ void SKYBOX::Draw()
 
 	// 3Dマトリックス設定
 	{
-		XMFLOAT3 position = *Get_Transform().Get_Position();
-		XMFLOAT3 rotate = *Get_Transform().Get_Rotation();
-		XMFLOAT3 scale = *Get_Transform().Get_Scaling();
+		Vector3 position = *Get_Transform().Get_Position();
+		Vector3 rotate = *Get_Transform().Get_Rotation();
+		Vector3 scale = *Get_Transform().Get_Scaling();
 
 		XMMATRIX world = XMMatrixScaling(scale.x, scale.y, scale.z);
 		world *= XMMatrixRotationRollPitchYaw(XMConvertToRadians(rotate.x), XMConvertToRadians(rotate.y), XMConvertToRadians(rotate.z));

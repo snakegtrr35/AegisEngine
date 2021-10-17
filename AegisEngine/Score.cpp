@@ -3,6 +3,8 @@
 #include	"manager.h"
 #include	"ShadowMap.h"
 
+using namespace Aegis;
+
 const unsigned int SCORE::MaxScore = 999999999;
 
 SCORE::SCORE()
@@ -15,7 +17,7 @@ SCORE::SCORE()
 	Number = new SPRITE_ANIMATION();
 	Number->SetTexture(string("number02.png"));
 	Number->SetParam(0, 10, 1);
-	Number->SetSize(XMFLOAT4(32.0f, 32.0f, 32.0f, 32.0f));
+	Number->SetSize(Vector4(32.0f, 32.0f, 32.0f, 32.0f));
 	Number->Init();
 }
 
@@ -35,15 +37,15 @@ void SCORE::Draw(void)
 		short i;
 		unsigned int number, score = NowScore;
 
-		XMFLOAT2 wh = Number->Get_Twh();
+		Vector2 wh = Number->Get_Twh();
 
-		XMFLOAT2 pos;
+		Vector2 pos;
 
-		XMFLOAT3 position = *Get_Transform().Get_Position();
+		Vector3 position = *Get_Transform().Get_Position();
 
 		for (i = Digit - 1; 0 <= i; i--)
 		{
-			pos = XMFLOAT2(position.x + wh.x * i, position.y);
+			pos = Vector2(position.x + wh.x * i, position.y);
 
 			number = score % 10;
 			Number->Set_Param_Txy(wh.x * number, 1.0f);
@@ -60,15 +62,15 @@ void SCORE::Draw_DPP(void)
 	short i;
 	unsigned int number, score = NowScore;
 
-	XMFLOAT2 wh = Number->Get_Twh();
+	Vector2 wh = Number->Get_Twh();
 
-	XMFLOAT2 pos;
+	Vector2 pos;
 
-	XMFLOAT3 position = *Get_Transform().Get_Position();
+	Vector3 position = *Get_Transform().Get_Position();
 
 	for (i = Digit - 1; 0 <= i; i--)
 	{
-		pos = XMFLOAT2(position.x + wh.x * i, position.y);
+		pos = Vector2(position.x + wh.x * i, position.y);
 
 		number = score % 10;
 		Number->Set_Param_Txy(wh.x * number, 1.0f);

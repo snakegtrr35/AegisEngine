@@ -20,10 +20,10 @@ class MESH_FIELD : public GAME_OBJECT {
 private:
 
 	//! グリッドサイズ
-	XMFLOAT3							GridSize;
+	Aegis::Vector3						GridSize;
 
 	//! グリッド数
-	XMINT2								GridNum;
+	Aegis::Int2							GridNum;
 
 	//! インデックス数
 	UINT								IndexNum;
@@ -90,7 +90,7 @@ public:
 	* @return float メッシュフィールドの高さ
 	* @details 引数の座標のメッシュフィールドの高さを取得する関数
 	*/
-	const float Get_Height(const XMFLOAT3& position);
+	const float Get_Height(const Aegis::Vector3& position);
 
 	/**
 	* @brief テクスチャを設定する関数
@@ -129,8 +129,8 @@ CEREAL_REGISTER_POLYMORPHIC_RELATION(GAME_OBJECT, MESH_FIELD)
 //==============================
 class MESH_WALL :public GAME_OBJECT {
 private:
-	XMFLOAT3		GridSize;
-	XMINT2			GridNum;
+	Aegis::Vector3		GridSize;
+	Aegis::Int2			GridNum;
 	unsigned int	IndexNum;
 	VERTEX_3D* VertexArray;
 
@@ -148,7 +148,7 @@ public:
 	void Update(float delta_time) override;
 	void Uninit() override;
 
-	const float Get_Height(const XMFLOAT3& position);
+	const float Get_Height(const Aegis::Vector3& position);
 };
 
 #endif // !MESH_FIELF_H

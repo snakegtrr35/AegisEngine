@@ -14,21 +14,21 @@ class CLUSTERED {
 private:
 
 	struct CLSTER_BUFFER {
-		XMFLOAT3 Scale;
+		Aegis::Vector3 Scale;
 		float dummy1;
 
-		XMFLOAT3 Bias;
+		Aegis::Vector3 Bias;
 		float dummy2;
 	};
 
 	struct CONSTATNT_BUFFER {
-		XMFLOAT3 Min;
+		Aegis::Vector3 Min;
 		float dummy1;
 
-		XMFLOAT3 Scale;
+		Aegis::Vector3 Scale;
 		float dummy2;
 
-		XMFLOAT3 Bias;
+		Aegis::Vector3 Bias;
 		float dummy3;
 	};
 
@@ -58,9 +58,9 @@ private:
 
 	array<array<array<bool, CLUSTERED_X>, CLUSTERED_Y>, CLUSTERED_Z> m_ClusterFlags = {};
 
-	XMFLOAT3  m_Max = {}, m_Min = {};
+	Aegis::Vector3  m_Max = {}, m_Min = {};
 
-	void Cale_Cluster(XMFLOAT3& max, XMFLOAT3& min);
+	void Cale_Cluster(Aegis::Vector3& max, Aegis::Vector3& min);
 
 public:
 

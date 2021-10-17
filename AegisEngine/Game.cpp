@@ -26,6 +26,8 @@
 
 #include	"Bullet.h"
 
+using namespace Aegis;
+
 static bool flag = false;
 
 static float hp;
@@ -41,8 +43,8 @@ void GAME::Init()
 	{
 		sprite_anime = make_unique<SPRITE_ANIMATION>();
 
-		sprite_anime->SetPosition(XMFLOAT2(SCREEN_WIDTH * 0.5, SCREEN_HEIGHT * 0.5));
-		sprite_anime->SetSize(XMFLOAT4(SCREEN_HEIGHT * 0.5, SCREEN_WIDTH * 0.5, SCREEN_HEIGHT * 0.5, SCREEN_WIDTH * 0.5));
+		sprite_anime->SetPosition(Vector2(SCREEN_WIDTH * 0.5, SCREEN_HEIGHT * 0.5));
+		sprite_anime->SetSize(Vector4(SCREEN_HEIGHT * 0.5, SCREEN_WIDTH * 0.5, SCREEN_HEIGHT * 0.5, SCREEN_WIDTH * 0.5));
 
 		sprite_anime->SetTexture("Load.png");
 
@@ -144,15 +146,15 @@ void GAME::Update(float delta_time)
 					switch (cnt)
 					{
 					case 0:
-						sprite->Set_Position_Child("select", *sprite->GetPosition(), XMFLOAT2(-165.0f, -110.0f));	// 1番目
+						sprite->Set_Position_Child("select", *sprite->GetPosition(), Vector2(-165.0f, -110.0f));	// 1番目
 						break;
 
 					case 1:
-						sprite->Set_Position_Child("select", *sprite->GetPosition(), XMFLOAT2(-165.0f, 0.0f));		// 2番目
+						sprite->Set_Position_Child("select", *sprite->GetPosition(), Vector2(-165.0f, 0.0f));		// 2番目
 						break;
 
 					case 2:
-						sprite->Set_Position_Child("select", *sprite->GetPosition(), XMFLOAT2(-165.0f, 105.0f));	// 3番目
+						sprite->Set_Position_Child("select", *sprite->GetPosition(), Vector2(-165.0f, 105.0f));	// 3番目
 						break;
 					}
 					break;
@@ -214,7 +216,7 @@ void GAME::Update(float delta_time)
 
 							hp = player.lock()->Get_HP();
 
-							child->Child->SetSize(XMFLOAT4(Math::LerpEx(-485.0f, 170.0f, hp, 0.0f, 100.0f), 25, 485, 25));
+							child->Child->SetSize(Vector4(Math::LerpEx(-485.0f, 170.0f, hp, 0.0f, 100.0f), 25, 485, 25));
 
 							if (hp <= 50.0f)
 							{
@@ -355,14 +357,14 @@ void GAME::Load(SCENE* scene)
 
 		// レティクル画像
 		{
-			XMFLOAT2 pos(SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.5f - 100.0f);
+			Vector2 pos(SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.5f - 100.0f);
 			SPRITE* sprite = Add_Game_Object<SPRITE>(LAYER_NAME::UI, "reticle");
 
 			sprite->SetPosition(pos);
 
 			sprite->SetTexture("Reticule.png");
 
-			sprite->SetSize(XMFLOAT4(400, 400, 400, 400));
+			sprite->SetSize(Vector4(400, 400, 400, 400));
 		}
 
 		//// メッシュドーム
@@ -370,7 +372,7 @@ void GAME::Load(SCENE* scene)
 		//	MESH_DOOM* pmd = Add_Game_Object<MESH_DOOM>(LAYER_NAME::BACKGROUND, "doom");
 		//	//pmd->Init();
 		//
-		//	XMFLOAT3 scaling = XMFLOAT3(2.0f, 2.0f, 2.0f);
+		//	Vector3 scaling = Vector3(2.0f, 2.0f, 2.0f);
 		//
 		//	pmd->Get_Transform().Set_Scaling(scaling);
 		//}
@@ -379,7 +381,7 @@ void GAME::Load(SCENE* scene)
 		{
 			SKYBOX* skybox = Add_Game_Object<SKYBOX>(LAYER_NAME::BACKGROUND, "skybox");
 
-			XMFLOAT3 scaling = XMFLOAT3(100.0f, 100.0f, 100.0f);
+			Vector3 scaling = Vector3(100.0f, 100.0f, 100.0f);
 
 			skybox->Get_Transform().Set_Scaling(scaling);
 		}
@@ -401,8 +403,8 @@ void GAME::Load(SCENE* scene)
 			//	number = to_string(i);
 			//
 			//	ENEMY* enemy = Add_Game_Object<ENEMY>(LAYER_NAME::GAMEOBJECT, name + number);
-			//	/*enemy->SetPosition(XMFLOAT3((float)(-10.0f + i * 5.0f), 0.0f, 10.0f));
-			//	enemy->SetRotation(XMFLOAT3(0.0f, 0.0f, 0.0f));
+			//	/*enemy->SetPosition(Vector3((float)(-10.0f + i * 5.0f), 0.0f, 10.0f));
+			//	enemy->SetRotation(Vector3(0.0f, 0.0f, 0.0f));
 			//
 			//	auto component = enemy->Get_Component();*/
 			//
@@ -419,17 +421,17 @@ void GAME::Load(SCENE* scene)
 				{
 					//ENEMY* e = Add_Game_Object<ENEMY>(LAYER_NAME::GAMEOBJECT, name + number);
 
-					XMFLOAT3 vec((float)(-10.0f + i * 5.0f), 0.0f, 10.0f);
+					Vector3 vec((float)(-10.0f + i * 5.0f), 0.0f, 10.0f);
 					enemy->Get_Transform().Set_Position(vec);
-					vec = XMFLOAT3(0.0f, 0.0f, 0.0f);
+					vec = Vector3(0.0f, 0.0f, 0.0f);
 					enemy->Get_Transform().Set_Rotation(vec);
 
 					continue;
 				}
 
-				XMFLOAT3 vec((float)(-10.0f + i * 5.0f), 0.0f, 10.0f);
+				Vector3 vec((float)(-10.0f + i * 5.0f), 0.0f, 10.0f);
 				enemy->Get_Transform().Set_Position(vec);
-				vec = XMFLOAT3(0.0f, 0.0f, 0.0f);
+				vec = Vector3(0.0f, 0.0f, 0.0f);
 				enemy->Get_Transform().Set_Rotation(vec);
 
 				number.clear();
@@ -438,7 +440,7 @@ void GAME::Load(SCENE* scene)
 
 		// スコア
 		{
-			XMFLOAT3 pos = XMFLOAT3(500.0f, 37.0f, 0.0f);
+			Vector3 pos = Vector3(500.0f, 37.0f, 0.0f);
 
 			SCORE* score = Add_Game_Object<SCORE>(LAYER_NAME::UI, "score");
 			score->Get_Transform().Set_Position(&pos);
@@ -447,14 +449,14 @@ void GAME::Load(SCENE* scene)
 
 		// HPのUI
 		{
-			XMFLOAT2 pos(50.0f, SCREEN_HEIGHT * 0.5f);
+			Vector2 pos(50.0f, SCREEN_HEIGHT * 0.5f);
 			SPRITE* sprite = Add_Game_Object<SPRITE>(LAYER_NAME::UI, "hp_ui");
 
 			sprite->SetPosition(pos);
 
 			sprite->SetTexture("hp_rod.png");
 
-			sprite->SetSize(XMFLOAT4(300, 32, 500, 32));
+			sprite->SetSize(Vector4(300, 32, 500, 32));
 
 			COLOR color = COLOR(0.0f, 1.0f, 1.0f, 1.0f);
 
@@ -466,16 +468,16 @@ void GAME::Load(SCENE* scene)
 
 			hp->SetColor(color);
 
-			hp->SetSize(XMFLOAT4(170, 25, 485, 25));	// HP MAX 655pixel
-			//hp->SetSize(XMFLOAT4(-485, 25, 485, 25));	// HP 0
+			hp->SetSize(Vector4(170, 25, 485, 25));	// HP MAX 655pixel
+			//hp->SetSize(Vector4(-485, 25, 485, 25));	// HP 0
 
-			hp->SetSize(XMFLOAT4(Math::LerpEx(-485.0f, 170.0f, 100.0f, 0.0f, 100.0f), 25, 485, 25));
+			hp->SetSize(Vector4(Math::LerpEx(-485.0f, 170.0f, 100.0f, 0.0f, 100.0f), 25, 485, 25));
 		}
 
 		// 弾のUI
 		{
-			//XMFLOAT2 pos(SCREEN_WIDTH - 300.0f, SCREEN_HEIGHT - 70.0f);
-			XMFLOAT2 pos(SCREEN_WIDTH - 550.0f, SCREEN_HEIGHT - 70.0f);
+			//Vector2 pos(SCREEN_WIDTH - 300.0f, SCREEN_HEIGHT - 70.0f);
+			Vector2 pos(SCREEN_WIDTH - 550.0f, SCREEN_HEIGHT - 70.0f);
 
 			COLOR color = COLOR(0.0f, 1.0f, 1.0f, 1.0f);
 
@@ -483,7 +485,7 @@ void GAME::Load(SCENE* scene)
 
 			sprite->SetPosition(pos);
 
-			sprite->SetSize(XMFLOAT4(20, 20, 20, 20));
+			sprite->SetSize(Vector4(20, 20, 20, 20));
 
 			sprite->SetColor(color);
 
@@ -499,12 +501,12 @@ void GAME::Load(SCENE* scene)
 
 			bullet_icon->SetPosition(pos);
 
-			bullet_icon->SetSize(XMFLOAT4(50, 16, 50, 16));
+			bullet_icon->SetSize(Vector4(50, 16, 50, 16));
 		}
 
 		// ポーズ画面のUI
 		{
-			XMFLOAT2 pos(SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.5f);
+			Vector2 pos(SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.5f);
 			COLOR color = COLOR(1.0f, 1.0f, 1.0f, 0.85f);
 
 			SPRITE* sprite = Add_Game_Object<SPRITE>(LAYER_NAME::UI, "pause");
@@ -513,7 +515,7 @@ void GAME::Load(SCENE* scene)
 
 			sprite->SetTexture("pause.png");
 
-			sprite->SetSize(XMFLOAT4(200, 200, 200, 200));
+			sprite->SetSize(Vector4(200, 200, 200, 200));
 
 			sprite->SetColor(color);
 
@@ -523,13 +525,13 @@ void GAME::Load(SCENE* scene)
 
 			select->SetTexture("select.png");
 
-			select->SetSize(XMFLOAT4(30, 30, 30, 30));
+			select->SetSize(Vector4(30, 30, 30, 30));
 
-			sprite->Set_Position_Child("select", *sprite->GetPosition(), XMFLOAT2(-165.0f, -110.0f));		// 1番目
+			sprite->Set_Position_Child("select", *sprite->GetPosition(), Vector2(-165.0f, -110.0f));		// 1番目
 
-			//sprite->Set_Position_Child("select", XMFLOAT2(-165.0f, 0.0f));		// 2番目
+			//sprite->Set_Position_Child("select", Vector2(-165.0f, 0.0f));		// 2番目
 
-			//sprite->Set_Position_Child("select", XMFLOAT2(-165.0f, 105.0f));		// 3番目
+			//sprite->Set_Position_Child("select", Vector2(-165.0f, 105.0f));		// 3番目
 		}
 	}
 
@@ -576,17 +578,17 @@ void GAME::Load(SCENE* scene)
 		//		{
 		//			ENEMY* e = Add_Game_Object<ENEMY>(LAYER_NAME::GAMEOBJECT, name + number);
 		//
-		//			XMFLOAT3 vec((float)(-10.0f + i * 5.0f), 0.0f, 10.0f);
+		//			Vector3 vec((float)(-10.0f + i * 5.0f), 0.0f, 10.0f);
 		//			e->Get_Transform().Set_Position(vec);
-		//			vec = XMFLOAT3(0.0f, 0.0f, 0.0f);
+		//			vec = Vector3(0.0f, 0.0f, 0.0f);
 		//			e->Get_Transform().Set_Rotation(vec);
 		//
 		//			continue;
 		//		}
 		//
-		//		XMFLOAT3 vec((float)(-10.0f + i * 5.0f), 0.0f, 10.0f);
+		//		Vector3 vec((float)(-10.0f + i * 5.0f), 0.0f, 10.0f);
 		//		enemy.lock()->Get_Transform().Set_Position(vec);
-		//		vec = XMFLOAT3(0.0f, 0.0f, 0.0f);
+		//		vec = Vector3(0.0f, 0.0f, 0.0f);
 		//		enemy.lock()->Get_Transform().Set_Rotation(vec);
 		//
 		//		number.clear();
@@ -639,17 +641,17 @@ void GAME::Load(SCENE* scene)
 				{
 					ENEMY* e = Add_Game_Object<ENEMY>(LAYER_NAME::GAMEOBJECT, name + number);
 		
-					XMFLOAT3 vec((float)(-10.0f + i * 5.0f), 0.0f, 10.0f);
+					Vector3 vec((float)(-10.0f + i * 5.0f), 0.0f, 10.0f);
 					e->Get_Transform().Set_Position(vec);
-					vec = XMFLOAT3(0.0f, 0.0f, 0.0f);
+					vec = Vector3(0.0f, 0.0f, 0.0f);
 					e->Get_Transform().Set_Rotation(vec);
 		
 					continue;
 				}
 		
-				XMFLOAT3 vec((float)(-10.0f + i * 5.0f), 0.0f, 10.0f);
+				Vector3 vec((float)(-10.0f + i * 5.0f), 0.0f, 10.0f);
 				enemy.lock()->Get_Transform().Set_Position(vec);
-				vec = XMFLOAT3(0.0f, 0.0f, 0.0f);
+				vec = Vector3(0.0f, 0.0f, 0.0f);
 				enemy.lock()->Get_Transform().Set_Rotation(vec);
 		
 				number.clear();

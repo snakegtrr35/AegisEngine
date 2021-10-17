@@ -20,7 +20,7 @@ private:
 	//! BOXの頂点バッファ
 	unique_ptr<ID3D11Buffer, Release> pVertexBuffer;
 	//! 各辺の長さ
-	XMFLOAT3 Radius;
+	Aegis::Vector3 Radius;
 
 	BoundingBox Aabb;
 
@@ -29,7 +29,7 @@ public:
 	* @brief コンストラクタ
 	* @details 引数無しコンストラクタ
 	*/
-	BOUNDING_AABB() : Radius(XMFLOAT3(0.5f, 0.5f, 0.5f)) {}
+	BOUNDING_AABB() : Radius(Aegis::Vector3(0.5f, 0.5f, 0.5f)) {}
 
 	/**
 	* @brief デストラクタ
@@ -81,22 +81,22 @@ public:
 
 	/**
 	* @brief 各辺の長さを設定する関数
-	* @param XMFLOAT3& 長さ
+	* @param Vector3& 長さ
 	*/
-	void Set_Radius(const XMFLOAT3& radius);
+	void Set_Radius(const Aegis::Vector3& radius);
 
 	/**
 	* @brief 各辺の長さを設定する関数
-	* @param XMFLOAT3* 長さ
+	* @param Vector3* 長さ
 	*/
-	void Set_Radius(const XMFLOAT3* radius);
+	void Set_Radius(const Aegis::Vector3* radius);
 
 	/**
 	* @brief 各辺の長さを取得する関数
-	* @return XMFLOAT3* 長さ
+	* @return Vector3* 長さ
 	* @details 各辺の長さを取得する関数
 	*/
-	XMFLOAT3* Get_Radius();
+	Aegis::Vector3* Get_Radius();
 
 	/**
 	* @brief バウンディングAABB(当たり判定専用)を取得する関数

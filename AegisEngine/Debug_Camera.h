@@ -20,17 +20,17 @@ private:
 	XMVECTOR Pos;
 	XMVECTOR At;
 
-	XMFLOAT3 F;
-	XMFLOAT3 U;
-	XMFLOAT3 R;
+	Aegis::Vector3 F;
+	Aegis::Vector3 U;
+	Aegis::Vector3 R;
 
-	XMFLOAT3 A;
+	Aegis::Vector3 A;
 
 	static float Lenght;
 
 	float Rotate;
 
-	XMFLOAT3 Velocity;
+	Aegis::Vector3 Velocity;
 
 	RECT Viewport;
 

@@ -329,6 +329,9 @@
     <ClCompile Include="include\engine\core\uuid\uuid.cpp">
       <Filter>include\engine\core\uuid</Filter>
     </ClCompile>
+    <ClCompile Include="include\engine\core\math\Vector4.cpp">
+      <Filter>include\engine\core\math</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="imgui\imconfig.h">
@@ -609,6 +612,9 @@
     </ClInclude>
     <ClInclude Include="include\engine\core\utility\TypeDefine.h">
       <Filter>include\engine\core\utility</Filter>
+    </ClInclude>
+    <ClInclude Include="include\engine\core\math\Vector4.h">
+      <Filter>include\engine\core\math</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

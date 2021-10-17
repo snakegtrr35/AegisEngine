@@ -64,10 +64,10 @@ struct TEXTURE_FILE {
 
 struct TEXTURE_DATA {
 	unique_ptr<ID3D11ShaderResourceView, Release> Resource;		//! リソースデータ
-	XMINT2 WH;													//!	テクスチャの幅と高さ
+	Aegis::Int2 WH;													//!	テクスチャの幅と高さ
 	UINT Cnt;													//! 参照回数
 
-	TEXTURE_DATA() : WH(XMINT2(0, 0)), Cnt(0) {}
+	TEXTURE_DATA() : WH(Aegis::Int2(0, 0)), Cnt(0) {}
 };
 
 //========================================
@@ -114,7 +114,7 @@ public:
 	void Add_ReferenceCnt(const size_t file);
 	void Sub_ReferenceCnt(const size_t file);
 	
-	XMINT2* const Get_WH(const size_t file);
+	Aegis::Int2* const Get_WH(const size_t file);
 
 	ID3D11ShaderResourceView* const GetShaderResourceView(const size_t file);
 

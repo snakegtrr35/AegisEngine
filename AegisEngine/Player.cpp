@@ -14,7 +14,9 @@
 #include	"Debug_Camera.h"
 #include	"audio_clip.h"
 
-static void Create_Bullet(XMFLOAT3& position, const XMFLOAT3& front);
+using namespace Aegis;
+
+static void Create_Bullet(Vector3& position, const Vector3& front);
 
 PLAYER::PLAYER(void)
 {
@@ -36,7 +38,7 @@ void PLAYER::Init(void)
 		Model->Load(name);
 	}
 
-	//Position = XMFLOAT3(0.f, 0.f, 0.f);
+	//Position = Vector3(0.f, 0.f, 0.f);
 
 	{
 		auto scene = CManager::Get_Instance()->Get_Scene();
@@ -52,9 +54,9 @@ void PLAYER::Init(void)
 void PLAYER::Draw(void)
 {
 	{
-		XMFLOAT3 position = *Get_Transform().Get_Position();
-		XMFLOAT3 rotate = *Get_Transform().Get_Rotation();
-		XMFLOAT3 scale = *Get_Transform().Get_Scaling();
+		Vector3 position = *Get_Transform().Get_Position();
+		Vector3 rotate = *Get_Transform().Get_Rotation();
+		Vector3 scale = *Get_Transform().Get_Scaling();
 
 		XMMATRIX matrix= XMMatrixScaling(scale.x, scale.y, scale.z);
 		matrix *= XMMatrixRotationRollPitchYaw(XMConvertToRadians(rotate.x), XMConvertToRadians(rotate.y), XMConvertToRadians(rotate.z));
@@ -70,9 +72,9 @@ void PLAYER::Draw(void)
 void PLAYER::Draw_DPP(void)
 {
 	{
-		XMFLOAT3 position = *Get_Transform().Get_Position();
-		XMFLOAT3 rotate = *Get_Transform().Get_Rotation();
-		XMFLOAT3 scale = *Get_Transform().Get_Scaling();
+		Vector3 position = *Get_Transform().Get_Position();
+		Vector3 rotate = *Get_Transform().Get_Rotation();
+		Vector3 scale = *Get_Transform().Get_Scaling();
 
 		XMMATRIX matrix = XMMatrixScaling(scale.x, scale.y, scale.z);
 		matrix *= XMMatrixRotationRollPitchYaw(XMConvertToRadians(rotate.x), XMConvertToRadians(rotate.y), XMConvertToRadians(rotate.z));
@@ -88,15 +90,15 @@ void PLAYER::Update(float delta_time)
 	const auto camera = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
 
 	XMVECTOR* vec = camera.lock()->Get_At();
-	XMFLOAT3 rotate = *camera.lock()->Get_Transform().Get_Rotation();
+	Vector3 rotate = *camera.lock()->Get_Transform().Get_Rotation();
 
 	XMVECTOR front_vec = *camera.lock()->Get_Front();
-	XMFLOAT3 front;
+	Vector3 front;
 	front_vec = XMVector3Normalize(front_vec);
 	XMStoreFloat3(&front, front_vec);
 	front.y = 0.0;
 
-	XMFLOAT3 pos;
+	Vector3 pos;
 
 	XMStoreFloat3(&pos, *vec);
 
@@ -116,7 +118,7 @@ void PLAYER::Update(float delta_time)
 
 	if (KEYBOARD::Trigger_Keyboard(VK_SPACE))
 	{
-		XMFLOAT3 pos = *Get_Transform().Get_Position() + front * 2.0f;
+		Vector3 pos = *Get_Transform().Get_Position() + front * 2.0f;
 		pos.y += 1.0;
 
 		Create_Bullet(pos, front * 2.0f);
@@ -130,17 +132,17 @@ void PLAYER::Uninit(void)
 	SAFE_DELETE(Model);
 }
 
-void PLAYER::SetPosition(XMFLOAT3& position)
+void PLAYER::SetPosition(Vector3& position)
 {
 	Get_Transform().Set_Position(position);
 }
 
-void PLAYER::SetScaling(XMFLOAT3& scaling)
+void PLAYER::SetScaling(Vector3& scaling)
 {
 	Get_Transform().Set_Scaling(scaling);
 }
 
-void Create_Bullet(XMFLOAT3& position, const XMFLOAT3& front)
+void Create_Bullet(Vector3& position, const Vector3& front)
 {
 	auto scene = CManager::Get_Instance()->Get_Scene();
 

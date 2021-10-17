@@ -12,9 +12,9 @@ SPRITE::SPRITE()
 {
 	Texture = nullptr;
 
-	Position = XMFLOAT2(0.0f, 0.0f);
+	Position = Vector2(0.0f, 0.0f);
 
-	Size = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+	Size = Vector4(1.0f, 1.0f, 1.0f, 1.0f);
 
 	Color = COLOR(1.0f, 1.0f, 1.0f, 1.0f);
 
@@ -24,7 +24,7 @@ SPRITE::SPRITE()
 	Texture.reset(new TEXTURE(string("number.png")));
 }
 
-SPRITE::SPRITE(XMFLOAT2 position, XMFLOAT4 size)
+SPRITE::SPRITE(Vector2 position, Vector4 size)
 {
 	Texture = nullptr;
 
@@ -127,25 +127,25 @@ void SPRITE::Draw(void)
 	{
 		if (Enable)
 		{
-			Vertex[0].Position = XMFLOAT3(Position.x - Size.w, Position.y - Size.x, 0.0f);
-			Vertex[0].Normal = XMFLOAT3(0.0f, 1.0f, 0.0f);
-			Vertex[0].Diffuse = XMFLOAT4(Color.r, Color.g, Color.b, Color.a);
-			Vertex[0].TexCoord = XMFLOAT2(0.0f, 0.0f);
+			Vertex[0].Position = Vector3(Position.x - Size.w, Position.y - Size.x, 0.0f);
+			Vertex[0].Normal = Vector3(0.0f, 1.0f, 0.0f);
+			Vertex[0].Diffuse = Vector4(Color.r, Color.g, Color.b, Color.a);
+			Vertex[0].TexCoord = Vector2(0.0f, 0.0f);
 
-			Vertex[1].Position = XMFLOAT3(Position.x + Size.y, Position.y - Size.x, 0.0f);
-			Vertex[1].Normal = XMFLOAT3(0.0f, 1.0f, 0.0f);
-			Vertex[1].Diffuse = XMFLOAT4(Color.r, Color.g, Color.b, Color.a);
-			Vertex[1].TexCoord = XMFLOAT2(1.0f, 0.0f);
+			Vertex[1].Position = Vector3(Position.x + Size.y, Position.y - Size.x, 0.0f);
+			Vertex[1].Normal = Vector3(0.0f, 1.0f, 0.0f);
+			Vertex[1].Diffuse = Vector4(Color.r, Color.g, Color.b, Color.a);
+			Vertex[1].TexCoord = Vector2(1.0f, 0.0f);
 
-			Vertex[2].Position = XMFLOAT3(Position.x - Size.w, Position.y + Size.z, 0.0f);
-			Vertex[2].Normal = XMFLOAT3(0.0f, 1.0f, 0.0f);
-			Vertex[2].Diffuse = XMFLOAT4(Color.r, Color.g, Color.b, Color.a);
-			Vertex[2].TexCoord = XMFLOAT2(0.0f, 1.0f);
+			Vertex[2].Position = Vector3(Position.x - Size.w, Position.y + Size.z, 0.0f);
+			Vertex[2].Normal = Vector3(0.0f, 1.0f, 0.0f);
+			Vertex[2].Diffuse = Vector4(Color.r, Color.g, Color.b, Color.a);
+			Vertex[2].TexCoord = Vector2(0.0f, 1.0f);
 
-			Vertex[3].Position = XMFLOAT3(Position.x + Size.y, Position.y + Size.z, 0.0f);
-			Vertex[3].Normal = XMFLOAT3(0.0f, 1.0f, 0.0f);
-			Vertex[3].Diffuse = XMFLOAT4(Color.r, Color.g, Color.b, Color.a);
-			Vertex[3].TexCoord = XMFLOAT2(1.0f, 1.0f);
+			Vertex[3].Position = Vector3(Position.x + Size.y, Position.y + Size.z, 0.0f);
+			Vertex[3].Normal = Vector3(0.0f, 1.0f, 0.0f);
+			Vertex[3].Diffuse = Vector4(Color.r, Color.g, Color.b, Color.a);
+			Vertex[3].TexCoord = Vector2(1.0f, 1.0f);
 
 			// 頂点バッファの書き換え
 			{
@@ -196,25 +196,25 @@ void SPRITE::Draw_DPP()
 {
 	if (Enable)
 	{
-		Vertex[0].Position = XMFLOAT3(Position.x - Size.w, Position.y - Size.x, 0.0f);
-		Vertex[0].Normal = XMFLOAT3(0.0f, 1.0f, 0.0f);
-		Vertex[0].Diffuse = XMFLOAT4(Color.r, Color.g, Color.b, Color.a);
-		Vertex[0].TexCoord = XMFLOAT2(0.0f, 0.0f);
+		Vertex[0].Position = Vector3(Position.x - Size.w, Position.y - Size.x, 0.0f);
+		Vertex[0].Normal = Vector3(0.0f, 1.0f, 0.0f);
+		Vertex[0].Diffuse = Vector4(Color.r, Color.g, Color.b, Color.a);
+		Vertex[0].TexCoord = Vector2(0.0f, 0.0f);
 
-		Vertex[1].Position = XMFLOAT3(Position.x + Size.y, Position.y - Size.x, 0.0f);
-		Vertex[1].Normal = XMFLOAT3(0.0f, 1.0f, 0.0f);
-		Vertex[1].Diffuse = XMFLOAT4(Color.r, Color.g, Color.b, Color.a);
-		Vertex[1].TexCoord = XMFLOAT2(1.0f, 0.0f);
+		Vertex[1].Position = Vector3(Position.x + Size.y, Position.y - Size.x, 0.0f);
+		Vertex[1].Normal = Vector3(0.0f, 1.0f, 0.0f);
+		Vertex[1].Diffuse = Vector4(Color.r, Color.g, Color.b, Color.a);
+		Vertex[1].TexCoord = Vector2(1.0f, 0.0f);
 
-		Vertex[2].Position = XMFLOAT3(Position.x - Size.w, Position.y + Size.z, 0.0f);
-		Vertex[2].Normal = XMFLOAT3(0.0f, 1.0f, 0.0f);
-		Vertex[2].Diffuse = XMFLOAT4(Color.r, Color.g, Color.b, Color.a);
-		Vertex[2].TexCoord = XMFLOAT2(0.0f, 1.0f);
+		Vertex[2].Position = Vector3(Position.x - Size.w, Position.y + Size.z, 0.0f);
+		Vertex[2].Normal = Vector3(0.0f, 1.0f, 0.0f);
+		Vertex[2].Diffuse = Vector4(Color.r, Color.g, Color.b, Color.a);
+		Vertex[2].TexCoord = Vector2(0.0f, 1.0f);
 
-		Vertex[3].Position = XMFLOAT3(Position.x + Size.y, Position.y + Size.z, 0.0f);
-		Vertex[3].Normal = XMFLOAT3(0.0f, 1.0f, 0.0f);
-		Vertex[3].Diffuse = XMFLOAT4(Color.r, Color.g, Color.b, Color.a);
-		Vertex[3].TexCoord = XMFLOAT2(1.0f, 1.0f);
+		Vertex[3].Position = Vector3(Position.x + Size.y, Position.y + Size.z, 0.0f);
+		Vertex[3].Normal = Vector3(0.0f, 1.0f, 0.0f);
+		Vertex[3].Diffuse = Vector4(Color.r, Color.g, Color.b, Color.a);
+		Vertex[3].TexCoord = Vector2(1.0f, 1.0f);
 
 		// 頂点バッファの書き換え
 		{
@@ -260,12 +260,12 @@ void SPRITE::Uninit(void)
 	Children.clear();
 }
 
-void SPRITE::SetPosition(const XMFLOAT2& position)
+void SPRITE::SetPosition(const Vector2& position)
 {
 	Position = position;
 }
 
-XMFLOAT2* const SPRITE::GetPosition()
+Vector2* const SPRITE::GetPosition()
 {
 	return &Position;
 }
@@ -293,12 +293,12 @@ COLOR& const SPRITE::GetColor()
 	return Color;
 }
 
-void SPRITE::SetSize(const XMFLOAT4& size)
+void SPRITE::SetSize(const Vector4& size)
 {
 	Size = size;
 }
 
-XMFLOAT4* const SPRITE::GetSize()
+Vector4* const SPRITE::GetSize()
 {
 	return &Size;
 }
@@ -380,13 +380,13 @@ void SPRITE::Draw_DPP_Child()
 	}
 };
 
-void SPRITE::Set_Position_Child(const string& const name, const XMFLOAT2& position, const XMFLOAT2& offset)
+void SPRITE::Set_Position_Child(const string& const name, const Vector2& position, const Vector2& offset)
 {
 	for (const auto& child : Children)
 	{
 		if (name == child->Name)
 		{
-			XMFLOAT2 pos(position.x + offset.x, position.y + offset.y);
+			Vector2 pos(position.x + offset.x, position.y + offset.y);
 
 			child->Child->SetPosition(pos);
 			return;

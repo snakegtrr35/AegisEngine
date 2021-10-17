@@ -22,12 +22,12 @@ struct CHILD_DATE {
 	unique_ptr<SPRITE> Child;
 
 	////! オフセット位置
-	//XMFLOAT3 Offset;
+	//Aegis::Vector3 Offset;
 
 	//! 子スプライトの名前
 	string Name;
 
-	CHILD_DATE() : /*Offset(XMFLOAT3(0.f, 0.f, 0.f)),*/ Name("") {
+	CHILD_DATE() : /*Offset(Aegis::Vector3(0.f, 0.f, 0.f)),*/ Name("") {
 		Child.reset(nullptr);
 	}
 
@@ -60,7 +60,7 @@ protected:
 	unique_ptr<TEXTURE> Texture;
 
 	//! ポジション
-	XMFLOAT2 Position;
+	Aegis::Vector2 Position;
 
 	/**
 	* サイズ
@@ -69,7 +69,7 @@ protected:
 	* z : 下
 	* w : 左
 	*/
-	XMFLOAT4 Size;
+	Aegis::Vector4 Size;
 
 	//!< カラー
 	Aegis::COLOR Color;//!< 子スプライトのリスト
@@ -111,7 +111,7 @@ public:
 	* @param size サイズ
 	* @details 引数付きコンストラクタ
 	*/
-	SPRITE(XMFLOAT2 position, XMFLOAT4 size);
+	SPRITE(Aegis::Vector2 position, Aegis::Vector4 size);
 
 	/**
 	* @brief デストラクタ
@@ -154,14 +154,14 @@ public:
 	* @param position 座標(二次元座標)
 	* @details 座標(二次元座標)を設定する関数
 	*/
-	void SetPosition(const XMFLOAT2& position);
+	void SetPosition(const Aegis::Vector2& position);
 
 	/**
 	* @brief 座標を取得する関数
-	* @return XMFLOAT2* 座標(二次元座標)(ポインタ)
+	* @return Aegis::Vector2* 座標(二次元座標)(ポインタ)
 	* @details 座標(二次元座標)を取得する関数
 	*/
-	XMFLOAT2* const GetPosition();
+	Aegis::Vector2* const GetPosition();
 
 	/**
 	* @brief 描画の有効無効を設定する関数
@@ -196,14 +196,14 @@ public:
 	* @param size x:上 y:右 z:下 w:左
 	* @details サイズ(4方向)を設定する関数
 	*/
-	void SetSize(const XMFLOAT4& size);
+	void SetSize(const Aegis::Vector4& size);
 
 	/**
 	* @brief サイズを取得する関数
-	* @return XMFLOAT4 サイズ(4方向)(x:上 y:右 z:下 w:左)
+	* @return Aegis::Vector4 サイズ(4方向)(x:上 y:右 z:下 w:左)
 	* @details サイズ(4方向)をを取得する関数
 	*/
-	XMFLOAT4* const GetSize();
+	Aegis::Vector4* const GetSize();
 
 	/**
 	* @brief テクスチャを設定する関数
@@ -275,7 +275,7 @@ public:
 	* @param offset オフセット位置(二次元座標)
 	* @details 特定の子スプライトの座標(二次元座標、親スプライトからオフセットされる)を設定する関数
 	*/
-	void Set_Position_Child(const string& const name, const XMFLOAT2& position, const XMFLOAT2& offset);
+	void Set_Position_Child(const string& const name, const Aegis::Vector2& position, const Aegis::Vector2& offset);
 
 	/**
 	* @brief 子スプライトの描画の有効無効を設定する関数

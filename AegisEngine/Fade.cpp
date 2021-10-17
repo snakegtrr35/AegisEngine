@@ -5,11 +5,13 @@
 #include	"ShadowMap.h"
 #include	"Renderer.h"
 
+using namespace Aegis;
+
 bool FADE::FadeEnable = false;
 
-FADE::FADE() : WH(XMFLOAT2(SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.5f)), Color(XMFLOAT4(0.f, 0.f, 0.f, 1.0f)), Cnt(0), Time(0), AdditionalAlpha(0.f)
+FADE::FADE() : WH(Vector2(SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.5f)), Color(Vector4(0.f, 0.f, 0.f, 1.0f)), Cnt(0), Time(0), AdditionalAlpha(0.f)
 {
-	Position = XMFLOAT2(SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.5f);
+	Position = Vector2(SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.5f);
 
 	FadeEnable = false;
 }
@@ -29,25 +31,25 @@ void FADE::Draw()
 	if (CManager::Get_Instance()->Get_ShadowMap()->Get_Enable()) return;
 
 	{
-		Vertex[0].Position = XMFLOAT3(Position.x - WH.x, Position.y - WH.y, 0.0f);
-		Vertex[0].Normal = XMFLOAT3(0.0f, 1.0f, 0.0f);
+		Vertex[0].Position = Vector3(Position.x - WH.x, Position.y - WH.y, 0.0f);
+		Vertex[0].Normal = Vector3(0.0f, 1.0f, 0.0f);
 		Vertex[0].Diffuse = Color;
-		Vertex[0].TexCoord = XMFLOAT2(0.0f, 0.0f);
+		Vertex[0].TexCoord = Vector2(0.0f, 0.0f);
 
-		Vertex[1].Position = XMFLOAT3(Position.x + WH.x, Position.y - WH.y, 0.0f);
-		Vertex[1].Normal = XMFLOAT3(0.0f, 1.0f, 0.0f);
+		Vertex[1].Position = Vector3(Position.x + WH.x, Position.y - WH.y, 0.0f);
+		Vertex[1].Normal = Vector3(0.0f, 1.0f, 0.0f);
 		Vertex[1].Diffuse = Color;
-		Vertex[1].TexCoord = XMFLOAT2(1.0f, 0.0f);
+		Vertex[1].TexCoord = Vector2(1.0f, 0.0f);
 
-		Vertex[2].Position = XMFLOAT3(Position.x - WH.x, Position.y + WH.y, 0.0f);
-		Vertex[2].Normal = XMFLOAT3(0.0f, 1.0f, 0.0f);
+		Vertex[2].Position = Vector3(Position.x - WH.x, Position.y + WH.y, 0.0f);
+		Vertex[2].Normal = Vector3(0.0f, 1.0f, 0.0f);
 		Vertex[2].Diffuse = Color;
-		Vertex[2].TexCoord = XMFLOAT2(0.0f, 1.0f);
+		Vertex[2].TexCoord = Vector2(0.0f, 1.0f);
 
-		Vertex[3].Position = XMFLOAT3(Position.x + WH.x, Position.y + WH.y, 0.0f);
-		Vertex[3].Normal = XMFLOAT3(0.0f, 1.0f, 0.0f);
+		Vertex[3].Position = Vector3(Position.x + WH.x, Position.y + WH.y, 0.0f);
+		Vertex[3].Normal = Vector3(0.0f, 1.0f, 0.0f);
 		Vertex[3].Diffuse = Color;
-		Vertex[3].TexCoord = XMFLOAT2(1.0f, 1.0f);
+		Vertex[3].TexCoord = Vector2(1.0f, 1.0f);
 
 		// 頂点バッファの書き換え
 		{
@@ -110,7 +112,7 @@ bool FADE::Get_FadeEnable()
 	return (Time <= Cnt);
 }
 
-void FADE::Set_Color(const XMFLOAT4& color)
+void FADE::Set_Color(const Vector4& color)
 {
 	Color = color;
 }
@@ -131,7 +133,7 @@ void FADE::Start_FadeOut(const WORD time)
 		//pFade->Init();
 
 		pFade->Set_Time((WORD)time);
-		pFade->Set_Color(XMFLOAT4(0.f, 0.f, 0.f, 0.f));
+		pFade->Set_Color(Vector4(0.f, 0.f, 0.f, 0.f));
 		pFade->Set_AdditionalAlpha(time, 1.0f);
 		FadeEnable = false;
 	}
@@ -148,7 +150,7 @@ void FADE::Start_FadeIn(const WORD time)
 		//pFade->Init();
 
 		pFade->Set_Time((WORD)time);
-		pFade->Set_Color(XMFLOAT4(0.f, 0.f, 0.f, 1.0f));
+		pFade->Set_Color(Vector4(0.f, 0.f, 0.f, 1.0f));
 		pFade->Set_AdditionalAlpha(time, -1.0f);
 		FadeEnable = false;
 	}

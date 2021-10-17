@@ -8,14 +8,14 @@
 //! 頂点構造体
 struct VERTEX_3D
 {
-    XMFLOAT3 Position;
-    XMFLOAT3 Normal;
-    XMFLOAT4 Diffuse;
-    XMFLOAT2 TexCoord;
+    Aegis::Vector3 Position;
+	Aegis::Vector3 Normal;
+	Aegis::Vector4 Diffuse;
+	Aegis::Vector2 TexCoord;
 
-	VERTEX_3D() : Position(XMFLOAT3(0.f, 0.f, 0.f)), Normal(XMFLOAT3(0.f, 0.f, 0.f)), Diffuse(XMFLOAT4(0.f, 0.f, 0.f, 1.0f)), TexCoord(XMFLOAT2(0.f, 0.f)) {}
+	VERTEX_3D() : Position(Aegis::Vector3(0.f, 0.f, 0.f)), Normal(Aegis::Vector3(0.f, 0.f, 0.f)), Diffuse(Aegis::Vector4(0.f, 0.f, 0.f, 1.0f)), TexCoord(Aegis::Vector2(0.f, 0.f)) {}
 
-	VERTEX_3D(XMFLOAT3 v, XMFLOAT3 n, XMFLOAT4 d, XMFLOAT2 t) : Position(v), Normal(n), Diffuse(d), TexCoord(t) {}
+	VERTEX_3D(XMFLOAT3 v, XMFLOAT3 n, XMFLOAT4 d, XMFLOAT2 t) : Position(v.x, v.y, v.z), Normal(n), Diffuse(d), TexCoord(t) {}
 
 	template<class Archive>
 	void serialize(Archive& ar) {
@@ -29,12 +29,12 @@ struct VERTEX_3D
 //! 頂点構造体
 struct VERTEX_3D_NORMAL
 {
-	XMFLOAT3 Position;
-	XMFLOAT3 Normal;
-	XMFLOAT3 Binormal;
-	XMFLOAT3 Tangent;
-	XMFLOAT4 Diffuse;
-	XMFLOAT2 TexCoord;
+	Aegis::Vector3 Position;
+	Aegis::Vector3 Normal;
+	Aegis::Vector3 Binormal;
+	Aegis::Vector3 Tangent;
+	Aegis::Vector4 Diffuse;
+	Aegis::Vector2 TexCoord;
 
 	template<class Archive>
 	void serialize(Archive& ar) {

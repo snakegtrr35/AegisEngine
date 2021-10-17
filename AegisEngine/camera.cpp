@@ -4,6 +4,8 @@
 #include	"Input.h"
 #include	"camera.h"
 
+using namespace Aegis;
+
 CCamera* CCamera::pCamera = nullptr;
 XMMATRIX CCamera::m_ViewMatrix;
 XMMATRIX CCamera::m_ProjectionMatrix;
@@ -13,7 +15,7 @@ float CCamera::Lenght_Y = 4.0f;
 
 void CCamera::Init()
 {
-	XMFLOAT4 at = XMFLOAT4(0.0f, 0.0f, 0.0f, 0.0f);
+	Vector4 at = Vector4(0.0f, 0.0f, 0.0f, 0.0f);
 
 	Viewing_Angle = 55.0f;
 
@@ -61,7 +63,7 @@ void CCamera::Uninit()
 
 void CCamera::Update(float delta_time)
 {
-	XMFLOAT2 point = MOUSE::Get_Mouse()->Get_Position();
+	Vector2 point = MOUSE::Get_Mouse()->Get_Position();
 
 	bool flag = KEYBOARD::Press_Keyboard(VK_RBUTTON);
 
@@ -78,7 +80,7 @@ void CCamera::Update(float delta_time)
 	}
 
 	XMVECTOR f(Front);
-	XMFLOAT4 front_vec;
+	Vector4 front_vec;
 	XMStoreFloat4(&front_vec, f);
 	//front_vec.y = 0.0f;
 	f = XMLoadFloat4(&front_vec);
@@ -86,7 +88,7 @@ void CCamera::Update(float delta_time)
 	f = DirectX::XMVector3Normalize(f);
 		
 	XMVECTOR r(Right);
-	XMFLOAT4 right_vec;
+	Vector4 right_vec;
 	XMStoreFloat4(&right_vec, r);
 	//right_vec.y = 0.0f;
 	r = XMLoadFloat4(&right_vec);
@@ -199,7 +201,7 @@ void CCamera::Update(float delta_time)
 		}
 	}
 
-	XMFLOAT4 pos;
+	Vector4 pos;
 	XMStoreFloat4(&pos, Pos);
 
 	XMStoreFloat3(Get_Transform().Get_Position(), Pos);
@@ -231,10 +233,10 @@ void CCamera::Draw_DPP()
 	Draw();
 }
 
-bool CCamera::Get_Visibility(const XMFLOAT3& position)
+bool CCamera::Get_Visibility(const Vector3& position)
 {
 	XMVECTOR world_pos, view_pos, projection_pos;
-	XMFLOAT3 projection_pos_F;
+	Vector3 projection_pos_F;
 
 	world_pos = XMLoadFloat3(&position);
 

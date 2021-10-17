@@ -3,6 +3,8 @@
 #include	"Debug_Camera.h"
 #include	"manager.h"
 
+using namespace Aegis;
+
 DEBUG_CAMERA* DEBUG_CAMERA::pDebugCamera = nullptr;
 XMMATRIX DEBUG_CAMERA::m_ViewMatrix;
 XMMATRIX DEBUG_CAMERA::m_ProjectionMatrix;
@@ -11,7 +13,7 @@ float DEBUG_CAMERA::Lenght = 15.0f;
 
 DEBUG_CAMERA::DEBUG_CAMERA()
 {
-	XMFLOAT4 at = XMFLOAT4(0.f, 0.f, 0.f, 0.f);
+	Vector4 at = Vector4(0.f, 0.f, 0.f, 0.f);
 
 	Viewing_Angle = 80.0f;
 
@@ -48,7 +50,7 @@ DEBUG_CAMERA::DEBUG_CAMERA()
 
 void DEBUG_CAMERA::Init()
 {
-	XMFLOAT4 at = XMFLOAT4(0.f, 0.f, 0.f, 0.f);
+	Vector4 at = Vector4(0.f, 0.f, 0.f, 0.f);
 
 	Viewing_Angle = 80.0f;
 
@@ -89,7 +91,7 @@ void DEBUG_CAMERA::Uninit()
 
 void DEBUG_CAMERA::Update(float delta_time)
 {
-	XMFLOAT2 point = MOUSE::Get_Mouse()->Get_Position();
+	Vector2 point = MOUSE::Get_Mouse()->Get_Position();
 
 	bool flag = KEYBOARD::Press_Keyboard(VK_SHIFT);
 
@@ -102,7 +104,7 @@ void DEBUG_CAMERA::Update(float delta_time)
 	}
 
 	XMVECTOR f(Front);
-	XMFLOAT4 front_vec;
+	Vector4 front_vec;
 	XMStoreFloat4(&front_vec, f);
 	//front_vec.y = 0.0f;
 	f = XMLoadFloat4(&front_vec);
@@ -110,7 +112,7 @@ void DEBUG_CAMERA::Update(float delta_time)
 	f = DirectX::XMVector3Normalize(f);
 
 	XMVECTOR r(Right);
-	XMFLOAT4 right_vec;
+	Vector4 right_vec;
 	XMStoreFloat4(&right_vec, r);
 	r = XMLoadFloat4(&right_vec);
 

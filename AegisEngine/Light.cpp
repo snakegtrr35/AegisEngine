@@ -1,6 +1,8 @@
 ﻿#include	"Light.h"
 #include	"Renderer.h"
 
+using namespace Aegis;
+
 array<LIGHT_BUFFER, MAX_NUM_LIGHTS> LIGHTS::Lights;
 unique_ptr<ID3D11Buffer, Release>	LIGHTS::LightBuffer;
 
@@ -17,12 +19,12 @@ LIGHTS::LIGHTS()
 	}
 
 	Lights[0].Enable = 1;
-	Lights[0].Position = XMFLOAT3(0.0f, 0.0f, 0.0f);
+	Lights[0].Position = Vector3(0.0f, 0.0f, 0.0f);
 	Lights[0].Color = COLOR(1.0f, 0.f, 0.f, 1.0f);
 	Lights[0].Type = (UINT)LIGHT_TYPE::POINT;
 
 	Lights[1].Enable = 1;
-	Lights[1].Position = XMFLOAT3(2.0f, 0.0f, 0.0f);
+	Lights[1].Position = Vector3(2.0f, 0.0f, 0.0f);
 	Lights[1].Color = COLOR(0.0f, 0.f, 1.0f, 1.0f);
 	Lights[1].Type = (UINT)LIGHT_TYPE::POINT;
 }

@@ -6,6 +6,8 @@
 #include	"camera.h"
 #include	"Debug_Camera.h"
 
+using namespace Aegis;
+
 MODEL::MODEL() : FileName(string()), Key(0)
 {
 }
@@ -50,7 +52,7 @@ void MODEL::Draw()
 			{
 				camera_pos = *camera01.lock()->Get_Pos();
 
-				XMFLOAT4 pos;
+				Vector4 pos;
 				XMStoreFloat4(&pos, camera_pos);
 				camera_pos = XMLoadFloat4(&pos);
 			}
@@ -58,7 +60,7 @@ void MODEL::Draw()
 			{
 				camera_pos = *camera02.lock()->Get_Pos();
 
-				XMFLOAT4 pos;
+				Vector4 pos;
 				XMStoreFloat4(&pos, camera_pos);
 				camera_pos = XMLoadFloat4(&pos);
 			}
@@ -138,7 +140,7 @@ void MODEL::Draw_Inspector()
 	ImGui::DragFloat3("Radius##MODEL", rotate, 0.01f);
 	ImGui::DragFloat3("Scaling##MODEL", scale, 0.01f);
 
-	Position = XMFLOAT3(position[0], position[1], position[2]);
-	Rotation = XMFLOAT3(rotate[0], rotate[1], rotate[2]);
-	Scaling = XMFLOAT3(scale[0], scale[1], scale[2]);
+	Position = Vector3(position[0], position[1], position[2]);
+	Rotation = Vector3(rotate[0], rotate[1], rotate[2]);
+	Scaling = Vector3(scale[0], scale[1], scale[2]);
 }

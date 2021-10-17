@@ -57,7 +57,7 @@ public:
 	* @param size サイズ
 	* @details 引数付きコンストラクタ
 	*/
-	SPRITE_ANIMATION(XMFLOAT2 position, XMFLOAT4 size);
+	SPRITE_ANIMATION(Aegis::Vector2 position, Aegis::Vector4 size);
 
 	/**
 	* @brief デストラクタ
@@ -114,11 +114,11 @@ public:
 
 	/**
 	* @brief テクスチャの切り取り幅と高さを取得する関数
-	* @return XMFLOAT2 テクスチャの切り取り幅と高さ
+	* @return Aegis::Vector2 テクスチャの切り取り幅と高さ
 	* @details テクスチャの切り取り幅と高さを取得する関数
 	*/
-	const XMFLOAT2 Get_Twh() {
-		return XMFLOAT2(Tw, Th);
+	const Aegis::Vector2 Get_Twh() {
+		return Aegis::Vector2(Tw, Th);
 	}
 
 	template<typename Archive>

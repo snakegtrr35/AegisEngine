@@ -60,6 +60,7 @@
     <ClCompile Include="imgui\imgui_stdlib.cpp" />
     <ClCompile Include="imgui\imgui_widgets.cpp" />
     <ClCompile Include="include\engine\core\math\Math.cpp" />
+    <ClCompile Include="include\engine\core\math\Vector4.cpp" />
     <ClCompile Include="include\engine\core\random\Random.cpp" />
     <ClCompile Include="include\engine\core\uuid\uuid.cpp" />
     <ClCompile Include="Input.cpp" />
@@ -165,6 +166,7 @@
     <ClInclude Include="include\engine\core\math\Quaternion.h" />
     <ClInclude Include="include\engine\core\math\Vector2.h" />
     <ClInclude Include="include\engine\core\math\Vector3.h" />
+    <ClInclude Include="include\engine\core\math\Vector4.h" />
     <ClInclude Include="include\engine\core\random\Random.h" />
     <ClInclude Include="include\engine\core\random\Xorshift.h" />
     <ClInclude Include="include\engine\core\utility\TypeDefine.h" />

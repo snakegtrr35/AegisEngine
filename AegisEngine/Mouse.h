@@ -20,7 +20,7 @@ private:
 
 	//! スクリーン上のマウスの変数
 	POINT ScreenPoint;
-	XMFLOAT2 ScreenPosition;
+	Aegis::Vector2 ScreenPosition;
 
 	// マウスの相対座標
 	POINT Pos;
@@ -50,11 +50,11 @@ public:
 		return pMouse.get();
 	}
 
-	XMFLOAT2& const Get_Screen_Position();
+	Aegis::Vector2& const Get_Screen_Position();
 
 	void Set_Position(POINT& pos);
 
-	const XMFLOAT2 Get_Position();
+	const Aegis::Vector2 Get_Position();
 
 	void Set_Sensitivity(const float sensitivity);
 	float& const Get_Sensitivity();

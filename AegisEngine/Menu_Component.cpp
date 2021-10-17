@@ -4,6 +4,8 @@
 #include	"manager.h"
 #include	"Sprite.h"
 
+using namespace Aegis;
+
 MOUSE_EVENT_COMPONENT::MOUSE_EVENT_COMPONENT()
 {
 }
@@ -23,10 +25,10 @@ void MOUSE_EVENT_COMPONENT::Uninit()
 
 bool MOUSE_EVENT_COMPONENT::Mouse_Click_Left(const string& const name, SPRITE* me)
 {
-	XMFLOAT2 mouse_pos = MOUSE::Get_Mouse()->Get_Screen_Position();
-	XMFLOAT2* pos;
-	XMFLOAT4* size;
-	XMFLOAT2 position;
+	Vector2 mouse_pos = MOUSE::Get_Mouse()->Get_Screen_Position();
+	Vector2* pos;
+	Vector4* size;
+	Vector2 position;
 
 	if (KEYBOARD::Trigger_Keyboard(VK_LBUTTON))
 	{
@@ -76,10 +78,10 @@ bool MOUSE_EVENT_COMPONENT::Mouse_Click_Left(const string& const name, SPRITE* m
 
 bool MOUSE_EVENT_COMPONENT::Mouse_Click_Right(const string& const name, SPRITE* me)
 {
-	XMFLOAT2 mouse_pos = MOUSE::Get_Mouse()->Get_Screen_Position();
-	XMFLOAT2* pos;
-	XMFLOAT4* size;
-	XMFLOAT2 position;
+	Vector2 mouse_pos = MOUSE::Get_Mouse()->Get_Screen_Position();
+	Vector2* pos;
+	Vector4* size;
+	Vector2 position;
 
 	if (KEYBOARD::Trigger_Keyboard(VK_RBUTTON))
 	{
@@ -129,10 +131,10 @@ bool MOUSE_EVENT_COMPONENT::Mouse_Click_Right(const string& const name, SPRITE* 
 
 bool MOUSE_EVENT_COMPONENT::Mouse_Over(const string& const name, SPRITE* me)
 {
-	XMFLOAT2 mouse_pos = MOUSE::Get_Mouse()->Get_Screen_Position();
-	XMFLOAT2* pos;
-	XMFLOAT4* size;
-	XMFLOAT2 position;
+	Vector2 mouse_pos = MOUSE::Get_Mouse()->Get_Screen_Position();
+	Vector2* pos;
+	Vector4* size;
+	Vector2 position;
 
 	// マウスと矩形の当たり判定
 
