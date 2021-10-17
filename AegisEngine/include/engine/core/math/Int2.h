@@ -5,7 +5,7 @@
 
 namespace Aegis
 {
-	class Int2 {
+	class Int2 : public DirectX::XMINT2 {
 	public:
 		Int2() noexcept;
 		Int2(int32 _x, int32 _y) noexcept;
@@ -156,8 +156,8 @@ namespace Aegis
 			return v - 2.0f * Int2::Dot(v, n) * n;
 		}
 	public:
-		int32 x;
-		int32 y;
+		//int32 x;
+		//int32 y;
 	};
 
 }

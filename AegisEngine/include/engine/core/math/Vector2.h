@@ -3,39 +3,93 @@
 
 namespace Aegis
 {
-	class Vector2 {
+	class Vector2 : public DirectX::XMFLOAT2 {
 	public:
 		Vector2() = default;
-		explicit Vector2(const float32 _x, const float32 _y) noexcept;
+		explicit Vector2(const float32 _x, const float32 _y) noexcept
+		{
+			x = _x;
+			y = _y;
+		}
+
+		explicit Vector2(const DirectX::XMFLOAT2 vector) noexcept : DirectX::XMFLOAT2(vector)
+		{
+		}
+
+
 		Vector2(const Vector2&) = default;
 
 		Vector2& operator=(const Vector2&) = default;
 		Vector2(Vector2&&) = default;
 		Vector2& operator=(Vector2&&) = default;
 
-		friend Vector2 operator+(const Vector2& a, const Vector2& b);
+		Vector2& operator=(const DirectX::XMFLOAT2& vector)
+		{
+			this->x = vector.x;
+			this->y = vector.y;
 
-		friend Vector2 operator+(const Vector2& Vector, float32 scalar);
+			return *this;
+		}
 
-		friend Vector2 operator+(float32 scalar, const Vector2& Vector);
+		inline friend Vector2 operator+(const Vector2& a, const Vector2& b)
+		{
+			return Vector2(a.x + b.x, a.y + b.y);
+		}
 
-		friend Vector2 operator-(const Vector2& a, const Vector2& b);
+		inline friend Vector2 operator+(const Vector2& Vector, float32 scalar)
+		{
+			return Vector2(Vector.x + scalar, Vector.y + scalar);
+		}
 
-		friend Vector2 operator-(const Vector2& Vector, float32 scalar);
+		inline friend Vector2 operator+(float32 scalar, const Vector2& Vector)
+		{
+			return Vector2(Vector.x + scalar, Vector.y + scalar);
+		}
 
-		friend Vector2 operator-(float32 scalar, const Vector2& Vector);
+		inline friend Vector2 operator-(const Vector2& a, const Vector2& b)
+		{
+			return Vector2(a.x - b.x, a.y - b.y);
+		}
 
-		friend Vector2 operator*(const Vector2& a, const Vector2& b);
+		inline friend Vector2 operator-(const Vector2& Vector, float32 scalar)
+		{
+			return Vector2(Vector.x - scalar, Vector.y - scalar);
+		}
 
-		friend Vector2 operator*(const Vector2& Vector, float32 scalar);
+		inline friend Vector2 operator-(float32 scalar, const Vector2& Vector)
+		{
+			return Vector2(Vector.x - scalar, Vector.y - scalar);
+		}
 
-		friend Vector2 operator*(float32 scalar, const Vector2& Vector);
+		inline friend Vector2 operator*(const Vector2& a, const Vector2& b)
+		{
+			return Vector2(a.x * b.x, a.y * b.y);
+		}
 
-		friend Vector2 operator/(const Vector2& a, const Vector2& b);
+		inline friend Vector2 operator*(const Vector2& Vector, float32 scalar)
+		{
+			return Vector2(Vector.x * scalar, Vector.y * scalar);
+		}
 
-		friend Vector2 operator/(const Vector2& Vector, float32 scalar);
+		inline friend Vector2 operator*(float32 scalar, const Vector2& Vector)
+		{
+			return Vector2(Vector.x * scalar, Vector.y * scalar);
+		}
 
-		friend Vector2 operator/(float32 scalar, const Vector2& Vector);
+		inline friend Vector2 operator/(const Vector2& a, const Vector2& b)
+		{
+			return Vector2(a.x / b.x, a.y / b.y);
+		}
+
+		inline friend Vector2 operator/(const Vector2& Vector, float32 scalar)
+		{
+			return Vector2(Vector.x / scalar, Vector.y / scalar);
+		}
+
+		inline friend Vector2 operator/(float32 scalar, const Vector2& Vector)
+		{
+			return Vector2(scalar / Vector.x, scalar / Vector.y);
+		}
 
 		inline Vector2& operator+=(const Vector2& vector)
 		{
@@ -127,13 +181,13 @@ namespace Aegis
 			return v - 2.0f * Vector2::Dot(v, n) * n;
 		}
 	public:
-		union
-		{
-			float32 x;
-			float32 y;
-
-			float32 f[2] = { 0.f };
-		};
+		//union
+		//{
+		//	float32 x;
+		//	float32 y;
+		//
+		//	float32 f[2] = { 0.f };
+		//};
 
 		static const Vector2 Zero;
 		static const Vector2 One;

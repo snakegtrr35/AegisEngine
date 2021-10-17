@@ -11,6 +11,7 @@
 #include "MathDef.h"
 #include "Vector3.h"
 #include "Vector2.h"
+#include "Vector4.h"
 #include "Int2.h"
 #include "Quaternion.h"
 #include "Color.h"

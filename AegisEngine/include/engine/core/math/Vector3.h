@@ -8,7 +8,7 @@
 
 namespace Aegis
 {
-	class Vector3 {
+	class Vector3 : public DirectX::XMFLOAT3 {
 	public:
 
 		friend class Quaternion;
@@ -21,11 +21,24 @@ namespace Aegis
 			z = _z;
 		}
 
+		explicit Vector3(const DirectX::XMFLOAT3 vector) noexcept : DirectX::XMFLOAT3(vector)
+		{
+		}
+
 		Vector3(const Vector3&) = default;
 
 		Vector3& operator=(const Vector3&) = default;
 		Vector3(Vector3&&) = default;
 		Vector3& operator=(Vector3&&) = default;
+
+		Vector3& operator=(const DirectX::XMFLOAT3& vector)
+		{
+			this->x = vector.x;
+			this->y = vector.y;
+			this->z = vector.z;
+
+			return *this;
+		}
 
 		inline friend Vector3 operator+(const Vector3& a, const Vector3& b)
 		{
@@ -70,6 +83,21 @@ namespace Aegis
 		inline friend Vector3 operator*(float32 scalar, const Vector3& Vector)
 		{
 			return Vector3(Vector.x * scalar, Vector.y * scalar, Vector.z * scalar);
+		}
+
+		inline friend Vector3 operator/(const Vector3& left, const Vector3& right)
+		{
+			return Vector3(left.x / right.x, left.y / right.y, left.z / right.z);
+		}
+
+		inline friend Vector3 operator/(const Vector3& Vector, float32 scalar)
+		{
+			return Vector3(Vector.x / scalar, Vector.y / scalar, Vector.z / scalar);
+		}
+
+		inline friend Vector3 operator/(float32 scalar, const Vector3& Vector)
+		{
+			return Vector3(scalar / Vector.x, scalar / Vector.y, scalar / Vector.z);
 		}
 
 		inline float32& operator[](const int32 index)
@@ -206,7 +234,7 @@ namespace Aegis
 			//temp.z = a.x * b.y - a.y * b.x;
 			//return temp;
 
-			return toVector3( DirectX::XMVector3Cross(toXMVECTOR(a.f), toXMVECTOR(b.f)) );
+			return toVector3( DirectX::XMVector3Cross(toXMVECTOR(a), toXMVECTOR(b)) );
 		}
 
 		inline Vector3 Lerp(const Vector3& a, const Vector3& b, float32 t)
@@ -217,7 +245,7 @@ namespace Aegis
 		inline Vector3 Reflect(const Vector3& v, const Vector3& n)
 		{
 			//return v - 2.0f * Vector3::Dot(v, n) * n;
-			return toVector3( DirectX::XMVector3Reflect(toXMVECTOR(v.f), toXMVECTOR(n.f)) );
+			return toVector3( DirectX::XMVector3Reflect(toXMVECTOR(v), toXMVECTOR(n)) );
 		}
 
 		// クォータニオンによるVector3の変換
@@ -230,7 +258,7 @@ namespace Aegis
 			//
 			//return retVal;
 
-			return toVector3( DirectX::XMVector3Rotate(toXMVECTOR(v.f), Quaternion::toXMVECTOR(q.Quat)) );
+			return toVector3( DirectX::XMVector3Rotate(toXMVECTOR(v), Quaternion::toXMVECTOR(q.Quat)) );
 		}
 
 		template<typename Archive>
@@ -240,14 +268,14 @@ namespace Aegis
 		}
 
 	public:
-		union
-		{
-			float32 x;
-			float32 y;
-			float32 z;
-
-			DirectX::XMFLOAT3 f;
-		};
+		//union
+		//{
+		//	float32 x;
+		//	float32 y;
+		//	float32 z;
+		//
+		//	DirectX::XMFLOAT3 f;
+		//};
 
 		static const Vector3 Front;
 		static const Vector3 Right;
@@ -260,20 +288,20 @@ namespace Aegis
 		static const Vector3 Minus;
 
 	private:
-		inline explicit Vector3(const DirectX::XMFLOAT3& vector) noexcept : f(vector)
-		{
-		}
+		//inline explicit Vector3(const DirectX::XMFLOAT3& vector) noexcept : XMFLOAT3(vector)
+		//{
+		//}
 
 
 		inline static DirectX::XMVECTOR toXMVECTOR(const DirectX::XMFLOAT3& vec)
 		{
-			return XMLoadFloat3(&vec);
+			return DirectX::XMLoadFloat3(&vec);
 		}
 
 		inline static Vector3 toVector3(const DirectX::XMVECTOR& vec)
 		{
 			XMFLOAT3 f;
-			XMStoreFloat3(&f, vec);
+			DirectX::XMStoreFloat3(&f, vec);
 
 			return Vector3(f);
 		}

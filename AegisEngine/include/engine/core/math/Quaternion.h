@@ -10,7 +10,8 @@ using namespace DirectX;
 
 namespace Aegis
 {
-	class Quaternion {
+	class Quaternion : public DirectX::XMFLOAT4
+	{
 	public:
 
 		friend class Vector3;
@@ -20,6 +21,10 @@ namespace Aegis
 		// これにより、クォータニオンコンポーネントが直接設定されます-
 		// 軸 / 角度には使用しないでください
 		Quaternion(float32 _x, float32 _y, float32 _z, float32 _w) noexcept;
+
+		explicit Quaternion(DirectX::XMFLOAT4 quar) noexcept : DirectX::XMFLOAT4(quar)
+		{
+		}
 
 		Quaternion(const Quaternion&) = default;
 
@@ -122,7 +127,7 @@ namespace Aegis
 			//retVal.Normalize();
 			//return retVal;
 
-			return toQuaternion( DirectX::XMQuaternionSlerpV(toXMVECTOR(a.Quat), toXMVECTOR(b.Quat), XMVectorReplicate(t)) );
+			return toQuaternion( DirectX::XMQuaternionSlerpV(toXMVECTOR(a.Quat), toXMVECTOR(b.Quat), DirectX::XMVectorReplicate(t)) );
 		}
 
 		// 連結する
@@ -154,7 +159,7 @@ namespace Aegis
 			//
 			//return Quaternion::Quaternion(quat.x, quat.y, quat.z, quat.w);
 
-			return toQuaternion( DirectX::XMQuaternionRotationRollPitchYawFromVector(XMVectorSet(z, y, z, 0.f)) );
+			return toQuaternion( DirectX::XMQuaternionRotationRollPitchYawFromVector(DirectX::XMVectorSet(z, y, z, 0.f)) );
 		}
 
 	public:
@@ -171,20 +176,20 @@ namespace Aegis
 		static const Quaternion Identity;
 
 	private:
-		inline explicit Quaternion(const DirectX::XMFLOAT4& quat) noexcept : Quat(quat)
-		{
-		}
+		//inline explicit Quaternion(const DirectX::XMFLOAT4& quat) noexcept : Quat(quat)
+		//{
+		//}
 
 
 		inline static DirectX::XMVECTOR toXMVECTOR(const DirectX::XMFLOAT4& quat)
 		{
-			return XMLoadFloat4(&quat);
+			return DirectX::XMLoadFloat4(&quat);
 		}
 
 		inline static Quaternion toQuaternion(const DirectX::XMVECTOR& vec)
 		{
 			XMFLOAT4 quat;
-			XMStoreFloat4(&quat, vec);
+			DirectX::XMStoreFloat4(&quat, vec);
 
 			return Quaternion(quat);
 		}
