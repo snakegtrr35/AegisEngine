@@ -6,7 +6,7 @@
 
 using namespace Aegis;
 
-unique_ptr<ID3D11Buffer, Release> SPRITE::pIndexBuffer;		// インデックスバッファ
+ComPtr<ID3D11Buffer> SPRITE::pIndexBuffer;		// インデックスバッファ
 
 SPRITE::SPRITE()
 {
@@ -47,11 +47,12 @@ SPRITE::~SPRITE()
 
 void SPRITE::Init(void)
 {
+	CRenderer* render = CRenderer::getInstance();
+
 	// 頂点バッファの設定
-	if (nullptr == pVertexBuffer.get())
+	if (nullptr == pVertexBuffer)
 	{
 		HRESULT hr;
-		ID3D11Buffer* pVB = nullptr;
 
 		D3D11_BUFFER_DESC bd;
 		ZeroMemory(&bd, sizeof(D3D11_BUFFER_DESC));
@@ -72,21 +73,18 @@ void SPRITE::Init(void)
 		srd.SysMemSlicePitch = 0;
 
 		// 頂点バッファの生成
-		hr = CRenderer::GetDevice()->CreateBuffer(&bd, &srd, &pVB);
+		hr = render->GetDevice()->CreateBuffer(&bd, &srd, &pVertexBuffer);
 
 		if (FAILED(hr))
 		{
 			return;
 		}
-
-		pVertexBuffer.reset(pVB);
 	}
 
 	// インデックスバッファの設定
-	if (nullptr == pIndexBuffer.get())
+	if (nullptr == pIndexBuffer)
 	{
 		HRESULT hr;
-		ID3D11Buffer* pIB = nullptr;
 
 		const WORD index[] = {
 			0, 1, 2,
@@ -106,13 +104,11 @@ void SPRITE::Init(void)
 		irData.SysMemPitch = 0;
 		irData.SysMemSlicePitch = 0;
 
-		hr = CRenderer::GetDevice()->CreateBuffer(&ibDesc, &irData, &pIB);
+		hr = render->GetDevice()->CreateBuffer(&ibDesc, &irData, &pIndexBuffer);
 		if (FAILED(hr))
 		{
 			FAILDE_ASSERT
 		}
-
-		pIndexBuffer.reset(pIB);
 	}
 
 	for (const auto& child : Children)
@@ -123,77 +119,13 @@ void SPRITE::Init(void)
 
 void SPRITE::Draw(void)
 {
-	if (false == CManager::Get_Instance()->Get_ShadowMap()->Get_Enable())
+	if (CManager::Get_Instance()->Get_ShadowMap()->Get_Enable())
 	{
-		if (Enable)
-		{
-			Vertex[0].Position = Vector3(Position.x - Size.w, Position.y - Size.x, 0.0f);
-			Vertex[0].Normal = Vector3(0.0f, 1.0f, 0.0f);
-			Vertex[0].Diffuse = Vector4(Color.r, Color.g, Color.b, Color.a);
-			Vertex[0].TexCoord = Vector2(0.0f, 0.0f);
-
-			Vertex[1].Position = Vector3(Position.x + Size.y, Position.y - Size.x, 0.0f);
-			Vertex[1].Normal = Vector3(0.0f, 1.0f, 0.0f);
-			Vertex[1].Diffuse = Vector4(Color.r, Color.g, Color.b, Color.a);
-			Vertex[1].TexCoord = Vector2(1.0f, 0.0f);
-
-			Vertex[2].Position = Vector3(Position.x - Size.w, Position.y + Size.z, 0.0f);
-			Vertex[2].Normal = Vector3(0.0f, 1.0f, 0.0f);
-			Vertex[2].Diffuse = Vector4(Color.r, Color.g, Color.b, Color.a);
-			Vertex[2].TexCoord = Vector2(0.0f, 1.0f);
-
-			Vertex[3].Position = Vector3(Position.x + Size.y, Position.y + Size.z, 0.0f);
-			Vertex[3].Normal = Vector3(0.0f, 1.0f, 0.0f);
-			Vertex[3].Diffuse = Vector4(Color.r, Color.g, Color.b, Color.a);
-			Vertex[3].TexCoord = Vector2(1.0f, 1.0f);
-
-			// 頂点バッファの書き換え
-			{
-				D3D11_MAPPED_SUBRESOURCE msr;
-				CRenderer::GetDeviceContext()->Map(pVertexBuffer.get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &msr);
-				memcpy(msr.pData, Vertex, sizeof(VERTEX_3D) * 4);
-				CRenderer::GetDeviceContext()->Unmap(pVertexBuffer.get(), 0);
-			}
-
-			// 入力アセンブラに頂点バッファを設定
-			CRenderer::SetVertexBuffers(pVertexBuffer.get());
-
-			// 入力アセンブラにインデックスバッファを設定
-			CRenderer::SetIndexBuffer(pIndexBuffer.get());
-
-			if (nullptr == ShaderResourceView)
-			{
-				// テクスチャの設定
-				Texture->Set_Texture();
-			}
-			else
-			{
-				CRenderer::GetDeviceContext()->PSSetShaderResources(0, 1, &ShaderResourceView);
-			}
-
-			// 2Dマトリックス設定
-			CRenderer::SetWorldViewProjection2D(*Get_Transform().Get_Scaling());
-
-			if (flag)
-			{
-				CRenderer::Set_Shader(SHADER_INDEX_V::DEFAULT, SHADER_INDEX_P::NO_LIGHT);
-			}
-			else
-			{
-				CRenderer::Set_Shader(SHADER_INDEX_V::DEFAULT, SHADER_INDEX_P::POST_EFFECT);
-			}
-
-			CRenderer::DrawIndexed(6, 0, 0);
-
-			Draw_Child();
-		}
-
-		CRenderer::Set_Shader();
+		return;
 	}
-}
 
-void SPRITE::Draw_DPP()
-{
+	CRenderer* render = CRenderer::getInstance();
+
 	if (Enable)
 	{
 		Vertex[0].Position = Vector3(Position.x - Size.w, Position.y - Size.x, 0.0f);
@@ -219,27 +151,98 @@ void SPRITE::Draw_DPP()
 		// 頂点バッファの書き換え
 		{
 			D3D11_MAPPED_SUBRESOURCE msr;
-			CRenderer::GetDeviceContext()->Map(pVertexBuffer.get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &msr);
+			render->GetDeviceContext()->Map(pVertexBuffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &msr);
 			memcpy(msr.pData, Vertex, sizeof(VERTEX_3D) * 4);
-			CRenderer::GetDeviceContext()->Unmap(pVertexBuffer.get(), 0);
+			render->GetDeviceContext()->Unmap(pVertexBuffer.Get(), 0);
 		}
 
 		// 入力アセンブラに頂点バッファを設定
-		CRenderer::SetVertexBuffers(pVertexBuffer.get());
+		render->SetVertexBuffers(pVertexBuffer.Get());
 
 		// 入力アセンブラにインデックスバッファを設定
-		CRenderer::SetIndexBuffer(pIndexBuffer.get());
+		render->SetIndexBuffer(pIndexBuffer.Get());
+
+		if (nullptr == ShaderResourceView)
+		{
+			// テクスチャの設定
+			// テクスチャの設定
+			Texture->Set_Texture();
+		}
+		else
+		{
+			render->GetDeviceContext()->PSSetShaderResources(0, 1, &ShaderResourceView);
+		}
+
+		// 2Dマトリックス設定
+		render->SetWorldViewProjection2D(*Get_Transform().Get_Scaling());
+
+		if (flag)
+		{
+			render->Set_Shader(SHADER_INDEX_V::DEFAULT, SHADER_INDEX_P::NO_LIGHT);
+		}
+		else
+		{
+			render->Set_Shader(SHADER_INDEX_V::DEFAULT, SHADER_INDEX_P::POST_EFFECT);
+		}
+
+		render->DrawIndexed(6, 0, 0);
+
+		Draw_Child();
+	}
+
+	render->Set_Shader();
+}
+
+void SPRITE::Draw_DPP()
+{
+	CRenderer* render = CRenderer::getInstance();
+
+	if (Enable)
+	{
+		Vertex[0].Position = Vector3(Position.x - Size.w, Position.y - Size.x, 0.0f);
+		Vertex[0].Normal = Vector3(0.0f, 1.0f, 0.0f);
+		Vertex[0].Diffuse = Vector4(Color.r, Color.g, Color.b, Color.a);
+		Vertex[0].TexCoord = Vector2(0.0f, 0.0f);
+
+		Vertex[1].Position = Vector3(Position.x + Size.y, Position.y - Size.x, 0.0f);
+		Vertex[1].Normal = Vector3(0.0f, 1.0f, 0.0f);
+		Vertex[1].Diffuse = Vector4(Color.r, Color.g, Color.b, Color.a);
+		Vertex[1].TexCoord = Vector2(1.0f, 0.0f);
+
+		Vertex[2].Position = Vector3(Position.x - Size.w, Position.y + Size.z, 0.0f);
+		Vertex[2].Normal = Vector3(0.0f, 1.0f, 0.0f);
+		Vertex[2].Diffuse = Vector4(Color.r, Color.g, Color.b, Color.a);
+		Vertex[2].TexCoord = Vector2(0.0f, 1.0f);
+
+		Vertex[3].Position = Vector3(Position.x + Size.y, Position.y + Size.z, 0.0f);
+		Vertex[3].Normal = Vector3(0.0f, 1.0f, 0.0f);
+		Vertex[3].Diffuse = Vector4(Color.r, Color.g, Color.b, Color.a);
+		Vertex[3].TexCoord = Vector2(1.0f, 1.0f);
+
+		// 頂点バッファの書き換え
+		{
+			D3D11_MAPPED_SUBRESOURCE msr;
+			render->GetDeviceContext()->Map(pVertexBuffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &msr);
+			memcpy(msr.pData, Vertex, sizeof(VERTEX_3D) * 4);
+			render->GetDeviceContext()->Unmap(pVertexBuffer.Get(), 0);
+		}
+
+		// 入力アセンブラに頂点バッファを設定
+		render->SetVertexBuffers(pVertexBuffer.Get());
+
+		// 入力アセンブラにインデックスバッファを設定
+		render->SetIndexBuffer(pIndexBuffer.Get());
 
 
 		// 2Dマトリックス設定
-		CRenderer::SetWorldViewProjection2D(*Get_Transform().Get_Scaling());
+		render->SetWorldViewProjection2D(*Get_Transform().Get_Scaling());
 
-		CRenderer::DrawIndexed(6, 0, 0);
+		render->DrawIndexed(6, 0, 0);
 	}
 
 	Draw_DPP_Child();
 
-	CRenderer::Set_Shader();
+	render->Set_Shader();
 }
 
 void SPRITE::Update(float delta_time)
@@ -249,8 +252,6 @@ void SPRITE::Update(float delta_time)
 void SPRITE::Uninit(void)
 {	
 	Texture.reset(nullptr);
-
-	pVertexBuffer.reset(nullptr);
 
 	for (auto& child : Children)
 	{

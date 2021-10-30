@@ -37,8 +37,10 @@ using namespace Aegis;
 bool EFFEKSEER_MANAGER::Init()
 {
 	{
+		CRenderer* render = CRenderer::getInstance();
+
 		// 描画用インスタンスの生成
-		Renderer = ::EffekseerRendererDX11::Renderer::Create(CRenderer::GetDevice(), CRenderer::GetDeviceContext(), 2000);
+		Renderer = ::EffekseerRendererDX11::Renderer::Create(render->GetDevice(), render->GetDeviceContext(), 2000);
 		if (nullptr == Renderer)
 		{
 			return false;

@@ -47,8 +47,9 @@ POLYGON_3D::~POLYGON_3D()
 
 void POLYGON_3D::Init(void)
 {
-	HRESULT hr;
+	CRenderer* render = CRenderer::getInstance();
 
+	HRESULT hr;
 	POLYGOM Polygon_3d;
 
 	// 正面
@@ -198,7 +199,7 @@ void POLYGON_3D::Init(void)
 		srd.SysMemSlicePitch = 0;
 
 		// 頂点バッファの生成
-		hr = CRenderer::GetDevice()->CreateBuffer(&bd, &srd, &pVertexBuffer);
+		hr = render->GetDevice()->CreateBuffer(&bd, &srd, &pVertexBuffer);
 
 		if (FAILED(hr))
 		{
@@ -210,6 +211,8 @@ void POLYGON_3D::Init(void)
 
 void POLYGON_3D::Draw(void)
 {
+	CRenderer* render = CRenderer::getInstance();
+
 	// 3Dマトリックス設定
 	{
 		XMMATRIX world(XMMatrixIdentity());
@@ -233,17 +236,17 @@ void POLYGON_3D::Draw(void)
 				XMMATRIX view = CManager::Get_Instance()->Get_ShadowMap()->Get_View();
 				XMMATRIX proj = CManager::Get_Instance()->Get_ShadowMap()->Get_Plojection();
 
-				CRenderer::Set_MatrixBuffer(world, view, proj);
+				render->Set_MatrixBuffer(world, view, proj);
 
-				CRenderer::Set_Shader(SHADER_INDEX_V::SHADOW_MAP, SHADER_INDEX_P::SHADOW_MAP);
+				render->Set_Shader(SHADER_INDEX_V::SHADOW_MAP, SHADER_INDEX_P::SHADOW_MAP);
 			}
 			else
 			{
-				CRenderer::Set_MatrixBuffer(world, camera01.lock()->Get_Camera_View(), camera01.lock()->Get_Camera_Projection());
+				render->Set_MatrixBuffer(world, camera01.lock()->Get_Camera_View(), camera01.lock()->Get_Camera_Projection());
 
-				CRenderer::Set_MatrixBuffer01(*camera01.lock()->Get_Pos());
+				render->Set_MatrixBuffer01(*camera01.lock()->Get_Pos());
 
-				CRenderer::Set_Shader();
+				render->Set_Shader();
 			}
 		}
 		else
@@ -254,37 +257,39 @@ void POLYGON_3D::Draw(void)
 				XMMATRIX view = CManager::Get_Instance()->Get_ShadowMap()->Get_View();
 				XMMATRIX proj = CManager::Get_Instance()->Get_ShadowMap()->Get_Plojection();
 
-				CRenderer::Set_MatrixBuffer(world, view, proj);
+				render->Set_MatrixBuffer(world, view, proj);
 
-				CRenderer::Set_Shader(SHADER_INDEX_V::SHADOW_MAP, SHADER_INDEX_P::SHADOW_MAP);
+				render->Set_Shader(SHADER_INDEX_V::SHADOW_MAP, SHADER_INDEX_P::SHADOW_MAP);
 			}
 			else
 			{
-				CRenderer::Set_MatrixBuffer(world, camera02.lock()->Get_Camera_View(), camera02.lock()->Get_Camera_Projection());
+				render->Set_MatrixBuffer(world, camera02.lock()->Get_Camera_View(), camera02.lock()->Get_Camera_Projection());
 
-				CRenderer::Set_MatrixBuffer01(*camera02.lock()->Get_Pos());
+				render->Set_MatrixBuffer01(*camera02.lock()->Get_Pos());
 
-				CRenderer::Set_Shader();
+				render->Set_Shader();
 			}
 		}
 	}
 
 	// 入力アセンブラに頂点バッファを設定.
-	CRenderer::SetVertexBuffers(pVertexBuffer);
+	render->SetVertexBuffers(pVertexBuffer.Get());
 
 	// テクスチャの設定
 	Texture->Set_Texture();
 
 	// トポロジの設定
-	CRenderer::GetDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
+	render->GetDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
 
-	CRenderer::GetDeviceContext()->Draw(4 * 6, 0);
+	render->GetDeviceContext()->Draw(4 * 6, 0);
 
 	GAME_OBJECT::Draw();
 }
 
 void POLYGON_3D::Draw_DPP(void)
 {
+	CRenderer* render = CRenderer::getInstance();
+
 	// 3Dマトリックス設定
 	{
 		XMMATRIX world(XMMatrixIdentity());
@@ -302,21 +307,21 @@ void POLYGON_3D::Draw_DPP(void)
 
 		if (!camera01.expired() && Empty_weak_ptr<CCamera>(camera01))
 		{
-			CRenderer::Set_MatrixBuffer(world, camera01.lock()->Get_Camera_View(), camera01.lock()->Get_Camera_Projection());
+			render->Set_MatrixBuffer(world, camera01.lock()->Get_Camera_View(), camera01.lock()->Get_Camera_Projection());
 		}
 		else
 		{
-			CRenderer::Set_MatrixBuffer(world, camera02.lock()->Get_Camera_View(), camera02.lock()->Get_Camera_Projection());
+			render->Set_MatrixBuffer(world, camera02.lock()->Get_Camera_View(), camera02.lock()->Get_Camera_Projection());
 		}
 	}
 
 	// 入力アセンブラに頂点バッファを設定.
-	CRenderer::SetVertexBuffers(pVertexBuffer);
+	render->SetVertexBuffers(pVertexBuffer.Get());
 
 	// トポロジの設定
-	CRenderer::GetDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
+	render->GetDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
 
-	CRenderer::GetDeviceContext()->Draw(4 * 6, 0);
+	render->GetDeviceContext()->Draw(4 * 6, 0);
 }
 
 void POLYGON_3D::Update(float delta_time)

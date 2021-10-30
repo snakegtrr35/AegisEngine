@@ -14,10 +14,9 @@
 class BOUNDING_SHPERE : public BOUNDING {
 private:
 	//! 頂点バッファ
-	unique_ptr<ID3D11Buffer, Release> pVertexBuffer;
-
+	ComPtr<ID3D11Buffer> pVertexBuffer;
 	//! インデックスバッファ
-	unique_ptr<ID3D11Buffer, Release> pIndexBuffer;
+	ComPtr<ID3D11Buffer> pIndexBuffer;
 
 	//! 半径
 	float Radius;

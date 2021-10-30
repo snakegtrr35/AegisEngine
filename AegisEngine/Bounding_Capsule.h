@@ -14,22 +14,22 @@
 class BOUNDING_CAPSULE : public BOUNDING {
 private:
 	//! 一つ目の頂点バッファ
-	unique_ptr<ID3D11Buffer, Release> pVertexBuffer;
+	ComPtr<ID3D11Buffer> pVertexBuffer;
 
 	//! 二つ目の頂点バッファ
-	unique_ptr<ID3D11Buffer, Release> pVertexBuffer2;
+	ComPtr<ID3D11Buffer> pVertexBuffer2;
 
 	//! インデックスバッファ
-	unique_ptr<ID3D11Buffer, Release> pIndexBuffer;	
+	ComPtr<ID3D11Buffer> pIndexBuffer;
 
 	//! インデックス数
 	UINT IndexNum;
 
 	//! リングの頂点バッファ
-	unique_ptr<ID3D11Buffer, Release> pVertexBuffer_Ring;
+	ComPtr<ID3D11Buffer> pVertexBuffer_Ring;
 
 	//! リングのインデックスバッファ
-	unique_ptr<ID3D11Buffer, Release> pIndexBuffer_Ring;
+	ComPtr<ID3D11Buffer> pIndexBuffer_Ring;
 
 	//! リングのインデックス数
 	UINT IndexNum_Ring;

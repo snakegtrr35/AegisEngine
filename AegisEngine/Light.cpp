@@ -4,7 +4,7 @@
 using namespace Aegis;
 
 array<LIGHT_BUFFER, MAX_NUM_LIGHTS> LIGHTS::Lights;
-unique_ptr<ID3D11Buffer, Release>	LIGHTS::LightBuffer;
+ComPtr<ID3D11Buffer>	LIGHTS::LightBuffer;
 
 
 LIGHT_BUFFER::LIGHT_BUFFER() : Enable(0), Position(0.f, 0.f, 0.f), Color(0.f, 0.f, 0.f, 0.f), Type((UINT)LIGHT_TYPE::NONE) {}
@@ -31,10 +31,10 @@ LIGHTS::LIGHTS()
 
 bool LIGHTS::Init()
 {
+	CRenderer* render = CRenderer::getInstance();
+
 	// 定数バッファ生成
 	{
-		ID3D11Buffer* buffer = nullptr;
-
 		D3D11_BUFFER_DESC hBufferDesc;
 		hBufferDesc.Usage = D3D11_USAGE_DEFAULT;
 		hBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
@@ -45,16 +45,14 @@ bool LIGHTS::Init()
 		D3D11_SUBRESOURCE_DATA date = {};
 		date.pSysMem = Lights.data();
 
-		HRESULT hr = CRenderer::GetDevice()->CreateBuffer(&hBufferDesc, &date, &buffer);
+		HRESULT hr = render->GetDevice()->CreateBuffer(&hBufferDesc, &date, &LightBuffer);
 		if (FAILED(hr))
 		{
 			FAILDE_ASSERT;
 			return false;
 		}
 
-		LightBuffer.reset(buffer);
-
-		CRenderer::GetDeviceContext()->PSSetConstantBuffers(6, 1, &buffer);
+		render->GetDeviceContext()->PSSetConstantBuffers(6, 1, LightBuffer.GetAddressOf());
 	}
 
 	return true;
@@ -62,16 +60,14 @@ bool LIGHTS::Init()
 
 void LIGHTS::Draw()
 {
-	auto buffer = LightBuffer.get();
-	CRenderer::GetDeviceContext()->PSSetConstantBuffers(6, 1, &buffer);
+	CRenderer::getInstance()->GetDeviceContext()->PSSetConstantBuffers(6, 1, LightBuffer.GetAddressOf());
 }
 
 void LIGHTS::Update()
 {
-	CRenderer::GetDeviceContext()->UpdateSubresource(LightBuffer.get(), 0, nullptr, Lights.data(), 0, 0);
+	CRenderer::getInstance()->GetDeviceContext()->UpdateSubresource(LightBuffer.Get(), 0, nullptr, Lights.data(), 0, 0);
 }
 
 void LIGHTS::Uninit()
 {
-	LightBuffer.reset(nullptr);
 }

@@ -19,8 +19,8 @@ private:
 	unsigned int	VertexNum;
 	unsigned int	IndexNum;
 
-	unique_ptr<ID3D11Buffer, Release>	VertexBuffer;	// 頂点バッファ
-	unique_ptr<ID3D11Buffer, Release>	IndexBuffer;	// インデックスバッファ
+	ComPtr<ID3D11Buffer>	VertexBuffer;	// 頂点バッファ
+	ComPtr<ID3D11Buffer>	IndexBuffer;	// インデックスバッファ
 	unique_ptr<TEXTURE> Texture;						// テクスチャ
 
 public:

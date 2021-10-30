@@ -21,10 +21,10 @@ class BILL_BOARD : public GAME_OBJECT {
 protected:
 
 	//! インデックスバッファ
-	static unique_ptr<ID3D11Buffer, Release> pIndexBuffer;
+	static ComPtr<ID3D11Buffer> pIndexBuffer;
 
 	//! 頂点バッファ
-	unique_ptr<ID3D11Buffer, Release> pVertexBuffer;
+	ComPtr<ID3D11Buffer> pVertexBuffer;
 
 	//! テクスチャ
 	unique_ptr<TEXTURE> Texture;

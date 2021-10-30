@@ -14,7 +14,7 @@ struct POLYGOM {
 
 class POLYGON_3D : public GAME_OBJECT {
 private:
-	ID3D11Buffer* pVertexBuffer;		// 頂点バッファ
+	ComPtr<ID3D11Buffer> pVertexBuffer;		// 頂点バッファ
 	unique_ptr<TEXTURE> Texture;		// テクスチャ
 
 	Aegis::Vector3 XYZ;						// 幅と高さと奥行き

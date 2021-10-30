@@ -11,6 +11,8 @@ using namespace Aegis;
 
 AXIS::AXIS()
 {
+	CRenderer* render = render->getInstance();
+
 	// X
 	{
 		const VERTEX_3D Vertexs[4] = {
@@ -48,7 +50,7 @@ AXIS::AXIS()
 			srd.SysMemSlicePitch = 0;
 
 			// 頂点バッファの生成
-			hr = CRenderer::GetDevice()->CreateBuffer(&bd, &srd, &pVertexBuffer[0]);
+			hr = render->GetDevice()->CreateBuffer(&bd, &srd, &pVertexBuffer[0]);
 
 			if (FAILED(hr))
 			{
@@ -95,7 +97,7 @@ AXIS::AXIS()
 			srd.SysMemSlicePitch = 0;
 
 			// 頂点バッファの生成
-			hr = CRenderer::GetDevice()->CreateBuffer(&bd, &srd, &pVertexBuffer[1]);
+			hr = render->GetDevice()->CreateBuffer(&bd, &srd, &pVertexBuffer[1]);
 
 			if (FAILED(hr))
 			{
@@ -142,7 +144,7 @@ AXIS::AXIS()
 			srd.SysMemSlicePitch = 0;
 
 			// 頂点バッファの生成
-			hr = CRenderer::GetDevice()->CreateBuffer(&bd, &srd, &pVertexBuffer[2]);
+			hr = render->GetDevice()->CreateBuffer(&bd, &srd, &pVertexBuffer[2]);
 
 			if (FAILED(hr))
 			{
@@ -176,7 +178,7 @@ AXIS::AXIS()
 		irData.SysMemPitch = 0;
 		irData.SysMemSlicePitch = 0;
 
-		hr = CRenderer::GetDevice()->CreateBuffer(&ibDesc, &irData, &pIndexBuffer);
+		hr = render->GetDevice()->CreateBuffer(&ibDesc, &irData, &pIndexBuffer);
 		if (FAILED(hr))
 		{
 			FAILDE_ASSERT
@@ -195,58 +197,61 @@ void AXIS::Init(void)
 
 void AXIS::Draw(void)
 {
-	if (false == CManager::Get_Instance()->Get_ShadowMap()->Get_Enable())
+	if (CManager::Get_Instance()->Get_ShadowMap()->Get_Enable())
 	{
-		XMMATRIX world;
-
-		// 入力アセンブラにインデックスバッファを設定
-		CRenderer::SetIndexBuffer(pIndexBuffer);
-
-		// トポロジの設定
-		CRenderer::GetDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_LINESTRIP);
-
-		// 
-		CRenderer::Set_Shader(SHADER_INDEX_V::DEFAULT, SHADER_INDEX_P::NO_TEXTURE);
-
-		for (int i = 0; i < 3; i++)
-		{
-			// 入力アセンブラに頂点バッファを設定
-			CRenderer::SetVertexBuffers(pVertexBuffer[i]);
-
-			// 3Dマトリックス設定
-			{
-				world = XMMatrixIdentity();
-
-				Vector3 position = *Get_Transform().Get_Position();
-				Vector3 rotate = *Get_Transform().Get_Rotation();
-				Vector3 scale = *Get_Transform().Get_Scaling();
-
-				world = XMMatrixScaling(scale.x, scale.y, scale.z);																						// 拡大縮小
-				world *= XMMatrixRotationRollPitchYaw(XMConvertToRadians(rotate.x), XMConvertToRadians(rotate.y), XMConvertToRadians(rotate.z));			// 回転(ロールピッチヨウ)
-				//world *= XMMatrixTranslation(pos.x, pos.y, pos.z);																								// 移動
-				world *= XMMatrixTranslation(position.x, position.y + 0.5f, position.z);
-
-				const auto camera01 = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<CCamera>("camera");
-				const auto camera02 = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
-
-				if (!camera01.expired() && Empty_weak_ptr<CCamera>(camera01))
-				{
-					CRenderer::Set_MatrixBuffer(world, camera01.lock()->Get_Camera_View(), camera01.lock()->Get_Camera_Projection());
-				}
-				else
-				{
-					CRenderer::Set_MatrixBuffer(world, camera02.lock()->Get_Camera_View(), camera02.lock()->Get_Camera_Projection());
-				}
-			}
-
-			CRenderer::GetDeviceContext()->DrawIndexed(COUNT, 0, 0);
-		}
-
-		// トポロジの設定
-		CRenderer::GetDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
-
-		CRenderer::Set_Shader();
+		return;
 	}
+
+	CRenderer* render = render->getInstance();
+
+	XMMATRIX world;
+
+	// 入力アセンブラにインデックスバッファを設定
+	render->SetIndexBuffer(pIndexBuffer.Get());
+
+	// トポロジの設定
+	render->SetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_LINESTRIP);
+
+	// 
+	render->Set_Shader(SHADER_INDEX_V::DEFAULT, SHADER_INDEX_P::NO_TEXTURE);
+
+	for (int i = 0; i < 3; i++)
+	{
+		// 入力アセンブラに頂点バッファを設定
+		render->SetVertexBuffers(pVertexBuffer[i].Get());
+
+		// 3Dマトリックス設定
+		{
+			world = XMMatrixIdentity();
+
+			Vector3 position = *Get_Transform().Get_Position();
+			Vector3 rotate = *Get_Transform().Get_Rotation();
+			Vector3 scale = *Get_Transform().Get_Scaling();
+
+			world = XMMatrixScaling(scale.x, scale.y, scale.z);																						// 拡大縮小
+			world *= XMMatrixRotationRollPitchYaw(XMConvertToRadians(rotate.x), XMConvertToRadians(rotate.y), XMConvertToRadians(rotate.z));			// 回転(ロールピッチヨウ)
+			//world *= XMMatrixTranslation(pos.x, pos.y, pos.z);																								// 移動
+			world *= XMMatrixTranslation(position.x, position.y + 0.5f, position.z);
+
+			const auto camera01 = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<CCamera>("camera");
+			const auto camera02 = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
+
+			if (!camera01.expired() && Empty_weak_ptr<CCamera>(camera01))
+			{
+				render->Set_MatrixBuffer(world, camera01.lock()->Get_Camera_View(), camera01.lock()->Get_Camera_Projection());
+			}
+			else
+			{
+				render->Set_MatrixBuffer(world, camera02.lock()->Get_Camera_View(), camera02.lock()->Get_Camera_Projection());
+			}
+		}
+		render->DrawIndexed(COUNT, 0, 0);
+	}
+
+	// トポロジの設定
+	render->SetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+	render->Set_Shader();
 }
 
 void AXIS::Update(float delta_time)

@@ -15,10 +15,9 @@
 class BOUNDING_FRUSTUM : public BOUNDING {
 private:
 	//! 頂点バッファ
-	unique_ptr<ID3D11Buffer, Release> pVertexBuffer;
-
+	ComPtr<ID3D11Buffer> pVertexBuffer;
 	//! インデックスバッファ
-	unique_ptr<ID3D11Buffer, Release> pIndexBuffer;
+	ComPtr<ID3D11Buffer> pIndexBuffer;
 
 	//! 視錐台
 	BoundingFrustum Frustum;

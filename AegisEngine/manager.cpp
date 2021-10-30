@@ -59,12 +59,12 @@ bool CManager::Init()
 
 	CINPUT::Init();
 
-	if (false == CRenderer::Init())
+	if (false == CRenderer::getInstance()->Init())
 	{
 		return false;
 	}
 
-	CRenderer::CreateRenderTexture();
+	CRenderer::getInstance()->CreateRenderTexture();
 
 	AUDIO_MANAGER::Init();
 
@@ -185,11 +185,13 @@ void CManager::Update()
 
 void CManager::Draw()
 {
+	CRenderer* render = CRenderer::getInstance();
+
 #ifdef _DEBUG
 	imgui->Begin();
 #endif // _DEBUG
 
-	CRenderer::Begin();
+	render->Begin();
 
 	// シャドウマップの描画
 	{
@@ -200,7 +202,7 @@ void CManager::Draw()
 
 	// 最終レンダリング
 	{
-		CRenderer::SetPass_Rendring();
+		render->SetPass_Rendring();
 		pShadowMap->Set();
 		Manager->pSceneManager->Get_Scene()->Get_Light_Manager()->Draw();
 		Manager->cluster->Draw();
@@ -212,55 +214,55 @@ void CManager::Draw()
 		EFFEKSEER_MANAGER::Draw();
 	}
 
-	//// Direct2D
-	//{
-	//	D2D1_COLOR_F color;
-	//	color.r = 1.0f;
-	//	color.g = 1.0f;
-	//	color.b = 1.0f;
-	//	color.a = 1.0f;
+	/*// Direct2D
+	{
+		D2D1_COLOR_F color;
+		color.r = 1.0f;
+		color.g = 1.0f;
+		color.b = 1.0f;
+		color.a = 1.0f;
 
-	//	ID2D1SolidColorBrush* brush;
-	//	CRenderer::Get2DDeviceContext()->CreateSolidColorBrush(color, &brush);
+		ID2D1SolidColorBrush* brush;
+		render->Get2DDeviceContext()->CreateSolidColorBrush(color, &brush);
 
-	//	D2D1_RECT_F rect;
-	//	rect = D2D1::RectF(100, 100, 200, 200);
+		D2D1_RECT_F rect;
+		rect = D2D1::RectF(100, 100, 200, 200);
 
-	//	CRenderer::Get2DDeviceContext()->BeginDraw();
-	//	//CRenderer::Get2DDeviceContext()->FillRectangle(&rect, brush);
+		render->Get2DDeviceContext()->BeginDraw();
+		//CRenderer::Get2DDeviceContext()->FillRectangle(&rect, brush);
 
-	//	// DirectWrite
+		// DirectWrite
 
-	//	color.r = 1.0f;
-	//	color.g = 0.0f;
-	//	color.b = 0.0f;
-	//	color.a = 1.0f;
+		color.r = 1.0f;
+		color.g = 0.0f;
+		color.b = 0.0f;
+		color.a = 1.0f;
 
-	//	brush->SetColor(color);
+		brush->SetColor(color);
 
-	//	{
-	//		rect = D2D1::RectF(500, 100, 900, 200);
-	//		const wstring drawText = L"Hello HELL World!!!\n地球の未来にご奉仕するにゃん！";
+		{
+			rect = D2D1::RectF(500, 100, 900, 200);
+			const wstring drawText = L"Hello HELL World!!!\n地球の未来にご奉仕するにゃん！";
 
-	//		CRenderer::Get2DDeviceContext()->DrawText(
-	//			drawText.c_str(), drawText.size(), CRenderer::GetTextFormat(), &rect, brush);
-	//	}
+			render->Get2DDeviceContext()->DrawText(
+				drawText.c_str(), drawText.size(), render->GetTextFormat(), &rect, brush);
+		}
 
-	//	{
-	//		D2D1_POINT_2F points;
-	//		points.x = 100.0f;
-	//		points.y = 100.0f;
+		{
+			D2D1_POINT_2F points;
+			points.x = 100.0f;
+			points.y = 100.0f;
 
-	//		CRenderer::Get2DDeviceContext()->DrawTextLayout(
-	//			points, CRenderer::GetTextLayout(), brush);
-	//	}
+			render->Get2DDeviceContext()->DrawTextLayout(
+				points, render->GetTextLayout(), brush);
+		}
 
-	//	CRenderer::Get2DDeviceContext()->EndDraw();
-	//	brush->Release();
-	//}
+		render->Get2DDeviceContext()->EndDraw();
+		brush->Release();
+	}*/
 
 	{
-		CRenderer::End_Draw();
+		render->End_Draw();
 	}
 
 #ifdef _DEBUG
@@ -272,7 +274,7 @@ void CManager::Draw()
 	imgui->Render();//
 #endif // _DEBUG
 
-	CRenderer::End();
+	render->End();
 }
 
 void CManager::Uninit()
@@ -302,7 +304,7 @@ void CManager::Uninit()
 
 	AUDIO_MANAGER::Uninit();
 
-	CRenderer::Uninit();
+	CRenderer::getInstance()->Uninit();
 
 	CINPUT::Uninit();
 

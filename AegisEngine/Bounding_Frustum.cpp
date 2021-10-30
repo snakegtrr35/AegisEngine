@@ -9,6 +9,8 @@ using namespace Aegis;
 
 void BOUNDING_FRUSTUM::Init()
 {
+	CRenderer* render = CRenderer::getInstance();
+
 	{
 		BoundingFrustum::CreateFromMatrix(Frustum, XMMatrixPerspectiveFovLH(XMConvertToRadians(80.0f + 35.0f), float(SCREEN_WIDTH / SCREEN_HEIGHT), 0.001f, 1000.0f));
 		Frustum.Origin.z = 0.0f;
@@ -22,14 +24,8 @@ void BOUNDING_FRUSTUM::Init()
 
 	Color = COLOR(1.f, 0.f, 0.f, 1.f);
 
-	if (nullptr != pVertexBuffer.get())
-		pVertexBuffer.reset(nullptr);
-
-	if (nullptr != pIndexBuffer.get())
-		pIndexBuffer.reset(nullptr);
-
 	// 頂点バッファの設定
-	if (nullptr == pVertexBuffer.get())
+	if (nullptr == pVertexBuffer)
 	{
 		const char VertexNum = 8;
 
@@ -56,11 +52,7 @@ void BOUNDING_FRUSTUM::Init()
 
 		// 頂点バッファの設定
 		{
-			ID3D11Buffer* buffer;
-
 			D3D11_BUFFER_DESC bd;
-			ZeroMemory(&bd, sizeof(bd));
-
 			bd.ByteWidth = sizeof(VERTEX_3D) * VertexNum;
 			bd.Usage = D3D11_USAGE_DYNAMIC;
 			bd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
@@ -70,20 +62,14 @@ void BOUNDING_FRUSTUM::Init()
 
 			D3D11_SUBRESOURCE_DATA sd;
 			sd.pSysMem = Vertex;
-			sd.SysMemPitch = 0;
-			sd.SysMemSlicePitch = 0;
 
-			CRenderer::GetDevice()->CreateBuffer(&bd, &sd, &buffer);
-
-			pVertexBuffer.reset(buffer);
+			render->GetDevice()->CreateBuffer(&bd, &sd, &pVertexBuffer);
 		}
 	}
 
 	// インデックスバッファの設定
-	if (nullptr == pIndexBuffer.get())
+	if (nullptr == pIndexBuffer)
 	{
-		ID3D11Buffer* buffer;
-
 		const WORD index[24] = {
 		0, 1,
 		1, 3,
@@ -102,9 +88,7 @@ void BOUNDING_FRUSTUM::Init()
 		6, 2
 		};
 
-		D3D11_BUFFER_DESC bd;
-		ZeroMemory(&bd, sizeof(bd));
-
+		D3D11_BUFFER_DESC bd{};
 		bd.ByteWidth = sizeof(WORD) * 24;
 		bd.Usage = D3D11_USAGE_DEFAULT;
 		bd.BindFlags = D3D11_BIND_INDEX_BUFFER;
@@ -112,63 +96,67 @@ void BOUNDING_FRUSTUM::Init()
 		bd.MiscFlags = 0;
 		bd.StructureByteStride = 0;
 
-		D3D11_SUBRESOURCE_DATA sd;
-		ZeroMemory(&sd, sizeof(sd));
+		D3D11_SUBRESOURCE_DATA sd{};
 		sd.pSysMem = index;
 
-		CRenderer::GetDevice()->CreateBuffer(&bd, &sd, &buffer);
-
-		pIndexBuffer.reset(buffer);
+		render->GetDevice()->CreateBuffer(&bd, &sd, &pIndexBuffer);
 	}
 }
 
 void BOUNDING_FRUSTUM::Draw()
 {
-	if (false == CManager::Get_Instance()->Get_ShadowMap()->Get_Enable())
+	if (CManager::Get_Instance()->Get_ShadowMap()->Get_Enable())
 	{
-		// 入力アセンブラに頂点バッファを設定
-		CRenderer::SetVertexBuffers(pVertexBuffer.get());
+		return;
+	}
 
-		// 入力アセンブラにインデックスバッファを設定
-		CRenderer::SetIndexBuffer(pIndexBuffer.get());
+	CRenderer* render = CRenderer::getInstance();
 
-		// トポロジの設定
-		CRenderer::GetDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_LINESTRIP);
+	// 入力アセンブラに頂点バッファを設定
+	render->SetVertexBuffers(pVertexBuffer.Get());
 
-		CRenderer::Set_Shader(SHADER_INDEX_V::DEFAULT, SHADER_INDEX_P::NO_TEXTURE);
+	// 入力アセンブラにインデックスバッファを設定
+	render->SetIndexBuffer(pIndexBuffer.Get());
 
+	// トポロジの設定
+	render->SetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_LINESTRIP);
+
+	render->Set_Shader(SHADER_INDEX_V::DEFAULT, SHADER_INDEX_P::NO_TEXTURE);
+
+	{
+		// 3Dマトリックス設定
 		{
-			// 3Dマトリックス設定
+			XMMATRIX world = XMMatrixIdentity();
+
+			world = XMMatrixIdentity();
+			//world *= XMMatrixScaling(Scaling.x, Scaling.y, Scaling.z);
+			//world *= XMMatrixRotationRollPitchYaw(XMConvertToRadians(Rotation.x), XMConvertToRadians(Rotation.y), XMConvertToRadians(Rotation.z));
+			//world *= XMMatrixTranslation(Position.x, Position.y, Position.z);
+
+			const auto camera01 = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<CCamera>("camera");
+			const auto camera02 = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
+
+			if (!camera01.expired() && Empty_weak_ptr<CCamera>(camera01))
 			{
-				XMMATRIX world = XMMatrixIdentity();
+				render->Set_MatrixBuffer(world, camera01.lock()->Get_Camera_View(), camera01.lock()->Get_Camera_Projection());
 
-				world = XMMatrixIdentity();
-				//world *= XMMatrixScaling(Scaling.x, Scaling.y, Scaling.z);
-				//world *= XMMatrixRotationRollPitchYaw(XMConvertToRadians(Rotation.x), XMConvertToRadians(Rotation.y), XMConvertToRadians(Rotation.z));
-				//world *= XMMatrixTranslation(Position.x, Position.y, Position.z);
-
-				const auto camera01 = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<CCamera>("camera");
-				const auto camera02 = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
-
-				if (!camera01.expired() && Empty_weak_ptr<CCamera>(camera01))
-				{
-					CRenderer::Set_MatrixBuffer(world, camera01.lock()->Get_Camera_View(), camera01.lock()->Get_Camera_Projection());
-
-					CRenderer::Set_MatrixBuffer01(*camera01.lock()->Get_Pos());
-				}
-				else
-				{
-					CRenderer::Set_MatrixBuffer(world, camera02.lock()->Get_Camera_View(), camera02.lock()->Get_Camera_Projection());
-
-					CRenderer::Set_MatrixBuffer01(*camera02.lock()->Get_Pos());
-				}
+				render->Set_MatrixBuffer01(*camera01.lock()->Get_Pos());
 			}
+			else
+			{
+				render->Set_MatrixBuffer(world, camera02.lock()->Get_Camera_View(), camera02.lock()->Get_Camera_Projection());
 
-			CRenderer::GetDeviceContext()->DrawIndexed(24, 0, 0);
+				render->Set_MatrixBuffer01(*camera02.lock()->Get_Pos());
+			}
 		}
 
-		CRenderer::Set_Shader();
+		render->GetDeviceContext()->DrawIndexed(24, 0, 0);
 	}
+
+	render->Set_Shader();
+
+	// トポロジの設定
+	render->SetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 }
 
 void BOUNDING_FRUSTUM::Update(float delta_time)
@@ -223,12 +211,12 @@ void BOUNDING_FRUSTUM::Update(float delta_time)
 
 void BOUNDING_FRUSTUM::Uninit()
 {
-	pVertexBuffer.reset(nullptr);
-	pIndexBuffer.reset(nullptr);
 }
 
 void BOUNDING_FRUSTUM::OverWrite()
 {
+	CRenderer* render = CRenderer::getInstance();
+
 	// 頂点バッファの設定
 	{
 		const char VertexNum = 8;
@@ -256,11 +244,7 @@ void BOUNDING_FRUSTUM::OverWrite()
 
 		// 頂点バッファの設定
 		{
-			ID3D11Buffer* buffer;
-
-			D3D11_BUFFER_DESC bd;
-			ZeroMemory(&bd, sizeof(bd));
-
+			D3D11_BUFFER_DESC bd{};
 			bd.ByteWidth = sizeof(VERTEX_3D) * VertexNum;
 			bd.Usage = D3D11_USAGE_DYNAMIC;
 			bd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
@@ -268,21 +252,15 @@ void BOUNDING_FRUSTUM::OverWrite()
 			bd.MiscFlags = 0;
 			bd.StructureByteStride = 0;
 
-			D3D11_SUBRESOURCE_DATA sd;
+			D3D11_SUBRESOURCE_DATA sd{};
 			sd.pSysMem = Vertex;
-			sd.SysMemPitch = 0;
-			sd.SysMemSlicePitch = 0;
 
-			CRenderer::GetDevice()->CreateBuffer(&bd, &sd, &buffer);
-
-			pVertexBuffer.reset(buffer);
+			render->GetDevice()->CreateBuffer(&bd, &sd, &pVertexBuffer);
 		}
 	}
 
 	// インデックスバッファの設定
 	{
-		ID3D11Buffer* buffer;
-
 		const WORD index[24] = {
 		0, 1,
 		1, 3,
@@ -301,9 +279,7 @@ void BOUNDING_FRUSTUM::OverWrite()
 		6, 2
 		};
 
-		D3D11_BUFFER_DESC bd;
-		ZeroMemory(&bd, sizeof(bd));
-
+		D3D11_BUFFER_DESC bd{};
 		bd.ByteWidth = sizeof(WORD) * 24;
 		bd.Usage = D3D11_USAGE_DEFAULT;
 		bd.BindFlags = D3D11_BIND_INDEX_BUFFER;
@@ -311,13 +287,10 @@ void BOUNDING_FRUSTUM::OverWrite()
 		bd.MiscFlags = 0;
 		bd.StructureByteStride = 0;
 
-		D3D11_SUBRESOURCE_DATA sd;
-		ZeroMemory(&sd, sizeof(sd));
+		D3D11_SUBRESOURCE_DATA sd{};
 		sd.pSysMem = index;
 
-		CRenderer::GetDevice()->CreateBuffer(&bd, &sd, &buffer);
-
-		pIndexBuffer.reset(buffer);
+		render->GetDevice()->CreateBuffer(&bd, &sd, &pIndexBuffer);
 	}
 }
 

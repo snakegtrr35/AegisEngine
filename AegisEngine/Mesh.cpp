@@ -10,9 +10,6 @@ MESH::MESH()
 
 MESH::MESH(vector<VERTEX_3D>& vertices, vector<UINT>& indices, vector<TEXTURE_S>& textures, XMMATRIX& matrix, string name)
 {
-	VertexBuffer = nullptr;
-	IndexBuffer = nullptr;
-
 	//Vertices = vertices;
 	Indices = indices;
 	Textures = textures;
@@ -104,6 +101,7 @@ bool MESH::GetAnime()
 
 bool MESH::SetupMesh(vector<VERTEX_3D>& vertices)
 {
+	CRenderer* render = CRenderer::getInstance();
 	HRESULT hr;
 
 	{
@@ -115,14 +113,13 @@ bool MESH::SetupMesh(vector<VERTEX_3D>& vertices)
 		vbd.MiscFlags = 0;
 
 		// サブリソースの設定
-		D3D11_SUBRESOURCE_DATA initData;
-		ZeroMemory(&initData, sizeof(D3D11_SUBRESOURCE_DATA));
+		D3D11_SUBRESOURCE_DATA initData{};
 
 		initData.pSysMem = &vertices[0];
 		initData.SysMemPitch = 0;
 		initData.SysMemSlicePitch = 0;
 
-		hr = CRenderer::GetDevice()->CreateBuffer(&vbd, &initData, &VertexBuffer);
+		hr = render->GetDevice()->CreateBuffer(&vbd, &initData, &VertexBuffer);
 		if (FAILED(hr))
 			return false;
 	}
@@ -136,14 +133,13 @@ bool MESH::SetupMesh(vector<VERTEX_3D>& vertices)
 		ibd.MiscFlags = 0;
 
 		// サブリソースの設定
-		D3D11_SUBRESOURCE_DATA initData;
-		ZeroMemory(&initData, sizeof(D3D11_SUBRESOURCE_DATA));
+		D3D11_SUBRESOURCE_DATA initData{};
 
 		initData.pSysMem = &Indices[0];
 		initData.SysMemPitch = 0;
 		initData.SysMemSlicePitch = 0;
 
-		hr = CRenderer::GetDevice()->CreateBuffer(&ibd, &initData, &IndexBuffer);
+		hr = render->GetDevice()->CreateBuffer(&ibd, &initData, &IndexBuffer);
 		if (FAILED(hr))
 			return false;
 	}
@@ -152,17 +148,18 @@ bool MESH::SetupMesh(vector<VERTEX_3D>& vertices)
 
 void MESH::Draw_Mesh(XMMATRIX& parent_matrix)
 {
+	CRenderer* render = CRenderer::getInstance();
 	XMMATRIX matrix;
 
 	if (Indices.empty() || nullptr == Textures[0].Texture) FAILDE_ASSERT;
 
 	if (!Indices.empty() && nullptr != Textures[0].Texture)
 	{
-		CRenderer::SetVertexBuffers(VertexBuffer);
+		render->SetVertexBuffers(VertexBuffer.Get());
 
-		CRenderer::GetDeviceContext()->IASetIndexBuffer(IndexBuffer, DXGI_FORMAT_R32_UINT, 0);
+		render->GetDeviceContext()->IASetIndexBuffer(IndexBuffer.Get(), DXGI_FORMAT_R32_UINT, 0);
 
-		CRenderer::GetDeviceContext()->PSSetShaderResources(0, 1, &Textures[0].Texture);
+		render->GetDeviceContext()->PSSetShaderResources(0, 1, &Textures[0].Texture);
 
 		// 3Dマトリックス設定
 		{
@@ -180,13 +177,13 @@ void MESH::Draw_Mesh(XMMATRIX& parent_matrix)
 					XMMATRIX view = CManager::Get_Instance()->Get_ShadowMap()->Get_View();
 					XMMATRIX proj = CManager::Get_Instance()->Get_ShadowMap()->Get_Plojection();
 
-					CRenderer::Set_MatrixBuffer(matrix, view, proj);
+					render->Set_MatrixBuffer(matrix, view, proj);
 				}
 				else
 				{
-					CRenderer::Set_MatrixBuffer(matrix, camera01.lock()->Get_Camera_View(), camera01.lock()->Get_Camera_Projection());
+					render->Set_MatrixBuffer(matrix, camera01.lock()->Get_Camera_View(), camera01.lock()->Get_Camera_Projection());
 
-					CRenderer::Set_MatrixBuffer01(*camera01.lock()->Get_Pos());
+					render->Set_MatrixBuffer01(*camera01.lock()->Get_Pos());
 				}
 			}
 			else
@@ -197,20 +194,20 @@ void MESH::Draw_Mesh(XMMATRIX& parent_matrix)
 					XMMATRIX view = CManager::Get_Instance()->Get_ShadowMap()->Get_View();
 					XMMATRIX proj = CManager::Get_Instance()->Get_ShadowMap()->Get_Plojection();
 
-					CRenderer::Set_MatrixBuffer(matrix, view, proj);
+					render->Set_MatrixBuffer(matrix, view, proj);
 				}
 				else
 				{
-					CRenderer::Set_MatrixBuffer(matrix, camera02.lock()->Get_Camera_View(), camera02.lock()->Get_Camera_Projection());
+					render->Set_MatrixBuffer(matrix, camera02.lock()->Get_Camera_View(), camera02.lock()->Get_Camera_Projection());
 
-					CRenderer::Set_MatrixBuffer01(*camera02.lock()->Get_Pos());
+					render->Set_MatrixBuffer01(*camera02.lock()->Get_Pos());
 				}
 			}
 		}
 
-		CRenderer::GetDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+		render->GetDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-		CRenderer::GetDeviceContext()->DrawIndexed((UINT)Indices.size(), 0, 0);
+		render->GetDeviceContext()->DrawIndexed((UINT)Indices.size(), 0, 0);
 	}
 	else
 	{
@@ -225,6 +222,7 @@ void MESH::Draw_Mesh(XMMATRIX& parent_matrix)
 
 void MESH::Draw_DPP_Mesh(XMMATRIX& parent_matrix)
 {
+	CRenderer* render = CRenderer::getInstance();
 	XMMATRIX matrix;
 
 	if (!Indices.empty())
@@ -239,21 +237,19 @@ void MESH::Draw_DPP_Mesh(XMMATRIX& parent_matrix)
 			// 普通のカメラかデバッグカメラ
 			if (!camera01.expired() && Empty_weak_ptr<CCamera>(camera01))
 			{
-				CRenderer::Set_MatrixBuffer(matrix, camera01.lock()->Get_Camera_View(), camera01.lock()->Get_Camera_Projection());
+				render->Set_MatrixBuffer(matrix, camera01.lock()->Get_Camera_View(), camera01.lock()->Get_Camera_Projection());
 			}
 			else
 			{
-				CRenderer::Set_MatrixBuffer(matrix, camera02.lock()->Get_Camera_View(), camera02.lock()->Get_Camera_Projection());
+				render->Set_MatrixBuffer(matrix, camera02.lock()->Get_Camera_View(), camera02.lock()->Get_Camera_Projection());
 			}
 		}
 
-		CRenderer::SetVertexBuffers(VertexBuffer);
+		render->SetVertexBuffers(VertexBuffer.Get());
 
-		CRenderer::GetDeviceContext()->IASetIndexBuffer(IndexBuffer, DXGI_FORMAT_R32_UINT, 0);
+		render->GetDeviceContext()->IASetIndexBuffer(IndexBuffer.Get(), DXGI_FORMAT_R32_UINT, 0);
 
-		CRenderer::GetDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-
-		CRenderer::GetDeviceContext()->DrawIndexed((UINT)Indices.size(), 0, 0);
+		render->GetDeviceContext()->DrawIndexed((UINT)Indices.size(), 0, 0);
 	}
 	else
 	{
@@ -268,13 +264,14 @@ void MESH::Draw_DPP_Mesh(XMMATRIX& parent_matrix)
 
 void MESH::Draw_Mesh_Animation(XMMATRIX& parent_matrix, unordered_map<string, Anim>& anime, DWORD frame, const string& name1, const string& name2, float blend)
 {
+	CRenderer* render = CRenderer::getInstance();
 	XMMATRIX world;
 
-	CRenderer::SetVertexBuffers(VertexBuffer);
+	render->SetVertexBuffers(VertexBuffer.Get());
 
-	CRenderer::GetDeviceContext()->IASetIndexBuffer(IndexBuffer, DXGI_FORMAT_R32_UINT, 0);
+	render->GetDeviceContext()->IASetIndexBuffer(IndexBuffer.Get(), DXGI_FORMAT_R32_UINT, 0);
 
-	CRenderer::GetDeviceContext()->PSSetShaderResources(0, 1, &Textures[0].Texture);
+	render->GetDeviceContext()->PSSetShaderResources(0, 1, &Textures[0].Texture);
 
 	// 3Dマトリックス設定
 	{
@@ -312,13 +309,13 @@ void MESH::Draw_Mesh_Animation(XMMATRIX& parent_matrix, unordered_map<string, An
 							XMMATRIX view = CManager::Get_Instance()->Get_ShadowMap()->Get_View();
 							XMMATRIX proj = CManager::Get_Instance()->Get_ShadowMap()->Get_Plojection();
 
-							CRenderer::Set_MatrixBuffer(world, view, proj);
+							render->Set_MatrixBuffer(world, view, proj);
 						}
 						else
 						{
-							CRenderer::Set_MatrixBuffer(world, camera01.lock()->Get_Camera_View(), camera01.lock()->Get_Camera_Projection());
+							render->Set_MatrixBuffer(world, camera01.lock()->Get_Camera_View(), camera01.lock()->Get_Camera_Projection());
 
-							CRenderer::Set_MatrixBuffer01(*camera01.lock()->Get_Pos());
+							render->Set_MatrixBuffer01(*camera01.lock()->Get_Pos());
 						}
 					}
 					else
@@ -329,13 +326,13 @@ void MESH::Draw_Mesh_Animation(XMMATRIX& parent_matrix, unordered_map<string, An
 							XMMATRIX view = CManager::Get_Instance()->Get_ShadowMap()->Get_View();
 							XMMATRIX proj = CManager::Get_Instance()->Get_ShadowMap()->Get_Plojection();
 
-							CRenderer::Set_MatrixBuffer(world, view, proj);
+							render->Set_MatrixBuffer(world, view, proj);
 						}
 						else
 						{
-							CRenderer::Set_MatrixBuffer(world, camera02.lock()->Get_Camera_View(), camera02.lock()->Get_Camera_Projection());
+							render->Set_MatrixBuffer(world, camera02.lock()->Get_Camera_View(), camera02.lock()->Get_Camera_Projection());
 
-							CRenderer::Set_MatrixBuffer01(*camera02.lock()->Get_Pos());
+							render->Set_MatrixBuffer01(*camera02.lock()->Get_Pos());
 						}
 					}
 
@@ -406,13 +403,13 @@ void MESH::Draw_Mesh_Animation(XMMATRIX& parent_matrix, unordered_map<string, An
 					XMMATRIX view = CManager::Get_Instance()->Get_ShadowMap()->Get_View();
 					XMMATRIX proj = CManager::Get_Instance()->Get_ShadowMap()->Get_Plojection();
 
-					CRenderer::Set_MatrixBuffer(world, view, proj);
+					render->Set_MatrixBuffer(world, view, proj);
 				}
 				else
 				{
-					CRenderer::Set_MatrixBuffer(world, camera01.lock()->Get_Camera_View(), camera01.lock()->Get_Camera_Projection());
+					render->Set_MatrixBuffer(world, camera01.lock()->Get_Camera_View(), camera01.lock()->Get_Camera_Projection());
 
-					CRenderer::Set_MatrixBuffer01(*camera01.lock()->Get_Pos());
+					render->Set_MatrixBuffer01(*camera01.lock()->Get_Pos());
 				}
 			}
 			else
@@ -423,21 +420,21 @@ void MESH::Draw_Mesh_Animation(XMMATRIX& parent_matrix, unordered_map<string, An
 					XMMATRIX view = CManager::Get_Instance()->Get_ShadowMap()->Get_View();
 					XMMATRIX proj = CManager::Get_Instance()->Get_ShadowMap()->Get_Plojection();
 
-					CRenderer::Set_MatrixBuffer(world, view, proj);
+					render->Set_MatrixBuffer(world, view, proj);
 				}
 				else
 				{
-					CRenderer::Set_MatrixBuffer(world, camera02.lock()->Get_Camera_View(), camera02.lock()->Get_Camera_Projection());
+					render->Set_MatrixBuffer(world, camera02.lock()->Get_Camera_View(), camera02.lock()->Get_Camera_Projection());
 
-					CRenderer::Set_MatrixBuffer01(*camera02.lock()->Get_Pos());
+					render->Set_MatrixBuffer01(*camera02.lock()->Get_Pos());
 				}
 			}
 		}
 	}
 
-	CRenderer::GetDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	render->GetDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-	CRenderer::GetDeviceContext()->DrawIndexed((UINT)Indices.size(), 0, 0);
+	render->GetDeviceContext()->DrawIndexed((UINT)Indices.size(), 0, 0);
 
 	for (auto child : ChildMeshes)
 	{
@@ -447,6 +444,7 @@ void MESH::Draw_Mesh_Animation(XMMATRIX& parent_matrix, unordered_map<string, An
 
 void MESH::Draw_DPP_Mesh_Animation(XMMATRIX& parent_matrix, unordered_map<string, Anim>& anime, DWORD frame, const string& name1, const string& name2, float blend)
 {
+	CRenderer* render = CRenderer::getInstance();
 	XMMATRIX world;
 
 	// 3Dマトリックス設定
@@ -479,11 +477,11 @@ void MESH::Draw_DPP_Mesh_Animation(XMMATRIX& parent_matrix, unordered_map<string
 					// 普通のカメラかデバッグカメラか?
 					if (!camera01.expired() && Empty_weak_ptr<CCamera>(camera01))
 					{
-						CRenderer::Set_MatrixBuffer(world, camera01.lock()->Get_Camera_View(), camera01.lock()->Get_Camera_Projection());
+						render->Set_MatrixBuffer(world, camera01.lock()->Get_Camera_View(), camera01.lock()->Get_Camera_Projection());
 					}
 					else
 					{
-						CRenderer::Set_MatrixBuffer(world, camera02.lock()->Get_Camera_View(), camera02.lock()->Get_Camera_Projection());
+						render->Set_MatrixBuffer(world, camera02.lock()->Get_Camera_View(), camera02.lock()->Get_Camera_Projection());
 					}
 
 					break;
@@ -546,22 +544,22 @@ void MESH::Draw_DPP_Mesh_Animation(XMMATRIX& parent_matrix, unordered_map<string
 			// 普通のカメラかデバッグカメラか?
 			if (!camera01.expired() && Empty_weak_ptr<CCamera>(camera01))
 			{
-				CRenderer::Set_MatrixBuffer(world, camera01.lock()->Get_Camera_View(), camera01.lock()->Get_Camera_Projection());
+				render->Set_MatrixBuffer(world, camera01.lock()->Get_Camera_View(), camera01.lock()->Get_Camera_Projection());
 			}
 			else
 			{
-				CRenderer::Set_MatrixBuffer(world, camera02.lock()->Get_Camera_View(), camera02.lock()->Get_Camera_Projection());
+				render->Set_MatrixBuffer(world, camera02.lock()->Get_Camera_View(), camera02.lock()->Get_Camera_Projection());
 			}
 		}
 	}
 
-	CRenderer::SetVertexBuffers(VertexBuffer);
+	render->SetVertexBuffers(VertexBuffer.Get());
 
-	CRenderer::GetDeviceContext()->IASetIndexBuffer(IndexBuffer, DXGI_FORMAT_R32_UINT, 0);
+	render->GetDeviceContext()->IASetIndexBuffer(IndexBuffer.Get(), DXGI_FORMAT_R32_UINT, 0);
 
-	CRenderer::GetDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	render->GetDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-	CRenderer::GetDeviceContext()->DrawIndexed((UINT)Indices.size(), 0, 0);
+	render->GetDeviceContext()->DrawIndexed((UINT)Indices.size(), 0, 0);
 
 	for (auto child : ChildMeshes)
 	{
@@ -608,7 +606,9 @@ void MESHS::Init()
 				wstring filenamews = wstring(path.begin(), path.end());
 
 				{
-					HRESULT hr = CreateWICTextureFromFile(CRenderer::GetDevice(), CRenderer::GetDeviceContext(), filenamews.c_str(), nullptr, &tex.Texture, nullptr, nullptr);
+					CRenderer* render = CRenderer::getInstance();
+
+					HRESULT hr = CreateWICTextureFromFile(render->GetDevice(), render->GetDeviceContext(), filenamews.c_str(), nullptr, &tex.Texture, nullptr, nullptr);
 					if (FAILED(hr))
 						FAILDE_ASSERT
 				}
@@ -706,6 +706,7 @@ void MESHS::Set(const MESHS& meshs)
 
 void MESHS::SetupMesh()
 {
+	CRenderer* render = CRenderer::getInstance();
 	HRESULT hr;
 
 	// 頂点バッファの生成
@@ -719,12 +720,11 @@ void MESHS::SetupMesh()
 		desc.MiscFlags = 0;
 
 		// サブリソースの設定
-		D3D11_SUBRESOURCE_DATA initData;
-		ZeroMemory(&initData, sizeof(D3D11_SUBRESOURCE_DATA));
+		D3D11_SUBRESOURCE_DATA initData{};
 
 		initData.pSysMem = Vertices.data();
 
-		hr = CRenderer::GetDevice()->CreateBuffer(&desc, &initData, &VertexBuffer);
+		hr = render->GetDevice()->CreateBuffer(&desc, &initData, &VertexBuffer);
 		if (FAILED(hr))
 			FAILDE_ASSERT;
 	}
@@ -740,12 +740,11 @@ void MESHS::SetupMesh()
 		desc.MiscFlags = 0;
 
 		// サブリソースの設定
-		D3D11_SUBRESOURCE_DATA initData;
-		ZeroMemory(&initData, sizeof(D3D11_SUBRESOURCE_DATA));
+		D3D11_SUBRESOURCE_DATA initData{};
 
 		initData.pSysMem = Indices.data();
 
-		hr = CRenderer::GetDevice()->CreateBuffer(&desc, &initData, &IndexBuffer);
+		hr = render->GetDevice()->CreateBuffer(&desc, &initData, &IndexBuffer);
 		if (FAILED(hr))
 			FAILDE_ASSERT;
 	}
@@ -753,19 +752,20 @@ void MESHS::SetupMesh()
 
 void MESHS::Draw_Mesh(XMMATRIX& parent_matrix, const vector<TEXTURE_S>& textures)
 {
+	CRenderer* render = CRenderer::getInstance();
 	XMMATRIX matrix;
 
 	if (!Indices.empty())
 	{
-		CRenderer::SetVertexBuffers(VertexBuffer);
+		render->SetVertexBuffers(VertexBuffer.Get());
 
-		CRenderer::GetDeviceContext()->IASetIndexBuffer(IndexBuffer, DXGI_FORMAT_R32_UINT, 0);
+		render->GetDeviceContext()->IASetIndexBuffer(IndexBuffer.Get(), DXGI_FORMAT_R32_UINT, 0);
 
 		for (UINT i = 0; textures.size(); i++)
 		{
 			if (textures[i].FileName == TextureName)
 			{
-				CRenderer::GetDeviceContext()->PSSetShaderResources(0, 1, &textures[i].Texture);
+				render->GetDeviceContext()->PSSetShaderResources(0, 1, &textures[i].Texture);
 				break;
 			}
 		}
@@ -786,13 +786,13 @@ void MESHS::Draw_Mesh(XMMATRIX& parent_matrix, const vector<TEXTURE_S>& textures
 					XMMATRIX view = CManager::Get_Instance()->Get_ShadowMap()->Get_View();
 					XMMATRIX proj = CManager::Get_Instance()->Get_ShadowMap()->Get_Plojection();
 
-					CRenderer::Set_MatrixBuffer(matrix, view, proj);
+					render->Set_MatrixBuffer(matrix, view, proj);
 				}
 				else
 				{
-					CRenderer::Set_MatrixBuffer(matrix, camera01.lock()->Get_Camera_View(), camera01.lock()->Get_Camera_Projection());
+					render->Set_MatrixBuffer(matrix, camera01.lock()->Get_Camera_View(), camera01.lock()->Get_Camera_Projection());
 
-					CRenderer::Set_MatrixBuffer01(*camera01.lock()->Get_Pos());
+					render->Set_MatrixBuffer01(*camera01.lock()->Get_Pos());
 				}
 			}
 			else
@@ -803,20 +803,20 @@ void MESHS::Draw_Mesh(XMMATRIX& parent_matrix, const vector<TEXTURE_S>& textures
 					XMMATRIX view = CManager::Get_Instance()->Get_ShadowMap()->Get_View();
 					XMMATRIX proj = CManager::Get_Instance()->Get_ShadowMap()->Get_Plojection();
 
-					CRenderer::Set_MatrixBuffer(matrix, view, proj);
+					render->Set_MatrixBuffer(matrix, view, proj);
 				}
 				else
 				{
-					CRenderer::Set_MatrixBuffer(matrix, camera02.lock()->Get_Camera_View(), camera02.lock()->Get_Camera_Projection());
+					render->Set_MatrixBuffer(matrix, camera02.lock()->Get_Camera_View(), camera02.lock()->Get_Camera_Projection());
 
-					CRenderer::Set_MatrixBuffer01(*camera02.lock()->Get_Pos());
+					render->Set_MatrixBuffer01(*camera02.lock()->Get_Pos());
 				}
 			}
 		}
 
-		CRenderer::GetDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+		render->GetDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-		CRenderer::GetDeviceContext()->DrawIndexed((UINT)Indices.size(), 0, 0);
+		render->GetDeviceContext()->DrawIndexed((UINT)Indices.size(), 0, 0);
 	}
 	else
 	{

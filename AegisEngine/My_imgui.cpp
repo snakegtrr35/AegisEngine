@@ -658,9 +658,13 @@ void My_imgui::Init(HWND hWnd)
 
 	io.Fonts->Build();
 
-	// Setup Platform/Renderer bindings
-	ImGui_ImplWin32_Init(hWnd);
-	ImGui_ImplDX11_Init(CRenderer::GetDevice(), CRenderer::GetDeviceContext());
+	{
+		CRenderer* render = CRenderer::getInstance();
+
+		// Setup Platform/Renderer bindings
+		ImGui_ImplWin32_Init(hWnd);
+		ImGui_ImplDX11_Init(render->GetDevice(), render->GetDeviceContext());
+	}
 
 	// Setup Style
 	ImGui::StyleColorsDark();
@@ -844,9 +848,11 @@ void My_imgui::Draw(void)
 	{
 		// ライトの設定
 		{
+			CRenderer* render = CRenderer::getInstance();
+
 			ImGuiWindowFlags window_flag = ImGuiWindowFlags_NoResize;
 
-			LIGHT* light = CRenderer::Get_Light();
+			LIGHT* light = render->Get_Light();
 
 			float32 vec4_Direction[] = { light->Direction.x, light->Direction.y, light->Direction.z, light->Direction.w };
 			float32 vec4_Position[] = { light->Position.x, light->Position.y, light->Position.z, light->Position.w };
@@ -879,7 +885,7 @@ void My_imgui::Draw(void)
 			light->Diffuse = COLOR(vec4_Diffuse[0], vec4_Diffuse[1], vec4_Diffuse[2], vec4_Diffuse[3]);
 			light->Ambient = COLOR(vec4_Ambient[0], vec4_Ambient[1], vec4_Ambient[2], vec4_Ambient[3]);
 			light->Specular = COLOR(vec4_Specular[0], vec4_Specular[1], vec4_Specular[2], vec4_Specular[3]);
-			CRenderer::SetLight(light);
+			render->SetLight(light);
 		}
 
 		// レンダリングテクスチャ

@@ -49,10 +49,10 @@ class SPRITE : public GAME_OBJECT {
 private:
 protected:
 	//! 頂点バッファ
-	unique_ptr<ID3D11Buffer, Release> pVertexBuffer;
+	ComPtr<ID3D11Buffer> pVertexBuffer;
 
 	//! インデックスバッファ
-	static unique_ptr<ID3D11Buffer, Release> pIndexBuffer;
+	static ComPtr<ID3D11Buffer> pIndexBuffer;
 
 	//! 頂点データ
 	VERTEX_3D Vertex[4];

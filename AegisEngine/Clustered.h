@@ -35,26 +35,26 @@ private:
 	using CLSTER = array<array<array<UINT, CLUSTERED_X>, CLUSTERED_Y>, CLUSTERED_Z>;
 	using LIGHT_LIST = array<array<UINT, CLUSTERED_X* CLUSTERED_Y* CLUSTERED_Z>, 32>;
 
-	unique_ptr <ID3D11Buffer, Release>					ConstatntBuffer;
+	ComPtr<ID3D11Buffer>				ConstatntBuffer;
 
-	unique_ptr <ID3D11ComputeShader, Release>			ClusterCS;
+	ComPtr<ID3D11ComputeShader>			ClusterCS;
 
-	unique_ptr <ID3D11Texture3D, Release>				ClusterTexture;
-	unique_ptr <ID3D11UnorderedAccessView, Release>		ClusterUAV;
-	unique_ptr <ID3D11ShaderResourceView, Release>		ClusterSRV;
+	ComPtr<ID3D11Texture3D>				ClusterTexture;
+	ComPtr<ID3D11UnorderedAccessView>	ClusterUAV;
+	ComPtr<ID3D11ShaderResourceView>	ClusterSRV;
 
-	unique_ptr <ID3D11Texture2D, Release>				Light_List_Texture;
-	unique_ptr <ID3D11UnorderedAccessView, Release>		Light_List_UAV;
-	unique_ptr <ID3D11ShaderResourceView, Release>		Light_List_SRV;
+	ComPtr<ID3D11Texture2D>				Light_List_Texture;
+	ComPtr<ID3D11UnorderedAccessView>	Light_List_UAV;
+	ComPtr<ID3D11ShaderResourceView>	Light_List_SRV;
 
-	unique_ptr<ID3D11Buffer, Release> ClusterBuffer;
+	ComPtr<ID3D11Buffer>				ClusterBuffer;
 
 
-	unique_ptr<CLSTER> Cluster;
-	unique_ptr<LIGHT_LIST> LightList;
+	unique_ptr<CLSTER>					Cluster;
+	unique_ptr<LIGHT_LIST>				LightList;
 
-	BOUNDING_FRUSTUM m_Frustum;
-	BOUNDING_AABB m_Aabb;
+	BOUNDING_FRUSTUM					m_Frustum;
+	BOUNDING_AABB						m_Aabb;
 
 	array<array<array<bool, CLUSTERED_X>, CLUSTERED_Y>, CLUSTERED_Z> m_ClusterFlags = {};
 

@@ -13,22 +13,16 @@ class TEXTURE;
 
 class MESH_DOOM :public GAME_OBJECT {
 private:
-
 	//! 半径
 	float								Radius;
-
 	//! 頂点数
 	UINT	VertexNum;
-
 	//! インデックス数
 	UINT								IndexNum;
-
 	//! 頂点バッファ
-	unique_ptr<ID3D11Buffer, Release>	VertexBuffer;	
-
+	ComPtr<ID3D11Buffer>	VertexBuffer;
 	//! インデックスバッファ
-	unique_ptr<ID3D11Buffer, Release>	IndexBuffer;	
-
+	ComPtr<ID3D11Buffer>	IndexBuffer;
 	//! テクスチャ
 	unique_ptr<TEXTURE>					Texture;						
 

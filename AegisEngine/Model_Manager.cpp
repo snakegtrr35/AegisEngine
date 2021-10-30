@@ -452,12 +452,14 @@ int MODEL_MANEGER::getTextureIndex(aiString* str)
 
 ID3D11ShaderResourceView* MODEL_MANEGER::getTextureFromModel(const aiScene* scene, int textureindex)
 {
+	CRenderer* render = CRenderer::getInstance();
+
 	HRESULT hr;
 	ID3D11ShaderResourceView* texture;
 
 	UINT size = scene->mTextures[textureindex]->mWidth;
 
-	hr = CreateWICTextureFromMemory(CRenderer::GetDevice(), CRenderer::GetDeviceContext(), reinterpret_cast<BYTE*>(scene->mTextures[textureindex]->pcData), size, nullptr, &texture);
+	hr = CreateWICTextureFromMemory(render->GetDevice(), render->GetDeviceContext(), reinterpret_cast<BYTE*>(scene->mTextures[textureindex]->pcData), size, nullptr, &texture);
 	if (FAILED(hr))
 		FAILDE_ASSERT
 

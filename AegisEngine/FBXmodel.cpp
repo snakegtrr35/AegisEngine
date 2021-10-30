@@ -53,6 +53,7 @@ aiMatrix4x4 MatrixToaiMatrix(XMMATRIX matrix)
 
 bool FBXmodel::Load(const string& FileName)
 {
+	CRenderer* render = CRenderer::getInstance();
 	HRESULT hr;
 
 	//モデルの読み込み
@@ -95,9 +96,7 @@ bool FBXmodel::Load(const string& FileName)
 			ANIME_VERTEX anime_vertex;
 
 			anime_vertex.Position = Vector3(mesh->mVertices[i].x, mesh->mVertices[i].y, mesh->mVertices[i].z);
-
 			anime_vertex.Normal = Vector3(mesh->mNormals[i].x, mesh->mNormals[i].y, mesh->mNormals[i].z);
-
 			anime_vertex.Diffuse = Vector4(1.0f, 1.0f, 1.0f, 1.0f);
 
 			if (mesh->mTextureCoords[0])
@@ -130,22 +129,19 @@ bool FBXmodel::Load(const string& FileName)
 		//頂点バッファ生成
 		ID3D11Buffer* vertex_Buffer;
 		{
-			D3D11_BUFFER_DESC bd;
-			ZeroMemory(&bd, sizeof(bd));
+			D3D11_BUFFER_DESC bd{};
 			bd.Usage = D3D11_USAGE_DEFAULT;
 			bd.ByteWidth = sizeof(ANIME_VERTEX) * (UINT)vertex.size();
 			bd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
 			bd.CPUAccessFlags = 0;
 			bd.MiscFlags = 0;
 
-			D3D11_SUBRESOURCE_DATA initData;
-			ZeroMemory(&initData, sizeof(D3D11_SUBRESOURCE_DATA));
-
+			D3D11_SUBRESOURCE_DATA initData{};
 			initData.pSysMem = vertex.data();
 			initData.SysMemPitch = 0;
 			initData.SysMemSlicePitch = 0;
 
-			hr = CRenderer::GetDevice()->CreateBuffer(&bd, &initData, &vertex_Buffer);
+			hr = render->GetDevice()->CreateBuffer(&bd, &initData, &vertex_Buffer);
 
 			if (FAILED(hr))
 			{
@@ -171,20 +167,18 @@ bool FBXmodel::Load(const string& FileName)
 
 			index_Num = (UINT)index.size();
 	
-			D3D11_BUFFER_DESC bd;
-			ZeroMemory(&bd, sizeof(bd));
+			D3D11_BUFFER_DESC bd{};
 			bd.Usage = D3D11_USAGE_DEFAULT;
 			bd.ByteWidth = sizeof(WORD) * (UINT)index.size();
 			bd.BindFlags = D3D11_BIND_INDEX_BUFFER;
 			bd.CPUAccessFlags = 0;
 
-			D3D11_SUBRESOURCE_DATA initData;
-			ZeroMemory(&initData, sizeof(initData));
+			D3D11_SUBRESOURCE_DATA initData{};
 			initData.pSysMem = index.data();
 			initData.SysMemPitch = 0;
 			initData.SysMemSlicePitch = 0;
 
-			hr = CRenderer::GetDevice()->CreateBuffer(&bd, &initData, &index_Beffer);
+			hr = render->GetDevice()->CreateBuffer(&bd, &initData, &index_Beffer);
 			
 			if (FAILED(hr))
 			{
@@ -227,7 +221,7 @@ bool FBXmodel::Load(const string& FileName)
 	{
 		ID3D11Buffer* buffer = nullptr;
 
-		D3D11_BUFFER_DESC hBufferDesc;
+		D3D11_BUFFER_DESC hBufferDesc{};
 		hBufferDesc.ByteWidth = sizeof(XMMATRIX) * m_BoneNum;
 		hBufferDesc.Usage = D3D11_USAGE_DEFAULT;
 		hBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
@@ -235,16 +229,14 @@ bool FBXmodel::Load(const string& FileName)
 		hBufferDesc.MiscFlags = 0;
 		hBufferDesc.StructureByteStride = sizeof(float);
 
+		hr = render->GetDevice()->CreateBuffer(&hBufferDesc, NULL, &buffer);
+		if (FAILED(hr))
 		{
-			hr = CRenderer::GetDevice()->CreateBuffer(&hBufferDesc, NULL, &buffer);
-			if (FAILED(hr))
-			{
-				FAILDE_ASSERT;
-				return false;
-			}
-
-			MatrixBuffer.reset(buffer);
+			FAILDE_ASSERT;
+			return false;
 		}
+
+		MatrixBuffer.reset(buffer);
 	}
 
 	return true;
@@ -303,6 +295,7 @@ void FBXmodel::Update(float delta_time)
 
 void FBXmodel::Draw(XMMATRIX &Matrix)
 {
+	CRenderer* render = CRenderer::getInstance();
 	{
 		vector<XMMATRIX> bone;
 		bone.reserve(m_BoneNum);
@@ -317,19 +310,20 @@ void FBXmodel::Draw(XMMATRIX &Matrix)
 		SetBoneMatrix(bone);
 	}
 
-	//CRenderer::Set_Shader(SHADER_INDEX_V::ANIMATION, SHADER_INDEX_P::DEFAULT);
-	CRenderer::Set_InputLayout(INPUTLAYOUT::ANIMATION);
+	//render->Set_Shader(SHADER_INDEX_V::ANIMATION, SHADER_INDEX_P::DEFAULT);
+	render->Set_InputLayout(INPUTLAYOUT::ANIMATION);
 
-	CRenderer::GetDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	render->SetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 	DrawMesh(m_Scene->mRootNode, Matrix);
 
-	CRenderer::Set_InputLayout();
-	CRenderer::Set_Shader();
+	render->Set_InputLayout();
+	render->Set_Shader();
 }
 
 void FBXmodel::Draw_DPP(XMMATRIX& Matrix)
 {
+	CRenderer* render = CRenderer::getInstance();
 	{
 		vector<XMMATRIX> bone;
 		bone.reserve(m_BoneNum);
@@ -339,15 +333,15 @@ void FBXmodel::Draw_DPP(XMMATRIX& Matrix)
 		SetBoneMatrix(bone);
 	}
 
-	CRenderer::Set_InputLayout(INPUTLAYOUT::ANIMATION);
-	CRenderer::Set_Shader(SHADER_INDEX_V::DEPTH_PRE_ANIME, SHADER_INDEX_P::MAX);
+	render->Set_InputLayout(INPUTLAYOUT::ANIMATION);
+	render->Set_Shader(SHADER_INDEX_V::DEPTH_PRE_ANIME, SHADER_INDEX_P::MAX);
 
-	CRenderer::GetDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	render->SetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 	DrawMesh_DPP(m_Scene->mRootNode, Matrix);
 
-	CRenderer::Set_InputLayout();
-	CRenderer::Set_Shader(SHADER_INDEX_V::DEPTH_PRE, SHADER_INDEX_P::MAX);
+	render->Set_InputLayout();
+	render->Set_Shader(SHADER_INDEX_V::DEPTH_PRE, SHADER_INDEX_P::MAX);
 }
 
 void FBXmodel::set_bone(const aiNode* Node, vector<XMMATRIX>& v)
@@ -362,15 +356,19 @@ void FBXmodel::set_bone(const aiNode* Node, vector<XMMATRIX>& v)
 
 void FBXmodel::SetBoneMatrix(const vector<XMMATRIX>& matrix)
 {
-	CRenderer::GetDeviceContext()->UpdateSubresource(MatrixBuffer.get(), 0, NULL, matrix.data(), 0, 0);
+	CRenderer* render = CRenderer::getInstance();
+
+	render->GetDeviceContext()->UpdateSubresource(MatrixBuffer.get(), 0, NULL, matrix.data(), 0, 0);
 
 	auto buffer = MatrixBuffer.get();
 
-	CRenderer::GetDeviceContext()->VSSetConstantBuffers(6, 1, &buffer);
+	render->GetDeviceContext()->VSSetConstantBuffers(6, 1, &buffer);
 }
 
 void FBXmodel::DrawMesh(const aiNode* Node, const XMMATRIX& Matrix)
 {
+	CRenderer* render = CRenderer::getInstance();
+
 	XMMATRIX world;
 	world = XMMatrixTranspose(aiMatrixToMatrix(Node->mTransformation));
 	world *= Matrix;
@@ -393,17 +391,17 @@ void FBXmodel::DrawMesh(const aiNode* Node, const XMMATRIX& Matrix)
 				// シャドウマップ用の描画か?
 				if (CManager::Get_Instance()->Get_ShadowMap()->Get_Enable())
 				{
-					CRenderer::Set_MatrixBuffer(world, view, proj);
+					render->Set_MatrixBuffer(world, view, proj);
 
-					CRenderer::Set_Shader(SHADER_INDEX_V::SHADOW_MAP_ANIMATION, SHADER_INDEX_P::SHADOW_MAP);
+					render->Set_Shader(SHADER_INDEX_V::SHADOW_MAP_ANIMATION, SHADER_INDEX_P::SHADOW_MAP);
 				}
 				else
 				{
-					CRenderer::Set_MatrixBuffer(world, camera01.lock()->Get_Camera_View(), camera01.lock()->Get_Camera_Projection());
+					render->Set_MatrixBuffer(world, camera01.lock()->Get_Camera_View(), camera01.lock()->Get_Camera_Projection());
 
-					CRenderer::Set_MatrixBuffer01(*camera01.lock()->Get_Pos());
+					render->Set_MatrixBuffer01(*camera01.lock()->Get_Pos());
 
-					CRenderer::Set_Shader(SHADER_INDEX_V::ANIMATION, SHADER_INDEX_P::DEFAULT);
+					render->Set_Shader(SHADER_INDEX_V::ANIMATION, SHADER_INDEX_P::DEFAULT);
 				}
 			}
 			else
@@ -411,41 +409,41 @@ void FBXmodel::DrawMesh(const aiNode* Node, const XMMATRIX& Matrix)
 				// シャドウマップ用の描画か?
 				if (CManager::Get_Instance()->Get_ShadowMap()->Get_Enable())
 				{
-					CRenderer::Set_MatrixBuffer(world, view, proj);
+					render->Set_MatrixBuffer(world, view, proj);
 
-					CRenderer::Set_Shader(SHADER_INDEX_V::SHADOW_MAP_ANIMATION, SHADER_INDEX_P::SHADOW_MAP);
+					render->Set_Shader(SHADER_INDEX_V::SHADOW_MAP_ANIMATION, SHADER_INDEX_P::SHADOW_MAP);
 				}
 				else
 				{
 
-					CRenderer::Set_MatrixBuffer(world, camera02.lock()->Get_Camera_View(), camera02.lock()->Get_Camera_Projection());
+					render->Set_MatrixBuffer(world, camera02.lock()->Get_Camera_View(), camera02.lock()->Get_Camera_Projection());
 
-					CRenderer::Set_MatrixBuffer01(*camera02.lock()->Get_Pos());
+					render->Set_MatrixBuffer01(*camera02.lock()->Get_Pos());
 
-					CRenderer::Set_Shader(SHADER_INDEX_V::ANIMATION, SHADER_INDEX_P::DEFAULT);
+					render->Set_Shader(SHADER_INDEX_V::ANIMATION, SHADER_INDEX_P::DEFAULT);
 				}
 			}
 		}
 
 		// テクスチャの設定
 		{
-			CRenderer::GetDeviceContext()->PSSetShaderResources(0, 1, &Textures[0].Texture);
+			render->GetDeviceContext()->PSSetShaderResources(0, 1, &Textures[0].Texture);
 		}
 
 		// 頂点バッファの設定
 		{
 			const UINT stride = sizeof(ANIME_VERTEX);
 			const UINT offset = 0;
-			ID3D11Buffer* vb[1] = { m_Meshes[m].VertexBuffer };
-			CRenderer::GetDeviceContext()->IASetVertexBuffers(0, 1, vb, &stride, &offset);
+			ID3D11Buffer* vb[1] = { m_Meshes[m].VertexBuffer.Get() };
+			render->GetDeviceContext()->IASetVertexBuffers(0, 1, vb, &stride, &offset);
 		}
 
 		// インデックスバッファの設定
 		{
-			CRenderer::SetIndexBuffer(m_Meshes[m].IndexBuffer);
+			render->SetIndexBuffer(m_Meshes[m].IndexBuffer.Get());
 		}
 
-		CRenderer::DrawIndexed(m_Meshes[m].IndexNum, 0, 0);
+		render->DrawIndexed(m_Meshes[m].IndexNum, 0, 0);
 	}
 
 	for (unsigned int i = 0; i < Node->mNumChildren; i++)
@@ -459,6 +457,7 @@ void FBXmodel::DrawMesh(const aiNode* Node, const XMMATRIX& Matrix)
 
 void FBXmodel::DrawMesh_DPP(const aiNode* Node, const XMMATRIX& Matrix)
 {
+	CRenderer* render = CRenderer::getInstance();
 
 	XMMATRIX world;
 	world = XMMatrixTranspose(aiMatrixToMatrix(Node->mTransformation));
@@ -476,11 +475,11 @@ void FBXmodel::DrawMesh_DPP(const aiNode* Node, const XMMATRIX& Matrix)
 			// 普通のカメラかデバッグカメラか?
 			if (!camera01.expired() && Empty_weak_ptr<CCamera>(camera01))
 			{
-				CRenderer::Set_MatrixBuffer(world, camera01.lock()->Get_Camera_View(), camera01.lock()->Get_Camera_Projection());
+				render->Set_MatrixBuffer(world, camera01.lock()->Get_Camera_View(), camera01.lock()->Get_Camera_Projection());
 			}
 			else
 			{
-				CRenderer::Set_MatrixBuffer(world, camera02.lock()->Get_Camera_View(), camera02.lock()->Get_Camera_Projection());
+				render->Set_MatrixBuffer(world, camera02.lock()->Get_Camera_View(), camera02.lock()->Get_Camera_Projection());
 			}
 		}
 
@@ -488,16 +487,16 @@ void FBXmodel::DrawMesh_DPP(const aiNode* Node, const XMMATRIX& Matrix)
 		{
 			const UINT stride = sizeof(ANIME_VERTEX);
 			const UINT offset = 0;
-			ID3D11Buffer* vb[1] = { m_Meshes[m].VertexBuffer };
-			CRenderer::GetDeviceContext()->IASetVertexBuffers(0, 1, vb, &stride, &offset);
+			ID3D11Buffer* vb[1] = { m_Meshes[m].VertexBuffer.Get() };
+			render->GetDeviceContext()->IASetVertexBuffers(0, 1, vb, &stride, &offset);
 		}
 
 		// インデックスバッファの設定
 		{
-			CRenderer::SetIndexBuffer(m_Meshes[m].IndexBuffer);
+			render->SetIndexBuffer(m_Meshes[m].IndexBuffer.Get());
 		}
 
-		CRenderer::DrawIndexed(m_Meshes[m].IndexNum, 0, 0);
+		render->DrawIndexed(m_Meshes[m].IndexNum, 0, 0);
 	}
 
 	for (unsigned int i = 0; i < Node->mNumChildren; i++)
@@ -579,7 +578,9 @@ vector<TEXTURE_S> FBXmodel::loadMaterialTextures(aiMaterial* mat, aiTextureType 
 				wstring filenamews = wstring(filename.begin(), filename.end());
 
 				{
-					hr = CreateWICTextureFromFile(CRenderer::GetDevice(), CRenderer::GetDeviceContext(), filenamews.c_str(), nullptr, &texture.Texture, nullptr, nullptr);
+					CRenderer* render = CRenderer::getInstance();
+
+					hr = CreateWICTextureFromFile(render->GetDevice(), render->GetDeviceContext(), filenamews.c_str(), nullptr, &texture.Texture, nullptr, nullptr);
 				}
 
 				if (FAILED(hr))
@@ -626,12 +627,14 @@ int FBXmodel::getTextureIndex(aiString* str)
 
 ID3D11ShaderResourceView* FBXmodel::getTextureFromModel(const aiScene* scene, int textureindex)
 {
+	CRenderer* render = CRenderer::getInstance();
+
 	HRESULT hr;
 	ID3D11ShaderResourceView* texture;
 
 	int* size = reinterpret_cast<int*>(&scene->mTextures[textureindex]->mWidth);
 
-	hr = CreateWICTextureFromMemory(CRenderer::GetDevice(), CRenderer::GetDeviceContext(), reinterpret_cast<unsigned char*>(scene->mTextures[textureindex]->pcData), *size, nullptr, &texture);
+	hr = CreateWICTextureFromMemory(render->GetDevice(), render->GetDeviceContext(), reinterpret_cast<unsigned char*>(scene->mTextures[textureindex]->pcData), *size, nullptr, &texture);
 	if (FAILED(hr))
 		FAILDE_ASSERT
 

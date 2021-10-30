@@ -8,7 +8,7 @@
 
 class GRID : public GAME_OBJECT {
 private:
-	ID3D11Buffer* pVertexBuffer;	// 頂点バッファ
+	ComPtr<ID3D11Buffer> pVertexBuffer;	// 頂点バッファ
 
 public:
 	GRID();

@@ -13,8 +13,8 @@
 
 using namespace Aegis;
 
-unique_ptr<ID3D11Buffer, Release> SKYBOX::VertexBuffer;
-unique_ptr<ID3D11Buffer, Release> SKYBOX::IndexBuffer;
+ComPtr<ID3D11Buffer> SKYBOX::VertexBuffer;
+ComPtr<ID3D11Buffer> SKYBOX::IndexBuffer;
 
 static constexpr UINT Indecies = 36;
 
@@ -29,8 +29,10 @@ SKYBOX::~SKYBOX(){ Uninit(); }
 
 void SKYBOX::Init()
 {
+	CRenderer* render = render->getInstance();
+
 	// 頂点バッファの作成
-	if(nullptr == VertexBuffer.get())
+	if(nullptr == VertexBuffer)
 	{
 		vector<VERTEX_3D> vertex_array;
 		vertex_array.resize(8);
@@ -65,27 +67,21 @@ void SKYBOX::Init()
 
 		// 頂点バッファの生成
 		{
-			ID3D11Buffer* buffer = nullptr;
-
-			D3D11_BUFFER_DESC bd;
-			ZeroMemory(&bd, sizeof(bd));
+			D3D11_BUFFER_DESC bd{};
 			bd.Usage = D3D11_USAGE_DEFAULT;
 			bd.ByteWidth = sizeof(VERTEX_3D) * vertex_array.size();
 			bd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
 			bd.CPUAccessFlags = 0;
 
-			D3D11_SUBRESOURCE_DATA sd;
-			ZeroMemory(&sd, sizeof(sd));
+			D3D11_SUBRESOURCE_DATA sd{};
 			sd.pSysMem = vertex_array.data();
 
-			CRenderer::GetDevice()->CreateBuffer(&bd, &sd, &buffer);
-
-			VertexBuffer.reset(buffer);
+			render->GetDevice()->CreateBuffer(&bd, &sd, &VertexBuffer);
 		}
 	}
 
 	// インデックスバッファの作成
-	if (nullptr == IndexBuffer.get())
+	if (nullptr == IndexBuffer)
 	{
 		const vector<WORD> index_array = {	// Front Face
 											0, 1, 2,
@@ -108,28 +104,22 @@ void SKYBOX::Init()
 
 		// インデックスバッファの生成
 		{
-			ID3D11Buffer* buffer = nullptr;
-
-			D3D11_BUFFER_DESC bd;
-			ZeroMemory(&bd, sizeof(bd));
+			D3D11_BUFFER_DESC bd{};
 			bd.Usage = D3D11_USAGE_DEFAULT;
 			bd.ByteWidth = sizeof(WORD) * index_array.size();
 			bd.BindFlags = D3D11_BIND_INDEX_BUFFER;
 			bd.CPUAccessFlags = 0;
 
-			D3D11_SUBRESOURCE_DATA sd;
-			ZeroMemory(&sd, sizeof(sd));
+			D3D11_SUBRESOURCE_DATA sd{};
 			sd.pSysMem = index_array.data();
 
-			CRenderer::GetDevice()->CreateBuffer(&bd, &sd, &buffer);
-
-			IndexBuffer.reset(buffer);
+			render->GetDevice()->CreateBuffer(&bd, &sd, &IndexBuffer);\
 		}
 	}
 
 	{
-		auto device = CRenderer::GetDevice();
-		auto device_context = CRenderer::GetDeviceContext();
+		auto device = render->GetDevice();
+		auto device_context = render->GetDeviceContext();
 		
 		CreateDDSTextureFromFile(device, device_context, L"asset/texture/cloudySea.dds", nullptr, &Srv, nullptr, nullptr);
 	}
@@ -137,7 +127,12 @@ void SKYBOX::Init()
 
 void SKYBOX::Draw()
 {
-	if (CManager::Get_Instance()->Get_ShadowMap()->Get_Enable()) return;
+	if (CManager::Get_Instance()->Get_ShadowMap()->Get_Enable())
+	{
+		return;
+	}
+
+	CRenderer* render = render->getInstance();
 
 	// 3Dマトリックス設定
 	{
@@ -154,35 +149,32 @@ void SKYBOX::Draw()
 
 		if (!camera01.expired())
 		{
-			CRenderer::Set_MatrixBuffer(world, camera01.lock()->Get_Camera_View(), camera01.lock()->Get_Camera_Projection());
+			render->Set_MatrixBuffer(world, camera01.lock()->Get_Camera_View(), camera01.lock()->Get_Camera_Projection());
 
-			CRenderer::Set_MatrixBuffer01(*camera01.lock()->Get_Pos());
+			render->Set_MatrixBuffer01(*camera01.lock()->Get_Pos());
 		}
 		else
 		{
-			CRenderer::Set_MatrixBuffer(world, camera02.lock()->Get_Camera_View(), camera02.lock()->Get_Camera_Projection());
+			render->Set_MatrixBuffer(world, camera02.lock()->Get_Camera_View(), camera02.lock()->Get_Camera_Projection());
 
-			CRenderer::Set_MatrixBuffer01(*camera02.lock()->Get_Pos());
+			render->Set_MatrixBuffer01(*camera02.lock()->Get_Pos());
 		}
 	}
 
 	// 頂点バッファ設定
-	CRenderer::SetVertexBuffers(VertexBuffer.get());
+	render->SetVertexBuffers(VertexBuffer.Get());
 
 	// インデックスバッファ設定
-	CRenderer::SetIndexBuffer(IndexBuffer.get());
+	render->SetIndexBuffer(IndexBuffer.Get());
 
 	// テクスチャの設定
-	CRenderer::GetDeviceContext()->PSSetShaderResources(0, 1, &Srv);
+	render->GetDeviceContext()->PSSetShaderResources(0, 1, &Srv);
 
-	// トポロジ設定
-	CRenderer::GetDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	render->Set_Shader(SHADER_INDEX_V::SKYBOX, SHADER_INDEX_P::SKYBOX);
 
-	CRenderer::Set_Shader(SHADER_INDEX_V::SKYBOX, SHADER_INDEX_P::SKYBOX);
+	render->GetDeviceContext()->DrawIndexed(Indecies, 0, 0);
 
-	CRenderer::GetDeviceContext()->DrawIndexed(Indecies, 0, 0);
-
-	CRenderer::Set_Shader();
+	render->Set_Shader();
 }
 
 void SKYBOX::Draw_DPP()
@@ -195,6 +187,4 @@ void SKYBOX::Update(float delta_time)
 
 void SKYBOX::Uninit()
 {
-	VertexBuffer.reset(nullptr);
-	IndexBuffer.reset(nullptr);
 }

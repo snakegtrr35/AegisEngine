@@ -21,13 +21,13 @@ class GAME_OBJECT;
 class FIELD : public GAME_OBJECT {
 
 	//! 頂点バッファ
-	unique_ptr<ID3D11Buffer, Release> pVertexBuffer;
+	ComPtr<ID3D11Buffer> pVertexBuffer;
 
 	//! インスタンシング用のバッファ
-	unique_ptr<ID3D11Buffer, Release> pInstanceBuffer;
+	ComPtr<ID3D11Buffer> pInstanceBuffer;
 
 	//! インデックスバッファ
-	unique_ptr<ID3D11Buffer, Release> pIndexBuffer;
+	ComPtr<ID3D11Buffer> pIndexBuffer;
 
 	//! テクスチャ
 	unique_ptr<TEXTURE> Texture;

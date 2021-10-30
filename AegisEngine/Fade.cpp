@@ -28,6 +28,8 @@ void FADE::Init()
 
 void FADE::Draw()
 {
+	CRenderer* render = CRenderer::getInstance();
+
 	if (CManager::Get_Instance()->Get_ShadowMap()->Get_Enable()) return;
 
 	{
@@ -54,26 +56,26 @@ void FADE::Draw()
 		// 頂点バッファの書き換え
 		{
 			D3D11_MAPPED_SUBRESOURCE msr;
-			CRenderer::GetDeviceContext()->Map(pVertexBuffer.get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &msr);
+			render->GetDeviceContext()->Map(pVertexBuffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &msr);
 			memcpy(msr.pData, Vertex, sizeof(VERTEX_3D) * 4); // 4頂点分コピー
-			CRenderer::GetDeviceContext()->Unmap(pVertexBuffer.get(), 0);
+			render->GetDeviceContext()->Unmap(pVertexBuffer.Get(), 0);
 		}
 	}
 
 	// 入力アセンブラに頂点バッファを設定
-	CRenderer::SetVertexBuffers(pVertexBuffer.get());
+	render->SetVertexBuffers(pVertexBuffer.Get());
 
 	// 入力アセンブラにインデックスバッファを設定
-	CRenderer::SetIndexBuffer(pIndexBuffer.get());
+	render->SetIndexBuffer(pIndexBuffer.Get());
 
 	// 2Dマトリックス設定
-	CRenderer::SetWorldViewProjection2D(*Get_Transform().Get_Scaling());
+	render->SetWorldViewProjection2D(*Get_Transform().Get_Scaling());
 
-	CRenderer::Set_Shader(SHADER_INDEX_V::DEFAULT, SHADER_INDEX_P::NO_TEXTURE);
+	render->Set_Shader(SHADER_INDEX_V::DEFAULT, SHADER_INDEX_P::NO_TEXTURE);
 
-	CRenderer::DrawIndexed(6, 0, 0);
+	render->DrawIndexed(6, 0, 0);
 
-	CRenderer::Set_Shader();
+	render->Set_Shader();
 }
 
 void FADE::Update(float delta_time)

@@ -82,6 +82,8 @@ void TEXTURE_MANEGER::Update()
 #ifdef _DEBUG
 	Load_Check();
 
+	CRenderer* render = CRenderer::getInstance();
+
 	wstring path;			// ファイル名(パス付き)
 	wstring file_name;		// ファイル名(パスなし)
 	wstring type;
@@ -105,7 +107,7 @@ void TEXTURE_MANEGER::Update()
 
 			if (L"dds" == type)	// dds
 			{
-				hr = CreateDDSTextureFromFile(CRenderer::GetDevice(), CRenderer::GetDeviceContext(), path.c_str(), nullptr, &ShaderResourceView, nullptr, nullptr);
+				hr = CreateDDSTextureFromFile(render->GetDevice(), render->GetDeviceContext(), path.c_str(), nullptr, &ShaderResourceView, nullptr, nullptr);
 				if (FAILED(hr))
 				{
 					FAILDE_ASSERT;
@@ -114,7 +116,7 @@ void TEXTURE_MANEGER::Update()
 			}
 			else	// jpg か png
 			{
-				hr = CreateWICTextureFromFile(CRenderer::GetDevice(), CRenderer::GetDeviceContext(), path.c_str(), nullptr, &ShaderResourceView, nullptr, nullptr);
+				hr = CreateWICTextureFromFile(render->GetDevice(), render->GetDeviceContext(), path.c_str(), nullptr, &ShaderResourceView, nullptr, nullptr);
 				if (FAILED(hr))
 				{
 					FAILDE_ASSERT;
@@ -132,8 +134,9 @@ void TEXTURE_MANEGER::Update()
 
 void TEXTURE_MANEGER::Default_Load(const bool flag)
 {
-	int width, height;
+	CRenderer* render = CRenderer::getInstance();
 
+	int width, height;
 	string path;			// ファイル名(パス付き) 
 	string file_name;		// ファイル名(パスなし)
 	string type;
@@ -179,7 +182,7 @@ void TEXTURE_MANEGER::Default_Load(const bool flag)
 
 			if ("dds" == type)	// dds
 			{
-				hr = CreateDDSTextureFromFile(CRenderer::GetDevice(), CRenderer::GetDeviceContext(), name.c_str(), nullptr, &ShaderResourceView, &width, &height);
+				hr = CreateDDSTextureFromFile(render->GetDevice(), render->GetDeviceContext(), name.c_str(), nullptr, &ShaderResourceView, &width, &height);
 				if (FAILED(hr))
 				{
 					FAILDE_ASSERT;
@@ -188,7 +191,7 @@ void TEXTURE_MANEGER::Default_Load(const bool flag)
 			}
 			else	// jpg か png
 			{
-				hr = CreateWICTextureFromFile(CRenderer::GetDevice(), CRenderer::GetDeviceContext(), name.c_str(), nullptr, &ShaderResourceView, &width, &height);
+				hr = CreateWICTextureFromFile(render->GetDevice(), render->GetDeviceContext(), name.c_str(), nullptr, &ShaderResourceView, &width, &height);
 				if (FAILED(hr))
 				{
 					FAILDE_ASSERT;
@@ -205,12 +208,12 @@ void TEXTURE_MANEGER::Default_Load(const bool flag)
 
 void TEXTURE_MANEGER::Load(const bool flag)
 {
+	CRenderer* render = CRenderer::getInstance();
+
 	// バイナリファイルがない
 	if (false == flag)
 	{
-
 		int width, height;
-
 		string path;			// ファイル名(パス付き) 
 		string file_name;		// ファイル名(パスなし)
 		string type;
@@ -253,7 +256,7 @@ void TEXTURE_MANEGER::Load(const bool flag)
 
 				if ("dds" == type)	// dds
 				{
-					hr = CreateDDSTextureFromFile(CRenderer::GetDevice(), CRenderer::GetDeviceContext(), name.c_str(), nullptr, &ShaderResourceView, &width, &height);
+					hr = CreateDDSTextureFromFile(render->GetDevice(), render->GetDeviceContext(), name.c_str(), nullptr, &ShaderResourceView, &width, &height);
 					if (FAILED(hr))
 					{
 						FAILDE_ASSERT;
@@ -262,7 +265,7 @@ void TEXTURE_MANEGER::Load(const bool flag)
 				}
 				else	// jpg か png
 				{
-					hr = CreateWICTextureFromFile(CRenderer::GetDevice(), CRenderer::GetDeviceContext(), name.c_str(), nullptr, &ShaderResourceView, &width, &height);
+					hr = CreateWICTextureFromFile(render->GetDevice(), render->GetDeviceContext(), name.c_str(), nullptr, &ShaderResourceView, &width, &height);
 					if (FAILED(hr))
 					{
 						FAILDE_ASSERT;
@@ -308,7 +311,7 @@ void TEXTURE_MANEGER::Load(const bool flag)
 
 			if ("dds" == type)	// dds
 			{
-				hr = CreateDDSTextureFromFile(CRenderer::GetDevice(), CRenderer::GetDeviceContext(), name.c_str(), nullptr, &ShaderResourceView, &width, &height);
+				hr = CreateDDSTextureFromFile(render->GetDevice(), render->GetDeviceContext(), name.c_str(), nullptr, &ShaderResourceView, &width, &height);
 				if (FAILED(hr))
 				{
 					FAILDE_ASSERT;
@@ -317,7 +320,7 @@ void TEXTURE_MANEGER::Load(const bool flag)
 			}
 			else	// jpg か png
 			{
-				hr = CreateWICTextureFromFile(CRenderer::GetDevice(), CRenderer::GetDeviceContext(), name.c_str(), nullptr, &ShaderResourceView, &width, &height);
+				hr = CreateWICTextureFromFile(render->GetDevice(), render->GetDeviceContext(), name.c_str(), nullptr, &ShaderResourceView, &width, &height);
 				if (FAILED(hr))
 				{
 					FAILDE_ASSERT;
@@ -335,6 +338,8 @@ void TEXTURE_MANEGER::Load(const bool flag)
 
 void TEXTURE_MANEGER::Add(const string& file_name)
 {
+	CRenderer* render = CRenderer::getInstance();
+
 	int width, height;
 
 	string path;	// ファイル名
@@ -342,49 +347,47 @@ void TEXTURE_MANEGER::Add(const string& file_name)
 	size_t first;			// 
 	size_t pos;
 
+	pos = file_name.find_last_of("/");
+
+	path = file_name.substr(pos + 1);
+
+	// テクスチャの読み込み
 	{
-		pos = file_name.find_last_of("/");
+		ID3D11ShaderResourceView* ShaderResourceView;
+		HRESULT hr;
+		wstring name;
 
-		path = file_name.substr(pos + 1);
+		pos = path.find_last_of(".");
+		type = path.substr(pos + 1);
 
-		// テクスチャの読み込み
+		// char から wchar_t への変換
+		name = stringTowstring("asset/texture/" + path);
+
+		if ("dds" == type)	// dds
 		{
-			ID3D11ShaderResourceView* ShaderResourceView;
-			HRESULT hr;
-			wstring name;
-
-			pos = path.find_last_of(".");
-			type = path.substr(pos + 1);
-
-			// char から wchar_t への変換
-			name = stringTowstring("asset/texture/" + path);
-
-			if ("dds" == type)	// dds
+			hr = CreateDDSTextureFromFile(render->GetDevice(), render->GetDeviceContext(), name.c_str(), nullptr, &ShaderResourceView, &width, &height);
+			if (FAILED(hr))
 			{
-				hr = CreateDDSTextureFromFile(CRenderer::GetDevice(), CRenderer::GetDeviceContext(), name.c_str(), nullptr, &ShaderResourceView, &width, &height);
-				if (FAILED(hr))
-				{
-					FAILDE_ASSERT;
-					return;
-				}
+				FAILDE_ASSERT;
+				return;
 			}
-			else	// jpg か png
-			{
-				hr = CreateWICTextureFromFile(CRenderer::GetDevice(), CRenderer::GetDeviceContext(), name.c_str(), nullptr, &ShaderResourceView, &width, &height);
-				if (FAILED(hr))
-				{
-					FAILDE_ASSERT;
-					return;
-				}
-			}
-
-			first = hash<string>()(file_name);
-			TextureFile[first].Path = "asset/texture/" + path;
-
-			TextureData[first].Resource.reset(ShaderResourceView);
-			TextureData[first].WH.x = width;
-			TextureData[first].WH.y = height;
 		}
+		else	// jpg か png
+		{
+			hr = CreateWICTextureFromFile(render->GetDevice(), render->GetDeviceContext(), name.c_str(), nullptr, &ShaderResourceView, &width, &height);
+			if (FAILED(hr))
+			{
+				FAILDE_ASSERT;
+				return;
+			}
+		}
+
+		first = hash<string>()(file_name);
+		TextureFile[first].Path = "asset/texture/" + path;
+
+		TextureData[first].Resource.reset(ShaderResourceView);
+		TextureData[first].WH.x = width;
+		TextureData[first].WH.y = height;
 	}
 }
 

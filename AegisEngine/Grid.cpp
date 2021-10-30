@@ -11,6 +11,8 @@ using namespace Aegis;
 
 GRID::GRID()
 {
+	CRenderer* render = CRenderer::getInstance();
+
 	const VERTEX_3D Vertexs[COUNT] = {
 
 		// 横
@@ -86,9 +88,7 @@ GRID::GRID()
 	// 頂点バッファの設定
 	{
 		HRESULT hr;
-
-		D3D11_BUFFER_DESC bd;
-		ZeroMemory(&bd, sizeof(D3D11_BUFFER_DESC));
+		D3D11_BUFFER_DESC bd = {};
 
 		bd.ByteWidth = sizeof(VERTEX_3D) * COUNT;
 		bd.Usage = D3D11_USAGE_DEFAULT;
@@ -106,7 +106,7 @@ GRID::GRID()
 		srd.SysMemSlicePitch = 0;
 
 		// 頂点バッファの生成
-		hr = CRenderer::GetDevice()->CreateBuffer(&bd, &srd, &pVertexBuffer);
+		hr = render->GetDevice()->CreateBuffer(&bd, &srd, &pVertexBuffer);
 
 		if (FAILED(hr))
 		{
@@ -127,10 +127,12 @@ void GRID::Init()
 
 void GRID::Draw()
 {
+	CRenderer* render = CRenderer::getInstance();
+
 	if (false == CManager::Get_Instance()->Get_ShadowMap()->Get_Enable())
 	{
 		// 入力アセンブラに頂点バッファを設定.
-		CRenderer::SetVertexBuffers(pVertexBuffer);
+		render->SetVertexBuffers(pVertexBuffer.Get());
 
 		// 3Dマトリックス設定
 		{
@@ -149,36 +151,35 @@ void GRID::Draw()
 
 			if (!camera01.expired() && Empty_weak_ptr<CCamera>(camera01))
 			{
-				CRenderer::Set_MatrixBuffer(world, camera01.lock()->Get_Camera_View(), camera01.lock()->Get_Camera_Projection());
+				render->Set_MatrixBuffer(world, camera01.lock()->Get_Camera_View(), camera01.lock()->Get_Camera_Projection());
 
-				CRenderer::Set_MatrixBuffer01(*camera01.lock()->Get_Pos());
+				render->Set_MatrixBuffer01(*camera01.lock()->Get_Pos());
 			}
 			else
 			{
-				CRenderer::Set_MatrixBuffer(world, camera02.lock()->Get_Camera_View(), camera02.lock()->Get_Camera_Projection());
+				render->Set_MatrixBuffer(world, camera02.lock()->Get_Camera_View(), camera02.lock()->Get_Camera_Projection());
 
-				CRenderer::Set_MatrixBuffer01(*camera02.lock()->Get_Pos());
+				render->Set_MatrixBuffer01(*camera02.lock()->Get_Pos());
 			}
 		}
 
 		// トポロジの設定
-		CRenderer::GetDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_LINELIST);
+		render->SetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_LINELIST);
 
-		CRenderer::Set_Shader(SHADER_INDEX_V::DEFAULT, SHADER_INDEX_P::NO_TEXTURE);
+		render->Set_Shader(SHADER_INDEX_V::DEFAULT, SHADER_INDEX_P::NO_TEXTURE);
 
-		CRenderer::GetDeviceContext()->Draw(COUNT, 0);
+		render->Draw(COUNT, 0);
 
 		// インスタンシング
-		//CRenderer::GetDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-		//CRenderer::GetDeviceContext()->DrawInstanced(COUNT, 200000, 0, 0);
+		//render->SetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+		//render->DrawInstanced(COUNT, 200000, 0, 0);
 
-		CRenderer::Set_Shader();
+		render->Set_Shader();
 	}
 }
 
 void GRID::Update(float delta_time)
 {
-
 }
 
 void GRID::Uninit()

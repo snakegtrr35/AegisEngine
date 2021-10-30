@@ -11,6 +11,8 @@ using namespace Aegis;
 
 void MESH_CYlLINDER::Init()
 {
+	CRenderer* render = CRenderer::getInstance();
+
 	int cornerNum = (int)Radius * CylinderLength * 10;
 
 	// 頂点バッファの確保
@@ -61,45 +63,33 @@ void MESH_CYlLINDER::Init()
 
 
 	// 頂点バッファ生成
-	if (nullptr == VertexBuffer.get())
+	if (nullptr == VertexBuffer)
 	{
-		ID3D11Buffer* pVB = nullptr;
-
-		D3D11_BUFFER_DESC bd;
-		ZeroMemory(&bd, sizeof(bd));
+		D3D11_BUFFER_DESC bd{};
 		bd.Usage = D3D11_USAGE_DEFAULT;
 		bd.ByteWidth = sizeof(VERTEX_3D) * VertexNum;
 		bd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
 		bd.CPUAccessFlags = 0;
 
-		D3D11_SUBRESOURCE_DATA sd;
-		ZeroMemory(&sd, sizeof(sd));
+		D3D11_SUBRESOURCE_DATA sd{};
 		sd.pSysMem = vertexArray;
 
-		CRenderer::GetDevice()->CreateBuffer(&bd, &sd, &pVB);
-
-		VertexBuffer.reset(pVB);
+		render->GetDevice()->CreateBuffer(&bd, &sd, &VertexBuffer);
 	}
 
 	// インデックスバッファ生成
-	if (nullptr == IndexBuffer.get())
+	if (nullptr == IndexBuffer)
 	{
-		ID3D11Buffer* pIB = nullptr;
-
-		D3D11_BUFFER_DESC bd;
-		ZeroMemory(&bd, sizeof(bd));
+		D3D11_BUFFER_DESC bd{};
 		bd.Usage = D3D11_USAGE_DEFAULT;
-		bd.ByteWidth = sizeof(unsigned short) * IndexNum;
+		bd.ByteWidth = sizeof(WORD) * IndexNum;
 		bd.BindFlags = D3D11_BIND_INDEX_BUFFER;
 		bd.CPUAccessFlags = 0;
 
-		D3D11_SUBRESOURCE_DATA sd;
-		ZeroMemory(&sd, sizeof(sd));
+		D3D11_SUBRESOURCE_DATA sd{};
 		sd.pSysMem = indexArray;
 
-		CRenderer::GetDevice()->CreateBuffer(&bd, &sd, &pIB);
-
-		IndexBuffer.reset(pIB);
+		render->GetDevice()->CreateBuffer(&bd, &sd, &IndexBuffer);\
 	}
 
 	// メモリ解放
@@ -112,60 +102,66 @@ void MESH_CYlLINDER::Init()
 
 void MESH_CYlLINDER::Uninit()
 {
-	VertexBuffer.reset();
-	IndexBuffer.reset();
 	Texture.reset();
 }
 
 void MESH_CYlLINDER::Draw()
 {
-	if (false == CManager::Get_Instance()->Get_ShadowMap()->Get_Enable())
+	if (CManager::Get_Instance()->Get_ShadowMap()->Get_Enable())
 	{
-		{
-			XMMATRIX world;
-
-			Vector3 position = *Get_Transform().Get_Position();
-			Vector3 rotate = *Get_Transform().Get_Rotation();
-			Vector3 scale = *Get_Transform().Get_Scaling();
-
-			world = XMMatrixScaling(scale.x, scale.y, scale.z);
-			world *= XMMatrixRotationRollPitchYaw(XMConvertToRadians(rotate.x), XMConvertToRadians(rotate.y), XMConvertToRadians(rotate.z));
-			world *= XMMatrixTranslation(position.x, position.y, position.z);
-
-			const auto camera01 = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<CCamera>("camera");
-			const auto camera02 = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
-
-			if (!camera01.expired() && Empty_weak_ptr<CCamera>(camera01))
-
-			{
-				CRenderer::Set_MatrixBuffer(world, camera01.lock()->Get_Camera_View(), camera01.lock()->Get_Camera_Projection());
-
-				CRenderer::Set_MatrixBuffer01(*camera01.lock()->Get_Pos());
-			}
-			else
-			{
-				CRenderer::Set_MatrixBuffer(world, camera02.lock()->Get_Camera_View(), camera02.lock()->Get_Camera_Projection());
-
-				CRenderer::Set_MatrixBuffer01(*camera02.lock()->Get_Pos());
-			}
-		}
-
-		CRenderer::SetVertexBuffers(VertexBuffer.get());	// 頂点バッファ設定
-		CRenderer::SetIndexBuffer(IndexBuffer.get());		// インデックスバッファ設定
-
-		Texture.get()->Set_Texture();
-
-		CRenderer::GetDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);	// トポロジ設定
-
-		// ポリゴン描画
-		CRenderer::GetDeviceContext()->DrawIndexed(IndexNum, 0, 0);
+		return;
 	}
+
+	CRenderer* render = CRenderer::getInstance();
+	{
+		XMMATRIX world;
+
+		Vector3 position = *Get_Transform().Get_Position();
+		Vector3 rotate = *Get_Transform().Get_Rotation();
+		Vector3 scale = *Get_Transform().Get_Scaling();
+
+		world = XMMatrixScaling(scale.x, scale.y, scale.z);
+		world *= XMMatrixRotationRollPitchYaw(XMConvertToRadians(rotate.x), XMConvertToRadians(rotate.y), XMConvertToRadians(rotate.z));
+		world *= XMMatrixTranslation(position.x, position.y, position.z);
+
+		const auto camera01 = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<CCamera>("camera");
+		const auto camera02 = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
+
+		if (!camera01.expired() && Empty_weak_ptr<CCamera>(camera01))
+
+		{
+			render->Set_MatrixBuffer(world, camera01.lock()->Get_Camera_View(), camera01.lock()->Get_Camera_Projection());
+
+			render->Set_MatrixBuffer01(*camera01.lock()->Get_Pos());
+		}
+		else
+		{
+			render->Set_MatrixBuffer(world, camera02.lock()->Get_Camera_View(), camera02.lock()->Get_Camera_Projection());
+
+			render->Set_MatrixBuffer01(*camera02.lock()->Get_Pos());
+		}
+	}
+
+	render->SetVertexBuffers(VertexBuffer.Get());	// 頂点バッファ設定
+	render->SetIndexBuffer(IndexBuffer.Get());		// インデックスバッファ設定
+
+	Texture.get()->Set_Texture();
+
+	// トポロジ設定
+	render->SetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
+
+	// ポリゴン描画
+	render->DrawIndexed(IndexNum, 0, 0);
+
+	// トポロジ設定
+	render->SetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 	GAME_OBJECT::Draw();
 }
 
 void MESH_CYlLINDER::Draw_DPP()
 {
+	CRenderer* render = CRenderer::getInstance();
 	{
 		XMMATRIX world;
 
@@ -182,21 +178,25 @@ void MESH_CYlLINDER::Draw_DPP()
 
 		if (!camera01.expired() && Empty_weak_ptr<CCamera>(camera01))
 		{
-			CRenderer::Set_MatrixBuffer(world, camera01.lock()->Get_Camera_View(), camera01.lock()->Get_Camera_Projection());
+			render->Set_MatrixBuffer(world, camera01.lock()->Get_Camera_View(), camera01.lock()->Get_Camera_Projection());
 		}
 		else
 		{
-			CRenderer::Set_MatrixBuffer(world, camera02.lock()->Get_Camera_View(), camera02.lock()->Get_Camera_Projection());
+			render->Set_MatrixBuffer(world, camera02.lock()->Get_Camera_View(), camera02.lock()->Get_Camera_Projection());
 		}
 	}
 
-	CRenderer::SetVertexBuffers(VertexBuffer.get());	// 頂点バッファ設定
-	CRenderer::SetIndexBuffer(IndexBuffer.get());		// インデックスバッファ設定
+	render->SetVertexBuffers(VertexBuffer.Get());	// 頂点バッファ設定
+	render->SetIndexBuffer(IndexBuffer.Get());		// インデックスバッファ設定
 
-	CRenderer::GetDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);	// トポロジ設定
+	// トポロジ設定
+	render->SetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
 
 	// ポリゴン描画
-	CRenderer::GetDeviceContext()->DrawIndexed(IndexNum, 0, 0);
+	render->DrawIndexed(IndexNum, 0, 0);
+
+	// トポロジ設定
+	render->SetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 }
 
 void MESH_CYlLINDER::Update(float delta_time)

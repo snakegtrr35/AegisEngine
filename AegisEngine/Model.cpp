@@ -18,6 +18,8 @@ void MODEL::Init()
 
 void MODEL::Draw()
 {
+	CRenderer* render = CRenderer::getInstance();
+
 	const auto camera = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<CCamera>("camera");
 
 	if (!camera.expired())
@@ -42,7 +44,7 @@ void MODEL::Draw()
 
 		{
 			XMVECTOR camera_pos;
-			LIGHT light = *CRenderer::Get_Light();
+			LIGHT light = *render->Get_Light();
 
 			XMVECTOR light_pos = XMVectorSet(light.Direction.x, light.Direction.y, light.Direction.z, light.Direction.w);
 
@@ -65,16 +67,16 @@ void MODEL::Draw()
 				camera_pos = XMLoadFloat4(&pos);
 			}
 
-			CRenderer::Set_MatrixBuffer01(camera_pos);
+			render->Set_MatrixBuffer01(camera_pos);
 		}
 
 		if (CManager::Get_Instance()->Get_ShadowMap()->Get_Enable())
 		{
-			CRenderer::Set_Shader(SHADER_INDEX_V::SHADOW_MAP, SHADER_INDEX_P::SHADOW_MAP);
+			render->Set_Shader(SHADER_INDEX_V::SHADOW_MAP, SHADER_INDEX_P::SHADOW_MAP);
 		}
 		else
 		{
-			CRenderer::Set_Shader();
+			render->Set_Shader();
 		}
 	}
 
@@ -91,7 +93,7 @@ void MODEL::Draw()
 		}
 	}
 
-	CRenderer::Set_Shader();
+	render->Set_Shader();
 }
 
 void MODEL::Draw_DPP()

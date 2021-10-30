@@ -10,8 +10,8 @@ class TEXTURE;
 
 class AXIS : public GAME_OBJECT {
 private:
-	ID3D11Buffer* pVertexBuffer[3];	// 頂点バッファ
-	ID3D11Buffer* pIndexBuffer;		// インデックスバッファ
+	ComPtr<ID3D11Buffer> pVertexBuffer[3];	// 頂点バッファ
+	ComPtr<ID3D11Buffer> pIndexBuffer;		// インデックスバッファ
 
 public:
 	AXIS();

@@ -10,10 +10,10 @@ class GAME_OBJECT;
 class SKYBOX : public GAME_OBJECT {
 private:
 	//! 頂点バッファ
-	static unique_ptr<ID3D11Buffer, Release>	VertexBuffer;
+	static ComPtr<ID3D11Buffer>	VertexBuffer;
 
 	//! インデックスバッファ
-	static unique_ptr<ID3D11Buffer, Release>	IndexBuffer;
+	static ComPtr<ID3D11Buffer>	IndexBuffer;
 
 	////! テクスチャ
 	//unique_ptr<TEXTURE>					Texture;

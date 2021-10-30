@@ -14,6 +14,8 @@ BOUNDING_AABB::~BOUNDING_AABB()
 
 void BOUNDING_AABB::Init()
 {
+	CRenderer* render = CRenderer::getInstance();
+
 	{
 		Vector3 pos = Vector3();
 
@@ -31,7 +33,7 @@ void BOUNDING_AABB::Init()
 	}
 
 	// 頂点バッファの設定
-	if (nullptr == pVertexBuffer.get())
+	if (nullptr == pVertexBuffer)
 	{
 		Vector3 corners[BoundingBox::CORNER_COUNT];
 
@@ -40,20 +42,14 @@ void BOUNDING_AABB::Init()
 		VERTEX_3D Vertex[BoundingBox::CORNER_COUNT];
 
 		Vertex[0].Position = corners[7];
-
 		Vertex[1].Position = corners[6];
-
 		Vertex[2].Position = corners[4];
-
 		Vertex[3].Position = corners[5];
 
 
 		Vertex[4].Position = corners[3];
-
 		Vertex[5].Position = corners[2];
-
 		Vertex[6].Position = corners[0];
-
 		Vertex[7].Position = corners[1];
 
 		for (char i = 0; i < BoundingBox::CORNER_COUNT; i++)
@@ -67,9 +63,7 @@ void BOUNDING_AABB::Init()
 		{
 			ID3D11Buffer* buffer;
 
-			D3D11_BUFFER_DESC bd;
-			ZeroMemory(&bd, sizeof(bd));
-
+			D3D11_BUFFER_DESC bd{};
 			bd.ByteWidth = sizeof(VERTEX_3D) * BoundingBox::CORNER_COUNT;
 			bd.Usage = D3D11_USAGE_DYNAMIC;
 			bd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
@@ -77,22 +71,16 @@ void BOUNDING_AABB::Init()
 			bd.MiscFlags = 0;
 			bd.StructureByteStride = 0;
 
-			D3D11_SUBRESOURCE_DATA sd;
+			D3D11_SUBRESOURCE_DATA sd{};
 			sd.pSysMem = Vertex;
-			sd.SysMemPitch = 0;
-			sd.SysMemSlicePitch = 0;
 
-			CRenderer::GetDevice()->CreateBuffer(&bd, &sd, &buffer);
-
-			pVertexBuffer.reset(buffer);
+			render->GetDevice()->CreateBuffer(&bd, &sd, &pVertexBuffer);
 		}
 	}
 
 	// インデックスバッファの設定
-	if (nullptr == pIndexBuffer_BOX.get())
+	if (nullptr == pIndexBuffer_BOX)
 	{
-		ID3D11Buffer* buffer;
-
 		const WORD index[] = {
 		0, 1,
 		1, 3,
@@ -111,9 +99,7 @@ void BOUNDING_AABB::Init()
 		6, 2
 		};
 
-		D3D11_BUFFER_DESC bd;
-		ZeroMemory(&bd, sizeof(bd));
-
+		D3D11_BUFFER_DESC bd{};
 		bd.ByteWidth = sizeof(WORD) * IndexNum_Box;
 		bd.Usage = D3D11_USAGE_DEFAULT;
 		bd.BindFlags = D3D11_BIND_INDEX_BUFFER;
@@ -121,13 +107,10 @@ void BOUNDING_AABB::Init()
 		bd.MiscFlags = 0;
 		bd.StructureByteStride = 0;
 
-		D3D11_SUBRESOURCE_DATA sd;
-		ZeroMemory(&sd, sizeof(sd));
+		D3D11_SUBRESOURCE_DATA sd{};
 		sd.pSysMem = index;
 
-		CRenderer::GetDevice()->CreateBuffer(&bd, &sd, &buffer);
-
-		pIndexBuffer_BOX.reset(buffer);
+		render->GetDevice()->CreateBuffer(&bd, &sd, &pIndexBuffer_BOX);
 	}
 }
 
@@ -135,6 +118,8 @@ void BOUNDING_AABB::Draw()
 {
 	//if (false == CManager::Get_Instance()->Get_ShadowMap()->Get_Enable())
 	{
+		CRenderer* render = CRenderer::getInstance();
+
 		// 3Dマトリックス設定
 		{
 
@@ -143,27 +128,30 @@ void BOUNDING_AABB::Draw()
 
 			if (!camera01.expired() && Empty_weak_ptr<CCamera>(camera01))
 			{
-				CRenderer::Set_MatrixBuffer(XMMatrixIdentity(), camera01.lock()->Get_Camera_View(), camera01.lock()->Get_Camera_Projection());
+				render->Set_MatrixBuffer(XMMatrixIdentity(), camera01.lock()->Get_Camera_View(), camera01.lock()->Get_Camera_Projection());
 			}
 			else
 			{
-				CRenderer::Set_MatrixBuffer(XMMatrixIdentity(), camera02.lock()->Get_Camera_View(), camera02.lock()->Get_Camera_Projection());
+				render->Set_MatrixBuffer(XMMatrixIdentity(), camera02.lock()->Get_Camera_View(), camera02.lock()->Get_Camera_Projection());
 			}
 		}
 
 		// 入力アセンブラに頂点バッファを設定
-		CRenderer::SetVertexBuffers(pVertexBuffer.get());
+		render->SetVertexBuffers(pVertexBuffer.Get());
 
-		CRenderer::SetIndexBuffer(pIndexBuffer_BOX.get());
+		render->SetIndexBuffer(pIndexBuffer_BOX.Get());
 
 		// トポロジの設定
-		CRenderer::GetDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_LINESTRIP);
+		render->SetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_LINESTRIP);
 
-		CRenderer::Set_Shader(SHADER_INDEX_V::DEFAULT, SHADER_INDEX_P::NO_TEXTURE);
+		render->Set_Shader(SHADER_INDEX_V::DEFAULT, SHADER_INDEX_P::NO_TEXTURE);
 
-		CRenderer::GetDeviceContext()->DrawIndexed(IndexNum_Box, 0, 0);
+		render->DrawIndexed(IndexNum_Box, 0, 0);
 
-		CRenderer::Set_Shader();
+		render->Set_Shader();
+
+		// トポロジの設定
+		render->SetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	}
 }
 
@@ -174,12 +162,11 @@ void BOUNDING_AABB::Update(float delta_time)
 
 void BOUNDING_AABB::Uninit()
 {
-	pVertexBuffer.reset(nullptr);
 }
 
 void BOUNDING_AABB::OverWrite()
 {
-	if (nullptr != pVertexBuffer.get())
+	if (nullptr != pVertexBuffer)
 	{
 		Color = Default_Color;
 
@@ -221,12 +208,14 @@ void BOUNDING_AABB::OverWrite()
 			Vertex[i].TexCoord = Vector2(0.0f, 0.0f);
 		}
 
+		CRenderer* render = CRenderer::getInstance();
+
 		// 頂点バッファの書き換え
 		{
 			D3D11_MAPPED_SUBRESOURCE msr;
-			CRenderer::GetDeviceContext()->Map(pVertexBuffer.get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &msr);
+			render->GetDeviceContext()->Map(pVertexBuffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &msr);
 			memcpy(msr.pData, Vertex, sizeof(VERTEX_3D) * BoundingBox::CORNER_COUNT);
-			CRenderer::GetDeviceContext()->Unmap(pVertexBuffer.get(), 0);
+			render->GetDeviceContext()->Unmap(pVertexBuffer.Get(), 0);
 		}
 	}
 }
@@ -289,12 +278,14 @@ void BOUNDING_AABB::OverWrite(BoundingBox aabb)
 			Vertex[i].TexCoord = Vector2(0.0f, 0.0f);
 		}
 
+		CRenderer* render = CRenderer::getInstance();
+
 		// 頂点バッファの書き換え
 		{
 			D3D11_MAPPED_SUBRESOURCE msr;
-			CRenderer::GetDeviceContext()->Map(pVertexBuffer.get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &msr);
+			render->GetDeviceContext()->Map(pVertexBuffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &msr);
 			memcpy(msr.pData, Vertex, sizeof(VERTEX_3D) * BoundingBox::CORNER_COUNT);
-			CRenderer::GetDeviceContext()->Unmap(pVertexBuffer.get(), 0);
+			render->GetDeviceContext()->Unmap(pVertexBuffer.Get(), 0);
 		}
 	}
 }

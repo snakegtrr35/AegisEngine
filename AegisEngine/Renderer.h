@@ -149,96 +149,103 @@ enum INPUTLAYOUT {
 class CRenderer {
 private:
 
+	static unique_ptr<CRenderer> m_Instance;
+
 	//! DirectXのフューチャーレベル
-	static D3D_FEATURE_LEVEL									m_FeatureLevel;
+	D3D_FEATURE_LEVEL											m_FeatureLevel = D3D_FEATURE_LEVEL_11_0;
 	//! DirectX11のデバイス
-	static ID3D11Device*										m_D3DDevice;
+	ComPtr<ID3D11Device>										m_D3DDevice;
 	//! DirectX11のデバイスコンテキスト
-	static ID3D11DeviceContext*									m_ImmediateContext;
+	ComPtr<ID3D11DeviceContext>									m_ImmediateContext;
 	//! スワップチェイン
-	static IDXGISwapChain1*										m_SwapChain;
+	ComPtr<IDXGISwapChain1>										m_SwapChain;
 	//! レンダーターゲットビュー
-	static ID3D11RenderTargetView*								m_RenderTargetView;
+	ComPtr<ID3D11RenderTargetView>								m_RenderTargetView;
 
-	static unique_ptr < ID3D11RenderTargetView, Release>		RenderTargetView_16bit;
-	static unique_ptr<ID3D11ShaderResourceView, Release>		ShaderResourceView_16bit;
+	ComPtr<ID3D11RenderTargetView>								RenderTargetView_16bit;
+	ComPtr<ID3D11ShaderResourceView>							ShaderResourceView_16bit;
 
-	static unique_ptr<ID3D11RenderTargetView, Release>			RenderTargetView[3];
-	static unique_ptr<ID3D11ShaderResourceView, Release>		ShaderResourceView[3];
+	ComPtr<ID3D11RenderTargetView>								RenderTargetView[3];
+	ComPtr<ID3D11ShaderResourceView>							ShaderResourceView[3];
 
 	//! デプスステンシル
-	static ID3D11DepthStencilView*								m_DepthStencilView;
+	ComPtr<ID3D11DepthStencilView>								m_DepthStencilView;
 	//! Direct2Dのデバイス
-	static ID2D1Device*											m_D2DDevice;
+	ComPtr<ID2D1Device>											m_D2DDevice;
 	//! Direct2Dのデバイスコンテキスト
-	static ID2D1DeviceContext*									m_D2DDeviceContext;
+	ComPtr<ID2D1DeviceContext>									m_D2DDeviceContext;
 	//! Direct2Dのターゲットビットマップ
-	static ID2D1Bitmap1*										m_D2DTargetBitmap;
+	ComPtr<ID2D1Bitmap1>										m_D2DTargetBitmap;
 	//! Dxgi
-	static IDXGIDevice1*										m_dxgiDev;
+	ComPtr<IDXGIDevice1>										m_dxgiDev;
 
 	//! テキストフォーマット
-	static IDWriteTextFormat*									m_DwriteTextFormat;
+	ComPtr<IDWriteTextFormat>									m_DwriteTextFormat;
 	//! テキストレイアウト
-	static IDWriteTextLayout*									m_TextLayout;
+	ComPtr<IDWriteTextLayout>									m_TextLayout;
 	//! Direct2Dのライトファクトリー
-	static IDWriteFactory*										m_DwriteFactory;
+	ComPtr<IDWriteFactory>										m_DwriteFactory;
 
-	static unordered_map<SHADER_INDEX_V, ID3D11VertexShader*>	m_VertexShader;
-	static unordered_map<SHADER_INDEX_P, ID3D11PixelShader*>	m_PixelShader;
+	unordered_map<SHADER_INDEX_V, ComPtr<ID3D11VertexShader>>	m_VertexShader;
+	unordered_map<SHADER_INDEX_P, ComPtr<ID3D11PixelShader>>	m_PixelShader;
 
-	static ID3D11DepthStencilState*								m_DepthStateEnable;
-	static ID3D11DepthStencilState*								m_DepthStateDisable;
-	static ID3D11RasterizerState*								m_RasterizerState;
+	ComPtr<ID3D11DepthStencilState>								m_DepthStateEnable;
+	ComPtr<ID3D11DepthStencilState>								m_DepthStateDisable;
+	ComPtr<ID3D11RasterizerState>								m_RasterizerState;
 
-	static unique_ptr<ID3D11SamplerState, Release>				m_SamplerState;
+	ComPtr<ID3D11SamplerState>									m_SamplerState;
 
 	//! 頂点レイアウト
-	static ID3D11InputLayout*									m_VertexLayout[3];
+	ComPtr<ID3D11InputLayout>									m_VertexLayout[3];
 	//! マテリアルバッファ
-	static ID3D11Buffer*										m_MaterialBuffer;
+	ComPtr<ID3D11Buffer>										m_MaterialBuffer;
 	//! ライトバッファ
-	static ID3D11Buffer*										m_LightBuffer;
+	ComPtr<ID3D11Buffer>										m_LightBuffer;
 	//! ボーン情報バッファ
-	static ID3D11Buffer*										m_Bone_Matrix_Buffer;
+	ComPtr<ID3D11Buffer>										m_Bone_Matrix_Buffer;
 	//! コンスタントバッファ
-	static ID3D11Buffer*										m_ConstantBuffer;
+	ComPtr<ID3D11Buffer>										m_ConstantBuffer;
 	
-	static ID3D11Buffer*										m_ConstantBuffer_02;
+	ComPtr<ID3D11Buffer>										m_ConstantBuffer_02;
 
 	//! スタンバイモードフラグ
-	static bool													Stand_By_Enable;
-
+	bool														Stand_By_Enable = false;
 	// ライト
-	static LIGHT m_Light;//
+	LIGHT														m_Light;
 
 	/**
 	* @brief Direct3Dの初期化
 	* @return bool 成功なら true 失敗なら false
 	* @details Direct3Dの初期化する
 	*/
-	static bool Init3D();
+	bool Init3D();
 
 	/**
 	* @brief Direct2Dの初期化
 	* @return bool 成功なら true 失敗なら false
 	* @details Direct2Dの初期化する
 	*/
-	static bool Init2D();
+	bool Init2D();
 
 public:
-	static bool Init();
-	static void Uninit();
-	static void Begin();
-	static void End();
+
+	CRenderer() {}
+	~CRenderer() {}
+
+	static CRenderer* getInstance();
+
+	bool Init();
+	void Uninit();
+	void Begin();
+	void End();
 
 	// 自前
-	static void SetBlendState(D3D11_BLEND_DESC* blend_state = nullptr, bool flag = false);
-	static void GetAddBlendState(D3D11_BLEND_DESC& blend_state);
-	static void GetSubtractBlendState(D3D11_BLEND_DESC& blend_state);
-	static void Get2DBlendState(D3D11_BLEND_DESC& blend_state);
-	static void SetDepthEnable(bool Enable);
-	static void Change_Window_Mode();
+	void SetBlendState(D3D11_BLEND_DESC* blend_state = nullptr, bool flag = false);
+	void GetAddBlendState(D3D11_BLEND_DESC& blend_state);
+	void GetSubtractBlendState(D3D11_BLEND_DESC& blend_state);
+	void Get2DBlendState(D3D11_BLEND_DESC& blend_state);
+	void SetDepthEnable(bool Enable);
+	void Change_Window_Mode();
 
 	/**
 	* @brief 2D用のワールドマトリックス設定
@@ -246,7 +253,7 @@ public:
 	* @param[in] rotation　回転のマトリックス
 	* @details 2D用のワールドマトリックス設定を設定する
 	*/
-	static void SetWorldViewProjection2D(const XMFLOAT3& scaling = XMFLOAT3(1.0f, 1.0f, 1.0f), const XMFLOAT3& rotation = XMFLOAT3(0.0f, 0.0f, 0.0f));
+	void SetWorldViewProjection2D(const XMFLOAT3& scaling = XMFLOAT3(1.0f, 1.0f, 1.0f), const XMFLOAT3& rotation = XMFLOAT3(0.0f, 0.0f, 0.0f));
 
 	/**
 	* @brief コンスタントバッファ設定
@@ -255,9 +262,9 @@ public:
 	* @param[in] projection　プロジェクションマトリックス
 	* @details コンスタントバッファを設定する
 	*/
-	static void Set_MatrixBuffer(const XMMATRIX world, const XMMATRIX view, const XMMATRIX projection);
+	void Set_MatrixBuffer(const XMMATRIX world, const XMMATRIX view, const XMMATRIX projection);
 
-	static void Set_MatrixBuffer01(const XMVECTOR camera_pos)
+	void Set_MatrixBuffer01(const XMVECTOR camera_pos)
 	{
 		CONSTANT_02 cons;
 
@@ -270,10 +277,10 @@ public:
 		cons.Camera_Pos.z = pos.z;
 		cons.Camera_Pos.w = 0.0f;
 
-		CRenderer::GetDeviceContext()->UpdateSubresource(m_ConstantBuffer_02, 0, NULL, &cons, 0, 0);
+		CRenderer::GetDeviceContext()->UpdateSubresource(m_ConstantBuffer_02.Get(), 0, NULL, &cons, 0, 0);
 
-		m_ImmediateContext->VSSetConstantBuffers(5, 1, &m_ConstantBuffer_02);
-		m_ImmediateContext->PSSetConstantBuffers(5, 1, &m_ConstantBuffer_02);
+		m_ImmediateContext->VSSetConstantBuffers(5, 1, m_ConstantBuffer_02.GetAddressOf());
+		m_ImmediateContext->PSSetConstantBuffers(5, 1, m_ConstantBuffer_02.GetAddressOf());
 	}
 
 	/**
@@ -281,74 +288,77 @@ public:
 	* @param[in] Material　マテリアル
 	* @details マテリアル設定を設定する
 	*/
-	static void SetMaterial(MATERIAL Material);
+	void SetMaterial(MATERIAL Material);
 
 	/**
 	* @brief ディレクショナルライト設定
 	* @param[in] Light　ディレクショナルライト
 	* @details ディレクショナルライト設定を設定する
 	*/
-	static void SetLight(LIGHT* Light);
+	void SetLight(LIGHT* Light);
 
 	/**
 	* @brief ディレクショナルライトの初期化
 	* @details ディレクショナルライト設定を初期化する
 	*/
-	static void Light_Identity();
+	void Light_Identity();
 
 	/**
 	* @brief	ラスタライズステートの設定
 	* @details 
 	*/
-	static void Set_RasterizerState();
+	void Set_RasterizerState();
 
 	/**
 	* @brief 頂点バッファの設定
 	* @details 頂点バッファ設定を設定する
 	*/
-	static void SetVertexBuffers( ID3D11Buffer* VertexBuffer );
+	void SetVertexBuffers( ID3D11Buffer* VertexBuffer );
 
 	/**
 	* @brief 頂点バッファの設定(インスタンシング用)
 	* @details インスタンシング用の頂点バッファ設定を設定する
 	*/
-	static void SetVertexBuffers(ID3D11Buffer* IndexBuffer, ID3D11Buffer* InstancingBuffer, UINT size);
+	void SetVertexBuffers(ID3D11Buffer* IndexBuffer, ID3D11Buffer* InstancingBuffer, UINT size);
 
 	/**
 	* @brief インデックスバッファの設定
 	* @details インデックスバッファ設定を設定する
 	*/
-	static void SetIndexBuffer( ID3D11Buffer* IndexBuffer );
+	void SetIndexBuffer( ID3D11Buffer* IndexBuffer );
 
-	static void DrawIndexed( unsigned int IndexCount, unsigned int StartIndexLocation, int BaseVertexLocation );
+	void Draw(unsigned int IndexCount, unsigned int StartVertexLocation);
+	void DrawIndexed( unsigned int IndexCount, unsigned int StartIndexLocation, int BaseVertexLocation );
+
+	void SetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY primitiveTopology);
 
 	/**
 	* @brief デバイス3Dの取得
 	* @return ID3D11Device* デバイスのポインタ
 	* @details デバイス3Dの取得する
 	*/
-	static ID3D11Device* GetDevice(){ return m_D3DDevice; }
+	ID3D11Device* GetDevice(){ return m_D3DDevice.Get(); }
 
 	/**
 	* @brief デバイスコンテキスト3Dの取得
 	* @return ID3D11DeviceContext* デバイスコンテキストのポインタ
 	* @details デバイスコンテキスト3Dの取得する
 	*/
-	static ID3D11DeviceContext* GetDeviceContext( void ){ return m_ImmediateContext; }
+	ID3D11DeviceContext* GetDeviceContext( void ){ return m_ImmediateContext.Get(); }
 
 	/**
 	* @brief デバイス2Dの取得
 	* @return ID2D1Device* デバイスのポインタ
 	* @details デバイス2Dの取得する
 	*/
-	static ID2D1Device* Get2DDevice() { return m_D2DDevice; }
+	ID2D1Device* Get2DDevice() { return m_D2DDevice.Get(); }
 
 	/**
 	* @brief デバイスコンテキスト2Dの取得
 	* @return ID2D1DeviceContext* デバイスコンテキストのポインタ
 	* @details デバイスコンテキスト2Dの取得する
 	*/
-	static ID2D1DeviceContext* Get2DDeviceContext(void) { return m_D2DDeviceContext; }
+	ID2D1DeviceContext* Get2DDeviceContext(void) { return m_D2DDeviceContext.Get(); }
 
 	/**
 	* @brief テキストフォーマットの作成
@@ -356,14 +366,14 @@ public:
 	* @return HRESULT 戻り値
 	* @details テキストフォーマットの作成する
 	*/
-	static HRESULT Create_TextFormat(const TEXT_FOMAT& fomat);
+	HRESULT Create_TextFormat(const TEXT_FOMAT& fomat);
 
 	/**
 	* @brief テキストフォーマットの取得
 	* @return IDWriteTextFormat* テキストフォーマットのポインタ
 	* @details テキストフォーマットの取得する
 	*/
-	static IDWriteTextFormat* GetTextFormat() { return m_DwriteTextFormat; }
+	IDWriteTextFormat* GetTextFormat() { return m_DwriteTextFormat.Get(); }
 
 	/**
 	* @brief テキストレイアウトを作成
@@ -371,53 +381,53 @@ public:
 	* @return HRESULT 戻り値
 	* @details テキストレイアウトを作成する
 	*/
-	static HRESULT Create_TextLayout(const TEXT_LAYOUT& layout);
+	HRESULT Create_TextLayout(const TEXT_LAYOUT& layout);
 
 	/**
 	* @brief テキストレイアウトを取得
 	* @return IDWriteTextLayout* テキストレイアウトのポインタ
 	* @details テキストレイアウトを取得する
 	*/
-	static IDWriteTextLayout* GetTextLayout() { return m_TextLayout; }
+	IDWriteTextLayout* GetTextLayout() { return m_TextLayout.Get(); }
 
 	/**
 	* @brief ダイレクトファクトリを取得
 	* @return IDWriteFactory* ダイレクトファクトリのポインタ
 	* @details ダイレクトファクトリを取得する
 	*/
-	static IDWriteFactory* GetFactory() { return m_DwriteFactory; }
+	IDWriteFactory* GetFactory() { return m_DwriteFactory.Get(); }
 
-	static void Set_Shader(const SHADER_INDEX_V v_index = SHADER_INDEX_V::DEFAULT, const SHADER_INDEX_P p_index = SHADER_INDEX_P::DEFAULT);
+	void Set_Shader(const SHADER_INDEX_V v_index = SHADER_INDEX_V::DEFAULT, const SHADER_INDEX_P p_index = SHADER_INDEX_P::DEFAULT);
 
-	static void Set_InputLayout(const INPUTLAYOUT v_index = INPUTLAYOUT::DEFAULT);
+	void Set_InputLayout(const INPUTLAYOUT v_index = INPUTLAYOUT::DEFAULT);
 
 	// 自前
-	static void CreateRenderTexture();
-	static void SetPass_Rendring();
+	void CreateRenderTexture();
+	void SetPass_Rendring();
 
-	static void SetPass_Geometry();
+	void SetPass_Geometry();
 
-	static bool Create();
+	bool Create();
 
-	static ID3D11ShaderResourceView* Get() {
-		return ShaderResourceView[0].get();
+	ID3D11ShaderResourceView* Get() {
+		return ShaderResourceView[0].Get();
 	}
 
-	static ID3D11ShaderResourceView* Get2() {
-		return ShaderResourceView[1].get();
+	ID3D11ShaderResourceView* Get2() {
+		return ShaderResourceView[1].Get();
 	}
 
-	static ID3D11ShaderResourceView* Get3() {
-		return ShaderResourceView[2].get();
+	ID3D11ShaderResourceView* Get3() {
+		return ShaderResourceView[2].Get();
 	}
 
-	static ID3D11ShaderResourceView* Get_Texture() {
-		return ShaderResourceView_16bit.get();
+	ID3D11ShaderResourceView* Get_Texture() {
+		return ShaderResourceView_16bit.Get();
 	}
 
-	static void End_Draw();
+	void End_Draw();
 
-	static LIGHT* Get_Light()
+	LIGHT* Get_Light()
 	{
 		return &m_Light;
 	}

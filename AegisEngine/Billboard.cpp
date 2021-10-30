@@ -11,7 +11,7 @@
 
 using namespace Aegis;
 
-unique_ptr<ID3D11Buffer, Release> BILL_BOARD::pIndexBuffer = nullptr;		// インデックスバッファ
+ComPtr<ID3D11Buffer> BILL_BOARD::pIndexBuffer = nullptr;		// インデックスバッファ
 
 BILL_BOARD::BILL_BOARD() : pVertexBuffer(nullptr), Texture(nullptr), WH(Vector2(1.0f, 1.0f))
 {
@@ -39,12 +39,13 @@ BILL_BOARD::~BILL_BOARD()
 
 void BILL_BOARD::Init()
 {
+	CRenderer* render = CRenderer::getInstance();
+
 	// 頂点バッファの設定
 	{
 		HRESULT hr;
-		ID3D11Buffer* buffer = nullptr;
 
-		D3D11_BUFFER_DESC bd;
+		D3D11_BUFFER_DESC bd{};
 		bd.ByteWidth = sizeof(VERTEX_3D) * 4;
 		bd.Usage = D3D11_USAGE_DYNAMIC;
 		bd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
@@ -53,28 +54,25 @@ void BILL_BOARD::Init()
 		bd.StructureByteStride = 0;
 
 		// 頂点バッファの生成
-		hr = CRenderer::GetDevice()->CreateBuffer(&bd, nullptr, &buffer);
+		hr = render->GetDevice()->CreateBuffer(&bd, nullptr, &pVertexBuffer);
 
 		if (FAILED(hr))
 		{
 			return;
 		}
-
-		pVertexBuffer.reset(buffer);
 	}
 
 	// インデックスバッファの設定
-	if (nullptr == pIndexBuffer.get())
+	if (nullptr == pIndexBuffer)
 	{
 		HRESULT hr;
-		ID3D11Buffer* buffer = nullptr;
 
 		const WORD index[] = {
 		0, 1, 2,
 		1, 3, 2,
 		};
 
-		D3D11_BUFFER_DESC ibDesc;
+		D3D11_BUFFER_DESC ibDesc{};
 		ibDesc.ByteWidth = sizeof(WORD) * 6;
 		ibDesc.Usage = D3D11_USAGE_DEFAULT;
 		ibDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
@@ -82,24 +80,27 @@ void BILL_BOARD::Init()
 		ibDesc.MiscFlags = 0;
 		ibDesc.StructureByteStride = 0;
 
-		D3D11_SUBRESOURCE_DATA irData;
+		D3D11_SUBRESOURCE_DATA irData{};
 		irData.pSysMem = index;
 		irData.SysMemPitch = 0;
 		irData.SysMemSlicePitch = 0;
 
-		hr = CRenderer::GetDevice()->CreateBuffer(&ibDesc, &irData, &buffer);
+		hr = render->GetDevice()->CreateBuffer(&ibDesc, &irData, &pIndexBuffer);
 		if (FAILED(hr))
 		{
 			return;
 		}
-
-		pIndexBuffer.reset(buffer);
 	}
 }
 
 void BILL_BOARD::Draw()
 {
-	if (CManager::Get_Instance()->Get_ShadowMap()->Get_Enable()) return;
+	if (CManager::Get_Instance()->Get_ShadowMap()->Get_Enable())
+	{
+		return;
+	}
+
+	CRenderer* render = CRenderer::getInstance();
 
 	{
 		VERTEX_3D vertex[4];
@@ -127,18 +128,16 @@ void BILL_BOARD::Draw()
 		// 頂点バッファの書き換え
 		{
 			D3D11_MAPPED_SUBRESOURCE msr;
-			CRenderer::GetDeviceContext()->Map(pVertexBuffer.get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &msr);
+			render->GetDeviceContext()->Map(pVertexBuffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &msr);
 			memcpy(msr.pData, vertex, sizeof(VERTEX_3D) * 4); // 4頂点分コピー
-			CRenderer::GetDeviceContext()->Unmap(pVertexBuffer.get(), 0);
+			render->GetDeviceContext()->Unmap(pVertexBuffer.Get(), 0);
 		}
 	}
 
 	// 入力アセンブラに頂点バッファを設定
-	auto vertex = pVertexBuffer.get();
-	CRenderer::SetVertexBuffers(vertex);
+	render->SetVertexBuffers(pVertexBuffer.Get());
 
-	auto index = pIndexBuffer.get();
-	CRenderer::SetIndexBuffer(index);
+	render->SetIndexBuffer(pIndexBuffer.Get());
 
 	// テクスチャの設定
 	Texture->Set_Texture();
@@ -186,29 +185,30 @@ void BILL_BOARD::Draw()
 
 		if (!camera01.expired() && Empty_weak_ptr<CCamera>(camera01))
 		{
-			CRenderer::Set_MatrixBuffer(world, camera01.lock()->Get_Camera_View(), camera01.lock()->Get_Camera_Projection());
+			render->Set_MatrixBuffer(world, camera01.lock()->Get_Camera_View(), camera01.lock()->Get_Camera_Projection());
 
-			CRenderer::Set_MatrixBuffer01(*camera01.lock()->Get_Pos());
+			render->Set_MatrixBuffer01(*camera01.lock()->Get_Pos());
 		}
 		else
 		{
-			CRenderer::Set_MatrixBuffer(world, camera02.lock()->Get_Camera_View(), camera02.lock()->Get_Camera_Projection());
+			render->Set_MatrixBuffer(world, camera02.lock()->Get_Camera_View(), camera02.lock()->Get_Camera_Projection());
 
-			CRenderer::Set_MatrixBuffer01(*camera02.lock()->Get_Pos());
+			render->Set_MatrixBuffer01(*camera02.lock()->Get_Pos());
 		}
 	}
 
-	CRenderer::Set_Shader(SHADER_INDEX_V::DEFAULT, SHADER_INDEX_P::NO_LIGHT);
+	render->Set_Shader(SHADER_INDEX_V::DEFAULT, SHADER_INDEX_P::NO_LIGHT);
 
-	CRenderer::DrawIndexed(6, 0, 0);
+	render->DrawIndexed(6, 0, 0);
 
-	CRenderer::Set_Shader();
+	render->Set_Shader();
 
 	GAME_OBJECT::Draw();
 }
 
 void BILL_BOARD::Draw_DPP()
 {
+	CRenderer* render = CRenderer::getInstance();
 	{
 		VERTEX_3D vertex[4];
 
@@ -235,18 +235,16 @@ void BILL_BOARD::Draw_DPP()
 		// 頂点バッファの書き換え
 		{
 			D3D11_MAPPED_SUBRESOURCE msr;
-			CRenderer::GetDeviceContext()->Map(pVertexBuffer.get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &msr);
+			render->GetDeviceContext()->Map(pVertexBuffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &msr);
 			memcpy(msr.pData, vertex, sizeof(VERTEX_3D) * 4); // 4頂点分コピー
-			CRenderer::GetDeviceContext()->Unmap(pVertexBuffer.get(), 0);
+			render->GetDeviceContext()->Unmap(pVertexBuffer.Get(), 0);
 		}
 	}
 
 	// 入力アセンブラに頂点バッファを設定
-	auto vertex = pVertexBuffer.get();
-	CRenderer::SetVertexBuffers(vertex);
+	render->SetVertexBuffers(pVertexBuffer.Get());
 
-	auto index = pIndexBuffer.get();
-	CRenderer::SetIndexBuffer(index);
+	render->SetIndexBuffer(pIndexBuffer.Get());
 
 	// 3Dマトリックス設定
 	{
@@ -292,15 +290,15 @@ void BILL_BOARD::Draw_DPP()
 
 		if (!camera01.expired() && Empty_weak_ptr<CCamera>(camera01))
 		{
-			CRenderer::Set_MatrixBuffer(world, camera01.lock()->Get_Camera_View(), camera01.lock()->Get_Camera_Projection());
+			render->Set_MatrixBuffer(world, camera01.lock()->Get_Camera_View(), camera01.lock()->Get_Camera_Projection());
 		}
 		else
 		{
-			CRenderer::Set_MatrixBuffer(world, camera02.lock()->Get_Camera_View(), camera02.lock()->Get_Camera_Projection());
+			render->Set_MatrixBuffer(world, camera02.lock()->Get_Camera_View(), camera02.lock()->Get_Camera_Projection());
 		}
 	}
 
-	CRenderer::DrawIndexed(6, 0, 0);
+	render->DrawIndexed(6, 0, 0);
 }
 
 void BILL_BOARD::Update(float delta_time)
@@ -310,7 +308,6 @@ void BILL_BOARD::Update(float delta_time)
 
 void BILL_BOARD::Uninit()
 {
-	pVertexBuffer.reset(nullptr);
 	Texture.reset(nullptr);
 }
 
@@ -366,7 +363,12 @@ void BILL_BOARD_ANIMATION::Draw_DPP()
 
 void BILL_BOARD_ANIMATION::Draw(float tx, float ty)
 {
-	if (CManager::Get_Instance()->Get_ShadowMap()->Get_Enable()) return;
+	if (CManager::Get_Instance()->Get_ShadowMap()->Get_Enable())
+	{
+		return;
+	}
+
+	CRenderer* render = CRenderer::getInstance();
 
 	if (-1.0f == tx)
 	{
@@ -420,18 +422,16 @@ void BILL_BOARD_ANIMATION::Draw(float tx, float ty)
 		// 頂点バッファの書き換え
 		{
 			D3D11_MAPPED_SUBRESOURCE msr;
-			CRenderer::GetDeviceContext()->Map(pVertexBuffer.get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &msr);
+			render->GetDeviceContext()->Map(pVertexBuffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &msr);
 			memcpy(msr.pData, vertex, sizeof(VERTEX_3D) * 4); // 4頂点分コピー
-			CRenderer::GetDeviceContext()->Unmap(pVertexBuffer.get(), 0);
+			render->GetDeviceContext()->Unmap(pVertexBuffer.Get(), 0);
 		}
 	}
 
 	// 入力アセンブラに頂点バッファを設定
-	auto vertex = pVertexBuffer.get();
-	CRenderer::SetVertexBuffers(vertex);
+	render->SetVertexBuffers(pVertexBuffer.Get());
 
-	auto index = pIndexBuffer.get();
-	CRenderer::SetIndexBuffer(index);
+	render->SetIndexBuffer(pIndexBuffer.Get());
 
 	// テクスチャの設定
 	Texture->Set_Texture();
@@ -479,31 +479,33 @@ void BILL_BOARD_ANIMATION::Draw(float tx, float ty)
 
 		if (!camera01.expired() && Empty_weak_ptr<CCamera>(camera01))
 		{
-			CRenderer::Set_MatrixBuffer(world, camera01.lock()->Get_Camera_View(), camera01.lock()->Get_Camera_Projection());
+			render->Set_MatrixBuffer(world, camera01.lock()->Get_Camera_View(), camera01.lock()->Get_Camera_Projection());
 
-			CRenderer::Set_MatrixBuffer01(*camera01.lock()->Get_Pos());
+			render->Set_MatrixBuffer01(*camera01.lock()->Get_Pos());
 
-			CRenderer::Set_Shader();
+			render->Set_Shader();
 		}
 		else
 		{
-			CRenderer::Set_MatrixBuffer(world, camera02.lock()->Get_Camera_View(), camera02.lock()->Get_Camera_Projection());
+			render->Set_MatrixBuffer(world, camera02.lock()->Get_Camera_View(), camera02.lock()->Get_Camera_Projection());
 
-			CRenderer::Set_MatrixBuffer01(*camera02.lock()->Get_Pos());
+			render->Set_MatrixBuffer01(*camera02.lock()->Get_Pos());
 
-			CRenderer::Set_Shader();
+			render->Set_Shader();
 		}
 	}
 
-	CRenderer::Set_Shader(SHADER_INDEX_V::DEFAULT, SHADER_INDEX_P::NO_LIGHT);
+	render->Set_Shader(SHADER_INDEX_V::DEFAULT, SHADER_INDEX_P::NO_LIGHT);
 
-	CRenderer::DrawIndexed(6, 0, 0);
+	render->DrawIndexed(6, 0, 0);
 
-	CRenderer::Set_Shader();
+	render->Set_Shader();
 }
 
 void BILL_BOARD_ANIMATION::Draw_DPP(float tx, float ty)
 {
+	CRenderer* render = CRenderer::getInstance();
+
 	if (-1.0f == tx)
 	{
 		Tx = (float)(Tw * (PatternCount % Pattern_Max_X));
@@ -556,18 +558,16 @@ void BILL_BOARD_ANIMATION::Draw_DPP(float tx, float ty)
 		// 頂点バッファの書き換え
 		{
 			D3D11_MAPPED_SUBRESOURCE msr;
-			CRenderer::GetDeviceContext()->Map(pVertexBuffer.get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &msr);
+			render->GetDeviceContext()->Map(pVertexBuffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &msr);
 			memcpy(msr.pData, vertex, sizeof(VERTEX_3D) * 4); // 4頂点分コピー
-			CRenderer::GetDeviceContext()->Unmap(pVertexBuffer.get(), 0);
+			render->GetDeviceContext()->Unmap(pVertexBuffer.Get(), 0);
 		}
 	}
 
 	// 入力アセンブラに頂点バッファを設定
-	auto vertex = pVertexBuffer.get();
-	CRenderer::SetVertexBuffers(vertex);
+	render->SetVertexBuffers(pVertexBuffer.Get());
 
-	auto index = pIndexBuffer.get();
-	CRenderer::SetIndexBuffer(index);
+	render->SetIndexBuffer(pIndexBuffer.Get());
 
 	// 3Dマトリックス設定
 	{
@@ -612,15 +612,15 @@ void BILL_BOARD_ANIMATION::Draw_DPP(float tx, float ty)
 
 		if (!camera01.expired() && Empty_weak_ptr<CCamera>(camera01))
 		{
-			CRenderer::Set_MatrixBuffer(world, camera01.lock()->Get_Camera_View(), camera01.lock()->Get_Camera_Projection());
+			render->Set_MatrixBuffer(world, camera01.lock()->Get_Camera_View(), camera01.lock()->Get_Camera_Projection());
 		}
 		else
 		{
-			CRenderer::Set_MatrixBuffer(world, camera02.lock()->Get_Camera_View(), camera02.lock()->Get_Camera_Projection());
+			render->Set_MatrixBuffer(world, camera02.lock()->Get_Camera_View(), camera02.lock()->Get_Camera_Projection());
 		}
 	}
 
-	CRenderer::DrawIndexed(6, 0, 0);
+	render->DrawIndexed(6, 0, 0);
 }
 
 void BILL_BOARD_ANIMATION::Update(float delta_time)

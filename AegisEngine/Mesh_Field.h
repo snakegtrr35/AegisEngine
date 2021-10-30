@@ -20,25 +20,25 @@ class MESH_FIELD : public GAME_OBJECT {
 private:
 
 	//! グリッドサイズ
-	Aegis::Vector3						GridSize;
+	Aegis::Vector3				GridSize;
 
 	//! グリッド数
-	Aegis::Int2							GridNum;
+	Aegis::Int2					GridNum;
 
 	//! インデックス数
-	UINT								IndexNum;
+	UINT						IndexNum;
 
 	// 頂点データ
-	vector<VERTEX_3D>					VertexArray;
+	vector<VERTEX_3D>			VertexArray;
 
 	//! 頂点バッファ
-	unique_ptr<ID3D11Buffer, Release>	VertexBuffer;
+	ComPtr<ID3D11Buffer>		VertexBuffer;
 
 	//! インデックスバッファ
-	unique_ptr<ID3D11Buffer, Release>	IndexBuffer;
+	ComPtr<ID3D11Buffer>		IndexBuffer;
 
 	//! テクスチャ
-	unique_ptr<TEXTURE>					Texture;
+	unique_ptr<TEXTURE>			Texture;
 
 public:
 
@@ -134,8 +134,8 @@ private:
 	unsigned int	IndexNum;
 	VERTEX_3D* VertexArray;
 
-	ID3D11Buffer* VertexBuffer;		// 頂点バッファ
-	ID3D11Buffer* IndexBuffer;		// インデックスバッファ
+	ComPtr<ID3D11Buffer> VertexBuffer;		// 頂点バッファ
+	ComPtr<ID3D11Buffer> IndexBuffer;		// インデックスバッファ
 	TEXTURE* Texture;				// テクスチャ
 
 public:

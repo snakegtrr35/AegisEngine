@@ -146,6 +146,8 @@ bool CMODEL::Reload(const string& filename)
 
 void CMODEL::Draw()
 {
+	CRenderer* render = CRenderer::getInstance();
+
 	const auto camera = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<CCamera>("camera");
 
 	Vector3 position = *Get_Transform().Get_Position();
@@ -206,7 +208,7 @@ void CMODEL::Draw()
 
 		{
 			XMVECTOR camera_pos;
-			LIGHT light = *CRenderer::Get_Light();
+			LIGHT light = *render->Get_Light();
 
 			XMVECTOR light_pos = XMVectorSet(light.Direction.x, light.Direction.y, light.Direction.z, light.Direction.w);
 
@@ -229,16 +231,16 @@ void CMODEL::Draw()
 				camera_pos = XMLoadFloat4(&pos);
 			}
 
-			CRenderer::Set_MatrixBuffer01(camera_pos);
+			render->Set_MatrixBuffer01(camera_pos);
 		}
 
 		if (CManager::Get_Instance()->Get_ShadowMap()->Get_Enable())
 		{
-			CRenderer::Set_Shader(SHADER_INDEX_V::SHADOW_MAP, SHADER_INDEX_P::SHADOW_MAP);
+			render->Set_Shader(SHADER_INDEX_V::SHADOW_MAP, SHADER_INDEX_P::SHADOW_MAP);
 		}
 		else
 		{
-			CRenderer::Set_Shader();
+			render->Set_Shader();
 		}
 	}
 
@@ -274,11 +276,13 @@ void CMODEL::Draw()
 		}
 	}
 
-	CRenderer::Set_Shader();
+	render->Set_Shader();
 }
 
 void CMODEL::Draw_DPP()
 {
+	CRenderer* render = CRenderer::getInstance();
+
 	const auto camera = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<CCamera>("camera");
 
 	Vector3 position = *Get_Transform().Get_Position();
@@ -308,7 +312,7 @@ void CMODEL::Draw_DPP()
 
 		{
 			XMVECTOR camera_pos;
-			LIGHT light = *CRenderer::Get_Light();
+			LIGHT light = *render->Get_Light();
 
 			XMVECTOR light_pos = XMVectorSet(light.Direction.x, light.Direction.y, light.Direction.z, light.Direction.w);
 
@@ -334,16 +338,16 @@ void CMODEL::Draw_DPP()
 				camera_pos = XMLoadFloat4(&pos);
 			}
 
-			CRenderer::Set_MatrixBuffer01(camera_pos);
+			render->Set_MatrixBuffer01(camera_pos);
 		}
 
 		if (CManager::Get_Instance()->Get_ShadowMap()->Get_Enable())
 		{
-			CRenderer::Set_Shader(SHADER_INDEX_V::SHADOW_MAP, SHADER_INDEX_P::SHADOW_MAP);
+			render->Set_Shader(SHADER_INDEX_V::SHADOW_MAP, SHADER_INDEX_P::SHADOW_MAP);
 		}
 		else
 		{
-			CRenderer::Set_Shader();
+			render->Set_Shader();
 		}
 	}
 
@@ -379,7 +383,7 @@ void CMODEL::Draw_DPP()
 		}
 	}
 
-	CRenderer::Set_Shader();
+	render->Set_Shader();
 }
 
 void CMODEL::Update(float delta_time)
@@ -536,7 +540,9 @@ vector<TEXTURE_S> CMODEL::loadMaterialTextures(aiMaterial* mat, aiTextureType ty
 				wstring filenamews = wstring(filename.begin(), filename.end());
 
 				{
-					hr = CreateWICTextureFromFile(CRenderer::GetDevice(), CRenderer::GetDeviceContext(), filenamews.c_str(), nullptr, &texture.Texture, nullptr, nullptr);
+					CRenderer* render = CRenderer::getInstance();
+
+					hr = CreateWICTextureFromFile(render->GetDevice(), render->GetDeviceContext(), filenamews.c_str(), nullptr, &texture.Texture, nullptr, nullptr);
 				}
 
 				if (FAILED(hr))
@@ -600,12 +606,13 @@ int CMODEL::getTextureIndex(aiString* str)
 
 ID3D11ShaderResourceView* CMODEL::getTextureFromModel(const aiScene* scene, int textureindex)
 {
+	CRenderer* render = CRenderer::getInstance();
 	HRESULT hr;
 	ID3D11ShaderResourceView* texture;
 
 	int* size = reinterpret_cast<int*>(&scene->mTextures[textureindex]->mWidth);
 
-	hr = CreateWICTextureFromMemory(CRenderer::GetDevice(), CRenderer::GetDeviceContext(), reinterpret_cast<unsigned char*>(scene->mTextures[textureindex]->pcData), *size, nullptr, &texture);
+	hr = CreateWICTextureFromMemory(render->GetDevice(), render->GetDeviceContext(), reinterpret_cast<unsigned char*>(scene->mTextures[textureindex]->pcData), *size, nullptr, &texture);
 	if (FAILED(hr))
 		FAILDE_ASSERT
 

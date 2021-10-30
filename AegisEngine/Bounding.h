@@ -19,7 +19,7 @@ class BOUNDING : public COMPONENT {
 private:
 protected:
 	//! BOXのインデックスバッファ
-	static unique_ptr<ID3D11Buffer, Release> pIndexBuffer_BOX;
+	static ComPtr<ID3D11Buffer> pIndexBuffer_BOX;
 	//! BOXのインデックス数
 	static const char IndexNum_Box;
 	//! デフォルトのカラー

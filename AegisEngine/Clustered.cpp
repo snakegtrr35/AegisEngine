@@ -14,12 +14,10 @@ static LIGHTS g_Light;
 bool CLUSTERED::Init()
 {
 	HRESULT hr;
-	auto device = CRenderer::GetDevice();
+	auto device = CRenderer::getInstance()->GetDevice();
 	
 	// コンピュートシェーダーの生成
 	{
-		ID3D11ComputeShader* pCS = nullptr;
-
 		// ライトカリングシェーダの生成
 		{
 			FILE* file;
@@ -31,21 +29,17 @@ bool CLUSTERED::Init()
 			fread(buffer, fsize, 1, file);
 			fclose(file);
 
-			hr = device->CreateComputeShader(buffer, fsize, NULL, &pCS);
+			hr = device->CreateComputeShader(buffer, fsize, NULL, &ClusterCS);
 
 			delete[] buffer;
 
 			assert(SUCCEEDED(hr));
-
-			ClusterCS.reset(pCS);
 		}
 	}
 
 	// クラスターグリッドの作成
 	{
-		ID3D11Texture3D* tex = nullptr;
-
-		D3D11_TEXTURE3D_DESC desc = {};
+		D3D11_TEXTURE3D_DESC desc{};
 
 		desc.Width = CLUSTERED_X;
 		desc.Height = CLUSTERED_Y;
@@ -57,13 +51,10 @@ bool CLUSTERED::Init()
 		desc.BindFlags = D3D11_BIND_UNORDERED_ACCESS | D3D11_BIND_SHADER_RESOURCE;
 		desc.CPUAccessFlags = 0;
 
-		hr = device->CreateTexture3D(&desc, nullptr, &tex);
+		hr = device->CreateTexture3D(&desc, nullptr, &ClusterTexture);
 		assert(SUCCEEDED(hr));
 
-		ClusterTexture.reset(tex);
-
 		{
-			ID3D11ShaderResourceView* srv = nullptr;
 			D3D11_SHADER_RESOURCE_VIEW_DESC SRVDesc = {};
 
 			SRVDesc.Format = desc.Format;
@@ -71,28 +62,19 @@ bool CLUSTERED::Init()
 			SRVDesc.Texture2D.MostDetailedMip = 0;
 			SRVDesc.Texture2D.MipLevels = 1;
 
-			hr = device->CreateShaderResourceView(ClusterTexture.get(), &SRVDesc, &srv);
+			hr = device->CreateShaderResourceView(ClusterTexture.Get(), &SRVDesc, &ClusterSRV);
 			assert(SUCCEEDED(hr));
-
-			ClusterSRV.reset(srv);
 		}
 
 		{
-			ID3D11UnorderedAccessView* uav = nullptr;
-
-			hr = device->CreateUnorderedAccessView(ClusterTexture.get(), nullptr, &uav);
+			hr = device->CreateUnorderedAccessView(ClusterTexture.Get(), nullptr, &ClusterUAV);
 			assert(SUCCEEDED(hr));
-
-			ClusterUAV.reset(uav);
 		}
 	}
 
 	//　ライトリストの作成
 	{
-		ID3D11Texture2D* tex = nullptr;
-
 		D3D11_TEXTURE2D_DESC desc = {};
-
 		desc.Width = CLUSTERED_X * CLUSTERED_Y * CLUSTERED_Z;
 		desc.Height = CLUSTERED_X;
 		desc.MipLevels = 1;
@@ -100,18 +82,14 @@ bool CLUSTERED::Init()
 		desc.SampleDesc.Count = 1;
 		desc.SampleDesc.Quality = 0;
 		desc.Format = DXGI_FORMAT_R32_UINT;
-
 		desc.Usage = D3D11_USAGE_DEFAULT;
 		desc.BindFlags = D3D11_BIND_UNORDERED_ACCESS | D3D11_BIND_SHADER_RESOURCE;
 		desc.CPUAccessFlags = 0;
 
-		hr = device->CreateTexture2D(&desc, nullptr, &tex);
+		hr = device->CreateTexture2D(&desc, nullptr, &Light_List_Texture);
 		assert(SUCCEEDED(hr));
 
-		Light_List_Texture.reset(tex);
-
 		{
-			ID3D11ShaderResourceView* srv = nullptr;
 			D3D11_SHADER_RESOURCE_VIEW_DESC SRVDesc = {};
 
 			SRVDesc.Format = desc.Format;
@@ -119,29 +97,19 @@ bool CLUSTERED::Init()
 			SRVDesc.Texture2D.MostDetailedMip = 0;
 			SRVDesc.Texture2D.MipLevels = 1;
 
-			hr = device->CreateShaderResourceView(Light_List_Texture.get(), &SRVDesc, &srv);
+			hr = device->CreateShaderResourceView(Light_List_Texture.Get(), &SRVDesc, &Light_List_SRV);
 			assert(SUCCEEDED(hr));
-
-			Light_List_SRV.reset(srv);
 		}
 
 		{
-			ID3D11UnorderedAccessView* uav = nullptr;
-
-			hr = device->CreateUnorderedAccessView(Light_List_Texture.get(), nullptr, &uav);
+			hr = device->CreateUnorderedAccessView(Light_List_Texture.Get(), nullptr, &Light_List_UAV);
 			assert(SUCCEEDED(hr));
-
-			Light_List_UAV.reset(uav);
 		}
 	}
 
 	// 定数バッファ作成
 	{
-		ID3D11Buffer* buffer = nullptr;
-
-		D3D11_BUFFER_DESC desc;
-		ZeroMemory(&desc, sizeof(D3D11_BUFFER_DESC));
-
+		D3D11_BUFFER_DESC desc{};
 		desc.Usage = D3D11_USAGE_DEFAULT;
 		desc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
 		desc.CPUAccessFlags = 0;
@@ -149,19 +117,13 @@ bool CLUSTERED::Init()
 		desc.StructureByteStride = sizeof(float);
 		desc.ByteWidth = sizeof(CLSTER_BUFFER);
 
-		hr = device->CreateBuffer(&desc, nullptr, &buffer);
+		hr = device->CreateBuffer(&desc, nullptr, &ClusterBuffer);
 		assert(SUCCEEDED(hr));
-
-		ClusterBuffer.reset(buffer);
 	}
 
 	// コンピュートシェーダー用の変数
 	{
-		ID3D11Buffer* buffer = nullptr;
-
-		D3D11_BUFFER_DESC desc;
-		ZeroMemory(&desc, sizeof(D3D11_BUFFER_DESC));
-
+		D3D11_BUFFER_DESC desc{};
 		desc.Usage = D3D11_USAGE_DEFAULT;
 		desc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
 		desc.CPUAccessFlags = 0;
@@ -169,10 +131,8 @@ bool CLUSTERED::Init()
 		desc.StructureByteStride = sizeof(float);
 		desc.ByteWidth = sizeof(CONSTATNT_BUFFER);
 
-		hr = device->CreateBuffer(&desc, nullptr, &buffer);
+		hr = device->CreateBuffer(&desc, nullptr, &ConstatntBuffer);
 		assert(SUCCEEDED(hr));
-
-		ConstatntBuffer.reset(buffer);
 	}
 
 	m_Frustum.Init();
@@ -185,7 +145,8 @@ bool CLUSTERED::Init()
 
 void CLUSTERED::Update()
 {
-	auto device_context = CRenderer::GetDeviceContext();
+	CRenderer* render = CRenderer::getInstance();
+	auto device_context = render->GetDeviceContext();
 
 	Cale_Cluster(m_Max, m_Min);
 	{
@@ -198,13 +159,13 @@ void CLUSTERED::Update()
 
 		buffer.Bias = m_Min;
 
-		CRenderer::GetDeviceContext()->UpdateSubresource(ClusterBuffer.get(), 0, nullptr, &buffer, 0, 0);
+		render->GetDeviceContext()->UpdateSubresource(ClusterBuffer.Get(), 0, nullptr, &buffer, 0, 0);
 	}
 }
 
 void CLUSTERED::Draw()
 {
-	auto device_context = CRenderer::GetDeviceContext();
+	auto device_context = CRenderer::getInstance()->GetDeviceContext();
 
 	/*{
 		Cale_Cluster(m_Max, m_Min);
@@ -225,16 +186,16 @@ void CLUSTERED::Draw()
 	{
 		{
 			float ClearColor[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
-			device_context->ClearUnorderedAccessViewFloat(ClusterUAV.get(), ClearColor);
-			device_context->ClearUnorderedAccessViewFloat(Light_List_UAV.get(), ClearColor);
+			device_context->ClearUnorderedAccessViewFloat(ClusterUAV.Get(), ClearColor);
+			device_context->ClearUnorderedAccessViewFloat(Light_List_UAV.Get(), ClearColor);
 		}
 
 		{
-			device_context->CSSetShader(ClusterCS.get(), nullptr, NULL);
+			device_context->CSSetShader(ClusterCS.Get(), nullptr, NULL);
 
 			// 定数バッファの設定
 			{
-				auto buffer = ConstatntBuffer.get();
+				auto buffer = ConstatntBuffer.Get();
 
 				device_context->CSSetConstantBuffers(0, 1, &buffer);
 
@@ -243,19 +204,13 @@ void CLUSTERED::Draw()
 				device_context->CSSetConstantBuffers(1, 1, &buffer);
 			}
 
-			auto uav = ClusterUAV.get();
-
-			device_context->CSSetUnorderedAccessViews(0, 1, &uav, nullptr);
-
-			uav = Light_List_UAV.get();
-
-			device_context->CSSetUnorderedAccessViews(1, 1, &uav, nullptr);
+			device_context->CSSetUnorderedAccessViews(0, 1, ClusterUAV.GetAddressOf(), nullptr);
+			device_context->CSSetUnorderedAccessViews(1, 1, ClusterUAV.GetAddressOf(), nullptr);
 
 			device_context->Dispatch(CLUSTERED_X, CLUSTERED_Y, CLUSTERED_Z);
 
-			uav = nullptr;
-			device_context->CSSetUnorderedAccessViews(0, 1, &uav, nullptr);
-			device_context->CSSetUnorderedAccessViews(1, 1, &uav, nullptr);
+			ID3D11UnorderedAccessView* uav[2] = { nullptr, nullptr };
+			device_context->CSSetUnorderedAccessViews(0, 2, uav, nullptr);
 		}
 
 		device_context->CSSetShader(nullptr, nullptr, NULL);
@@ -265,28 +220,13 @@ void CLUSTERED::Draw()
 		device_context->CSSetConstantBuffers(1, 1, &buffer);
 	}
 
-	auto tex = ClusterSRV.get();
-
-	device_context->PSSetShaderResources(10, 1, &tex);
-
-	tex = Light_List_SRV.get();
-
-	device_context->PSSetShaderResources(11, 1, &tex);
-
-	auto buffer = ClusterBuffer.get();
-
-	device_context->PSSetConstantBuffers(7, 1, &buffer);
+	device_context->PSSetShaderResources(10, 1, ClusterSRV.GetAddressOf());
+	device_context->PSSetShaderResources(11, 1, Light_List_SRV.GetAddressOf());
+	device_context->PSSetConstantBuffers(7, 1, ClusterBuffer.GetAddressOf());
 }
 
 void CLUSTERED::Uninit()
 {
-	ClusterTexture.reset();
-	ClusterSRV.reset();
-
-	Light_List_Texture.reset();
-	Light_List_SRV.reset();
-
-	ClusterBuffer.reset();
 }
 
 void CLUSTERED::Light_Culling()

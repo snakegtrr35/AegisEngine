@@ -13,19 +13,14 @@ static const UINT g_InstanceNum = 40 * 40 * 40;
 
 FIELD::FIELD()
 {
-	pVertexBuffer.reset(nullptr);
-	pIndexBuffer.reset(nullptr);
-
 	// テクスチャの設定
 	Texture.reset(new TEXTURE(string("UVCheckerMap01-512.png")));
 }
 
 FIELD::FIELD(Vector3 position, Vector2 wh)
 {
+	CRenderer* render = CRenderer::getInstance();
 	HRESULT hr;
-
-	pVertexBuffer.reset(nullptr);
-	pIndexBuffer.reset(nullptr);
 
 	WH = wh;
 
@@ -53,11 +48,7 @@ FIELD::FIELD(Vector3 position, Vector2 wh)
 
 	// 頂点バッファの設定
 	{
-		ID3D11Buffer* buffer = nullptr;
-
-		D3D11_BUFFER_DESC bd;
-		ZeroMemory(&bd, sizeof(D3D11_BUFFER_DESC));
-
+		D3D11_BUFFER_DESC bd{};
 		bd.ByteWidth = sizeof(VERTEX_3D) * 4;
 		bd.Usage = D3D11_USAGE_DEFAULT;
 		bd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
@@ -66,22 +57,18 @@ FIELD::FIELD(Vector3 position, Vector2 wh)
 		bd.StructureByteStride = 0;
 
 		// サブリソースの設定
-		D3D11_SUBRESOURCE_DATA srd;
-		ZeroMemory(&srd, sizeof(D3D11_SUBRESOURCE_DATA));
-
+		D3D11_SUBRESOURCE_DATA srd{};
 		srd.pSysMem = Vertex;
 		srd.SysMemPitch = 0;
 		srd.SysMemSlicePitch = 0;
 
 		// 頂点バッファの生成
-		hr = CRenderer::GetDevice()->CreateBuffer(&bd, &srd, &buffer);
+		hr = render->GetDevice()->CreateBuffer(&bd, &srd, &pVertexBuffer);
 
 		if (FAILED(hr))
 		{
 			return;
 		}
-
-		pVertexBuffer.reset(buffer);
 	}
 
 	////　インスタンシング用のバッファの生成
@@ -112,11 +99,7 @@ FIELD::FIELD(Vector3 position, Vector2 wh)
 	//	}
 
 	//	{
-	//		ID3D11Buffer* buffer = nullptr;
-
-	//		D3D11_BUFFER_DESC bd;
-	//		ZeroMemory(&bd, sizeof(D3D11_BUFFER_DESC));
-
+	//		D3D11_BUFFER_DESC bd{};
 	//		bd.ByteWidth = sizeof(XMMATRIX) * g_InstanceNum;
 	//		bd.Usage = D3D11_USAGE_DEFAULT;
 	//		bd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
@@ -125,35 +108,29 @@ FIELD::FIELD(Vector3 position, Vector2 wh)
 	//		bd.StructureByteStride = 0;
 
 	//		// サブリソースの設定
-	//		D3D11_SUBRESOURCE_DATA srd;
-	//		ZeroMemory(&srd, sizeof(D3D11_SUBRESOURCE_DATA));
-
+	//		D3D11_SUBRESOURCE_DATA srd{};
 	//		srd.pSysMem = instMatrix.data();
 	//		srd.SysMemPitch = 0;
 	//		srd.SysMemSlicePitch = 0;
 
 	//		// 頂点バッファの生成
-	//		hr = CRenderer::GetDevice()->CreateBuffer(&bd, &srd, &buffer);
+	//		hr = render->GetDevice()->CreateBuffer(&bd, &srd, &pInstanceBuffer);
 
 	//		if (FAILED(hr))
 	//		{
 	//			return;
 	//		}
-
-	//		pInstanceBuffer.reset(buffer);
 	//	}
 	//}
 
 	// インデックスバッファの設定
 	{
-		ID3D11Buffer* buffer = nullptr;
-
 		const WORD index[] = {
 		0, 1, 2,
 		1, 3, 2,
 		};
 
-		D3D11_BUFFER_DESC ibDesc;
+		D3D11_BUFFER_DESC ibDesc{};
 		ibDesc.ByteWidth = sizeof(WORD) * 6;
 		ibDesc.Usage = D3D11_USAGE_DEFAULT;
 		ibDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
@@ -166,13 +143,11 @@ FIELD::FIELD(Vector3 position, Vector2 wh)
 		irData.SysMemPitch = 0;
 		irData.SysMemSlicePitch = 0;
 
-		hr = CRenderer::GetDevice()->CreateBuffer(&ibDesc, &irData, &buffer);
+		hr = render->GetDevice()->CreateBuffer(&ibDesc, &irData, &pIndexBuffer);
 		if (FAILED(hr))
 		{
 			return;
 		}
-
-		pIndexBuffer.reset(buffer);
 	}
 
 	// テクスチャの設定
@@ -186,6 +161,8 @@ FIELD::~FIELD()
 
 void FIELD::Init()
 {
+	CRenderer* render = CRenderer::getInstance();
+
 	HRESULT hr;
 	VERTEX_3D Vertex[4];
 
@@ -212,11 +189,7 @@ void FIELD::Init()
 
 	// 頂点バッファの設定
 	{
-		ID3D11Buffer* buffer = nullptr;
-
-		D3D11_BUFFER_DESC bd;
-		ZeroMemory(&bd, sizeof(D3D11_BUFFER_DESC));
-
+		D3D11_BUFFER_DESC bd{};
 		bd.ByteWidth = sizeof(VERTEX_3D) * 4;
 		bd.Usage = D3D11_USAGE_DEFAULT;
 		bd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
@@ -225,22 +198,19 @@ void FIELD::Init()
 		bd.StructureByteStride = 0;
 
 		// サブリソースの設定
-		D3D11_SUBRESOURCE_DATA srd;
-		ZeroMemory(&srd, sizeof(D3D11_SUBRESOURCE_DATA));
+		D3D11_SUBRESOURCE_DATA srd{};
 
 		srd.pSysMem = Vertex;
 		srd.SysMemPitch = 0;
 		srd.SysMemSlicePitch = 0;
 
 		// 頂点バッファの生成
-		hr = CRenderer::GetDevice()->CreateBuffer(&bd, &srd, &buffer);
+		hr = render->GetDevice()->CreateBuffer(&bd, &srd, &pVertexBuffer);
 
 		if (FAILED(hr))
 		{
 			return;
 		}
-
-		pVertexBuffer.reset(buffer);
 	}
 
 	//　インスタンシング用のバッファの生成
@@ -278,11 +248,7 @@ void FIELD::Init()
 		}
 
 		{
-			ID3D11Buffer* buffer = nullptr;
-
-			D3D11_BUFFER_DESC bd;
-			ZeroMemory(&bd, sizeof(D3D11_BUFFER_DESC));
-
+			D3D11_BUFFER_DESC bd{};
 			bd.ByteWidth = sizeof(XMMATRIX) * g_InstanceNum;
 			bd.Usage = D3D11_USAGE_DEFAULT;
 			bd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
@@ -291,29 +257,23 @@ void FIELD::Init()
 			bd.StructureByteStride = 0;
 
 			// サブリソースの設定
-			D3D11_SUBRESOURCE_DATA srd;
-			ZeroMemory(&srd, sizeof(D3D11_SUBRESOURCE_DATA));
-
+			D3D11_SUBRESOURCE_DATA srd{};
 			srd.pSysMem = instMatrix.data();
 			srd.SysMemPitch = 0;
 			srd.SysMemSlicePitch = 0;
 
 			// 頂点バッファの生成
-			hr = CRenderer::GetDevice()->CreateBuffer(&bd, &srd, &buffer);
+			hr = render->GetDevice()->CreateBuffer(&bd, &srd, &pInstanceBuffer);
 
 			if (FAILED(hr))
 			{
 				return;
 			}
-
-			pInstanceBuffer.reset(buffer);
 		}
 	}
 
 	// インデックスバッファの設定
 	{
-		ID3D11Buffer* buffer = nullptr;
-
 		const WORD index[] = {
 		0, 1, 2,
 		1, 3, 2,
@@ -332,26 +292,26 @@ void FIELD::Init()
 		irData.SysMemPitch = 0;
 		irData.SysMemSlicePitch = 0;
 
-		hr = CRenderer::GetDevice()->CreateBuffer(&ibDesc, &irData, &buffer);
+		hr = render->GetDevice()->CreateBuffer(&ibDesc, &irData, &pIndexBuffer);
 		if (FAILED(hr))
 		{
 			return;
 		}
-
-		pIndexBuffer.reset(buffer);
 	}
 }
 
 void FIELD::Draw()
 {
+	CRenderer* render = CRenderer::getInstance();
+
 	// 入力アセンブラに頂点バッファを設定.
-	//CRenderer::SetVertexBuffers(pVertexBuffer.get());
+	//render->SetVertexBuffers(pVertexBuffer.Get());
 
-	CRenderer::Set_InputLayout(INPUTLAYOUT::INSTANCING);//
-	CRenderer::Set_Shader(SHADER_INDEX_V::INSTANCING, SHADER_INDEX_P::NO_LIGHT);//
-	CRenderer::SetVertexBuffers(pVertexBuffer.get(), pInstanceBuffer.get(), sizeof(VERTEX_3D));//
+	render->Set_InputLayout(INPUTLAYOUT::INSTANCING);//
+	render->Set_Shader(SHADER_INDEX_V::INSTANCING, SHADER_INDEX_P::NO_LIGHT);//
+	render->SetVertexBuffers(pVertexBuffer.Get(), pInstanceBuffer.Get(), sizeof(VERTEX_3D));//
 
-	CRenderer::SetIndexBuffer(pIndexBuffer.get());
+	render->SetIndexBuffer(pIndexBuffer.Get());
 
 	Texture->Set_Texture();//
 
@@ -376,17 +336,17 @@ void FIELD::Draw()
 				XMMATRIX view = CManager::Get_Instance()->Get_ShadowMap()->Get_View();
 				XMMATRIX proj = CManager::Get_Instance()->Get_ShadowMap()->Get_Plojection();
 
-				CRenderer::Set_MatrixBuffer(world, view, proj);
+				render->Set_MatrixBuffer(world, view, proj);
 
-				CRenderer::Set_Shader(SHADER_INDEX_V::SHADOW_MAP, SHADER_INDEX_P::SHADOW_MAP);
+				render->Set_Shader(SHADER_INDEX_V::SHADOW_MAP, SHADER_INDEX_P::SHADOW_MAP);
 			}
 			else
 			{
-				CRenderer::Set_MatrixBuffer(world, camera01.lock()->Get_Camera_View(), camera01.lock()->Get_Camera_Projection());
+				render->Set_MatrixBuffer(world, camera01.lock()->Get_Camera_View(), camera01.lock()->Get_Camera_Projection());
 
-				CRenderer::Set_MatrixBuffer01(*camera02.lock()->Get_Pos());
+				render->Set_MatrixBuffer01(*camera02.lock()->Get_Pos());
 
-				//CRenderer::Set_Shader();
+				//render->Set_Shader();
 			}
 		}
 		else
@@ -397,38 +357,37 @@ void FIELD::Draw()
 				XMMATRIX view = CManager::Get_Instance()->Get_ShadowMap()->Get_View();
 				XMMATRIX proj = CManager::Get_Instance()->Get_ShadowMap()->Get_Plojection();
 
-				CRenderer::Set_MatrixBuffer(world, view, proj);
+				render->Set_MatrixBuffer(world, view, proj);
 
-				CRenderer::Set_Shader(SHADER_INDEX_V::SHADOW_MAP, SHADER_INDEX_P::SHADOW_MAP);
+				render->Set_Shader(SHADER_INDEX_V::SHADOW_MAP, SHADER_INDEX_P::SHADOW_MAP);
 			}
 			else
 			{
-				CRenderer::Set_MatrixBuffer(world, camera02.lock()->Get_Camera_View(), camera02.lock()->Get_Camera_Projection());
+				render->Set_MatrixBuffer(world, camera02.lock()->Get_Camera_View(), camera02.lock()->Get_Camera_Projection());
 
-				CRenderer::Set_MatrixBuffer01(*camera02.lock()->Get_Pos());
+				render->Set_MatrixBuffer01(*camera02.lock()->Get_Pos());
 
-				//CRenderer::Set_Shader();
+				//render->Set_Shader();
 			}
 		}
 	}
 
-	// トポロジの設定
-	CRenderer::GetDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-
-	//CRenderer::DrawIndexed(6, 0, 0);
+	//render->DrawIndexed(6, 0, 0);
 	if (false == CManager::Get_Instance()->Get_ShadowMap()->Get_Enable())
 	{
-		CRenderer::GetDeviceContext()->DrawIndexedInstanced(6, g_InstanceNum, 0, 0, 0);//
+		render->GetDeviceContext()->DrawIndexedInstanced(6, g_InstanceNum, 0, 0, 0);//
 	}
 
-	CRenderer::Set_Shader();
-	CRenderer::Set_InputLayout();//
+	render->Set_Shader();
+	render->Set_InputLayout();//
 
 	GAME_OBJECT::Draw();
 }
 
 void FIELD::Draw_DPP()
 {
+	//CRenderer* render = CRenderer::getInstance();
+
 	//// 3Dマトリックス設定
 	//{
 	//	XMMATRIX world = XMMatrixScaling(Scaling.x, Scaling.y, Scaling.z);
@@ -440,20 +399,20 @@ void FIELD::Draw_DPP()
 
 	//	if (!camera01.expired() && Empty_weak_ptr<CCamera>(camera01))
 	//	{
-	//		CRenderer::Set_MatrixBuffer(world, camera01.lock()->Get_Camera_View(), camera01.lock()->Get_Camera_Projection());
+	//		render->Set_MatrixBuffer(world, camera01.lock()->Get_Camera_View(), camera01.lock()->Get_Camera_Projection());
 	//	}
 	//	else
 	//	{
-	//		CRenderer::Set_MatrixBuffer(world, camera02.lock()->Get_Camera_View(), camera02.lock()->Get_Camera_Projection());
+	//		render->Set_MatrixBuffer(world, camera02.lock()->Get_Camera_View(), camera02.lock()->Get_Camera_Projection());
 	//	}
 	//}
 
 	//// 入力アセンブラに頂点バッファを設定.
-	//CRenderer::SetVertexBuffers(pVertexBuffer.get());
+	//render->SetVertexBuffers(pVertexBuffer.Get());
 
-	//CRenderer::SetIndexBuffer(pIndexBuffer.get());
+	//render->SetIndexBuffer(pIndexBuffer.Get());
 
-	//CRenderer::DrawIndexed(6, 0, 0);
+	//render->DrawIndexed(6, 0, 0);
 }
 
 void FIELD::Update(float delta_time)
@@ -464,9 +423,6 @@ void FIELD::Update(float delta_time)
 
 void FIELD::Uninit()
 {
-	pVertexBuffer.reset(nullptr);
-	pIndexBuffer.reset(nullptr);
-
 	Texture.reset(nullptr);
 }
 

@@ -20,7 +20,7 @@ void TEXTURE::Set_Texture(void)
 {
 	ID3D11ShaderResourceView* shader_resouce_view = TEXTURE_MANEGER::Get_Instance()->GetShaderResourceView(File);
 
-	CRenderer::GetDeviceContext()->PSSetShaderResources(0, 1, &shader_resouce_view);
+	CRenderer::getInstance()->GetDeviceContext()->PSSetShaderResources(0, 1, &shader_resouce_view);
 }
 
 //========================================
@@ -71,6 +71,8 @@ void FONT::Uninit()
 
 void FONT::Load_Font()
 {
+	CRenderer* render = CRenderer::getInstance();
+
 	// フォントデータ
 	wstring Font;
 	{
@@ -148,7 +150,7 @@ void FONT::Load_Font()
 
 		ID3D11SamplerState* samplerState = nullptr;
 
-		CRenderer::GetDevice()->CreateSamplerState(&samDesc, &samplerState);
+		render->GetDevice()->CreateSamplerState(&samDesc, &samplerState);
 	}
 
 	// ShaderResourceViewの情報を作成する
@@ -162,10 +164,10 @@ void FONT::Load_Font()
 	ID3D11ShaderResourceView* ShaderResourceView;
 
 	// デバイス
-	auto device = CRenderer::GetDevice();
+	auto device = render->GetDevice();
 
 	// デバイスコンテキスト
-	auto deviceContext = CRenderer::GetDeviceContext();
+	auto deviceContext = render->GetDeviceContext();
 
 	UINT code;
 	TEXTMETRIC tm;
@@ -262,6 +264,8 @@ void FONT::Load_Font()
 
 void FONT::Load_Font(const wstring& one_character)
 {
+	CRenderer* render = CRenderer::getInstance();
+
 	// フォントハンドルの生成
 	int fontSize = 128;
 	int fontWeight = 1000;
@@ -314,10 +318,10 @@ void FONT::Load_Font(const wstring& one_character)
 	GetGlyphOutlineW(hdc, code, gradFlag, &gm, size, pMono, &mat);
 
 	// デバイス
-	auto device = CRenderer::GetDevice();
+	auto device = render->GetDevice();
 
 	// デバイスコンテキスト
-	auto deviceContext = CRenderer::GetDeviceContext();
+	auto deviceContext = render->GetDeviceContext();
 
 	//================================================================================
 

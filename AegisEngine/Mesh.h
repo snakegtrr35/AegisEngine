@@ -81,8 +81,8 @@ private:
 
 	unordered_map<string, Anim> Animation;
 
-	ID3D11Buffer* VertexBuffer;
-	ID3D11Buffer* IndexBuffer;
+	ComPtr<ID3D11Buffer> VertexBuffer;
+	ComPtr<ID3D11Buffer> IndexBuffer;
 
 	string Name;
 
@@ -149,8 +149,8 @@ protected:
 
 	vector<TEXTURE_S> Textures;
 
-	ID3D11Buffer* VertexBuffer;
-	ID3D11Buffer* IndexBuffer;
+	ComPtr<ID3D11Buffer> VertexBuffer;
+	ComPtr<ID3D11Buffer> IndexBuffer;
 
 	string Name; //! メッシュの名前
 

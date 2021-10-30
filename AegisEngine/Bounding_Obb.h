@@ -14,7 +14,7 @@
 class BOUNDING_OBB : public BOUNDING {
 private:
 	//! 頂点バッファ
-	unique_ptr<ID3D11Buffer, Release> pVertexBuffer;
+	ComPtr<ID3D11Buffer> pVertexBuffer;
 
 	//! OBB
 	BoundingOrientedBox Obb;

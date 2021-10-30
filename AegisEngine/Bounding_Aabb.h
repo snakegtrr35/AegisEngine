@@ -18,7 +18,7 @@
 class BOUNDING_AABB : public BOUNDING {
 private:
 	//! BOXの頂点バッファ
-	unique_ptr<ID3D11Buffer, Release> pVertexBuffer;
+	ComPtr<ID3D11Buffer> pVertexBuffer;
 	//! 各辺の長さ
 	Aegis::Vector3 Radius;
 

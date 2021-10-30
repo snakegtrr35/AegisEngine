@@ -20,35 +20,32 @@ private:
 	};
 
 	//! デプスステンシルビュー
-	unique_ptr <ID3D11DepthStencilView, Release>			DepthStencilView;
-
+	ComPtr<ID3D11DepthStencilView>		DepthStencilView;
 	//! シェーダーリソースビュー
-	unique_ptr <ID3D11ShaderResourceView, Release>		ShaderResourceView;
-	unique_ptr <ID3D11ShaderResourceView, Release>		SRV;
-
+	ComPtr<ID3D11ShaderResourceView>	ShaderResourceView;
+	ComPtr<ID3D11ShaderResourceView>	SRV;
 	//! ラスタライザステート
-	unique_ptr <ID3D11RasterizerState, Release>		RasterizerState;
+	ComPtr<ID3D11RasterizerState>		RasterizerState;
 	//! サンプラー
-	unique_ptr < ID3D11SamplerState, Release>			Sampler;
+	ComPtr<ID3D11SamplerState>			Sampler;
 	//! コンスタントバッファ
-	unique_ptr <ID3D11Buffer, Release>					ShadowBuffer;
-	CONSTANT_SHADOW_MAP									Shadow;
-
-	unique_ptr <ID3D11Buffer, Release>					LightBuffer;
+	ComPtr<ID3D11Buffer>				ShadowBuffer;
+	CONSTANT_SHADOW_MAP					Shadow;
+	ComPtr<ID3D11Buffer>				LightBuffer;
 	//! 
-	Aegis::Vector3											LightPos;
+	Aegis::Vector3						LightPos;
 	//!
-	CONSTANT_LIGHT										Light;
+	CONSTANT_LIGHT						Light;
 
-	XMMATRIX											ViewMatrix;
-	XMMATRIX											PlojectionMatrix;
+	XMMATRIX							ViewMatrix;
+	XMMATRIX							PlojectionMatrix;
 
-	RECT												Viewport;
-	D3D11_VIEWPORT										DxViewport;
+	RECT								Viewport;
+	D3D11_VIEWPORT						DxViewport;
 
 	bool Enable;
 
-	unique_ptr<ID3D11RenderTargetView, Release> RenderTargetView;
+	ComPtr<ID3D11RenderTargetView> RenderTargetView;
 
 	weak_ptr<GAME_OBJECT> Target;
 
@@ -89,7 +86,7 @@ public:
 	}
 
 	ID3D11ShaderResourceView* Get() {
-		return ShaderResourceView.get();
+		return ShaderResourceView.Get();
 	}
 
 	void Set_Target(const weak_ptr<GAME_OBJECT>& object);

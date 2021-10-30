@@ -12,15 +12,14 @@ using namespace Aegis;
 
 MESH_DOOM::MESH_DOOM() : Radius(500.0f)
 {
-	VertexBuffer.reset(nullptr);
-	IndexBuffer.reset(nullptr);
-
 	// テクスチャの生成
 	Texture = make_unique<TEXTURE>("sky.png");
 }
 
 void MESH_DOOM::Init()
 {
+	CRenderer* render = CRenderer::getInstance();
+
 	const int cornerNum = 20;
 
 	// 頂点バッファの作成
@@ -52,24 +51,18 @@ void MESH_DOOM::Init()
 		}
 
 		// 頂点バッファ生成
-		if (nullptr == VertexBuffer.get())
+		if (nullptr == VertexBuffer)
 		{
-			ID3D11Buffer* buffer = nullptr;
-
-			D3D11_BUFFER_DESC bd;
-			ZeroMemory(&bd, sizeof(bd));
+			D3D11_BUFFER_DESC bd{};
 			bd.Usage = D3D11_USAGE_DEFAULT;
 			bd.ByteWidth = sizeof(VERTEX_3D) * VertexNum;
 			bd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
 			bd.CPUAccessFlags = 0;
 
-			D3D11_SUBRESOURCE_DATA sd;
-			ZeroMemory(&sd, sizeof(sd));
+			D3D11_SUBRESOURCE_DATA sd{};
 			sd.pSysMem = vertexArray.data();
 
-			CRenderer::GetDevice()->CreateBuffer(&bd, &sd, &buffer);
-
-			VertexBuffer.reset(buffer);
+			render->GetDevice()->CreateBuffer(&bd, &sd, &VertexBuffer);
 		}
 	}
 
@@ -103,24 +96,18 @@ void MESH_DOOM::Init()
 		}
 
 		// インデックスバッファ生成
-		if (nullptr == IndexBuffer.get())
+		if (nullptr == IndexBuffer)
 		{
-			ID3D11Buffer* buffer = nullptr;
-
-			D3D11_BUFFER_DESC bd;
-			ZeroMemory(&bd, sizeof(bd));
+			D3D11_BUFFER_DESC bd{};
 			bd.Usage = D3D11_USAGE_DEFAULT;
 			bd.ByteWidth = sizeof(WORD) * IndexNum;
 			bd.BindFlags = D3D11_BIND_INDEX_BUFFER;
 			bd.CPUAccessFlags = 0;
 
-			D3D11_SUBRESOURCE_DATA sd;
-			ZeroMemory(&sd, sizeof(sd));
+			D3D11_SUBRESOURCE_DATA sd{};
 			sd.pSysMem = indexArray.data();
 
-			CRenderer::GetDevice()->CreateBuffer(&bd, &sd, &buffer);
-
-			IndexBuffer.reset(buffer);
+			render->GetDevice()->CreateBuffer(&bd, &sd, &IndexBuffer);
 		}
 	}
 }
@@ -130,8 +117,6 @@ void MESH_DOOM::Init()
 //***********************************************************************************************
 void MESH_DOOM::Uninit()
 {
-	VertexBuffer.reset(nullptr);
-	IndexBuffer.reset(nullptr);
 	Texture.reset(nullptr);
 }
 
@@ -148,7 +133,12 @@ void MESH_DOOM::Update(float delta_time)
 //***********************************************************************************************
 void MESH_DOOM::Draw()
 {
-	if(CManager::Get_Instance()->Get_ShadowMap()->Get_Enable()) return;
+	if (CManager::Get_Instance()->Get_ShadowMap()->Get_Enable())
+	{
+		return;
+	}
+
+	CRenderer* render = CRenderer::getInstance();
 
 	{
 		XMMATRIX world;
@@ -166,27 +156,30 @@ void MESH_DOOM::Draw()
 
 		if (!camera01.expired() && Empty_weak_ptr<CCamera>(camera01))
 		{
-			CRenderer::Set_MatrixBuffer(world, camera01.lock()->Get_Camera_View(), camera01.lock()->Get_Camera_Projection());
+			render->Set_MatrixBuffer(world, camera01.lock()->Get_Camera_View(), camera01.lock()->Get_Camera_Projection());
 		}
 		else
 		{
-			CRenderer::Set_MatrixBuffer(world, camera02.lock()->Get_Camera_View(), camera02.lock()->Get_Camera_Projection());
+			render->Set_MatrixBuffer(world, camera02.lock()->Get_Camera_View(), camera02.lock()->Get_Camera_Projection());
 		}
 	}
 
-	CRenderer::SetVertexBuffers(VertexBuffer.get());
-	CRenderer::SetIndexBuffer(IndexBuffer.get());
+	render->SetVertexBuffers(VertexBuffer.Get());
+	render->SetIndexBuffer(IndexBuffer.Get());
 
 	// トポロジ設定
-	CRenderer::GetDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
+	render->SetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
 
 	Texture.get()->Set_Texture();
 
-	CRenderer::Set_Shader(SHADER_INDEX_V::DEFAULT, SHADER_INDEX_P::NO_LIGHT);
+	render->Set_Shader(SHADER_INDEX_V::DEFAULT, SHADER_INDEX_P::NO_LIGHT);
 
-	CRenderer::GetDeviceContext()->DrawIndexed(IndexNum, 0, 0);
+	render->DrawIndexed(IndexNum, 0, 0);
 
-	CRenderer::Set_Shader();
+	render->Set_Shader();
+
+	// トポロジ設定
+	render->SetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 	GAME_OBJECT::Draw();
 }

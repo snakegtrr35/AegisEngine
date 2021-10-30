@@ -9,6 +9,8 @@ using namespace Aegis;
 
 void BOUNDING_SHPERE::Init()
 {
+	CRenderer* render = CRenderer::getInstance();
+
 	{
 		Vector3 pos = *Owner.lock()->Get_Transform().Get_Position();
 
@@ -23,17 +25,12 @@ void BOUNDING_SHPERE::Init()
 	}
 
 	// 頂点バッファの設定
-	if (nullptr == pVertexBuffer.get())
+	if (nullptr == pVertexBuffer)
 	{
 		const UINT cnt = 20 * max((UINT)1, (UINT)Radius);
 
 		vector<VERTEX_3D> vertex;
-		vertex.reserve(cnt);
-
-		for (UINT i = 0; i < cnt; i++)
-		{
-			vertex.emplace_back(VERTEX_3D());
-		}
+		vertex.resize(cnt);
 
 		const float angle = Math::PI2 / cnt;
 
@@ -47,11 +44,7 @@ void BOUNDING_SHPERE::Init()
 
 		// 頂点バッファの設定
 		{
-			ID3D11Buffer* buffer;
-
-			D3D11_BUFFER_DESC bd;
-			ZeroMemory(&bd, sizeof(bd));
-
+			D3D11_BUFFER_DESC bd{};
 			bd.ByteWidth = sizeof(VERTEX_3D) * cnt;
 			bd.Usage = D3D11_USAGE_DYNAMIC;
 			bd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
@@ -59,19 +52,15 @@ void BOUNDING_SHPERE::Init()
 			bd.MiscFlags = 0;
 			bd.StructureByteStride = 0;
 
-			D3D11_SUBRESOURCE_DATA sd;
+			D3D11_SUBRESOURCE_DATA sd{};
 			sd.pSysMem = vertex.data();
-			sd.SysMemPitch = 0;
-			sd.SysMemSlicePitch = 0;
 
-			CRenderer::GetDevice()->CreateBuffer(&bd, &sd, &buffer);
-
-			pVertexBuffer.reset(buffer);
+			render->GetDevice()->CreateBuffer(&bd, &sd, &pVertexBuffer);
 		}
 	}
 
 	// インデックスバッファの設定
-	if (nullptr == pIndexBuffer.get())
+	if (nullptr == pIndexBuffer)
 	{
 		const UINT cnt = 20 * max((UINT)1, (UINT)Radius);
 
@@ -92,11 +81,7 @@ void BOUNDING_SHPERE::Init()
 
 		// インデックスバッファの設定
 		{
-			ID3D11Buffer* buffer;
-
-			D3D11_BUFFER_DESC bd;
-			ZeroMemory(&bd, sizeof(bd));
-
+			D3D11_BUFFER_DESC bd{};
 			bd.ByteWidth = sizeof(WORD) * IndexNum;
 			bd.Usage = D3D11_USAGE_DEFAULT;
 			bd.BindFlags = D3D11_BIND_INDEX_BUFFER;
@@ -104,33 +89,30 @@ void BOUNDING_SHPERE::Init()
 			bd.MiscFlags = 0;
 			bd.StructureByteStride = 0;
 
-			D3D11_SUBRESOURCE_DATA sd;
-			ZeroMemory(&sd, sizeof(sd));
+			D3D11_SUBRESOURCE_DATA sd{};
 			sd.pSysMem = index_array.data();
-			sd.SysMemPitch = 0;
-			sd.SysMemSlicePitch = 0;
 
-			CRenderer::GetDevice()->CreateBuffer(&bd, &sd, &buffer);
-
-			pIndexBuffer.reset(buffer);
+			render->GetDevice()->CreateBuffer(&bd, &sd, &pIndexBuffer);
 		}
 	}
 }
 
 void BOUNDING_SHPERE::Draw()
 {
+	CRenderer* render = CRenderer::getInstance();
+
 	//if (false == CManager::Get_Instance()->Get_ShadowMap()->Get_Enable())
 	{
 		// 入力アセンブラに頂点バッファを設定
-		CRenderer::SetVertexBuffers(pVertexBuffer.get());
+		render->SetVertexBuffers(pVertexBuffer.Get());
 
 		// 入力アセンブラにインデックスバッファを設定
-		CRenderer::SetIndexBuffer(pIndexBuffer.get());
+		render->SetIndexBuffer(pIndexBuffer.Get());
 
 		// トポロジの設定
-		CRenderer::GetDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_LINESTRIP);
+		render->SetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_LINESTRIP);
 
-		CRenderer::Set_Shader(SHADER_INDEX_V::DEFAULT, SHADER_INDEX_P::NO_TEXTURE);
+		render->Set_Shader(SHADER_INDEX_V::DEFAULT, SHADER_INDEX_P::NO_TEXTURE);
 
 		Draw_Ring(Vector3(0.f, 0.f, 0.f));
 
@@ -138,7 +120,10 @@ void BOUNDING_SHPERE::Draw()
 
 		Draw_Ring(Vector3(90.0f, 0.f, 0.f));
 
-		CRenderer::Set_Shader();
+		render->Set_Shader();
+
+		// トポロジの設定
+		render->SetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	}
 }
 
@@ -162,8 +147,6 @@ void BOUNDING_SHPERE::Update(float delta_time)
 
 void BOUNDING_SHPERE::Uninit()
 {
-	pVertexBuffer.reset(nullptr);
-	pIndexBuffer.reset(nullptr);
 }
 
 void BOUNDING_SHPERE::Set_Radius(const float radius)
@@ -185,6 +168,7 @@ const BoundingSphere& BOUNDING_SHPERE::Get_Collition()
 
 void BOUNDING_SHPERE::Draw_Ring(const Vector3& rotation)
 {
+	CRenderer* render = CRenderer::getInstance();
 	// 3Dマトリックス設定
 	{
 		Vector3 pos = *Owner.lock()->Get_Transform().Get_Position();
@@ -198,23 +182,25 @@ void BOUNDING_SHPERE::Draw_Ring(const Vector3& rotation)
 
 		if (!camera01.expired() && Empty_weak_ptr<CCamera>(camera01))
 		{
-			CRenderer::Set_MatrixBuffer(world, camera01.lock()->Get_Camera_View(), camera01.lock()->Get_Camera_Projection());
+			render->Set_MatrixBuffer(world, camera01.lock()->Get_Camera_View(), camera01.lock()->Get_Camera_Projection());
 
-			CRenderer::Set_MatrixBuffer01(*camera01.lock()->Get_Pos());
+			render->Set_MatrixBuffer01(*camera01.lock()->Get_Pos());
 		}
 		else
 		{
-			CRenderer::Set_MatrixBuffer(world, camera02.lock()->Get_Camera_View(), camera02.lock()->Get_Camera_Projection());
+			render->Set_MatrixBuffer(world, camera02.lock()->Get_Camera_View(), camera02.lock()->Get_Camera_Projection());
 
-			CRenderer::Set_MatrixBuffer01(*camera02.lock()->Get_Pos());
+			render->Set_MatrixBuffer01(*camera02.lock()->Get_Pos());
 		}
 	}
 
-	CRenderer::GetDeviceContext()->DrawIndexed(IndexNum, 0, 0);
+	render->DrawIndexed(IndexNum, 0, 0);
 }
 
 void BOUNDING_SHPERE::OverWrite()
 {
+	CRenderer* render = CRenderer::getInstance();
+
 	Color = Default_Color;
 
 	// 頂点バッファの設定
@@ -241,11 +227,7 @@ void BOUNDING_SHPERE::OverWrite()
 
 		// 頂点バッファの設定
 		{
-			ID3D11Buffer* buffer;
-
-			D3D11_BUFFER_DESC bd;
-			ZeroMemory(&bd, sizeof(bd));
-
+			D3D11_BUFFER_DESC bd{};
 			bd.ByteWidth = sizeof(VERTEX_3D) * cnt;
 			bd.Usage = D3D11_USAGE_DYNAMIC;
 			bd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
@@ -253,14 +235,10 @@ void BOUNDING_SHPERE::OverWrite()
 			bd.MiscFlags = 0;
 			bd.StructureByteStride = 0;
 
-			D3D11_SUBRESOURCE_DATA sd;
+			D3D11_SUBRESOURCE_DATA sd{};
 			sd.pSysMem = vertex.data();
-			sd.SysMemPitch = 0;
-			sd.SysMemSlicePitch = 0;
 
-			CRenderer::GetDevice()->CreateBuffer(&bd, &sd, &buffer);
-
-			pVertexBuffer.reset(buffer);
+			render->GetDevice()->CreateBuffer(&bd, &sd, &pVertexBuffer);
 		}
 	}
 
@@ -285,11 +263,7 @@ void BOUNDING_SHPERE::OverWrite()
 
 		// インデックスバッファの設定
 		{
-			ID3D11Buffer* buffer;
-
-			D3D11_BUFFER_DESC bd;
-			ZeroMemory(&bd, sizeof(bd));
-
+			D3D11_BUFFER_DESC bd{};
 			bd.ByteWidth = sizeof(WORD) * IndexNum;
 			bd.Usage = D3D11_USAGE_DEFAULT;
 			bd.BindFlags = D3D11_BIND_INDEX_BUFFER;
@@ -297,15 +271,10 @@ void BOUNDING_SHPERE::OverWrite()
 			bd.MiscFlags = 0;
 			bd.StructureByteStride = 0;
 
-			D3D11_SUBRESOURCE_DATA sd;
-			ZeroMemory(&sd, sizeof(sd));
+			D3D11_SUBRESOURCE_DATA sd{};
 			sd.pSysMem = index_array.data();
-			sd.SysMemPitch = 0;
-			sd.SysMemSlicePitch = 0;
 
-			CRenderer::GetDevice()->CreateBuffer(&bd, &sd, &buffer);
-
-			pIndexBuffer.reset(buffer);
+			render->GetDevice()->CreateBuffer(&bd, &sd, &pIndexBuffer);
 		}
 	}
 }
