@@ -78,7 +78,10 @@
     <ClCompile Include="ModelLoader.cpp" />
     <ClCompile Include="Model_Manager.cpp" />
     <ClCompile Include="Mouse.cpp" />
+    <ClCompile Include="Mp3.cpp" />
     <ClCompile Include="My_imgui.cpp" />
+    <ClCompile Include="Ogg_Opus.cpp" />
+    <ClCompile Include="Ogg_Vorbis.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="Polygon_3D.cpp" />
     <ClCompile Include="Renderer.cpp" />
@@ -102,12 +105,14 @@
     <ClCompile Include="Texture_Manager.cpp" />
     <ClCompile Include="Time.cpp" />
     <ClCompile Include="Title.cpp" />
+    <ClCompile Include="WaveLoad.cpp" />
     <ClCompile Include="Xbox.cpp" />
     <ClCompile Include="XYZ_Axis.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Aegis_zlib.h" />
     <ClInclude Include="Animetion_State_Machine.h" />
+    <ClInclude Include="AudioDefine.h" />
     <ClInclude Include="audio_clip.h" />
     <ClInclude Include="Axis.h" />
     <ClInclude Include="Bill.h" />
@@ -207,7 +212,10 @@
     <ClInclude Include="ModelLoader.h" />
     <ClInclude Include="Model_Manager.h" />
     <ClInclude Include="Mouse.h" />
+    <ClInclude Include="Mp3.h" />
     <ClInclude Include="My_imgui.h" />
+    <ClInclude Include="Ogg_Opus.h" />
+    <ClInclude Include="Ogg_Vorbis.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="Polygon_3D.h" />
     <ClInclude Include="Renderer.h" />
@@ -243,6 +251,7 @@
     <ClInclude Include="Timer.h" />
     <ClInclude Include="Title.h" />
     <ClInclude Include="Transform.h" />
+    <ClInclude Include="WaveLoad.h" />
     <ClInclude Include="Xbox.h" />
     <ClInclude Include="XYZ_Axis.h" />
     <FxCompile Include="VertexShader_Skybox.hlsl">

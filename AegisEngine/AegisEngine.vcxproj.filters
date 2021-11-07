@@ -332,6 +332,18 @@
     <ClCompile Include="include\engine\core\math\Vector4.cpp">
       <Filter>include\engine\core\math</Filter>
     </ClCompile>
+    <ClCompile Include="WaveLoad.cpp">
+      <Filter>ソース ファイル\System\Audio</Filter>
+    </ClCompile>
+    <ClCompile Include="Ogg_Opus.cpp">
+      <Filter>ソース ファイル\System\Audio</Filter>
+    </ClCompile>
+    <ClCompile Include="Ogg_Vorbis.cpp">
+      <Filter>ソース ファイル\System\Audio</Filter>
+    </ClCompile>
+    <ClCompile Include="Mp3.cpp">
+      <Filter>ソース ファイル\System\Audio</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="imgui\imconfig.h">
@@ -615,6 +627,21 @@
     </ClInclude>
     <ClInclude Include="include\engine\core\math\Vector4.h">
       <Filter>include\engine\core\math</Filter>
+    </ClInclude>
+    <ClInclude Include="WaveLoad.h">
+      <Filter>ソース ファイル\System\Audio</Filter>
+    </ClInclude>
+    <ClInclude Include="Ogg_Opus.h">
+      <Filter>ソース ファイル\System\Audio</Filter>
+    </ClInclude>
+    <ClInclude Include="Ogg_Vorbis.h">
+      <Filter>ソース ファイル\System\Audio</Filter>
+    </ClInclude>
+    <ClInclude Include="Mp3.h">
+      <Filter>ソース ファイル\System\Audio</Filter>
+    </ClInclude>
+    <ClInclude Include="AudioDefine.h">
+      <Filter>ソース ファイル\System\Audio</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

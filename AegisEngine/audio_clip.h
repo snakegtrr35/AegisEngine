@@ -4,6 +4,7 @@
 #define AUDIO_CLIP_H
 
 #include <xaudio2.h>
+#include "AudioDefine.h"
 
 static const int SOUND_SOURCE_MAX = 64;
 static const int SOUND_DATE_MAX = 128;
@@ -19,6 +20,7 @@ enum class SOUND_INDEX {
 	SOUND_INDEX_GAMEOVER,		// ゲームオーバーのBGM
 
 	SOUND_INDEX_82,
+	SOUND_INDEX_82_MP3,
 
 	SOUND_INDEX_SHOT,
 	SOUND_INDEX_EXPLOSION,
@@ -56,6 +58,7 @@ static const SOUND_FILE g_SoundFiles[] = {
 
 	{ L"asset/Sound/82_vorbis.ogg", SOUND_TAG::BGM },
 	//{ L"asset/Sound/82_opus.ogg", SOUND_TAG::BGM },
+	{ L"asset/sound/82.mp3", SOUND_TAG::BGM },
 
 	{ L"asset/sound/SE_shot.wav", SOUND_TAG::SE },
 	{ L"asset/sound/SE_explosion000.wav", SOUND_TAG::SE },
@@ -88,10 +91,13 @@ static_assert((int)SOUND_INDEX::SOUND_INDEX_MAX == SOUND_FILE_COUNT, "SOUND_INDE
 class CAudioClip {
 private:
 	IXAudio2SourceVoice* SourceVoice[SOUND_SOURCE_MAX];
-	BYTE* SoundData;
+	//BYTE* SoundData;
+	//
+	//int	Length;
+	//int	PlayLength;
 
-	int	Length;
-	int	PlayLength;
+	Aegis::AudioInfo Info;
+	Aegis::PlayData AudioData;
 
 #ifdef UNICODE
 	wstring Name;
@@ -110,6 +116,8 @@ public:
 
 	void Load_Ogg(const wchar_t* FileName);
 
+	//void Load_mp3(const wchar_t* FileName);
+
 	wstring* const Get_Name();
 #else
 	void Load(const char* FileName);
@@ -121,11 +129,13 @@ public:
 
 	void Unload();
 	void Play(bool Loop=false);
+	void PlayLoop();
 	void Stop();
 
 	void Set_Tag(const SOUND_TAG tag);
 	const SOUND_TAG Get_Tag();
 
+	static void Polling(IXAudio2SourceVoice* SourceVoice, Aegis::AudioInfo* info);
 };
 
 /**
@@ -161,6 +171,8 @@ public:
 	*/
 	static void Play_Sound_Object(SOUND_INDEX index, bool flag = false);
 
+	static void Play_Sound(SOUND_INDEX index);
+
 	/**
 	* @brief マップからサウンドをストップする関数
 	* @param index SOUND_INDEX(サウンド管理番号)、引数を書かない場合はサウンド管理番号の最大値になる
@@ -175,6 +187,7 @@ public:
 
 	static IXAudio2* const Get_Xaudio();
 
+	static bool Enable;
 };
 
 #endif // !AUDIO_CLIP_H

@@ -49,12 +49,17 @@ bool CManager::Init()
 
 	// COMの初期化
 	hr = CoInitializeEx(0, COINITBASE_MULTITHREADED);
-
 	if (FAILED(hr))
 	{
 		FAILDE_ASSERT;
 		return false;
 	}
+	//hr = CoInitializeEx(NULL, COINIT_MULTITHREADED);
+	//if (FAILED(hr))
+	//{
+	//	FAILDE_ASSERT;
+	//	return false;
+	//}
 
 
 	CINPUT::Init();
