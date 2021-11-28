@@ -286,6 +286,50 @@ void POLYGON_3D::Draw(void)
 	GAME_OBJECT::Draw();
 }
 
+void POLYGON_3D::Draw_Shadow(void)
+{
+	CRenderer* render = CRenderer::getInstance();
+
+	// 3Dマトリックス設定
+	{
+		XMMATRIX world(XMMatrixIdentity());
+
+		Vector3 position = *Get_Transform().Get_Position();
+		Vector3 rotate = *Get_Transform().Get_Rotation();
+		Vector3 scale = *Get_Transform().Get_Scaling();
+
+		XMMATRIX matrix = XMMatrixScaling(scale.x, scale.y, scale.z);
+		matrix *= XMMatrixRotationRollPitchYaw(XMConvertToRadians(rotate.x), XMConvertToRadians(rotate.y), XMConvertToRadians(rotate.z));
+		matrix *= XMMatrixTranslation(position.x, position.y, position.z);
+
+		{
+			// シャドウマップ用の描画か?
+			if (CManager::Get_Instance()->Get_ShadowMap()->Get_Enable())
+			{
+				XMMATRIX view = CManager::Get_Instance()->Get_ShadowMap()->Get_View();
+				XMMATRIX proj = CManager::Get_Instance()->Get_ShadowMap()->Get_Plojection();
+
+				render->Set_MatrixBuffer(world, view, proj);
+
+				render->Set_Shader(SHADER_INDEX_V::SHADOW_MAP, SHADER_INDEX_P::MAX);
+			}
+		}
+	}
+
+	// 入力アセンブラに頂点バッファを設定.
+	render->SetVertexBuffers(pVertexBuffer.Get());
+
+	// テクスチャの設定
+	Texture->Set_Texture();
+
+	// トポロジの設定
+	render->SetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
+
+	render->Draw(4 * 6, 0);
+
+	GAME_OBJECT::Draw_Shadow();
+}
+
 void POLYGON_3D::Draw_DPP(void)
 {
 	CRenderer* render = CRenderer::getInstance();

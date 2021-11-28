@@ -86,6 +86,12 @@ public:
 	virtual void Draw();
 
 	/**
+	* @brief 描画(shdow-pass)関数
+	* @details 仮想shdow-pass関数
+	*/
+	virtual void Draw_Shadow();
+
+	/**
 	* @brief 描画(Depth-pre-pass)関数
 	* @details 純粋仮想Depth-pre-pass関数
 	*/

@@ -196,14 +196,16 @@ void CManager::Draw()
 	imgui->Begin();
 #endif // _DEBUG
 
-	render->Begin();
+	//render->Begin();
 
 	// シャドウマップの描画
 	{
 		pShadowMap->Begin();
-		pSceneManager->Draw();
+		pSceneManager->Draw_Shadow();
 		pShadowMap->End();//
 	}
+
+	render->Begin();
 
 	// 最終レンダリング
 	{
@@ -211,6 +213,7 @@ void CManager::Draw()
 		pShadowMap->Set();
 		Manager->pSceneManager->Get_Scene()->Get_Light_Manager()->Draw();
 		Manager->cluster->Draw();
+		//pShadowMap->Set_SamplerState();
 		pSceneManager->Draw();
 	}
 

@@ -67,6 +67,12 @@ public:
 	void Draw() override;
 
 	/**
+	* @brief 描画関数
+	* @details 描画する関数
+	*/
+	void Draw_Shadow() override;
+
+	/**
 	* @brief 描画(Depth-pre-pass)関数
 	* @details Depth-pre-passをする関数
 	*/

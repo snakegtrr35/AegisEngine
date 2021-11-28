@@ -279,6 +279,115 @@ void CMODEL::Draw()
 	render->Set_Shader();
 }
 
+void CMODEL::Draw_Shadow()
+{
+	CRenderer* render = CRenderer::getInstance();
+
+	const auto camera = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<CCamera>("camera");
+
+	Vector3 position = *Get_Transform().Get_Position();
+	Vector3 rotate = *Get_Transform().Get_Rotation();
+	Vector3 scale = *Get_Transform().Get_Scaling();
+
+	if (!camera.expired() && Empty_weak_ptr<CCamera>(camera))
+	{
+		if (false == camera.lock()->Get_Visibility(position))
+		{
+			return;
+		}
+	}
+
+	XMMATRIX matrix = XMMatrixIdentity();
+	XMMATRIX scaling = XMMatrixScaling(scale.x, scale.y, scale.z);
+	XMMATRIX rotation = XMMatrixRotationRollPitchYaw(XMConvertToRadians(rotate.x), XMConvertToRadians(rotate.y), XMConvertToRadians(rotate.z));
+
+	{
+		if (false == XMQuaternionEqual(XMVectorSet(0.f, 0.f, 0.f, 0.f), Quaternion)) rotation = XMMatrixRotationQuaternion(Quaternion);
+	}
+
+	XMMATRIX transform = XMMatrixTranslation(position.x, position.y, position.z);
+
+	matrix = XMMatrixMultiply(matrix, scaling);
+
+	matrix = XMMatrixMultiply(matrix, rotation);
+
+	matrix = XMMatrixMultiply(matrix, transform);
+
+	{
+		auto camera01 = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<CCamera>("camera");
+		auto camera02 = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
+
+		{
+			XMVECTOR camera_pos;
+			LIGHT light = *render->Get_Light();
+
+			XMVECTOR light_pos = XMVectorSet(light.Direction.x, light.Direction.y, light.Direction.z, light.Direction.w);
+
+			light_pos = XMVectorScale(light_pos, 10.0f);
+
+			if (!camera01.expired() && Empty_weak_ptr<CCamera>(camera01))
+			{
+				camera_pos = *camera01.lock()->Get_Pos();
+
+				Vector4 pos;
+				XMStoreFloat4(&pos, camera_pos);
+				camera_pos = XMLoadFloat4(&pos);
+			}
+			else
+			{
+				camera_pos = *camera02.lock()->Get_Pos();
+
+				Vector4 pos;
+				XMStoreFloat4(&pos, camera_pos);
+				camera_pos = XMLoadFloat4(&pos);
+			}
+
+			render->Set_MatrixBuffer01(camera_pos);
+		}
+
+		if (CManager::Get_Instance()->Get_ShadowMap()->Get_Enable())
+		{
+			render->Set_Shader(SHADER_INDEX_V::SHADOW_MAP, SHADER_INDEX_P::MAX);
+		}
+		else
+		{
+			render->Set_Shader();
+		}
+	}
+
+	if (Meshes.GetAnime())
+	{
+		// アニメーション
+		for (auto mesh : Meshes.Get())
+		{
+			auto anime = Meshes.Get_Anime();
+
+			for (auto i : mesh.second.Get())
+			{
+				if (Anime_State_Machine.Get_Enable())
+				{
+					i.second.Draw_Shadow_Animation(matrix, anime, Frame, Anime_State_Machine.Get_Anime_Name(), Anime_State_Machine.Get_Next_Anime_Name(), Anime_State_Machine.Get_Ratio());
+				}
+				else
+				{
+					i.second.Draw_Shadow_Animation(matrix, anime, Frame, Anime_State_Machine.Get_Anime_Name());
+				}
+			}
+		}
+	}
+	else
+	{
+		// 普通の描画
+		for (auto mesh : Meshes.Get())
+		{
+			for (auto& i : mesh.second.Get())
+			{
+				i.second.Draw_Shadow(matrix);
+			}
+		}
+	}
+}
+
 void CMODEL::Draw_DPP()
 {
 	CRenderer* render = CRenderer::getInstance();
@@ -382,8 +491,6 @@ void CMODEL::Draw_DPP()
 			}
 		}
 	}
-
-	render->Set_Shader();
 }
 
 void CMODEL::Update(float delta_time)

@@ -184,6 +184,55 @@ void MESH_DOOM::Draw()
 	GAME_OBJECT::Draw();
 }
 
+void MESH_DOOM::Draw_Shadow()
+{
+	if (CManager::Get_Instance()->Get_ShadowMap()->Get_Enable())
+	{
+		return;
+	}
+
+	CRenderer* render = CRenderer::getInstance();
+
+	{
+		XMMATRIX world;
+
+		Vector3 position = *Get_Transform().Get_Position();
+		Vector3 rotate = *Get_Transform().Get_Rotation();
+		Vector3 scale = *Get_Transform().Get_Scaling();
+
+		world = XMMatrixScaling(scale.x, scale.y, scale.z);
+		world *= XMMatrixRotationRollPitchYaw(XMConvertToRadians(rotate.x), XMConvertToRadians(rotate.y), XMConvertToRadians(rotate.z));
+		world *= XMMatrixTranslation(position.x, position.y, position.z);
+
+		auto camera01 = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<CCamera>("camera");
+		auto camera02 = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
+
+		if (!camera01.expired() && Empty_weak_ptr<CCamera>(camera01))
+		{
+			render->Set_MatrixBuffer(world, camera01.lock()->Get_Camera_View(), camera01.lock()->Get_Camera_Projection());
+		}
+		else
+		{
+			render->Set_MatrixBuffer(world, camera02.lock()->Get_Camera_View(), camera02.lock()->Get_Camera_Projection());
+		}
+	}
+
+	render->SetVertexBuffers(VertexBuffer.Get());
+	render->SetIndexBuffer(IndexBuffer.Get());
+
+	// トポロジ設定
+	render->SetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
+
+	render->Set_Shader(SHADER_INDEX_V::SHADOW_MAP, SHADER_INDEX_P::MAX);
+
+	render->DrawIndexed(IndexNum, 0, 0);
+
+	// トポロジ設定
+	render->SetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+	GAME_OBJECT::Draw_Shadow();
+}
+
 void MESH_DOOM::Draw_DPP()
 {
 }

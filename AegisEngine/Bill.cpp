@@ -46,18 +46,28 @@ void BILL::Init()
 
 void BILL::Draw()
 {
-	{
-		Model->Draw();
-	}
+	if (nullptr == Model)
+		return;
+
+	Model->Draw();
 
 	GAME_OBJECT::Draw();
 }
 
+void BILL::Draw_Shadow()
+{
+	if (nullptr == Model)
+		return;
+
+	Model->Draw_Shadow();
+}
+
 void BILL::Draw_DPP()
 {
-	{
-		Model->Draw_DPP();
-	}
+	if (nullptr == Model)
+		return;
+
+	Model->Draw_DPP();
 }
 
 void BILL::Update(float delta_time)
@@ -73,6 +83,4 @@ void BILL::Update(float delta_time)
 
 void BILL::Uninit()
 {
-	Model->Uninit();
-	Model.reset(nullptr);
 }

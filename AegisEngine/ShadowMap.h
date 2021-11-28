@@ -94,6 +94,8 @@ public:
 	const bool Target_Enable();
 
 	void Set();
+
+	ID3D11SamplerState* getSampler() { return Sampler.Get(); }
 };
 
 #endif // !SHADOW_MAP_H

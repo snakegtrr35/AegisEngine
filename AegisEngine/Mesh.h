@@ -92,9 +92,13 @@ private:
 
 	void Draw_Mesh(XMMATRIX& parent_matrix);
 
+	void Draw_Shadow_Mesh(XMMATRIX& parent_matrix);
+
 	void Draw_DPP_Mesh(XMMATRIX& parent_matrix);
 
 	void Draw_Mesh_Animation(XMMATRIX& parent_matrix, unordered_map<string, Anim>& anime, DWORD frame, const string& name1, const string& name2 = string("none"), float blend = 0.0f);
+
+	void Draw_Shadow_Mesh_Animation(XMMATRIX& parent_matrix, unordered_map<string, Anim>& anime, DWORD frame, const string& name1, const string& name2 = string("none"), float blend = 0.0f);
 
 	void Draw_DPP_Mesh_Animation(XMMATRIX& parent_matrix, unordered_map<string, Anim>& anime, DWORD frame, const string& name1, const string& name2 = string("none"), float blend = 0.0f);
 
@@ -110,9 +114,13 @@ public:
 
 	void Draw(XMMATRIX& matrix);
 
+	void Draw_Shadow(XMMATRIX& matrix);
+
 	void Draw_DPP(XMMATRIX& matrix);
 
 	void Draw_Animation(XMMATRIX& matrix, unordered_map<string, Anim>& anime, DWORD frame, const string& name1, const string& name2 = string("none"), float blend = 0.0f);
+
+	void Draw_Shadow_Animation(XMMATRIX& matrix, unordered_map<string, Anim>& anime, DWORD frame, const string& name1, const string& name2 = string("none"), float blend = 0.0f);
 
 	void Draw_DPP_Animation(XMMATRIX& matrix, unordered_map<string, Anim>& anime, DWORD frame, const string& name1, const string& name2 = string("none"), float blend = 0.0f);
 

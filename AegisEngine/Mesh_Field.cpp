@@ -240,6 +240,51 @@ void MESH_FIELD::Draw()
 	GAME_OBJECT::Draw();
 }
 
+void MESH_FIELD::Draw_Shadow()
+{
+	CRenderer* render = CRenderer::getInstance();
+
+	// 3Dマトリックス設定
+	{
+		XMMATRIX world;
+
+		Vector3 position = *Get_Transform().Get_Position();
+		Vector3 rotate = *Get_Transform().Get_Rotation();
+		Vector3 scale = *Get_Transform().Get_Scaling();
+
+		world = XMMatrixScaling(scale.x, scale.y, scale.z);
+		world *= XMMatrixRotationRollPitchYaw(XMConvertToRadians(rotate.x), XMConvertToRadians(rotate.y), XMConvertToRadians(rotate.z));
+		world *= XMMatrixTranslation(position.x, position.y, position.z);
+
+		// シャドウマップ用の描画か?
+		if (CManager::Get_Instance()->Get_ShadowMap()->Get_Enable())
+		{
+			XMMATRIX view = CManager::Get_Instance()->Get_ShadowMap()->Get_View();
+			XMMATRIX proj = CManager::Get_Instance()->Get_ShadowMap()->Get_Plojection();
+
+			render->Set_MatrixBuffer(world, view, proj);
+
+			render->Set_Shader(SHADER_INDEX_V::SHADOW_MAP, SHADER_INDEX_P::MAX);
+		}
+	}
+
+	// 頂点バッファ設定
+	render->SetVertexBuffers(VertexBuffer.Get());
+
+	// インデックスバッファ設定
+	render->SetIndexBuffer(IndexBuffer.Get());
+
+	// トポロジ設定
+	render->SetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
+
+	render->DrawIndexed(IndexNum, 0, 0);
+
+	// トポロジ設定
+	render->SetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+	GAME_OBJECT::Draw_Shadow();
+}
+
 void MESH_FIELD::Draw_DPP()
 {
 	CRenderer* render = CRenderer::getInstance();

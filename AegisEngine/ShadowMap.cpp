@@ -43,8 +43,8 @@ SHADOW_MAP::SHADOW_MAP()
 		DxViewport.Height = (float)(Viewport.bottom - Viewport.top);
 		DxViewport.MinDepth = 0.0f;
 		DxViewport.MaxDepth = 1.0f;
-		DxViewport.TopLeftX = (float)Viewport.left;
-		DxViewport.TopLeftY = (float)Viewport.top;
+		DxViewport.TopLeftX = 0;
+		DxViewport.TopLeftY = 0;
 	}
 
 	Target.reset();
@@ -57,6 +57,7 @@ bool SHADOW_MAP::Init()
 
 	// デプスステンシルビューの作成
 	{
+
 		ID3D11Texture2D* pTex = nullptr;
 
 		// テクスチャの作成
@@ -85,7 +86,6 @@ bool SHADOW_MAP::Init()
 			desc.Format = DXGI_FORMAT_D32_FLOAT;
 			desc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
 			desc.Flags = 0;
-			desc.Texture2D.MipSlice = 0;
 
 			hr = render->GetDevice()->CreateDepthStencilView(pTex, &desc, &DepthStencilView);
 			if (FAILED(hr))
@@ -95,74 +95,14 @@ bool SHADOW_MAP::Init()
 			}
 		}
 
-		//// シェーダーリソースビュー設定
-		//{
-		//	ID3D11ShaderResourceView* srv = nullptr;
-
-		//	D3D11_SHADER_RESOURCE_VIEW_DESC desc = {};
-		//	ZeroMemory(&desc, sizeof(desc));
-		//	desc.Format = DXGI_FORMAT_R32_FLOAT;
-		//	desc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
-		//	desc.Texture2D.MipLevels = 1;
-		//	desc.Texture2D.MostDetailedMip = 0;
-
-		//	hr = CRenderer::GetDevice()->CreateShaderResourceView(pTex, &desc, &srv);
-		//	if (FAILED(hr))
-		//	{
-		//		FAILDE_ASSERT;
-		//		return false;
-		//	}
-		//	ShaderResourceView.reset(srv);
-		//}
-    }
-
-	// デプスバッファの作成
-	{
-		ID3D11Texture2D* pTex = nullptr;
-
-		// テクスチャの作成
-		D3D11_TEXTURE2D_DESC td = {};
-		td.Width = WIDTH;
-		td.Height = HEIGHT;
-		td.MipLevels = 1;
-		td.ArraySize = 1;
-		td.Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
-		td.SampleDesc.Count = 1;
-		td.SampleDesc.Quality = 0;
-		td.Usage = D3D11_USAGE_DEFAULT;
-		td.BindFlags = D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE;
-		td.CPUAccessFlags = 0;
-		td.MiscFlags = 0;
-
-		hr = render->GetDevice()->CreateTexture2D(&td, nullptr, &pTex);
-		if (FAILED(hr))
-		{
-			FAILDE_ASSERT;
-			return false;
-		}
-
-		// レンダーターゲットビュー設定
-		{
-			D3D11_RENDER_TARGET_VIEW_DESC desc = {};
-			desc.Format = td.Format;
-			desc.ViewDimension = D3D11_RTV_DIMENSION_TEXTURE2D;
-			desc.Texture2D.MipSlice = 0;
-
-			hr = render->GetDevice()->CreateRenderTargetView(pTex, &desc, &RenderTargetView);
-			if (FAILED(hr))
-			{
-				return false;
-			}
-		}
-
 		// シェーダーリソースビュー設定
 		{
-			// シェーダーリソースビューの設定
 			D3D11_SHADER_RESOURCE_VIEW_DESC desc = {};
-			desc.Format = td.Format;
-			desc.ViewDimension = D3D_SRV_DIMENSION_TEXTURE2D;
-			desc.Texture2D.MostDetailedMip = 0;
+			ZeroMemory(&desc, sizeof(desc));
+			desc.Format = DXGI_FORMAT_R32_FLOAT;
+			desc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
 			desc.Texture2D.MipLevels = 1;
+			desc.Texture2D.MostDetailedMip = 0;
 
 			hr = render->GetDevice()->CreateShaderResourceView(pTex, &desc, &ShaderResourceView);
 			if (FAILED(hr))
@@ -171,7 +111,64 @@ bool SHADOW_MAP::Init()
 				return false;
 			}
 		}
-	}
+    }
+
+	//// デプスバッファの作成
+	//{
+	//	ID3D11Texture2D* pTex = nullptr;
+
+	//	// テクスチャの作成
+	//	D3D11_TEXTURE2D_DESC td = {};
+	//	td.Width = WIDTH;
+	//	td.Height = HEIGHT;
+	//	td.MipLevels = 1;
+	//	td.ArraySize = 1;
+	//	td.Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
+	//	td.SampleDesc.Count = 1;
+	//	td.SampleDesc.Quality = 0;
+	//	td.Usage = D3D11_USAGE_DEFAULT;
+	//	td.BindFlags = D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE;
+	//	td.CPUAccessFlags = 0;
+	//	td.MiscFlags = 0;
+
+	//	hr = render->GetDevice()->CreateTexture2D(&td, nullptr, &pTex);
+	//	if (FAILED(hr))
+	//	{
+	//		FAILDE_ASSERT;
+	//		return false;
+	//	}
+
+	//	// レンダーターゲットビュー設定
+	//	{
+	//		D3D11_RENDER_TARGET_VIEW_DESC desc = {};
+	//		desc.Format = td.Format;
+	//		desc.ViewDimension = D3D11_RTV_DIMENSION_TEXTURE2D;
+	//		desc.Texture2D.MipSlice = 0;
+
+	//		hr = render->GetDevice()->CreateRenderTargetView(pTex, &desc, &RenderTargetView);
+	//		if (FAILED(hr))
+	//		{
+	//			return false;
+	//		}
+	//	}
+
+	//	// シェーダーリソースビュー設定
+	//	{
+	//		// シェーダーリソースビューの設定
+	//		D3D11_SHADER_RESOURCE_VIEW_DESC desc = {};
+	//		desc.Format = td.Format;
+	//		desc.ViewDimension = D3D_SRV_DIMENSION_TEXTURE2D;
+	//		desc.Texture2D.MostDetailedMip = 0;
+	//		desc.Texture2D.MipLevels = 1;
+
+	//		hr = render->GetDevice()->CreateShaderResourceView(pTex, &desc, &ShaderResourceView);
+	//		if (FAILED(hr))
+	//		{
+	//			FAILDE_ASSERT;
+	//			return false;
+	//		}
+	//	}
+	//}
 
 	// ラスタライズステートの設定
 	{
@@ -179,6 +176,7 @@ bool SHADOW_MAP::Init()
 		D3D11_RASTERIZER_DESC rd = {};
 		rd.FillMode = D3D11_FILL_SOLID;
 		rd.CullMode = D3D11_CULL_BACK;
+		//rd.CullMode = D3D11_CULL_FRONT;
 		rd.DepthClipEnable = TRUE;
 		rd.MultisampleEnable = FALSE;
 
@@ -196,8 +194,8 @@ bool SHADOW_MAP::Init()
 		desc.BorderColor[2] = 1.0f;
 		desc.BorderColor[3] = 1.0f;
 		desc.ComparisonFunc = D3D11_COMPARISON_ALWAYS;
-		desc.Filter = D3D11_FILTER_COMPARISON_MIN_MAG_MIP_POINT;
-		desc.MaxAnisotropy = 1;
+		desc.Filter = D3D11_FILTER_ANISOTROPIC;
+		desc.MaxAnisotropy = 16;
 		desc.MipLODBias = 0;
 		desc.MaxLOD = FLT_MAX;
 		desc.MinLOD = 0.f;
@@ -274,12 +272,12 @@ void SHADOW_MAP::Begin()
 	CRenderer* render = render->getInstance();
 	ID3D11RenderTargetView* pRTV = RenderTargetView.Get();
 
-    render->GetDeviceContext()->OMSetRenderTargets( 1, &pRTV, DepthStencilView.Get());
-	//render->GetDeviceContext()->OMSetRenderTargets(0, nullptr, pDSV);
+    //render->GetDeviceContext()->OMSetRenderTargets(1, &pRTV, DepthStencilView.Get());
+	render->GetDeviceContext()->OMSetRenderTargets(0, nullptr, DepthStencilView.Get());
 
 	// バックバッファクリア
 	float ClearColor[4] = { 1.0f, 0.0f, 0.0f, 1.0f };
-	render->GetDeviceContext()->ClearRenderTargetView(pRTV, ClearColor);
+	//render->GetDeviceContext()->ClearRenderTargetView(pRTV, ClearColor);
     render->GetDeviceContext()->ClearDepthStencilView(DepthStencilView.Get(), D3D11_CLEAR_DEPTH, 1.0f, 0 );
 
 
@@ -287,7 +285,7 @@ void SHADOW_MAP::Begin()
 
 	render->GetDeviceContext()->RSSetState(RasterizerState.Get());
 
-	render->GetDeviceContext()->OMSetDepthStencilState(m_DepthStateEnable, 0x00);
+	//render->GetDeviceContext()->OMSetDepthStencilState(m_DepthStateEnable, 0x00);
 
 
 	Set_Light(LightPos);
@@ -298,6 +296,13 @@ void SHADOW_MAP::Begin()
 void SHADOW_MAP::End()
 {
 	Enable = false;
+
+	ID3D11RenderTargetView* pRTV = nullptr;
+
+	CRenderer* render = render->getInstance();
+	render->getInstance()->GetDeviceContext()->OMSetRenderTargets(1, &pRTV, nullptr);
+
+	//render->GetDeviceContext()->PSSetShaderResources(1, 1, ShaderResourceView.GetAddressOf());
 }
 
 void SHADOW_MAP::Update()

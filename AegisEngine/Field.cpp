@@ -384,6 +384,46 @@ void FIELD::Draw()
 	GAME_OBJECT::Draw();
 }
 
+void FIELD::Draw_Shadow()
+{
+	CRenderer* render = CRenderer::getInstance();
+
+	// 入力アセンブラに頂点バッファを設定.
+	render->SetVertexBuffers(pVertexBuffer.Get());
+
+	render->Set_Shader(SHADER_INDEX_V::SHADOW_MAP, SHADER_INDEX_P::MAX);
+
+	render->SetIndexBuffer(pIndexBuffer.Get());
+
+	Texture->Set_Texture();//
+
+	// 3Dマトリックス設定
+	{
+		Vector3 position = *Get_Transform().Get_Position();
+		Vector3 rotate = *Get_Transform().Get_Rotation();
+		Vector3 scale = *Get_Transform().Get_Scaling();
+
+		XMMATRIX world = XMMatrixScaling(scale.x, scale.y, scale.z);
+		world *= XMMatrixRotationRollPitchYaw(XMConvertToRadians(rotate.x), XMConvertToRadians(rotate.y), XMConvertToRadians(rotate.z));
+		world *= XMMatrixTranslation(position.x, position.y, position.z);
+
+		{
+			// シャドウマップ用の描画か?
+			if (CManager::Get_Instance()->Get_ShadowMap()->Get_Enable())
+			{
+				XMMATRIX view = CManager::Get_Instance()->Get_ShadowMap()->Get_View();
+				XMMATRIX proj = CManager::Get_Instance()->Get_ShadowMap()->Get_Plojection();
+
+				render->Set_MatrixBuffer(world, view, proj);
+			}
+		}
+	}
+
+	render->DrawIndexed(6, 0, 0);
+
+	GAME_OBJECT::Draw_Shadow();
+}
+
 void FIELD::Draw_DPP()
 {
 	//CRenderer* render = CRenderer::getInstance();

@@ -63,13 +63,29 @@ void BULLET::Init()
 
 void BULLET::Draw()
 {
+	if (nullptr == Model)
+		return;
+
 	Model->Draw();
 
 	GAME_OBJECT::Draw();
 }
 
+void BULLET::Draw_Shadow()
+{
+	if (nullptr == Model)
+		return;
+
+	Model->Draw_Shadow();
+
+	GAME_OBJECT::Draw_Shadow();
+}
+
 void BULLET::Draw_DPP()
 {
+	if (nullptr == Model)
+		return;
+
 	Model->Draw_DPP();
 }
 

@@ -74,13 +74,16 @@ public:
 		{
 			for (const auto& object : GameObjects[i])
 			{
-				if (typeid(T) == typeid(*object.get()))
+				if (object)
 				{
-					if (name == object.get()->Get_Object_Name())
+					if (typeid(T) == typeid(*object.get()))
 					{
-						weak_ptr<T> obj(static_pointer_cast<T>(object));
+						if (name == object.get()->Get_Object_Name())
+						{
+							weak_ptr<T> obj(static_pointer_cast<T>(object));
 
-						return  obj;
+							return  obj;
+						}
 					}
 				}
 			}
@@ -98,9 +101,12 @@ public:
 		{
 			for (const auto& object : GameObjects[i])
 			{
-				if (name == object.get()->Get_Object_Name())
+				if (object)
 				{
-					return object.get();
+					if (name == object.get()->Get_Object_Name())
+					{
+						return object.get();
+					}
 				}
 			}
 		}
@@ -115,11 +121,14 @@ public:
 		{
 			for (const auto& object : GameObjects[i])
 			{
-				if (me == object.get())
+				if (object)
 				{
-					weak_ptr<GAME_OBJECT> obj(object);
+					if (me == object.get())
+					{
+						weak_ptr<GAME_OBJECT> obj(object);
 
-					return  obj;
+						return  obj;
+					}
 				}
 			}
 		}
@@ -136,9 +145,12 @@ public:
 		{
 			for (const auto& object : GameObjects[i])
 			{
-				if (typeid(T) == typeid(*object.get()))
+				if (object)
 				{
-					objects.emplace_back(static_cast<T*>(object.get()));
+					if (typeid(T) == typeid(*object.get()))
+					{
+						objects.emplace_back(static_cast<T*>(object.get()));
+					}
 				}
 			}
 		}
@@ -153,7 +165,10 @@ public:
 		{
 			for (const auto& object : GameObjects[i])
 			{
-				objects.push_back(object.get());
+				if (object)
+				{
+					objects.push_back(object.get());
+				}
 			}
 		}
 		return objects;
@@ -167,9 +182,12 @@ public:
 		{
 			for (const auto& object : GameObjects[i])
 			{
-				if (typeid(T) == typeid(*object.get()))
+				if (object)
 				{
-					object.get()->Set_Destroy();
+					if (typeid(T) == typeid(*object.get()))
+					{
+						object.get()->Set_Destroy();
+					}
 				}
 			}
 		}
@@ -210,7 +228,8 @@ public:
 
 			for (const auto& object : GameObjects[i])
 			{
-				object.get()->Init();
+				if (object)
+					object.get()->Init();
 			}
 
 			Light_Manager.Init();
@@ -221,9 +240,6 @@ public:
 
 	/**
 	* @brief 簡単な説明（～する関数）
-	* @param[in] a(引数名) 引数の説明
-	* @param[out] b(引数名) 引数の説明
-	* @return bool 戻り値の説明
 	* @details 詳細な説明
 	*/
 	virtual void Draw(void) {
@@ -231,7 +247,23 @@ public:
 		{
 			for (const auto& object : GameObjects[i])
 			{
-				object.get()->Draw();
+				if (object)
+					object.get()->Draw();
+			}
+		}
+	};
+
+	/**
+	* @brief 簡単な説明（～する関数）
+	* @details 詳細な説明
+	*/
+	virtual void Draw_Shadow(void) {
+		for (int i = 0; i < (int)LAYER_NAME::UI; i++)
+		{
+			for (const auto& object : GameObjects[i])
+			{
+				if (object)
+					object.get()->Draw_Shadow();
 			}
 		}
 	};
@@ -245,7 +277,8 @@ public:
 		{
 			for (const auto& object : GameObjects[i])
 			{
-				object.get()->Draw_DPP();
+				if (object)
+					object.get()->Draw_DPP();
 			}
 		}
 	};
@@ -294,7 +327,8 @@ public:
 			{
 				for (const auto& object : GameObjects[i])
 				{
-					object.get()->Update(delta_time);
+					if (object)
+						object.get()->Update(delta_time);
 				}
 
 				if (!AddGameObjects[i].empty())

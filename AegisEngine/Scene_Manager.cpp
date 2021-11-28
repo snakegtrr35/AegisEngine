@@ -28,6 +28,11 @@ void SCENE_MANAGER::Draw()
 	pScene->Draw();
 }
 
+void SCENE_MANAGER::Draw_Shadow()
+{
+	pScene->Draw_Shadow();
+}
+
 void SCENE_MANAGER::Draw_DPP()
 {
 	pScene->Draw_DPP();

@@ -13,7 +13,7 @@ class BULLET;
 
 class PLAYER : public GAME_OBJECT {
 private:
-	CMODEL* Model = nullptr;
+	unique_ptr<CMODEL> Model;
 	//FBXmodel* Model = nullptr;
 
 	float HP;
@@ -22,11 +22,12 @@ public:
 	PLAYER();
 	~PLAYER();
 
-	void Init(void) override;
-	void Draw(void) override;
+	void Init() override;
+	void Draw() override;
+	void Draw_Shadow() override;
 	void Draw_DPP() override;
 	void Update(float delta_time) override;
-	void Uninit(void) override;
+	void Uninit() override;
 
 	void SetPosition(Aegis::Vector3& position);					// ポジションの設定
 	void SetScaling(Aegis::Vector3& scaling);					// 拡大縮小の値の設定

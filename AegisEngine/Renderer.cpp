@@ -574,6 +574,10 @@ bool CRenderer::Init3D()
 	// フラグ
 	UINT d3dFlags = D3D11_CREATE_DEVICE_BGRA_SUPPORT; // BGRA テクスチャ有効(Direct2Dには必ず必要)
 
+#if defined(_DEBUG)
+	//d3dFlags |= D3D11_CREATE_DEVICE_DEBUG;
+#endif
+
 	// Direct3Dの作成
 	{
 		// アダプターの列挙
@@ -1212,14 +1216,14 @@ void CRenderer::Change_Window_Mode()
 
 void CRenderer::Begin()
 {
-	//auto render_target = RenderTargetView_16bit.get();
+	auto render_target = RenderTargetView_16bit.Get();
 
 	// バックバッファクリア
 	float ClearColor[4] = { 0.5f, 0.5f, 0.5f, 1.0f };
-	m_ImmediateContext->OMSetRenderTargets(1, m_RenderTargetView.GetAddressOf(), m_DepthStencilView.Get());
-	//m_ImmediateContext->OMSetRenderTargets(1, &render_target, m_DepthStencilView);//
-	m_ImmediateContext->ClearRenderTargetView(m_RenderTargetView.Get(), ClearColor);
-	//m_ImmediateContext->ClearRenderTargetView(RenderTargetView_16bit.get(), ClearColor);//
+	//m_ImmediateContext->OMSetRenderTargets(1, m_RenderTargetView.GetAddressOf(), m_DepthStencilView.Get());
+	m_ImmediateContext->OMSetRenderTargets(1, &render_target, m_DepthStencilView.Get());//
+	//m_ImmediateContext->ClearRenderTargetView(m_RenderTargetView.Get(), ClearColor);
+	m_ImmediateContext->ClearRenderTargetView(render_target, ClearColor);//
 	m_ImmediateContext->ClearDepthStencilView(m_DepthStencilView.Get(), D3D11_CLEAR_DEPTH, 1.0f, 0);
 }
 
@@ -1241,8 +1245,8 @@ void CRenderer::End_Draw()
 		sprite.get()->SetPosition(Vector2(SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.5f));
 		sprite.get()->SetSize(Vector4(SCREEN_HEIGHT * 0.5f, SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.5f, SCREEN_WIDTH * 0.5f));
 
-		sprite.get()->Set(ShaderResourceView[0].Get());
-		//te.get()->Set(ShaderResourceView_16bit.get());
+		//sprite.get()->Set(ShaderResourceView[0].Get());
+		sprite.get()->Set(ShaderResourceView_16bit.Get());
 
 		sprite.get()->flag = false;
 
@@ -1255,24 +1259,24 @@ void CRenderer::End_Draw()
 		m_ImmediateContext->ClearRenderTargetView(m_RenderTargetView.Get(), ClearColor);//
 		m_ImmediateContext->ClearDepthStencilView(m_DepthStencilView.Get(), D3D11_CLEAR_DEPTH, 1.0f, 0);
 
-		{
-			// サンプラーステート設定
-			D3D11_SAMPLER_DESC samplerDesc = {};
-			samplerDesc.Filter = D3D11_FILTER_ANISOTROPIC;
-			samplerDesc.AddressU = samplerDesc.AddressV = samplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_CLAMP;
-			samplerDesc.MaxAnisotropy = 4;
-			samplerDesc.ComparisonFunc = D3D11_COMPARISON_ALWAYS;
-			samplerDesc.MaxLOD = 0.0f;
-			samplerDesc.MinLOD = 0.0f;
+		//{
+		//	// サンプラーステート設定
+		//	D3D11_SAMPLER_DESC samplerDesc = {};
+		//	samplerDesc.Filter = D3D11_FILTER_ANISOTROPIC;
+		//	samplerDesc.AddressU = samplerDesc.AddressV = samplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_CLAMP;
+		//	samplerDesc.MaxAnisotropy = 4;
+		//	samplerDesc.ComparisonFunc = D3D11_COMPARISON_ALWAYS;
+		//	samplerDesc.MaxLOD = 0.0f;
+		//	samplerDesc.MinLOD = 0.0f;
 
-			ID3D11SamplerState* samplerState = nullptr;
-			m_D3DDevice->CreateSamplerState(&samplerDesc, &samplerState);
+		//	ID3D11SamplerState* samplerState = nullptr;
+		//	m_D3DDevice->CreateSamplerState(&samplerDesc, &samplerState);
 
-			m_ImmediateContext->PSSetSamplers(1, 1, &samplerState);
-		}
+		//	m_ImmediateContext->PSSetSamplers(1, 1, &samplerState);
+		//}
 	}
 
-		sprite.get()->Draw();
+	sprite.get()->Draw();
 }
 
 void CRenderer::End()
@@ -1508,26 +1512,28 @@ void CRenderer::Set_InputLayout(const INPUTLAYOUT InputLayout)
 
 void CRenderer::CreateRenderTexture() {}
 
+#include "ShadowMap.h"
+
 void CRenderer::SetPass_Rendring()
 {
 	float clearColor[4] = { 0.5f, 0.5f, 0.5f, 1.0f };
 
 	{
 		// デフォルトのレンダーターゲットビューに切り替え
-		auto render_target = RenderTargetView[0].Get();
-		m_ImmediateContext->OMSetRenderTargets(1, &render_target, m_DepthStencilView.Get());
-		m_ImmediateContext->ClearRenderTargetView(render_target, clearColor);
-
-		//m_ImmediateContext->OMSetRenderTargets(1, &m_RenderTargetView, m_DepthStencilView);
-		//m_ImmediateContext->ClearRenderTargetView(m_RenderTargetView, clearColor);
-		m_ImmediateContext->ClearDepthStencilView(m_DepthStencilView.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
+		//auto render_target = RenderTargetView[0].Get();
+		//m_ImmediateContext->OMSetRenderTargets(1, &render_target, m_DepthStencilView.Get());
+		//m_ImmediateContext->ClearRenderTargetView(render_target, clearColor);
+		//
+		////m_ImmediateContext->OMSetRenderTargets(1, &m_RenderTargetView, m_DepthStencilView);
+		////m_ImmediateContext->ClearRenderTargetView(m_RenderTargetView, clearColor);
+		//m_ImmediateContext->ClearDepthStencilView(m_DepthStencilView.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 
 		{
-			//auto render_target = RenderTargetView_16bit.get();
+			auto render_target = RenderTargetView_16bit.Get();
 
-			//m_ImmediateContext->OMSetRenderTargets(1, &render_target, m_DepthStencilView);//
-			//m_ImmediateContext->ClearRenderTargetView(RenderTargetView_16bit.get(), clearColor);//
-			//m_ImmediateContext->ClearDepthStencilView(m_DepthStencilView, D3D11_CLEAR_DEPTH, 1.0f, 0);
+			m_ImmediateContext->OMSetRenderTargets(1, &render_target, m_DepthStencilView.Get());//
+			m_ImmediateContext->ClearRenderTargetView(RenderTargetView_16bit.Get(), clearColor);//
+			m_ImmediateContext->ClearDepthStencilView(m_DepthStencilView.Get(), D3D11_CLEAR_DEPTH, 1.0f, 0);
 		}
 
 		{
@@ -1546,8 +1552,10 @@ void CRenderer::SetPass_Rendring()
 		Set_Shader();
 		Set_RasterizerState();
 
-		ID3D11SamplerState* pSS = m_SamplerState.Get();
-		m_ImmediateContext->PSSetSamplers(0, 1, &pSS);
+		//ID3D11SamplerState* pSS = m_SamplerState.Get();
+		ID3D11SamplerState* pSS[] = { m_SamplerState.Get(), CManager::Get_Instance()->Get_ShadowMap()->getSampler() };
+		//m_ImmediateContext->PSSetSamplers(0, 1, &pSS);
+		m_ImmediateContext->PSSetSamplers(0, 2, pSS);
 
 		SetDepthEnable(true);
 	}

@@ -20,7 +20,7 @@ static void Create_Bullet(Vector3& position, const Vector3& front);
 
 PLAYER::PLAYER(void)
 {
-	Model = new CMODEL();
+	Model = make_unique<CMODEL>();
 	//Model = new FBXmodel();
 }
 
@@ -53,6 +53,9 @@ void PLAYER::Init(void)
 
 void PLAYER::Draw(void)
 {
+	if (nullptr == Model)
+		return;
+
 	{
 		Vector3 position = *Get_Transform().Get_Position();
 		Vector3 rotate = *Get_Transform().Get_Rotation();
@@ -69,8 +72,11 @@ void PLAYER::Draw(void)
 	GAME_OBJECT::Draw();
 }
 
-void PLAYER::Draw_DPP(void)
+void PLAYER::Draw_Shadow(void)
 {
+	if (nullptr == Model)
+		return;
+
 	{
 		Vector3 position = *Get_Transform().Get_Position();
 		Vector3 rotate = *Get_Transform().Get_Rotation();
@@ -80,9 +86,26 @@ void PLAYER::Draw_DPP(void)
 		matrix *= XMMatrixRotationRollPitchYaw(XMConvertToRadians(rotate.x), XMConvertToRadians(rotate.y), XMConvertToRadians(rotate.z));
 		matrix *= XMMatrixTranslation(position.x, position.y, position.z);
 
-		Model->Draw_DPP();
-		//Model->Draw_DPP(matrix);
+		Model->Draw_Shadow();
 	}
+
+	GAME_OBJECT::Draw_Shadow();
+}
+
+void PLAYER::Draw_DPP(void)
+{
+	if (nullptr == Model)
+		return;
+
+	Vector3 position = *Get_Transform().Get_Position();
+	Vector3 rotate = *Get_Transform().Get_Rotation();
+	Vector3 scale = *Get_Transform().Get_Scaling();
+
+	XMMATRIX matrix = XMMatrixScaling(scale.x, scale.y, scale.z);
+	matrix *= XMMatrixRotationRollPitchYaw(XMConvertToRadians(rotate.x), XMConvertToRadians(rotate.y), XMConvertToRadians(rotate.z));
+	matrix *= XMMatrixTranslation(position.x, position.y, position.z);
+
+	Model->Draw_DPP();
 }
 
 void PLAYER::Update(float delta_time)
@@ -102,10 +125,10 @@ void PLAYER::Update(float delta_time)
 
 	XMStoreFloat3(&pos, *vec);
 
-	Get_Transform().Set_Position(pos);
+	//Get_Transform().Set_Position(pos);
 
 	// カメラに合わせた回転
-	Get_Transform().Get_Rotation()->y = rotate.y + 0.0f;
+	//Get_Transform().Get_Rotation()->y = rotate.y + 0.0f;
 
 	// モデルの更新
 	{
@@ -129,7 +152,6 @@ void PLAYER::Update(float delta_time)
 
 void PLAYER::Uninit(void)
 {
-	SAFE_DELETE(Model);
 }
 
 void PLAYER::SetPosition(Vector3& position)

@@ -45,7 +45,7 @@ void ENEMY::Init()
 		//string name = "asset/model/Player.fbx";
 		string name("asset/model/viranrifle.fbx");
 
-		Model = new CMODEL();
+		Model = make_unique<CMODEL>();
 
 		Model->Load(name);
 
@@ -72,13 +72,29 @@ void ENEMY::Init()
 
 void ENEMY::Draw()
 {
+	if (nullptr == Model)
+		return;
+
 	Model->Draw();
 
 	GAME_OBJECT::Draw();
 }
 
+void ENEMY::Draw_Shadow()
+{
+	if (nullptr == Model)
+		return;
+
+	Model->Draw_Shadow();
+
+	GAME_OBJECT::Draw_Shadow();
+}
+
 void ENEMY::Draw_DPP()
 {
+	if (nullptr == Model)
+		return;
+
 	Model->Draw_DPP();
 }
 
@@ -185,7 +201,6 @@ void ENEMY::Update(float delta_time)
 
 void ENEMY::Uninit(void)
 {
-	SAFE_DELETE(Model);
 }
 
 // ポジションの設定

@@ -28,6 +28,8 @@ void GAME_OBJECT::Draw()
 	Component->Draw();
 }
 
+void GAME_OBJECT::Draw_Shadow() {}
+
 void GAME_OBJECT::Update(float delta_time)
 {
 	Component->Update(delta_time);

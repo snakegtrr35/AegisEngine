@@ -35,6 +35,8 @@ public:
 
 	void Draw();
 
+	void Draw_Shadow();
+
 	void Draw_DPP();
 
 	void Update(float delta_time);
