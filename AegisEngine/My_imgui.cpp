@@ -1527,7 +1527,7 @@ void EditTransform(const float32* cameraView, float32* cameraProjection, float32
 				if (Rotation_Ans != Rotation)
 				{
 					Vector3 vec(Rotation[0], Rotation[1], Rotation[2]);
-					object->Get_Transform().Set_Position(vec);
+					object->Get_Transform().Set_Rotation(vec);
 				}
 			}
 			break;
@@ -1536,7 +1536,7 @@ void EditTransform(const float32* cameraView, float32* cameraProjection, float32
 				if (Scale_Ans != Scale)
 				{
 					Vector3 vec(Scale[0], Scale[1], Scale[2]);
-					object->Get_Transform().Set_Position(vec);
+					object->Get_Transform().Set_Scaling(vec);
 				}
 			}
 			break;

@@ -220,8 +220,8 @@ void TEXTURE_MANEGER::Load(const bool flag)
 		size_t first;			// 
 		size_t pos;
 
-		std::filesystem::directory_iterator e = std::filesystem::directory_iterator("./asset/texture");
-		for (auto file : e)
+		const std::filesystem::directory_iterator e = std::filesystem::directory_iterator("./asset/texture");
+		for (auto& file : e)
 		{
 			// 一つ一つのファイル名(パス付き)
 			path = file.path().string();

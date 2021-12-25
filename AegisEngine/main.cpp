@@ -36,6 +36,8 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 #endif // _DEBUG
 
+	//_CrtSetBreakAlloc(2164);
+
 	WNDCLASSEX wcex =
 	{
 		sizeof(WNDCLASSEX),
