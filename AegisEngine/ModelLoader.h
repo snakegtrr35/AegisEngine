@@ -18,9 +18,9 @@
 #include	"Mesh.h"
 #include	"Animetion_State_Machine.h"
 
-class GAME_OBJECT;
+class GameObject;
 
-class CMODEL : public GAME_OBJECT {
+class CMODEL : public GameObject {
 private:
 	//map<string, MESH> Meshes;		// メッシュ
 	MESH Meshes;		// メッシュ
@@ -72,12 +72,12 @@ public:
 	template<typename Archive>
 	void serialize(Archive& ar)
 	{
-		ar(cereal::base_class<GAME_OBJECT>(this));
+		ar(cereal::base_class<GameObject>(this));
 	}
 
 };
 
 CEREAL_REGISTER_TYPE(CMODEL)
-CEREAL_REGISTER_POLYMORPHIC_RELATION(GAME_OBJECT, CMODEL)
+CEREAL_REGISTER_POLYMORPHIC_RELATION(GameObject, CMODEL)
 
 #endif // !MODEL_LOADER_H

@@ -3,10 +3,10 @@
 #ifndef ENEMY_H
 #define ENEMY_H
 
-class GAME_OBJECT;
+class GameObject;
 class CMODEL;
 
-class ENEMY : public GAME_OBJECT {
+class ENEMY : public GameObject {
 private:
 	unique_ptr<CMODEL> Model;
 
@@ -31,11 +31,11 @@ public:
 	template<typename Archive>
 	void serialize(Archive& ar)
 	{
-		ar(cereal::base_class<GAME_OBJECT>(this));
+		ar(cereal::base_class<GameObject>(this));
 	}
 };
 
 CEREAL_REGISTER_TYPE(ENEMY)
-CEREAL_REGISTER_POLYMORPHIC_RELATION(GAME_OBJECT, ENEMY)
+CEREAL_REGISTER_POLYMORPHIC_RELATION(GameObject, ENEMY)
 
 #endif // !ENEMY_H

@@ -138,7 +138,7 @@ void MESH_FIELD::Init()
 		}
 	}
 
-	GAME_OBJECT::Init();
+	GameObject::Init();
 }
 
 void MESH_FIELD::Uninit()
@@ -148,7 +148,7 @@ void MESH_FIELD::Uninit()
 
 void MESH_FIELD::Update(float delta_time)
 {
-	GAME_OBJECT::Update(delta_time);
+	GameObject::Update(delta_time);
 }
 
 void MESH_FIELD::Draw()
@@ -237,7 +237,7 @@ void MESH_FIELD::Draw()
 	// トポロジ設定
 	render->GetDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-	GAME_OBJECT::Draw();
+	GameObject::Draw();
 }
 
 void MESH_FIELD::Draw_Shadow()
@@ -282,7 +282,7 @@ void MESH_FIELD::Draw_Shadow()
 	// トポロジ設定
 	render->SetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-	GAME_OBJECT::Draw_Shadow();
+	GameObject::Draw_Shadow();
 }
 
 void MESH_FIELD::Draw_DPP()
@@ -339,25 +339,25 @@ const float MESH_FIELD::Get_Height(const Vector3& position)
 
 	x = (position.x +  (GridSize.x * GridNum.x) * 0.5f) / GridSize.x;
 	z = (-position.z + (GridSize.z * GridNum.y) * 0.5f) / GridSize.z;
-	va.x = VertexArray[(z + 1) * (GridNum.x + 1) + (x + 1)].Position.x - VertexArray[z * (GridNum.x + 1) + x].Position.x;
-	va.y = VertexArray[(z + 1) * (GridNum.x + 1) + (x + 1)].Position.y - VertexArray[z * (GridNum.x + 1) + x].Position.y;
-	va.z = VertexArray[(z + 1) * (GridNum.x + 1) + (x + 1)].Position.z - VertexArray[z * (GridNum.x + 1) + x].Position.z;
+	va.x = VertexArray[static_cast<int32>((z + 1) * (GridNum.x + 1) + (x + 1))].Position.x - VertexArray[static_cast<int32>(z * (GridNum.x + 1) + x)].Position.x;
+	va.y = VertexArray[static_cast<int32>((z + 1) * (GridNum.x + 1) + (x + 1))].Position.y - VertexArray[static_cast<int32>(z * (GridNum.x + 1) + x)].Position.y;
+	va.z = VertexArray[static_cast<int32>((z + 1) * (GridNum.x + 1) + (x + 1))].Position.z - VertexArray[static_cast<int32>(z * (GridNum.x + 1) + x)].Position.z;
 
-	vb.x = position.x - VertexArray[z * (GridNum.x + 1) + x].Position.x;
-	vb.y = position.y - VertexArray[z * (GridNum.x + 1) + x].Position.y;
-	vb.z = position.z - VertexArray[z * (GridNum.x + 1) + x].Position.z;
+	vb.x = position.x - VertexArray[static_cast<int32>(z * (GridNum.x + 1) + x)].Position.x;
+	vb.y = position.y - VertexArray[static_cast<int32>(z * (GridNum.x + 1) + x)].Position.y;
+	vb.z = position.z - VertexArray[static_cast<int32>(z * (GridNum.x + 1) + x)].Position.z;
 
 	if ((va.z * vb.x - va.x * vb.z) > 0.0f)
 	{
-		p0 = VertexArray[(z + 1) * (GridNum.x + 1) + x].Position;
-		p1 = VertexArray[z * (GridNum.x + 1) + x].Position;
-		p2 = VertexArray[(z + 1) * (GridNum.y + 1) + (x + 1)].Position;
+		p0 = VertexArray[static_cast<int32>((z + 1) * (GridNum.x + 1) + x)].Position;
+		p1 = VertexArray[static_cast<int32>(z * (GridNum.x + 1) + x)].Position;
+		p2 = VertexArray[static_cast<int32>((z + 1) * (GridNum.y + 1) + (x + 1))].Position;
 	}
 	else
 	{
-		p0 = VertexArray[z * (GridNum.x + 1) + (x + 1)].Position;
-		p1 = VertexArray[(z + 1) * (GridNum.x + 1) + (x + 1)].Position;
-		p2 = VertexArray[z * (GridNum.x + 1) + x].Position;
+		p0 = VertexArray[static_cast<int32>(z * (GridNum.x + 1) + (x + 1))].Position;
+		p1 = VertexArray[static_cast<int32>((z + 1) * (GridNum.x + 1) + (x + 1))].Position;
+		p2 = VertexArray[static_cast<int32>(z * (GridNum.x + 1) + x)].Position;
 	}
 
 	v01.x = p1.x - p2.x;
@@ -540,7 +540,7 @@ void MESH_WALL::Uninit()
 
 void MESH_WALL::Update(float delta_time)
 {
-	GAME_OBJECT::Update(delta_time);
+	GameObject::Update(delta_time);
 }
 
 void MESH_WALL::Draw()
@@ -625,7 +625,7 @@ void MESH_WALL::Draw()
 		render->Set_Shader();
 	}
 
-	GAME_OBJECT::Draw();
+	GameObject::Draw();
 }
 
 void MESH_WALL::Draw_DPP()

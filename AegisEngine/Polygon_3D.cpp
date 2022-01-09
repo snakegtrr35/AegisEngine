@@ -283,7 +283,7 @@ void POLYGON_3D::Draw(void)
 
 	render->GetDeviceContext()->Draw(4 * 6, 0);
 
-	GAME_OBJECT::Draw();
+	GameObject::Draw();
 }
 
 void POLYGON_3D::Draw_Shadow(void)
@@ -327,7 +327,7 @@ void POLYGON_3D::Draw_Shadow(void)
 
 	render->Draw(4 * 6, 0);
 
-	GAME_OBJECT::Draw_Shadow();
+	GameObject::Draw_Shadow();
 }
 
 void POLYGON_3D::Draw_DPP(void)
@@ -370,7 +370,7 @@ void POLYGON_3D::Draw_DPP(void)
 
 void POLYGON_3D::Update(float delta_time)
 {
-	GAME_OBJECT::Update(delta_time);
+	GameObject::Update(delta_time);
 }
 
 

@@ -122,7 +122,7 @@ namespace Aegis
 
 		inline float32 Length()
 		{
-			return std::sqrtf(x * x + y * y);
+			return std::sqrtf(static_cast<float32>(x * x + y * y));
 		}
 
 		inline float32 LengthSq()

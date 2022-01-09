@@ -11,4 +11,9 @@ namespace Aegis
 	const Vector3 Vector3::Zero(0.f, 0.f, 0.f);
 	const Vector3 Vector3::One(1.0f, 1.0f, 1.0f);
 	const Vector3 Vector3::Minus(-1.0f, -1.0f, -1.0f);
+
+	//Vector3 Vector3::Transform(const Vector3& v, const Quaternion& q)
+	//{
+	//	return toVector3(DirectX::XMVector3Rotate(toXMVECTOR(v), DirectX::XMLoadFloat4(&q.Quat)));
+	//}
 }

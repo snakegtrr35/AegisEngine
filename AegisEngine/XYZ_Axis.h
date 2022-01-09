@@ -8,7 +8,7 @@
 
 class TEXTURE;
 
-class AXIS : public GAME_OBJECT {
+class AXIS : public GameObject {
 private:
 	ComPtr<ID3D11Buffer> pVertexBuffer[3];	// 頂点バッファ
 	ComPtr<ID3D11Buffer> pIndexBuffer;		// インデックスバッファ

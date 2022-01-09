@@ -98,6 +98,6 @@ using namespace std;
 
 #include "include\engine\core\utility\TypeDefine.h"
 
-#include	"include/engine/core/math/Math.h"
+#include "include/engine/core/math/Math.h"
 
 #endif // !STDAFX_H

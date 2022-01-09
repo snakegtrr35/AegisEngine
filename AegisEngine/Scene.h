@@ -39,8 +39,8 @@ class SCENE {
 private:
 
 protected:
-	static std::vector<shared_ptr<GAME_OBJECT>> GameObjects[(int)LAYER_NAME::MAX_LAYER];
-	static std::vector<shared_ptr<GAME_OBJECT>> AddGameObjects[(int)LAYER_NAME::MAX_LAYER];
+	static std::vector<shared_ptr<GameObject>> GameObjects[(int)LAYER_NAME::MAX_LAYER];
+	static std::vector<shared_ptr<GameObject>> AddGameObjects[(int)LAYER_NAME::MAX_LAYER];
 
 	static bool PauseEnable;
 
@@ -95,7 +95,7 @@ public:
 
 	// リストから特定のオブジェクの取得
 	// 引数 name オブジェクト名
-	static GAME_OBJECT* Get_Game_Object(const string& name)
+	static GameObject* Get_Game_Object(const string& name)
 	{
 		for (int i = 0; i < (int)LAYER_NAME::MAX_LAYER; i++)
 		{
@@ -115,7 +115,7 @@ public:
 
 	// リストから特定のオブジェクの取得
 	// 引数 name オブジェクト名
-	static weak_ptr<GAME_OBJECT> Get_Game_Object(const GAME_OBJECT* me)
+	static weak_ptr<GameObject> Get_Game_Object(const GameObject* me)
 	{
 		for (int i = 0; i < (int)LAYER_NAME::MAX_LAYER; i++)
 		{
@@ -125,14 +125,14 @@ public:
 				{
 					if (me == object.get())
 					{
-						weak_ptr<GAME_OBJECT> obj(object);
+						weak_ptr<GameObject> obj(object);
 
 						return  obj;
 					}
 				}
 			}
 		}
-		weak_ptr<GAME_OBJECT> obj;
+		weak_ptr<GameObject> obj;
 		return obj;
 	}
 
@@ -158,9 +158,9 @@ public:
 	}
 
 	// 全オブジェクトの取得
-	static vector<GAME_OBJECT*> Get_All_Game_Object()
+	static vector<GameObject*> Get_All_Game_Object()
 	{
-		vector<GAME_OBJECT*> objects;
+		vector<GameObject*> objects;
 		for (int i = 0; i < (int)LAYER_NAME::MAX_LAYER; i++)
 		{
 			for (const auto& object : GameObjects[i])
@@ -392,7 +392,7 @@ public:
 	* @return bool 戻り値の説明
 	* @details 詳細な説明
 	*/
-	static void Destroy_Game_Object(GAME_OBJECT* game_object) {
+	static void Destroy_Game_Object(GameObject* game_object) {
 		game_object->Set_Destroy();
 	};
 

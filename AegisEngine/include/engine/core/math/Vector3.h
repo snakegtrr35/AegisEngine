@@ -4,14 +4,15 @@
 #define _MATH_VECTOR3_H_
 
 //class Vector3;
-#include"Quaternion.h"
+#include "Quaternion.h"
+
+#include <DirectXMath.h>
+using namespace DirectX;
 
 namespace Aegis
 {
 	class Vector3 : public DirectX::XMFLOAT3 {
 	public:
-
-		friend class Quaternion;
 
 		Vector3() = default;
 		Vector3(const float32 _x, const float32 _y, const float32 _z) noexcept
@@ -249,16 +250,9 @@ namespace Aegis
 		}
 
 		// クォータニオンによるVector3の変換
-		static Vector3 Transform(const Vector3& v, const Quaternion& q)
+		inline static Vector3 Transform(const Vector3& v, const Quaternion& q)
 		{
-			//// v + 2.0 * Cross(q.xyz, Cross(q.xyz,v) + q.w * v);
-			//Vector3 qv(q.x, q.y, q.z);
-			//Vector3 retVal = v;
-			//retVal += 2.0f * Vector3::Cross(qv, Vector3::Cross(qv, v) + q.w * v);
-			//
-			//return retVal;
-
-			return toVector3( DirectX::XMVector3Rotate(toXMVECTOR(v), Quaternion::toXMVECTOR(q.Quat)) );
+			return toVector3(DirectX::XMVector3Rotate(toXMVECTOR(v), DirectX::XMLoadFloat4(&q.Quat)));
 		}
 
 		template<typename Archive>

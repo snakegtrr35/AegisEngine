@@ -5,7 +5,7 @@
 
 #include	"GameObject.h"
 
-class CCamera : public GAME_OBJECT{
+class CCamera : public GameObject{
 private:
 	static CCamera* pCamera;
 

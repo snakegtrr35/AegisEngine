@@ -141,9 +141,9 @@ void RESULT::Load(SCENE* scene)
 		string name(id.name());
 
 		// 置換
-		Replace_String(name, "class ", "      ");
-		Replace_String(name, "*", " ");
-		name.erase(remove_if(name.begin(), name.end(), isspace), name.end());
+		Replace_String(name, "class ", "");
+		Replace_String(name, "*", "");
+		//name.erase(remove_if(name.begin(), name.end(), isspace), name.end());
 
 		std::ifstream file(name + ".dat", std::ios::binary);
 
@@ -214,9 +214,9 @@ void RESULT::Load(SCENE* scene)
 		string name(id.name());
 
 		// 置換
-		Replace_String(name, "class ", "      ");
-		Replace_String(name, "*", " ");
-		name.erase(remove_if(name.begin(), name.end(), isspace), name.end());
+		Replace_String(name, "class ", "");
+		Replace_String(name, "*", "");
+		//name.erase(remove_if(name.begin(), name.end(), isspace), name.end());
 
 		std::ofstream file(name + ".dat", std::ios::binary);
 

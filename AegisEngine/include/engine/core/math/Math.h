@@ -9,11 +9,15 @@
 #define MATH_H
 
 #include "MathDef.h"
+
 #include "Vector3.h"
 #include "Vector2.h"
 #include "Vector4.h"
-#include "Int2.h"
 #include "Quaternion.h"
+#include "Int2.h"
+
+#include "detail\quaternion.h"
+
 #include "Color.h"
 
 namespace Aegis
@@ -41,7 +45,8 @@ namespace Aegis
 
 		inline XMVECTOR Vector3ToXMVECTOR(const Vector3& vector)
 		{
-			return XMLoadFloat3(&XMFLOAT3(vector.x, vector.y, vector.z));
+			const auto v = XMFLOAT3(vector.x, vector.y, vector.z);
+			return XMLoadFloat3(&v);
 		}
 
 		inline Vector3 XMFLOAT3ToVector3(const XMFLOAT3& vector)
@@ -158,8 +163,6 @@ namespace Aegis
 		}
 
 	}
-
-	Quaternion RotateAxis(const Vector3& axis, const float angle);
 }
 
 XMFLOAT3 operator+(const XMFLOAT3& left, const XMFLOAT3 right);

@@ -3,14 +3,14 @@
 #ifndef COMPONENT_H
 #define COMPONENT_H
 
-class GAME_OBJECT;
+class GameObject;
 //#include	"GameObject.h"
 //#include	"manager.h"
 
 // コンポーネントクラス
-class COMPONENT /*: public GAME_OBJECT*/ {
+class COMPONENT /*: public GameObject*/ {
 protected:
-	weak_ptr<GAME_OBJECT> Owner;
+	weak_ptr<GameObject> Owner;
 
 	bool Enable;
 	bool Draw_Enable;
@@ -37,7 +37,7 @@ public:
 
 	virtual void Draw_Inspector() = 0;
 
-	void Set_Owner(const weak_ptr<GAME_OBJECT>& owner);
+	void Set_Owner(const weak_ptr<GameObject>& owner);
 
 	void SetEnable(const bool flag);
 
@@ -92,6 +92,6 @@ public:
 };
 
 //CEREAL_REGISTER_TYPE(COMPONENT)
-//CEREAL_REGISTER_POLYMORPHIC_RELATION(GAME_OBJECT, COMPONENT)
+//CEREAL_REGISTER_POLYMORPHIC_RELATION(GameObject, COMPONENT)
 
 #endif // COMPONENT_H!

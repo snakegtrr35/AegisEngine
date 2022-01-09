@@ -14,8 +14,6 @@ namespace Aegis
 	{
 	public:
 
-		friend class Vector3;
-
 		Quaternion() noexcept = default;
 
 		// これにより、クォータニオンコンポーネントが直接設定されます-
@@ -31,17 +29,6 @@ namespace Aegis
 		Quaternion& operator=(const Quaternion&) = default;
 		Quaternion(Quaternion&&) = default;
 		Quaternion& operator=(Quaternion&&) = default;
-
-		// 軸と角度からCQuaternionを構築します
-		// 軸はすでに正規化されていると想定されますが、角度はディグリーです
-		/*Quaternion RotateAxis(const Vector3& axis, const float32 angle)
-		{
-			float32 scalar = sin(Math::DegreeToRadian(angle) / 2.0f);
-			x = axis.x * scalar;
-			y = axis.y * scalar;
-			z = axis.z * scalar;
-			w = cos(angle / 2.0f);
-		}*/
 
 		// 内部コンポーネントを直接設定します
 		void Set(float32 _x, float32 _y, float32 _z, float32 _w)
@@ -134,33 +121,37 @@ namespace Aegis
 		// q回転、p回転
 		Quaternion Concatenate(const Quaternion& q, const Quaternion& p);
 
-		static Quaternion Euler(const float32 x, const float32 y, const float32 z)
-		{
-			//XMVECTOR Quaternion = DirectX::XMQuaternionIdentity();
-			//
-			//const XMVECTOR axisX = XMVectorSet(1.0f, 0.f, 0.f, 0.f);
-			//const XMVECTOR axisY = XMVectorSet(0.0f, 1.0f, 0.f, 0.f);
-			//const XMVECTOR axisZ = XMVectorSet(0.0f, 0.f, 1.0f, 0.f);
-			//
-			//XMVECTOR rotateX = XMQuaternionRotationAxis(axisX, XMConvertToRadians(x));
-			//rotateX = XMVector4Normalize(rotateX);
-			//XMVECTOR rotateY = XMQuaternionRotationAxis(axisY, XMConvertToRadians(y));
-			//rotateY = XMVector4Normalize(rotateY);
-			//XMVECTOR rotateZ = XMQuaternionRotationAxis(axisZ, XMConvertToRadians(z));
-			//rotateZ = XMVector4Normalize(rotateZ);
-			//
-			//Quaternion = XMQuaternionMultiply(Quaternion, rotateX);
-			//Quaternion = XMQuaternionMultiply(Quaternion, rotateY);
-			//Quaternion = XMQuaternionMultiply(Quaternion, rotateZ);
-			//Quaternion = XMQuaternionNormalize(Quaternion);
-			//
-			//XMFLOAT4 quat;
-			//XMStoreFloat4(&quat, Quaternion);
-			//
-			//return Quaternion::Quaternion(quat.x, quat.y, quat.z, quat.w);
+		//static Quaternion Euler(const float32 x, const float32 y, const float32 z)
+		//{
+		//	//XMVECTOR Quaternion = DirectX::XMQuaternionIdentity();
+		//	//
+		//	//const XMVECTOR axisX = XMVectorSet(1.0f, 0.f, 0.f, 0.f);
+		//	//const XMVECTOR axisY = XMVectorSet(0.0f, 1.0f, 0.f, 0.f);
+		//	//const XMVECTOR axisZ = XMVectorSet(0.0f, 0.f, 1.0f, 0.f);
+		//	//
+		//	//XMVECTOR rotateX = XMQuaternionRotationAxis(axisX, XMConvertToRadians(x));
+		//	//rotateX = XMVector4Normalize(rotateX);
+		//	//XMVECTOR rotateY = XMQuaternionRotationAxis(axisY, XMConvertToRadians(y));
+		//	//rotateY = XMVector4Normalize(rotateY);
+		//	//XMVECTOR rotateZ = XMQuaternionRotationAxis(axisZ, XMConvertToRadians(z));
+		//	//rotateZ = XMVector4Normalize(rotateZ);
+		//	//
+		//	//Quaternion = XMQuaternionMultiply(Quaternion, rotateX);
+		//	//Quaternion = XMQuaternionMultiply(Quaternion, rotateY);
+		//	//Quaternion = XMQuaternionMultiply(Quaternion, rotateZ);
+		//	//Quaternion = XMQuaternionNormalize(Quaternion);
+		//	//
+		//	//XMFLOAT4 quat;
+		//	//XMStoreFloat4(&quat, Quaternion);
+		//	//
+		//	//return Quaternion::Quaternion(quat.x, quat.y, quat.z, quat.w);
+		//
+		//	return toQuaternion( DirectX::XMQuaternionRotationRollPitchYawFromVector(DirectX::XMVectorSet(z, y, z, 0.f)) );
+		//}
 
-			return toQuaternion( DirectX::XMQuaternionRotationRollPitchYawFromVector(DirectX::XMVectorSet(z, y, z, 0.f)) );
-		}
+		//// 軸と角度からCQuaternionを構築します
+		//// 軸はすでに正規化されていると想定されますが、角度はディグリーです
+		//static Quaternion RotateAxis(const Vector3& axis, const float32 angle);
 
 	public:
 		union

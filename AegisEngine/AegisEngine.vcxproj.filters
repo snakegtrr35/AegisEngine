@@ -105,6 +105,9 @@
     <Filter Include="include\engine\core\utility">
       <UniqueIdentifier>{0567d155-7025-4b63-8b27-c02eae7b26b7}</UniqueIdentifier>
     </Filter>
+    <Filter Include="include\engine\core\math\detail">
+      <UniqueIdentifier>{2ae38893-9bbd-4378-a40d-877152f51999}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="imgui\imgui.cpp">
@@ -642,6 +645,9 @@
     </ClInclude>
     <ClInclude Include="AudioDefine.h">
       <Filter>ソース ファイル\System\Audio</Filter>
+    </ClInclude>
+    <ClInclude Include="include\engine\core\math\detail\quaternion.h">
+      <Filter>include\engine\core\math\detail</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -4,10 +4,10 @@
 #define SKYBOX_H
 
 
-class GAME_OBJECT;
+class GameObject;
 //class TEXTURE;
 
-class SKYBOX : public GAME_OBJECT {
+class SKYBOX : public GameObject {
 private:
 	//! 頂点バッファ
 	static ComPtr<ID3D11Buffer>	VertexBuffer;
@@ -64,26 +64,26 @@ public:
 	template<typename Archive>
 	void serialize(Archive& ar)
 	{
-		ar(cereal::base_class<GAME_OBJECT>(this));
+		ar(cereal::base_class<GameObject>(this));
 		//ar(Texture);
 	}
 
 	//template<class Archive>
 	//void save(Archive& ar) const
 	//{
-	//	ar(cereal::base_class<GAME_OBJECT>(this));
+	//	ar(cereal::base_class<GameObject>(this));
 	//	ar(Texture);
 	//}
 
 	//template<class Archive>
 	//void load(Archive& ar)
 	//{
-	//	ar(cereal::base_class<GAME_OBJECT>(this));
+	//	ar(cereal::base_class<GameObject>(this));
 	//	ar(Texture);
 	//}
 };
 
 CEREAL_REGISTER_TYPE(SKYBOX)
-CEREAL_REGISTER_POLYMORPHIC_RELATION(GAME_OBJECT, SKYBOX)
+CEREAL_REGISTER_POLYMORPHIC_RELATION(GameObject, SKYBOX)
 
 #endif // !SKYBOX_H

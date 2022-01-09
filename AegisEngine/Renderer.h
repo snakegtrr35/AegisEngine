@@ -86,19 +86,19 @@ struct LIGHT
 	Aegis::COLOR Specular;
 };
 
-typedef struct {
+struct TEXT_FOMAT{
 	string FontName;
 	float FontSize = 32.0f;
 	DWRITE_FONT_WEIGHT Weight = DWRITE_FONT_WEIGHT_NORMAL;
 	DWRITE_FONT_STYLE Style = DWRITE_FONT_STYLE_NORMAL;
 	DWRITE_FONT_STRETCH Stretch = DWRITE_FONT_STRETCH_NORMAL;
-}TEXT_FOMAT;
+};
 
-typedef struct {
+struct TEXT_LAYOUT {
 	string Text;
 	float Width;
 	float Height;
-}TEXT_LAYOUT;
+};
 
 enum class SHADER_INDEX_V {
 	DEFAULT,

@@ -41,7 +41,7 @@ void BILL::Init()
 		model->Set_Position(Position + XMFLOAT3(10, 0, 0));
 	}*/
 
-	GAME_OBJECT::Init();
+	GameObject::Init();
 }
 
 void BILL::Draw()
@@ -51,7 +51,7 @@ void BILL::Draw()
 
 	Model->Draw();
 
-	GAME_OBJECT::Draw();
+	GameObject::Draw();
 }
 
 void BILL::Draw_Shadow()
@@ -78,7 +78,7 @@ void BILL::Update(float delta_time)
 
 	Model->Update(delta_time);
 
-	GAME_OBJECT::Update(delta_time);
+	GameObject::Update(delta_time);
 }
 
 void BILL::Uninit()

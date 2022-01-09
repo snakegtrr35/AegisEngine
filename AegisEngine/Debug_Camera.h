@@ -5,7 +5,7 @@
 
 #include	"GameObject.h"
 
-class DEBUG_CAMERA : public GAME_OBJECT {
+class DEBUG_CAMERA : public GameObject {
 private:
 	static DEBUG_CAMERA* pDebugCamera;
 
@@ -122,7 +122,7 @@ public:
 		XMStoreFloat3(Get_Transform().Get_Position(), Pos);
 		XMStoreFloat3(&A, At);
 
-		ar(cereal::base_class<GAME_OBJECT>(this));
+		ar(cereal::base_class<GameObject>(this));
 		ar(A);
 
 		ar(F);
@@ -148,7 +148,7 @@ public:
 	/*template<class Archive>
 	void save(Archive& ar) const
 	{
-		ar(cereal::base_class<GAME_OBJECT>(this));
+		ar(cereal::base_class<GameObject>(this));
 		ar(A);
 
 		ar(F);
@@ -163,7 +163,7 @@ public:
 	template<class Archive>
 	void load(Archive& ar)
 	{
-		ar(cereal::base_class<GAME_OBJECT>(this));
+		ar(cereal::base_class<GameObject>(this));
 		ar(A);
 		ar(A);
 
@@ -186,6 +186,6 @@ public:
 };
 
 CEREAL_REGISTER_TYPE(DEBUG_CAMERA)
-CEREAL_REGISTER_POLYMORPHIC_RELATION(GAME_OBJECT, DEBUG_CAMERA)
+CEREAL_REGISTER_POLYMORPHIC_RELATION(GameObject, DEBUG_CAMERA)
 
 #endif // !DEBUG_CAMERA_H

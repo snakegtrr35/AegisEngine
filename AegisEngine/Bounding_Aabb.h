@@ -121,13 +121,13 @@ public:
 	//template<class Archive>
 	//void save(Archive& ar) const
 	//{
-	//	ar(cereal::base_class<GAME_OBJECT>(this));
+	//	ar(cereal::base_class<GameObject>(this));
 	//}
 
 	//template<class Archive>
 	//void load(Archive& ar)
 	//{
-	//	ar(cereal::base_class<GAME_OBJECT>(this));
+	//	ar(cereal::base_class<GameObject>(this));
 	//}
 };
 

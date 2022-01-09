@@ -12,13 +12,13 @@
 #include	"Renderer.h"
 #include	"main.h"
 
-class GAME_OBJECT;
+class GameObject;
 
 /**
 * @brief フィールドクラス
 * @details フィールドクラス
 */
-class FIELD : public GAME_OBJECT {
+class FIELD : public GameObject {
 
 	//! 頂点バッファ
 	ComPtr<ID3D11Buffer> pVertexBuffer;
@@ -118,24 +118,24 @@ public:
 	template<typename Archive>
 	void serialize(Archive& ar)
 	{
-		ar(cereal::base_class<GAME_OBJECT>(this));
+		ar(cereal::base_class<GameObject>(this));
 		ar(Texture);
 	}
 
 	/*template<class Archive>
 	void save(Archive& ar) const
 	{
-		ar(cereal::base_class<GAME_OBJECT>(this));
+		ar(cereal::base_class<GameObject>(this));
 	}
 
 	template<class Archive>
 	void load(Archive& ar)
 	{
-		ar(cereal::base_class<GAME_OBJECT>(this));
+		ar(cereal::base_class<GameObject>(this));
 	}*/
 };
 
 CEREAL_REGISTER_TYPE(FIELD)
-CEREAL_REGISTER_POLYMORPHIC_RELATION(GAME_OBJECT, FIELD)
+CEREAL_REGISTER_POLYMORPHIC_RELATION(GameObject, FIELD)
 
 #endif // !FIELD_H

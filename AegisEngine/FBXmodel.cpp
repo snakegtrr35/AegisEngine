@@ -15,10 +15,13 @@ static string directory;
 XMMATRIX aiMatrixToMatrix(aiMatrix4x4 matrix)
 {
 	XMMATRIX m;
-	m.r[0] = XMLoadFloat4(&Vector4(matrix.a1, matrix.a2, matrix.a3, matrix.a4));
-	m.r[1] = XMLoadFloat4(&Vector4(matrix.b1, matrix.b2, matrix.b3, matrix.b4));
-	m.r[2] = XMLoadFloat4(&Vector4(matrix.c1, matrix.c2, matrix.c3, matrix.c4));
-	m.r[3] = XMLoadFloat4(&Vector4(matrix.d1, matrix.d2, matrix.d3, matrix.d4));
+
+	Vector4 vec = Vector4(matrix.a1, matrix.a2, matrix.a3, matrix.a4);
+
+	m.r[0] = XMLoadFloat4(&vec);
+	m.r[1] = XMLoadFloat4( &(vec = Vector4(matrix.b1, matrix.b2, matrix.b3, matrix.b4)) );
+	m.r[2] = XMLoadFloat4( &(vec = Vector4(matrix.c1, matrix.c2, matrix.c3, matrix.c4)) );
+	m.r[3] = XMLoadFloat4( &(vec = Vector4(matrix.d1, matrix.d2, matrix.d3, matrix.d4)) );
 
 	return m;
 }

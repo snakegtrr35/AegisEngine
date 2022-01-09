@@ -1,6 +1,6 @@
 ﻿/**
- * @file Game_Object.h
- * @brief Game_Objectのヘッダーファイル
+ * @file GameObject.h
+ * @brief GameObjectのヘッダーファイル
  */
 
 #pragma once
@@ -16,7 +16,7 @@
  * @brief ゲームオブジェクトクラス
  * @details ゲームオブジェクトクラス
  */
-class GAME_OBJECT {
+class GameObject {
 private:
 	//! ゲームオブジェクトの名称一覧(静的なもの)
 	static unordered_set<string> Object_Name_Map;
@@ -65,13 +65,13 @@ public:
 	* @brief コンストラクタ
 	* @details 引数無しコンストラクタ
 	*/
-	GAME_OBJECT();
+	GameObject();
 
 	/**
 	* @brief デストラクタ
 	* @details デストラクタ
 	*/
-	virtual ~GAME_OBJECT();
+	virtual ~GameObject();
 
 	/**
 	* @brief 初期化関数

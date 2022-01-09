@@ -10,14 +10,14 @@
 
 #include	"Renderer.h"
 
-class GAME_OBJECT;
+class GameObject;
 class TEXTURE;
 
 /**
 * @brief ビルボードクラス
 * @details ビルボードクラス
 */
-class BILL_BOARD : public GAME_OBJECT {
+class BILL_BOARD : public GameObject {
 protected:
 
 	//! インデックスバッファ
@@ -103,7 +103,7 @@ public:
 };
 
 CEREAL_REGISTER_TYPE(BILL_BOARD)
-CEREAL_REGISTER_POLYMORPHIC_RELATION(GAME_OBJECT, BILL_BOARD)
+CEREAL_REGISTER_POLYMORPHIC_RELATION(GameObject, BILL_BOARD)
 
 //////////////////////////////////////////////////
 

@@ -45,7 +45,7 @@ void PLAYER::Init(void)
 
 		auto aabb = Get_Component()->Add_Component<BOUNDING_AABB>(scene->Get_Game_Object(this));
 
-		GAME_OBJECT::Init();
+		GameObject::Init();
 	}
 
 	HP = 100.0f;
@@ -69,7 +69,7 @@ void PLAYER::Draw(void)
 		//Model->Draw(matrix);
 	}
 
-	GAME_OBJECT::Draw();
+	GameObject::Draw();
 }
 
 void PLAYER::Draw_Shadow(void)
@@ -89,7 +89,7 @@ void PLAYER::Draw_Shadow(void)
 		Model->Draw_Shadow();
 	}
 
-	GAME_OBJECT::Draw_Shadow();
+	GameObject::Draw_Shadow();
 }
 
 void PLAYER::Draw_DPP(void)
@@ -147,7 +147,7 @@ void PLAYER::Update(float delta_time)
 		Create_Bullet(pos, front * 2.0f);
 	}
 
-	GAME_OBJECT::Update(delta_time);
+	GameObject::Update(delta_time);
 }
 
 void PLAYER::Uninit(void)

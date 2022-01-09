@@ -8,10 +8,10 @@
 #ifndef MESH_DOOM_H
 #define	MESH_DOOM_H
 
-class GAME_OBJECT;
+class GameObject;
 class TEXTURE;
 
-class MESH_DOOM :public GAME_OBJECT {
+class MESH_DOOM :public GameObject {
 private:
 	//! 半径
 	float								Radius;
@@ -79,26 +79,26 @@ public:
 	template<typename Archive>
 	void serialize(Archive& ar)
 	{
-		ar(cereal::base_class<GAME_OBJECT>(this));
+		ar(cereal::base_class<GameObject>(this));
 		ar(Texture);
 	}
 
 	//template<class Archive>
 	//void save(Archive& ar) const
 	//{
-	//	ar(cereal::base_class<GAME_OBJECT>(this));
+	//	ar(cereal::base_class<GameObject>(this));
 	//	ar(Texture);
 	//}
 
 	//template<class Archive>
 	//void load(Archive& ar)
 	//{
-	//	ar(cereal::base_class<GAME_OBJECT>(this));
+	//	ar(cereal::base_class<GameObject>(this));
 	//	ar(Texture);
 	//}
 };
 
 CEREAL_REGISTER_TYPE(MESH_DOOM)
-CEREAL_REGISTER_POLYMORPHIC_RELATION(GAME_OBJECT, MESH_DOOM)
+CEREAL_REGISTER_POLYMORPHIC_RELATION(GameObject, MESH_DOOM)
 
 #endif // !MESH_DOOM_H

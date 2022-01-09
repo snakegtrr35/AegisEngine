@@ -203,7 +203,7 @@ void BILL_BOARD::Draw()
 
 	render->Set_Shader();
 
-	GAME_OBJECT::Draw();
+	GameObject::Draw();
 }
 
 void BILL_BOARD::Draw_DPP()
@@ -303,7 +303,7 @@ void BILL_BOARD::Draw_DPP()
 
 void BILL_BOARD::Update(float delta_time)
 {
-	GAME_OBJECT::Update(delta_time);
+	GameObject::Update(delta_time);
 }
 
 void BILL_BOARD::Uninit()

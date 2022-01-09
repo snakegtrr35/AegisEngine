@@ -229,13 +229,15 @@ void CAudioClip::PlayLoop()
 						break;
 
 					case Aegis::AudioType::Ogg_Vorbis:
-						Info.Stream[0] = make_unique<Aegis::uint8[]>(Info.AvgBytesPerSec * 1.0f);
-						Info.Stream[1] = make_unique<Aegis::uint8[]>(Info.AvgBytesPerSec * 1.0f);
+						// 1秒分のデータを確保
+						Info.Stream[0] = make_unique<Aegis::uint8[]>(static_cast<Aegis::int64>(Info.AvgBytesPerSec * 1.0f));
+						Info.Stream[1] = make_unique<Aegis::uint8[]>(static_cast<Aegis::int64>(Info.AvgBytesPerSec * 1.0f));
 
 						Aegis::OggVorbis::reset(&Info);
 
-						Aegis::OggVorbis::Stream(&Info, (char*)Info.Stream[0].get(), Info.AvgBytesPerSec * 1.0f);
-						Aegis::OggVorbis::Stream(&Info, (char*)Info.Stream[1].get(), Info.AvgBytesPerSec * 1.0f);
+						// 1秒分のデータを読み込み
+						Aegis::OggVorbis::Stream(&Info, (char*)Info.Stream[0].get(), static_cast<Aegis::int64>(Info.AvgBytesPerSec * 1.0f));
+						Aegis::OggVorbis::Stream(&Info, (char*)Info.Stream[1].get(), static_cast<Aegis::int64>(Info.AvgBytesPerSec * 1.0f));
 
 						break;
 

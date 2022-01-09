@@ -5,14 +5,14 @@
 
 #include	"Renderer.h"
 
-class GAME_OBJECT;
+class GameObject;
 class TEXTURE;
 
 struct POLYGOM {
 	VERTEX_3D Vertex[4 * 6];
 };
 
-class POLYGON_3D : public GAME_OBJECT {
+class POLYGON_3D : public GameObject {
 private:
 	ComPtr<ID3D11Buffer> pVertexBuffer;		// 頂点バッファ
 	unique_ptr<TEXTURE> Texture;		// テクスチャ
@@ -50,24 +50,24 @@ public:
 	//template<typename Archive>
 	//void serialize(Archive& ar)
 	//{
-	//	ar(cereal::base_class<GAME_OBJECT>(this));
+	//	ar(cereal::base_class<GameObject>(this));
 	//	ar(Texture);
 	//}
 
 	/*template<class Archive>
 	void save(Archive& ar) const
 	{
-		ar(cereal::base_class<GAME_OBJECT>(this));
+		ar(cereal::base_class<GameObject>(this));
 	}
 
 	template<class Archive>
 	void load(Archive& ar)
 	{
-		ar(cereal::base_class<GAME_OBJECT>(this));
+		ar(cereal::base_class<GameObject>(this));
 	}*/
 };
 
 //CEREAL_REGISTER_TYPE(POLYGOM)
-//CEREAL_REGISTER_POLYMORPHIC_RELATION(GAME_OBJECT, POLYGOM)
+//CEREAL_REGISTER_POLYMORPHIC_RELATION(GameObject, POLYGOM)
 
 #endif // ! POLYGON_3D_H

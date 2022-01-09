@@ -234,7 +234,7 @@ void SPRITE_ANIMATION::Update(float delta_time)
 		FrameCount = 0.0f;
 	}
 
-	PatternCount = (int)(Age / WaitFrame);
+	PatternCount = WORD(Age / WaitFrame);
 
 	if ((Pattern_Max_X * Pattern_Max_Y) <= PatternCount)
 	{

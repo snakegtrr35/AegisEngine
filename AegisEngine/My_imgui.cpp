@@ -565,7 +565,7 @@ static string old_name;
 
 extern double fps;
 
-void EditTransform(const float32* cameraView, float32* cameraProjection, float32* matrix, bool enable, GAME_OBJECT* object);
+void EditTransform(const float32* cameraView, float32* cameraProjection, float32* matrix, bool enable, GameObject* object);
 
 #include	<dxgi1_4.h>
 extern DXGI_QUERY_VIDEO_MEMORY_INFO info;
@@ -841,7 +841,7 @@ void My_imgui::Draw(void)
 	// ドッキングスペース
 	ImGui::DockSpaceOverViewport(ImGui::GetMainViewport(), ImGuiDockNodeFlags_PassthruCentralNode);
 
-	static string s = GAME_OBJECT::Get_Object_Name_Map().begin()->c_str();
+	static string s = GameObject::Get_Object_Name_Map().begin()->c_str();
 
 	old_name = s;
 
@@ -912,7 +912,7 @@ void My_imgui::Draw(void)
 		{
 			ImGuiWindowFlags window_flag = ImGuiWindowFlags_NoTitleBar;
 			ImGuiTreeNodeFlags node_flags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_OpenOnDoubleClick;
-			auto map = GAME_OBJECT::Get_Object_Name_Map();
+			auto map = GameObject::Get_Object_Name_Map();
 
 			vector<string> Object_Name_List;
 			Object_Name_List.reserve(map.size());
@@ -1474,7 +1474,7 @@ void My_imgui::Draw_Inspector(const string& name)
 	}
 }
 
-void EditTransform(const float32* cameraView, float32* cameraProjection, float32* matrix, bool enable, GAME_OBJECT* object)
+void EditTransform(const float32* cameraView, float32* cameraProjection, float32* matrix, bool enable, GameObject* object)
 {
 	static ImGuizmo::OPERATION mCurrentGizmoOperation(ImGuizmo::TRANSLATE);
 	float32 snap[3] = { 0.001f, 0.001f, 0.001f };
@@ -2226,7 +2226,7 @@ void My_imgui::Light_Setting()
 	ImGui::End();
 }
 
-void My_imgui::Add_Component(GAME_OBJECT* object, const string s)
+void My_imgui::Add_Component(GameObject* object, const string s)
 {
 	ImGui::Text("%s", s.c_str());
 
@@ -2258,7 +2258,7 @@ void My_imgui::Add_Component(GAME_OBJECT* object, const string s)
 	}
 }
 
-void My_imgui::Delete_Component(GAME_OBJECT* object, const string s)
+void My_imgui::Delete_Component(GameObject* object, const string s)
 {
 	ImGui::Text("%s", s.c_str());
 

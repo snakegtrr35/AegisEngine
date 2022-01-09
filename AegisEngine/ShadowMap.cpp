@@ -353,7 +353,7 @@ void SHADOW_MAP::Set_LightPos(const Vector3& pos)
 	LightPos = pos;
 }
 
-void SHADOW_MAP::Set_Target(const weak_ptr<GAME_OBJECT>& object)
+void SHADOW_MAP::Set_Target(const weak_ptr<GameObject>& object)
 {
 	Target = object;
 }

@@ -4,7 +4,7 @@
 #include	"main.h"
 #include	"Renderer.h"
 
-class GAME_OBJECT;
+class GameObject;
 
 class SHADOW_MAP {
 private:
@@ -47,7 +47,7 @@ private:
 
 	ComPtr<ID3D11RenderTargetView> RenderTargetView;
 
-	weak_ptr<GAME_OBJECT> Target;
+	weak_ptr<GameObject> Target;
 
 	static UINT WIDTH;
 	static UINT HEIGHT;
@@ -89,7 +89,7 @@ public:
 		return ShaderResourceView.Get();
 	}
 
-	void Set_Target(const weak_ptr<GAME_OBJECT>& object);
+	void Set_Target(const weak_ptr<GameObject>& object);
 
 	const bool Target_Enable();
 

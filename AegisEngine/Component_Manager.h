@@ -16,7 +16,7 @@ class BOUNDING_AABB;
 class BOUNDING_OBB;
 class BOUNDING_SHPERE;
 
-class GAME_OBJECT;
+class GameObject;
 
 class COMPONENT_MANEGER {
 private:
@@ -29,7 +29,7 @@ public:
 
 	// リストへのコンポーネントの追加
 	template <typename T>
-	T* Add_Component(const shared_ptr<GAME_OBJECT>& owner)
+	T* Add_Component(const shared_ptr<GameObject>& owner)
 	{
 		//for (auto object = Conponent_List.begin(); object != Conponent_List.end(); object++)
 		for (const auto& object : Conponents)
@@ -53,7 +53,7 @@ public:
 
 	// リストへのコンポーネントの追加
 	template <typename T>
-	T* Add_Component(const weak_ptr<GAME_OBJECT>& owner)
+	T* Add_Component(const weak_ptr<GameObject>& owner)
 	{
 		//for (auto object = Conponent_List.begin(); object != Conponent_List.end(); object++)
 		for (const auto& object : Conponents)

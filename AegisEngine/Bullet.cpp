@@ -1,8 +1,13 @@
-﻿#include	"manager.h"
-#include	"Scene_Manager.h"
+﻿//#include	"manager.h"
+//#include	"Scene_Manager.h"
+//#include	"Scene.h"
+
+#include	"GameObject.h"
+#include	"Bullet.h"
+
+#include	"manager.h"
 #include	"Scene.h"
 
-#include	"Bullet.h"
 #include	"ModelLoader.h"
 #include	"Component_Manager.h"
 #include	"Bounding_Aabb.h"
@@ -13,8 +18,6 @@
 #include	"Billboard.h"
 
 #include	"audio_clip.h"
-
-#include	<sstream>
 
 using namespace Aegis;
 
@@ -58,7 +61,7 @@ void BULLET::Init()
 
 	sphere->Set_Scaling(Vector3(0.11f, 0.11f, 0.11f));
 
-	GAME_OBJECT::Init();
+	GameObject::Init();
 }
 
 void BULLET::Draw()
@@ -68,7 +71,7 @@ void BULLET::Draw()
 
 	Model->Draw();
 
-	GAME_OBJECT::Draw();
+	GameObject::Draw();
 }
 
 void BULLET::Draw_Shadow()
@@ -78,7 +81,7 @@ void BULLET::Draw_Shadow()
 
 	Model->Draw_Shadow();
 
-	GAME_OBJECT::Draw_Shadow();
+	GameObject::Draw_Shadow();
 }
 
 void BULLET::Draw_DPP()
@@ -211,7 +214,7 @@ void BULLET::Update(float delta_time)
 	Model->Get_Transform().Set_Rotation(Get_Transform().Get_Rotation());
 	Model->Get_Transform().Set_Scaling(Get_Transform().Get_Scaling());
 
-	GAME_OBJECT::Update(delta_time);
+	GameObject::Update(delta_time);
 }
 
 void BULLET::Uninit()

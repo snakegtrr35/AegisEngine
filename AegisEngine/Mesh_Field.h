@@ -10,13 +10,13 @@
 
 #include	"Renderer.h"
 
-class GAME_OBJECT;
+class GameObject;
 class TEXTURE;
 
 //==============================
 //  フィールドクラス
 //==============================
-class MESH_FIELD : public GAME_OBJECT {
+class MESH_FIELD : public GameObject {
 private:
 
 	//! グリッドサイズ
@@ -108,32 +108,32 @@ public:
 	template<typename Archive>
 	void serialize(Archive& ar)
 	{
-		ar(cereal::base_class<GAME_OBJECT>(this));
+		ar(cereal::base_class<GameObject>(this));
 		ar(Texture);
 	}
 
 	//template<class Archive>
 	//void save(Archive& ar) const
 	//{
-	//	ar(cereal::base_class<GAME_OBJECT>(this));
+	//	ar(cereal::base_class<GameObject>(this));
 	//	ar(Texture);
 	//}
 
 	//template<class Archive>
 	//void load(Archive& ar)
 	//{
-	//	ar(cereal::base_class<GAME_OBJECT>(this));
+	//	ar(cereal::base_class<GameObject>(this));
 	//	ar(Texture);
 	//}
 };
 
 CEREAL_REGISTER_TYPE(MESH_FIELD)
-CEREAL_REGISTER_POLYMORPHIC_RELATION(GAME_OBJECT, MESH_FIELD)
+CEREAL_REGISTER_POLYMORPHIC_RELATION(GameObject, MESH_FIELD)
 
 //==============================
 //  ウォールクラス
 //==============================
-class MESH_WALL :public GAME_OBJECT {
+class MESH_WALL :public GameObject {
 private:
 	Aegis::Vector3		GridSize;
 	Aegis::Int2			GridNum;

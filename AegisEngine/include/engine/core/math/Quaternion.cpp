@@ -1,6 +1,5 @@
 ﻿#include "Quaternion.h"
 #include "Vector3.h"
-#include "MathDef.h"
 
 namespace Aegis
 {
@@ -12,6 +11,15 @@ namespace Aegis
 		y = _y;
 		z = _z;
 		w = _w;
+	}
+
+	Quaternion Quaternion::RotateAxis(const Vector3& axis, const float32 angle)
+	{
+		float32 scalar = sin(Math::DegreeToRadian(angle) / 2.0f);
+		x = axis.x * scalar;
+		y = axis.y * scalar;
+		z = axis.z * scalar;
+		w = cos(angle / 2.0f);
 	}
 
 	Quaternion Quaternion::Lerp(const Quaternion& a, const Quaternion& b, float32 t)

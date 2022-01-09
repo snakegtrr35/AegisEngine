@@ -3,7 +3,7 @@
 #ifndef PLAYER_H
 #define PLAYER_H
 
-class GAME_OBJECT;
+class GameObject;
 
 class CMODEL;
 class FBXmodel;
@@ -11,7 +11,7 @@ class FBXmodel;
 class BULLET;
 
 
-class PLAYER : public GAME_OBJECT {
+class PLAYER : public GameObject {
 private:
 	unique_ptr<CMODEL> Model;
 	//FBXmodel* Model = nullptr;
@@ -48,23 +48,23 @@ public:
 	template<typename Archive>
 	void serialize(Archive& ar)
 	{
-		ar(cereal::base_class<GAME_OBJECT>(this));
+		ar(cereal::base_class<GameObject>(this));
 	}
 
 	/*template<class Archive>
 	void save(Archive& ar) const
 	{
-		ar(cereal::base_class<GAME_OBJECT>(this));
+		ar(cereal::base_class<GameObject>(this));
 	}
 
 	template<class Archive>
 	void load(Archive& ar)
 	{
-		ar(cereal::base_class<GAME_OBJECT>(this));
+		ar(cereal::base_class<GameObject>(this));
 	}*/
 };
 
 CEREAL_REGISTER_TYPE(PLAYER)
-CEREAL_REGISTER_POLYMORPHIC_RELATION(GAME_OBJECT, PLAYER)
+CEREAL_REGISTER_POLYMORPHIC_RELATION(GameObject, PLAYER)
 
 #endif // !PLAYER_H

@@ -41,7 +41,7 @@ void COMPONENT::Draw_Inspector()
 	}
 }
 
-void COMPONENT::Set_Owner(const weak_ptr<GAME_OBJECT>& owner)
+void COMPONENT::Set_Owner(const weak_ptr<GameObject>& owner)
 {
 	Owner = owner;
 }

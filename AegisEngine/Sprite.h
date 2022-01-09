@@ -45,7 +45,7 @@ struct CHILD_DATE {
 * @brief スプライトクラス
 * @details スプライトクラス
 */
-class SPRITE : public GAME_OBJECT {
+class SPRITE : public GameObject {
 private:
 protected:
 	//! 頂点バッファ
@@ -344,7 +344,7 @@ public:
 	template<typename Archive>
 	void serialize(Archive& ar)
 	{
-		ar(cereal::base_class<GAME_OBJECT>(this));
+		ar(cereal::base_class<GameObject>(this));
 		ar(Children);
 		ar(Texture);
 		ar(SPRITE::Position);
@@ -356,7 +356,7 @@ public:
 	//template<class Archive>
 	//void save(Archive& ar) const
 	//{
-	//	ar(cereal::base_class<GAME_OBJECT>(this));
+	//	ar(cereal::base_class<GameObject>(this));
 	//	ar(Texture);
 	//	ar(SPRITE::Position);
 	//	ar(Size);
@@ -366,7 +366,7 @@ public:
 	//template<class Archive>
 	//void load(Archive& ar)
 	//{
-	//	ar(cereal::base_class<GAME_OBJECT>(this));
+	//	ar(cereal::base_class<GameObject>(this));
 	//	ar(Texture);
 	//	ar(SPRITE::Position);
 	//	ar(Size);
@@ -377,6 +377,6 @@ public:
 };
 
 CEREAL_REGISTER_TYPE(SPRITE)
-CEREAL_REGISTER_POLYMORPHIC_RELATION(GAME_OBJECT, SPRITE)
+CEREAL_REGISTER_POLYMORPHIC_RELATION(GameObject, SPRITE)
 
 #endif // ! SPRITE_H

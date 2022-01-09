@@ -15,7 +15,7 @@ namespace ImGui {
 }
 
 class COMPONENT;
-class GAME_OBJECT;
+class GameObject;
 
 class My_imgui{
 private:
@@ -56,9 +56,9 @@ private:
 
 	void Draw_Components(const vector<COMPONENT*>& components);
 
-	void Add_Component(GAME_OBJECT* object, const string s);
+	void Add_Component(GameObject* object, const string s);
 
-	void Delete_Component(GAME_OBJECT* object, const string s);
+	void Delete_Component(GameObject* object, const string s);
 
 public:
 	My_imgui() : show_demo_window(false), show_another_window(false), show_default_window(false),

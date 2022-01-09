@@ -7,7 +7,7 @@
 
 class SPRITE_ANIMATION;
 
-class SCORE : public GAME_OBJECT {
+class SCORE : public GameObject {
 private:
 	SPRITE_ANIMATION* Number;
 
@@ -44,12 +44,12 @@ public:
 	template<typename Archive>
 	void serialize(Archive& ar)
 	{
-		ar(cereal::base_class<GAME_OBJECT>(this));
+		ar(cereal::base_class<GameObject>(this));
 	}
 };
 
 
 CEREAL_REGISTER_TYPE(SCORE)
-CEREAL_REGISTER_POLYMORPHIC_RELATION(GAME_OBJECT, SCORE)
+CEREAL_REGISTER_POLYMORPHIC_RELATION(GameObject, SCORE)
 
 #endif // !SCORE_H

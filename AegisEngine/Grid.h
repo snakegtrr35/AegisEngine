@@ -6,7 +6,7 @@
 #include	"Renderer.h"
 #include	"GameObject.h"
 
-class GRID : public GAME_OBJECT {
+class GRID : public GameObject {
 private:
 	ComPtr<ID3D11Buffer> pVertexBuffer;	// 頂点バッファ
 

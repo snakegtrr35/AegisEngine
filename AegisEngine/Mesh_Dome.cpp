@@ -125,7 +125,7 @@ void MESH_DOOM::Uninit()
 //***********************************************************************************************
 void MESH_DOOM::Update(float delta_time)
 {
-	GAME_OBJECT::Update(delta_time);
+	GameObject::Update(delta_time);
 }
 
 //***********************************************************************************************
@@ -181,7 +181,7 @@ void MESH_DOOM::Draw()
 	// トポロジ設定
 	render->SetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-	GAME_OBJECT::Draw();
+	GameObject::Draw();
 }
 
 void MESH_DOOM::Draw_Shadow()
@@ -230,7 +230,7 @@ void MESH_DOOM::Draw_Shadow()
 	// トポロジ設定
 	render->SetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-	GAME_OBJECT::Draw_Shadow();
+	GameObject::Draw_Shadow();
 }
 
 void MESH_DOOM::Draw_DPP()

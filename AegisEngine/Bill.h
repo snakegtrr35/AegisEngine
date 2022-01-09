@@ -3,10 +3,10 @@
 #ifndef BILL_H
 #define BILL_H
 
-class GAME_OBJECT;
+class GameObject;
 class CMODEL;
 
-class BILL : public GAME_OBJECT {
+class BILL : public GameObject {
 private:
 
 	unique_ptr<CMODEL> Model;
@@ -25,12 +25,12 @@ public:
 	template<typename Archive>
 	void serialize(Archive& ar)
 	{
-		ar(cereal::base_class<GAME_OBJECT>(this));
+		ar(cereal::base_class<GameObject>(this));
 		//ar(Texture);
 	}
 };
 
 CEREAL_REGISTER_TYPE(BILL)
-CEREAL_REGISTER_POLYMORPHIC_RELATION(GAME_OBJECT, BILL)
+CEREAL_REGISTER_POLYMORPHIC_RELATION(GameObject, BILL)
 
 #endif // !BILL_H

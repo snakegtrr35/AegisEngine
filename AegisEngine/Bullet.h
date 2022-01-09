@@ -5,10 +5,10 @@
 
 //#include	"GameObject.h"
 
-class GAME_OBJECT;
+class GameObject;
 class CMODEL;
 
-class BULLET : public GAME_OBJECT {
+class BULLET : public GameObject {
 protected:
 	Aegis::Vector3 MoveVector;
 	unique_ptr<CMODEL> Model;
@@ -35,6 +35,6 @@ public:
 };
 
 CEREAL_REGISTER_TYPE(BULLET)
-CEREAL_REGISTER_POLYMORPHIC_RELATION(GAME_OBJECT, BULLET)
+CEREAL_REGISTER_POLYMORPHIC_RELATION(GameObject, BULLET)
 
 #endif // !ENEMY_H

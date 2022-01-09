@@ -1,5 +1,4 @@
 ﻿#include	"Scene_Manager.h"
-#include	"Scene.h"
 
 unique_ptr<SCENE> SCENE_MANAGER::pScene;
 bool SCENE_MANAGER::Scene_Change_Enable = false;

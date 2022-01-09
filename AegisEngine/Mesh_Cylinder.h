@@ -10,9 +10,9 @@
 
 #include	"texture.h"
 
-class GAME_OBJECT;
+class GameObject;
 
-class MESH_CYlLINDER : public GAME_OBJECT {
+class MESH_CYlLINDER : public GameObject {
 private:
 	int				CylinderLength;
 	float			Radius;
@@ -76,26 +76,26 @@ public:
 	template<typename Archive>
 	void serialize(Archive& ar)
 	{
-		ar(cereal::base_class<GAME_OBJECT>(this));
+		ar(cereal::base_class<GameObject>(this));
 		ar(Texture);
 	}
 
 	//template<class Archive>
 	//void save(Archive& ar) const
 	//{
-	//	ar(cereal::base_class<GAME_OBJECT>(this));
+	//	ar(cereal::base_class<GameObject>(this));
 	//	ar(Texture);
 	//}
 
 	//template<class Archive>
 	//void load(Archive& ar)
 	//{
-	//	ar(cereal::base_class<GAME_OBJECT>(this));
+	//	ar(cereal::base_class<GameObject>(this));
 	//	ar(Texture);
 	//}
 };
 
 CEREAL_REGISTER_TYPE(MESH_CYlLINDER)
-CEREAL_REGISTER_POLYMORPHIC_RELATION(GAME_OBJECT, MESH_CYlLINDER)
+CEREAL_REGISTER_POLYMORPHIC_RELATION(GameObject, MESH_CYlLINDER)
 
 #endif // !MESH_CYLINDER_H

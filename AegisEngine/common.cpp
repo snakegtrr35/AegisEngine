@@ -1,7 +1,7 @@
 ﻿#include	"common.h"
 #include	<locale.h>
 
-std::wstring stringTowstring(const std::string& font)
+std::wstring stringTowstring(const std::string_view font)
 {
 	//ロケール指定
 	setlocale(LC_ALL, "japanese");
@@ -12,7 +12,7 @@ std::wstring stringTowstring(const std::string& font)
 
 	size_t wLen = 0;
 
-	mbstowcs_s(&wLen, StrW.get(), length * 2, font.c_str(), _TRUNCATE);
+	mbstowcs_s(&wLen, StrW.get(), length * 2, font.data(), _TRUNCATE);
 
 	wstring s(StrW.get());
 
@@ -21,7 +21,7 @@ std::wstring stringTowstring(const std::string& font)
 	return s;
 }
 
-std::string wstringTostring(const std::wstring& font)
+std::string wstringTostring(const std::wstring_view font)
 {
 	//ロケール指定
 	setlocale(LC_ALL, "japanese");
@@ -32,7 +32,7 @@ std::string wstringTostring(const std::wstring& font)
 
 	size_t Len = 0;
 
-	wcstombs_s(&Len, Str.get(), length * 2, font.c_str(), length * 2);
+	wcstombs_s(&Len, Str.get(), length * 2, font.data(), length * 2);
 
 	string s(Str.get());
 
@@ -54,12 +54,12 @@ void ExtratNum(std::string& str)
 }
 
 #ifdef UNICODE
-void Erroer_Message(const std::wstring& str1, const std::wstring& str2)
+void Erroer_Message(const std::wstring_view str1, const std::wstring_view str2)
 {
-	MessageBox(GetWindow(), str1.c_str(), str2.c_str(), MB_OK | MB_ICONWARNING);
+	MessageBox(GetWindow(), str1.data(), str2.data(), MB_OK | MB_ICONWARNING);
 }
 
-void Erroer_Message(const std::string& str1, const std::string& str2)
+void Erroer_Message(const std::string_view str1, const std::string_view str2)
 {
 	std::wstring str01, str02;
 
@@ -69,31 +69,24 @@ void Erroer_Message(const std::string& str1, const std::string& str2)
 	MessageBox(GetWindow(), str01.c_str(), str02.c_str(), MB_OK | MB_ICONWARNING);
 }
 #else
-void Erroer_Message(const std::string& str1, const std::string& str2)
+void Erroer_Message(const std::string_view str1, const std::string_view str2)
 {
-	MessageBox(GetWindow(), str1.c_str(), str2.c_str(), MB_OK | MB_ICONWARNING);
+	MessageBox(GetWindow(), str1.data(), str2.data(), MB_OK | MB_ICONWARNING);
 }
 #endif // !UNICODE
 
-string Replace_String(string& replacedStr, const string& from, const string& to)
+string Replace_String(const string_view replacedStr, const string_view from, const string_view to)
 {
 	if (replacedStr.empty() || from.empty() || to.empty())
 	{
-		return replacedStr;
+		return std::string(replacedStr);
 	}
 
-	if (from.size() != to.size())
+	std::string replaceStr = std::string(replacedStr);
+	std::string::size_type pos = 0;
+	while (std::string::npos != (pos = replaceStr.find(from, pos)))
 	{
-		return replacedStr;
+		replaceStr.replace(pos, from.length(), to);
+		pos += to.length();
 	}
-
-	const UINT pos = (UINT)replacedStr.find(from);
-	const UINT len = (UINT)from.length();
-
-	if (replacedStr.size() < pos)
-	{
-		return replacedStr;
-	}
-
-	return replacedStr.replace(pos, len, to);
 }

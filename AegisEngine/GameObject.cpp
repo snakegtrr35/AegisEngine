@@ -4,48 +4,48 @@
 
 #include	"GameObject.h"
 
-unordered_set<string> GAME_OBJECT::Object_Name_Map;
+unordered_set<string> GameObject::Object_Name_Map;
 
-GAME_OBJECT::GAME_OBJECT() : Object_Name("none"), DestroyFlag(false), Uuid(Aegis::Uuid::GetUuid())
+GameObject::GameObject() : Object_Name("none"), DestroyFlag(false), Uuid(Aegis::Uuid::GetUuid())
 {
 	Component.reset(new COMPONENT_MANEGER());
 }
 
-GAME_OBJECT::~GAME_OBJECT()
+GameObject::~GameObject()
 {
 	Object_Name_Map.erase(Object_Name);
 
 	Component.reset();
 };
 
-void GAME_OBJECT::Init()
+void GameObject::Init()
 {
 	Component->Init();
 }
 
-void GAME_OBJECT::Draw()
+void GameObject::Draw()
 {
 	Component->Draw();
 }
 
-void GAME_OBJECT::Draw_Shadow() {}
+void GameObject::Draw_Shadow() {}
 
-void GAME_OBJECT::Update(float delta_time)
+void GameObject::Update(float delta_time)
 {
 	Component->Update(delta_time);
 }
 
-void GAME_OBJECT::Set_Destroy()
+void GameObject::Set_Destroy()
 {
 	DestroyFlag = true;
 };
 
-bool GAME_OBJECT::Destroy()
+bool GameObject::Destroy()
 {
 	return DestroyFlag;
 };
 
-void GAME_OBJECT::Set_Object_Name(const string& name)
+void GameObject::Set_Object_Name(const string& name)
 {
 #ifdef _DEBUG
 	if (Object_Name_Map.emplace(name).second)

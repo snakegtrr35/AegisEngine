@@ -381,7 +381,7 @@ void FIELD::Draw()
 	render->Set_Shader();
 	render->Set_InputLayout();//
 
-	GAME_OBJECT::Draw();
+	GameObject::Draw();
 }
 
 void FIELD::Draw_Shadow()
@@ -421,7 +421,7 @@ void FIELD::Draw_Shadow()
 
 	render->DrawIndexed(6, 0, 0);
 
-	GAME_OBJECT::Draw_Shadow();
+	GameObject::Draw_Shadow();
 }
 
 void FIELD::Draw_DPP()
@@ -457,7 +457,7 @@ void FIELD::Draw_DPP()
 
 void FIELD::Update(float delta_time)
 {
-	GAME_OBJECT::Update(delta_time);
+	GameObject::Update(delta_time);
 }
 
 

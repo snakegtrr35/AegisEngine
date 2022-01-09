@@ -67,7 +67,7 @@ void ENEMY::Init()
 		}
 	}
 
-	GAME_OBJECT::Init();
+	GameObject::Init();
 }
 
 void ENEMY::Draw()
@@ -77,7 +77,7 @@ void ENEMY::Draw()
 
 	Model->Draw();
 
-	GAME_OBJECT::Draw();
+	GameObject::Draw();
 }
 
 void ENEMY::Draw_Shadow()
@@ -87,7 +87,7 @@ void ENEMY::Draw_Shadow()
 
 	Model->Draw_Shadow();
 
-	GAME_OBJECT::Draw_Shadow();
+	GameObject::Draw_Shadow();
 }
 
 void ENEMY::Draw_DPP()
@@ -196,7 +196,7 @@ void ENEMY::Update(float delta_time)
 	Model->Get_Transform().Set_Scaling(Get_Transform().Get_Scaling());
 
 
-	GAME_OBJECT::Update(delta_time);
+	GameObject::Update(delta_time);
 }
 
 void ENEMY::Uninit(void)

@@ -110,7 +110,7 @@ void CCamera::Update(float delta_time)
 				angle = -2.0f;
 			}
 
-			Aegis::Quaternion q = RotateAxis(Aegis::Math::XMVECTORToVector3(Right), angle);
+			Aegis::Quaternion q = Aegis::quaternion::RotateAxis(Aegis::Math::XMVECTORToVector3(Right), angle);
 
 			Aegis::Vector3 f = Aegis::Vector3::Transform(Aegis::Math::XMVECTORToVector3(Front), q);
 
@@ -138,9 +138,9 @@ void CCamera::Update(float delta_time)
 				angle = -2.0f;
 			}
 
-			Aegis::Quaternion q = RotateAxis(Aegis::Math::XMVECTORToVector3(Up), angle);
+			Aegis::Quaternion q = Aegis::quaternion::RotateAxis(Aegis::Math::XMVECTORToVector3(Up), angle);
 
-			Aegis::Vector3 f = Aegis::Vector3::Transform(Aegis::Math::XMVECTORToVector3(Front), q);
+			Aegis::Vector3 f = Vector3::Transform(Aegis::Math::XMVECTORToVector3(Front), q);
 
 			At = Pos + Front * Lenght_Z;//
 

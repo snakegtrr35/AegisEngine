@@ -78,18 +78,18 @@ struct Uninit_Array {
 	}
 };
 
-std::wstring stringTowstring(const std::string& font);
-std::string wstringTostring(const std::wstring& font);
+std::wstring stringTowstring(const std::string_view font);
+std::string wstringTostring(const std::wstring_view font);
 
 void ExtratNum(std::string& str);
 
-std::string Replace_String(std::string& replacedStr, const std::string& from, const std::string& to);
+std::string Replace_String(std::string_view replacedStr, const std::string_view from, const std::string_view to);
 
 #ifdef UNICODE
-void Erroer_Message(const std::wstring& str1, const std::wstring& str2 = std::wstring(L"エラーメッセージ"));
-void Erroer_Message(const std::string& str1, const std::string& str2 = std::string("エラーメッセージ"));
+void Erroer_Message(const std::wstring_view str1, const std::wstring_view str2 = std::wstring_view(L"エラーメッセージ"));
+void Erroer_Message(const std::string_view str1, const std::string_view str2 = std::string_view("エラーメッセージ"));
 #else
-void Erroer_Message(const std::string& str1, const std::string& str2 = std::string("エラーメッセージ"));
+void Erroer_Message(const std::string_view str1, const std::string_view str2 = std::string("エラーメッセージ"));
 #endif // !UNICODE
 
 #endif // !COMMON_H
