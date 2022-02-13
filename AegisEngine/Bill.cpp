@@ -22,7 +22,7 @@ BILL::~BILL()
 
 void BILL::Init()
 {
-	Model = make_unique<CMODEL>();
+	Model = std::make_unique<CMODEL>();
 
 	Model->Load("asset/model/bill01.fbx");
 

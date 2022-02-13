@@ -3,7 +3,7 @@
 #ifndef _INCLEDE_AUDIO_DIFINE_H_
 #define _INCLEDE_AUDIO_DIFINE_H_
 
-namespace Aegis
+namespace aegis
 {
 	enum class AudioType : uint8
 	{
@@ -34,7 +34,7 @@ namespace Aegis
 		//! オーディオタイプ
 		AudioType Type = AudioType::None;
 
-		std::array<std::unique_ptr<uint8[]>, 2> Stream;
+		array<std::unique_ptr<uint8[]>, 2> Stream;
 		uint32 submitCount = 0;
 	};
 

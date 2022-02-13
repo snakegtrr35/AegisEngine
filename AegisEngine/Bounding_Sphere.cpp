@@ -5,7 +5,7 @@
 #include	"Scene.h"
 #include	"ShadowMap.h"
 
-using namespace Aegis;
+using namespace aegis;
 
 void BOUNDING_SHPERE::Init()
 {
@@ -27,7 +27,7 @@ void BOUNDING_SHPERE::Init()
 	// 頂点バッファの設定
 	if (nullptr == pVertexBuffer)
 	{
-		const UINT cnt = 20 * max((UINT)1, (UINT)Radius);
+		const UINT cnt = 20 * std::max((UINT)1, (UINT)Radius);
 
 		vector<VERTEX_3D> vertex;
 		vertex.resize(cnt);
@@ -62,7 +62,7 @@ void BOUNDING_SHPERE::Init()
 	// インデックスバッファの設定
 	if (nullptr == pIndexBuffer)
 	{
-		const UINT cnt = 20 * max((UINT)1, (UINT)Radius);
+		const UINT cnt = 20 * std::max((UINT)1, (UINT)Radius);
 
 		IndexNum = cnt * 2;
 		vector<WORD> index_array;
@@ -151,7 +151,7 @@ void BOUNDING_SHPERE::Uninit()
 
 void BOUNDING_SHPERE::Set_Radius(const float radius)
 {
-	Radius = max(radius, 0.01f);
+	Radius = std::max(radius, 0.01f);
 
 	//Create_Buffer();
 }
@@ -205,7 +205,7 @@ void BOUNDING_SHPERE::OverWrite()
 
 	// 頂点バッファの設定
 	{
-		const UINT cnt = 20 * max((UINT)1, (UINT)Radius);
+		const UINT cnt = 20 * std::max((UINT)1, (UINT)Radius);
 
 		vector<VERTEX_3D> vertex;
 		vertex.reserve(cnt);
@@ -244,7 +244,7 @@ void BOUNDING_SHPERE::OverWrite()
 
 	// インデックスバッファの設定
 	{
-		const UINT cnt = 20 * max((UINT)1, (UINT)Radius);
+		const UINT cnt = 20 * std::max((UINT)1, (UINT)Radius);
 
 		IndexNum = cnt * 2;
 		vector<WORD> index_array;

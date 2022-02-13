@@ -5,7 +5,7 @@
 
 #undef DELETE
 
-namespace Aegis
+namespace aegis
 {
 	enum class KeyCode : std::uint8_t
 	{

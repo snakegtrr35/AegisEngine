@@ -5,7 +5,7 @@
 #include	"Scene.h"
 #include	"ShadowMap.h"
 
-using namespace Aegis;
+using namespace aegis;
 
 BOUNDING_OBB::~BOUNDING_OBB()
 {

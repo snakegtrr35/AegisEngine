@@ -5,7 +5,7 @@
 
 #include "AudioDefine.h"
 
-namespace Aegis
+namespace aegis
 {
 	namespace Mp3
 	{

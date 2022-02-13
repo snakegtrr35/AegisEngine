@@ -9,14 +9,14 @@
 #include	"Scene.h"
 #include	"ShadowMap.h"
 
-using namespace Aegis;
+using namespace aegis;
 
 ComPtr<ID3D11Buffer> BILL_BOARD::pIndexBuffer = nullptr;		// インデックスバッファ
 
 BILL_BOARD::BILL_BOARD() : pVertexBuffer(nullptr), Texture(nullptr), WH(Vector2(1.0f, 1.0f))
 {
 	// テクスチャの設定
-	Texture = make_unique<TEXTURE>();
+	Texture = std::make_unique<TEXTURE>();
 }
 
 //==============================
@@ -29,7 +29,7 @@ BILL_BOARD::BILL_BOARD(Vector3 position, Vector2 wh) : pVertexBuffer(nullptr), T
 	Get_Transform().Set_Position(position);
 
 	// テクスチャの設定
-	Texture = make_unique<TEXTURE>();
+	Texture = std::make_unique<TEXTURE>();
 }
 
 BILL_BOARD::~BILL_BOARD()
@@ -318,7 +318,7 @@ void BILL_BOARD::SetWH(const Vector2& wh)
 };
 
 // テクスチャの設定
-void BILL_BOARD::SetTexture(const string& const file_name)
+void BILL_BOARD::SetTexture(const std::string& const file_name)
 {
 	Texture->Set_Texture_Name(file_name);
 };

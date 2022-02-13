@@ -1,15 +1,15 @@
 ﻿#include	"Scene_Manager.h"
 
-unique_ptr<SCENE> SCENE_MANAGER::pScene;
+std::unique_ptr<SCENE> SCENE_MANAGER::pScene;
 bool SCENE_MANAGER::Scene_Change_Enable = false;
 
 void SCENE_MANAGER::Init()
 {
 #ifdef _DEBUG
 	{
-		string name("GameInstance");
+		std::string name("GameInstance");
 
-		ifstream file(name + ".dat", std::ios::binary);
+		std::ifstream file(name + ".dat", std::ios::binary);
 
 		bool flag = file.is_open();
 
@@ -50,9 +50,9 @@ void SCENE_MANAGER::Uninit()
 
 #ifdef _DEBUG
 	{
-		string name("GameInstance");
+		std::string name("GameInstance");
 
-		ofstream file(name + ".dat", std::ios::binary);
+		std::ofstream file(name + ".dat", std::ios::binary);
 
 		cereal::BinaryOutputArchive archive(file);
 		archive(*this);
@@ -60,7 +60,7 @@ void SCENE_MANAGER::Uninit()
 #endif // _DEBUG
 }
 
-void SCENE_MANAGER::Delete_GameInstance(const string& name)
+void SCENE_MANAGER::Delete_GameInstance(const std::string& name)
 {
 	GamaInstance.erase(name);
 }

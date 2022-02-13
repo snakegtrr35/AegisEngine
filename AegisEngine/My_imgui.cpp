@@ -38,7 +38,7 @@ ImVec2 operator-(const ImVec2& lhs, const ImVec2& rhs) { return ImVec2(lhs.x - r
 
 #include	"Player.h"
 
-using namespace Aegis;
+using namespace aegis;
 
 static const ImWchar glyphRangesJapanese[] = {
 	0x0020, 0x007E, 0x00A2, 0x00A3, 0x00A7, 0x00A8, 0x00AC, 0x00AC, 0x00B0, 0x00B1, 0x00B4, 0x00B4, 0x00B6, 0x00B6, 0x00D7, 0x00D7,
@@ -561,7 +561,7 @@ static const ImWchar glyphRangesJapanese[] = {
 
 extern float32 radius;
 
-static string old_name;
+static std::string old_name;
 
 extern double fps;
 
@@ -577,20 +577,20 @@ template <typename ... Args>
 std::string format(const std::string& fmt, Args ... args)
 {
 	size_t len = std::snprintf(nullptr, 0, fmt.c_str(), args ...);
-	std::vector<char> buf(len + 1);
+	aegis::vector<char> buf(len + 1);
 	std::snprintf(&buf[0], len + 1, fmt.c_str(), args ...);
 	return std::string(&buf[0]/*, &buf[0] + len*/);
 }
 
 void printFile(const std::string& path)
 {
-	wstring wstr;
-	string str;
+	std::wstring wstr;
+	std::string str;
 
 	for (const std::filesystem::directory_entry& i : std::filesystem::directory_iterator(path)) {	
 		if (i.is_directory()) {
 
-			//wstr = stringTowstring(i.path().filename().string());
+			//wstr = stringTowstring(i.path().filename().std::string());
 
 			str = format((char*)u8"%s %s", ICON_FA_FOLDER, i.path().filename().string().c_str());
 
@@ -841,7 +841,7 @@ void My_imgui::Draw(void)
 	// ドッキングスペース
 	ImGui::DockSpaceOverViewport(ImGui::GetMainViewport(), ImGuiDockNodeFlags_PassthruCentralNode);
 
-	static string s = GameObject::Get_Object_Name_Map().begin()->c_str();
+	static std::string s = GameObject::Get_Object_Name_Map().begin()->c_str();
 
 	old_name = s;
 
@@ -914,7 +914,7 @@ void My_imgui::Draw(void)
 			ImGuiTreeNodeFlags node_flags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_OpenOnDoubleClick;
 			auto map = GameObject::Get_Object_Name_Map();
 
-			vector<string> Object_Name_List;
+			aegis::vector<std::string> Object_Name_List;
 			Object_Name_List.reserve(map.size());
 
 			for (auto object : map)
@@ -933,7 +933,7 @@ void My_imgui::Draw(void)
 				for (auto object : Object_Name_List)
 				{
 					// マウスボタン : 0 = left, 1 = right, 2 = middle + extras
-					string str = object.c_str();
+					std::string str = object.c_str();
 
 					node_flags |= /*ImGuiTreeNodeFlags_Leaf |*/ ImGuiTreeNodeFlags_NoTreePushOnOpen; // ImGuiTreeNodeFlags_Bullet
 					ImGui::TreeNodeEx((void*)(intptr_t)i, node_flags, str.c_str());
@@ -964,7 +964,7 @@ void My_imgui::Draw(void)
 	}
 
 	{
-		const weak_ptr<DEBUG_CAMERA> camera = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
+		const std::weak_ptr<DEBUG_CAMERA> camera = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
 
 		ImGuiWindowFlags window_flags = ImGuiWindowFlags_NoResize;
 
@@ -1051,7 +1051,7 @@ void My_imgui::Draw(void)
 
 	// Drag Test
 	{
-		static std::vector<std::string> names = { "Bobby", "Beatrice", "Betty", "Brianna", "Barry", "Bernard", "Bibi", "Blaine", "Bryn" };
+		static aegis::vector<std::string> names = { "Bobby", "Beatrice", "Betty", "Brianna", "Barry", "Bernard", "Bibi", "Blaine", "Bryn" };
 
 		static int32 cnt = 0;
 
@@ -1077,12 +1077,12 @@ void My_imgui::Draw(void)
 
 					size_t pos = tex_file->second.Path.find_last_of("/");
 
-					string tex_name = tex_file->second.Path.substr(pos + 1);
+					std::string tex_name = tex_file->second.Path.substr(pos + 1);
 
 					ImGui::BeginGroup();
 					{
 						{
-							auto hash = std::hash<string>()(tex_name);
+							auto hash = std::hash<std::string>()(tex_name);
 
 							ImTextureID image = TEXTURE_MANEGER::Get_Instance()->GetShaderResourceView(hash);
 
@@ -1138,7 +1138,7 @@ void My_imgui::Draw(void)
 
 		if (ImGui::Begin("Drop Test"))
 		{
-			static std::vector<std::string> names_temp = { "Bobby", "Beatrice", "Betty", "Brianna", "Barry", "Bernard", "Bibi", "Blaine", "Bryn" };
+			static aegis::vector<std::string> names_temp = { "Bobby", "Beatrice", "Betty", "Brianna", "Barry", "Bernard", "Bibi", "Blaine", "Bryn" };
 
 			enum Mode
 			{
@@ -1168,13 +1168,13 @@ void My_imgui::Draw(void)
 						//IM_ASSERT(payload->DataSize == sizeof(char*));
 						//int32 payload_n = *(const int32*)payload->Data;
 
-						string str = reinterpret_cast<char*>(payload->Data);
+						std::string str = reinterpret_cast<char*>(payload->Data);
 
 						if (mode == Mode_Copy)
 						{
 							size_t pos = start->second.Path.find_last_of("/");
 
-							string tex_name = start->second.Path.substr(pos + 1);
+							std::string tex_name = start->second.Path.substr(pos + 1);
 
 							//names_temp[cnt] = tex_name;
 							names_temp[cnt] = str.c_str();
@@ -1291,7 +1291,7 @@ void My_imgui::Uninit(void)
 	ImGui::DestroyContext();
 
 	{
-		pair< vector<string>, vector<string> > temp;
+		std::pair< aegis::vector<std::string>, aegis::vector<std::string> > temp;
 
 		temp.swap(Component_Items);
 	}
@@ -1325,13 +1325,13 @@ const bool My_imgui::Get_Mouse_Over_Enable()
 
 
 
-void My_imgui::Draw_Inspector(const string& name)
+void My_imgui::Draw_Inspector(const std::string& name)
 {
 	//static const char* item_current = nullptr;
 	//static const char* temp_current = nullptr;
 
-	static unique_ptr<const char> item_current;
-	static unique_ptr<const char> temp_current;
+	static std::unique_ptr<const char> item_current;
+	static std::unique_ptr<const char> temp_current;
 
 	bool flag = false;
 	if (old_name != name)
@@ -1453,7 +1453,7 @@ void My_imgui::Draw_Inspector(const string& name)
 			{
 				if (nullptr != temp_current)
 				{
-					string s(temp_current.get());
+					std::string s(temp_current.get());
 
 					Add_Component(object, s);
 				}
@@ -1463,7 +1463,7 @@ void My_imgui::Draw_Inspector(const string& name)
 			{
 				if (nullptr != temp_current)
 				{
-					string s(temp_current.get());
+					std::string s(temp_current.get());
 
 					Delete_Component(object, s);
 				}
@@ -1565,7 +1565,7 @@ void EditTransform(const float32* cameraView, float32* cameraProjection, float32
 	ImGuizmo::Manipulate(cameraView, cameraProjection, mCurrentGizmoOperation, ImGuizmo::LOCAL, matrix, NULL, &snap[0], NULL, NULL);
 }
 
-void My_imgui::Draw_Components(const vector<COMPONENT*>& components)
+void My_imgui::Draw_Components(const aegis::vector<COMPONENT*>& components)
 {
 	ImGui::Spacing();
 	ImGui::Text((char*)u8"コンポーネント");
@@ -1584,7 +1584,7 @@ void My_imgui::Texture_Import()
 	static bool flag = false;
 	static bool flag2 = false;
 
-	static string file_name;
+	static std::string file_name;
 
 	ImGuiWindowFlags window_flags = ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoDocking;
 
@@ -1678,7 +1678,7 @@ void My_imgui::Texture_Import()
 	}
 }
 
-const char My_imgui::Texture_File_Check(const string& file_name)
+const char My_imgui::Texture_File_Check(const std::string& file_name)
 {
 	if (file_name.empty())
 	{
@@ -1686,7 +1686,7 @@ const char My_imgui::Texture_File_Check(const string& file_name)
 		return -1;
 	}
 
-	size_t file = hash<string>()(file_name);//
+	size_t file = std::hash<std::string>()(file_name);//
 
 	if (TEXTURE_MANEGER::Get_Instance()->Get_TextureFile().find(file) != TEXTURE_MANEGER::Get_Instance()->Get_TextureFile().end())
 	{
@@ -1696,7 +1696,7 @@ const char My_imgui::Texture_File_Check(const string& file_name)
 
 	// ファイルがあるかの判定
 	{
-		string path = "./asset/texture/";
+		std::string path = "./asset/texture/";
 
 		path += file_name;
 
@@ -1716,7 +1716,7 @@ void My_imgui::Texture_Delete()
 	static bool flag = true;
 	static bool flag2 = false;
 
-	static string file_name;
+	static std::string file_name;
 
 	ImGuiWindowFlags window_flags = ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoDocking;
 
@@ -1809,7 +1809,7 @@ void My_imgui::Model_Import()
 	static bool flag = false;
 	static bool flag2 = false;
 
-	static string file_name;
+	static std::string file_name;
 
 	ImGuiWindowFlags window_flags = ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoDocking;
 
@@ -1903,7 +1903,7 @@ void My_imgui::Model_Import()
 	}
 }
 
-const char My_imgui::Model_File_Check(const string& file_name)
+const char My_imgui::Model_File_Check(const std::string& file_name)
 {
 	if (file_name.empty())
 	{
@@ -1911,7 +1911,7 @@ const char My_imgui::Model_File_Check(const string& file_name)
 		return -1;
 	}
 
-	size_t file = hash<string>()(file_name);//
+	size_t file = std::hash<std::string>()(file_name);//
 
 	if (MODEL_MANEGER::Get_Instance()->Get_ModelFile().find(file) != MODEL_MANEGER::Get_Instance()->Get_ModelFile().end())
 	{
@@ -1921,7 +1921,7 @@ const char My_imgui::Model_File_Check(const string& file_name)
 
 	// ファイルがあるかの判定
 	{
-		string path = "./asset/model/";
+		std::string path = "./asset/model/";
 
 		path += file_name;
 
@@ -1941,7 +1941,7 @@ void My_imgui::Model_Delete()
 	static bool flag = true;
 	static bool flag2 = false;
 
-	static string file_name;
+	static std::string file_name;
 
 	ImGuiWindowFlags window_flags = ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoDocking;
 
@@ -2144,7 +2144,7 @@ void My_imgui::Light_Setting()
 
 						////
 						{
-							vector<const char*> Items;
+							aegis::vector<const char*> Items;
 
 							Items.emplace_back((char*)u8"ポイントライト");
 							Items.emplace_back((char*)u8"スポットライト");
@@ -2226,39 +2226,39 @@ void My_imgui::Light_Setting()
 	ImGui::End();
 }
 
-void My_imgui::Add_Component(GameObject* object, const string s)
+void My_imgui::Add_Component(GameObject* object, const std::string s)
 {
 	ImGui::Text("%s", s.c_str());
 
 	auto scene = CManager::Get_Instance()->Get_Scene();
 	auto comp = object->Get_Component();
 
-	if (string::npos != s.find("AABB"))
+	if (std::string::npos != s.find("AABB"))
 	{
 		comp->Add_Component<BOUNDING_AABB>(scene->Get_Game_Object(object));
 		return;
 	}
 
-	if (string::npos != s.find("OBB"))
+	if (std::string::npos != s.find("OBB"))
 	{
 		comp->Add_Component<BOUNDING_OBB>(scene->Get_Game_Object(object));
 		return;
 	}
 
-	if (string::npos != s.find("球"))
+	if (std::string::npos != s.find("球"))
 	{
 		comp->Add_Component<BOUNDING_SHPERE>(scene->Get_Game_Object(object));
 		return;
 	}
 
-	if (string::npos != s.find("カプセル"))
+	if (std::string::npos != s.find("カプセル"))
 	{
 		comp->Add_Component<BOUNDING_CAPSULE>(scene->Get_Game_Object(object));
 		return;
 	}
 }
 
-void My_imgui::Delete_Component(GameObject* object, const string s)
+void My_imgui::Delete_Component(GameObject* object, const std::string s)
 {
 	ImGui::Text("%s", s.c_str());
 
@@ -2267,22 +2267,22 @@ void My_imgui::Delete_Component(GameObject* object, const string s)
 
 	COMPONENT* component = nullptr;
 
-	if (string::npos != s.find("AABB"))
+	if (std::string::npos != s.find("AABB"))
 	{
 		component = comp->Get_Component<BOUNDING_AABB>();
 	}
 
-	if (string::npos != s.find("OBB"))
+	if (std::string::npos != s.find("OBB"))
 	{
 		component = comp->Get_Component<BOUNDING_OBB>();
 	}
 
-	if (string::npos != s.find("球"))
+	if (std::string::npos != s.find("球"))
 	{
 		component = comp->Get_Component<BOUNDING_SHPERE>();
 	}
 
-	if (string::npos != s.find("カプセル"))
+	if (std::string::npos != s.find("カプセル"))
 	{
 		component = comp->Get_Component<BOUNDING_CAPSULE>();
 	}

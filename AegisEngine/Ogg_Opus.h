@@ -7,7 +7,7 @@
 
 class OggOpusFile;
 
-namespace Aegis
+namespace aegis
 {
 	namespace OggOpus
 	{

@@ -11,7 +11,7 @@ class MENU_COMPONENT : public COMPONENT {
 private:
 
 protected:
-	list<MENU_COMPONENT*> MenuObjects;
+	aegis::list<MENU_COMPONENT*> MenuObjects;
 
 public:
 	// リストへのメニューオブジェクトの追加
@@ -75,9 +75,9 @@ public:
 	void Update(float delta_time) override;
 	void Uninit() override;
 
-	bool Mouse_Click_Left(const string& const name, SPRITE* me);
-	bool Mouse_Click_Right(const string& const name, SPRITE* me);
-	bool Mouse_Over(const string& const name, SPRITE* me);
+	bool Mouse_Click_Left(const std::string& const name, SPRITE* me);
+	bool Mouse_Click_Right(const std::string& const name, SPRITE* me);
+	bool Mouse_Over(const std::string& const name, SPRITE* me);
 };
 
 class KEYBOARD_EVENT_COMPONENT : public MENU_COMPONENT {

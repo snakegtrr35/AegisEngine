@@ -4,7 +4,7 @@
 #define MINIMP3_IMPLEMENTATION
 #include "external\mp3\minimp3_ex.h"
 
-namespace Aegis
+namespace aegis
 {
 	//// memory buffer
 	//static std::vector<uint8> data;

@@ -24,18 +24,18 @@ private:
 		}
 	};
 
-	static unique_ptr<CManager> Manager;
+	static std::unique_ptr<CManager> Manager;
 
-	unique_ptr<SCENE_MANAGER, Delete> pSceneManager;
+	std::unique_ptr<SCENE_MANAGER, Delete> pSceneManager;
 	bool GameEnable;
 
-	unique_ptr<SHADOW_MAP, Delete> pShadowMap;
+	std::unique_ptr<SHADOW_MAP, Delete> pShadowMap;
 #ifdef _DEBUG
-	unique_ptr<My_imgui, Delete> imgui;		// Imguiのクラス
+	std::unique_ptr<My_imgui, Delete> imgui;		// Imguiのクラス
 	bool Play_Enable;
 #endif // _DEBUG
 
-	unique_ptr<CLUSTERED, Delete> cluster;		// CLUSTEREDのクラス
+	std::unique_ptr<CLUSTERED, Delete> cluster;		// CLUSTEREDのクラス
 
 	UINT ThreadCount;
 

@@ -12,18 +12,18 @@
 #include	"Scene_Manager.h"
 #include	"Title.h"
 
-using namespace Aegis;
+using namespace aegis;
 
 bool RESULT::Clear_Flag = true;
 static bool flag = true;
 
-static unique_ptr<SPRITE_ANIMATION> sprite_anime = nullptr;
+static std::unique_ptr<SPRITE_ANIMATION> sprite_anime = nullptr;
 
 void RESULT::Init()
 {
 	// リザルト画面
 	{
-		sprite_anime = make_unique<SPRITE_ANIMATION>();
+		sprite_anime = std::make_unique<SPRITE_ANIMATION>();
 
 		sprite_anime->SetPosition(Vector2(SCREEN_WIDTH * 0.5, SCREEN_HEIGHT * 0.5));
 		sprite_anime->SetSize(Vector4(SCREEN_HEIGHT * 0.5, SCREEN_WIDTH * 0.5, SCREEN_HEIGHT * 0.5, SCREEN_WIDTH * 0.5));
@@ -108,7 +108,7 @@ void RESULT::Uninit()
 //	{
 //		const type_info& id = typeid(*this);
 //
-//		string name(id.name());
+//		std::string name(id.name());
 //
 //		// 置換
 //		Replace_String(name, "class ", "      ");
@@ -138,7 +138,7 @@ void RESULT::Load(SCENE* scene)
 	{
 		const type_info& id = typeid(*scene);
 
-		string name(id.name());
+		std::string name(id.name());
 
 		// 置換
 		Replace_String(name, "class ", "");
@@ -175,13 +175,13 @@ void RESULT::Load(SCENE* scene)
 	//	{
 	//		if (RESULT::Clear_Flag)
 	//		{
-	//			result.lock()->SetTexture(string("game_clear.png"));
+	//			result.lock()->SetTexture(std::string("game_clear.png"));
 	//
 	//			//AUDIO_MANAGER::Play_Sound_Object(SOUND_INDEX::SOUND_INDEX_CLEAR, false);
 	//		}
 	//		else
 	//		{
-	//			result.lock()->SetTexture(string("game_over.png"));
+	//			result.lock()->SetTexture(std::string("game_over.png"));
 	//
 	//			//AUDIO_MANAGER::Play_Sound_Object(SOUND_INDEX::SOUND_INDEX_GAMEOVER, false);
 	//		}
@@ -197,11 +197,11 @@ void RESULT::Load(SCENE* scene)
 		{
 			if (RESULT::Clear_Flag)
 			{
-				result.lock()->SetTexture(string("game_clear.png"));
+				result.lock()->SetTexture(std::string("game_clear.png"));
 			}
 			else
 			{
-				result.lock()->SetTexture(string("game_over.png"));
+				result.lock()->SetTexture(std::string("game_over.png"));
 			}
 		}
 	}
@@ -211,7 +211,7 @@ void RESULT::Load(SCENE* scene)
 	{
 		const type_info& id = typeid(*scene);
 
-		string name(id.name());
+		std::string name(id.name());
 
 		// 置換
 		Replace_String(name, "class ", "");

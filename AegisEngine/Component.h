@@ -10,19 +10,19 @@ class GameObject;
 // コンポーネントクラス
 class COMPONENT /*: public GameObject*/ {
 protected:
-	weak_ptr<GameObject> Owner;
+	std::weak_ptr<GameObject> Owner;
 
 	bool Enable;
 	bool Draw_Enable;
 	bool DestroyFlag;
 
-	Aegis::Vector3 Position;
-	Aegis::Vector3 Rotation;
-	Aegis::Vector3 Scaling;
+	aegis::Vector3 Position;
+	aegis::Vector3 Rotation;
+	aegis::Vector3 Scaling;
 
 public:
 
-	COMPONENT() : Enable(true), DestroyFlag(false), Position(Aegis::Vector3(0.0f, 0.0f, 0.0f)), Rotation(Aegis::Vector3(0.0f, 0.0f, 0.0f)), Scaling(Aegis::Vector3(1.0f, 1.0f, 1.0f)) {
+	COMPONENT() : Enable(true), DestroyFlag(false), Position(aegis::Vector3(0.0f, 0.0f, 0.0f)), Rotation(aegis::Vector3(0.0f, 0.0f, 0.0f)), Scaling(aegis::Vector3(1.0f, 1.0f, 1.0f)) {
 		Owner.reset();
 
 	}
@@ -37,7 +37,7 @@ public:
 
 	virtual void Draw_Inspector() = 0;
 
-	void Set_Owner(const weak_ptr<GameObject>& owner);
+	void Set_Owner(const std::weak_ptr<GameObject>& owner);
 
 	void SetEnable(const bool flag);
 
@@ -49,22 +49,22 @@ public:
 
 	bool Get_Draw_Enable();
 
-	Aegis::Vector3* const Get_Position();
+	aegis::Vector3* const Get_Position();
 
-	Aegis::Vector3* const Get_Rotation();
+	aegis::Vector3* const Get_Rotation();
 
-	Aegis::Vector3* const Get_Scaling();
+	aegis::Vector3* const Get_Scaling();
 
 
 
-	void Set_Position(Aegis::Vector3* const  position);
-	void Set_Position(const Aegis::Vector3& position);
+	void Set_Position(aegis::Vector3* const  position);
+	void Set_Position(const aegis::Vector3& position);
 
-	void Set_Rotation(Aegis::Vector3* const  rotation);
-	void Set_Rotation(const Aegis::Vector3& rotation);
+	void Set_Rotation(aegis::Vector3* const  rotation);
+	void Set_Rotation(const aegis::Vector3& rotation);
 
-	void Set_Scaling(Aegis::Vector3* const  scaling);
-	void Set_Scaling(const Aegis::Vector3& scaling);
+	void Set_Scaling(aegis::Vector3* const  scaling);
+	void Set_Scaling(const aegis::Vector3& scaling);
 
 	// メモリ上からの削除
 	bool Destroy();

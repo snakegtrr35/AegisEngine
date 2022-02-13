@@ -2,15 +2,15 @@
 
 #include	"external/DirectXTex/WICTextureLoader.h"
 
-unique_ptr<MODEL_MANEGER> MODEL_MANEGER::ModelManager;
+std::unique_ptr<MODEL_MANEGER> MODEL_MANEGER::ModelManager;
 
-static string textype;
+static std::string textype;
 
 void MODEL_MANEGER::Init()
 {
 	if (nullptr == ModelManager.get())
 	{
-		ModelManager = make_unique<MODEL_MANEGER>();
+		ModelManager = std::make_unique<MODEL_MANEGER>();
 	}
 
 	bool flag;
@@ -22,7 +22,7 @@ void MODEL_MANEGER::Init()
 
 		if (flag)
 		{
-			size_t size = filesystem::file_size("model.dat");
+			size_t size = std::filesystem::file_size("model.dat");
 
 			if (0 < size)
 			{
@@ -49,9 +49,9 @@ void MODEL_MANEGER::Load(const bool flag)
 	// バイナリファイルがない
 	if (false == flag)
 	{
-		string path;			// ファイル名(パス付き) 
-		string file_name;		// ファイル名(パスなし)
-		string type;
+		std::string path;			// ファイル名(パス付き) 
+		std::string file_name;		// ファイル名(パスなし)
+		std::string type;
 		size_t key;
 		size_t pos;
 
@@ -80,7 +80,7 @@ void MODEL_MANEGER::Load(const bool flag)
 
 			file_name = path.substr(pos + 1);
 
-			key = hash<string>()(file_name);//
+			key = std::hash<std::string>()(file_name);//
 
 			//テクスチャの登録
 			ModelFile[key].Path = path;
@@ -113,9 +113,9 @@ void MODEL_MANEGER::Load(const bool flag)
 	{
 		// 現在は普通のファイルから読み込んでいるが、将来的にはバイナリファイルと普通のファイルどちらからも読み込めるようにする
 
-		string path;			// ファイル名(パス付き) 
-		string file_name;		// ファイル名(パスなし)
-		string type;
+		std::string path;			// ファイル名(パス付き) 
+		std::string file_name;		// ファイル名(パスなし)
+		std::string type;
 		size_t key;
 		size_t pos;
 
@@ -127,7 +127,7 @@ void MODEL_MANEGER::Load(const bool flag)
 
 			file_name = path.substr(pos + 1);
 
-			key = hash<string>()(file_name);
+			key = std::hash<std::string>()(file_name);
 
 			pos = path.find_last_of(".");
 			type = path.substr(pos + 1);
@@ -162,7 +162,7 @@ MODEL_MANEGER* MODEL_MANEGER::Get_Instance()
 	return ModelManager.get();
 }
 
-const unordered_map<size_t, MODEL_FILE>& MODEL_MANEGER::Get_ModelFile()
+const aegis::unordered_map<size_t, MODEL_FILE>& MODEL_MANEGER::Get_ModelFile()
 {
 	return ModelFile;
 }
@@ -178,9 +178,9 @@ MESHS* const MODEL_MANEGER::Get_Mesh(const size_t key)
 
 using is = std::pair<size_t, MESHS>;
 
-void MODEL_MANEGER::Add(const string& file_name)
+void MODEL_MANEGER::Add(const std::string& file_name)
 {
-	size_t key = hash<string>()(file_name);
+	size_t key = std::hash<std::string>()(file_name);
 
 	//テクスチャの登録
 	ModelFile[key].Path = "./asset/model/" + file_name;
@@ -209,9 +209,9 @@ void MODEL_MANEGER::Add(const string& file_name)
 	}
 }
 
-const bool MODEL_MANEGER::Unload(const string& const file_name)
+const bool MODEL_MANEGER::Unload(const std::string& const file_name)
 {
-	size_t first = hash<string>()(file_name);//
+	size_t first = std::hash<std::string>()(file_name);//
 
 #ifdef _DEBUG
 	if (0 != ModelData[first].Cnt)
@@ -251,19 +251,19 @@ void MODEL_MANEGER::Sub_ReferenceCnt(const size_t file)
 
 
 
-MESHS MODEL_MANEGER::processMesh(aiMesh* mesh, aiNode* node, const aiScene* scene, vector<TEXTURE_S>& textures_loaded)
+MESHS MODEL_MANEGER::processMesh(aiMesh* mesh, aiNode* node, const aiScene* scene, aegis::vector<TEXTURE_S>& textures_loaded)
 {
 	// Data to fill
-	vector<VERTEX_3D> vertices;
+	aegis::vector<VERTEX_3D> vertices;
 	vertices.resize(mesh->mNumVertices);
 
-	vector<UINT> indices;
+	aegis::vector<UINT> indices;
 
 	XMMATRIX matrix;
 
-	string name = node->mName.C_Str();
+	std::string name = node->mName.C_Str();
 
-	string texture_name;
+	std::string texture_name;
 
 	if (mesh->mMaterialIndex >= 0)
 	{
@@ -333,11 +333,11 @@ MESHS MODEL_MANEGER::processMesh(aiMesh* mesh, aiNode* node, const aiScene* scen
 	return MESHS(vertices, indices, texture_name, matrix, name);
 }
 
-//vector<TEXTURE_S> MODEL_MANEGER::loadMaterialTextures(aiMaterial* mat, aiTextureType type, string typeName, const aiScene* scene, vector<TEXTURE_S>& textures_loaded)
-string MODEL_MANEGER::loadMaterialTextures(aiMaterial* mat, aiTextureType type, string typeName, const aiScene* scene, vector<TEXTURE_S>& textures_loaded)
+//vector<TEXTURE_S> MODEL_MANEGER::loadMaterialTextures(aiMaterial* mat, aiTextureType type, std::string typeName, const aiScene* scene, vector<TEXTURE_S>& textures_loaded)
+std::string MODEL_MANEGER::loadMaterialTextures(aiMaterial* mat, aiTextureType type, std::string typeName, const aiScene* scene, aegis::vector<TEXTURE_S>& textures_loaded)
 {
-	string file_name;
-	const string directory = "./asset/model";
+	std::string file_name;
+	const std::string directory = "./asset/model";
 
 	for (UINT i = 0; i < mat->GetTextureCount(type); i++)
 	{
@@ -348,7 +348,7 @@ string MODEL_MANEGER::loadMaterialTextures(aiMaterial* mat, aiTextureType type, 
 		bool skip = false;
 		for (UINT j = 0; j < textures_loaded.size(); j++)
 		{
-			if ( textures_loaded[j].FileName == string(str.C_Str()) )
+			if ( textures_loaded[j].FileName == std::string(str.C_Str()) )
 			{
 				file_name = textures_loaded[j].FileName;
 				skip = true; // A texture with the same filepath has already been loaded, continue to next one. (optimization)
@@ -366,9 +366,9 @@ string MODEL_MANEGER::loadMaterialTextures(aiMaterial* mat, aiTextureType type, 
 			}
 			else
 			{
-				file_name = string(str.C_Str());
-				string path = directory + "/" + file_name;
-				wstring filenamews = wstring(path.begin(), path.end());
+				file_name = std::string(str.C_Str());
+				std::string path = directory + "/" + file_name;
+				std::wstring filenamews = std::wstring(path.begin(), path.end());
 
 				{
 					//hr = CreateWICTextureFromFile(CRenderer::GetDevice(), CRenderer::GetDeviceContext(), filenamews.c_str(), nullptr, &texture.Texture, nullptr, nullptr);
@@ -385,7 +385,7 @@ string MODEL_MANEGER::loadMaterialTextures(aiMaterial* mat, aiTextureType type, 
 	return file_name;
 }
 
-void MODEL_MANEGER::processNode(aiNode* node, const aiScene* scene, vector<MESHS>& meshs, vector<TEXTURE_S>& textures_loaded)
+void MODEL_MANEGER::processNode(aiNode* node, const aiScene* scene, aegis::vector<MESHS>& meshs, aegis::vector<TEXTURE_S>& textures_loaded)
 {
 	for (UINT i = 0; i < node->mNumMeshes; i++)
 	{
@@ -417,11 +417,11 @@ void MODEL_MANEGER::processNode(aiNode* node, const aiScene* scene, vector<MESHS
 	}
 }
 
-string MODEL_MANEGER::determineTextureType(const aiScene* scene, aiMaterial* mat)
+std::string MODEL_MANEGER::determineTextureType(const aiScene* scene, aiMaterial* mat)
 {
 	aiString textypeStr;
 	mat->GetTexture(aiTextureType_DIFFUSE, 0, &textypeStr);
-	string textypeteststr = textypeStr.C_Str();
+	std::string textypeteststr = textypeStr.C_Str();
 	if (textypeteststr == "*0" || textypeteststr == "*1" || textypeteststr == "*2" || textypeteststr == "*3" || textypeteststr == "*4" || textypeteststr == "*5")
 	{
 		if (scene->mTextures[0]->mHeight == 0)
@@ -433,7 +433,7 @@ string MODEL_MANEGER::determineTextureType(const aiScene* scene, aiMaterial* mat
 			return "embedded non-compressed texture";
 		}
 	}
-	if (textypeteststr.find('.') != string::npos)
+	if (textypeteststr.find('.') != std::string::npos)
 	{
 		return "textures are on disk";
 	}
@@ -444,7 +444,7 @@ string MODEL_MANEGER::determineTextureType(const aiScene* scene, aiMaterial* mat
 
 int MODEL_MANEGER::getTextureIndex(aiString* str)
 {
-	string tistr;
+	std::string tistr;
 	tistr = str->C_Str();
 	tistr = tistr.substr(1);
 	return stoi(tistr);

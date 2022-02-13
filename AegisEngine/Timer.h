@@ -29,7 +29,7 @@ private:
 
 public:
 
-	static deque<double> FPSs;
+	static aegis::deque<double> FPSs;
 	static double FPS;
 
 	/**
@@ -104,7 +104,7 @@ public:
 
 				if (0.0 < fps)
 				{
-					string s = to_string(fps);
+					std::string s = std::to_string(fps);
 
 					size_t i = s.find_first_of(".");
 
@@ -112,7 +112,7 @@ public:
 					{
 						s.erase(i + 2, 5);
 
-						FPSs.emplace_front(stod(s));
+						FPSs.emplace_front(std::stod(s));
 
 						if (10 <= FPSs.size())
 						{

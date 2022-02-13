@@ -12,8 +12,8 @@
 
 // プログラムに必要な追加ヘッダーをここで参照してください
 
-#include	<stdio.h>
-#include	<stdlib.h>
+#include <cstdio>
+#include <cstdlib>
 
 //#define NOMINMAX
 //#include	<windows.h>
@@ -21,7 +21,7 @@
 #undef min
 #undef max
 
-#include	<assert.h>
+#include	<cassert>
 
 #include	<DirectXMath.h>
 #include	<directxcollision.h>
@@ -67,36 +67,36 @@ using namespace DirectX;
 #ifndef INCLUDE
 #define INCLUDE
 
-#include	<array>
-#include	<list>
-#include	<vector>
-#include	<map>
-#include	<unordered_map>
-#include	<set>
-#include	<unordered_set>
-#include	<deque>
-#include	<memory>
-#include	<string>
-#include	<variant>
-#include	<functional>
-#include	<fstream>
-#include	<algorithm>
-#include	<functional>
-#include	<typeinfo>
-#include	<chrono>
-#include	<filesystem>
-#include	<numeric>
-#include	<thread>
-#include	<mutex>
+#include <array>
+#include <list>
+#include <vector>
+#include <map>
+#include <unordered_map>
+#include <set>
+#include <unordered_set>
+#include <deque>
+#include <memory>
+#include <string>
+#include <variant>
+#include <functional>
+#include <fstream>
+#include <algorithm>
+#include <functional>
+#include <typeinfo>
+#include <chrono>
+#include <filesystem>
+#include <numeric>
+#include <thread>
+#include <mutex>
+#include <shared_mutex>
 
-#include	<cstdint>
-#include	<ctime>
+#include <cstdint>
+#include <ctime>
 
 #endif // !INCLUDE
 
-using namespace std;
-
 #include "include\engine\core\utility\TypeDefine.h"
+#include "include\engine\core\aegisContainer.h"
 
 #include "include/engine/core/math/Math.h"
 

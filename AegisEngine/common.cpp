@@ -8,13 +8,13 @@ std::wstring stringTowstring(const std::string_view font)
 
 	size_t length = font.size();
 
-	unique_ptr<wchar_t[]>  StrW = make_unique<wchar_t[]>(length * 2);
+	std::unique_ptr<wchar_t[]>  StrW = std::make_unique<wchar_t[]>(length * 2);
 
 	size_t wLen = 0;
 
 	mbstowcs_s(&wLen, StrW.get(), length * 2, font.data(), _TRUNCATE);
 
-	wstring s(StrW.get());
+	std::wstring s(StrW.get());
 
 	StrW.reset(nullptr);
 
@@ -28,13 +28,13 @@ std::string wstringTostring(const std::wstring_view font)
 
 	size_t length = font.size();
 
-	unique_ptr<char[]>  Str = make_unique<char[]>(length * 2);
+	std::unique_ptr<char[]>  Str = std::make_unique<char[]>(length * 2);
 
 	size_t Len = 0;
 
 	wcstombs_s(&Len, Str.get(), length * 2, font.data(), length * 2);
 
-	string s(Str.get());
+	std::string s(Str.get());
 
 	Str.reset(nullptr);
 
@@ -75,7 +75,7 @@ void Erroer_Message(const std::string_view str1, const std::string_view str2)
 }
 #endif // !UNICODE
 
-string Replace_String(const string_view replacedStr, const string_view from, const string_view to)
+std::string Replace_String(const std::string_view replacedStr, const std::string_view from, const std::string_view to)
 {
 	if (replacedStr.empty() || from.empty() || to.empty())
 	{

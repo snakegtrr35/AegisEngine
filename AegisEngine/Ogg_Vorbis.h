@@ -6,7 +6,7 @@
 #include "AudioDefine.h"
 #include <vorbis/vorbisfile.h>
 
-namespace Aegis
+namespace aegis
 {
 	namespace OggVorbis
 	{

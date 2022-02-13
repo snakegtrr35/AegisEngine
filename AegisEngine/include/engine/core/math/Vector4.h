@@ -3,7 +3,7 @@
 #ifndef _INCLUDE_MATH_VECTOR4_H_
 #define _INCLUDE_MATH_VECTOR4_H_
 
-namespace Aegis
+namespace aegis
 {
 	class Vector4 : public DirectX::XMFLOAT4 {
 	public:

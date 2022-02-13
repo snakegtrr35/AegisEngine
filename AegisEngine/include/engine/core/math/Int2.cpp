@@ -2,7 +2,7 @@
 
 #include <DirectXMath.h>
 
-namespace Aegis
+namespace aegis
 {
 	//Int2::Int2() noexcept : DirectX::XMINT2(0, 0) 
 	//{}

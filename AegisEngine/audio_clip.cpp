@@ -9,9 +9,9 @@
 bool AUDIO_MANAGER::Enable = true;
 
 #ifdef UNICODE
-map<wstring, CAudioClip*> AUDIO_MANAGER::Sound_Dates;
+aegis::unordered_map<std::wstring, CAudioClip*> AUDIO_MANAGER::Sound_Dates;
 #else
-map<string, CAudioClip*> AUDIO_MANAGER::Sound_Dates;
+aegis::unordered_map<std::string, CAudioClip*> AUDIO_MANAGER::Sound_Dates;
 #endif // !UNICODE
 
 IXAudio2*					AUDIO_MANAGER::Xaudio;
@@ -45,7 +45,7 @@ void callBack()
 	int a = 0;
 }
 
-WAVEFORMATEX AudioInfoToWAVEFORMATEX(const Aegis::AudioInfo& info)
+WAVEFORMATEX AudioInfoToWAVEFORMATEX(const aegis::AudioInfo& info)
 {
 	WAVEFORMATEX wfx {};
 
@@ -74,19 +74,19 @@ void CAudioClip::Load(const char* FileName)
 	// サウンドデータ読込
 	WAVEFORMATEX wfx {};
 
-	if (wstring::npos != wstring(FileName).find(L".wav"))
+	if (std::wstring::npos != std::wstring(FileName).find(L".wav"))
 	{
-		Aegis::Wave::Open(wstringTostring(FileName), &Info);
-		//Aegis::Wave::Close(&Info);
+		aegis::Wave::Open(wstringTostring(FileName), &Info);
+		//aegis::Wave::Close(&Info);
 	}
-	else if (wstring::npos != wstring(FileName).find(L".ogg"))
+	else if (std::wstring::npos != std::wstring(FileName).find(L".ogg"))
 	{
 		Load_Ogg(FileName);
 	}
-	else if (wstring::npos != wstring(FileName).find(L".mp3"))
+	else if (std::wstring::npos != std::wstring(FileName).find(L".mp3"))
 	{
-		Aegis::Mp3::Open(wstringTostring(FileName), &Info);
-		//Aegis::Mp3::Close(&Info);
+		aegis::Mp3::Open(wstringTostring(FileName), &Info);
+		//aegis::Mp3::Close(&Info);
 	}
 
 	wfx = AudioInfoToWAVEFORMATEX(Info);
@@ -113,20 +113,20 @@ void CAudioClip::Unload()
 
 	switch (Info.Type)
 	{
-		case Aegis::AudioType::Wav:
-			Aegis::Wave::Uninit(&Info, &AudioData);
+		case aegis::AudioType::Wav:
+			aegis::Wave::Uninit(&Info, &AudioData);
 			break;
 
-		case Aegis::AudioType::Ogg_Vorbis:
-			Aegis::OggVorbis::Uninit(&Info, &AudioData);
+		case aegis::AudioType::Ogg_Vorbis:
+			aegis::OggVorbis::Uninit(&Info, &AudioData);
 			break;
 
-		case Aegis::AudioType::Ogg_Opus:
-			Aegis::OggOpus::Uninit(&Info, &AudioData);
+		case aegis::AudioType::Ogg_Opus:
+			aegis::OggOpus::Uninit(&Info, &AudioData);
 			break;
 
-		case Aegis::AudioType::Mp3:
-			Aegis::Mp3::Uninit(&Info, &AudioData);
+		case aegis::AudioType::Mp3:
+			aegis::Mp3::Uninit(&Info, &AudioData);
 			break;
 
 		default:
@@ -151,20 +151,20 @@ void CAudioClip::Play( bool Loop )
 			{
 				switch (Info.Type)
 				{
-					case Aegis::AudioType::Wav:
-						Aegis::Wave::Load(&Info, &AudioData);
+					case aegis::AudioType::Wav:
+						aegis::Wave::Load(&Info, &AudioData);
 						break;
 
-					case Aegis::AudioType::Ogg_Vorbis:
-						Aegis::OggVorbis::Load(&Info, &AudioData);
+					case aegis::AudioType::Ogg_Vorbis:
+						aegis::OggVorbis::Load(&Info, &AudioData);
 						break;
 
-					case Aegis::AudioType::Ogg_Opus:
-						Aegis::OggOpus::Load(&Info, &AudioData);
+					case aegis::AudioType::Ogg_Opus:
+						aegis::OggOpus::Load(&Info, &AudioData);
 						break;
 
-					case Aegis::AudioType::Mp3:
-						Aegis::Mp3::Load(&Info, &AudioData);
+					case aegis::AudioType::Mp3:
+						aegis::Mp3::Load(&Info, &AudioData);
 						break;
 
 					default:
@@ -224,29 +224,29 @@ void CAudioClip::PlayLoop()
 			{
 				switch (Info.Type)
 				{
-					case Aegis::AudioType::Wav:
-						//Aegis::Wave::Load(&Info, &AudioData);
+					case aegis::AudioType::Wav:
+						//aegis::Wave::Load(&Info, &AudioData);
 						break;
 
-					case Aegis::AudioType::Ogg_Vorbis:
+					case aegis::AudioType::Ogg_Vorbis:
 						// 1秒分のデータを確保
-						Info.Stream[0] = make_unique<Aegis::uint8[]>(static_cast<Aegis::int64>(Info.AvgBytesPerSec * 1.0f));
-						Info.Stream[1] = make_unique<Aegis::uint8[]>(static_cast<Aegis::int64>(Info.AvgBytesPerSec * 1.0f));
+						Info.Stream[0] = std::make_unique<aegis::uint8[]>(static_cast<aegis::int64>(Info.AvgBytesPerSec * 1.0f));
+						Info.Stream[1] = std::make_unique<aegis::uint8[]>(static_cast<aegis::int64>(Info.AvgBytesPerSec * 1.0f));
 
-						Aegis::OggVorbis::reset(&Info);
+						aegis::OggVorbis::reset(&Info);
 
 						// 1秒分のデータを読み込み
-						Aegis::OggVorbis::Stream(&Info, (char*)Info.Stream[0].get(), static_cast<Aegis::int64>(Info.AvgBytesPerSec * 1.0f));
-						Aegis::OggVorbis::Stream(&Info, (char*)Info.Stream[1].get(), static_cast<Aegis::int64>(Info.AvgBytesPerSec * 1.0f));
+						aegis::OggVorbis::Stream(&Info, (char*)Info.Stream[0].get(), static_cast<aegis::int64>(Info.AvgBytesPerSec * 1.0f));
+						aegis::OggVorbis::Stream(&Info, (char*)Info.Stream[1].get(), static_cast<aegis::int64>(Info.AvgBytesPerSec * 1.0f));
 
 						break;
 
-					case Aegis::AudioType::Ogg_Opus:
-						//Aegis::OggOpus::Load(&Info, &AudioData);
+					case aegis::AudioType::Ogg_Opus:
+						//aegis::OggOpus::Load(&Info, &AudioData);
 						break;
 
-					case Aegis::AudioType::Mp3:
-						//Aegis::Mp3::Load(&Info, &AudioData);
+					case aegis::AudioType::Mp3:
+						//aegis::Mp3::Load(&Info, &AudioData);
 						break;
 
 					default:
@@ -284,7 +284,7 @@ void CAudioClip::PlayLoop()
 
 }
 
-void CAudioClip::Polling(IXAudio2SourceVoice* SourceVoice, Aegis::AudioInfo* info)
+void CAudioClip::Polling(IXAudio2SourceVoice* SourceVoice, aegis::AudioInfo* info)
 {
 	while (AUDIO_MANAGER::Enable)
 	{
@@ -300,7 +300,7 @@ void CAudioClip::Polling(IXAudio2SourceVoice* SourceVoice, Aegis::AudioInfo* inf
 
 		if (state.BuffersQueued < 2)
 		{
-			Aegis::OggVorbis::Stream(info, (char*)info->Stream[info->submitCount].get(), info->AvgBytesPerSec * 1.0f);
+			aegis::OggVorbis::Stream(info, (char*)info->Stream[info->submitCount].get(), info->AvgBytesPerSec * 1.0f);
 
 			XAUDIO2_BUFFER bufferDesc = { 0 };
 			bufferDesc.AudioBytes = info->AvgBytesPerSec * 1.0f;
@@ -323,7 +323,7 @@ void CAudioClip::Stop()
 }
 
 #ifdef UNICODE
-void CAudioClip::Set_Name(const wstring& name)
+void CAudioClip::Set_Name(const std::wstring& name)
 #else
 void CAudioClip::Set_Name(const string& name)
 #endif // !UNICODE
@@ -332,7 +332,7 @@ void CAudioClip::Set_Name(const string& name)
 }
 
 #ifdef UNICODE
-wstring* const CAudioClip::Get_Name()
+std::wstring* const CAudioClip::Get_Name()
 #else
 string* const CAudioClip::Get_Name()
 #endif // !UNICODE
@@ -440,14 +440,14 @@ void AUDIO_MANAGER::Load()
 
 struct _ogg_header
 {
-	Aegis::uint32 Signature;
-	Aegis::uint8 Version;
-	Aegis::uint8 Flags;
-	Aegis::uint64 GranulePosition;
-	Aegis::uint32 SerialNumber;
-	Aegis::uint32 SequenceNumber;
-	Aegis::uint32 Checksum;
-	Aegis::uint8 TotalSegments;
+	aegis::uint32 Signature;
+	aegis::uint8 Version;
+	aegis::uint8 Flags;
+	aegis::uint64 GranulePosition;
+	aegis::uint32 SerialNumber;
+	aegis::uint32 SequenceNumber;
+	aegis::uint32 Checksum;
+	aegis::uint8 TotalSegments;
 };
 
 struct _ogg_Type
@@ -466,14 +466,14 @@ void CAudioClip::Load_Ogg(const wchar_t* FileName)
 	if (error != 0)
 	{
 		// Opus
-		Aegis::OggOpus::Open(wstringTostring(FileName), &Info);
-		//Aegis::OggOpus::Close(&Info);
+		aegis::OggOpus::Open(wstringTostring(FileName), &Info);
+		//aegis::OggOpus::Close(&Info);
 	}
 	else
 	{
 		// Vorbis
-		Aegis::OggVorbis::Open(wstringTostring(FileName), &Info);
-		//Aegis::OggVorbis::Close(&Info);
+		aegis::OggVorbis::Open(wstringTostring(FileName), &Info);
+		//aegis::OggVorbis::Close(&Info);
 	}
 }
 
@@ -498,7 +498,7 @@ void CAudioClip::Load_Ogg(const wchar_t* FileName)
 //		_ogg_Type type;
 //		file.read(reinterpret_cast<char*>(&type.Typs), sizeof(char) * type.Typs.size());
 //	
-//		//type.Typs[7] = (Aegis::int8)"\0";
+//		//type.Typs[7] = (aegis::int8)"\0";
 //		std::string t((char*)&type.Typs);
 //	
 //		if (t == "vorbis")
@@ -627,7 +627,7 @@ void CAudioClip::Load_Ogg(const wchar_t* FileName)
 //void CAudioClip::Load_mp3(const wchar_t* FileName)
 //{
 //	mp3dec_ex_t* dec = new mp3dec_ex_t;
-//	if (mp3dec_ex_open(dec, wstringTostring(std::wstring(FileName)).c_str(), MP3D_SEEK_TO_SAMPLE))
+//	if (mp3dec_ex_open(dec, wstringTostring(std:wstring(FileName)).c_str(), MP3D_SEEK_TO_SAMPLE))
 //	{
 //		assert(false);
 //	}

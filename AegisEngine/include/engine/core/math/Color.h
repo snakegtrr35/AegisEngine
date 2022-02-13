@@ -3,7 +3,7 @@
 #ifndef COLOR_H
 #define COLOR_H
 
-namespace Aegis
+namespace aegis
 {
 
 	//! 色構造体

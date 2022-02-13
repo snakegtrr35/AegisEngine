@@ -7,7 +7,7 @@
 #include	"Scene.h"
 #include	"ShadowMap.h"
 
-using namespace Aegis;
+using namespace aegis;
 
 void MESH_CYlLINDER::Init()
 {
@@ -97,7 +97,7 @@ void MESH_CYlLINDER::Init()
 	SAFE_DELETE_ARRAY(indexArray);
 
 	// テクスチャの設定
-	Texture.reset(new TEXTURE(string("field004.png")));
+	Texture.reset(new TEXTURE(std::string("field004.png")));
 }
 
 void MESH_CYlLINDER::Uninit()

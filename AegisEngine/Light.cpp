@@ -1,15 +1,15 @@
 ﻿#include	"Light.h"
 #include	"Renderer.h"
 
-using namespace Aegis;
+using namespace aegis;
 
-array<LIGHT_BUFFER, MAX_NUM_LIGHTS> LIGHTS::Lights;
+aegis::array<LIGHT_BUFFER, MAX_NUM_LIGHTS> LIGHTS::Lights;
 ComPtr<ID3D11Buffer>	LIGHTS::LightBuffer;
 
 
 LIGHT_BUFFER::LIGHT_BUFFER() : Enable(0), Position(0.f, 0.f, 0.f), Color(0.f, 0.f, 0.f, 0.f), Type((UINT)LIGHT_TYPE::NONE) {}
 
-using namespace Aegis;
+using namespace aegis;
 
 LIGHTS::LIGHTS()
 {

@@ -3,7 +3,7 @@
 #ifndef _INCLEDE_TRANSFORM_H_
 #define _INCLEDE_TRANSFORM_H_
 
-namespace Aegis
+namespace aegis
 {
 	class Transform
 	{

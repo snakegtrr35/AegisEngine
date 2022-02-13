@@ -55,8 +55,8 @@ public:
 	//========================================
 	static bool Release(const int any_button, const unsigned char number = 0);
 
-	static Aegis::Int2 const LeftStick(const unsigned char number = 0);
-	static Aegis::Int2 const RightStick(const unsigned char number = 0);
+	static aegis::Int2 const LeftStick(const unsigned char number = 0);
+	static aegis::Int2 const RightStick(const unsigned char number = 0);
 };
 
 #endif // !XBOX_H

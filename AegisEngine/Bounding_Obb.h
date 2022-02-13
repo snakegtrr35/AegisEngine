@@ -20,17 +20,17 @@ private:
 	BoundingOrientedBox Obb;
 
 	//! 各辺の長さ
-	Aegis::Vector3 Radius;
+	aegis::Vector3 Radius;
 
 	//! 回転量(クオータニオン)
-	Aegis::Vector4 Quaternion;
+	aegis::Vector4 Quaternion;
 
 public:
 	/**
 	* @brief コンストラクタ
 	* @details 引数無しコンストラクタ
 	*/
-	BOUNDING_OBB() : Radius(Aegis::Vector3(0.5f, 0.5f, 0.5f)), Quaternion(Aegis::Vector4(0.f, 0.f, 0.f, 1.0f)) {}
+	BOUNDING_OBB() : Radius(aegis::Vector3(0.5f, 0.5f, 0.5f)), Quaternion(aegis::Vector4(0.f, 0.f, 0.f, 1.0f)) {}
 
 	/**
 	* @brief デストラクタ

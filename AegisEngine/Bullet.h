@@ -10,15 +10,15 @@ class CMODEL;
 
 class BULLET : public GameObject {
 protected:
-	Aegis::Vector3 MoveVector;
-	unique_ptr<CMODEL> Model;
+	aegis::Vector3 MoveVector;
+	std::unique_ptr<CMODEL> Model;
 
 	short HP;
 	float fps = 0.f;
 
 public:
 	BULLET();
-	BULLET(Aegis::Vector3& position, Aegis::Vector3& move_vector);
+	BULLET(aegis::Vector3& position, aegis::Vector3& move_vector);
 	~BULLET();
 
 	void Init() override;
@@ -28,7 +28,7 @@ public:
 	void Update(float delta_time) override;
 	void Uninit() override;
 
-	void Set_Move_Vector(const Aegis::Vector3 move_vector);			// 
+	void Set_Move_Vector(const aegis::Vector3 move_vector);			// 
 
 	template<typename Archive>
 	void serialize(Archive& ar) {}

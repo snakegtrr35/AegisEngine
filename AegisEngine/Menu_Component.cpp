@@ -4,7 +4,7 @@
 #include	"manager.h"
 #include	"Sprite.h"
 
-using namespace Aegis;
+using namespace aegis;
 
 MOUSE_EVENT_COMPONENT::MOUSE_EVENT_COMPONENT()
 {
@@ -23,7 +23,7 @@ void MOUSE_EVENT_COMPONENT::Uninit()
 {
 }
 
-bool MOUSE_EVENT_COMPONENT::Mouse_Click_Left(const string& const name, SPRITE* me)
+bool MOUSE_EVENT_COMPONENT::Mouse_Click_Left(const std::string& const name, SPRITE* me)
 {
 	Vector2 mouse_pos = MOUSE::Get_Mouse()->Get_Screen_Position();
 	Vector2* pos;
@@ -76,7 +76,7 @@ bool MOUSE_EVENT_COMPONENT::Mouse_Click_Left(const string& const name, SPRITE* m
 	return false;
 }
 
-bool MOUSE_EVENT_COMPONENT::Mouse_Click_Right(const string& const name, SPRITE* me)
+bool MOUSE_EVENT_COMPONENT::Mouse_Click_Right(const std::string& const name, SPRITE* me)
 {
 	Vector2 mouse_pos = MOUSE::Get_Mouse()->Get_Screen_Position();
 	Vector2* pos;
@@ -129,7 +129,7 @@ bool MOUSE_EVENT_COMPONENT::Mouse_Click_Right(const string& const name, SPRITE* 
 	return false;
 }
 
-bool MOUSE_EVENT_COMPONENT::Mouse_Over(const string& const name, SPRITE* me)
+bool MOUSE_EVENT_COMPONENT::Mouse_Over(const std::string& const name, SPRITE* me)
 {
 	Vector2 mouse_pos = MOUSE::Get_Mouse()->Get_Screen_Position();
 	Vector2* pos;

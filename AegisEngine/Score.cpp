@@ -3,7 +3,7 @@
 #include	"manager.h"
 #include	"ShadowMap.h"
 
-using namespace Aegis;
+using namespace aegis;
 
 const unsigned int SCORE::MaxScore = 999999999;
 
@@ -15,7 +15,7 @@ SCORE::SCORE()
 	Flag = true;
 
 	Number = new SPRITE_ANIMATION();
-	Number->SetTexture(string("number02.png"));
+	Number->SetTexture(std::string("number02.png"));
 	Number->SetParam(0, 10, 1);
 	Number->SetSize(Vector4(32.0f, 32.0f, 32.0f, 32.0f));
 	Number->Init();

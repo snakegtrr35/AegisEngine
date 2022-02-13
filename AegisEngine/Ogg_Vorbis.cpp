@@ -8,7 +8,7 @@
 // liboggをリンク
 #pragma comment(lib, "libogg.lib")
 
-namespace Aegis
+namespace aegis
 {
 	namespace OggVorbis
 	{

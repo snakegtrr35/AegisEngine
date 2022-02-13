@@ -27,10 +27,10 @@ protected:
 	ComPtr<ID3D11Buffer> pVertexBuffer;
 
 	//! テクスチャ
-	unique_ptr<TEXTURE> Texture;
+	std::unique_ptr<TEXTURE> Texture;
 
 	//! 幅と高さ
-	Aegis::Vector2 WH;
+	aegis::Vector2 WH;
 
 public:
 
@@ -46,7 +46,7 @@ public:
 	* @param wh サイズ
 	* @details 引数付きコンストラクタ
 	*/
-	BILL_BOARD(Aegis::Vector3 position, Aegis::Vector2 wh);
+	BILL_BOARD(aegis::Vector3 position, aegis::Vector2 wh);
 
 	/**
 	* @brief デストラクタ
@@ -89,14 +89,14 @@ public:
 	* @param wh サイズ
 	* @details 幅と高さを設定する関数
 	*/
-	void SetWH(const Aegis::Vector2& wh);
+	void SetWH(const aegis::Vector2& wh);
 	
 	/**
 	* @brief テクスチャを設定する関数
 	* @param file_name 使用するテクスチャ名
 	* @details テクスチャ(クラス)を設定する関数
 	*/
-	void SetTexture(const string& const file_name);
+	void SetTexture(const std::string& const file_name);
 
 	template<typename Archive>
 	void serialize(Archive& ar) {}
@@ -176,7 +176,7 @@ public:
 	* @param wh サイズ
 	* @details 引数付きコンストラクタ
 	*/
-	BILL_BOARD_ANIMATION(Aegis::Vector3 position, Aegis::Vector2 wh);
+	BILL_BOARD_ANIMATION(aegis::Vector3 position, aegis::Vector2 wh);
 
 	/**
 	* @brief デストラクタ

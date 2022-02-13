@@ -5,15 +5,15 @@
 #include	"external/DirectXTex/WICTextureLoader.h"
 #include	"external/DirectXTex/DDSTextureLoader.h"
 
-using namespace Aegis;
+using namespace aegis;
 
-unique_ptr<TEXTURE_MANEGER> TEXTURE_MANEGER::Texture_Manager;
+std::unique_ptr<TEXTURE_MANEGER> TEXTURE_MANEGER::Texture_Manager;
 
 bool TEXTURE_MANEGER::Init()
 {
 	if (nullptr == Texture_Manager.get())
 	{
-		Texture_Manager = make_unique<TEXTURE_MANEGER>();
+		Texture_Manager = std::make_unique<TEXTURE_MANEGER>();
 	}
 
 	bool flag;
@@ -25,7 +25,7 @@ bool TEXTURE_MANEGER::Init()
 
 		if (flag)
 		{
-			size_t size = filesystem::file_size("texture.dat");
+			size_t size = std::filesystem::file_size("texture.dat");
 
 			if (0 < size)
 			{
@@ -43,7 +43,7 @@ bool TEXTURE_MANEGER::Init()
 
 #ifdef _DEBUG
 	{
-		Texture_Manager->Monitor = make_unique<FILE_CHANGE_MONITOR>("./asset/texture");
+		Texture_Manager->Monitor = std::make_unique<FILE_CHANGE_MONITOR>("./asset/texture");
 		if (false == Texture_Manager->Monitor->Init())
 		{
 			return false;
@@ -84,9 +84,9 @@ void TEXTURE_MANEGER::Update()
 
 	CRenderer* render = CRenderer::getInstance();
 
-	wstring path;			// ファイル名(パス付き)
-	wstring file_name;		// ファイル名(パスなし)
-	wstring type;
+	std::wstring path;			// ファイル名(パス付き)
+	std::wstring file_name;		// ファイル名(パスなし)
+	std::wstring type;
 	size_t pos;
 	size_t first;			// 
 
@@ -98,7 +98,7 @@ void TEXTURE_MANEGER::Update()
 
 		{
 			// ファイルが更新された
-			wstring name;
+			std::wstring name;
 			HRESULT hr;
 			ID3D11ShaderResourceView* ShaderResourceView;
 
@@ -124,7 +124,7 @@ void TEXTURE_MANEGER::Update()
 				}
 			}
 
-			first = hash<string>()( wstringTostring(file_name));
+			first = std::hash<std::string>()(wstringTostring(file_name));
 
 			TextureData[first].Resource.reset(ShaderResourceView);
 		}
@@ -137,14 +137,14 @@ void TEXTURE_MANEGER::Default_Load(const bool flag)
 	CRenderer* render = CRenderer::getInstance();
 
 	int width, height;
-	string path;			// ファイル名(パス付き) 
-	string file_name;		// ファイル名(パスなし)
-	string type;
+	std::string path;			// ファイル名(パス付き) 
+	std::string file_name;		// ファイル名(パスなし)
+	std::string type;
 	size_t first;			// 
 	size_t pos;
 
 	ID3D11ShaderResourceView* ShaderResourceView;
-	wstring name;
+	std::wstring name;
 
 	std::filesystem::directory_iterator e = std::filesystem::directory_iterator("./asset/Default/texture");
 	for (auto file : e) {
@@ -159,7 +159,7 @@ void TEXTURE_MANEGER::Default_Load(const bool flag)
 
 		file_name = path.substr(pos + 1);
 
-		first = hash<string>()(file_name);//
+		first = std::hash<std::string>()(file_name);//
 
 		// バイナリファイルがない
 		if (false == flag)
@@ -214,9 +214,9 @@ void TEXTURE_MANEGER::Load(const bool flag)
 	if (false == flag)
 	{
 		int width, height;
-		string path;			// ファイル名(パス付き) 
-		string file_name;		// ファイル名(パスなし)
-		string type;
+		std::string path;			// ファイル名(パス付き) 
+		std::string file_name;		// ファイル名(パスなし)
+		std::string type;
 		size_t first;			// 
 		size_t pos;
 
@@ -233,7 +233,7 @@ void TEXTURE_MANEGER::Load(const bool flag)
 
 			file_name = path.substr(pos + 1);
 
-			first = hash<string>()(file_name);//
+			first = std::hash<std::string>()(file_name);//
 
 			//バイナリファイルがない
 			{
@@ -246,7 +246,7 @@ void TEXTURE_MANEGER::Load(const bool flag)
 			{
 				ID3D11ShaderResourceView* ShaderResourceView;
 				HRESULT hr;
-				wstring name;
+				std::wstring name;
 
 				pos = file_name.find_last_of(".");
 				type = file_name.substr(pos + 1);
@@ -283,15 +283,15 @@ void TEXTURE_MANEGER::Load(const bool flag)
 	else
 	{
 		int width, height;
-		string path;			// ファイル名(パス付き) 
-		string file_name;		// ファイル名(パスなし)
-		string type;
+		std::string path;			// ファイル名(パス付き) 
+		std::string file_name;		// ファイル名(パスなし)
+		std::string type;
 		size_t first;
 		size_t pos;
 
 		ID3D11ShaderResourceView* ShaderResourceView;
 		HRESULT hr;
-		wstring name;
+		std::wstring name;
 
 		for (auto f : TextureFile)
 		{
@@ -301,7 +301,7 @@ void TEXTURE_MANEGER::Load(const bool flag)
 
 			file_name = path.substr(pos + 1);
 
-			first = hash<string>()(file_name);//
+			first = std::hash<std::string>()(file_name);//
 
 			pos = path.find_last_of(".");
 			type = path.substr(pos + 1);
@@ -336,14 +336,14 @@ void TEXTURE_MANEGER::Load(const bool flag)
 	}
 }
 
-void TEXTURE_MANEGER::Add(const string& file_name)
+void TEXTURE_MANEGER::Add(const std::string& file_name)
 {
 	CRenderer* render = CRenderer::getInstance();
 
 	int width, height;
 
-	string path;	// ファイル名
-	string type;
+	std::string path;	// ファイル名
+	std::string type;
 	size_t first;			// 
 	size_t pos;
 
@@ -355,7 +355,7 @@ void TEXTURE_MANEGER::Add(const string& file_name)
 	{
 		ID3D11ShaderResourceView* ShaderResourceView;
 		HRESULT hr;
-		wstring name;
+		std::wstring name;
 
 		pos = path.find_last_of(".");
 		type = path.substr(pos + 1);
@@ -382,7 +382,7 @@ void TEXTURE_MANEGER::Add(const string& file_name)
 			}
 		}
 
-		first = hash<string>()(file_name);
+		first = std::hash<std::string>()(file_name);
 		TextureFile[first].Path = "asset/texture/" + path;
 
 		TextureData[first].Resource.reset(ShaderResourceView);
@@ -391,9 +391,9 @@ void TEXTURE_MANEGER::Add(const string& file_name)
 	}
 }
 
-const bool TEXTURE_MANEGER::Unload(const string& const file_name)
+const bool TEXTURE_MANEGER::Unload(const std::string& const file_name)
 {
-	size_t first = hash<string>()(file_name);//
+	size_t first = std::hash<std::string>()(file_name);//
 
 #ifdef _DEBUG
 	if (0 != TextureData[first].Cnt)
@@ -468,17 +468,17 @@ ID3D11ShaderResourceView* const TEXTURE_MANEGER::GetShaderResourceView(const siz
 	return nullptr;
 }
 
-unordered_map<size_t, TEXTURE_FILE>& TEXTURE_MANEGER::Get_TextureFile()
+aegis::unordered_map<size_t, TEXTURE_FILE>& TEXTURE_MANEGER::Get_TextureFile()
 {
 	return TextureFile;
 }
 
-const unordered_map<size_t, TEXTURE_DATA>::iterator TEXTURE_MANEGER::Get_TextureData_Start()
+const aegis::unordered_map<size_t, TEXTURE_DATA>::iterator TEXTURE_MANEGER::Get_TextureData_Start()
 {
 	return TextureData.begin();
 }
 
-const unordered_map<size_t, TEXTURE_DATA>::iterator TEXTURE_MANEGER::Get_TextureData_End()
+const aegis::unordered_map<size_t, TEXTURE_DATA>::iterator TEXTURE_MANEGER::Get_TextureData_End()
 {
 	return TextureData.end();
 }

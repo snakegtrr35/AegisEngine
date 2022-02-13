@@ -7,10 +7,10 @@
 
 #include	"external/DirectXTex/WICTextureLoader.h"
 
-using namespace Aegis;
+using namespace aegis;
 
-static string textype;
-static string directory;
+static std::string textype;
+static std::string directory;
 
 XMMATRIX aiMatrixToMatrix(aiMatrix4x4 matrix)
 {
@@ -54,7 +54,7 @@ aiMatrix4x4 MatrixToaiMatrix(XMMATRIX matrix)
 
 
 
-bool FBXmodel::Load(const string& FileName)
+bool FBXmodel::Load(const std::string& FileName)
 {
 	CRenderer* render = CRenderer::getInstance();
 	HRESULT hr;
@@ -88,10 +88,10 @@ bool FBXmodel::Load(const string& FileName)
 		aiMesh* mesh = m_Scene->mMeshes[m];
 		UINT vertex_Num = mesh->mNumVertices;
 
-		vector<UINT> Bone_num;
+		aegis::vector<UINT> Bone_num;
 		Bone_num.reserve(mesh->mNumVertices);
 
-		vector<ANIME_VERTEX> vertex;
+		aegis::vector<ANIME_VERTEX> vertex;
 		vertex.reserve(mesh->mNumVertices);
 
 		for (UINT i = 0; i < mesh->mNumVertices; i++)
@@ -158,7 +158,7 @@ bool FBXmodel::Load(const string& FileName)
 		UINT index_Num;
 		ID3D11Buffer* index_Beffer;
 		{
-			vector<WORD> index;
+			aegis::vector<WORD> index;
 			for (UINT f = 0; f < mesh->mNumFaces; f++)
 			{
 				aiFace* face = &mesh->mFaces[f];
@@ -205,7 +205,7 @@ bool FBXmodel::Load(const string& FileName)
 
 			if (textype.empty()) textype = determineTextureType(m_Scene, material);
 
-			vector<TEXTURE_S> diffuseMaps = this->loadMaterialTextures(material, aiTextureType_DIFFUSE, "texture_diffuse", m_Scene);
+			aegis::vector<TEXTURE_S> diffuseMaps = this->loadMaterialTextures(material, aiTextureType_DIFFUSE, "texture_diffuse", m_Scene);
 			Textures.insert(Textures.end(), diffuseMaps.begin(), diffuseMaps.end());
 
 			for (auto i : diffuseMaps)
@@ -300,7 +300,7 @@ void FBXmodel::Draw(XMMATRIX &Matrix)
 {
 	CRenderer* render = CRenderer::getInstance();
 	{
-		vector<XMMATRIX> bone;
+		aegis::vector<XMMATRIX> bone;
 		bone.reserve(m_BoneNum);
 
 		/*for (UINT b = 0; b < m_BoneNum; b++)
@@ -328,7 +328,7 @@ void FBXmodel::Draw_DPP(XMMATRIX& Matrix)
 {
 	CRenderer* render = CRenderer::getInstance();
 	{
-		vector<XMMATRIX> bone;
+		aegis::vector<XMMATRIX> bone;
 		bone.reserve(m_BoneNum);
 
 		set_bone(m_Scene->mRootNode, bone);
@@ -347,7 +347,7 @@ void FBXmodel::Draw_DPP(XMMATRIX& Matrix)
 	render->Set_Shader(SHADER_INDEX_V::DEPTH_PRE, SHADER_INDEX_P::MAX);
 }
 
-void FBXmodel::set_bone(const aiNode* Node, vector<XMMATRIX>& v)
+void FBXmodel::set_bone(const aiNode* Node, aegis::vector<XMMATRIX>& v)
 {
 	v.emplace_back( m_Bone[m_BoneIndex[Node->mName.C_Str()] ].Matrix );
 
@@ -357,7 +357,7 @@ void FBXmodel::set_bone(const aiNode* Node, vector<XMMATRIX>& v)
 	}
 }
 
-void FBXmodel::SetBoneMatrix(const vector<XMMATRIX>& matrix)
+void FBXmodel::SetBoneMatrix(const aegis::vector<XMMATRIX>& matrix)
 {
 	CRenderer* render = CRenderer::getInstance();
 
@@ -546,9 +546,9 @@ void FBXmodel::UpdateBoneMatrix(const aiNode* Node, const XMMATRIX& Matrix)
 
 
 
-vector<TEXTURE_S> FBXmodel::loadMaterialTextures(aiMaterial* mat, aiTextureType type, string typeName, const aiScene* scene)
+aegis::vector<TEXTURE_S> FBXmodel::loadMaterialTextures(aiMaterial* mat, aiTextureType type, std::string typeName, const aiScene* scene)
 {
-	vector<TEXTURE_S> textures;
+	aegis::vector<TEXTURE_S> textures;
 	for (UINT i = 0; i < mat->GetTextureCount(type); i++)
 	{
 		aiString str;
@@ -576,9 +576,9 @@ vector<TEXTURE_S> FBXmodel::loadMaterialTextures(aiMaterial* mat, aiTextureType 
 			}
 			else
 			{
-				string filename = string(str.C_Str());
+				std::string filename = std::string(str.C_Str());
 				filename = directory + "/" + filename;
-				wstring filenamews = wstring(filename.begin(), filename.end());
+				std::wstring filenamews = std::wstring(filename.begin(), filename.end());
 
 				{
 					CRenderer* render = CRenderer::getInstance();
@@ -598,11 +598,11 @@ vector<TEXTURE_S> FBXmodel::loadMaterialTextures(aiMaterial* mat, aiTextureType 
 	return textures;
 }
 
-string FBXmodel::determineTextureType(const aiScene* scene, aiMaterial* mat)
+std::string FBXmodel::determineTextureType(const aiScene* scene, aiMaterial* mat)
 {
 	aiString textypeStr;
 	mat->GetTexture(aiTextureType_DIFFUSE, 0, &textypeStr);
-	string textypeteststr = textypeStr.C_Str();
+	std::string textypeteststr = textypeStr.C_Str();
 	if (textypeteststr == "" || textypeteststr == "*0" || textypeteststr == "*1" || textypeteststr == "*2" || textypeteststr == "*3" || textypeteststr == "*4" || textypeteststr == "*5")
 	{
 		if (scene->mTextures[0]->mHeight == 0)
@@ -614,7 +614,7 @@ string FBXmodel::determineTextureType(const aiScene* scene, aiMaterial* mat)
 			return "embedded non-compressed texture";
 		}
 	}
-	if (textypeteststr.find('.') != string::npos)
+	if (textypeteststr.find('.') != std::string::npos)
 	{
 		return "textures are on disk";
 	}
@@ -622,10 +622,10 @@ string FBXmodel::determineTextureType(const aiScene* scene, aiMaterial* mat)
 
 int FBXmodel::getTextureIndex(aiString* str)
 {
-	string tistr;
+	std::string tistr;
 	tistr = str->C_Str();
 	tistr = tistr.substr(1);
-	return stoi(tistr);
+	return std::stoi(tistr);
 }
 
 ID3D11ShaderResourceView* FBXmodel::getTextureFromModel(const aiScene* scene, int textureindex)

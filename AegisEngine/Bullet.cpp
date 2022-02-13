@@ -19,14 +19,14 @@
 
 #include	"audio_clip.h"
 
-using namespace Aegis;
+using namespace aegis;
 
 BULLET::BULLET() : MoveVector(Vector3(0.0f, 0.0f, 0.0f))
 {
 	Vector3 Scaling = Vector3(0.1f, 0.1f, 0.1f);
 	Get_Transform().Set_Scaling(Scaling);
 
-	Model = make_unique<CMODEL>();
+	Model = std::make_unique<CMODEL>();
 
 	HP = 200;
 }
@@ -38,7 +38,7 @@ BULLET::BULLET(Vector3& position, Vector3& move_vector) : MoveVector(move_vector
 	Vector3 Scaling = Vector3(0.1f, 0.1f, 0.1f);
 	Get_Transform().Set_Scaling(Scaling);
 
-	Model = make_unique<CMODEL>();
+	Model = std::make_unique<CMODEL>();
 
 	HP = 200;
 }
@@ -50,7 +50,7 @@ BULLET::~BULLET()
 
 void BULLET::Init()
 {
-	string name("asset/model/bullet.fbx");
+	std::string name("asset/model/bullet.fbx");
 
 	Model->Load(name);
 
@@ -106,7 +106,7 @@ void BULLET::Update(float delta_time)
 		//{
 		//	auto name = this->Get_Object_Name();
 		//
-		//	string str(name);
+		//	std::string str(name);
 		//	ExtratNum(str);
 		//	if (false == str.empty())
 		//	{
@@ -149,13 +149,13 @@ void BULLET::Update(float delta_time)
 				{
 					auto name = this->Get_Object_Name();
 
-					string str(name);
+					std::string str(name);
 					ExtratNum(str);
 					if (!str.empty())
 					{
 						const int x = std::stoi(str);
 
-						BILL_BOARD_ANIMATION* bba = CManager::Get_Instance()->Get_Scene()->Add_Game_Object<BILL_BOARD_ANIMATION>(LAYER_NAME::EFFECT, "explosion" + to_string(x));
+						BILL_BOARD_ANIMATION* bba = CManager::Get_Instance()->Get_Scene()->Add_Game_Object<BILL_BOARD_ANIMATION>(LAYER_NAME::EFFECT, "explosion" + std::to_string(x));
 						bba->Get_Transform().Set_Position(Get_Transform().Get_Position());
 						bba->SetWH(Vector2(1.0f, 1.0f));
 						bba->SetParam(6, 4, 4);
@@ -183,14 +183,14 @@ void BULLET::Update(float delta_time)
 					{
 						auto name = this->Get_Object_Name();
 
-						string str(name);
+						std::string str(name);
 						ExtratNum(str);
 
 						if (!str.empty())
 						{
 							const int x = std::stoi(str);
 
-							BILL_BOARD_ANIMATION* bba = CManager::Get_Instance()->Get_Scene()->Add_Game_Object<BILL_BOARD_ANIMATION>(LAYER_NAME::EFFECT, "explosion" + to_string(x));
+							BILL_BOARD_ANIMATION* bba = CManager::Get_Instance()->Get_Scene()->Add_Game_Object<BILL_BOARD_ANIMATION>(LAYER_NAME::EFFECT, "explosion" + std::to_string(x));
 							bba->Get_Transform().Set_Position(Get_Transform().Get_Position());
 							bba->SetWH(Vector2(1.0f, 1.0f));
 							bba->SetParam(6, 4, 4);

@@ -6,9 +6,9 @@
 #include	"camera.h"
 #include	"Debug_Camera.h"
 
-using namespace Aegis;
+using namespace aegis;
 
-MODEL::MODEL() : FileName(string()), Key(0)
+MODEL::MODEL() : FileName(std::string()), Key(0)
 {
 }
 
@@ -108,18 +108,18 @@ void MODEL::Uninit()
 {
 }
 
-void MODEL::Set_Model_Name(const string& file_name)
+void MODEL::Set_Model_Name(const std::string& file_name)
 {
 	if (file_name != FileName)
 	{
 		MODEL_MANEGER::Get_Instance()->Sub_ReferenceCnt(Key);
 		FileName = file_name;
-		Key = hash<string>()(file_name);
+		Key = std::hash<std::string>()(file_name);
 		MODEL_MANEGER::Get_Instance()->Add_ReferenceCnt(Key);
 	}
 }
 
-const string& MODEL::Get_Model_Name()
+const std::string& MODEL::Get_Model_Name()
 {
 	return FileName;
 }

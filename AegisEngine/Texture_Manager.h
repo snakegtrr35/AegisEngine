@@ -10,30 +10,30 @@
 class FILE_CHANGE_MONITOR {
 private:
 #ifdef UNICODE
-	wstring m_directoryName;
+	std::wstring m_directoryName;
 #else
-	string m_directoryName;
+	std::string m_directoryName;
 #endif // !UNICODE
 	const DWORD m_bufferSize = 1024 * 2;
 	HANDLE m_directoryHandle;
 	HANDLE m_eventHandle;
-	vector<BYTE> m_buf;
+	aegis::vector<BYTE> m_buf;
 	OVERLAPPED Olp;
-	set<wstring> m_fileActions;
+	aegis::unordered_set<std::wstring> m_fileActions;
 
 	// 変更の監視を開始
 	bool beginReadChanges();
 
 public:
 
-	FILE_CHANGE_MONITOR(const string& directoryName);
+	FILE_CHANGE_MONITOR(const std::string& directoryName);
 
 	~FILE_CHANGE_MONITOR();
 
 	bool Get_FileStack_Empty();
 
 	// ファイル変更履歴キューから情報を取り出す
-	wstring Pop_FileStack();
+	std::wstring Pop_FileStack();
 
 	// 初期化
 	bool Init();
@@ -41,7 +41,7 @@ public:
 	// 変更を読み取る
 	void readChanges();
 
-	set<wstring>* Get();
+	aegis::unordered_set<std::wstring>* Get();
 };
 #endif // _DEBUG
 
@@ -52,7 +52,7 @@ public:
 constexpr const int TEXTURE_SIZE_MAX = 16384;
 
 struct TEXTURE_FILE {
-	string Path;		//! テクスチャファイルのファイルパス
+	std::string Path;		//! テクスチャファイルのファイルパス
 
 	TEXTURE_FILE() {}
 
@@ -63,11 +63,11 @@ struct TEXTURE_FILE {
 };
 
 struct TEXTURE_DATA {
-	unique_ptr<ID3D11ShaderResourceView, Release> Resource;		//! リソースデータ
-	Aegis::Int2 WH;													//!	テクスチャの幅と高さ
+	std::unique_ptr<ID3D11ShaderResourceView, Release> Resource;		//! リソースデータ
+	aegis::Int2 WH;													//!	テクスチャの幅と高さ
 	UINT Cnt;													//! 参照回数
 
-	TEXTURE_DATA() : WH(Aegis::Int2(0, 0)), Cnt(0) {}
+	TEXTURE_DATA() : WH(aegis::Int2(0, 0)), Cnt(0) {}
 };
 
 //========================================
@@ -76,11 +76,11 @@ struct TEXTURE_DATA {
 class TEXTURE_MANEGER {
 private:
 
-	static unique_ptr<TEXTURE_MANEGER> Texture_Manager;
+	static std::unique_ptr<TEXTURE_MANEGER> Texture_Manager;
 
-	unordered_map<size_t, string> Default_Texture_File;			//! デフォルトのテクスチャのファイルパス
-	unordered_map<size_t, TEXTURE_FILE> TextureFile;			//! テクスチャのファイルデータ
-	unordered_map<size_t, TEXTURE_DATA> TextureData;			//! テクスチャデータ
+	aegis::unordered_map<size_t, std::string> Default_Texture_File;			//! デフォルトのテクスチャのファイルパス
+	aegis::unordered_map<size_t, TEXTURE_FILE> TextureFile;			//! テクスチャのファイルデータ
+	aegis::unordered_map<size_t, TEXTURE_DATA> TextureData;			//! テクスチャデータ
 
 	void Default_Load(const bool flag);							// デフォルトのテクスチャの読み込み
 	void Load(const bool flag);									// テクスチャの読み込み
@@ -92,7 +92,7 @@ private:
 	std::mutex isLoadedMutex;
 
 #ifdef _DEBUG
-	unique_ptr<FILE_CHANGE_MONITOR> Monitor;
+	std::unique_ptr<FILE_CHANGE_MONITOR> Monitor;
 #endif // _DEBUG
 
 public:
@@ -108,20 +108,20 @@ public:
 
 	static TEXTURE_MANEGER* Get_Instance();
 
-	void Add(const string& file_name);
-	const bool Unload(const string& const file_name);
+	void Add(const std::string& file_name);
+	const bool Unload(const std::string& const file_name);
 
 	void Add_ReferenceCnt(const size_t file);
 	void Sub_ReferenceCnt(const size_t file);
 	
-	Aegis::Int2* const Get_WH(const size_t file);
+	aegis::Int2* const Get_WH(const size_t file);
 
 	ID3D11ShaderResourceView* const GetShaderResourceView(const size_t file);
 
-	unordered_map<size_t, TEXTURE_FILE>& Get_TextureFile();
+	aegis::unordered_map<size_t, TEXTURE_FILE>& Get_TextureFile();
 
-	const unordered_map<size_t, TEXTURE_DATA>::iterator Get_TextureData_Start();
-	const unordered_map<size_t, TEXTURE_DATA>::iterator Get_TextureData_End();
+	const aegis::unordered_map<size_t, TEXTURE_DATA>::iterator Get_TextureData_Start();
+	const aegis::unordered_map<size_t, TEXTURE_DATA>::iterator Get_TextureData_End();
 
 	template<class Archive>
 	void serialize(Archive& archive) {

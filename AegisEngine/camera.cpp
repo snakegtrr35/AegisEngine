@@ -4,7 +4,7 @@
 #include	"Input.h"
 #include	"camera.h"
 
-using namespace Aegis;
+using namespace aegis;
 
 CCamera* CCamera::pCamera = nullptr;
 XMMATRIX CCamera::m_ViewMatrix;
@@ -110,18 +110,18 @@ void CCamera::Update(float delta_time)
 				angle = -2.0f;
 			}
 
-			Aegis::Quaternion q = Aegis::quaternion::RotateAxis(Aegis::Math::XMVECTORToVector3(Right), angle);
+			aegis::Quaternion q = aegis::quaternion::RotateAxis(aegis::Math::XMVECTORToVector3(Right), angle);
 
-			Aegis::Vector3 f = Aegis::Vector3::Transform(Aegis::Math::XMVECTORToVector3(Front), q);
+			aegis::Vector3 f = aegis::Vector3::Transform(aegis::Math::XMVECTORToVector3(Front), q);
 
 			At = Pos + Front * Lenght_Z;//
 
-			Front = Aegis::Math::Vector3ToXMVECTOR(f);
+			Front = aegis::Math::Vector3ToXMVECTOR(f);
 			Front = XMVector3Normalize(Front);
 
-			f = Aegis::Vector3::Transform(Aegis::Math::XMVECTORToVector3(Up), q);
+			f = aegis::Vector3::Transform(aegis::Math::XMVECTORToVector3(Up), q);
 
-			Up = Aegis::Math::Vector3ToXMVECTOR(f);
+			Up = aegis::Math::Vector3ToXMVECTOR(f);
 			Up = XMVector3Normalize(Up);
 		}
 
@@ -138,18 +138,18 @@ void CCamera::Update(float delta_time)
 				angle = -2.0f;
 			}
 
-			Aegis::Quaternion q = Aegis::quaternion::RotateAxis(Aegis::Math::XMVECTORToVector3(Up), angle);
+			aegis::Quaternion q = aegis::quaternion::RotateAxis(aegis::Math::XMVECTORToVector3(Up), angle);
 
-			Aegis::Vector3 f = Vector3::Transform(Aegis::Math::XMVECTORToVector3(Front), q);
+			aegis::Vector3 f = Vector3::Transform(aegis::Math::XMVECTORToVector3(Front), q);
 
 			At = Pos + Front * Lenght_Z;//
 
-			Front = Aegis::Math::Vector3ToXMVECTOR(f);
+			Front = aegis::Math::Vector3ToXMVECTOR(f);
 			Front = XMVector3Normalize(Front);
 
-			f = Aegis::Vector3::Transform(Aegis::Math::XMVECTORToVector3(Right), q);
+			f = aegis::Vector3::Transform(aegis::Math::XMVECTORToVector3(Right), q);
 
-			Right = Aegis::Math::Vector3ToXMVECTOR(f);
+			Right = aegis::Math::Vector3ToXMVECTOR(f);
 			Right = XMVector3Normalize(Right);
 		}
 

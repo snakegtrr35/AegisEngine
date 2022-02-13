@@ -13,16 +13,17 @@
 #include	"Main_Menu.h"
 #include	"Game.h"
 
-using namespace Aegis;
+using namespace aegis;
 
 static bool flag = false;
 
-static unique_ptr<SPRITE_ANIMATION> sprite_anime = nullptr;
+static std::unique_ptr<SPRITE_ANIMATION> sprite_anime = nullptr;
+
 
 void TITLE::Init()
 {
 	{
-		sprite_anime = make_unique<SPRITE_ANIMATION>();
+		sprite_anime = std::make_unique<SPRITE_ANIMATION>();
 
 		sprite_anime->SetPosition(Vector2(SCREEN_WIDTH * 0.5, SCREEN_HEIGHT * 0.5));
 		sprite_anime->SetSize(Vector4(SCREEN_HEIGHT * 0.5, SCREEN_WIDTH * 0.5, SCREEN_HEIGHT * 0.5, SCREEN_WIDTH * 0.5));
@@ -85,18 +86,18 @@ void TITLE::Update(float delta_time)
 		{
 			static short cnt = 0;
 
-			if (KEYBOARD::Trigger_Keyboard(BYTE(Aegis::KeyCode::UP)))
+			if (KEYBOARD::Trigger_Keyboard(BYTE(aegis::KeyCode::UP)))
 			{
 				cnt--;
-				cnt = Aegis::Math::Loop_Minus(cnt, 3);
+				cnt = aegis::Math::Loop_Minus(cnt, 3);
 
 				AUDIO_MANAGER::Play_Sound_Object(SOUND_INDEX::SOUND_INDEX_SENTAKU, false);
 			}
 
-			if (KEYBOARD::Trigger_Keyboard(BYTE(Aegis::KeyCode::DOWN)))
+			if (KEYBOARD::Trigger_Keyboard(BYTE(aegis::KeyCode::DOWN)))
 			{
 				cnt++;
-				cnt = Aegis::Math::Loop_Plus(cnt, 3);
+				cnt = aegis::Math::Loop_Plus(cnt, 3);
 
 				AUDIO_MANAGER::Play_Sound_Object(SOUND_INDEX::SOUND_INDEX_SENTAKU, false);
 			}
@@ -175,7 +176,7 @@ void TITLE::Uninit()
 //	{
 //		const type_info& id = typeid(*this);
 //
-//		string name(id.name());
+//		std::string name(id.name());
 //
 //		// 置換
 //		Replace_String(name, "class ", "      ");
@@ -205,7 +206,7 @@ void TITLE::Load(SCENE* scene)
 	{
 		const type_info& id = typeid(*scene);
 
-		string name(id.name());
+		std::string name(id.name());
 
 		// 置換
 		Replace_String(name, "class ", "");
@@ -235,11 +236,11 @@ void TITLE::Load(SCENE* scene)
 
 			title->SetSize(Vector4(SCREEN_HEIGHT * 0.5f, SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.5f, SCREEN_WIDTH * 0.5f));
 
-			title->SetTexture(string("title.png"));
+			title->SetTexture(std::string("title.png"));
 
 			SPRITE* arrow = title->Add_Child_Sptite("arrow");
 
-			arrow->SetTexture(string("arrow.png"));
+			arrow->SetTexture(std::string("arrow.png"));
 
 			title->Set_Position_Child("arrow", *title->GetPosition(), Vector2(0.0f, 65.0f + 140.0f));
 
@@ -256,7 +257,7 @@ void TITLE::Load(SCENE* scene)
 	{
 		const type_info& id = typeid(*scene);
 
-		string name(id.name());
+		std::string name(id.name());
 
 		// 置換
 		Replace_String(name, "class ", "");

@@ -20,7 +20,7 @@
 
 #include "Color.h"
 
-namespace Aegis
+namespace aegis
 {
 	namespace Math
 	{

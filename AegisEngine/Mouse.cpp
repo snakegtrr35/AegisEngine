@@ -5,9 +5,9 @@
 #include	"Mouse.h"
 #include	<algorithm>
 
-using namespace Aegis;
+using namespace aegis;
 
-unique_ptr<MOUSE> MOUSE::pMouse = nullptr;
+std::unique_ptr<MOUSE> MOUSE::pMouse = nullptr;
 
 void MOUSE::Init(void)
 {
@@ -77,8 +77,8 @@ const Vector2 MOUSE::Get_Position()
 {
 	Vector2 pos;
 
-	pos.x = static_cast<Aegis::float32>(Pos.x - OldPos.x);
-	pos.y = static_cast<Aegis::float32>(Pos.y - OldPos.y);
+	pos.x = static_cast<aegis::float32>(Pos.x - OldPos.x);
+	pos.y = static_cast<aegis::float32>(Pos.y - OldPos.y);
 
 	pos.x *= Mouse_Sensitivity;
 	pos.y *= Mouse_Sensitivity;

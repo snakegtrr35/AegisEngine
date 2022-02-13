@@ -5,7 +5,7 @@
 #include	"Scene.h"
 #include	"Player.h"
 
-using namespace Aegis;
+using namespace aegis;
 
 UINT SHADOW_MAP::WIDTH = 2048;
 UINT SHADOW_MAP::HEIGHT = 2048;
@@ -353,7 +353,7 @@ void SHADOW_MAP::Set_LightPos(const Vector3& pos)
 	LightPos = pos;
 }
 
-void SHADOW_MAP::Set_Target(const weak_ptr<GameObject>& object)
+void SHADOW_MAP::Set_Target(const std::weak_ptr<GameObject>& object)
 {
 	Target = object;
 }

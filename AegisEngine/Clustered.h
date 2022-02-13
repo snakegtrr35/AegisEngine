@@ -14,26 +14,26 @@ class CLUSTERED {
 private:
 
 	struct CLSTER_BUFFER {
-		Aegis::Vector3 Scale;
+		aegis::Vector3 Scale;
 		float dummy1;
 
-		Aegis::Vector3 Bias;
+		aegis::Vector3 Bias;
 		float dummy2;
 	};
 
 	struct CONSTATNT_BUFFER {
-		Aegis::Vector3 Min;
+		aegis::Vector3 Min;
 		float dummy1;
 
-		Aegis::Vector3 Scale;
+		aegis::Vector3 Scale;
 		float dummy2;
 
-		Aegis::Vector3 Bias;
+		aegis::Vector3 Bias;
 		float dummy3;
 	};
 
-	using CLSTER = array<array<array<UINT, CLUSTERED_X>, CLUSTERED_Y>, CLUSTERED_Z>;
-	using LIGHT_LIST = array<array<UINT, CLUSTERED_X* CLUSTERED_Y* CLUSTERED_Z>, 32>;
+	using CLSTER = aegis::array<aegis::array<aegis::array<UINT, CLUSTERED_X>, CLUSTERED_Y>, CLUSTERED_Z>;
+	using LIGHT_LIST = aegis::array<aegis::array<UINT, CLUSTERED_X* CLUSTERED_Y* CLUSTERED_Z>, 32>;
 
 	ComPtr<ID3D11Buffer>				ConstatntBuffer;
 
@@ -50,21 +50,21 @@ private:
 	ComPtr<ID3D11Buffer>				ClusterBuffer;
 
 
-	unique_ptr<CLSTER>					Cluster;
-	unique_ptr<LIGHT_LIST>				LightList;
+	std::unique_ptr<CLSTER>					Cluster;
+	std::unique_ptr<LIGHT_LIST>				LightList;
 
 	BOUNDING_FRUSTUM					m_Frustum;
 	BOUNDING_AABB						m_Aabb;
 
-	array<array<array<bool, CLUSTERED_X>, CLUSTERED_Y>, CLUSTERED_Z> m_ClusterFlags = {};
+	aegis::array<aegis::array<aegis::array<bool, CLUSTERED_X>, CLUSTERED_Y>, CLUSTERED_Z> m_ClusterFlags = {};
 
-	Aegis::Vector3  m_Max = {}, m_Min = {};
+	aegis::Vector3  m_Max = {}, m_Min = {};
 
-	void Cale_Cluster(Aegis::Vector3& max, Aegis::Vector3& min);
+	void Cale_Cluster(aegis::Vector3& max, aegis::Vector3& min);
 
 public:
 
-	CLUSTERED() : Cluster(make_unique<CLSTER>()), LightList(make_unique<LIGHT_LIST>()) {}
+	CLUSTERED() : Cluster(std::make_unique<CLSTER>()), LightList(std::make_unique<LIGHT_LIST>()) {}
 	~CLUSTERED() { Uninit(); };
 
 	bool Init();

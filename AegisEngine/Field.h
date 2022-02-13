@@ -30,10 +30,10 @@ class FIELD : public GameObject {
 	ComPtr<ID3D11Buffer> pIndexBuffer;
 
 	//! テクスチャ
-	unique_ptr<TEXTURE> Texture;
+	std::unique_ptr<TEXTURE> Texture;
 
 	//! 幅と高さ
-	Aegis::Vector2 WH;
+	aegis::Vector2 WH;
 
 public:
 
@@ -49,7 +49,7 @@ public:
 	* @param wh サイズ
 	* @details 引数無しコンストラクタ
 	*/
-	FIELD(Aegis::Vector3 position, Aegis::Vector2 wh);
+	FIELD(aegis::Vector3 position, aegis::Vector2 wh);
 
 	/**
 	* @brief デストラクタ
@@ -99,21 +99,21 @@ public:
 	* @param position 座標
 	* @details 座標の設定をする関数
 	*/
-	void SetPosition(Aegis::Vector3& position);
+	void SetPosition(aegis::Vector3& position);
 
 	/**
 	* @brief サイズの設定関数
 	* @param wh サイズ
 	* @details サイズの設定をする関数
 	*/
-	void SetWH(const Aegis::Vector2 wh);
+	void SetWH(const aegis::Vector2 wh);
 
 	/**
 	* @brief テクスチャの設定関数
 	* @param file_name テクスチャの設定(テクスチャの名前)
 	* @details テクスチャの設定をする関数
 	*/
-	void SetTexture(const string& const file_name);
+	void SetTexture(const std::string& const file_name);
 
 	template<typename Archive>
 	void serialize(Archive& ar)

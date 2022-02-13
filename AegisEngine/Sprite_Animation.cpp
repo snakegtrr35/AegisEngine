@@ -3,7 +3,7 @@
 #include	"manager.h"
 #include	"ShadowMap.h"
 
-using namespace Aegis;
+using namespace aegis;
 
 SPRITE_ANIMATION::SPRITE_ANIMATION()
 {
@@ -22,7 +22,7 @@ SPRITE_ANIMATION::SPRITE_ANIMATION()
 
 	Ty_Param = Tx_Param = -1.0f;
 
-	SetTexture(string("Explosion.png"));
+	SetTexture(std::string("Explosion.png"));
 }
 
 SPRITE_ANIMATION::SPRITE_ANIMATION(Vector2 position, Vector4 size)
@@ -46,7 +46,7 @@ SPRITE_ANIMATION::SPRITE_ANIMATION(Vector2 position, Vector4 size)
 
 	Ty_Param = Tx_Param = -1.0f;
 
-	SetTexture(string("Explosion.png"));
+	SetTexture(std::string("Explosion.png"));
 }
 
 SPRITE_ANIMATION::~SPRITE_ANIMATION()

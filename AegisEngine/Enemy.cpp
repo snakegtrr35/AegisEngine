@@ -17,7 +17,7 @@
 #include	"Math.h"
 #include	"include/engine/core/random/Random.h"
 
-using namespace Aegis;
+using namespace aegis;
 
 static void Create_Bullet(Vector3& position, const Vector3& front);
 
@@ -43,9 +43,9 @@ void ENEMY::Init()
 
 	{
 		//string name = "asset/model/Player.fbx";
-		string name("asset/model/viranrifle.fbx");
+		std::string name("asset/model/viranrifle.fbx");
 
-		Model = make_unique<CMODEL>();
+		Model = std::make_unique<CMODEL>();
 
 		Model->Load(name);
 
@@ -167,7 +167,7 @@ void ENEMY::Update(float delta_time)
 	if (0.5f <= Time)
 	{
 		// 弾を撃つ
-		if(Aegis::Random::GetRandomfloat() <= 0.01f)
+		if(aegis::Random::GetRandomfloat() <= 0.01f)
 		{
 			XMVECTOR vector = XMLoadFloat3(&vec);
 			vector = XMVector3Normalize(vector);
@@ -227,7 +227,7 @@ void Create_Bullet(Vector3& position, const Vector3& front)
 
 	auto bullets = scene->Get_Game_Objects<BULLET>();
 
-	auto bullet = scene->Add_Game_Object<BULLET>( LAYER_NAME::GAMEOBJECT, "bullet" + to_string(bullets.size() + 1) );
+	auto bullet = scene->Add_Game_Object<BULLET>( LAYER_NAME::GAMEOBJECT, "bullet" + std::to_string(bullets.size() + 1) );
 
 	//bullet->Init();
 

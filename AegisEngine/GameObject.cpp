@@ -2,11 +2,12 @@
 #define new new(_NORMAL_BLOCK, __FILE__, __LINE__)
 #endif // _DEBUG
 
-#include	"GameObject.h"
+#include "GameObject.h"
+#include "include\/engine\core\memory\aegisAllocator.h"
 
-unordered_set<string> GameObject::Object_Name_Map;
+aegis::unordered_set<std::string> GameObject::Object_Name_Map;
 
-GameObject::GameObject() : Object_Name("none"), DestroyFlag(false), Uuid(Aegis::Uuid::GetUuid())
+GameObject::GameObject() : Object_Name("none"), DestroyFlag(false), Uuid(aegis::Uuid::GetUuid())
 {
 	Component.reset(new COMPONENT_MANEGER());
 }
@@ -45,7 +46,7 @@ bool GameObject::Destroy()
 	return DestroyFlag;
 };
 
-void GameObject::Set_Object_Name(const string& name)
+void GameObject::Set_Object_Name(const std::string& name)
 {
 #ifdef _DEBUG
 	if (Object_Name_Map.emplace(name).second)
@@ -62,3 +63,55 @@ void GameObject::Set_Object_Name(const string& name)
 	Object_Name = name;
 #endif // _DEBUG
 };
+
+#undef new new(_NORMAL_BLOCK, __FILE__, __LINE__)
+
+void* GameObject::operator new(aegis::uint64 size)
+{
+	return aegis::memory::AegisAllocator::allocate(size, aegis::memory::AllocatorType::Default);
+}
+
+void* GameObject::operator new(aegis::uint64 size, std::align_val_t alignment)
+{
+	return aegis::memory::AegisAllocator::allocate(size, alignment, aegis::memory::AllocatorType::Default);
+}
+
+void* GameObject::operator new[](aegis::uint64 size)
+{
+	return aegis::memory::AegisAllocator::allocate(size, aegis::memory::AllocatorType::Default);
+}
+
+void* GameObject::operator new[](aegis::uint64 size, std::align_val_t alignment)
+{
+	return aegis::memory::AegisAllocator::allocate(size, alignment, aegis::memory::AllocatorType::Default);
+}
+
+void GameObject::operator delete(void* ptr, aegis::uint64 size) noexcept
+{
+	return aegis::memory::AegisAllocator::deallocate(ptr, size, aegis::memory::AllocatorType::Default);
+}
+
+void GameObject::operator delete(void* ptr, std::align_val_t alignment) noexcept
+{
+	aegis::memory::AegisAllocator::deallocate(ptr, alignment, aegis::memory::AllocatorType::Default);
+}
+
+void GameObject::operator delete(void* ptr, aegis::uint64 size, std::align_val_t alignment) noexcept
+{
+	aegis::memory::AegisAllocator::deallocate(ptr, size, aegis::memory::AllocatorType::Default);
+}
+
+void GameObject::operator delete[](void* ptr, aegis::uint64 size) noexcept
+{
+	aegis::memory::AegisAllocator::deallocate(ptr, size, aegis::memory::AllocatorType::Default);
+}
+
+void GameObject::operator delete[](void* ptr, std::align_val_t alignment) noexcept
+{
+	aegis::memory::AegisAllocator::deallocate(ptr, alignment, aegis::memory::AllocatorType::Default);
+}
+
+void GameObject::operator delete[](void* ptr, aegis::uint64 size, std::align_val_t alignment) noexcept
+{
+	aegis::memory::AegisAllocator::deallocate(ptr, size, aegis::memory::AllocatorType::Default);
+}

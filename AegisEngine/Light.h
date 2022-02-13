@@ -14,12 +14,12 @@ enum class LIGHT_TYPE : UINT {
 struct LIGHT_BUFFER {
 	// 共通部分
 	UINT			Enable;
-	Aegis::Vector3	Position;
+	aegis::Vector3	Position;
 
-	Aegis::COLOR	Color;
+	aegis::COLOR	Color;
 
 	UINT			Type;
-	Aegis::Vector3	Dummy;
+	aegis::Vector3	Dummy;
 
 	LIGHT_BUFFER();
 };
@@ -36,7 +36,7 @@ void serialize(Archive& ar, LIGHT_BUFFER& light)
 class LIGHTS {
 private:
 
-	static array<LIGHT_BUFFER,		MAX_NUM_LIGHTS> Lights;
+	static aegis::array<LIGHT_BUFFER, MAX_NUM_LIGHTS> Lights;
 
 	static ComPtr<ID3D11Buffer>		LightBuffer;
 
@@ -49,7 +49,7 @@ public:
 	void Update();
 	void Uninit();
 
-	 static array<LIGHT_BUFFER, MAX_NUM_LIGHTS>* Get_Lights() {
+	 static aegis::array<LIGHT_BUFFER, MAX_NUM_LIGHTS>* Get_Lights() {
 		return &Lights;
 	}
 

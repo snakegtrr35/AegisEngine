@@ -14,13 +14,13 @@
 #include	"Debug_Camera.h"
 #include	"audio_clip.h"
 
-using namespace Aegis;
+using namespace aegis;
 
 static void Create_Bullet(Vector3& position, const Vector3& front);
 
 PLAYER::PLAYER(void)
 {
-	Model = make_unique<CMODEL>();
+	Model = std::make_unique<CMODEL>();
 	//Model = new FBXmodel();
 }
 
@@ -32,7 +32,7 @@ PLAYER::~PLAYER()
 void PLAYER::Init(void)
 {
 	{
-		string name = "asset/model/viranrifle.fbx";
+		std::string name = "asset/model/viranrifle.fbx";
 		//string name = "asset/model/kakunin_joint.fbx";
 
 		Model->Load(name);
@@ -170,7 +170,7 @@ void Create_Bullet(Vector3& position, const Vector3& front)
 
 	auto bullets = scene->Get_Game_Objects<BULLET>();
 
-	string name = "1";
+	std::string name = "1";
 	int cnt = 1;
 	if (!bullets.empty())
 	{
@@ -181,7 +181,7 @@ void Create_Bullet(Vector3& position, const Vector3& front)
 		cnt++;
 	}
 
-	auto bullet = scene->Add_Game_Object<BULLET>(LAYER_NAME::GAMEOBJECT, "bullet" + to_string(cnt));
+	auto bullet = scene->Add_Game_Object<BULLET>(LAYER_NAME::GAMEOBJECT, "bullet" + std::to_string(cnt));
 
 	bullet->Get_Transform().Set_Position(position);
 	bullet->Set_Move_Vector(front);

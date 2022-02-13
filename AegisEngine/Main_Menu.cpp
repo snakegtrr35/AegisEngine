@@ -22,14 +22,14 @@
 
 #include	"Skybox.h"
 
-using namespace Aegis;
+using namespace aegis;
 
-static unique_ptr<SPRITE_ANIMATION> sprite_anime;
+static std::unique_ptr<SPRITE_ANIMATION> sprite_anime;
 
 void MAIN_MENU::Init()
 {
 	{
-		sprite_anime = make_unique<SPRITE_ANIMATION>();
+		sprite_anime = std::make_unique<SPRITE_ANIMATION>();
 
 		sprite_anime->SetPosition(Vector2(SCREEN_WIDTH * 0.5, SCREEN_HEIGHT * 0.5));
 		sprite_anime->SetSize(Vector4(SCREEN_HEIGHT * 0.5, SCREEN_WIDTH * 0.5, SCREEN_HEIGHT * 0.5, SCREEN_WIDTH * 0.5));
@@ -119,7 +119,7 @@ void MAIN_MENU::Uninit()
 	{
 		const type_info& id = typeid(*this);
 
-		string name(id.name());
+		std::string name(id.name());
 
 		// 置換
 		Replace_String(name, "class ", "");
@@ -151,7 +151,7 @@ void MAIN_MENU::Load(SCENE* scene)
 	{
 		const type_info& id = typeid(*scene);
 
-		string name(id.name());
+		std::string name(id.name());
 
 		// 置換
 		Replace_String(name, "class ", "");
@@ -248,9 +248,9 @@ void MAIN_MENU::Load(SCENE* scene)
 
 		//	text->SetSize(Vector4(20, 20, 20, 20));
 
-		//	text->Set_Object_Name(string("delta_time"));
+		//	text->Set_Object_Name(std::string("delta_time"));
 
-		//	//string time = to_string(Time);
+		//	//std::string time = to_string(Time);
 
 		//	text->Edit("0.000");
 		//}

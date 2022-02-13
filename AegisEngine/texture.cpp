@@ -2,13 +2,13 @@
 #include	"Texture_Manager.h"
 #include	"Renderer.h"
 
-using namespace Aegis;
+using namespace aegis;
 
-TEXTURE::TEXTURE() : FileName("none"), File(hash<string>()(FileName))
+TEXTURE::TEXTURE() : FileName("none"), File(std::hash<std::string>()(FileName))
 {
 }
 
-TEXTURE::TEXTURE(const string& file_name) : FileName(file_name), File(hash<string>()(file_name))
+TEXTURE::TEXTURE(std::string_view file_name) : FileName(file_name), File(std::hash<std::string_view>()(file_name))
 {
 	TEXTURE_MANEGER::Get_Instance()->Add_ReferenceCnt(File);
 }
@@ -26,13 +26,13 @@ void TEXTURE::Set_Texture(void)
 //========================================
 // テクスチャ名の設定
 //========================================
-void TEXTURE::Set_Texture_Name(const string& file_name)
+void TEXTURE::Set_Texture_Name(const std::string& file_name)
 {
 	if (file_name != FileName)
 	{
 		TEXTURE_MANEGER::Get_Instance()->Sub_ReferenceCnt(File);
 		FileName = file_name;
-		File = hash<string>()(file_name);
+		File = std::hash<std::string>()(file_name);
 		TEXTURE_MANEGER::Get_Instance()->Add_ReferenceCnt(File);
 	}
 }
@@ -40,18 +40,18 @@ void TEXTURE::Set_Texture_Name(const string& file_name)
 //========================================
 // テクスチャ名の取得
 //========================================
-const string& TEXTURE::Get_Texture_Name(void)
+const std::string& TEXTURE::Get_Texture_Name(void)
 {
 	return FileName;
 }
 
-Aegis::Int2* const TEXTURE::Get_WH()
+aegis::Int2* const TEXTURE::Get_WH()
 {
 	return TEXTURE_MANEGER::Get_Instance()->Get_WH(File);
 }
 
 
-map<wstring,unique_ptr<ID3D11ShaderResourceView, Release>> FONT::FontResource;
+aegis::unordered_map<std::wstring,std::unique_ptr<ID3D11ShaderResourceView, Release>> FONT::FontResource;
 ID3D11SamplerState* FONT::SamplerState = nullptr;
 
 
@@ -74,13 +74,13 @@ void FONT::Load_Font()
 	CRenderer* render = CRenderer::getInstance();
 
 	// フォントデータ
-	wstring Font;
+	std::wstring Font;
 	{
-		string Font01("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789\ -+*=/^.,;'\"!?()[]{}");
+		std::string Font01("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789\ -+*=/^.,;'\"!?()[]{}");
 
-		string Font02("あいおうえおかきくけこさしすせそたちつてとなにぬねのはひふへほまみむめもやゆよらりるれろわをんがぎぐげござじずぜぞだぢづでどばびぶべぼぱぴぷぺぽゃゅょっ");
+		std::string Font02("あいおうえおかきくけこさしすせそたちつてとなにぬねのはひふへほまみむめもやゆよらりるれろわをんがぎぐげござじずぜぞだぢづでどばびぶべぼぱぴぷぺぽゃゅょっ");
 
-		string Font03("アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲンガギグゲゴザジズゼゾダヂヅデドバビブベボパピプペポャュョッ");
+		std::string Font03("アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲンガギグゲゴザジズゼゾダヂヅデドバビブベボパピプペポャュョッ");
 
 		Font01 = Font01 + Font02;
 
@@ -184,7 +184,7 @@ void FONT::Load_Font()
 	HRESULT hr;
 	D3D11_MAPPED_SUBRESOURCE hMappedResource;
 
-	wstring f;
+	std::wstring f;
 
 	for (auto font : Font)
 	{
@@ -262,7 +262,7 @@ void FONT::Load_Font()
 	}
 }
 
-void FONT::Load_Font(const wstring& one_character)
+void FONT::Load_Font(const std::wstring& one_character)
 {
 	CRenderer* render = CRenderer::getInstance();
 
@@ -403,13 +403,13 @@ void FONT::Load_Font(const wstring& one_character)
 
 	SAFE_RELEASE(font_texture);
 
-	wstring f;
+	std::wstring f;
 	f.push_back(font);
 
 	FontResource[f].reset(ShaderResourceView);
 }
 
-void FONT::Add_Font(const wstring& one_character)
+void FONT::Add_Font(const std::wstring& one_character)
 {
 	for (auto tex = FontResource.begin(); tex != FontResource.end(); tex++)
 	{
@@ -420,7 +420,7 @@ void FONT::Add_Font(const wstring& one_character)
 	}
 }
 
-ID3D11ShaderResourceView* FONT::Get_Font_Resource(const wstring& one_character)
+ID3D11ShaderResourceView* FONT::Get_Font_Resource(const std::wstring& one_character)
 {
 	if (FontResource.end() != FontResource.find(one_character))
 	{

@@ -24,7 +24,7 @@ private:
 	static float Lenght_Z;
 	static float Lenght_Y;
 
-	Aegis::Vector3 Velocity;
+	aegis::Vector3 Velocity;
 
 	RECT Viewport;
 
@@ -83,7 +83,7 @@ public:
 		return Viewing_Angle;
 	};
 
-	bool Get_Visibility(const Aegis::Vector3& position);
+	bool Get_Visibility(const aegis::Vector3& position);
 
 	void Set_Move_Enable(const bool flag) {
 		MoveEnable = flag;

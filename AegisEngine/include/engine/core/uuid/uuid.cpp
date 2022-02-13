@@ -1,6 +1,6 @@
 ﻿#include "uuid.h"
 
-namespace Aegis
+namespace aegis
 {
 	std::mutex Uuid::lock_mutex;
 

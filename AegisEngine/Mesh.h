@@ -25,7 +25,7 @@
 #define ARRAY_SIZE_IN_ELEMENTS(a) (sizeof(a)/sizeof(a[0]))
 
 struct TEXTURE_S {
-	string FileName;
+	std::string FileName;
 	ID3D11ShaderResourceView* Texture = nullptr;
 };
 
@@ -42,7 +42,7 @@ struct MESH_SUBSET
 	UINT StartVertex;
 	UINT StartIndex;
 	UINT IndexNum;
-	vector<UINT> Indeces;
+	aegis::vector<UINT> Indeces;
 
 	MESH_SUBSET() {
 		StartVertex = 0;
@@ -53,42 +53,42 @@ struct MESH_SUBSET
 
 struct VectorKey {
 	unsigned int time;
-	Aegis::Vector3 value;
+	aegis::Vector3 value;
 };
 
 struct QuatKey {
 	unsigned int time;
-	Aegis::Vector4 value;
+	aegis::Vector4 value;
 };
 
 struct NodeAnim {
-	string node_name;
+	std::string node_name;
 
-	vector<VectorKey> translate;
-	vector<VectorKey> scaling;
-	vector<QuatKey>   rotation;
+	aegis::vector<VectorKey> translate;
+	aegis::vector<VectorKey> scaling;
+	aegis::vector<QuatKey>   rotation;
 };
 
 struct Anim {
-	vector<NodeAnim> body;
+	aegis::vector<NodeAnim> body;
 };
 
 class MESH {
 private:
 	//vector<VERTEX_3D> Vertices;
-	vector<UINT> Indices;
-	vector<TEXTURE_S> Textures;
+	aegis::vector<UINT> Indices;
+	aegis::vector<TEXTURE_S> Textures;
 
-	unordered_map<string, Anim> Animation;
+	aegis::unordered_map<std::string, Anim> Animation;
 
 	ComPtr<ID3D11Buffer> VertexBuffer;
 	ComPtr<ID3D11Buffer> IndexBuffer;
 
-	string Name;
+	std::string Name;
 
 	XMMATRIX Matrix;
 
-	unordered_map<string, MESH> ChildMeshes;
+	aegis::unordered_map<std::string, MESH> ChildMeshes;
 
 	void Draw_Mesh(XMMATRIX& parent_matrix);
 
@@ -96,19 +96,19 @@ private:
 
 	void Draw_DPP_Mesh(XMMATRIX& parent_matrix);
 
-	void Draw_Mesh_Animation(XMMATRIX& parent_matrix, unordered_map<string, Anim>& anime, DWORD frame, const string& name1, const string& name2 = string("none"), float blend = 0.0f);
+	void Draw_Mesh_Animation(XMMATRIX& parent_matrix, aegis::unordered_map<std::string, Anim>& anime, DWORD frame, const std::string& name1, const std::string& name2 = std::string("none"), float blend = 0.0f);
 
-	void Draw_Shadow_Mesh_Animation(XMMATRIX& parent_matrix, unordered_map<string, Anim>& anime, DWORD frame, const string& name1, const string& name2 = string("none"), float blend = 0.0f);
+	void Draw_Shadow_Mesh_Animation(XMMATRIX& parent_matrix, aegis::unordered_map<std::string, Anim>& anime, DWORD frame, const std::string& name1, const std::string& name2 = std::string("none"), float blend = 0.0f);
 
-	void Draw_DPP_Mesh_Animation(XMMATRIX& parent_matrix, unordered_map<string, Anim>& anime, DWORD frame, const string& name1, const string& name2 = string("none"), float blend = 0.0f);
+	void Draw_DPP_Mesh_Animation(XMMATRIX& parent_matrix, aegis::unordered_map<std::string, Anim>& anime, DWORD frame, const std::string& name1, const std::string& name2 = std::string("none"), float blend = 0.0f);
 
-	bool SetupMesh(vector<VERTEX_3D>& vertices);
+	bool SetupMesh(aegis::vector<VERTEX_3D>& vertices);
 
 public:
 
 	MESH();
 
-	MESH(vector<VERTEX_3D>& vertices, vector<UINT>& indices, vector<TEXTURE_S>& textures, XMMATRIX& matrix, string name);
+	MESH(aegis::vector<VERTEX_3D>& vertices, aegis::vector<UINT>& indices, aegis::vector<TEXTURE_S>& textures, XMMATRIX& matrix, std::string name);
 
 	~MESH();
 
@@ -118,23 +118,23 @@ public:
 
 	void Draw_DPP(XMMATRIX& matrix);
 
-	void Draw_Animation(XMMATRIX& matrix, unordered_map<string, Anim>& anime, DWORD frame, const string& name1, const string& name2 = string("none"), float blend = 0.0f);
+	void Draw_Animation(XMMATRIX& matrix, aegis::unordered_map<std::string, Anim>& anime, DWORD frame, const std::string& name1, const std::string& name2 = std::string("none"), float blend = 0.0f);
 
-	void Draw_Shadow_Animation(XMMATRIX& matrix, unordered_map<string, Anim>& anime, DWORD frame, const string& name1, const string& name2 = string("none"), float blend = 0.0f);
+	void Draw_Shadow_Animation(XMMATRIX& matrix, aegis::unordered_map<std::string, Anim>& anime, DWORD frame, const std::string& name1, const std::string& name2 = std::string("none"), float blend = 0.0f);
 
-	void Draw_DPP_Animation(XMMATRIX& matrix, unordered_map<string, Anim>& anime, DWORD frame, const string& name1, const string& name2 = string("none"), float blend = 0.0f);
+	void Draw_DPP_Animation(XMMATRIX& matrix, aegis::unordered_map<std::string, Anim>& anime, DWORD frame, const std::string& name1, const std::string& name2 = std::string("none"), float blend = 0.0f);
 
 	void Update();
 
 	void Uninit();
 
-	void SetAnimation(const string& name, const Anim& animations);
+	void SetAnimation(const std::string& name, const Anim& animations);
 
-	//void Add(const string name, const MESH& mesh);
+	//void Add(const std::string name, const MESH& mesh);
 
-	unordered_map<string, MESH>& Get();
+	aegis::unordered_map<std::string, MESH>& Get();
 
-	unordered_map<string, Anim>& Get_Anime();
+	aegis::unordered_map<std::string, Anim>& Get_Anime();
 
 	bool GetAnime();
 };
@@ -152,23 +152,23 @@ public:
 
 class MESHS {
 protected:
-	vector<VERTEX_3D> Vertices;
-	vector<UINT> Indices;
+	aegis::vector<VERTEX_3D> Vertices;
+	aegis::vector<UINT> Indices;
 
-	vector<TEXTURE_S> Textures;
+	aegis::vector<TEXTURE_S> Textures;
 
 	ComPtr<ID3D11Buffer> VertexBuffer;
 	ComPtr<ID3D11Buffer> IndexBuffer;
 
-	string Name; //! メッシュの名前
+	std::string Name; //! メッシュの名前
 
-	string TextureName;	//! テクスチャ名
+	std::string TextureName;	//! テクスチャ名
 
 	XMFLOAT4X4 Matrix;
 
-	vector<MESHS> ChildMeshes;
+	aegis::vector<MESHS> ChildMeshes;
 
-	void Draw_Mesh(XMMATRIX& parent_matrix, const vector<TEXTURE_S>& textures);
+	void Draw_Mesh(XMMATRIX& parent_matrix, const aegis::vector<TEXTURE_S>& textures);
 
 	void Draw_DPP_Mesh(XMMATRIX& parent_matrix);
 
@@ -179,13 +179,13 @@ public:
 	MESHS();
 
 
-	MESHS(vector<VERTEX_3D>& vertices, vector<UINT>& indices, string& texture_name, XMMATRIX& matrix, string name);
+	MESHS(aegis::vector<VERTEX_3D>& vertices, aegis::vector<UINT>& indices, std::string& texture_name, XMMATRIX& matrix, std::string name);
 
 	~MESHS() { Uninit(); }
 
 	void Init();
 
-	void Draw(XMMATRIX& matrix, const vector<TEXTURE_S>& textures);
+	void Draw(XMMATRIX& matrix, const aegis::vector<TEXTURE_S>& textures);
 
 	void Draw_DPP(XMMATRIX& matrix);
 
@@ -193,17 +193,17 @@ public:
 
 	void Uninit();
 
-	vector<MESHS>& Get_Meshs();
+	aegis::vector<MESHS>& Get_Meshs();
 
-	vector<TEXTURE_S>& Get_Textures();
+	aegis::vector<TEXTURE_S>& Get_Textures();
 
-	const string& Get_Name();
+	const std::string& Get_Name();
 
-	void Set_Name(const string& name);
+	void Set_Name(const std::string& name);
 
-	const string& Get_Texture_Name();
+	const std::string& Get_Texture_Name();
 
-	void Set_Texture_Name(const string& texture_name);
+	void Set_Texture_Name(const std::string& texture_name);
 
 	void Set(const MESHS& meshs);
 

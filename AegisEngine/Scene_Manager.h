@@ -17,11 +17,11 @@ private:
 #define DECIAL		float, double
 #define DX_MATH		XMINT2, XMINT3, XMINT4, XMUINT2, XMUINT3, XMUINT4, XMFLOAT2, XMFLOAT3, XMFLOAT4
 
-	typedef std::variant<INTEGER, DECIAL, DX_MATH, string> VARIANT;
+	typedef std::variant<INTEGER, DECIAL, DX_MATH, std::string> VARIANT;
 
-	static unique_ptr<SCENE> pScene;
+	static std::unique_ptr<SCENE> pScene;
 
-	unordered_map<string, VARIANT > GamaInstance;
+	aegis::unordered_map<std::string, VARIANT > GamaInstance;
 
 	static bool Scene_Change_Enable;
 
@@ -47,19 +47,19 @@ public:
 	const bool Get_Scene_Change_Enable();
 
 	template <typename T>
-	void Set_GameInstance(const string& name, T object) {
+	void Set_GameInstance(const std::string& name, T object) {
 		GamaInstance.emplace(name, object);
 	}
 
 	template <typename T>
-	const T* Get_GameInstance(const string& name) {
+	const T* Get_GameInstance(const std::string& name) {
 
 		if (GamaInstance.end() == GamaInstance.find(name)) return nullptr;
 
 		return std::get_if<T>(&GamaInstance[name]);
 	}
 
-	void Delete_GameInstance(const string& name);
+	void Delete_GameInstance(const std::string& name);
 
 	static SCENE* const Get_Scene();
 

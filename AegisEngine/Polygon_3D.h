@@ -15,9 +15,9 @@ struct POLYGOM {
 class POLYGON_3D : public GameObject {
 private:
 	ComPtr<ID3D11Buffer> pVertexBuffer;		// 頂点バッファ
-	unique_ptr<TEXTURE> Texture;		// テクスチャ
+	std::unique_ptr<TEXTURE> Texture;		// テクスチャ
 
-	Aegis::Vector3 XYZ;						// 幅と高さと奥行き
+	aegis::Vector3 XYZ;						// 幅と高さと奥行き
 
 protected:
 
@@ -28,7 +28,7 @@ public:
 	// position : 中心座標
 	// wh : 幅と高さ
 	//========================================
-	POLYGON_3D(Aegis::Vector3 position, Aegis::Vector3 xyz);
+	POLYGON_3D(aegis::Vector3 position, aegis::Vector3 xyz);
 	~POLYGON_3D();
 
 	void Init(void) override;
@@ -38,14 +38,14 @@ public:
 	void Update(float delta_time) override;
 	void Uninit(void) override;
 
-	void SetPosition(Aegis::Vector3& position);					// ポジションの設定
-	void SetXYZ(const Aegis::Vector3 xyz);							// 幅と高さの設定
-	void SetScaling(Aegis::Vector3& scaling);							// 拡大縮小の値の設定
-	void SetTexture(const string& const file_name);			// テクスチャの設定
+	void SetPosition(aegis::Vector3& position);					// ポジションの設定
+	void SetXYZ(const aegis::Vector3 xyz);							// 幅と高さの設定
+	void SetScaling(aegis::Vector3& scaling);							// 拡大縮小の値の設定
+	void SetTexture(const std::string& file_name);			// テクスチャの設定
 
-	Aegis::Vector3* const Get_Position();
-	Aegis::Vector3* const Get_Rotation();
-	Aegis::Vector3* const Get_Scaling();
+	aegis::Vector3* const Get_Position();
+	aegis::Vector3* const Get_Rotation();
+	aegis::Vector3* const Get_Scaling();
 
 	//template<typename Archive>
 	//void serialize(Archive& ar)

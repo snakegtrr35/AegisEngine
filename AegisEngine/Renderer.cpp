@@ -6,18 +6,18 @@
 
 #include	"manager.h"
 
-unique_ptr<CRenderer> CRenderer::m_Instance = nullptr;
+std::unique_ptr<CRenderer> CRenderer::m_Instance = nullptr;
 
 IDXGIAdapter3* pAdapter = nullptr;
 DXGI_QUERY_VIDEO_MEMORY_INFO info;
 
-using namespace Aegis;
+using namespace aegis;
 
 CRenderer* CRenderer::getInstance()
 {
 	if (nullptr == m_Instance)
 	{
-		m_Instance = make_unique<CRenderer>();
+		m_Instance = std::make_unique<CRenderer>();
 	}
 
 	return m_Instance.get();
@@ -587,7 +587,7 @@ bool CRenderer::Init3D()
 			IDXGIAdapter* pAdapter = nullptr;
 
 			DXGI_ADAPTER_DESC desc;
-			wstring str;
+			std::wstring str;
 
 			//ファクトリの作成
 			hr = CreateDXGIFactory1(__uuidof(IDXGIFactory1), reinterpret_cast<void**>(&pDXGIFactory));
@@ -605,9 +605,9 @@ bool CRenderer::Init3D()
 
 				if (SUCCEEDED(pAdapter->GetDesc(&desc)))
 				{
-					str = wstring(desc.Description);
+					str = std::wstring(desc.Description);
 
-					if (wstring::npos == str.find(L"Microsoft"))
+					if (std::wstring::npos == str.find(L"Microsoft"))
 					{
 						Adapters.emplace_back(pAdapter);
 					}
@@ -1229,10 +1229,10 @@ void CRenderer::Begin()
 
 
 #include	"Sprite.h"
-static unique_ptr<SPRITE> sprite;
+static std::unique_ptr<SPRITE> sprite;
 static bool flag = true;
 
-using namespace Aegis;
+using namespace aegis;
 
 void CRenderer::End_Draw()
 {
@@ -1240,7 +1240,7 @@ void CRenderer::End_Draw()
 	{
 		flag = false;
 
-		sprite = make_unique<SPRITE>();
+		sprite = std::make_unique<SPRITE>();
 
 		sprite.get()->SetPosition(Vector2(SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.5f));
 		sprite.get()->SetSize(Vector4(SCREEN_HEIGHT * 0.5f, SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.5f, SCREEN_WIDTH * 0.5f));
@@ -1410,7 +1410,7 @@ HRESULT CRenderer::Create_TextFormat(const TEXT_FOMAT& fomat)
 {
 	SAFE_RELEASE(m_DwriteTextFormat)
 
-	wstring font_name = stringTowstring(fomat.FontName);
+	std::wstring font_name = stringTowstring(fomat.FontName);
 
 	// テキストフォーマットの作成
 	HRESULT hr = m_DwriteFactory->CreateTextFormat(
@@ -1426,7 +1426,7 @@ HRESULT CRenderer::Create_TextLayout(const TEXT_LAYOUT& layout)
 	SAFE_RELEASE(m_TextLayout)
 
 	// テキストレイアウトを作成
-	wstring drawText;
+	std::wstring drawText;
 
 	drawText = stringTowstring(layout.Text);
 

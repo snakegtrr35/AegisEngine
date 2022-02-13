@@ -3,7 +3,7 @@
 
 #include "common.h"
 
-FILE_CHANGE_MONITOR::FILE_CHANGE_MONITOR(const string& directoryName) /*: m_directoryName(directoryName)*/
+FILE_CHANGE_MONITOR::FILE_CHANGE_MONITOR(const std::string& directoryName) /*: m_directoryName(directoryName)*/
 {
 	m_directoryHandle = nullptr;
 	m_eventHandle = nullptr;
@@ -70,9 +70,9 @@ bool FILE_CHANGE_MONITOR::Get_FileStack_Empty()
 	return m_fileActions.empty();
 }
 
-wstring FILE_CHANGE_MONITOR::Pop_FileStack()
+std::wstring FILE_CHANGE_MONITOR::Pop_FileStack()
 {
-	wstring file_name = *(m_fileActions.begin());
+	std::wstring file_name = *(m_fileActions.begin());
 	m_fileActions.erase(m_fileActions.begin());
 	return file_name;
 }
@@ -107,7 +107,7 @@ void FILE_CHANGE_MONITOR::readChanges()
 			return;
 		}
 
-		wstring m_fileName = wstring(pData->FileName).substr(0, pData->FileNameLength / sizeof(wchar_t));
+		std::wstring m_fileName = std::wstring(pData->FileName).substr(0, pData->FileNameLength / sizeof(wchar_t));
 
 		m_fileActions.insert(m_fileName);
 
@@ -115,7 +115,7 @@ void FILE_CHANGE_MONITOR::readChanges()
 	}
 }
 
-set<wstring>* FILE_CHANGE_MONITOR::Get()
+aegis::unordered_set<std::wstring>* FILE_CHANGE_MONITOR::Get()
 {
 	return &m_fileActions;
 }

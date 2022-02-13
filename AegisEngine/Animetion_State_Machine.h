@@ -1,23 +1,23 @@
-﻿#pragma once
+#pragma once
 
 #ifndef  ANIMETION_STATE_MACHINE_H
 #define ANIMETION_STATE_MACHINE_H
 
 /**
-* @brief ?A?j???[?V?????X?e?[?g?}?V???N???X
-* @details ???f????A?j???[?V????????p?N???X
+* @brief アニメーションステートマシンクラス
+* @details モデルのアニメーション管理用クラス
 */
 class ANIMETION_STATE {
 private:
-	unordered_map<string, string> Anime_Name_Map;		//!< ?S???A?j???[?V????????O
+	aegis::unordered_map<std::string, std::string> Anime_Name_Map;		//!< 全てのアニメーションの名前
 
-	string AnimeName;									//!< ??????????A?j???[?V????
-	string Next_Anime_Name;								//!< ?J????A?j???[?V????
+	std::string AnimeName;									//!< 現在再生中のアニメーション
+	std::string Next_Anime_Name;								//!< 遷移先のアニメーション
 
-	float Ratio;										//!< ????????A?j???[?V?????????
-	float Frame;										//!< ????A?j???[?V??????J?????????
+	float Ratio;										//!< 現在の二つのアニメーションの割合
+	float Frame;										//!< 二つのアニメーションを遷移させる時間
 
-	bool Enable;										//!< ?A?j???[?V??????J???????t???O
+	bool Enable;										//!< アニメーションの遷移中かのフラグ
 
 public:
 
@@ -32,7 +32,7 @@ public:
 
 		if (Enable)
 		{
-			Ratio = min(1.0f, Ratio + (1.0f / Frame));
+			Ratio = std::min(1.0f, Ratio + (1.0f / Frame));
 
 			if (1.0f == Ratio)
 			{
@@ -43,11 +43,11 @@ public:
 
 	}
 
-	void Add_Name(const string& name) {
+	void Add_Name(const std::string& name) {
 		Anime_Name_Map[name] = name;
 	}
 
-	//const unordered_map<string, string>& Get_Anime_Name_Map() {
+	//const aegis::unordered_map<std::string, std::string>& Get_Anime_Name_Map() {
 	//	return Anime_Name_Map;
 	//}
 
@@ -59,19 +59,19 @@ public:
 		return Enable;
 	}
 
-	void Set_Anime_Name(const string& anime_name) {
+	void Set_Anime_Name(const std::string& anime_name) {
 		AnimeName = anime_name;
 	}
 
-	string& Get_Anime_Name() {
+	std::string& Get_Anime_Name() {
 		return AnimeName;
 	}
 
-	string& Get_Next_Anime_Name() {
+	std::string& Get_Next_Anime_Name() {
 		return Next_Anime_Name;
 	}
 
-	void Change_Anime(const string& next_name, const float frame) {
+	void Change_Anime(const std::string& next_name, const float frame) {
 		Next_Anime_Name = next_name;
 		Frame = frame;
 		Enable = true;

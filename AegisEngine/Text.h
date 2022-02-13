@@ -12,19 +12,19 @@
 */
 class TEXTS :public  SPRITE {
 private:
-	string Text;	//!< 表示する文字列
+	std::string Text;	//!< 表示する文字列
 
 	/**
 	* @brief 描画関数
 	* @details 実際に描画する関数
 	*/
-	void Text_Draw(const string& text);
+	void Text_Draw(const std::string& text);
 
 	/**
 	* @brief 描画(Depth-pre-pass)関数
 	* @details Depth-pre-passをする関数
 	*/
-	void Text_Draw_DPP(const string& text);
+	void Text_Draw_DPP(const std::string& text);
 
 public:
 	/**
@@ -74,7 +74,7 @@ public:
 	* @param text 設定する文字列
 	* @details 表示する文字列を設定する関数
 	*/
-	void Edit(const string& text);
+	void Edit(const std::string& text);
 
 	template<typename Archive>
 	void serialize(Archive& ar)

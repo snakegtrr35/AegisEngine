@@ -5,7 +5,7 @@
 
 #include	<cstdint>
 
-namespace Aegis
+namespace aegis
 {
 	//using byte = std::uint8_t;
 	using int8 = std::int8_t;

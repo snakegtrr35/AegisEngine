@@ -16,7 +16,7 @@ private:
 	};
 
 	struct CONSTANT_LIGHT {
-		Aegis::Vector4 Direction;
+		aegis::Vector4 Direction;
 	};
 
 	//! デプスステンシルビュー
@@ -33,7 +33,7 @@ private:
 	CONSTANT_SHADOW_MAP					Shadow;
 	ComPtr<ID3D11Buffer>				LightBuffer;
 	//! 
-	Aegis::Vector3						LightPos;
+	aegis::Vector3						LightPos;
 	//!
 	CONSTANT_LIGHT						Light;
 
@@ -47,12 +47,12 @@ private:
 
 	ComPtr<ID3D11RenderTargetView> RenderTargetView;
 
-	weak_ptr<GameObject> Target;
+	std::weak_ptr<GameObject> Target;
 
 	static UINT WIDTH;
 	static UINT HEIGHT;
 
-	void Set_LightPos(const Aegis::Vector3& pos);
+	void Set_LightPos(const aegis::Vector3& pos);
 
 public:
 
@@ -67,7 +67,7 @@ public:
 
 	void Set_SamplerState();
 
-	void Set_Light(const Aegis::Vector3& pos);
+	void Set_Light(const aegis::Vector3& pos);
 
 	XMMATRIX& Get_View() {
 		return ViewMatrix;
@@ -81,7 +81,7 @@ public:
 		return Enable;
 	}
 
-	Aegis::Vector3 Get_LightPos() {
+	aegis::Vector3 Get_LightPos() {
 		return LightPos;
 	}
 
@@ -89,7 +89,7 @@ public:
 		return ShaderResourceView.Get();
 	}
 
-	void Set_Target(const weak_ptr<GameObject>& object);
+	void Set_Target(const std::weak_ptr<GameObject>& object);
 
 	const bool Target_Enable();
 

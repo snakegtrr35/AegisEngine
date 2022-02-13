@@ -6,7 +6,7 @@
 #include <cmath>
 #include <limits>
 
-namespace Aegis
+namespace aegis
 {
 	namespace Math
 	{

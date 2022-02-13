@@ -21,7 +21,7 @@ private:
 
 	ComPtr<ID3D11Buffer>	VertexBuffer;	// 頂点バッファ
 	ComPtr<ID3D11Buffer>	IndexBuffer;	// インデックスバッファ
-	unique_ptr<TEXTURE> Texture;						// テクスチャ
+	std::unique_ptr<TEXTURE> Texture;						// テクスチャ
 
 public:
 

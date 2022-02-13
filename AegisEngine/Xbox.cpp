@@ -1,6 +1,6 @@
 ﻿#include	"Xbox.h"
 
-using namespace Aegis;
+using namespace aegis;
 
 CONTROLER_STATE XBOX::Controllers[MAX_CONTROLLERS];
 CONTROLER_STATE XBOX::Old_Controllers[MAX_CONTROLLERS];

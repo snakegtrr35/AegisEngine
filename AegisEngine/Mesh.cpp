@@ -1,6 +1,6 @@
 ﻿#include	"Mesh.h"
 
-using namespace Aegis;
+using namespace aegis;
 
 MESH::MESH()
 {
@@ -8,7 +8,7 @@ MESH::MESH()
 	IndexBuffer = nullptr;
 }
 
-MESH::MESH(vector<VERTEX_3D>& vertices, vector<UINT>& indices, vector<TEXTURE_S>& textures, XMMATRIX& matrix, string name)
+MESH::MESH(vector<VERTEX_3D>& vertices, vector<UINT>& indices, vector<TEXTURE_S>& textures, XMMATRIX& matrix, std::string name)
 {
 	//Vertices = vertices;
 	Indices = indices;
@@ -39,17 +39,17 @@ void MESH::Draw_DPP(XMMATRIX& matrix)
 	Draw_DPP_Mesh(matrix);
 }
 
-void MESH::Draw_Animation(XMMATRIX& matrix, unordered_map<string, Anim>& anime, DWORD frame, const string& name1, const string& name2, float blend)
+void MESH::Draw_Animation(XMMATRIX& matrix, aegis::unordered_map<std::string, Anim>& anime, DWORD frame, const std::string& name1, const std::string& name2, float blend)
 {
 	Draw_Mesh_Animation(matrix, anime, frame, name1, name2, blend);
 }
 
-void MESH::Draw_Shadow_Animation(XMMATRIX& matrix, unordered_map<string, Anim>& anime, DWORD frame, const string& name1, const string& name2, float blend)
+void MESH::Draw_Shadow_Animation(XMMATRIX& matrix, aegis::unordered_map<std::string, Anim>& anime, DWORD frame, const std::string& name1, const std::string& name2, float blend)
 {
 	Draw_Shadow_Mesh_Animation(matrix, anime, frame, name1, name2, blend);
 }
 
-void MESH::Draw_DPP_Animation(XMMATRIX& matrix, unordered_map<string, Anim>& anime, DWORD frame, const string& name1, const string& name2, float blend)
+void MESH::Draw_DPP_Animation(XMMATRIX& matrix, aegis::unordered_map<std::string, Anim>& anime, DWORD frame, const std::string& name1, const std::string& name2, float blend)
 {
 	Draw_DPP_Mesh_Animation(matrix, anime, frame, name1, name2, blend);
 }
@@ -79,22 +79,22 @@ void MESH::Uninit()
 	ChildMeshes.clear();
 }
 
-void MESH::SetAnimation(const string& name, const Anim& animations)
+void MESH::SetAnimation(const std::string& name, const Anim& animations)
 {
 	Animation[name] = animations;
 }
 
-//void MESH::Add(const string name, const MESH& mesh)
+//void MESH::Add(const std::string name, const MESH& mesh)
 //{
 //	ChildMeshes[name] = mesh;
 //}
 
-unordered_map<string, MESH>& MESH::Get()
+aegis::unordered_map<std::string, MESH>& MESH::Get()
 {
 	return ChildMeshes;
 }
 
-unordered_map<string, Anim>& MESH::Get_Anime()
+aegis::unordered_map<std::string, Anim>& MESH::Get_Anime()
 {
 	return Animation;
 }
@@ -348,7 +348,7 @@ void MESH::Draw_DPP_Mesh(XMMATRIX& parent_matrix)
 	}
 }
 
-void MESH::Draw_Mesh_Animation(XMMATRIX& parent_matrix, unordered_map<string, Anim>& anime, DWORD frame, const string& name1, const string& name2, float blend)
+void MESH::Draw_Mesh_Animation(XMMATRIX& parent_matrix, aegis::unordered_map<std::string, Anim>& anime, DWORD frame, const std::string& name1, const std::string& name2, float blend)
 {
 	CRenderer* render = CRenderer::getInstance();
 	XMMATRIX world;
@@ -357,7 +357,7 @@ void MESH::Draw_Mesh_Animation(XMMATRIX& parent_matrix, unordered_map<string, An
 
 	render->GetDeviceContext()->IASetIndexBuffer(IndexBuffer.Get(), DXGI_FORMAT_R32_UINT, 0);
 
-	render->GetDeviceContext()->PSSetShaderResources(0, 1, &Textures[0].Texture);
+	render->GetDeviceContext()->PSSetShaderResources(0, 1, &(this->Textures[0].Texture));
 
 	// 3Dマトリックス設定
 	{
@@ -365,7 +365,7 @@ void MESH::Draw_Mesh_Animation(XMMATRIX& parent_matrix, unordered_map<string, An
 		{
 			for (auto i : anime[name1].body)
 			{
-				if (i.node_name == Name)
+				if (i.node_name == this->Name)
 				{
 					unsigned int f = frame % i.translate.begin()->time;
 
@@ -433,7 +433,7 @@ void MESH::Draw_Mesh_Animation(XMMATRIX& parent_matrix, unordered_map<string, An
 
 			for (auto i : anime[name1].body)
 			{
-				if (i.node_name == Name)
+				if (i.node_name == this->Name)
 				{
 					unsigned int f = frame % i.translate.begin()->time;
 
@@ -451,7 +451,7 @@ void MESH::Draw_Mesh_Animation(XMMATRIX& parent_matrix, unordered_map<string, An
 
 			for (auto i : anime[name2].body)
 			{
-				if (i.node_name == Name)
+				if (i.node_name == this->Name)
 				{
 					unsigned int f = frame % i.translate.begin()->time;
 
@@ -522,13 +522,13 @@ void MESH::Draw_Mesh_Animation(XMMATRIX& parent_matrix, unordered_map<string, An
 
 	render->GetDeviceContext()->DrawIndexed((UINT)Indices.size(), 0, 0);
 
-	for (auto child : ChildMeshes)
+	for (auto child : this->ChildMeshes)
 	{
 		child.second.Draw_Mesh_Animation(world, anime, frame, name1, name2, blend);
 	}
 }
 
-void MESH::Draw_Shadow_Mesh_Animation(XMMATRIX& parent_matrix, unordered_map<string, Anim>& anime, DWORD frame, const string& name1, const string& name2, float blend)
+void MESH::Draw_Shadow_Mesh_Animation(XMMATRIX& parent_matrix, aegis::unordered_map<std::string, Anim>& anime, DWORD frame, const std::string& name1, const std::string& name2, float blend)
 {
 	CRenderer* render = CRenderer::getInstance();
 	XMMATRIX world;
@@ -537,7 +537,7 @@ void MESH::Draw_Shadow_Mesh_Animation(XMMATRIX& parent_matrix, unordered_map<str
 
 	render->GetDeviceContext()->IASetIndexBuffer(IndexBuffer.Get(), DXGI_FORMAT_R32_UINT, 0);
 
-	render->GetDeviceContext()->PSSetShaderResources(0, 1, &Textures[0].Texture);
+	render->GetDeviceContext()->PSSetShaderResources(0, 1, &(this->Textures[0].Texture));
 
 	// 3Dマトリックス設定
 	{
@@ -545,7 +545,7 @@ void MESH::Draw_Shadow_Mesh_Animation(XMMATRIX& parent_matrix, unordered_map<str
 		{
 			for (auto i : anime[name1].body)
 			{
-				if (i.node_name == Name)
+				if (i.node_name == this->Name)
 				{
 					unsigned int f = frame % i.translate.begin()->time;
 
@@ -613,7 +613,7 @@ void MESH::Draw_Shadow_Mesh_Animation(XMMATRIX& parent_matrix, unordered_map<str
 
 			for (auto i : anime[name1].body)
 			{
-				if (i.node_name == Name)
+				if (i.node_name == this->Name)
 				{
 					unsigned int f = frame % i.translate.begin()->time;
 
@@ -631,7 +631,7 @@ void MESH::Draw_Shadow_Mesh_Animation(XMMATRIX& parent_matrix, unordered_map<str
 
 			for (auto i : anime[name2].body)
 			{
-				if (i.node_name == Name)
+				if (i.node_name == this->Name)
 				{
 					unsigned int f = frame % i.translate.begin()->time;
 
@@ -704,13 +704,13 @@ void MESH::Draw_Shadow_Mesh_Animation(XMMATRIX& parent_matrix, unordered_map<str
 
 	render->DrawIndexed((UINT)Indices.size(), 0, 0);
 
-	for (auto child : ChildMeshes)
+	for (auto child : this->ChildMeshes)
 	{
 		child.second.Draw_Shadow_Mesh_Animation(world, anime, frame, name1, name2, blend);
 	}
 }
 
-void MESH::Draw_DPP_Mesh_Animation(XMMATRIX& parent_matrix, unordered_map<string, Anim>& anime, DWORD frame, const string& name1, const string& name2, float blend)
+void MESH::Draw_DPP_Mesh_Animation(XMMATRIX& parent_matrix, aegis::unordered_map<std::string, Anim>& anime, DWORD frame, const std::string& name1, const std::string& name2, float blend)
 {
 	CRenderer* render = CRenderer::getInstance();
 	XMMATRIX world;
@@ -721,7 +721,7 @@ void MESH::Draw_DPP_Mesh_Animation(XMMATRIX& parent_matrix, unordered_map<string
 		{
 			for (auto i : anime[name1].body)
 			{
-				if (i.node_name == Name)
+				if (i.node_name == this->Name)
 				{
 					unsigned int f = frame % i.translate.begin()->time;
 
@@ -763,7 +763,7 @@ void MESH::Draw_DPP_Mesh_Animation(XMMATRIX& parent_matrix, unordered_map<string
 
 			for (auto i : anime[name1].body)
 			{
-				if (i.node_name == Name)
+				if (i.node_name == this->Name)
 				{
 					unsigned int f = frame % i.translate.begin()->time;
 
@@ -781,7 +781,7 @@ void MESH::Draw_DPP_Mesh_Animation(XMMATRIX& parent_matrix, unordered_map<string
 
 			for (auto i : anime[name2].body)
 			{
-				if (i.node_name == Name)
+				if (i.node_name == this->Name)
 				{
 					unsigned int f = frame % i.translate.begin()->time;
 
@@ -829,7 +829,7 @@ void MESH::Draw_DPP_Mesh_Animation(XMMATRIX& parent_matrix, unordered_map<string
 
 	render->GetDeviceContext()->DrawIndexed((UINT)Indices.size(), 0, 0);
 
-	for (auto child : ChildMeshes)
+	for (auto child : this->ChildMeshes)
 	{
 		child.second.Draw_DPP_Mesh_Animation(world, anime, frame, name1, name2, blend);
 	}
@@ -852,7 +852,7 @@ MESHS::MESHS() : VertexBuffer(nullptr), IndexBuffer(nullptr)
 {
 }
 
-MESHS::MESHS(vector<VERTEX_3D>& vertices, vector<UINT>& indices, string& texture_name, XMMATRIX& matrix, string name) : Name(name), TextureName(texture_name), Matrix(XMMATRIXToXMFLOAT4X4(matrix)), Vertices(vertices), Indices(indices), VertexBuffer(nullptr), IndexBuffer(nullptr)
+MESHS::MESHS(aegis::vector<VERTEX_3D>& vertices, aegis::vector<UINT>& indices, std::string& texture_name, XMMATRIX& matrix, std::string name) : Name(name), TextureName(texture_name), Matrix(XMMATRIXToXMFLOAT4X4(matrix)), Vertices(vertices), Indices(indices), VertexBuffer(nullptr), IndexBuffer(nullptr)
 {
 }
 
@@ -869,9 +869,9 @@ void MESHS::Init()
 		{
 			for (auto& tex : Textures)
 			{
-				const string directory = "./asset/model/";
-				string path = directory + tex.FileName;
-				wstring filenamews = wstring(path.begin(), path.end());
+				const std::string directory = "./asset/model/";
+				std::string path = directory + tex.FileName;
+				std::wstring filenamews = std::wstring(path.begin(), path.end());
 
 				{
 					CRenderer* render = CRenderer::getInstance();
@@ -890,7 +890,7 @@ void MESHS::Init()
 	}
 }
 
-void MESHS::Draw(XMMATRIX& matrix, const vector<TEXTURE_S>& textures)
+void MESHS::Draw(XMMATRIX& matrix, const aegis::vector<TEXTURE_S>& textures)
 {
 	Draw_Mesh(matrix, textures);
 }
@@ -925,32 +925,32 @@ void MESHS::Uninit()
 	ChildMeshes.clear();
 }
 
-vector<MESHS>& MESHS::Get_Meshs()
+aegis::vector<MESHS>& MESHS::Get_Meshs()
 {
 	return ChildMeshes;
 }
 
-vector<TEXTURE_S>& MESHS::Get_Textures()
+aegis::vector<TEXTURE_S>& MESHS::Get_Textures()
 {
 	return Textures;
 }
 
-const string& MESHS::Get_Name()
+const std::string& MESHS::Get_Name()
 {
 	return Name;
 }
 
-void MESHS::Set_Name(const string& name)
+void MESHS::Set_Name(const std::string& name)
 {
 	Name = name;
 }
 
-const string& MESHS::Get_Texture_Name()
+const std::string& MESHS::Get_Texture_Name()
 {
 	return TextureName;
 }
 
-void MESHS::Set_Texture_Name(const string & texture_name)
+void MESHS::Set_Texture_Name(const std::string & texture_name)
 {
 	TextureName = texture_name;
 }
@@ -1018,7 +1018,7 @@ void MESHS::SetupMesh()
 	}
 }
 
-void MESHS::Draw_Mesh(XMMATRIX& parent_matrix, const vector<TEXTURE_S>& textures)
+void MESHS::Draw_Mesh(XMMATRIX& parent_matrix, const aegis::vector<TEXTURE_S>& textures)
 {
 	CRenderer* render = CRenderer::getInstance();
 	XMMATRIX matrix;

@@ -19,12 +19,12 @@
 class GameObject {
 private:
 	//! ゲームオブジェクトの名称一覧(静的なもの)
-	static unordered_set<string> Object_Name_Map;
+	static aegis::unordered_set<std::string> Object_Name_Map;
 
 protected:
 
 	//! オブジェクトの名前
-	string Object_Name;
+	std::string Object_Name;
 
 	//! 削除するかのフラグ
 	bool DestroyFlag;
@@ -38,12 +38,12 @@ protected:
 	////! 拡大縮小値
 	//XMFLOAT3 Scaling;
 
-	Aegis::Transform Transform;
+	aegis::Transform Transform;
 
 	//! コンポーネント
-	unique_ptr<COMPONENT_MANEGER, Delete> Component;
+	std::unique_ptr<COMPONENT_MANEGER, Delete> Component;
 
-	Aegis::uuid Uuid;
+	aegis::uuid Uuid;
 
 	////! クオータニオン
 	//XMVECTOR Quaternion;
@@ -127,7 +127,7 @@ public:
 	* @return string オブジェクトの名前
 	* @details オブジェクトの名前を取得する関数
 	*/
-	const string& Get_Object_Name() {
+	const std::string& Get_Object_Name() {
 		return Object_Name;
 	};
 
@@ -136,7 +136,7 @@ public:
 	* @param name 名前(string)
 	* @details オブジェクトの名前を設定する関数
 	*/
-	void Set_Object_Name(const string& name);
+	void Set_Object_Name(const std::string& name);
 
 	///**
 	//* @brief 座標を取得する関数
@@ -219,7 +219,19 @@ public:
 	//	Scaling = scaling;
 	//};
 
-	Aegis::Transform& Get_Transform()
+	void* operator new(aegis::uint64 size);
+	void* operator new(aegis::uint64 size, std::align_val_t alignment);
+	void* operator new[](aegis::uint64 size);
+	void* operator new[](aegis::uint64 size, std::align_val_t alignment);
+
+	void operator delete(void* ptr, aegis::uint64 size) noexcept;
+	void operator delete(void* ptr, std::align_val_t alignment) noexcept;
+	void operator delete(void* ptr, aegis::uint64 size, std::align_val_t alignment) noexcept;
+	void operator delete[](void* ptr, aegis::uint64 size) noexcept;
+	void operator delete[](void* ptr, std::align_val_t alignment) noexcept;
+	void operator delete[](void* ptr, aegis::uint64 size, std::align_val_t alignment) noexcept;
+
+	aegis::Transform& Get_Transform()
 	{
 		return Transform;
 	}
@@ -238,7 +250,7 @@ public:
 	* @return unordered_set<string> ゲームオブジェクトネームマップ(unordered_set<string>)
 	* @details ゲームオブジェクトネームマップを取得する関数
 	*/
-	static const unordered_set<string>& Get_Object_Name_Map() {
+	static const aegis::unordered_set<std::string>& Get_Object_Name_Map() {
 		return Object_Name_Map;
 	}
 

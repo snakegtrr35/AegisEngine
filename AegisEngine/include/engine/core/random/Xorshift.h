@@ -8,7 +8,7 @@
 #undef min
 #undef max
 
-namespace Aegis
+namespace aegis
 {
 	inline constexpr float FloatFromBits(const uint32 i, const float min = 0.f, const float max = 1.0f) noexcept
 	{

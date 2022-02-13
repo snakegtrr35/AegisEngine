@@ -23,13 +23,13 @@ private:
 
 	static bool Draw_Enable_All;
 
-	vector< unique_ptr<COMPONENT, Delete> > Conponents;
+	aegis::vector< std::unique_ptr<COMPONENT, Delete> > Conponents;
 
 public:
 
 	// リストへのコンポーネントの追加
 	template <typename T>
-	T* Add_Component(const shared_ptr<GameObject>& owner)
+	T* Add_Component(const std::shared_ptr<GameObject>& owner)
 	{
 		//for (auto object = Conponent_List.begin(); object != Conponent_List.end(); object++)
 		for (const auto& object : Conponents)
@@ -53,7 +53,7 @@ public:
 
 	// リストへのコンポーネントの追加
 	template <typename T>
-	T* Add_Component(const weak_ptr<GameObject>& owner)
+	T* Add_Component(const std::weak_ptr<GameObject>& owner)
 	{
 		//for (auto object = Conponent_List.begin(); object != Conponent_List.end(); object++)
 		for (const auto& object : Conponents)
@@ -90,7 +90,7 @@ public:
 	}
 
 	// リストから全てのコンポーネントの取得
-	vector<COMPONENT*> Get_All_Components();
+	aegis::vector<COMPONENT*> Get_All_Components();
 
 	COMPONENT_MANEGER() {}
 

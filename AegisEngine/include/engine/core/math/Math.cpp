@@ -3,7 +3,7 @@
 
 
 
-namespace Aegis
+namespace aegis
 {
 	namespace Math
 	{

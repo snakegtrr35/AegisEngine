@@ -8,12 +8,12 @@
 #include	"Scene.h"
 #include	"ShadowMap.h"
 
-using namespace Aegis;
+using namespace aegis;
 
 MESH_DOOM::MESH_DOOM() : Radius(500.0f)
 {
 	// テクスチャの生成
-	Texture = make_unique<TEXTURE>("sky.png");
+	Texture = std::make_unique<TEXTURE>("sky.png");
 }
 
 void MESH_DOOM::Init()

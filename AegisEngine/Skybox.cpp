@@ -11,7 +11,7 @@
 
 #include	"external/DirectXTex/DDSTextureLoader.h"
 
-using namespace Aegis;
+using namespace aegis;
 
 ComPtr<ID3D11Buffer> SKYBOX::VertexBuffer;
 ComPtr<ID3D11Buffer> SKYBOX::IndexBuffer;
@@ -22,7 +22,7 @@ static ID3D11ShaderResourceView* Srv = nullptr;
 
 SKYBOX::SKYBOX()
 {
-	//Texture = make_unique<TEXTURE>("");
+	//Texture = std::make_unique<TEXTURE>("");
 }
 
 SKYBOX::~SKYBOX(){ Uninit(); }

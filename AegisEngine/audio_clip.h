@@ -38,7 +38,7 @@ enum class SOUND_TAG {
 
 #ifdef UNICODE
 typedef struct {
-	wstring Name;
+	std::wstring Name;
 	SOUND_TAG Tag;
 }SOUND_FILE;
 #else
@@ -56,8 +56,8 @@ static const SOUND_FILE g_SoundFiles[] = {
 	{ L"asset/sound/BGM_game_clear .wav", SOUND_TAG::BGM },
 	{ L"asset/sound/BGM_game_over.wav", SOUND_TAG::BGM },
 
-	{ L"asset/Sound/82_vorbis.ogg", SOUND_TAG::BGM },
-	//{ L"asset/Sound/82_opus.ogg", SOUND_TAG::BGM },
+	//{ L"asset/Sound/82_vorbis.ogg", SOUND_TAG::BGM },
+	{ L"asset/Sound/82_opus.ogg", SOUND_TAG::BGM },
 	{ L"asset/sound/82.mp3", SOUND_TAG::BGM },
 
 	{ L"asset/sound/SE_shot.wav", SOUND_TAG::SE },
@@ -96,13 +96,13 @@ private:
 	//int	Length;
 	//int	PlayLength;
 
-	Aegis::AudioInfo Info;
-	Aegis::PlayData AudioData;
+	aegis::AudioInfo Info;
+	aegis::PlayData AudioData;
 
 #ifdef UNICODE
-	wstring Name;
+	std::wstring Name;
 #else
-	string Name;
+	std::string Name;
 #endif // !UNICODE
 
 	SOUND_TAG Tag;
@@ -112,17 +112,17 @@ public:
 #ifdef UNICODE
 	void Load(const wchar_t* FileName);
 
-	void Set_Name(const wstring& name);
+	void Set_Name(const std::wstring& name);
 
 	void Load_Ogg(const wchar_t* FileName);
 
 	//void Load_mp3(const wchar_t* FileName);
 
-	wstring* const Get_Name();
+	std::wstring* const Get_Name();
 #else
 	void Load(const char* FileName);
 
-	void Set_Name(const string& name);
+	void Set_Name(const std::string& name);
 
 	string* const Get_Name();
 #endif // !UNICODE
@@ -135,7 +135,7 @@ public:
 	void Set_Tag(const SOUND_TAG tag);
 	const SOUND_TAG Get_Tag();
 
-	static void Polling(IXAudio2SourceVoice* SourceVoice, Aegis::AudioInfo* info);
+	static void Polling(IXAudio2SourceVoice* SourceVoice, aegis::AudioInfo* info);
 };
 
 /**
@@ -146,9 +146,9 @@ class AUDIO_MANAGER {
 private:
 
 #ifdef UNICODE
-	static map<wstring, CAudioClip*> Sound_Dates;
+	static aegis::unordered_map<std::wstring, CAudioClip*> Sound_Dates;
 #else
-	static map<string, CAudioClip*> Sound_Dates;
+	static aegis::unordered_map<std::string, CAudioClip*> Sound_Dates;
 #endif // !UNICODE
 
 	static IXAudio2* Xaudio;

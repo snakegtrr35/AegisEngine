@@ -1,6 +1,6 @@
 ﻿#include "Vector3.h"
 
-namespace Aegis
+namespace aegis
 {
 	const Vector3 Vector3::Front(0.f, 0.f, 1.0f);
 	const Vector3 Vector3::Right(1.0f, 0.f, 0.f);

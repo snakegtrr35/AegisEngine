@@ -4,7 +4,7 @@
 #include <mmsystem.h>
 #pragma comment (lib, "winmm.lib")
 
-namespace Aegis
+namespace aegis
 {
 	namespace Wave
 	{

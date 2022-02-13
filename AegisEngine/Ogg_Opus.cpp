@@ -6,7 +6,7 @@
 #pragma comment(lib, "opus.lib")
 #pragma comment(lib, "opusfile.lib")
 
-namespace Aegis
+namespace aegis
 {
 	//// memory buffer
 	//static std::vector<uint8> data;

@@ -9,7 +9,7 @@
 #include <DirectXMath.h>
 using namespace DirectX;
 
-namespace Aegis
+namespace aegis
 {
 	class Vector3 : public DirectX::XMFLOAT3 {
 	public:

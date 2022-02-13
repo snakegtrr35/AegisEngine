@@ -8,12 +8,12 @@
 //! 頂点構造体
 struct VERTEX_3D
 {
-    Aegis::Vector3 Position;
-	Aegis::Vector3 Normal;
-	Aegis::Vector4 Diffuse;
-	Aegis::Vector2 TexCoord;
+    aegis::Vector3 Position;
+	aegis::Vector3 Normal;
+	aegis::Vector4 Diffuse;
+	aegis::Vector2 TexCoord;
 
-	VERTEX_3D() : Position(Aegis::Vector3(0.f, 0.f, 0.f)), Normal(Aegis::Vector3(0.f, 0.f, 0.f)), Diffuse(Aegis::Vector4(0.f, 0.f, 0.f, 1.0f)), TexCoord(Aegis::Vector2(0.f, 0.f)) {}
+	VERTEX_3D() : Position(aegis::Vector3(0.f, 0.f, 0.f)), Normal(aegis::Vector3(0.f, 0.f, 0.f)), Diffuse(aegis::Vector4(0.f, 0.f, 0.f, 1.0f)), TexCoord(aegis::Vector2(0.f, 0.f)) {}
 
 	VERTEX_3D(XMFLOAT3 v, XMFLOAT3 n, XMFLOAT4 d, XMFLOAT2 t) : Position(v.x, v.y, v.z), Normal(n), Diffuse(d), TexCoord(t) {}
 
@@ -29,12 +29,12 @@ struct VERTEX_3D
 //! 頂点構造体
 struct VERTEX_3D_NORMAL
 {
-	Aegis::Vector3 Position;
-	Aegis::Vector3 Normal;
-	Aegis::Vector3 Binormal;
-	Aegis::Vector3 Tangent;
-	Aegis::Vector4 Diffuse;
-	Aegis::Vector2 TexCoord;
+	aegis::Vector3 Position;
+	aegis::Vector3 Normal;
+	aegis::Vector3 Binormal;
+	aegis::Vector3 Tangent;
+	aegis::Vector4 Diffuse;
+	aegis::Vector2 TexCoord;
 
 	template<class Archive>
 	void serialize(Archive& ar) {
@@ -50,10 +50,10 @@ struct VERTEX_3D_NORMAL
 //! マテリアル構造体
 struct MATERIAL
 {
-	Aegis::COLOR Ambient;
-	Aegis::COLOR Diffuse;
-	Aegis::COLOR Specular;
-	Aegis::COLOR Emission;
+	aegis::COLOR Ambient;
+	aegis::COLOR Diffuse;
+	aegis::COLOR Specular;
+	aegis::COLOR Emission;
 	float Shininess;
 	float Dummy[3];//16bit境界用
 };
@@ -81,13 +81,13 @@ struct LIGHT
 {
 	XMFLOAT4 Direction;
 	XMFLOAT4 Position;
-	Aegis::COLOR Diffuse;
-	Aegis::COLOR Ambient;
-	Aegis::COLOR Specular;
+	aegis::COLOR Diffuse;
+	aegis::COLOR Ambient;
+	aegis::COLOR Specular;
 };
 
 struct TEXT_FOMAT{
-	string FontName;
+	std::string FontName;
 	float FontSize = 32.0f;
 	DWRITE_FONT_WEIGHT Weight = DWRITE_FONT_WEIGHT_NORMAL;
 	DWRITE_FONT_STYLE Style = DWRITE_FONT_STYLE_NORMAL;
@@ -95,7 +95,7 @@ struct TEXT_FOMAT{
 };
 
 struct TEXT_LAYOUT {
-	string Text;
+	std::string Text;
 	float Width;
 	float Height;
 };
@@ -149,7 +149,7 @@ enum INPUTLAYOUT {
 class CRenderer {
 private:
 
-	static unique_ptr<CRenderer> m_Instance;
+	static std::unique_ptr<CRenderer> m_Instance;
 
 	//! DirectXのフューチャーレベル
 	D3D_FEATURE_LEVEL											m_FeatureLevel = D3D_FEATURE_LEVEL_11_0;
@@ -186,8 +186,8 @@ private:
 	//! Direct2Dのライトファクトリー
 	ComPtr<IDWriteFactory>										m_DwriteFactory;
 
-	unordered_map<SHADER_INDEX_V, ComPtr<ID3D11VertexShader>>	m_VertexShader;
-	unordered_map<SHADER_INDEX_P, ComPtr<ID3D11PixelShader>>	m_PixelShader;
+	aegis::unordered_map<SHADER_INDEX_V, ComPtr<ID3D11VertexShader>>	m_VertexShader;
+	aegis::unordered_map<SHADER_INDEX_P, ComPtr<ID3D11PixelShader>>	m_PixelShader;
 
 	ComPtr<ID3D11DepthStencilState>								m_DepthStateEnable;
 	ComPtr<ID3D11DepthStencilState>								m_DepthStateDisable;

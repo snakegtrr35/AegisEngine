@@ -8,12 +8,12 @@
 #include	"Scene.h"
 #include	"ShadowMap.h"
 
-using namespace Aegis;
+using namespace aegis;
 
 MESH_FIELD::MESH_FIELD() : GridSize(Vector3(1.0f, 0.0f, 1.0f)), GridNum(Int2(10, 10))
 {
 	// テクスチャの生成
-	Texture = make_unique<TEXTURE>("UVCheckerMap01-512.png");
+	Texture = std::make_unique<TEXTURE>("UVCheckerMap01-512.png");
 };
 
 void MESH_FIELD::Init()
@@ -100,7 +100,7 @@ void MESH_FIELD::Init()
 
 		const UINT size = IndexNum;
 
-		vector<WORD> indexArray;
+		aegis::vector<WORD> indexArray;
 		indexArray.resize(IndexNum);
 
 		// 頂点インデックスバッファへの書き込み
@@ -394,7 +394,7 @@ const float MESH_FIELD::Get_Height(const Vector3& position)
 //==============================
 // テクスチャの設定
 //==============================
-void MESH_FIELD::SetTexture(const string& const file_name)
+void MESH_FIELD::SetTexture(const std::string& const file_name)
 {
 	Texture->Set_Texture_Name(file_name);
 }
@@ -527,7 +527,7 @@ void MESH_WALL::Init()
 	delete[] indexArray;
 
 	// テクスチャの設定
-	Texture = new TEXTURE(string("field004.png"));
+	Texture = new TEXTURE(std::string("field004.png"));
 }
 
 void MESH_WALL::Uninit()

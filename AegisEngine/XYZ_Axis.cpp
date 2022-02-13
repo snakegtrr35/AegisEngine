@@ -7,7 +7,7 @@
 
 #define COUNT (6)
 
-using namespace Aegis;
+using namespace aegis;
 
 AXIS::AXIS()
 {

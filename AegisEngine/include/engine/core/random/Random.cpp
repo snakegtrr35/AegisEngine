@@ -1,6 +1,6 @@
 ﻿#include "Random.h"
 
-namespace Aegis
+namespace aegis
 {
 	Random Random::Insrance;
 	std::mutex Random::mutex;

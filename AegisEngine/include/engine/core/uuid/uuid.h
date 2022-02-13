@@ -7,7 +7,7 @@
 #include	"../random/Xorshift.h"
 #include	"uuid_utility.h"
 
-namespace Aegis
+namespace aegis
 {
 	using uuid = uuids::uuid;
 

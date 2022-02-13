@@ -35,15 +35,15 @@ private:
 
 	bool Debug_Draw_Enable;
 
-	//pair< vector<const char*>, vector<const char*> > Component_Items;
-	pair< vector<string>, vector<string> > Component_Items;
+	//pair< aegis::vector<const char*>, aegis::vector<const char*> > Component_Items;
+	std::pair< aegis::vector<std::string>, aegis::vector<std::string> > Component_Items;
 
 	void Texture_Import();
-	const char Texture_File_Check(const string& file_name);
+	const char Texture_File_Check(const std::string& file_name);
 	void Texture_Delete();
 
 	void Model_Import();
-	const char Model_File_Check(const string& file_name);
+	const char Model_File_Check(const std::string& file_name);
 	void Model_Delete();
 
 	void Setting();
@@ -52,13 +52,13 @@ private:
 
 	void Light_Setting();
 
-	void Draw_Inspector(const string& name);
+	void Draw_Inspector(const std::string& name);
 
-	void Draw_Components(const vector<COMPONENT*>& components);
+	void Draw_Components(const aegis::vector<COMPONENT*>& components);
 
-	void Add_Component(GameObject* object, const string s);
+	void Add_Component(GameObject* object, const std::string s);
 
-	void Delete_Component(GameObject* object, const string s);
+	void Delete_Component(GameObject* object, const std::string s);
 
 public:
 	My_imgui() : show_demo_window(false), show_another_window(false), show_default_window(false),

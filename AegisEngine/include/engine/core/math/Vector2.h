@@ -1,7 +1,7 @@
 ﻿#ifndef _MATH_VECTOR2_H_
 #define _MATH_VECTOR2_H_
 
-namespace Aegis
+namespace aegis
 {
 	class Vector2 : public DirectX::XMFLOAT2 {
 	public:

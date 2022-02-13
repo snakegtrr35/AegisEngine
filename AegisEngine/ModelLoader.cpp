@@ -8,7 +8,7 @@
 
 #include	"Renderer.h"
 
-using namespace Aegis;
+using namespace aegis;
 
 Anim createAnimation(const aiAnimation* anim);
 NodeAnim createNodeAnim(const aiNodeAnim* anim);
@@ -16,7 +16,7 @@ NodeAnim createNodeAnim(const aiNodeAnim* anim);
 VectorKey fromAssimp(const aiVectorKey& key);
 QuatKey fromAssimp(const aiQuatKey& key);
 
-static string textype;
+static std::string textype;
 
 bool flag = true;
 
@@ -33,7 +33,7 @@ CMODEL::~CMODEL()
 	Uninit();
 }
 
-bool CMODEL::Load(const string& filename)
+bool CMODEL::Load(const std::string& filename)
 {
 	Assimp::Importer importer;
 
@@ -107,7 +107,7 @@ bool CMODEL::Load(const string& filename)
 	return true;
 }
 
-bool CMODEL::Reload(const string& filename)
+bool CMODEL::Reload(const std::string& filename)
 {
 	Assimp::Importer importer;
 
@@ -543,7 +543,7 @@ MESH CMODEL::processMesh(aiMesh* mesh, aiNode* node, const aiScene* scene)
 
 	XMMATRIX matrix;
 
-	string name = node->mName.C_Str();
+	std::string name = node->mName.C_Str();
 
 	if (mesh->mMaterialIndex >= 0)
 	{
@@ -612,7 +612,7 @@ MESH CMODEL::processMesh(aiMesh* mesh, aiNode* node, const aiScene* scene)
 	return MESH(vertices, indices, textures, matrix, name);
 }
 
-vector<TEXTURE_S> CMODEL::loadMaterialTextures(aiMaterial* mat, aiTextureType type, string typeName, const aiScene* scene)
+aegis::vector<TEXTURE_S> CMODEL::loadMaterialTextures(aiMaterial* mat, aiTextureType type, std::string typeName, const aiScene* scene)
 {
 	vector<TEXTURE_S> textures;
 	for (UINT i = 0; i < mat->GetTextureCount(type); i++)
@@ -642,9 +642,9 @@ vector<TEXTURE_S> CMODEL::loadMaterialTextures(aiMaterial* mat, aiTextureType ty
 			}
 			else
 			{
-				string filename = string(str.C_Str());
+				std::string filename = std::string(str.C_Str());
 				filename = directory + "/" + filename;
-				wstring filenamews = wstring(filename.begin(), filename.end());
+				std::wstring filenamews = std::wstring(filename.begin(), filename.end());
 
 				{
 					CRenderer* render = CRenderer::getInstance();
@@ -664,7 +664,7 @@ vector<TEXTURE_S> CMODEL::loadMaterialTextures(aiMaterial* mat, aiTextureType ty
 	return textures;
 }
 
-void CMODEL::processNode(aiNode* node, const aiScene* scene, unordered_map<string, MESH>& mesh_map)
+void CMODEL::processNode(aiNode* node, const aiScene* scene, aegis::unordered_map<std::string, MESH>& mesh_map)
 {
 	for (UINT i = 0; i < node->mNumMeshes; i++)
 	{
@@ -681,11 +681,11 @@ void CMODEL::processNode(aiNode* node, const aiScene* scene, unordered_map<strin
 	}
 }
 
-string CMODEL::determineTextureType(const aiScene* scene, aiMaterial* mat)
+std::string CMODEL::determineTextureType(const aiScene* scene, aiMaterial* mat)
 {
 	aiString textypeStr;
 	mat->GetTexture(aiTextureType_DIFFUSE, 0, &textypeStr);
-	string textypeteststr = textypeStr.C_Str();
+	std::string textypeteststr = textypeStr.C_Str();
 	if (textypeteststr == "*0" || textypeteststr == "*1" || textypeteststr == "*2" || textypeteststr == "*3" || textypeteststr == "*4" || textypeteststr == "*5")
 	{
 		if (scene->mTextures[0]->mHeight == 0)
@@ -697,7 +697,7 @@ string CMODEL::determineTextureType(const aiScene* scene, aiMaterial* mat)
 			return "embedded non-compressed texture";
 		}
 	}
-	if (textypeteststr.find('.') != string::npos)
+	if (textypeteststr.find('.') != std::string::npos)
 	{
 		return "textures are on disk";
 	}
@@ -705,7 +705,7 @@ string CMODEL::determineTextureType(const aiScene* scene, aiMaterial* mat)
 
 int CMODEL::getTextureIndex(aiString* str)
 {
-	string tistr;
+	std::string tistr;
 	tistr = str->C_Str();
 	tistr = tistr.substr(1);
 	return stoi(tistr);

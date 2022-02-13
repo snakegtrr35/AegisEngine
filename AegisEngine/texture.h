@@ -9,19 +9,19 @@
 class TEXTURE {
 private:
 
-	string FileName;
-	size_t File;
+	std::string FileName;
+	std::size_t File;
 
 public:
 	TEXTURE();
-	TEXTURE(const string& file_name);
+	TEXTURE(std::string_view file_name);
 	~TEXTURE() {};
 
 	void Set_Texture();											// テクスチャを設定(Directx11)
-	void Set_Texture_Name(const string& file_name);				// テクスチャ名の設定
-	const string& Get_Texture_Name();							// テクスチャ名の取得
+	void Set_Texture_Name(const std::string& file_name);				// テクスチャ名の設定
+	const std::string& Get_Texture_Name();							// テクスチャ名の取得
 
-	Aegis::Int2* const Get_WH();
+	aegis::Int2* const Get_WH();
 
 	template<typename Archive>
 	void serialize(Archive& ar)
@@ -34,11 +34,11 @@ public:
 
 class FONT {
 private:
-	static map<wstring, unique_ptr<ID3D11ShaderResourceView, Release>> FontResource;
+	static aegis::unordered_map<std::wstring, std::unique_ptr<ID3D11ShaderResourceView, Release>> FontResource;
 	static ID3D11SamplerState* SamplerState;
 
 	static void Load_Font();
-	static void Load_Font(const wstring& one_character);
+	static void Load_Font(const std::wstring& one_character);
 
 public:
 
@@ -46,9 +46,9 @@ public:
 
 	static void Uninit();
 
-	static void Add_Font(const wstring& one_character);
+	static void Add_Font(const std::wstring& one_character);
 
-	static ID3D11ShaderResourceView* Get_Font_Resource(const wstring& one_character);
+	static ID3D11ShaderResourceView* Get_Font_Resource(const std::wstring& one_character);
 
 	static ID3D11SamplerState* Get_SamplerState();
 

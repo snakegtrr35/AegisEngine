@@ -3,7 +3,7 @@
 #ifndef _MATH_INT2_H_
 #define _MATH_INT2_H_
 
-namespace Aegis
+namespace aegis
 {
 	class Int2 : public DirectX::XMINT2 {
 	public:

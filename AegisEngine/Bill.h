@@ -9,7 +9,7 @@ class CMODEL;
 class BILL : public GameObject {
 private:
 
-	unique_ptr<CMODEL> Model;
+	std::unique_ptr<CMODEL> Model;
 
 public:
 	BILL();

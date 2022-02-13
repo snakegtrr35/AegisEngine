@@ -5,27 +5,27 @@
 
 // 円
 struct CIRCLE {
-	Aegis::Vector2 Position;		// 中心座標
+	aegis::Vector2 Position;		// 中心座標
 	float Radius;			// 半径
 };
 
 // 球
 struct SPHERE {
-	Aegis::Vector3 Position;		// 中心座標
+	aegis::Vector3 Position;		// 中心座標
 	float Radius;			// 半径
 };
 
 // カプセル
 struct CAPSULE {
-	Aegis::Vector3 Start_Position;	// 線分の開始点
-	Aegis::Vector3 End_Position;		// 線分の終了点
+	aegis::Vector3 Start_Position;	// 線分の開始点
+	aegis::Vector3 End_Position;		// 線分の終了点
 	float Radius;				// 半径
 
-	Aegis::Vector3 Rotation;			// 回転量
+	aegis::Vector3 Rotation;			// 回転量
 
-	CAPSULE() : Radius(0.5f), Start_Position(Aegis::Vector3(0.f, -0.5f, 0.f)), End_Position(Aegis::Vector3(0.f, 0.5f, 0.f)), Rotation(Aegis::Vector3(0.f, 0.f, 0.f)) {}
+	CAPSULE() : Radius(0.5f), Start_Position(aegis::Vector3(0.f, -0.5f, 0.f)), End_Position(aegis::Vector3(0.f, 0.5f, 0.f)), Rotation(aegis::Vector3(0.f, 0.f, 0.f)) {}
 
-	void Transform(const Aegis::Vector3& position, const float height) {
+	void Transform(const aegis::Vector3& position, const float height) {
 		XMVECTOR vector;
 		XMMATRIX matrix = XMMatrixRotationRollPitchYaw(XMConvertToRadians(Rotation.x), XMConvertToRadians(Rotation.y), XMConvertToRadians(Rotation.z));
 
@@ -52,7 +52,7 @@ struct CAPSULE {
 		}
 	}
 
-	void Rotate(const Aegis::Vector3& rotation) {
+	void Rotate(const aegis::Vector3& rotation) {
 		XMVECTOR vector;
 		XMMATRIX matrix = XMMatrixRotationRollPitchYaw(XMConvertToRadians(rotation.x - Rotation.x), XMConvertToRadians(rotation.y - Rotation.y), XMConvertToRadians(rotation.z - Rotation.z));
 
@@ -109,15 +109,15 @@ struct CAPSULE {
 
 // AABB
 struct AABB {
-	Aegis::Vector3 Position;		// 中心座標
-	Aegis::Vector3 Radius;		// 半径
+	aegis::Vector3 Position;		// 中心座標
+	aegis::Vector3 Radius;		// 半径
 };
 
 // OBB
 struct OBB {
-	Aegis::Vector3 Position;		// 中心座標
-	Aegis::Vector3 Radius;		// 半径
-	Aegis::Vector3 Rotation;		// 回転量
+	aegis::Vector3 Position;		// 中心座標
+	aegis::Vector3 Radius;		// 半径
+	aegis::Vector3 Rotation;		// 回転量
 
 };
 
@@ -125,9 +125,9 @@ struct OBB {
 class COLLISION  {
 protected:
 	
-	string Name;
-	string ParentName;
-	unordered_map<string, COLLISION*> Childlen;
+	std::string Name;
+	std::string ParentName;
+	aegis::unordered_map<std::string, COLLISION*> Childlen;
 
 public:
 	COLLISION() : Name("Collision"), ParentName("None") {}
@@ -136,29 +136,29 @@ public:
 	virtual void Update(float delta_time) = 0;
 	virtual void Draw() = 0;
 
-	void Set_Name(const string& name) {
+	void Set_Name(const std::string& name) {
 		Name = name;
 	}
 
-	string& const Get_Name() {
+	std::string& const Get_Name() {
 		return Name;
 	}
 
-	void Set_Parent_Name(const string& parent_name) {
+	void Set_Parent_Name(const std::string& parent_name) {
 		ParentName = parent_name;
 	}
 
-	string& const Get_Parent_Name() {
+	std::string& const Get_Parent_Name() {
 		return ParentName;
 	}
 
 
 
-	//void Set_Childt_Name(const string& child_name) {
+	//void Set_Childt_Name(const std::string& child_name) {
 	//	ChildlenName.push_back(child_name);
 	//};
 
-	//vector<string> const Get_Childlen_Name() {
+	//vector<std::string> const Get_Childlen_Name() {
 	//	return ChildlenName;
 	//};
 };
@@ -185,7 +185,7 @@ public:
 		return &Sphere;
 	}
 
-	void Set_Position(const Aegis::Vector3& position) {
+	void Set_Position(const aegis::Vector3& position) {
 		Sphere.Position = position;
 	}
 
@@ -220,11 +220,11 @@ public:
 		return &Aabb;
 	};
 
-	void Set_Position(const Aegis::Vector3& position) {
+	void Set_Position(const aegis::Vector3& position) {
 		Aabb.Position = position;
 	};
 
-	void Set_Radius(const Aegis::Vector3& radius) {
+	void Set_Radius(const aegis::Vector3& radius) {
 		Aabb.Radius = radius;
 	};
 };
@@ -242,7 +242,7 @@ public:
 
 	COLLISIION_CAPSULE() : Height(1.0f) {}
 
-	COLLISIION_CAPSULE(Aegis::Vector3 position, float radius, float height) : Height(height) {
+	COLLISIION_CAPSULE(aegis::Vector3 position, float radius, float height) : Height(height) {
 		Capsule.Radius = radius;
 
 		Capsule.Start_Position.x = position.x;
@@ -281,20 +281,20 @@ public:
 		return Height;
 	};
 
-	void Set_Rotation(const Aegis::Vector3& rotation) {
+	void Set_Rotation(const aegis::Vector3& rotation) {
 		Capsule.Rotate(rotation);
 	}
 
-	Aegis::Vector3 Get_Rotation() {
+	aegis::Vector3 Get_Rotation() {
 		return Capsule.Rotation;
 	}
 
-	void Set_Position(const Aegis::Vector3& position) {
+	void Set_Position(const aegis::Vector3& position) {
 		Capsule.Transform(position, Height);
 	}
 
-	Aegis::Vector3 Get_Position() {
-		Aegis::Vector3 pos = Capsule.Start_Position;
+	aegis::Vector3 Get_Position() {
+		aegis::Vector3 pos = Capsule.Start_Position;
 
 		pos.y += Height;
 

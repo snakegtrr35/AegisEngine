@@ -7,7 +7,7 @@
 
 #define COUNT (11 * 2 * 2)
 
-using namespace Aegis;
+using namespace aegis;
 
 GRID::GRID()
 {

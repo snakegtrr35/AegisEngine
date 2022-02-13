@@ -16,11 +16,11 @@ enum class WHEEL_MOVE_ENUM {
 class MOUSE {
 private:
 
-	static unique_ptr<MOUSE> pMouse;
+	static std::unique_ptr<MOUSE> pMouse;
 
 	//! スクリーン上のマウスの変数
 	POINT ScreenPoint;
-	Aegis::Vector2 ScreenPosition;
+	aegis::Vector2 ScreenPosition;
 
 	// マウスの相対座標
 	POINT Pos;
@@ -50,11 +50,11 @@ public:
 		return pMouse.get();
 	}
 
-	Aegis::Vector2& const Get_Screen_Position();
+	aegis::Vector2& const Get_Screen_Position();
 
 	void Set_Position(POINT& pos);
 
-	const Aegis::Vector2 Get_Position();
+	const aegis::Vector2 Get_Position();
 
 	void Set_Sensitivity(const float sensitivity);
 	float& const Get_Sensitivity();

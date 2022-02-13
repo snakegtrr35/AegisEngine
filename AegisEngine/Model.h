@@ -19,7 +19,7 @@ class MODEL : public COMPONENT {
 private:
 
 	//! ファイル名
-	string FileName;
+	std::string FileName;
 
 	//! ファイル名のハッシュ値
 	size_t Key;
@@ -75,10 +75,10 @@ public:
 	void Draw_Inspector() override;
 
 	// モデル名の設定
-	void Set_Model_Name(const string& file_name);	
+	void Set_Model_Name(const std::string& file_name);	
 
 	// モデル名の取得
-	const string& Get_Model_Name();
+	const std::string& Get_Model_Name();
 
 	template<class Archive>
 	void serialize(Archive& ar)

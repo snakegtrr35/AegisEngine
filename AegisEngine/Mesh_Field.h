@@ -20,16 +20,16 @@ class MESH_FIELD : public GameObject {
 private:
 
 	//! グリッドサイズ
-	Aegis::Vector3				GridSize;
+	aegis::Vector3				GridSize;
 
 	//! グリッド数
-	Aegis::Int2					GridNum;
+	aegis::Int2					GridNum;
 
 	//! インデックス数
 	UINT						IndexNum;
 
 	// 頂点データ
-	vector<VERTEX_3D>			VertexArray;
+	aegis::vector<VERTEX_3D>	VertexArray;
 
 	//! 頂点バッファ
 	ComPtr<ID3D11Buffer>		VertexBuffer;
@@ -38,7 +38,7 @@ private:
 	ComPtr<ID3D11Buffer>		IndexBuffer;
 
 	//! テクスチャ
-	unique_ptr<TEXTURE>			Texture;
+	std::unique_ptr<TEXTURE>			Texture;
 
 public:
 
@@ -96,14 +96,14 @@ public:
 	* @return float メッシュフィールドの高さ
 	* @details 引数の座標のメッシュフィールドの高さを取得する関数
 	*/
-	const float Get_Height(const Aegis::Vector3& position);
+	const float Get_Height(const aegis::Vector3& position);
 
 	/**
 	* @brief テクスチャを設定する関数
 	* @param file_name 使用するテクスチャ名
 	* @details テクスチャ(クラス)を設定する関数
 	*/
-	void SetTexture(const string& const file_name);
+	void SetTexture(const std::string& const file_name);
 
 	template<typename Archive>
 	void serialize(Archive& ar)
@@ -135,8 +135,8 @@ CEREAL_REGISTER_POLYMORPHIC_RELATION(GameObject, MESH_FIELD)
 //==============================
 class MESH_WALL :public GameObject {
 private:
-	Aegis::Vector3		GridSize;
-	Aegis::Int2			GridNum;
+	aegis::Vector3		GridSize;
+	aegis::Int2			GridNum;
 	unsigned int	IndexNum;
 	VERTEX_3D* VertexArray;
 
@@ -154,7 +154,7 @@ public:
 	void Update(float delta_time) override;
 	void Uninit() override;
 
-	const float Get_Height(const Aegis::Vector3& position);
+	const float Get_Height(const aegis::Vector3& position);
 };
 
 #endif // !MESH_FIELF_H

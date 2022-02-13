@@ -11,10 +11,10 @@
 ::EffekseerRenderer::Renderer*	EFFEKSEER_MANAGER::Renderer = nullptr;
 ::EffekseerSound::Sound*		EFFEKSEER_MANAGER::Sound = nullptr;
 
-map<string, ::Effekseer::Effect*>	EFFEKSEER_MANAGER::Effects;
-map<string, ::Effekseer::Handle>	EFFEKSEER_MANAGER::Handles;
+aegis::unordered_map<std::string, ::Effekseer::Effect*>	EFFEKSEER_MANAGER::Effects;
+aegis::unordered_map<std::string, ::Effekseer::Handle>	EFFEKSEER_MANAGER::Handles;
 
-using namespace Aegis;
+using namespace aegis;
 
 ::Effekseer::Matrix44 XMMATRIXToMatrix44(const XMMATRIX& matrix)
 {
@@ -164,7 +164,7 @@ void EFFEKSEER_MANAGER::Update(float delta_time)
 
 void EFFEKSEER_MANAGER::Set()
 {
-	weak_ptr<DEBUG_CAMERA> D_camera;
+	std::weak_ptr<DEBUG_CAMERA> D_camera;
 	auto camera = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<CCamera>("camera");
 
 	if (camera.expired() && Empty_weak_ptr<CCamera>(camera))
@@ -270,7 +270,7 @@ void EFFEKSEER_MANAGER::Set()
 	}
 }
 
-void EFFEKSEER_MANAGER::Play(const string& name)
+void EFFEKSEER_MANAGER::Play(const std::string& name)
 {
 	Manager->StopEffect(Handles[name]);
 
@@ -283,14 +283,14 @@ void EFFEKSEER_MANAGER::Play(const string& name)
 	//Effects[name].Handle = Manager->Play(Effects[name].Effect, 0, 0, 0);
 }
 
-void EFFEKSEER_MANAGER::Play(const string& handle_name, const string& effect_name, const XMFLOAT3& position)
+void EFFEKSEER_MANAGER::Play(const std::string& handle_name, const std::string& effect_name, const XMFLOAT3& position)
 {
 	// ロードしていないエフェクトの判定
 #ifdef _DEBUG
 	if (Effects.find(effect_name) == Effects.end())
 	{
-		string text("存在しないエフェクトです\n");
-		string t(effect_name.c_str());
+		std::string text("存在しないエフェクトです\n");
+		std::string t(effect_name.c_str());
 		text += t;
 
 		Erroer_Message(text);
@@ -306,14 +306,14 @@ void EFFEKSEER_MANAGER::Play(const string& handle_name, const string& effect_nam
 
 
 
-void EFFEKSEER_MANAGER::Play(const string& handle_name, const string& effect_name, const Vector3& position)
+void EFFEKSEER_MANAGER::Play(const std::string& handle_name, const std::string& effect_name, const Vector3& position)
 {
 	// ロードしていないエフェクトの判定
 #ifdef _DEBUG
 	if (Effects.find(effect_name) == Effects.end())
 	{
-		string text("存在しないエフェクトです\n");
-		string t(effect_name.c_str());
+		std::string text("存在しないエフェクトです\n");
+		std::string t(effect_name.c_str());
 		text += t;
 
 		Erroer_Message(text);
@@ -332,48 +332,48 @@ void EFFEKSEER_MANAGER::Play(const string& handle_name, const string& effect_nam
 	return Manager;
 }
 
-const map<string, ::Effekseer::Effect*>& EFFEKSEER_MANAGER::Get_Effects()
+const aegis::unordered_map<std::string, ::Effekseer::Effect*>& EFFEKSEER_MANAGER::Get_Effects()
 {
 	return Effects;
 }
 
-void EFFEKSEER_MANAGER::Set_Location(const string& handle_name, const XMFLOAT3& position)
+void EFFEKSEER_MANAGER::Set_Location(const std::string& handle_name, const XMFLOAT3& position)
 {
 	Manager->SetLocation(Handles[handle_name], Effekseer::Vector3D(position.x, position.y, position.z));
 }
 
-void EFFEKSEER_MANAGER::Set_Location(const string& handle_name, const Vector3& position)
+void EFFEKSEER_MANAGER::Set_Location(const std::string& handle_name, const Vector3& position)
 {
 	Manager->SetLocation(Handles[handle_name], Effekseer::Vector3D(position.x, position.y, position.z));
 }
 
-void EFFEKSEER_MANAGER::Set_Rotation(const string& handle_name, const XMFLOAT3& axis, const float angle)
+void EFFEKSEER_MANAGER::Set_Rotation(const std::string& handle_name, const XMFLOAT3& axis, const float angle)
 {
 	Manager->SetRotation(Handles[handle_name], Effekseer::Vector3D(axis.x, axis.y, axis.z), XMConvertToRadians(angle));
 }
 
-void EFFEKSEER_MANAGER::Set_Rotation(const string& handle_name, const Vector3& axis, const float angle)
+void EFFEKSEER_MANAGER::Set_Rotation(const std::string& handle_name, const Vector3& axis, const float angle)
 {
 	Manager->SetRotation(Handles[handle_name], Effekseer::Vector3D(axis.x, axis.y, axis.z), XMConvertToRadians(angle));
 }
 
-void EFFEKSEER_MANAGER::Set_Scale(const string& handle_name, const XMFLOAT3& scale)
+void EFFEKSEER_MANAGER::Set_Scale(const std::string& handle_name, const XMFLOAT3& scale)
 {
 	Manager->SetScale(Handles[handle_name], scale.x, scale.y, scale.z);
 }
 
-void EFFEKSEER_MANAGER::Set_Scale(const string& handle_name, const Vector3& scale)
+void EFFEKSEER_MANAGER::Set_Scale(const std::string& handle_name, const Vector3& scale)
 {
 	Manager->SetScale(Handles[handle_name], scale.x, scale.y, scale.z);
 }
 
-void EFFEKSEER_MANAGER::Set_Speed(const string& handle_name, const float speed)
+void EFFEKSEER_MANAGER::Set_Speed(const std::string& handle_name, const float speed)
 {
 	Manager->SetSpeed(Handles[handle_name], speed);
 }
 
 
-//const EFFECT& EFFEKSEER_MANAGER::Get_Effect(const string& name)
+//const EFFECT& EFFEKSEER_MANAGER::Get_Effect(const std::string& name)
 //{
 //	return Handles[name];
 //}

@@ -24,22 +24,26 @@
 #include	"My_imgui.h"
 #endif // _DEBUG
 
+#include "include/engine/core/memory/aegisAllocator.h"
+
 #ifdef _DEBUG
 #define new new(_NORMAL_BLOCK, __FILE__, __LINE__)
 #endif // _DEBUG
 
-unique_ptr<CManager> CManager::Manager;
+std::unique_ptr<CManager> CManager::Manager;
 
 bool CManager::Init()
 {
 	if (nullptr == Manager.get())
 	{
-		Manager = make_unique<CManager>();
+		Manager = std::make_unique<CManager>();
 	}
+
+	atexit(aegis::memory::AegisAllocator::uninitAllocator);
 
 	HRESULT hr;
 
-	UINT count = thread::hardware_concurrency();
+	UINT count = std::thread::hardware_concurrency();
 	if (0 == count)
 	{
 		FAILDE_ASSERT;
@@ -250,7 +254,7 @@ void CManager::Draw()
 
 		{
 			rect = D2D1::RectF(500, 100, 900, 200);
-			const wstring drawText = L"Hello HELL World!!!\n地球の未来にご奉仕するにゃん！";
+			const std::wstring drawText = L"Hello HELL World!!!\n地球の未来にご奉仕するにゃん！";
 
 			render->Get2DDeviceContext()->DrawText(
 				drawText.c_str(), drawText.size(), render->GetTextFormat(), &rect, brush);
@@ -296,7 +300,7 @@ void CManager::Uninit()
 #ifdef _DEBUG
 
 	{
-		//unique_ptr<My_imgui> temp;
+		//std::unique_ptr<My_imgui> temp;
 
 		//temp.swap(imgui);
 	}
@@ -315,6 +319,8 @@ void CManager::Uninit()
 	CRenderer::getInstance()->Uninit();
 
 	CINPUT::Uninit();
+
+	//aegis::memory::AegisAllocator::uninitAllocator();
 
 	// COMの終了処理
 	CoUninitialize();

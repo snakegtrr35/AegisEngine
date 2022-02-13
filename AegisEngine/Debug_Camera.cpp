@@ -3,7 +3,7 @@
 #include	"Debug_Camera.h"
 #include	"manager.h"
 
-using namespace Aegis;
+using namespace aegis;
 
 DEBUG_CAMERA* DEBUG_CAMERA::pDebugCamera = nullptr;
 XMMATRIX DEBUG_CAMERA::m_ViewMatrix;

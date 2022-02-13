@@ -8,7 +8,7 @@
 #include	"ShadowMap.h"
 #include	"Scene.h"
 
-using namespace Aegis;
+using namespace aegis;
 
 static float roll = 0.0f;
 static float pichi = 0.0f;
@@ -23,7 +23,7 @@ POLYGON_3D::POLYGON_3D()
 
 	// テクスチャの設定
 	//Texture = new TEXTURE(string("field004.png"));
-	Texture = make_unique<TEXTURE>(string("field004.png"));
+	Texture = std::make_unique<TEXTURE>(string("field004.png"));
 }
 
 POLYGON_3D::POLYGON_3D(Vector3 position, Vector3 xyz)
@@ -36,7 +36,7 @@ POLYGON_3D::POLYGON_3D(Vector3 position, Vector3 xyz)
 
 	// テクスチャの設定
 	//Texture = new TEXTURE(string("field004.png"));
-	Texture = make_unique<TEXTURE>(string("field004.png"));
+	Texture = std::make_unique<TEXTURE>(string("field004.png"));
 }
 
 POLYGON_3D::~POLYGON_3D()
@@ -407,7 +407,7 @@ void POLYGON_3D::SetScaling(Vector3& scaling)
 //==============================
 // テクスチャの設定
 //==============================
-void POLYGON_3D::SetTexture(const string& const file_name)
+void POLYGON_3D::SetTexture(const std::string& file_name)
 {
 	Texture->Set_Texture_Name(file_name);
 }

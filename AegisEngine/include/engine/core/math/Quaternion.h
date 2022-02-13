@@ -8,7 +8,7 @@
 #include <DirectXMath.h>
 using namespace DirectX;
 
-namespace Aegis
+namespace aegis
 {
 	class Quaternion : public DirectX::XMFLOAT4
 	{

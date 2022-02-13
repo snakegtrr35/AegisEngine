@@ -13,7 +13,7 @@ class BULLET;
 
 class PLAYER : public GameObject {
 private:
-	unique_ptr<CMODEL> Model;
+	std::unique_ptr<CMODEL> Model;
 	//FBXmodel* Model = nullptr;
 
 	float HP;
@@ -29,8 +29,8 @@ public:
 	void Update(float delta_time) override;
 	void Uninit() override;
 
-	void SetPosition(Aegis::Vector3& position);					// ポジションの設定
-	void SetScaling(Aegis::Vector3& scaling);					// 拡大縮小の値の設定
+	void SetPosition(aegis::Vector3& position);					// ポジションの設定
+	void SetScaling(aegis::Vector3& scaling);					// 拡大縮小の値の設定
 
 
 	void Add_HP(float hp) {

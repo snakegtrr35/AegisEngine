@@ -5,7 +5,7 @@
 #include	"Scene.h"
 #include	"ShadowMap.h"
 
-using namespace Aegis;
+using namespace aegis;
 
 void BOUNDING_CAPSULE::Init()
 {
@@ -65,7 +65,7 @@ void BOUNDING_CAPSULE::OverWrite()
 
 void BOUNDING_CAPSULE::Set_Radius(const float radius)
 {
-	Radius = max(radius, 0.01f);
+	Radius = std::max(radius, 0.01f);
 }
 
 const float BOUNDING_CAPSULE::Get_Radius()
@@ -77,7 +77,7 @@ void BOUNDING_CAPSULE::Init_Body()
 {
 	CRenderer* render = CRenderer::getInstance();
 
-	int vertex_num = max(int(10 * (UINT)Radius * 0.5), 8);
+	int vertex_num = std::max(int(10 * (UINT)Radius * 0.5), 8);
 
 	// 頂点バッファの設定
 	{
@@ -139,7 +139,7 @@ void BOUNDING_CAPSULE::Init_Body()
 
 	// 頂点バッファの設定
 	{
-		vertex_num = max(int(10 * (UINT)Radius * 0.5), 8);
+		vertex_num = std::max(int(10 * (UINT)Radius * 0.5), 8);
 
 		vector<VERTEX_3D> Vertex;
 		VERTEX_3D vertex;

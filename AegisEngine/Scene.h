@@ -6,11 +6,12 @@
 #include	"GameObject.h"
 #include	"Light.h"
 
+#include "include/engine/core/memory/stlAllocator.h"
 
 template <typename T>
-bool Empty_weak_ptr(const weak_ptr<T>& w)
+bool Empty_weak_ptr(const std::weak_ptr<T>& w)
 {
-	bool flag = (!w.owner_before(weak_ptr<T>{})) && (!weak_ptr<T>{}.owner_before(w));
+	bool flag = (!w.owner_before(std::weak_ptr<T>{})) && (!std::weak_ptr<T>{}.owner_before(w));
 	return flag;
 }
 
@@ -39,8 +40,8 @@ class SCENE {
 private:
 
 protected:
-	static std::vector<shared_ptr<GameObject>> GameObjects[(int)LAYER_NAME::MAX_LAYER];
-	static std::vector<shared_ptr<GameObject>> AddGameObjects[(int)LAYER_NAME::MAX_LAYER];
+	static std::vector<std::shared_ptr<GameObject>> GameObjects[(int)LAYER_NAME::MAX_LAYER];
+	static std::vector<std::shared_ptr<GameObject>> AddGameObjects[(int)LAYER_NAME::MAX_LAYER];
 
 	static bool PauseEnable;
 
@@ -54,9 +55,9 @@ public:
 
 	//// リストへの追加
 	template <typename T>
-	static T* Add_Game_Object(LAYER_NAME layer, const string& name)
+	static T* Add_Game_Object(LAYER_NAME layer, const std::string& name)
 	{
-		shared_ptr<T> object(new T());
+		std::shared_ptr<T> object(new T());
 
 		object->Set_Object_Name(name);
 
@@ -68,11 +69,11 @@ public:
 
 	// リストから特定の名前のオブジェクトの取得
 	template <typename T>
-	static weak_ptr<T> Get_Game_Object(const string& name = "none")
+	static std::weak_ptr<T> Get_Game_Object(const std::string& name = "none")
 	{
 		for (int i = 0; i < (int)LAYER_NAME::MAX_LAYER; i++)
 		{
-			for (const auto& object : GameObjects[i])
+			for (auto& object : GameObjects[i])
 			{
 				if (object)
 				{
@@ -80,22 +81,22 @@ public:
 					{
 						if (name == object.get()->Get_Object_Name())
 						{
-							weak_ptr<T> obj(static_pointer_cast<T>(object));
+							std::weak_ptr<T> obj(std::static_pointer_cast<T>(object));
 
-							return  obj;
+							return obj;
 						}
 					}
 				}
 			}
 		}
 
-		weak_ptr<T> obj;
+		std::weak_ptr<T> obj;
 		return obj;
 	}
 
 	// リストから特定のオブジェクの取得
 	// 引数 name オブジェクト名
-	static GameObject* Get_Game_Object(const string& name)
+	static GameObject* Get_Game_Object(const std::string& name)
 	{
 		for (int i = 0; i < (int)LAYER_NAME::MAX_LAYER; i++)
 		{
@@ -115,7 +116,7 @@ public:
 
 	// リストから特定のオブジェクの取得
 	// 引数 name オブジェクト名
-	static weak_ptr<GameObject> Get_Game_Object(const GameObject* me)
+	static std::weak_ptr<GameObject> Get_Game_Object(const GameObject* me)
 	{
 		for (int i = 0; i < (int)LAYER_NAME::MAX_LAYER; i++)
 		{
@@ -125,22 +126,22 @@ public:
 				{
 					if (me == object.get())
 					{
-						weak_ptr<GameObject> obj(object);
+						std::weak_ptr<GameObject> obj(object);
 
 						return  obj;
 					}
 				}
 			}
 		}
-		weak_ptr<GameObject> obj;
+		std::weak_ptr<GameObject> obj;
 		return obj;
 	}
 
 	// リストから特定のオブジェクト（複数）の取得
 	template <typename T>
-	static vector<T*> Get_Game_Objects()
+	static aegis::vector<T*> Get_Game_Objects()
 	{
-		vector<T*> objects;
+		aegis::vector<T*> objects;
 		for (int i = 0; i < (int)LAYER_NAME::MAX_LAYER; i++)
 		{
 			for (const auto& object : GameObjects[i])
@@ -158,9 +159,9 @@ public:
 	}
 
 	// 全オブジェクトの取得
-	static vector<GameObject*> Get_All_Game_Object()
+	static aegis::vector<GameObject*> Get_All_Game_Object()
 	{
-		vector<GameObject*> objects;
+		aegis::vector<GameObject*> objects;
 		for (int i = 0; i < (int)LAYER_NAME::MAX_LAYER; i++)
 		{
 			for (const auto& object : GameObjects[i])

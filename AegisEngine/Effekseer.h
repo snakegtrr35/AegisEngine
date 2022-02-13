@@ -24,8 +24,8 @@ private:
 	static ::EffekseerRenderer::Renderer*	Renderer;
 	static ::EffekseerSound::Sound*			Sound;
 
-	static map<string, ::Effekseer::Effect*> Effects;
-	static map<string, ::Effekseer::Handle> Handles;
+	static aegis::unordered_map<std::string, ::Effekseer::Effect*> Effects;
+	static aegis::unordered_map<std::string, ::Effekseer::Handle> Handles;
 
 
 	EFFEKSEER_MANAGER() {}
@@ -42,25 +42,25 @@ public:
 
 	static ::Effekseer::Manager* const Get_Manager();
 
-	static const map<string, ::Effekseer::Effect*>& Get_Effects();
+	static const aegis::unordered_map<std::string, ::Effekseer::Effect*>& Get_Effects();
 
-	static void Play(const string& name);
-	static void Play(const string& handle_name, const string& effect_name, const XMFLOAT3& position);
-	static void Play(const string& handle_name, const string& effect_name, const Aegis::Vector3& position);
+	static void Play(const std::string& name);
+	static void Play(const std::string& handle_name, const std::string& effect_name, const XMFLOAT3& position);
+	static void Play(const std::string& handle_name, const std::string& effect_name, const aegis::Vector3& position);
 
-	static void Set_Location(const string& handle_name, const XMFLOAT3& position);
-	static void Set_Location(const string& handle_name, const Aegis::Vector3& position);
+	static void Set_Location(const std::string& handle_name, const XMFLOAT3& position);
+	static void Set_Location(const std::string& handle_name, const aegis::Vector3& position);
 
-	static void Set_Rotation(const string& handle_name, const XMFLOAT3& axis, const float angle);
-	static void Set_Rotation(const string& handle_name, const Aegis::Vector3& axis, const float angle);
+	static void Set_Rotation(const std::string& handle_name, const XMFLOAT3& axis, const float angle);
+	static void Set_Rotation(const std::string& handle_name, const aegis::Vector3& axis, const float angle);
 
-	static void Set_Scale(const string& handle_name, const XMFLOAT3& scale);
-	static void Set_Scale(const string& handle_name, const Aegis::Vector3& scale);
+	static void Set_Scale(const std::string& handle_name, const XMFLOAT3& scale);
+	static void Set_Scale(const std::string& handle_name, const aegis::Vector3& scale);
 
 
-	static void Set_Speed(const string& handle_name, const float speed);
+	static void Set_Speed(const std::string& handle_name, const float speed);
 
-	//static const EFFECT& Get_Effect(const string& name);
+	//static const EFFECT& Get_Effect(const std::string& name);
 
 };
 

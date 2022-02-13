@@ -26,7 +26,7 @@
 
 #include	"Bullet.h"
 
-using namespace Aegis;
+using namespace aegis;
 
 static bool flag = false;
 
@@ -34,14 +34,14 @@ static float hp;
 
 static short cnt;
 
-static unique_ptr<SPRITE_ANIMATION> sprite_anime = nullptr;
+static std::unique_ptr<SPRITE_ANIMATION> sprite_anime = nullptr;
 
-using namespace Aegis;
+using namespace aegis;
 
 void GAME::Init()
 {
 	{
-		sprite_anime = make_unique<SPRITE_ANIMATION>();
+		sprite_anime = std::make_unique<SPRITE_ANIMATION>();
 
 		sprite_anime->SetPosition(Vector2(SCREEN_WIDTH * 0.5, SCREEN_HEIGHT * 0.5));
 		sprite_anime->SetSize(Vector4(SCREEN_HEIGHT * 0.5, SCREEN_WIDTH * 0.5, SCREEN_HEIGHT * 0.5, SCREEN_WIDTH * 0.5));
@@ -204,13 +204,13 @@ void GAME::Update(float delta_time)
 
 			for (auto sprite : sprits)
 			{
-				if (string("hp_ui") == sprite->Get_Object_Name())
+				if (std::string("hp_ui") == sprite->Get_Object_Name())
 				{
 					auto children = sprite->Get_Child_Sptite();
 
 					for (const auto& child : *children)
 					{
-						if (string("hp") == child->Name)
+						if (std::string("hp") == child->Name)
 						{
 							auto player = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<PLAYER>("player");
 
@@ -297,7 +297,7 @@ void GAME::Uninit()
 //	{
 //		const type_info& id = typeid(*this);
 //
-//		string name(id.name());
+//		std::string name(id.name());
 //
 //		// 置換
 //		Replace_String(name, "class ", "      ");
@@ -327,7 +327,7 @@ void GAME::Load(SCENE* scene)
 	{
 		const type_info& id = typeid(*scene);
 
-		string name(id.name());
+		std::string name(id.name());
 
 		// 置換
 		Replace_String(name, "class ", "");
@@ -395,8 +395,8 @@ void GAME::Load(SCENE* scene)
 
 		// 敵
 		{
-			string name("enemy");
-			string number;
+			std::string name("enemy");
+			std::string number;
 
 			//for (int i = 0; i < 5; i++)
 			//{
@@ -413,7 +413,7 @@ void GAME::Load(SCENE* scene)
 
 			for (int i = 0; i < 5; i++)
 			{
-				number = to_string(i);
+				number = std::to_string(i);
 
 				auto enemy = Add_Game_Object<ENEMY>(LAYER_NAME::GAMEOBJECT, name + number);
 
@@ -489,8 +489,8 @@ void GAME::Load(SCENE* scene)
 
 			sprite->SetColor(color);
 
-			//sprite->Edit(string("30 / 30"));
-			sprite->Edit(string("infinite / 30"));
+			//sprite->Edit(std::string("30 / 30"));
+			sprite->Edit(std::string("infinite / 30"));
 
 			// 弾のアイコン
 			SPRITE* bullet_icon = sprite->Add_Child_Sptite("bullet_icon");
@@ -557,7 +557,7 @@ void GAME::Load(SCENE* scene)
 		//
 		//	for (const auto& child : *children)
 		//	{
-		//		if (string("hp") == child->Name)
+		//		if (std::string("hp") == child->Name)
 		//		{
 		//			child->Child->SetColor(color);
 		//		}
@@ -565,8 +565,8 @@ void GAME::Load(SCENE* scene)
 		//}
 
 		//{
-		//	string name("enemy");
-		//	string number;
+		//	std::string name("enemy");
+		//	std::string number;
 		//
 		//	for (int i = 0; i < 5; i++)
 		//	{
@@ -620,7 +620,7 @@ void GAME::Load(SCENE* scene)
 		
 			for (const auto& child : *children)
 			{
-				if (string("hp") == child->Name)
+				if (std::string("hp") == child->Name)
 				{
 					child->Child->SetColor(color);
 				}
@@ -628,12 +628,12 @@ void GAME::Load(SCENE* scene)
 		}
 
 		{
-			string name("enemy");
-			string number;
+			std::string name("enemy");
+			std::string number;
 		
 			for (int i = 0; i < 5; i++)
 			{
-				number = to_string(i);
+				number = std::to_string(i);
 		
 				auto enemy = scene->Get_Game_Object<ENEMY>(name + number);
 		
@@ -665,7 +665,7 @@ void GAME::Load(SCENE* scene)
 	{
 		const type_info& id = typeid(*scene);
 
-		string name(id.name());
+		std::string name(id.name());
 
 		// 置換
 		Replace_String(name, "class ", "");

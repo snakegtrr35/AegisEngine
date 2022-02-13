@@ -22,16 +22,16 @@ class GameObject;
 
 class CMODEL : public GameObject {
 private:
-	//map<string, MESH> Meshes;		// メッシュ
+	//map<std::string, MESH> Meshes;		// メッシュ
 	MESH Meshes;		// メッシュ
-	string directory;
-	vector<TEXTURE_S> textures_loaded;
+	std::string directory;
+	aegis::vector<TEXTURE_S> textures_loaded;
 
-	void processNode(aiNode* node, const aiScene* scene, unordered_map<string, MESH>& mesh_map);
+	void processNode(aiNode* node, const aiScene* scene, aegis::unordered_map<std::string, MESH>& mesh_map);
 	MESH processMesh(aiMesh* mesh, aiNode* node, const aiScene* scene);
 
-	vector<TEXTURE_S> loadMaterialTextures(aiMaterial* mat, aiTextureType type, string typeName, const aiScene* scene);
-	string determineTextureType(const aiScene* scene, aiMaterial* mat);
+	aegis::vector<TEXTURE_S> loadMaterialTextures(aiMaterial* mat, aiTextureType type, std::string typeName, const aiScene* scene);
+	std::string determineTextureType(const aiScene* scene, aiMaterial* mat);
 	int getTextureIndex(aiString* str);
 	ID3D11ShaderResourceView* getTextureFromModel(const aiScene* scene, int textureindex);
 
@@ -48,8 +48,8 @@ public:
 
 	~CMODEL();
 
-	bool Load(const string& filename);
-	bool Reload(const string& filename);
+	bool Load(const std::string& filename);
+	bool Reload(const std::string& filename);
 
 	void Init() override {};
 	void Draw() override;

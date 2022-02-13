@@ -19,15 +19,15 @@
  */
 struct CHILD_DATE {
 	//! 子スプライトのポインタ
-	unique_ptr<SPRITE> Child;
+	std::unique_ptr<SPRITE> Child;
 
 	////! オフセット位置
-	//Aegis::Vector3 Offset;
+	//aegis::Vector3 Offset;
 
 	//! 子スプライトの名前
-	string Name;
+	std::string Name;
 
-	CHILD_DATE() : /*Offset(Aegis::Vector3(0.f, 0.f, 0.f)),*/ Name("") {
+	CHILD_DATE() : /*Offset(aegis::Vector3(0.f, 0.f, 0.f)),*/ Name("") {
 		Child.reset(nullptr);
 	}
 
@@ -57,10 +57,10 @@ protected:
 	//! 頂点データ
 	VERTEX_3D Vertex[4];
 	//! テクスチャ
-	unique_ptr<TEXTURE> Texture;
+	std::unique_ptr<TEXTURE> Texture;
 
 	//! ポジション
-	Aegis::Vector2 Position;
+	aegis::Vector2 Position;
 
 	/**
 	* サイズ
@@ -69,16 +69,16 @@ protected:
 	* z : 下
 	* w : 左
 	*/
-	Aegis::Vector4 Size;
+	aegis::Vector4 Size;
 
 	//!< カラー
-	Aegis::COLOR Color;//!< 子スプライトのリスト
+	aegis::COLOR Color;//!< 子スプライトのリスト
 
 	//!< 子スプライトのリスト
-	vector< unique_ptr<CHILD_DATE> > Children;
+	aegis::vector< std::unique_ptr<CHILD_DATE> > Children;
 
 	//!< メニューイベント(リスト)
-	list<MENU_COMPONENT*> MenuEvents;
+	aegis::list<MENU_COMPONENT*> MenuEvents;
 
 	//!< スプライトの有効無効フラグ(デフォルトは true )
 	bool Enable;
@@ -111,7 +111,7 @@ public:
 	* @param size サイズ
 	* @details 引数付きコンストラクタ
 	*/
-	SPRITE(Aegis::Vector2 position, Aegis::Vector4 size);
+	SPRITE(aegis::Vector2 position, aegis::Vector4 size);
 
 	/**
 	* @brief デストラクタ
@@ -154,14 +154,14 @@ public:
 	* @param position 座標(二次元座標)
 	* @details 座標(二次元座標)を設定する関数
 	*/
-	void SetPosition(const Aegis::Vector2& position);
+	void SetPosition(const aegis::Vector2& position);
 
 	/**
 	* @brief 座標を取得する関数
-	* @return Aegis::Vector2* 座標(二次元座標)(ポインタ)
+	* @return aegis::Vector2* 座標(二次元座標)(ポインタ)
 	* @details 座標(二次元座標)を取得する関数
 	*/
-	Aegis::Vector2* const GetPosition();
+	aegis::Vector2* const GetPosition();
 
 	/**
 	* @brief 描画の有効無効を設定する関数
@@ -182,35 +182,35 @@ public:
 	* @param color カラー構造体
 	* @details 頂点カラー(カラー構造体)を設定する関数
 	*/
-	void SetColor(Aegis::COLOR& const color);
+	void SetColor(aegis::COLOR& const color);
 
 	/**
 	* @brief 頂点カラーを取得する関数
 	* @return COLOR 頂点カラー(カラー構造体)
 	* @details 頂点カラー(カラー構造体)を取得する関数
 	*/
-	Aegis::COLOR& const GetColor();
+	aegis::COLOR& const GetColor();
 
 	/**
 	* @brief サイズを設定する関数
 	* @param size x:上 y:右 z:下 w:左
 	* @details サイズ(4方向)を設定する関数
 	*/
-	void SetSize(const Aegis::Vector4& size);
+	void SetSize(const aegis::Vector4& size);
 
 	/**
 	* @brief サイズを取得する関数
-	* @return Aegis::Vector4 サイズ(4方向)(x:上 y:右 z:下 w:左)
+	* @return aegis::Vector4 サイズ(4方向)(x:上 y:右 z:下 w:左)
 	* @details サイズ(4方向)をを取得する関数
 	*/
-	Aegis::Vector4* const GetSize();
+	aegis::Vector4* const GetSize();
 
 	/**
 	* @brief テクスチャを設定する関数
 	* @param file_name 使用するテクスチャ名
 	* @details テクスチャ(クラス)を設定する関数
 	*/
-	void SetTexture(const string& const file_name);
+	void SetTexture(const std::string& const file_name);
 
 	/**
 	* @brief テクスチャを取得する関数
@@ -226,21 +226,21 @@ public:
 	* @return SPRITE 子スプライトのポインタ
 	* @details 子スプライトを一つ追加する関数
 	*/
-	SPRITE* Add_Child_Sptite(const string& name);
+	SPRITE* Add_Child_Sptite(const std::string& name);
 
 	/**
 	* @brief 子スプライトを取得する関数
 	* @return list<CHILD_DATE> 子スプライトのリスト
 	* @details 子スプライトのリストを取得する関数
 	*/
-	vector< unique_ptr<CHILD_DATE> >* const Get_Child_Sptite();
+	aegis::vector< std::unique_ptr<CHILD_DATE> >* const Get_Child_Sptite();
 
 	/**
 	* @brief 子スプライトを取得する関数
 	* @return list<CHILD_DATE> 子スプライトのリスト
 	* @details 子スプライトのリストを取得する関数
 	*/
-	CHILD_DATE* const Get_Child_Sptite(const string& name);
+	CHILD_DATE* const Get_Child_Sptite(const std::string& name);
 
 	/**
 	* @brief メニューイベントを追加する関数
@@ -275,7 +275,7 @@ public:
 	* @param offset オフセット位置(二次元座標)
 	* @details 特定の子スプライトの座標(二次元座標、親スプライトからオフセットされる)を設定する関数
 	*/
-	void Set_Position_Child(const string& const name, const Aegis::Vector2& position, const Aegis::Vector2& offset);
+	void Set_Position_Child(const std::string& const name, const aegis::Vector2& position, const aegis::Vector2& offset);
 
 	/**
 	* @brief 子スプライトの描画の有効無効を設定する関数
@@ -290,7 +290,7 @@ public:
 	* @param flag 描画の有効無効のフラグ
 	* @details 特定の子スプライトの描画の有効無効を設定する関数
 	*/
-	void Set_Enable_Child(const string& const name, const bool flag);
+	void Set_Enable_Child(const std::string& const name, const bool flag);
 
 	/**
 	* @brief 子スプライトの描画の有効無効を取得する関数
@@ -298,7 +298,7 @@ public:
 	* @return bool 描画の有効無効のフラグ
 	* @details 特定の子スプライトの描画の有効無効を取得する関数
 	*/
-	const bool Get_Enable_Child(const string& const name, vector< unique_ptr<CHILD_DATE> >* const children);
+	const bool Get_Enable_Child(const std::string& const name, aegis::vector< std::unique_ptr<CHILD_DATE> >* const children);
 	
 	void Set(ID3D11ShaderResourceView* shader_resource_view) {
 		ShaderResourceView = shader_resource_view;

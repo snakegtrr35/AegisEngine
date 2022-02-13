@@ -12,9 +12,9 @@ private:
 	XMVECTOR Up;
 	XMVECTOR Right;
 
-	Aegis::Vector4 F;
-	Aegis::Vector4 U;
-	Aegis::Vector4 R;
+	aegis::Vector4 F;
+	aegis::Vector4 U;
+	aegis::Vector4 R;
 
 	void Set(const XMVECTOR& f, const XMVECTOR& u, const XMVECTOR& r) {
 		XMStoreFloat4(&F, f);

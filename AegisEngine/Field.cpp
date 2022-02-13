@@ -7,14 +7,14 @@
 #include	"Scene.h"
 #include	"ShadowMap.h"
 
-using namespace Aegis;
+using namespace aegis;
 
 static const UINT g_InstanceNum = 40 * 40 * 40;
 
 FIELD::FIELD()
 {
 	// テクスチャの設定
-	Texture.reset(new TEXTURE(string("UVCheckerMap01-512.png")));
+	Texture.reset(new TEXTURE(std::string("UVCheckerMap01-512.png")));
 }
 
 FIELD::FIELD(Vector3 position, Vector2 wh)
@@ -151,7 +151,7 @@ FIELD::FIELD(Vector3 position, Vector2 wh)
 	}
 
 	// テクスチャの設定
-	Texture.reset(new TEXTURE(string("UVCheckerMap01-512.png")));
+	Texture.reset(new TEXTURE(std::string("UVCheckerMap01-512.png")));
 }
 
 FIELD::~FIELD()
@@ -485,7 +485,7 @@ void FIELD::SetWH(const Vector2 wh)
 //==============================
 // テクスチャの設定
 //==============================
-void FIELD::SetTexture(const string& const file_name)
+void FIELD::SetTexture(const std::string& const file_name)
 {
 	Texture->Set_Texture_Name(file_name);
 }

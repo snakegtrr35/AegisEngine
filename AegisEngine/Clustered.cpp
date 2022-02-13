@@ -7,7 +7,7 @@
 
 #include	"Scene_Manager.h"
 
-using namespace Aegis;
+using namespace aegis;
 
 static LIGHTS g_Light;
 

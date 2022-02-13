@@ -2,7 +2,7 @@
 
 #include	"imgui/imgui.h"
 
-using namespace Aegis;
+using namespace aegis;
 
 void COMPONENT::Draw_Inspector()
 {
@@ -41,7 +41,7 @@ void COMPONENT::Draw_Inspector()
 	}
 }
 
-void COMPONENT::Set_Owner(const weak_ptr<GameObject>& owner)
+void COMPONENT::Set_Owner(const std::weak_ptr<GameObject>& owner)
 {
 	Owner = owner;
 }

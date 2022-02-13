@@ -17,9 +17,9 @@ const bool COMPONENT_MANEGER::Get_Draw_Enable_All()
 	return Draw_Enable_All;
 }
 
-vector<COMPONENT*> COMPONENT_MANEGER::Get_All_Components()
+aegis::vector<COMPONENT*> COMPONENT_MANEGER::Get_All_Components()
 {
-	vector<COMPONENT*> objects;
+	aegis::vector<COMPONENT*> objects;
 	objects.reserve(Conponents.size());
 
 	for (const auto& object : Conponents)

@@ -24,7 +24,7 @@ private:
 	//! インデックスバッファ
 	ComPtr<ID3D11Buffer>	IndexBuffer;
 	//! テクスチャ
-	unique_ptr<TEXTURE>					Texture;						
+	std::unique_ptr<TEXTURE>					Texture;						
 
 public:
 

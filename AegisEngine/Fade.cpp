@@ -5,7 +5,7 @@
 #include	"ShadowMap.h"
 #include	"Renderer.h"
 
-using namespace Aegis;
+using namespace aegis;
 
 bool FADE::FadeEnable = false;
 
@@ -90,7 +90,7 @@ void FADE::Update(float delta_time)
 		fps = 0.f;
 	}
 
-	Color.w = clamp((Color.w + AdditionalAlpha), 0.0f, 1.0f);
+	Color.w = std::clamp((Color.w + AdditionalAlpha), 0.0f, 1.0f);
 
 	if (Get_FadeEnable())
 	{

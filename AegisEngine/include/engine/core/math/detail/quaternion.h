@@ -1,9 +1,9 @@
-#pragma once
+ï»¿#pragma once
 
 #ifndef _MATH_DETAIL_QUATERNION_H_
 #define _MATH_DETAIL_QUATERNION_H_
 
-namespace Aegis
+namespace aegis
 {
 	namespace quaternion
 	{
@@ -28,8 +28,8 @@ namespace Aegis
 			return detail::toQuaternion(DirectX::XMQuaternionRotationRollPitchYawFromVector(DirectX::XMVectorSet(z, y, z, 0.f)));
 		}
 
-		// ²‚ÆŠp“x‚©‚çCQuaternion‚ğ\’z‚µ‚Ü‚·
-		// ²‚Í‚·‚Å‚É³‹K‰»‚³‚ê‚Ä‚¢‚é‚Æ‘z’è‚³‚ê‚Ü‚·‚ªAŠp“x‚ÍƒfƒBƒOƒŠ[‚Å‚·
+		// è»¸ã¨è§’åº¦ã‹ã‚‰CQuaternionã‚’æ§‹ç¯‰ã—ã¾ã™
+		// è»¸ã¯ã™ã§ã«æ­£è¦åŒ–ã•ã‚Œã¦ã„ã‚‹ã¨æƒ³å®šã•ã‚Œã¾ã™ãŒã€è§’åº¦ã¯ãƒ‡ã‚£ã‚°ãƒªãƒ¼ã§ã™
 		inline static Quaternion RotateAxis(const Vector3& axis, const float32 angle)
 		{
 			return detail::toQuaternion(DirectX::XMQuaternionRotationAxis(detail::toXMVECTOR(axis), angle));

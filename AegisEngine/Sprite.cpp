@@ -4,7 +4,7 @@
 #include	"ShadowMap.h"
 #include	"Scene.h"
 
-using namespace Aegis;
+using namespace aegis;
 
 ComPtr<ID3D11Buffer> SPRITE::pIndexBuffer;		// インデックスバッファ
 
@@ -21,7 +21,7 @@ SPRITE::SPRITE()
 	Enable = true;
 
 	// テクスチャの設定
-	Texture.reset(new TEXTURE(string("number.png")));
+	Texture.reset(new TEXTURE(std::string("number.png")));
 }
 
 SPRITE::SPRITE(Vector2 position, Vector4 size)
@@ -37,7 +37,7 @@ SPRITE::SPRITE(Vector2 position, Vector4 size)
 	Enable = true;
 
 	// テクスチャの設定
-	Texture.reset(new TEXTURE(string("number.png")));
+	Texture.reset(new TEXTURE(std::string("number.png")));
 }
 
 SPRITE::~SPRITE()
@@ -304,7 +304,7 @@ Vector4* const SPRITE::GetSize()
 	return &Size;
 }
 
-void SPRITE::SetTexture(const string& const file_name)
+void SPRITE::SetTexture(const std::string& const file_name)
 {
 	Texture->Set_Texture_Name(file_name);
 }
@@ -316,11 +316,11 @@ TEXTURE* const SPRITE::GetTexture()
 
 
 
-SPRITE* SPRITE::Add_Child_Sptite(const string& name)
+SPRITE* SPRITE::Add_Child_Sptite(const std::string& name)
 {
-	unique_ptr<CHILD_DATE> child = make_unique<CHILD_DATE>();
+	std::unique_ptr<CHILD_DATE> child = std::make_unique<CHILD_DATE>();
 
-	child->Child = make_unique<SPRITE>();
+	child->Child = std::make_unique<SPRITE>();
 
 	child->Name = name;
 
@@ -329,12 +329,12 @@ SPRITE* SPRITE::Add_Child_Sptite(const string& name)
 	return (Children.end() - 1)->get()->Child.get();
 }
 
-vector< unique_ptr<CHILD_DATE> >* const SPRITE::Get_Child_Sptite()
+aegis::vector< std::unique_ptr<CHILD_DATE> >* const SPRITE::Get_Child_Sptite()
 {
 	return &Children;
 }
 
-CHILD_DATE* const SPRITE::Get_Child_Sptite(const string& name)
+CHILD_DATE* const SPRITE::Get_Child_Sptite(const std::string& name)
 {
 	for (const auto& child : Children)
 	{
@@ -381,7 +381,7 @@ void SPRITE::Draw_DPP_Child()
 	}
 };
 
-void SPRITE::Set_Position_Child(const string& const name, const Vector2& position, const Vector2& offset)
+void SPRITE::Set_Position_Child(const std::string& const name, const Vector2& position, const Vector2& offset)
 {
 	for (const auto& child : Children)
 	{
@@ -408,7 +408,7 @@ void SPRITE::Set_Enable_Child(const bool flag)
 	}
 };
 
-void SPRITE::Set_Enable_Child(const string& const name, const bool flag)
+void SPRITE::Set_Enable_Child(const std::string& const name, const bool flag)
 {
 	for (const auto& child : Children)
 	{
@@ -425,7 +425,7 @@ void SPRITE::Set_Enable_Child(const string& const name, const bool flag)
 	}
 };
 
-const bool SPRITE::Get_Enable_Child(const string& const name, vector< unique_ptr<CHILD_DATE> >* const children)
+const bool SPRITE::Get_Enable_Child(const std::string& const name, aegis::vector< std::unique_ptr<CHILD_DATE> >* const children)
 {
 	for (const auto& child : *children)
 	{

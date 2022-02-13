@@ -3,7 +3,7 @@
 #include	"ShadowMap.h"
 #include	"Scene.h"
 
-using namespace Aegis;
+using namespace aegis;
 
 TEXTS::TEXTS()
 {
@@ -48,16 +48,16 @@ void TEXTS::Uninit(void)
 {
 }
 
-void TEXTS::Edit(const string& text)
+void TEXTS::Edit(const std::string& text)
 {
 	Text = text;
 }
 
-void TEXTS::Text_Draw(const string& text)
+void TEXTS::Text_Draw(const std::string& text)
 {
 	SPRITE sprite;
 	ID3D11ShaderResourceView* shader_resource_view = nullptr;
-	wstring font;
+	std::wstring font;
 	short i = 0;
 
 	sprite.Init();
@@ -66,8 +66,8 @@ void TEXTS::Text_Draw(const string& text)
 
 	sprite.SetColor(Color);
 
-	string ctext = text;
-	wstring wtext = stringTowstring(ctext);
+	std::string ctext = text;
+	std::wstring wtext = stringTowstring(ctext);
 
 	for (auto itr : wtext)
 	{
@@ -86,11 +86,11 @@ void TEXTS::Text_Draw(const string& text)
 	}
 }
 
-void TEXTS::Text_Draw_DPP(const string& text)
+void TEXTS::Text_Draw_DPP(const std::string& text)
 {
 	SPRITE sprite;
 	ID3D11ShaderResourceView* shader_resource_view = nullptr;
-	wstring font;
+	std::wstring font;
 	short i = 0;
 
 	sprite.Init();
@@ -99,8 +99,8 @@ void TEXTS::Text_Draw_DPP(const string& text)
 
 	sprite.SetColor(Color);
 
-	string ctext = text;
-	wstring wtext = stringTowstring(ctext);
+	std::string ctext = text;
+	std::wstring wtext = stringTowstring(ctext);
 
 	for (auto itr : wtext)
 	{
