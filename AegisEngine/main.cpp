@@ -82,15 +82,16 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 	if (false == CManager::Init()) return -1;
 
 	//フレームカウント初期化
-	DWORD dwExecLastTime;
-	DWORD dwCurrentTime;
+	std::chrono::high_resolution_clock::time_point dwExecLastTime{};
+	std::chrono::high_resolution_clock::time_point dwCurrentTime{};
 	timeBeginPeriod(1);
-	dwExecLastTime = timeGetTime();
-	dwCurrentTime = 0;
+	dwExecLastTime = std::chrono::high_resolution_clock::now();
 
 	// メッセージループ
 	MSG msg;
 	ZeroMemory(&msg, sizeof msg);
+
+	const std::chrono::milliseconds time = std::chrono::milliseconds(1000U / 500U);
 
 	while(CManager::Get_Instance()->Get_GameEnd())
 	{
@@ -109,9 +110,9 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
         }
 		else
 		{
-			dwCurrentTime = timeGetTime();
+			dwCurrentTime = std::chrono::high_resolution_clock::now();
 
-			if ((dwCurrentTime - dwExecLastTime) >= (1000 / 240))
+			if (std::chrono::duration_cast<std::chrono::milliseconds>(dwCurrentTime - dwExecLastTime) >= time)
 			{
 				dwExecLastTime = dwCurrentTime;
 
