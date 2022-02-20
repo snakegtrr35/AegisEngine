@@ -181,7 +181,6 @@ void EFFEKSEER_MANAGER::Set()
 	}
 
 	{
-		XMFLOAT3* pos;
 		static float angle;
 		static ::Effekseer::Vector3D position;
 		static ::Effekseer::Vector3D at;

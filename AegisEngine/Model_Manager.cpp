@@ -357,7 +357,6 @@ std::string MODEL_MANEGER::loadMaterialTextures(aiMaterial* mat, aiTextureType t
 		}
 		if (!skip)
 		{   // If texture hasn't been loaded already, load it
-			HRESULT hr;
 			TEXTURE_S texture;
 			if (textype == "embedded compressed texture")
 			{

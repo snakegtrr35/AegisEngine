@@ -211,8 +211,6 @@ void BOUNDING_CAPSULE::Init_Body()
 
 		// インデックスバッファの設定
 		{
-			ID3D11Buffer* buffer;
-
 			D3D11_BUFFER_DESC bd{};
 			bd.ByteWidth = sizeof(WORD) * IndexNum;
 			bd.Usage = D3D11_USAGE_DEFAULT;

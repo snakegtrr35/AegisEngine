@@ -61,8 +61,6 @@ void BOUNDING_AABB::Init()
 
 		// 頂点バッファの設定
 		{
-			ID3D11Buffer* buffer;
-
 			D3D11_BUFFER_DESC bd{};
 			bd.ByteWidth = sizeof(VERTEX_3D) * BoundingBox::CORNER_COUNT;
 			bd.Usage = D3D11_USAGE_DYNAMIC;

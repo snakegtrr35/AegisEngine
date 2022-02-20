@@ -25,7 +25,7 @@ namespace aegis
 
 		inline static Quaternion Euler(const float32 x, const float32 y, const float32 z)
 		{
-			return detail::toQuaternion(DirectX::XMQuaternionRotationRollPitchYawFromVector(DirectX::XMVectorSet(z, y, z, 0.f)));
+			return detail::toQuaternion(DirectX::XMQuaternionRotationRollPitchYawFromVector(DirectX::XMVectorSet(x, y, z, 0.f)));
 		}
 
 		// 軸と角度からCQuaternionを構築します

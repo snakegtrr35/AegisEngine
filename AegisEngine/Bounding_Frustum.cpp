@@ -164,8 +164,6 @@ void BOUNDING_FRUSTUM::Update(float delta_time)
 	BoundingFrustum::CreateFromMatrix(Frustum, XMMatrixPerspectiveFovLH(XMConvertToRadians(80.0f + 35.0f), float(SCREEN_WIDTH / SCREEN_HEIGHT), 0.001f, 1000.0f));
 	Frustum.Origin.z = 0.0f;
 
-	Vector3 r;
-
 	const auto camera = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
 
 	if (false == camera.expired())
