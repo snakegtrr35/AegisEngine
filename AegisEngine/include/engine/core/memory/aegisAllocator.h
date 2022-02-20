@@ -15,6 +15,7 @@ namespace aegis
             Boot,
             Default,
             Resource,
+            Temp,
             Develop,
             Max
         };
@@ -31,7 +32,10 @@ namespace aegis
             static void deallocate(void* p, std::align_val_t alignment, AllocatorType type);
             static void deallocate(void* p, const uint64 num, std::align_val_t alignment, AllocatorType type);
 
-            static uint64 getTotalSize();
+            static void addMemoey(const uint64 num, AllocatorType type);
+            static void subMemoey(const uint64 num, AllocatorType type);
+
+            static uint64 getTotalSize(AllocatorType type);
 
             static void initAllocator();
             static void initMemoryPool();

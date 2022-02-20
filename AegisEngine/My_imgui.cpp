@@ -38,6 +38,8 @@ ImVec2 operator-(const ImVec2& lhs, const ImVec2& rhs) { return ImVec2(lhs.x - r
 
 #include	"Player.h"
 
+#include "include\engine\core\memory\aegisAllocator.h"
+
 using namespace aegis;
 
 static const ImWchar glyphRangesJapanese[] = {
@@ -1018,9 +1020,37 @@ void My_imgui::Draw(void)
 			{
 				ImGui::Text((char*)u8"メモリ使用量 %d byte", pmc.PrivateUsage);
 
-				ImGui::Text((char*)u8"1 メモリ使用量 %.3f キロバイト", float32(pmc.PrivateUsage / 1024.0f));
+				ImGui::Text((char*)u8"1 メモリ使用量 %.3f キロバイト", float32(pmc.PrivateUsage / 1000.0f));
 
-				ImGui::Text((char*)u8"2 メモリ使用量 %.3f メガバイト", float32(pmc.PrivateUsage / 1024.0f / 1024.0f));
+				ImGui::Text((char*)u8"2 メモリ使用量 %.3f メガバイト", float32(pmc.PrivateUsage / 1000.0f / 1000.0f));
+
+				for (int i = 0; i < (int)aegis::memory::AllocatorType::Max; i++)
+				{
+					std::string type;
+					switch (aegis::memory::AllocatorType(i))
+					{
+						case aegis::memory::AllocatorType::Boot:
+							type = "Boot";
+							break;
+
+						case aegis::memory::AllocatorType::Default:
+							type = "Default";
+							break;
+
+						case aegis::memory::AllocatorType::Resource:
+							type = "Resource";
+							break;
+
+						case aegis::memory::AllocatorType::Temp:
+							type = "Temp";
+							break;
+
+						case aegis::memory::AllocatorType::Develop:
+							type = "Develop";
+							break;
+					}
+					ImGui::Text((char*)u8"2 メモリ使用量[ アロケーター: %s ] %lu バイト", type.c_str(), aegis::memory::AegisAllocator::getTotalSize(aegis::memory::AllocatorType(i)));
+				}
 
 				CloseHandle(hProc);
 			}

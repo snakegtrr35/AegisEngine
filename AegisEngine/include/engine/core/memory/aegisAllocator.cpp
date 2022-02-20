@@ -8,9 +8,13 @@ namespace aegis
 {
     namespace
     {
+        static uint64 InitDataSize = 10 * 1024 * 1024;
+
         static tlsf_t gMemoryPools[static_cast<uint32>(memory::AllocatorType::Max)] = { nullptr };
         //static std::unique_ptr<void, Delete> gMemoryPools[static_cast<uint32>(memory::AllocatorType::Max)] = { nullptr };
         //static std::vector<pool_t> gAddtionalPools = std::vector<pool_t>(16);
+
+        static uint64 gTotalSize[static_cast<uint32>(memory::AllocatorType::Max)] = {};
     }
 
     namespace memory
@@ -37,10 +41,13 @@ namespace aegis
 
                 if (nullptr == ptr)
                 {
+                    const uint64 size = num * 2;
                     aegis::vector<std::unique_ptr<void, Delete_Array>>& addtionalPools = getAddtionalMemoryPool();
-                    addtionalPools.emplace_back(tlsf_add_pool(gMemoryPools[type], ::new uint8[num * 2], num * 2));
+                    addtionalPools.emplace_back(tlsf_add_pool(gMemoryPools[type], ::new uint8[size], size));
 
                     ptr = tlsf_malloc(gMemoryPools[type], num);
+
+                    gTotalSize[type] += size;
                 }
 
                 return ptr;
@@ -60,6 +67,7 @@ namespace aegis
                 {
                     //gMemoryPools[i] = ( tlsf_create_with_pool(::new uint8[dataSize], dataSize) );
                     gMemoryPools[i] = (tlsf_create_with_pool(getMemoryPool(i), dataSize));
+                    gTotalSize[i] = InitDataSize;
                 }
             }
 
@@ -85,13 +93,13 @@ namespace aegis
 
             void* getMemoryPool(uint32 type)
             {
-                constexpr uint64 dataSize = 10 * 1024 * 1024;
                 static std::unique_ptr<uint8[], Delete_Array> MemoryPools[static_cast<uint32>(memory::AllocatorType::Max)] =
                 {
-                    std::unique_ptr<uint8[], Delete_Array>(new uint8[dataSize]),
-                    std::unique_ptr<uint8[], Delete_Array>(new uint8[dataSize]),
-                    std::unique_ptr<uint8[], Delete_Array>(new uint8[dataSize]),
-                    std::unique_ptr<uint8[], Delete_Array>(new uint8[dataSize])
+                    std::unique_ptr<uint8[], Delete_Array>(new uint8[InitDataSize]),
+                    std::unique_ptr<uint8[], Delete_Array>(new uint8[InitDataSize]),
+                    std::unique_ptr<uint8[], Delete_Array>(new uint8[InitDataSize]),
+                    std::unique_ptr<uint8[], Delete_Array>(new uint8[InitDataSize]),
+                    std::unique_ptr<uint8[], Delete_Array>(new uint8[InitDataSize])
                 };
 
                 return MemoryPools[type].get();
@@ -116,7 +124,7 @@ namespace aegis
             }
         }
 
-        uint64 AegisAllocator::mTotalSize[static_cast<uint32>(AllocatorType::Max)] = { 0 };
+        uint64 AegisAllocator::mTotalSize[static_cast<uint32>(AllocatorType::Max)] = { InitDataSize };
         std::shared_mutex AegisAllocator::mLockObjs[static_cast<uint32>(AllocatorType::Max)];
         std::once_flag AegisAllocator::mOnce[2];
         bool AegisAllocator::mIsInit = false;
@@ -184,11 +192,26 @@ namespace aegis
             detail::deallocate(p, typeNum);
         }
 
-        uint64 AegisAllocator::getTotalSize()
+        void AegisAllocator::addMemoey(const uint64 num, AllocatorType type)
         {
-            std::shared_lock lock(mLockObjs[0]);
+            std::lock_guard lock(mLockObjs[static_cast<uint32>(type)]);
 
-            return mTotalSize[0];
+            mTotalSize[static_cast<uint32>(type)] += num;
+        }
+
+        void AegisAllocator::subMemoey(const uint64 num, AllocatorType type)
+        {
+            std::lock_guard lock(mLockObjs[static_cast<uint32>(type)]);
+
+            mTotalSize[static_cast<uint32>(type)] -= num;
+        }
+
+        uint64 AegisAllocator::getTotalSize(AllocatorType type)
+        {
+            std::shared_lock lock(mLockObjs[static_cast<uint32>(type)]);
+
+            //return mTotalSize[static_cast<uint32>(type)];
+            return gTotalSize[static_cast<uint32>(type)];
         }
 
         void AegisAllocator::initAllocator()

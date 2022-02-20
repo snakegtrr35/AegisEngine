@@ -28,14 +28,12 @@ namespace aegis
         {
             const aegis::uint64 size = num * sizeof(T);
             return static_cast<T*>(memory::AegisAllocator::allocate(size, memory::AllocatorType::Default));
-            //return static_cast<T*>(::operator new(size));
         }
 
         // メモリ領域を解放
         void deallocate(T* p, aegis::uint64 num)
         {
             memory::AegisAllocator::deallocate(p, num, memory::AllocatorType::Default);
-            //::operator delete(p);
         }
     private:
         static std::once_flag mOnce[2];
