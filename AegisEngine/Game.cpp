@@ -92,31 +92,31 @@ void GAME::Update(float delta_time)
 
 		SCENE::Update(delta_time);
 
-		// ポーズ画面の切り替え
-		if (KEYBOARD::Trigger_Keyboard(VK_Q))
-		{
-			vector<SPRITE*> sprites = Get_Game_Objects<SPRITE>();
+		//// ポーズ画面の切り替え
+		//if (KEYBOARD::Trigger_Keyboard(VK_Q))
+		//{
+		//	vector<SPRITE*> sprites = Get_Game_Objects<SPRITE>();
 
-			for (auto sprite : sprites)
-			{
-				if ("pause" == sprite->Get_Object_Name())
-				{
-					if (true == sprite->GetEnable())
-					{
-						sprite->SetEnable(false);
-						sprite->Set_Enable_Child(false);
-						End_Pause();
-					}
-					else
-					{
-						sprite->SetEnable(true);
-						sprite->Set_Enable_Child(true);
-						Start_Pause();
-					}
-					break;
-				}
-			}
-		}
+		//	for (auto sprite : sprites)
+		//	{
+		//		if ("pause" == sprite->Get_Object_Name())
+		//		{
+		//			if (true == sprite->GetEnable())
+		//			{
+		//				sprite->SetEnable(false);
+		//				sprite->Set_Enable_Child(false);
+		//				End_Pause();
+		//			}
+		//			else
+		//			{
+		//				sprite->SetEnable(true);
+		//				sprite->Set_Enable_Child(true);
+		//				Start_Pause();
+		//			}
+		//			break;
+		//		}
+		//	}
+		//}
 
 		// ポーズ画面の入力処理
 		if (true == Get_PauseEnable())
@@ -137,29 +137,29 @@ void GAME::Update(float delta_time)
 				AUDIO_MANAGER::Play_Sound_Object(SOUND_INDEX::SOUND_INDEX_SENTAKU, false);
 			}
 
-			vector<SPRITE*> sprites = Get_Game_Objects<SPRITE>();
+			//vector<SPRITE*> sprites = Get_Game_Objects<SPRITE>();
 
-			for (auto sprite : sprites)
-			{
-				if ("pause" == sprite->Get_Object_Name())
-				{
-					switch (cnt)
-					{
-					case 0:
-						sprite->Set_Position_Child("select", *sprite->GetPosition(), Vector2(-165.0f, -110.0f));	// 1番目
-						break;
+			//for (auto sprite : sprites)
+			//{
+			//	if ("pause" == sprite->Get_Object_Name())
+			//	{
+			//		switch (cnt)
+			//		{
+			//		case 0:
+			//			sprite->Set_Position_Child("select", *sprite->GetPosition(), Vector2(-165.0f, -110.0f));	// 1番目
+			//			break;
 
-					case 1:
-						sprite->Set_Position_Child("select", *sprite->GetPosition(), Vector2(-165.0f, 0.0f));		// 2番目
-						break;
+			//		case 1:
+			//			sprite->Set_Position_Child("select", *sprite->GetPosition(), Vector2(-165.0f, 0.0f));		// 2番目
+			//			break;
 
-					case 2:
-						sprite->Set_Position_Child("select", *sprite->GetPosition(), Vector2(-165.0f, 105.0f));	// 3番目
-						break;
-					}
-					break;
-				}
-			}
+			//		case 2:
+			//			sprite->Set_Position_Child("select", *sprite->GetPosition(), Vector2(-165.0f, 105.0f));	// 3番目
+			//			break;
+			//		}
+			//		break;
+			//	}
+			//}
 
 			if (KEYBOARD::Trigger_Keyboard(VK_RETURN))
 			{
@@ -167,7 +167,7 @@ void GAME::Update(float delta_time)
 				{
 				case 0:
 				{
-					vector<SPRITE*> sprites = Get_Game_Objects<SPRITE>();
+					/*vector<SPRITE*> sprites = Get_Game_Objects<SPRITE>();
 
 					for (auto sprite : sprites)
 					{
@@ -178,7 +178,7 @@ void GAME::Update(float delta_time)
 							End_Pause();
 							break;
 						}
-					}
+					}*/
 				}
 				break;
 
@@ -195,43 +195,43 @@ void GAME::Update(float delta_time)
 			}
 		}
 
-		// HPのUI
-		{
-			vector<SPRITE*> sprits = Get_Game_Objects<SPRITE>();
+		//// HPのUI
+		//{
+		//	vector<SPRITE*> sprits = Get_Game_Objects<SPRITE>();
 
-			COLOR color1 = COLOR(1.0f, 1.0f, 0.0f, 1.0f);
-			COLOR color2 = COLOR(1.0f, 0.0f, 0.0f, 1.0f);
+		//	COLOR color1 = COLOR(1.0f, 1.0f, 0.0f, 1.0f);
+		//	COLOR color2 = COLOR(1.0f, 0.0f, 0.0f, 1.0f);
 
-			for (auto sprite : sprits)
-			{
-				if (std::string("hp_ui") == sprite->Get_Object_Name())
-				{
-					auto children = sprite->Get_Child_Sptite();
+		//	for (auto sprite : sprits)
+		//	{
+		//		if (std::string("hp_ui") == sprite->Get_Object_Name())
+		//		{
+		//			auto children = sprite->Get_Child_Sptite();
 
-					for (const auto& child : *children)
-					{
-						if (std::string("hp") == child->Name)
-						{
-							auto player = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<PLAYER>("player");
+		//			for (const auto& child : *children)
+		//			{
+		//				if (std::string("hp") == child->Name)
+		//				{
+		//					auto player = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<PLAYER>("player");
 
-							hp = player.lock()->Get_HP();
+		//					hp = 100;//player.lock()->Get_HP();
 
-							child->Child->SetSize(Vector4(Math::LerpEx(-485.0f, 170.0f, hp, 0.0f, 100.0f), 25, 485, 25));
+		//					child->Child->SetSize(Vector4(Math::LerpEx(-485.0f, 170.0f, hp, 0.0f, 100.0f), 25, 485, 25));
 
-							if (hp <= 50.0f)
-							{
-								child->Child->SetColor(color1);
-							}
+		//					if (hp <= 50.0f)
+		//					{
+		//						child->Child->SetColor(color1);
+		//					}
 
-							if (hp <= 20.0f)
-							{
-								child->Child->SetColor(color2);
-							}
-						}
-					}
-				}
-			}
-		}
+		//					if (hp <= 20.0f)
+		//					{
+		//						child->Child->SetColor(color2);
+		//					}
+		//				}
+		//			}
+		//		}
+		//	}
+		//}
 
 		{
 			auto player = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<PLAYER>("player");
@@ -251,22 +251,22 @@ void GAME::Update(float delta_time)
 				}
 			}
 
-			{
-				auto enemys = Get_Game_Objects<ENEMY>();
-
-				if (enemys.empty())
-				//if (KEYBOARD::Trigger_Keyboard(VK_SPACE))
-				{
-					if (flag)
-					{
-						FADE::Start_FadeOut(60);
-
-						flag = false;
-
-						RESULT::Set(true);
-					}
-				}
-			}
+			//{
+			//	auto enemys = Get_Game_Objects<ENEMY>();
+			//
+			//	if (enemys.empty())
+			//	//if (KEYBOARD::Trigger_Keyboard(VK_SPACE))
+			//	{
+			//		if (flag)
+			//		{
+			//			FADE::Start_FadeOut(60);
+			//
+			//			flag = false;
+			//
+			//			RESULT::Set(true);
+			//		}
+			//	}
+			//}
 		}
 
 		if (FADE::End_Fade())
@@ -330,7 +330,7 @@ void GAME::Load(SCENE* scene)
 		std::string name(id.name());
 
 		// 置換
-		Replace_String(name, "class ", "");
+		name = Replace_String(name, "class ", "");
 		Replace_String(name, "*", "");
 		//name.erase(remove_if(name.begin(), name.end(), isspace), name.end());
 
@@ -359,11 +359,11 @@ void GAME::Load(SCENE* scene)
 		{
 			Vector2 pos(SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.5f - 100.0f);
 			SPRITE* sprite = Add_Game_Object<SPRITE>(LAYER_NAME::UI, "reticle");
-
+		
 			sprite->SetPosition(pos);
-
+		
 			sprite->SetTexture("Reticule.png");
-
+		
 			sprite->SetSize(Vector4(400, 400, 400, 400));
 		}
 
@@ -397,43 +397,28 @@ void GAME::Load(SCENE* scene)
 		{
 			std::string name("enemy");
 			std::string number;
-
-			//for (int i = 0; i < 5; i++)
-			//{
-			//	number = to_string(i);
-			//
-			//	ENEMY* enemy = Add_Game_Object<ENEMY>(LAYER_NAME::GAMEOBJECT, name + number);
-			//	/*enemy->SetPosition(Vector3((float)(-10.0f + i * 5.0f), 0.0f, 10.0f));
-			//	enemy->SetRotation(Vector3(0.0f, 0.0f, 0.0f));
-			//
-			//	auto component = enemy->Get_Component();*/
-			//
-			//	number.clear();
-			//}
-
+		
 			for (int i = 0; i < 5; i++)
 			{
 				number = std::to_string(i);
-
+		
 				auto enemy = Add_Game_Object<ENEMY>(LAYER_NAME::GAMEOBJECT, name + number);
-
+		
 				if (enemy)
 				{
-					//ENEMY* e = Add_Game_Object<ENEMY>(LAYER_NAME::GAMEOBJECT, name + number);
-
 					Vector3 vec((float)(-10.0f + i * 5.0f), 0.0f, 10.0f);
 					enemy->Get_Transform().Set_Position(vec);
 					vec = Vector3(0.0f, 0.0f, 0.0f);
 					enemy->Get_Transform().Set_Rotation(vec);
-
+		
 					continue;
 				}
-
+		
 				Vector3 vec((float)(-10.0f + i * 5.0f), 0.0f, 10.0f);
 				enemy->Get_Transform().Set_Position(vec);
 				vec = Vector3(0.0f, 0.0f, 0.0f);
 				enemy->Get_Transform().Set_Rotation(vec);
-
+		
 				number.clear();
 			}
 		}
@@ -441,7 +426,7 @@ void GAME::Load(SCENE* scene)
 		// スコア
 		{
 			Vector3 pos = Vector3(500.0f, 37.0f, 0.0f);
-
+		
 			SCORE* score = Add_Game_Object<SCORE>(LAYER_NAME::UI, "score");
 			score->Get_Transform().Set_Position(&pos);
 			score->Set_Additional(1);
@@ -451,26 +436,26 @@ void GAME::Load(SCENE* scene)
 		{
 			Vector2 pos(50.0f, SCREEN_HEIGHT * 0.5f);
 			SPRITE* sprite = Add_Game_Object<SPRITE>(LAYER_NAME::UI, "hp_ui");
-
+		
 			sprite->SetPosition(pos);
-
+		
 			sprite->SetTexture("hp_rod.png");
-
+		
 			sprite->SetSize(Vector4(300, 32, 500, 32));
-
+		
 			COLOR color = COLOR(0.0f, 1.0f, 1.0f, 1.0f);
-
+		
 			SPRITE* hp = sprite->Add_Child_Sptite("hp");
-
+		
 			hp->SetTexture("hp.png");
-
+		
 			hp->SetPosition(pos);
-
+		
 			hp->SetColor(color);
-
+		
 			hp->SetSize(Vector4(170, 25, 485, 25));	// HP MAX 655pixel
 			//hp->SetSize(Vector4(-485, 25, 485, 25));	// HP 0
-
+		
 			hp->SetSize(Vector4(Math::LerpEx(-485.0f, 170.0f, 100.0f, 0.0f, 100.0f), 25, 485, 25));
 		}
 
@@ -478,29 +463,29 @@ void GAME::Load(SCENE* scene)
 		{
 			//Vector2 pos(SCREEN_WIDTH - 300.0f, SCREEN_HEIGHT - 70.0f);
 			Vector2 pos(SCREEN_WIDTH - 550.0f, SCREEN_HEIGHT - 70.0f);
-
+		
 			COLOR color = COLOR(0.0f, 1.0f, 1.0f, 1.0f);
-
+		
 			TEXTS* sprite = Add_Game_Object<TEXTS>(LAYER_NAME::UI, "bullet_ui");
-
+		
 			sprite->SetPosition(pos);
-
+		
 			sprite->SetSize(Vector4(20, 20, 20, 20));
-
+		
 			sprite->SetColor(color);
-
+		
 			//sprite->Edit(std::string("30 / 30"));
 			sprite->Edit(std::string("infinite / 30"));
-
+		
 			// 弾のアイコン
 			SPRITE* bullet_icon = sprite->Add_Child_Sptite("bullet_icon");
-
+		
 			bullet_icon->SetTexture("bullet_icon.png");
-
+		
 			pos.x += -60.0f;
-
+		
 			bullet_icon->SetPosition(pos);
-
+		
 			bullet_icon->SetSize(Vector4(50, 16, 50, 16));
 		}
 
@@ -508,29 +493,29 @@ void GAME::Load(SCENE* scene)
 		{
 			Vector2 pos(SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.5f);
 			COLOR color = COLOR(1.0f, 1.0f, 1.0f, 0.85f);
-
+		
 			SPRITE* sprite = Add_Game_Object<SPRITE>(LAYER_NAME::UI, "pause");
-
+		
 			sprite->SetPosition(pos);
-
+		
 			sprite->SetTexture("pause.png");
-
+		
 			sprite->SetSize(Vector4(200, 200, 200, 200));
-
+		
 			sprite->SetColor(color);
-
+		
 			sprite->SetEnable(false);
-
+		
 			SPRITE* select = sprite->Add_Child_Sptite("select");
-
+		
 			select->SetTexture("select.png");
-
+		
 			select->SetSize(Vector4(30, 30, 30, 30));
-
+		
 			sprite->Set_Position_Child("select", *sprite->GetPosition(), Vector2(-165.0f, -110.0f));		// 1番目
-
+		
 			//sprite->Set_Position_Child("select", Vector2(-165.0f, 0.0f));		// 2番目
-
+		
 			//sprite->Set_Position_Child("select", Vector2(-165.0f, 105.0f));		// 3番目
 		}
 	}
@@ -564,36 +549,36 @@ void GAME::Load(SCENE* scene)
 		//	}
 		//}
 
-		//{
-		//	std::string name("enemy");
-		//	std::string number;
-		//
-		//	for (int i = 0; i < 5; i++)
-		//	{
-		//		number = to_string(i);
-		//
-		//		auto enemy = scene->Get_Game_Object<ENEMY>(name + number);
-		//
-		//		if (enemy.expired())
-		//		{
-		//			ENEMY* e = Add_Game_Object<ENEMY>(LAYER_NAME::GAMEOBJECT, name + number);
-		//
-		//			Vector3 vec((float)(-10.0f + i * 5.0f), 0.0f, 10.0f);
-		//			e->Get_Transform().Set_Position(vec);
-		//			vec = Vector3(0.0f, 0.0f, 0.0f);
-		//			e->Get_Transform().Set_Rotation(vec);
-		//
-		//			continue;
-		//		}
-		//
-		//		Vector3 vec((float)(-10.0f + i * 5.0f), 0.0f, 10.0f);
-		//		enemy.lock()->Get_Transform().Set_Position(vec);
-		//		vec = Vector3(0.0f, 0.0f, 0.0f);
-		//		enemy.lock()->Get_Transform().Set_Rotation(vec);
-		//
-		//		number.clear();
-		//	}
-		//}
+		{
+			std::string name("enemy");
+			std::string number;
+		
+			for (int i = 0; i < 5; i++)
+			{
+				number = std::to_string(i);
+		
+				auto enemy = scene->Get_Game_Object<ENEMY>(name + number);
+		
+				if (enemy.expired())
+				{
+					ENEMY* e = Add_Game_Object<ENEMY>(LAYER_NAME::GAMEOBJECT, name + number);
+		
+					Vector3 vec((float)(-10.0f + i * 5.0f), 0.0f, 10.0f);
+					e->Get_Transform().Set_Position(vec);
+					vec = Vector3(0.0f, 0.0f, 0.0f);
+					e->Get_Transform().Set_Rotation(vec);
+		
+					continue;
+				}
+		
+				Vector3 vec((float)(-10.0f + i * 5.0f), 0.0f, 10.0f);
+				enemy.lock()->Get_Transform().Set_Position(vec);
+				vec = Vector3(0.0f, 0.0f, 0.0f);
+				enemy.lock()->Get_Transform().Set_Rotation(vec);
+		
+				number.clear();
+			}
+		}
 	}
 
 	scene->SCENE::Init();
@@ -627,36 +612,36 @@ void GAME::Load(SCENE* scene)
 			}
 		}
 
-		{
-			std::string name("enemy");
-			std::string number;
-		
-			for (int i = 0; i < 5; i++)
-			{
-				number = std::to_string(i);
-		
-				auto enemy = scene->Get_Game_Object<ENEMY>(name + number);
-		
-				if (enemy.expired())
-				{
-					ENEMY* e = Add_Game_Object<ENEMY>(LAYER_NAME::GAMEOBJECT, name + number);
-		
-					Vector3 vec((float)(-10.0f + i * 5.0f), 0.0f, 10.0f);
-					e->Get_Transform().Set_Position(vec);
-					vec = Vector3(0.0f, 0.0f, 0.0f);
-					e->Get_Transform().Set_Rotation(vec);
-		
-					continue;
-				}
-		
-				Vector3 vec((float)(-10.0f + i * 5.0f), 0.0f, 10.0f);
-				enemy.lock()->Get_Transform().Set_Position(vec);
-				vec = Vector3(0.0f, 0.0f, 0.0f);
-				enemy.lock()->Get_Transform().Set_Rotation(vec);
-		
-				number.clear();
-			}
-		}
+		//{
+		//	std::string name("enemy");
+		//	std::string number;
+		//
+		//	for (int i = 0; i < 5; i++)
+		//	{
+		//		number = std::to_string(i);
+		//
+		//		auto enemy = scene->Get_Game_Object<ENEMY>(name + number);
+		//
+		//		if (enemy.expired())
+		//		{
+		//			ENEMY* e = Add_Game_Object<ENEMY>(LAYER_NAME::GAMEOBJECT, name + number);
+		//
+		//			Vector3 vec((float)(-10.0f + i * 5.0f), 0.0f, 10.0f);
+		//			e->Get_Transform().Set_Position(vec);
+		//			vec = Vector3(0.0f, 0.0f, 0.0f);
+		//			e->Get_Transform().Set_Rotation(vec);
+		//
+		//			continue;
+		//		}
+		//
+		//		Vector3 vec((float)(-10.0f + i * 5.0f), 0.0f, 10.0f);
+		//		enemy.lock()->Get_Transform().Set_Position(vec);
+		//		vec = Vector3(0.0f, 0.0f, 0.0f);
+		//		enemy.lock()->Get_Transform().Set_Rotation(vec);
+		//
+		//		number.clear();
+		//	}
+		//}
 	}
 
 #ifdef _DEBUG
@@ -668,9 +653,7 @@ void GAME::Load(SCENE* scene)
 		std::string name(id.name());
 
 		// 置換
-		Replace_String(name, "class ", "");
-		Replace_String(name, "*", "");
-		//name.erase(remove_if(name.begin(), name.end(), isspace), name.end());
+		name = Replace_String(name, "class ", "");
 
 		std::ofstream file(name + ".dat", std::ios::binary);
 

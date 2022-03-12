@@ -209,8 +209,7 @@ void TITLE::Load(SCENE* scene)
 		std::string name(id.name());
 
 		// 置換
-		Replace_String(name, "class ", "");
-		Replace_String(name, "*", "");
+		name = Replace_String(name, "class ", "");
 		//name.erase(remove_if(name.begin(), name.end(), isspace), name.end());
 
 		std::ifstream file(name + ".dat", std::ios::binary);
@@ -260,9 +259,7 @@ void TITLE::Load(SCENE* scene)
 		std::string name(id.name());
 
 		// 置換
-		Replace_String(name, "class ", "");
-		Replace_String(name, "*", "");
-		//name.erase(remove_if(name.begin(), name.end(), isspace), name.end());
+		name = Replace_String(name, "class ", "");
 
 		std::ofstream file(name + ".dat", std::ios::binary);
 
