@@ -1,6 +1,5 @@
 ﻿#include	"Scene.h"
 #include	"Main_Menu.h"
-#include	"ModelLoader.h"
 #include	"Input.h"
 #include	"manager.h"
 #include	"Component.h"
