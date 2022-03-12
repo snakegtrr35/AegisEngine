@@ -74,7 +74,7 @@ struct Anim {
 };
 
 
-class MESHS {
+class MESH {
 protected:
 	aegis::vector<VERTEX_3D> Vertices;
 	aegis::vector<UINT> Indices;
@@ -90,7 +90,7 @@ protected:
 
 	XMFLOAT4X4 Matrix;
 
-	aegis::vector<MESHS> ChildMeshes;
+	aegis::vector<MESH> ChildMeshes;
 
 	void Draw_Mesh(XMMATRIX& parent_matrix, const aegis::vector<TEXTURE_S>& textures);
 
@@ -100,12 +100,12 @@ protected:
 
 public:
 
-	MESHS();
+	MESH();
 
 
-	MESHS(aegis::vector<VERTEX_3D>& vertices, aegis::vector<UINT>& indices, std::string& texture_name, XMMATRIX& matrix, std::string name);
+	MESH(aegis::vector<VERTEX_3D>& vertices, aegis::vector<UINT>& indices, std::string& texture_name, XMMATRIX& matrix, std::string name);
 
-	~MESHS() { Uninit(); }
+	~MESH() { Uninit(); }
 
 	void Init();
 
@@ -117,7 +117,7 @@ public:
 
 	void Uninit();
 
-	aegis::vector<MESHS>& Get_Meshs();
+	aegis::vector<MESH>& Get_Meshs();
 
 	aegis::vector<TEXTURE_S>& Get_Textures();
 
@@ -129,7 +129,7 @@ public:
 
 	void Set_Texture_Name(const std::string& texture_name);
 
-	void Set(const MESHS& meshs);
+	void Set(const MESH& meshs);
 
 	template<class Archive>
 	void serialize(Archive& ar) {

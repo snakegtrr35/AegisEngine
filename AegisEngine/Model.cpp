@@ -128,7 +128,7 @@ const std::string& MODEL::Get_Model_Name()
 
 void MODEL::Draw_Inspector()
 {
-	auto str = (char*)u8"コリジョン(MODEL)";
+	auto str = (char*)u8"メッシュ(MODEL)";
 
 	ImGui::Text(str);
 

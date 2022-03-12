@@ -6,15 +6,15 @@ using namespace aegis;
 
 #pragma comment (lib, "assimp-vc141-mt.lib")
 
-MESHS::MESHS() : VertexBuffer(nullptr), IndexBuffer(nullptr)
+MESH::MESH() : VertexBuffer(nullptr), IndexBuffer(nullptr)
 {
 }
 
-MESHS::MESHS(aegis::vector<VERTEX_3D>& vertices, aegis::vector<UINT>& indices, std::string& texture_name, XMMATRIX& matrix, std::string name) : Name(name), TextureName(texture_name), Matrix(XMMATRIXToXMFLOAT4X4(matrix)), Vertices(vertices), Indices(indices), VertexBuffer(nullptr), IndexBuffer(nullptr)
+MESH::MESH(aegis::vector<VERTEX_3D>& vertices, aegis::vector<UINT>& indices, std::string& texture_name, XMMATRIX& matrix, std::string name) : Name(name), TextureName(texture_name), Matrix(XMMATRIXToXMFLOAT4X4(matrix)), Vertices(vertices), Indices(indices), VertexBuffer(nullptr), IndexBuffer(nullptr)
 {
 }
 
-void MESHS::Init()
+void MESH::Init()
 {
 	{
 		SetupMesh();
@@ -48,21 +48,21 @@ void MESHS::Init()
 	}
 }
 
-void MESHS::Draw(XMMATRIX& matrix, const aegis::vector<TEXTURE_S>& textures)
+void MESH::Draw(XMMATRIX& matrix, const aegis::vector<TEXTURE_S>& textures)
 {
 	Draw_Mesh(matrix, textures);
 }
 
-void MESHS::Draw_DPP(XMMATRIX& matrix)
+void MESH::Draw_DPP(XMMATRIX& matrix)
 {
 	Draw_DPP_Mesh(matrix);
 }
 
-void MESHS::Update()
+void MESH::Update()
 {
 }
 
-void MESHS::Uninit()
+void MESH::Uninit()
 {
 	//SAFE_RELEASE(VertexBuffer);
 	//SAFE_RELEASE(IndexBuffer);
@@ -83,37 +83,37 @@ void MESHS::Uninit()
 	ChildMeshes.clear();
 }
 
-aegis::vector<MESHS>& MESHS::Get_Meshs()
+aegis::vector<MESH>& MESH::Get_Meshs()
 {
 	return ChildMeshes;
 }
 
-aegis::vector<TEXTURE_S>& MESHS::Get_Textures()
+aegis::vector<TEXTURE_S>& MESH::Get_Textures()
 {
 	return Textures;
 }
 
-const std::string& MESHS::Get_Name()
+const std::string& MESH::Get_Name()
 {
 	return Name;
 }
 
-void MESHS::Set_Name(const std::string& name)
+void MESH::Set_Name(const std::string& name)
 {
 	Name = name;
 }
 
-const std::string& MESHS::Get_Texture_Name()
+const std::string& MESH::Get_Texture_Name()
 {
 	return TextureName;
 }
 
-void MESHS::Set_Texture_Name(const std::string & texture_name)
+void MESH::Set_Texture_Name(const std::string & texture_name)
 {
 	TextureName = texture_name;
 }
 
-void MESHS::Set(const MESHS& meshs)
+void MESH::Set(const MESH& meshs)
 {
 	this->Vertices = meshs.Vertices;
 	this->Indices = meshs.Indices;
@@ -130,7 +130,7 @@ void MESHS::Set(const MESHS& meshs)
 	}
 }
 
-void MESHS::SetupMesh()
+void MESH::SetupMesh()
 {
 	CRenderer* render = CRenderer::getInstance();
 	HRESULT hr;
@@ -176,7 +176,7 @@ void MESHS::SetupMesh()
 	}
 }
 
-void MESHS::Draw_Mesh(XMMATRIX& parent_matrix, const aegis::vector<TEXTURE_S>& textures)
+void MESH::Draw_Mesh(XMMATRIX& parent_matrix, const aegis::vector<TEXTURE_S>& textures)
 {
 	CRenderer* render = CRenderer::getInstance();
 	XMMATRIX matrix;
@@ -255,6 +255,6 @@ void MESHS::Draw_Mesh(XMMATRIX& parent_matrix, const aegis::vector<TEXTURE_S>& t
 	}
 }
 
-void MESHS::Draw_DPP_Mesh(XMMATRIX& parent_matrix)
+void MESH::Draw_DPP_Mesh(XMMATRIX& parent_matrix)
 {
 }

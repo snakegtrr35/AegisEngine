@@ -26,7 +26,7 @@ struct MODEL_FILE {
 };
 
 struct MODEL_DATA {
-	MESHS Meshes;			//! メッシュ
+	MESH Meshes;			//! メッシュ
 	UINT Cnt;				//! 参照回数
 
 	MODEL_DATA() : Cnt(0) {}
@@ -40,7 +40,7 @@ struct MODEL_DATA {
 class MODEL_MANEGER {
 private:
 
-	friend MESHS;
+	friend MESH;
 
 	static std::unique_ptr<MODEL_MANEGER> ModelManager;
 
@@ -49,8 +49,8 @@ private:
 
 	void Load(const bool flag);								// モデルの読み込み
 
-	void processNode(aiNode* node, const aiScene* scene, aegis::vector<MESHS>& mesh_map, aegis::vector<TEXTURE_S>& textures_loaded);
-	MESHS processMesh(aiMesh* mesh, aiNode* node, const aiScene* scene, aegis::vector<TEXTURE_S>& textures_loaded);
+	void processNode(aiNode* node, const aiScene* scene, aegis::vector<MESH>& mesh_map, aegis::vector<TEXTURE_S>& textures_loaded);
+	MESH processMesh(aiMesh* mesh, aiNode* node, const aiScene* scene, aegis::vector<TEXTURE_S>& textures_loaded);
 
 	//vector<TEXTURE_S> loadMaterialTextures(aiMaterial* mat, aiTextureType type, std::string typeName, const aiScene* scene, vector<TEXTURE_S>& textures_loaded);
 	std::string loadMaterialTextures(aiMaterial* mat, aiTextureType type, std::string typeName, const aiScene* scene, aegis::vector<TEXTURE_S>& textures_loaded);
@@ -72,7 +72,7 @@ public:
 
 	const aegis::unordered_map<size_t, MODEL_FILE>& Get_ModelFile();
 
-	MESHS* const Get_Mesh(const size_t key);
+	MESH* const Get_Mesh(const size_t key);
 
 	void Add(const std::string& file_name);
 	const bool Unload(const std::string& const file_name);

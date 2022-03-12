@@ -95,7 +95,7 @@ void MODEL_MANEGER::Load(const bool flag)
 			// モデルの読み込み
 			if (ModelFile.find(key) != ModelFile.end())
 			{
-				MESHS Mesh;
+				MESH Mesh;
 
 				Assimp::Importer importer;
 
@@ -141,7 +141,7 @@ void MODEL_MANEGER::Load(const bool flag)
 
 			// モデルの読み込み
 			{
-				MESHS Mesh;
+				MESH Mesh;
 
 				Assimp::Importer importer;
 
@@ -174,7 +174,7 @@ const aegis::unordered_map<size_t, MODEL_FILE>& MODEL_MANEGER::Get_ModelFile()
 	return ModelFile;
 }
 
-MESHS* const MODEL_MANEGER::Get_Mesh(const size_t key)
+MESH* const MODEL_MANEGER::Get_Mesh(const size_t key)
 {
 	if (ModelData.find(key) != ModelData.end())
 	{
@@ -183,7 +183,7 @@ MESHS* const MODEL_MANEGER::Get_Mesh(const size_t key)
 	return nullptr;
 }
 
-using is = std::pair<size_t, MESHS>;
+using is = std::pair<size_t, MESH>;
 
 void MODEL_MANEGER::Add(const std::string& file_name)
 {
@@ -195,7 +195,7 @@ void MODEL_MANEGER::Add(const std::string& file_name)
 	// モデルの読み込み
 	if (ModelFile.find(key) != ModelFile.end())
 	{
-		MESHS Mesh;
+		MESH Mesh;
 
 		Assimp::Importer importer;
 
@@ -264,7 +264,7 @@ void MODEL_MANEGER::Sub_ReferenceCnt(const size_t file)
 
 
 
-MESHS MODEL_MANEGER::processMesh(aiMesh* mesh, aiNode* node, const aiScene* scene, aegis::vector<TEXTURE_S>& textures_loaded)
+MESH MODEL_MANEGER::processMesh(aiMesh* mesh, aiNode* node, const aiScene* scene, aegis::vector<TEXTURE_S>& textures_loaded)
 {
 	// Data to fill
 	aegis::vector<VERTEX_3D> vertices;
@@ -343,7 +343,7 @@ MESHS MODEL_MANEGER::processMesh(aiMesh* mesh, aiNode* node, const aiScene* scen
 		matrix = Covert_Matrix(&node->mTransformation);
 	}
 
-	return MESHS(vertices, indices, texture_name, matrix, name);
+	return MESH(vertices, indices, texture_name, matrix, name);
 }
 
 //vector<TEXTURE_S> MODEL_MANEGER::loadMaterialTextures(aiMaterial* mat, aiTextureType type, std::string typeName, const aiScene* scene, vector<TEXTURE_S>& textures_loaded)
@@ -397,7 +397,7 @@ std::string MODEL_MANEGER::loadMaterialTextures(aiMaterial* mat, aiTextureType t
 	return file_name;
 }
 
-void MODEL_MANEGER::processNode(aiNode* node, const aiScene* scene, aegis::vector<MESHS>& meshs, aegis::vector<TEXTURE_S>& textures_loaded)
+void MODEL_MANEGER::processNode(aiNode* node, const aiScene* scene, aegis::vector<MESH>& meshs, aegis::vector<TEXTURE_S>& textures_loaded)
 {
 	for (UINT i = 0; i < node->mNumMeshes; i++)
 	{
