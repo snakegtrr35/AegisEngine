@@ -16,6 +16,7 @@
 #include	"Player.h"
 #include	"Enemy.h"
 #include	"Billboard.h"
+#include	"Model.h"
 
 #include	"audio_clip.h"
 
@@ -25,8 +26,6 @@ BULLET::BULLET() : MoveVector(Vector3(0.0f, 0.0f, 0.0f))
 {
 	Vector3 Scaling = Vector3(0.1f, 0.1f, 0.1f);
 	Get_Transform().Set_Scaling(Scaling);
-
-	Model = std::make_unique<CMODEL>();
 
 	HP = 200;
 }
@@ -38,8 +37,6 @@ BULLET::BULLET(Vector3& position, Vector3& move_vector) : MoveVector(move_vector
 	Vector3 Scaling = Vector3(0.1f, 0.1f, 0.1f);
 	Get_Transform().Set_Scaling(Scaling);
 
-	Model = std::make_unique<CMODEL>();
-
 	HP = 200;
 }
 
@@ -50,11 +47,14 @@ BULLET::~BULLET()
 
 void BULLET::Init()
 {
-	std::string name("asset/model/bullet.fbx");
-
-	Model->Load(name);
-
 	auto scene = CManager::Get_Instance()->Get_Scene();
+
+	std::string name("bullet.fbx");
+
+	auto model = Get_Component()->Add_Component<MODEL>(scene->Get_Game_Object(this));
+	model->Set_Model_Name(name);
+	model->Set_Scaling(Get_Transform().Get_Scaling());
+
 	auto sphere = Get_Component()->Add_Component<BOUNDING_SHPERE>(scene->Get_Game_Object(this));
 
 	sphere->Set_Radius(1.0f);
@@ -66,30 +66,17 @@ void BULLET::Init()
 
 void BULLET::Draw()
 {
-	if (nullptr == Model)
-		return;
-
-	Model->Draw();
-
 	GameObject::Draw();
 }
 
 void BULLET::Draw_Shadow()
 {
-	if (nullptr == Model)
-		return;
-
-	Model->Draw_Shadow();
-
 	GameObject::Draw_Shadow();
 }
 
 void BULLET::Draw_DPP()
 {
-	if (nullptr == Model)
-		return;
-
-	Model->Draw_DPP();
+	//GameObject::Draw_DPP();
 }
 
 void BULLET::Update(float delta_time)
@@ -102,23 +89,23 @@ void BULLET::Update(float delta_time)
 	{
 		CManager::Get_Instance()->Get_Scene()->Destroy_Game_Object(this);
 
-		//// ビルボード
-		//{
-		//	auto name = this->Get_Object_Name();
-		//
-		//	std::string str(name);
-		//	ExtratNum(str);
-		//	if (false == str.empty())
-		//	{
-		//		const int x = std::stoi(str);
-		//
-		//		BILL_BOARD_ANIMATION* bba = CManager::Get_Instance()->Get_Scene()->Add_Game_Object<BILL_BOARD_ANIMATION>(LAYER_NAME::EFFECT, "explosion" + to_string(x));
-		//		bba->Get_Transform().Set_Position(Get_Transform().Get_Position());
-		//		bba->SetWH(Vector2(1.0f, 1.0f));
-		//		bba->SetParam(6, 4, 4);
-		//		//bba->Init();
-		//	}
-		//}
+		// ビルボード
+		{
+			auto name = this->Get_Object_Name();
+		
+			std::string str(name);
+			ExtratNum(str);
+			if (false == str.empty())
+			{
+				const int x = std::stoi(str);
+		
+				BILL_BOARD_ANIMATION* bba = CManager::Get_Instance()->Get_Scene()->Add_Game_Object<BILL_BOARD_ANIMATION>(LAYER_NAME::EFFECT, "explosion" + std::to_string(x));
+				bba->Get_Transform().Set_Position(Get_Transform().Get_Position());
+				bba->SetWH(Vector2(1.0f, 1.0f));
+				bba->SetParam(6, 4, 4);
+				//bba->Init();
+			}
+		}
 
 		return;
 	}
@@ -174,52 +161,46 @@ void BULLET::Update(float delta_time)
 			// プレイヤーと弾の当たり判定
 			{
 				auto player = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<PLAYER>("player");
-
+			
 				if (ContainmentType::DISJOINT != bullet_collision->Get_Collition().Contains(player.lock()->Get_Component()->Get_Component<BOUNDING_AABB>()->Get_Collition()))
 				{
 					auto billboards = scene->Get_Game_Objects<BILL_BOARD_ANIMATION>();
-
+			
 					// ビルボード
 					{
 						auto name = this->Get_Object_Name();
-
+			
 						std::string str(name);
 						ExtratNum(str);
-
+			
 						if (!str.empty())
 						{
 							const int x = std::stoi(str);
-
+			
 							BILL_BOARD_ANIMATION* bba = CManager::Get_Instance()->Get_Scene()->Add_Game_Object<BILL_BOARD_ANIMATION>(LAYER_NAME::EFFECT, "explosion" + std::to_string(x));
 							bba->Get_Transform().Set_Position(Get_Transform().Get_Position());
 							bba->SetWH(Vector2(1.0f, 1.0f));
 							bba->SetParam(6, 4, 4);
-							//bba->Init();
 						}
 					}
-
+			
 					player.lock()->Add_HP(-1.0f);
-
+			
 					CManager::Get_Instance()->Get_Scene()->Destroy_Game_Object(this);
-
+			
 					AUDIO_MANAGER::Play_Sound_Object(SOUND_INDEX::SOUND_INDEX_EXPLOSION);
-
+			
 					return;
 				}
 			}
 		}
 	}
 
-	Model->Get_Transform().Set_Position(Get_Transform().Get_Position());
-	Model->Get_Transform().Set_Rotation(Get_Transform().Get_Rotation());
-	Model->Get_Transform().Set_Scaling(Get_Transform().Get_Scaling());
-
 	GameObject::Update(delta_time);
 }
 
 void BULLET::Uninit()
 {
-	Model.reset(nullptr);
 }
 
 void BULLET::Set_Move_Vector(const Vector3 move_vector)

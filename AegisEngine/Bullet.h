@@ -6,12 +6,10 @@
 //#include	"GameObject.h"
 
 class GameObject;
-class CMODEL;
 
 class BULLET : public GameObject {
 protected:
 	aegis::Vector3 MoveVector;
-	std::unique_ptr<CMODEL> Model;
 
 	short HP;
 	float fps = 0.f;

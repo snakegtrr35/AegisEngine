@@ -1,6 +1,6 @@
 ﻿#include	"GameObject.h"
 #include	"Bill.h"
-#include	"ModelLoader.h"
+#include	"Model.h"
 #include	"Component.h"
 
 #include	"Bounding_Aabb.h"
@@ -10,6 +10,8 @@
 #include	"Scene_Manager.h"
 
 #include	"Model.h"
+
+using namespace aegis;
 
 BILL::BILL()
 {
@@ -22,9 +24,11 @@ BILL::~BILL()
 
 void BILL::Init()
 {
-	Model = std::make_unique<CMODEL>();
+	Vector3 pos(10, 0, 0);
 
-	Model->Load("asset/model/bill01.fbx");
+	Get_Transform().Set_Position(pos);
+
+	std::string name("bill01.fbx");
 
 	auto scene = CManager::Get_Instance()->Get_Scene();
 
@@ -33,51 +37,32 @@ void BILL::Init()
 	//aabb->Set_Position(Position);
 	//aabb->Set_Radius(XMFLOAT3(10, 10, 10));
 
-	/*{
+	{
 		auto model = Get_Component()->Add_Component<MODEL>(scene->Get_Game_Object(this));
 
-		model->Set_Model_Name("player_neutral.fbx");
-
-		model->Set_Position(Position + XMFLOAT3(10, 0, 0));
-	}*/
+		model->Set_Model_Name(name);
+	}
 
 	GameObject::Init();
 }
 
 void BILL::Draw()
 {
-	if (nullptr == Model)
-		return;
-
-	Model->Draw();
-
 	GameObject::Draw();
 }
 
 void BILL::Draw_Shadow()
 {
-	if (nullptr == Model)
-		return;
-
-	Model->Draw_Shadow();
+	GameObject::Draw_Shadow();
 }
 
 void BILL::Draw_DPP()
 {
-	if (nullptr == Model)
-		return;
-
-	Model->Draw_DPP();
+	//GameObject::Draw_DPP();
 }
 
 void BILL::Update(float delta_time)
 {
-	Model->Get_Transform().Set_Position(Get_Transform().Get_Position());
-	Model->Get_Transform().Set_Rotation(Get_Transform().Get_Rotation());
-	Model->Get_Transform().Set_Scaling(Get_Transform().Get_Scaling());
-
-	Model->Update(delta_time);
-
 	GameObject::Update(delta_time);
 }
 

@@ -4,11 +4,9 @@
 #define ENEMY_H
 
 class GameObject;
-class CMODEL;
 
 class ENEMY : public GameObject {
 private:
-	std::unique_ptr<CMODEL> Model;
 
 	bool Fire_Flag;
 	float Time;

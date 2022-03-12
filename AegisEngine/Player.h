@@ -5,16 +5,11 @@
 
 class GameObject;
 
-class CMODEL;
-class FBXmodel;
-
-class BULLET;
-
-
 class PLAYER : public GameObject {
 private:
-	std::unique_ptr<CMODEL> Model;
+	//std::unique_ptr<CMODEL> Model;
 	//FBXmodel* Model = nullptr;
+
 
 	float HP;
 

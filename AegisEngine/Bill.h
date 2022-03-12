@@ -4,12 +4,9 @@
 #define BILL_H
 
 class GameObject;
-class CMODEL;
 
 class BILL : public GameObject {
 private:
-
-	std::unique_ptr<CMODEL> Model;
 
 public:
 	BILL();

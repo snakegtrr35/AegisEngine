@@ -4,8 +4,9 @@
 #include	"manager.h"
 #include	"Scene.h"
 
-#include	"ModelLoader.h"
+//#include	"ModelLoader.h"
 //#include	"FBXmodel.h"
+#include	"Model.h"
 
 #include	"Input.h"
 #include	"Collision.h"
@@ -20,7 +21,7 @@ static void Create_Bullet(Vector3& position, const Vector3& front);
 
 PLAYER::PLAYER(void)
 {
-	Model = std::make_unique<CMODEL>();
+	//Model = std::make_unique<CMODEL>();
 	//Model = new FBXmodel();
 }
 
@@ -31,18 +32,22 @@ PLAYER::~PLAYER()
 
 void PLAYER::Init(void)
 {
+	auto scene = CManager::Get_Instance()->Get_Scene();
+
 	{
-		std::string name = "asset/model/viranrifle.fbx";
+		std::string name = "viranrifle.fbx";
 		//string name = "asset/model/kakunin_joint.fbx";
 
-		Model->Load(name);
+		//Model->Load(name);
+
+		auto model = Get_Component()->Add_Component<MODEL>(scene->Get_Game_Object(this));
+
+		model->Set_Model_Name(name);
 	}
 
 	//Position = Vector3(0.f, 0.f, 0.f);
 
 	{
-		auto scene = CManager::Get_Instance()->Get_Scene();
-
 		auto aabb = Get_Component()->Add_Component<BOUNDING_AABB>(scene->Get_Game_Object(this));
 
 		GameObject::Init();
@@ -53,59 +58,61 @@ void PLAYER::Init(void)
 
 void PLAYER::Draw(void)
 {
-	if (nullptr == Model)
-		return;
-
-	{
-		Vector3 position = *Get_Transform().Get_Position();
-		Vector3 rotate = *Get_Transform().Get_Rotation();
-		Vector3 scale = *Get_Transform().Get_Scaling();
-
-		XMMATRIX matrix= XMMatrixScaling(scale.x, scale.y, scale.z);
-		matrix *= XMMatrixRotationRollPitchYaw(XMConvertToRadians(rotate.x), XMConvertToRadians(rotate.y), XMConvertToRadians(rotate.z));
-		matrix *= XMMatrixTranslation(position.x, position.y, position.z);
-
-		Model->Draw();
-		//Model->Draw(matrix);
-	}
+	//if (nullptr == Model)
+	//	return;
+	//
+	//{
+	//	Vector3 position = *Get_Transform().Get_Position();
+	//	Vector3 rotate = *Get_Transform().Get_Rotation();
+	//	Vector3 scale = *Get_Transform().Get_Scaling();
+	//
+	//	XMMATRIX matrix= XMMatrixScaling(scale.x, scale.y, scale.z);
+	//	matrix *= XMMatrixRotationRollPitchYaw(XMConvertToRadians(rotate.x), XMConvertToRadians(rotate.y), XMConvertToRadians(rotate.z));
+	//	matrix *= XMMatrixTranslation(position.x, position.y, position.z);
+	//
+	//	Model->Draw();
+	//	//Model->Draw(matrix);
+	//}
 
 	GameObject::Draw();
 }
 
 void PLAYER::Draw_Shadow(void)
 {
-	if (nullptr == Model)
-		return;
-
-	{
-		Vector3 position = *Get_Transform().Get_Position();
-		Vector3 rotate = *Get_Transform().Get_Rotation();
-		Vector3 scale = *Get_Transform().Get_Scaling();
-
-		XMMATRIX matrix = XMMatrixScaling(scale.x, scale.y, scale.z);
-		matrix *= XMMatrixRotationRollPitchYaw(XMConvertToRadians(rotate.x), XMConvertToRadians(rotate.y), XMConvertToRadians(rotate.z));
-		matrix *= XMMatrixTranslation(position.x, position.y, position.z);
-
-		Model->Draw_Shadow();
-	}
+	//if (nullptr == Model)
+	//	return;
+	//
+	//{
+	//	Vector3 position = *Get_Transform().Get_Position();
+	//	Vector3 rotate = *Get_Transform().Get_Rotation();
+	//	Vector3 scale = *Get_Transform().Get_Scaling();
+	//
+	//	XMMATRIX matrix = XMMatrixScaling(scale.x, scale.y, scale.z);
+	//	matrix *= XMMatrixRotationRollPitchYaw(XMConvertToRadians(rotate.x), XMConvertToRadians(rotate.y), XMConvertToRadians(rotate.z));
+	//	matrix *= XMMatrixTranslation(position.x, position.y, position.z);
+	//
+	//	Model->Draw_Shadow();
+	//}
 
 	GameObject::Draw_Shadow();
 }
 
 void PLAYER::Draw_DPP(void)
 {
-	if (nullptr == Model)
-		return;
+	//if (nullptr == Model)
+	//	return;
+	//
+	//Vector3 position = *Get_Transform().Get_Position();
+	//Vector3 rotate = *Get_Transform().Get_Rotation();
+	//Vector3 scale = *Get_Transform().Get_Scaling();
+	//
+	//XMMATRIX matrix = XMMatrixScaling(scale.x, scale.y, scale.z);
+	//matrix *= XMMatrixRotationRollPitchYaw(XMConvertToRadians(rotate.x), XMConvertToRadians(rotate.y), XMConvertToRadians(rotate.z));
+	//matrix *= XMMatrixTranslation(position.x, position.y, position.z);
+	//
+	//Model->Draw_DPP();
 
-	Vector3 position = *Get_Transform().Get_Position();
-	Vector3 rotate = *Get_Transform().Get_Rotation();
-	Vector3 scale = *Get_Transform().Get_Scaling();
-
-	XMMATRIX matrix = XMMatrixScaling(scale.x, scale.y, scale.z);
-	matrix *= XMMatrixRotationRollPitchYaw(XMConvertToRadians(rotate.x), XMConvertToRadians(rotate.y), XMConvertToRadians(rotate.z));
-	matrix *= XMMatrixTranslation(position.x, position.y, position.z);
-
-	Model->Draw_DPP();
+	//GameObject::Draw_DPP();
 }
 
 void PLAYER::Update(float delta_time)
@@ -130,20 +137,20 @@ void PLAYER::Update(float delta_time)
 	// カメラに合わせた回転
 	//Get_Transform().Get_Rotation()->y = rotate.y + 0.0f;
 
-	// モデルの更新
-	{
-		Model->Get_Transform().Set_Position(Get_Transform().Get_Position());
-		Model->Get_Transform().Set_Rotation(Get_Transform().Get_Rotation());
-		Model->Get_Transform().Set_Scaling(Get_Transform().Get_Scaling());
-
-		Model->Update(delta_time);
-	}
+	//// モデルの更新
+	//{
+	//	Model->Get_Transform().Set_Position(Get_Transform().Get_Position());
+	//	Model->Get_Transform().Set_Rotation(Get_Transform().Get_Rotation());
+	//	Model->Get_Transform().Set_Scaling(Get_Transform().Get_Scaling());
+	//
+	//	Model->Update(delta_time);
+	//}
 
 	if (KEYBOARD::Trigger_Keyboard(VK_SPACE))
 	{
 		Vector3 pos = *Get_Transform().Get_Position() + front * 2.0f;
 		pos.y += 1.0;
-
+	
 		Create_Bullet(pos, front * 2.0f);
 	}
 

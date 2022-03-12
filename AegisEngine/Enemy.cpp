@@ -10,7 +10,7 @@
 #include	"Bullet.h"
 #include	"Axis.h"
 
-#include	"ModelLoader.h"
+#include	"Model.h"
 #include	"Collision.h"
 
 #include	"audio_clip.h"
@@ -33,26 +33,7 @@ ENEMY::~ENEMY()
 
 void ENEMY::Init()
 {
-	/*Position = Vector3(3.0f, 1.0f, 3.0f);
-
-	Rotation = Vector3(0.0f, 0.0f, 0.0f);
-
-	Scaling = Vector3(1.0f, 1.0f, 1.0f);*/
-
 	Time = 0.f;
-
-	{
-		//string name = "asset/model/Player.fbx";
-		std::string name("asset/model/viranrifle.fbx");
-
-		Model = std::make_unique<CMODEL>();
-
-		Model->Load(name);
-
-		Model->Get_Transform().Set_Position(Get_Transform().Get_Position());
-		Model->Get_Transform().Set_Rotation(Get_Transform().Get_Rotation());
-		Model->Get_Transform().Set_Scaling(Get_Transform().Get_Scaling());
-	}
 
 	// コンポーネント
 	{
@@ -65,6 +46,15 @@ void ENEMY::Init()
 			aabb->Set_Radius(Vector3(0.5f, 1.0f, 0.5f));
 			aabb->Set_Position(Vector3(0.f, 0.5f, 0.f));
 		}
+
+		std::string name("viranrifle.fbx");
+
+		auto model = Get_Component()->Add_Component<MODEL>(scene->Get_Game_Object(this));
+		model->Set_Model_Name(name);
+
+		model->Set_Position(Get_Transform().Get_Position());
+		model->Set_Rotation(Get_Transform().Get_Rotation());
+		model->Set_Scaling(Get_Transform().Get_Scaling());
 	}
 
 	GameObject::Init();
@@ -72,30 +62,17 @@ void ENEMY::Init()
 
 void ENEMY::Draw()
 {
-	if (nullptr == Model)
-		return;
-
-	Model->Draw();
-
 	GameObject::Draw();
 }
 
 void ENEMY::Draw_Shadow()
 {
-	if (nullptr == Model)
-		return;
-
-	Model->Draw_Shadow();
-
 	GameObject::Draw_Shadow();
 }
 
 void ENEMY::Draw_DPP()
 {
-	if (nullptr == Model)
-		return;
-
-	Model->Draw_DPP();
+	//GameObject::Draw_DPP();
 }
 
 void ENEMY::Update(float delta_time)
@@ -119,16 +96,20 @@ void ENEMY::Update(float delta_time)
 			{
 				if (vec.z >= 0.0f)
 				{
-					rotate.y = atan(vec.x / vec.z);
+					rotate.y = std::atan(vec.x / vec.z);
 				}
 				else
 				{
-					rotate.y = atan(vec.x / vec.z) + XM_PI;
+					rotate.y = std::atan(vec.x / vec.z) + XM_PI;
 				}
 			}
 			XMVECTOR vector = XMQuaternionRotationRollPitchYaw(rotate.x, rotate.y, rotate.z);
 
-			Model->Set_Quaternion(vector);
+			rotate.y = XMConvertToDegrees(rotate.y);
+
+			Get_Transform().Set_Rotation(rotate);
+
+			//Model->Set_Quaternion(vector);
 		}
 	}
 
@@ -190,11 +171,6 @@ void ENEMY::Update(float delta_time)
 	{
 		Time += delta_time;
 	}
-
-	Model->Get_Transform().Set_Position(Get_Transform().Get_Position());
-	Model->Get_Transform().Set_Rotation(Get_Transform().Get_Rotation());
-	Model->Get_Transform().Set_Scaling(Get_Transform().Get_Scaling());
-
 
 	GameObject::Update(delta_time);
 }
