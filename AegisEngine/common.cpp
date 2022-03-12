@@ -77,7 +77,7 @@ void Erroer_Message(const std::string_view str1, const std::string_view str2)
 
 std::string Replace_String(const std::string_view replacedStr, const std::string_view from, const std::string_view to)
 {
-	if (replacedStr.empty() || from.empty() || to.empty())
+	if (replacedStr.empty() || from.empty()/* || to.empty()*/)
 	{
 		return std::string(replacedStr);
 	}
@@ -89,4 +89,6 @@ std::string Replace_String(const std::string_view replacedStr, const std::string
 		replaceStr.replace(pos, from.length(), to);
 		pos += to.length();
 	}
+
+	return replaceStr;
 }
