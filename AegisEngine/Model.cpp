@@ -34,9 +34,9 @@ void MODEL::Draw()
 	const auto rota = *(Owner.lock()->Get_Transform().Get_Rotation());
 	const auto scale = *(Owner.lock()->Get_Transform().Get_Scaling());
 
-	XMMATRIX matrix = XMMatrixScaling(Scaling.x, Scaling.y, Scaling.z);
-	matrix *= XMMatrixRotationRollPitchYaw(XMConvertToRadians(Rotation.x), XMConvertToRadians(Rotation.y), XMConvertToRadians(Rotation.z));
-	matrix *= XMMatrixTranslation(Position.x + pos.x, Position.y + pos.y, Position.z + pos.z);
+	XMMATRIX matrix = XMMatrixScaling(scale.x, scale.y, scale.z);
+	matrix *= XMMatrixRotationRollPitchYaw(XMConvertToRadians(rota.x), XMConvertToRadians(rota.y), XMConvertToRadians(rota.z));
+	matrix *= XMMatrixTranslation(pos.x, pos.y, pos.z);
 
 	{
 		auto camera01 = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<CCamera>("camera");
@@ -85,11 +85,11 @@ void MODEL::Draw()
 	if (nullptr == meshs) return;
 
 	// 普通の描画
-	for (auto mesh : meshs->Get_Meshs())
+	for (auto& mesh : meshs->Get_Meshs())
 	{
-		for (auto& m : mesh.Get_Meshs())
+		//for (auto& m : mesh.Get_Meshs())
 		{
-			m.Draw(matrix, meshs->Get_Textures());
+			mesh.Draw(matrix, meshs->Get_Textures());
 		}
 	}
 

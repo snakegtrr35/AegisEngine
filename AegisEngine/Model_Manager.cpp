@@ -33,11 +33,18 @@ void MODEL_MANEGER::Init()
 	}
 
 	// 画像データの読み込み
-	//ModelManager->Load(flag);
+	ModelManager->Load(flag);
 }
 
 void MODEL_MANEGER::Uninit()
 {
+	{
+		std::ofstream file("model.dat", std::ios::binary);
+
+		cereal::BinaryOutputArchive archive(file);
+		archive(*ModelManager.get());
+	}
+
 	for (auto& mesh : ModelData)
 	{
 		mesh.second.Meshes.Uninit();
@@ -232,11 +239,17 @@ const bool MODEL_MANEGER::Unload(const std::string& const file_name)
 
 void MODEL_MANEGER::Add_ReferenceCnt(const size_t file)
 {
+	if (!ModelData.contains(file))
+		return;
+
 	ModelData[file].Cnt++;
 }
 
 void MODEL_MANEGER::Sub_ReferenceCnt(const size_t file)
 {
+	if (!ModelData.contains(file))
+		return;
+
 	ModelData[file].Cnt--;
 
 #ifdef _DEBUG
@@ -397,7 +410,7 @@ void MODEL_MANEGER::processNode(aiNode* node, const aiScene* scene, aegis::vecto
 
 	for (UINT i = 0; i < node->mNumChildren; i++)
 	{
-		if (!meshs.empty())
+		if (meshs.size() != 0)
 		{
 			for (auto& m : meshs)
 			{
@@ -409,9 +422,7 @@ void MODEL_MANEGER::processNode(aiNode* node, const aiScene* scene, aegis::vecto
 		}
 		else
 		{
-			meshs.emplace_back(MESHS());
-
-			processNode(node->mChildren[i], scene, meshs.begin()->Get_Meshs(), textures_loaded);
+			processNode(node->mChildren[i], scene, meshs, textures_loaded);
 		}
 	}
 }
@@ -437,7 +448,6 @@ std::string MODEL_MANEGER::determineTextureType(const aiScene* scene, aiMaterial
 		return "textures are on disk";
 	}
 
-	FAILDE_ASSERT
 	return "textures are nothing";
 }
 

@@ -77,7 +77,6 @@
     <ClCompile Include="Mesh_Dome.cpp" />
     <ClCompile Include="Mesh_Field.cpp" />
     <ClCompile Include="Model.cpp" />
-    <ClCompile Include="ModelLoader.cpp" />
     <ClCompile Include="Model_Manager.cpp" />
     <ClCompile Include="Mouse.cpp" />
     <ClCompile Include="Mp3.cpp" />
@@ -215,7 +214,6 @@
     <ClInclude Include="Mesh_Dome.h" />
     <ClInclude Include="Mesh_Field.h" />
     <ClInclude Include="Model.h" />
-    <ClInclude Include="ModelLoader.h" />
     <ClInclude Include="Model_Manager.h" />
     <ClInclude Include="Mouse.h" />
     <ClInclude Include="Mp3.h" />
