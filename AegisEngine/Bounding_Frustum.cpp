@@ -150,7 +150,7 @@ void BOUNDING_FRUSTUM::Draw()
 			}
 		}
 
-		render->GetDeviceContext()->DrawIndexed(24, 0, 0);
+		render->DrawIndexed(24, 0, 0);
 	}
 
 	render->Set_Shader();

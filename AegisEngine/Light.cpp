@@ -52,7 +52,7 @@ bool LIGHTS::Init()
 			return false;
 		}
 
-		render->GetDeviceContext()->PSSetConstantBuffers(6, 1, LightBuffer.GetAddressOf());
+		//render->GetDeviceContext()->PSSetConstantBuffers(6, 1, LightBuffer.GetAddressOf());
 	}
 
 	return true;

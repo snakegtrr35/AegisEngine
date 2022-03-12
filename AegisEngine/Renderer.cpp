@@ -575,7 +575,7 @@ bool CRenderer::Init3D()
 	UINT d3dFlags = D3D11_CREATE_DEVICE_BGRA_SUPPORT; // BGRA テクスチャ有効(Direct2Dには必ず必要)
 
 #if defined(_DEBUG)
-	//d3dFlags |= D3D11_CREATE_DEVICE_DEBUG;
+	d3dFlags |= D3D11_CREATE_DEVICE_DEBUG;
 #endif
 
 	// Direct3Dの作成
@@ -1446,7 +1446,7 @@ void CRenderer::SetVertexBuffers( ID3D11Buffer* VertexBuffer )
 {
 	UINT stride = sizeof( VERTEX_3D );
 	UINT offset = 0;
-	ID3D11Buffer* vb[1] = { VertexBuffer };
+	ID3D11Buffer* const vb[1] = { VertexBuffer };
 	m_ImmediateContext->IASetVertexBuffers( 0, 1, vb, &stride, &offset );
 }
 

@@ -172,7 +172,7 @@ void SKYBOX::Draw()
 
 	render->Set_Shader(SHADER_INDEX_V::SKYBOX, SHADER_INDEX_P::SKYBOX);
 
-	render->GetDeviceContext()->DrawIndexed(Indecies, 0, 0);
+	render->DrawIndexed(Indecies, 0, 0);
 
 	render->Set_Shader();
 }

@@ -185,9 +185,9 @@ void CLUSTERED::Draw()
 
 	{
 		{
-			float ClearColor[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
-			device_context->ClearUnorderedAccessViewFloat(ClusterUAV.Get(), ClearColor);
-			device_context->ClearUnorderedAccessViewFloat(Light_List_UAV.Get(), ClearColor);
+			uint32 ClearColor[4] = { 0, 0, 0, 0. };
+			device_context->ClearUnorderedAccessViewUint(ClusterUAV.Get(), ClearColor);
+			device_context->ClearUnorderedAccessViewUint(Light_List_UAV.Get(), ClearColor);
 		}
 
 		{
@@ -205,12 +205,15 @@ void CLUSTERED::Draw()
 			}
 
 			device_context->CSSetUnorderedAccessViews(0, 1, ClusterUAV.GetAddressOf(), nullptr);
-			device_context->CSSetUnorderedAccessViews(1, 1, ClusterUAV.GetAddressOf(), nullptr);
+			device_context->CSSetUnorderedAccessViews(1, 1, Light_List_UAV.GetAddressOf(), nullptr);
 
 			device_context->Dispatch(CLUSTERED_X, CLUSTERED_Y, CLUSTERED_Z);
 
-			ID3D11UnorderedAccessView* uav[2] = { nullptr, nullptr };
-			device_context->CSSetUnorderedAccessViews(0, 2, uav, nullptr);
+			//ID3D11UnorderedAccessView* uav[2] = { nullptr, nullptr };
+			//device_context->CSSetUnorderedAccessViews(0, 2, uav, nullptr);
+			ID3D11UnorderedAccessView* uav = nullptr;
+			device_context->CSSetUnorderedAccessViews(0, 1, &uav, nullptr);
+			device_context->CSSetUnorderedAccessViews(1, 1, &uav, nullptr);
 		}
 
 		device_context->CSSetShader(nullptr, nullptr, NULL);

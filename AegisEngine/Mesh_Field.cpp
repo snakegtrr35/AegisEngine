@@ -232,7 +232,7 @@ void MESH_FIELD::Draw()
 	// トポロジ設定
 	render->GetDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
 
-	render->GetDeviceContext()->DrawIndexed(IndexNum, 0, 0);
+	render->DrawIndexed(IndexNum, 0, 0);
 
 	// トポロジ設定
 	render->GetDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
@@ -618,7 +618,7 @@ void MESH_WALL::Draw()
 	// トポロジ設定
 	render->GetDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
 
-	render->GetDeviceContext()->DrawIndexed(IndexNum, 0, 0);
+	render->DrawIndexed(IndexNum, 0, 0);
 
 	if (CManager::Get_Instance()->Get_ShadowMap()->Get_Enable())
 	{
