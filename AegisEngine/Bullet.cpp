@@ -8,7 +8,6 @@
 #include	"manager.h"
 #include	"Scene.h"
 
-#include	"ModelLoader.h"
 #include	"Component_Manager.h"
 #include	"Bounding_Aabb.h"
 #include	"Bounding_Sphere.h"
