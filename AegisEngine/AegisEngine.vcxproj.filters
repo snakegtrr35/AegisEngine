@@ -114,6 +114,12 @@
     <Filter Include="external\tlsf">
       <UniqueIdentifier>{956d5a04-1e84-4e6f-9e2e-f18e00eb64c2}</UniqueIdentifier>
     </Filter>
+    <Filter Include="include\engine\core\typeInfo">
+      <UniqueIdentifier>{44a1b73e-0137-49a7-8b74-c1605baaa0c7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\engine\core\hash">
+      <UniqueIdentifier>{551a9e4b-4316-4e57-8d0e-75468a1a6634}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="imgui\imgui.cpp">
@@ -355,6 +361,15 @@
     </ClCompile>
     <ClCompile Include="include\engine\core\memory\aegisAllocator.cpp">
       <Filter>include\engine\core\memory</Filter>
+    </ClCompile>
+    <ClCompile Include="include\engine\core\typeInfo\typeInfo.cpp">
+      <Filter>include\engine\core\typeInfo</Filter>
+    </ClCompile>
+    <ClCompile Include="include\engine\core\hash\hash.cpp">
+      <Filter>include\engine\core\hash</Filter>
+    </ClCompile>
+    <ClCompile Include="include\engine\core\AegisObject.cpp">
+      <Filter>include\engine\core</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -662,6 +677,21 @@
       <Filter>include\engine\core\memory</Filter>
     </ClInclude>
     <ClInclude Include="include\engine\core\aegisContainer.h">
+      <Filter>include\engine\core</Filter>
+    </ClInclude>
+    <ClInclude Include="include\engine\core\typeInfo\typeInfo.h">
+      <Filter>include\engine\core\typeInfo</Filter>
+    </ClInclude>
+    <ClInclude Include="include\engine\core\typeInfo\classCreateInterface.h">
+      <Filter>include\engine\core\typeInfo</Filter>
+    </ClInclude>
+    <ClInclude Include="include\engine\core\hash\hash.h">
+      <Filter>include\engine\core\hash</Filter>
+    </ClInclude>
+    <ClInclude Include="include\engine\core\typeInfo\DTI.h">
+      <Filter>include\engine\core\typeInfo</Filter>
+    </ClInclude>
+    <ClInclude Include="include\engine\core\AegisObject.h">
       <Filter>include\engine\core</Filter>
     </ClInclude>
   </ItemGroup>
