@@ -641,13 +641,14 @@ void My_imgui::Init(HWND hWnd)
 	ImFontConfig config;
 
 	// Load a first font
-	ImFont* font = io.Fonts->AddFontDefault();
+	//ImFont* font = io.Fonts->AddFontDefault();
 
 	// Add character ranges and merge into the previous font
 	// The ranges array is not copied by the AddFont* functions and is used lazily
 	// so ensure it is available at the time of building or calling GetTexDataAsRGBA32().
-	config.MergeMode = true;
+	config.MergeMode = false;
 	io.Fonts->AddFontFromFileTTF("./asset/font/Gidole-Regular.ttf", 15.0f, &config, io.Fonts->GetGlyphRangesDefault());
+	config.MergeMode = true;
 	io.Fonts->AddFontFromFileTTF("./asset/font/meiryo.ttc", 16.0f, &config, glyphRangesJapanese);
 
 	///
@@ -656,6 +657,7 @@ void My_imgui::Init(HWND hWnd)
 	//io.Fonts->AddFontFromFileTTF("./asset/font/fa-regular-400.ttf", 13.0f, &config, icon_ranges);
 	io.Fonts->AddFontFromFileTTF("./asset/font/Font Awesome 5 Free-Solid-900.otf", 13.0f, &config, icon_ranges);
 	///
+
 
 
 	io.Fonts->Build();
@@ -2170,7 +2172,7 @@ void My_imgui::Light_Setting()
 
 						ImGui::Checkbox("Enable", &flag);
 						ImGui::DragFloat3("Position", Position, 0.01f);
-						ImGui::DragFloat3("Color", Color, 0.01f, 0.f, 1.0f);
+						ImGui::DragFloat3("Color", Color, 0.01f, 0.f);
 
 						////
 						{
