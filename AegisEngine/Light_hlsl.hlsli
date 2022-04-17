@@ -51,7 +51,8 @@ float3 DoPointLight(Lights light, float3 Position)
 	//float3 Dir = Position - light.Position;
     float distance = length(Dir);
 
-    float colA = 1.0 / ((1.0 + distance) * (1.0 + distance));
+    //float colA = 1.0 / ((1.0 + distance) * (1.0 + distance));
+    float colA = 1.0 / (distance * distance);
     
     result = light.Color.rgb * colA;
     

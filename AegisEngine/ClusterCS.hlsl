@@ -148,10 +148,6 @@ bool isHit(in float3 max, in float3 min, in float3 position, in float radius)
 float CaleRadius(in Lights light)
 {
     float luminance = dot(light.Color.rgb, float3(0.298912, 0.586611, 0.114478));
-
-    float distance = 0.0;
-
-    distance = sqrt(luminance * 500.0) - 1.0;
-
-    return distance;
+    
+    return 10 * sqrt(luminance);
 }

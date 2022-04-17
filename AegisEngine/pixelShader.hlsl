@@ -188,7 +188,7 @@ void main( PS_IN Input,
                         {
                             case LIGHT_TYPE_POINT:
                                 float3 col = DoPointLight(light, world_pos);
-                                light_color = saturate(col + light_color);
+                                light_color += col;
                                 break;
             
                             case LIGHT_TYPE_SPOT:
