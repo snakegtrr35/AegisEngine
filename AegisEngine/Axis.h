@@ -6,6 +6,9 @@
 class COMPONENT;
 
 class AXIS_COMPONENT : public COMPONENT {
+
+	OBJECT_TYPE_INFO(AXIS_COMPONENT)
+
 private:
 
 	XMVECTOR Front;

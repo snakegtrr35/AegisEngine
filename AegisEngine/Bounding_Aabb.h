@@ -16,6 +16,9 @@
  * @note BOUNDINGクラス図を継承しています
  */
 class BOUNDING_AABB : public BOUNDING {
+
+	OBJECT_TYPE_INFO(BOUNDING_AABB)
+
 private:
 	//! BOXの頂点バッファ
 	ComPtr<ID3D11Buffer> pVertexBuffer;

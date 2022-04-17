@@ -3,6 +3,8 @@
 #include	"manager.h"
 #include	"ShadowMap.h"
 
+IMPLEMENT_OBJECT_TYPE_INFO(SPRITE, SPRITE_ANIMATION)
+
 using namespace aegis;
 
 SPRITE_ANIMATION::SPRITE_ANIMATION()

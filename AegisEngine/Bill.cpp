@@ -11,6 +11,8 @@
 
 #include	"Model.h"
 
+IMPLEMENT_OBJECT_TYPE_INFO(GameObject, BILL)
+
 using namespace aegis;
 
 BILL::BILL()

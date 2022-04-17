@@ -6,6 +6,9 @@
 #include	"GameObject.h"
 
 class DEBUG_CAMERA : public GameObject {
+
+	OBJECT_TYPE_INFO(DEBUG_CAMERA)
+
 private:
 	static DEBUG_CAMERA* pDebugCamera;
 

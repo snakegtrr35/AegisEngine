@@ -19,6 +19,8 @@
 
 #include	"audio_clip.h"
 
+IMPLEMENT_OBJECT_TYPE_INFO(GameObject, BULLET)
+
 using namespace aegis;
 
 BULLET::BULLET() : MoveVector(Vector3(0.0f, 0.0f, 0.0f))

@@ -8,6 +8,8 @@
 #include	"ShadowMap.h"
 #include	"Scene.h"
 
+IMPLEMENT_OBJECT_TYPE_INFO(GameObject, POLYGON_3D)
+
 using namespace aegis;
 
 static float roll = 0.0f;

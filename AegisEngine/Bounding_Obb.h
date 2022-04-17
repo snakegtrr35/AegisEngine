@@ -12,6 +12,9 @@
 
 // OBB
 class BOUNDING_OBB : public BOUNDING {
+
+	OBJECT_TYPE_INFO(BOUNDING_OBB)
+
 private:
 	//! 頂点バッファ
 	ComPtr<ID3D11Buffer> pVertexBuffer;

@@ -6,6 +6,9 @@
 #include	"GameObject.h"
 
 class CCamera : public GameObject{
+
+	OBJECT_TYPE_INFO(CCamera)
+
 private:
 	static CCamera* pCamera;
 

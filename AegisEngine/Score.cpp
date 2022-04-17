@@ -3,6 +3,8 @@
 #include	"manager.h"
 #include	"ShadowMap.h"
 
+IMPLEMENT_OBJECT_TYPE_INFO(GameObject, SCORE)
+
 using namespace aegis;
 
 const unsigned int SCORE::MaxScore = 999999999;

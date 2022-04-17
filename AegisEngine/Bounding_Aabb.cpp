@@ -5,6 +5,8 @@
 #include	"Scene.h"
 #include	"ShadowMap.h"
 
+IMPLEMENT_OBJECT_TYPE_INFO(BOUNDING, BOUNDING_AABB)
+
 using namespace aegis;
 
 BOUNDING_AABB::~BOUNDING_AABB()

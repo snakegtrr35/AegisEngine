@@ -8,6 +8,9 @@
 class GameObject;
 
 class BULLET : public GameObject {
+
+	OBJECT_TYPE_INFO(BULLET)
+
 protected:
 	aegis::Vector3 MoveVector;
 

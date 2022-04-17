@@ -5,6 +5,8 @@
 #include	"Scene.h"
 #include	"ShadowMap.h"
 
+IMPLEMENT_OBJECT_TYPE_INFO(BOUNDING, BOUNDING_FRUSTUM)
+
 using namespace aegis;
 
 void BOUNDING_FRUSTUM::Init()

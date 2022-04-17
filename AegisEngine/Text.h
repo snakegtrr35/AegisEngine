@@ -11,6 +11,9 @@
 * @details スプライトクラスの派生クラス
 */
 class TEXTS :public  SPRITE {
+
+	OBJECT_TYPE_INFO(TEXTS)
+
 private:
 	std::string Text;	//!< 表示する文字列
 

@@ -3,6 +3,8 @@
 #include	"Debug_Camera.h"
 #include	"manager.h"
 
+IMPLEMENT_OBJECT_TYPE_INFO(GameObject, DEBUG_CAMERA)
+
 using namespace aegis;
 
 DEBUG_CAMERA* DEBUG_CAMERA::pDebugCamera = nullptr;

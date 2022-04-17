@@ -3,7 +3,8 @@
 #ifndef PLAYER_H
 #define PLAYER_H
 
-class GameObject;
+//class GameObject;
+#include "GameObject.h"
 
 class PLAYER : public GameObject {
 private:

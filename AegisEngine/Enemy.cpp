@@ -17,6 +17,8 @@
 #include	"Math.h"
 #include	"include/engine/core/random/Random.h"
 
+IMPLEMENT_OBJECT_TYPE_INFO(GameObject, ENEMY)
+
 using namespace aegis;
 
 static void Create_Bullet(Vector3& position, const Vector3& front);

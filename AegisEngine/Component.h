@@ -7,8 +7,13 @@ class GameObject;
 //#include	"GameObject.h"
 //#include	"manager.h"
 
+#include "include\engine\core\AegisObject.h"
+
 // コンポーネントクラス
-class COMPONENT /*: public GameObject*/ {
+class COMPONENT : public aegis::AegisObject {
+
+	ABSTRACT_OBJECT_TYPE_INFO(COMPONENT)
+
 protected:
 	std::weak_ptr<GameObject> Owner;
 

@@ -16,6 +16,9 @@
 #include	<assimp/matrix4x4.h>
 
 class MODEL : public COMPONENT {
+
+	OBJECT_TYPE_INFO(MODEL)
+
 private:
 
 	//! ファイル名

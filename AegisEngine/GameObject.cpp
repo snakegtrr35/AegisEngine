@@ -5,6 +5,8 @@
 #include "GameObject.h"
 #include "include\/engine\core\memory\aegisAllocator.h"
 
+IMPLEMENT_ABSTRACT_OBJECT_TYPE_INFO(aegis::AegisObject, GameObject)
+
 aegis::unordered_set<std::string> GameObject::Object_Name_Map;
 
 GameObject::GameObject() : Object_Name("none"), DestroyFlag(false), Uuid(aegis::Uuid::GetUuid())

@@ -3,6 +3,8 @@
 #include	"ShadowMap.h"
 #include	"Scene.h"
 
+IMPLEMENT_OBJECT_TYPE_INFO(SPRITE, TEXTS)
+
 using namespace aegis;
 
 TEXTS::TEXTS()

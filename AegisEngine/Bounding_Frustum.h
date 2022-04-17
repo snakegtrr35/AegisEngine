@@ -13,6 +13,9 @@
 
 // 球
 class BOUNDING_FRUSTUM : public BOUNDING {
+
+	OBJECT_TYPE_INFO(BOUNDING_FRUSTUM);
+
 private:
 	//! 頂点バッファ
 	ComPtr<ID3D11Buffer> pVertexBuffer;

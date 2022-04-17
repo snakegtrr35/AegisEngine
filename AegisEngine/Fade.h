@@ -15,6 +15,9 @@
  * @details フェイドクラス
  */
 class FADE : public SPRITE {
+
+	OBJECT_TYPE_INFO(FADE)
+
 private:
 	
 	//! フェイドが終了したかを判定するフラグ(使用していない時はfalse、フェイドが終了したらtrue)

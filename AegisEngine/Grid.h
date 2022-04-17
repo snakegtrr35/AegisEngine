@@ -7,6 +7,9 @@
 #include	"GameObject.h"
 
 class GRID : public GameObject {
+
+	OBJECT_TYPE_INFO(GRID)
+
 private:
 	ComPtr<ID3D11Buffer> pVertexBuffer;	// 頂点バッファ
 

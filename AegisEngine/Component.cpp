@@ -2,6 +2,8 @@
 
 #include	"imgui/imgui.h"
 
+IMPLEMENT_ABSTRACT_OBJECT_TYPE_INFO(aegis::AegisObject, COMPONENT)
+
 using namespace aegis;
 
 void COMPONENT::Draw_Inspector()

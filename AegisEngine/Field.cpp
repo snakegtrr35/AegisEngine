@@ -7,6 +7,8 @@
 #include	"Scene.h"
 #include	"ShadowMap.h"
 
+IMPLEMENT_OBJECT_TYPE_INFO(GameObject, FIELD)
+
 using namespace aegis;
 
 static const UINT g_InstanceNum = 40 * 40 * 40;

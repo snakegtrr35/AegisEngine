@@ -6,6 +6,8 @@
 #include	"camera.h"
 #include	"Debug_Camera.h"
 
+IMPLEMENT_OBJECT_TYPE_INFO(COMPONENT, MODEL)
+
 using namespace aegis;
 
 MODEL::MODEL() : FileName(std::string()), Key(0)

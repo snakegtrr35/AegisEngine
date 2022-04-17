@@ -20,6 +20,9 @@ class GameObject;
 */
 class FIELD : public GameObject {
 
+	OBJECT_TYPE_INFO(FIELD)
+
+private:
 	//! 頂点バッファ
 	ComPtr<ID3D11Buffer> pVertexBuffer;
 

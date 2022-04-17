@@ -53,8 +53,7 @@ const constexpr UINT BONE_MAX = 256;
 
 
 /*** FBXmodelクラス ***/
-class FBXmodel 
-{
+class FBXmodel {
 private:
 
 	struct MESH

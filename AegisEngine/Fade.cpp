@@ -5,6 +5,8 @@
 #include	"ShadowMap.h"
 #include	"Renderer.h"
 
+IMPLEMENT_OBJECT_TYPE_INFO(SPRITE, FADE)
+
 using namespace aegis;
 
 bool FADE::FadeEnable = false;

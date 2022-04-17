@@ -16,6 +16,9 @@
  * @details 全バウンディングの基底クラス
  */
 class BOUNDING : public COMPONENT {
+
+	ABSTRACT_OBJECT_TYPE_INFO(BOUNDING)
+
 private:
 protected:
 	//! BOXのインデックスバッファ

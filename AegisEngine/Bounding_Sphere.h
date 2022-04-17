@@ -12,6 +12,9 @@
 
 // 球
 class BOUNDING_SHPERE : public BOUNDING {
+
+	OBJECT_TYPE_INFO(BOUNDING_SHPERE)
+
 private:
 	//! 頂点バッファ
 	ComPtr<ID3D11Buffer> pVertexBuffer;

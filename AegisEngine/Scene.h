@@ -77,7 +77,8 @@ public:
 			{
 				if (object)
 				{
-					if (typeid(T) == typeid(*object.get()))
+					//if (typeid(T) == typeid(*object.get()))
+					if ( object.get()->GetTypeId() == T::getDTI()->GetTypeID() )
 					{
 						if (name == object.get()->Get_Object_Name())
 						{
@@ -148,7 +149,8 @@ public:
 			{
 				if (object)
 				{
-					if (typeid(T) == typeid(*object.get()))
+					//if (typeid(T) == typeid(*object.get()))
+					if (object.get()->GetTypeId() == T::getDTI()->GetTypeID())
 					{
 						objects.emplace_back(static_cast<T*>(object.get()));
 					}
@@ -185,7 +187,8 @@ public:
 			{
 				if (object)
 				{
-					if (typeid(T) == typeid(*object.get()))
+					//if (typeid(T) == typeid(*object.get()))
+					if (object.get()->GetTypeId() == T::getDTI()->GetTypeID())
 					{
 						object.get()->Set_Destroy();
 					}

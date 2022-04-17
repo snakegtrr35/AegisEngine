@@ -8,6 +8,9 @@
 class SPRITE_ANIMATION;
 
 class SCORE : public GameObject {
+
+	OBJECT_TYPE_INFO(SCORE)
+
 private:
 	SPRITE_ANIMATION* Number;
 

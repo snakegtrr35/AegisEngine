@@ -4,6 +4,8 @@
 #include	"ShadowMap.h"
 #include	"Scene.h"
 
+IMPLEMENT_OBJECT_TYPE_INFO(GameObject, SPRITE)
+
 using namespace aegis;
 
 ComPtr<ID3D11Buffer> SPRITE::pIndexBuffer;		// インデックスバッファ

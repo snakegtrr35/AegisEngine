@@ -4,6 +4,8 @@
 #include	"Input.h"
 #include	"camera.h"
 
+IMPLEMENT_OBJECT_TYPE_INFO(GameObject, CCamera)
+
 using namespace aegis;
 
 CCamera* CCamera::pCamera = nullptr;

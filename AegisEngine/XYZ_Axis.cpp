@@ -5,6 +5,8 @@
 #include	"Scene.h"
 #include	"ShadowMap.h"
 
+IMPLEMENT_OBJECT_TYPE_INFO(GameObject, AXIS)
+
 #define COUNT (6)
 
 using namespace aegis;

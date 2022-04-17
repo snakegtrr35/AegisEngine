@@ -6,6 +6,9 @@
 class GameObject;
 
 class ENEMY : public GameObject {
+
+	OBJECT_TYPE_INFO(ENEMY)
+
 private:
 
 	bool Fire_Flag;

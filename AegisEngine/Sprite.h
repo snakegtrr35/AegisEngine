@@ -46,6 +46,9 @@ struct CHILD_DATE {
 * @details スプライトクラス
 */
 class SPRITE : public GameObject {
+
+	OBJECT_TYPE_INFO(SPRITE)
+
 private:
 protected:
 	//! 頂点バッファ

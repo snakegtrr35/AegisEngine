@@ -9,6 +9,9 @@
 class TEXTURE;
 
 class AXIS : public GameObject {
+
+	OBJECT_TYPE_INFO(AXIS)
+
 private:
 	ComPtr<ID3D11Buffer> pVertexBuffer[3];	// 頂点バッファ
 	ComPtr<ID3D11Buffer> pIndexBuffer;		// インデックスバッファ

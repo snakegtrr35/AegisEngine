@@ -13,6 +13,9 @@ struct POLYGOM {
 };
 
 class POLYGON_3D : public GameObject {
+
+	OBJECT_TYPE_INFO(POLYGON_3D)
+
 private:
 	ComPtr<ID3D11Buffer> pVertexBuffer;		// 頂点バッファ
 	std::unique_ptr<TEXTURE> Texture;		// テクスチャ

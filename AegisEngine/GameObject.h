@@ -12,11 +12,16 @@
 #include	"Transform.h"
 #include	"include/engine/core/uuid/uuid.h"
 
+#include "include\engine\core\AegisObject.h"
+
  /**
  * @brief ゲームオブジェクトクラス
  * @details ゲームオブジェクトクラス
  */
-class GameObject {
+class GameObject : public aegis::AegisObject {
+
+	ABSTRACT_OBJECT_TYPE_INFO(GameObject)
+
 private:
 	//! ゲームオブジェクトの名称一覧(静的なもの)
 	static aegis::unordered_set<std::string> Object_Name_Map;

@@ -15,6 +15,9 @@
 * @details スプライトでアニメーションができるクラス
 */
 class SPRITE_ANIMATION : public SPRITE {
+
+	OBJECT_TYPE_INFO(SPRITE_ANIMATION)
+
 private:
 	float WaitFrame;
 	WORD CreatCount;

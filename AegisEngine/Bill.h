@@ -6,6 +6,9 @@
 class GameObject;
 
 class BILL : public GameObject {
+
+	OBJECT_TYPE_INFO(BILL)
+
 private:
 
 public:

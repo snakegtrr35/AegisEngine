@@ -8,6 +8,9 @@
 class SPRITE;
 
 class MENU_COMPONENT : public COMPONENT {
+
+	ABSTRACT_OBJECT_TYPE_INFO(MENU_COMPONENT)
+
 private:
 
 protected:
@@ -63,7 +66,11 @@ public:
 
 };
 
+
 class MOUSE_EVENT_COMPONENT : public MENU_COMPONENT {
+
+	ABSTRACT_OBJECT_TYPE_INFO(MOUSE_EVENT_COMPONENT)
+
 private:
 
 protected:
@@ -81,6 +88,9 @@ public:
 };
 
 class KEYBOARD_EVENT_COMPONENT : public MENU_COMPONENT {
+
+	ABSTRACT_OBJECT_TYPE_INFO(KEYBOARD_EVENT_COMPONENT)
+
 private:
 
 protected:
@@ -92,5 +102,6 @@ public:
 	void Update(float delta_time) override;
 	void Uninit() override;
 };
+
 
 #endif // !MENU_COMPONENT_H

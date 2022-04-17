@@ -12,6 +12,9 @@
 
 // 球
 class BOUNDING_CAPSULE : public BOUNDING {
+
+	OBJECT_TYPE_INFO(BOUNDING_CAPSULE)
+
 private:
 	//! 一つ目の頂点バッファ
 	ComPtr<ID3D11Buffer> pVertexBuffer;

@@ -9,6 +9,8 @@
 #include	"Scene.h"
 #include	"ShadowMap.h"
 
+IMPLEMENT_OBJECT_TYPE_INFO(GameObject, BILL_BOARD)
+
 using namespace aegis;
 
 ComPtr<ID3D11Buffer> BILL_BOARD::pIndexBuffer = nullptr;		// インデックスバッファ

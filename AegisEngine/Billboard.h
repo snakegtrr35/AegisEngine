@@ -18,6 +18,9 @@ class TEXTURE;
 * @details ビルボードクラス
 */
 class BILL_BOARD : public GameObject {
+
+	OBJECT_TYPE_INFO(BILL_BOARD)
+
 protected:
 
 	//! インデックスバッファ

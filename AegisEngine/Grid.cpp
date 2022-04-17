@@ -5,6 +5,8 @@
 #include	"Scene.h"
 #include	"ShadowMap.h"
 
+IMPLEMENT_OBJECT_TYPE_INFO(GameObject, GRID)
+
 #define COUNT (11 * 2 * 2)
 
 using namespace aegis;
