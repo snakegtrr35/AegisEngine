@@ -36,8 +36,8 @@ namespace aegis
 		* @return Vector3* 座標(Vector3*)
 		* @details　オブジェクトの座標を取得する関数
 		*/
-		Vector3* const Get_Position() {
-			return &Position;
+		const Vector3 Get_Position() {
+			return Position;
 		};
 
 		/**
@@ -45,8 +45,8 @@ namespace aegis
 		* @return Vector3* 回転(Vector3*)
 		* @details　オブジェクトの回転を取得する関数
 		*/
-		Vector3* const Get_Rotation() {
-			return &Rotation;
+		const Vector3 Get_Rotation() {
+			return Rotation;
 		};
 
 		/**
@@ -54,8 +54,8 @@ namespace aegis
 		* @return Vector3* スケート(Vector3*)
 		* @details　オブジェクトのスケートを取得する関数
 		*/
-		Vector3* const Get_Scaling() {
-			return &Scaling;
+		const Vector3 Get_Scaling() {
+			return Scaling;
 		};
 
 		/**
@@ -113,11 +113,21 @@ namespace aegis
 		};
 
 		template<class Archive>
-		void serialize(Archive& ar)
+		void save(Archive& archive) const
 		{
-			ar(Position);
-			ar(Rotation);
-			ar(Scaling);
+			archive(cereal::make_nvp("Position", Position),
+					cereal::make_nvp("Rotation", Rotation),
+					cereal::make_nvp("Scaling", Scaling)
+			);
+		}
+
+		template<class Archive>
+		void load(Archive& archive)
+		{
+			archive(cereal::make_nvp("Position", Position),
+					cereal::make_nvp("Rotation", Rotation),
+					cereal::make_nvp("Scaling", Scaling)
+			);
 		}
 	};
 }
