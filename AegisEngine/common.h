@@ -3,8 +3,9 @@
 #ifndef COMMON_H
 #define COMMON_H
 
+#include "include/engine/core/aegisContainer.h"
+
 #include	"main.h"
-#include	<xstring>
 #include	<string>
 
 // メモリ開放
@@ -81,7 +82,7 @@ struct Uninit_Array {
 std::wstring stringTowstring(const std::string_view font);
 std::string wstringTostring(const std::wstring_view font);
 
-void ExtratNum(std::string& str);
+aegis::string ExtratNum(aegis::string& str);
 
 std::string Replace_String(std::string_view replacedStr, const std::string_view from, const std::string_view to);
 

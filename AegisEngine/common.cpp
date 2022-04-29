@@ -48,9 +48,10 @@ auto notdigit = [](char s)
 	return (0 == std::isdigit<unsigned char>(static_cast<unsigned char>(s), std::locale()));
 };
 
-void ExtratNum(std::string& str)
+aegis::string ExtratNum(aegis::string& str)
 {
 	str.erase(std::remove_if(str.begin(), str.end(), notdigit), str.end());
+	return str;
 }
 
 #ifdef UNICODE
