@@ -1,9 +1,8 @@
-﻿#include	"GameObject.h"
+﻿
 #include	"Bill.h"
-#include	"Model.h"
-#include	"Component.h"
 
 #include	"Bounding_Aabb.h"
+#include	"Model.h"
 
 #include	"manager.h"
 #include	"Scene.h"
@@ -30,18 +29,20 @@ void BILL::Init()
 
 	Get_Transform().Set_Position(pos);
 
-	std::string name("bill01.fbx");
+	aegis::string name("bill01.fbx");
 
-	auto scene = CManager::Get_Instance()->Get_Scene();
+	//auto scene = CManager::Get_Instance()->Get_Scene();
 
-	auto aabb = Get_Component()->Add_Component<BOUNDING_AABB>(scene->Get_Game_Object(this));
+	//auto aabb = Get_Component()->Add_Component<BOUNDING_AABB>(scene->Get_Game_Object(this));
+	auto aabb = this->AddComponent<BOUNDING_AABB>();
 
 	//aabb->Set_Position(Position);
 	//aabb->Set_Radius(XMFLOAT3(10, 10, 10));
 
 	{
-		auto model = Get_Component()->Add_Component<MODEL>(scene->Get_Game_Object(this));
-
+		//auto model = Get_Component()->Add_Component<MODEL>(scene->Get_Game_Object(this));
+		auto model = this->AddComponent<MODEL>();
+		
 		model->Set_Model_Name(name);
 	}
 
@@ -70,4 +71,5 @@ void BILL::Update(float delta_time)
 
 void BILL::Uninit()
 {
+	GameObject::Uninit();
 }

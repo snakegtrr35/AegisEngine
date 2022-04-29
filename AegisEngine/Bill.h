@@ -3,7 +3,7 @@
 #ifndef BILL_H
 #define BILL_H
 
-class GameObject;
+#include "GameObject.h"
 
 class BILL : public GameObject {
 
@@ -22,11 +22,16 @@ public:
 	void Update(float delta_time) override;
 	void Uninit() override;
 
-	template<typename Archive>
-	void serialize(Archive& ar)
+	template<class Archive>
+	void save(Archive& archive) const
 	{
-		ar(cereal::base_class<GameObject>(this));
-		//ar(Texture);
+		archive(cereal::make_nvp("GameObject", cereal::base_class<GameObject>(this)));
+	}
+
+	template<class Archive>
+	void load(Archive& archive)
+	{
+		archive(cereal::make_nvp("GameObject", cereal::base_class<GameObject>(this)));
 	}
 };
 
