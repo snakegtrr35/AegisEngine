@@ -5,6 +5,18 @@
 
 #include "utility\TypeDefine.h"
 #include "memory\stlAllocator.h"
+
+
+#include <array>
+#include <vector>
+#include <list>
+#include <map>
+#include <unordered_map>
+#include <set>
+#include <unordered_set>
+#include <deque>
+#include <stack>
+#include <variant>
 #include <string>
 
 namespace aegis
