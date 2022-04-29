@@ -118,7 +118,6 @@
     <ClInclude Include="Animetion_State_Machine.h" />
     <ClInclude Include="AudioDefine.h" />
     <ClInclude Include="audio_clip.h" />
-    <ClInclude Include="Axis.h" />
     <ClInclude Include="Bill.h" />
     <ClInclude Include="Billboard.h" />
     <ClInclude Include="Bounding.h" />
@@ -449,6 +448,7 @@
       <LanguageStandard>stdcpp20</LanguageStandard>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <EnableEnhancedInstructionSet>StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
+      <AdditionalOptions>/bigobj %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -494,6 +494,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <EnableEnhancedInstructionSet>StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
+      <AdditionalOptions>/bigobj %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>

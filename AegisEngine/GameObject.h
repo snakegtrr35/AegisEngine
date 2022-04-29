@@ -26,6 +26,9 @@ private:
 	//! ゲームオブジェクトの名称一覧(静的なもの)
 	static aegis::unordered_set<std::string> Object_Name_Map;
 
+	//! コンポーネント
+	aegis::vector< std::weak_ptr<COMPONENT> > Components;
+
 protected:
 
 	//! オブジェクトの名前
@@ -34,36 +37,12 @@ protected:
 	//! 削除するかのフラグ
 	bool DestroyFlag;
 
-	////! 座標
-	//XMFLOAT3 Position;
-	//
-	////! 回転量
-	//XMFLOAT3 Rotation;
-	//
-	////! 拡大縮小値
-	//XMFLOAT3 Scaling;
-
 	aegis::Transform Transform;
 
-	//! コンポーネント
-	std::unique_ptr<COMPONENT_MANEGER, Delete> Component;
+	////! コンポーネント
+	//std::unique_ptr<COMPONENT_MANEGER, Delete> Component;
 
 	aegis::uuid Uuid;
-
-	////! クオータニオン
-	//XMVECTOR Quaternion;
-	////! デバッグ用のクオータニオン
-	//XMVECTOR Edit_Quaternion;
-	////! クオータニオン用の入れ物
-	//XMFLOAT4 Q_num;
-
-#ifdef _DEBUG
-	//XMFLOAT3 Edit_Position;				//! デバッグ用の座標
-	//XMFLOAT3 Edit_Rotation;				//! デバッグ用の回転量
-	//XMFLOAT3 Edit_Scaling;				//! デバッグ用の拡大縮小値
-
-	//XMFLOAT4 Edit_Q_num;				//! デバッグ用のクオータニオン用の入れ物
-#endif // _DEBUG
 
 public:
 	/**
@@ -112,7 +91,7 @@ public:
 	* @brief 終了処理関数
 	* @details 純粋仮想終了処理関数
 	*/
-	virtual void Uninit() = 0;
+	virtual void Uninit();
 
 	/**
 	* @brief 削除要請関数
@@ -143,86 +122,7 @@ public:
 	*/
 	void Set_Object_Name(const std::string& name);
 
-	///**
-	//* @brief 座標を取得する関数
-	//* @return XMFLOAT3* 座標(XMFLOAT3*)
-	//* @details　オブジェクトの座標を取得する関数
-	//*/
-	//XMFLOAT3* const Get_Position() {
-	//	return &Position;
-	//};
-
-	///**
-	//* @brief 回転を取得する関数
-	//* @return XMFLOAT3* 回転(XMFLOAT3*)
-	//* @details　オブジェクトの回転を取得する関数
-	//*/
-	//XMFLOAT3* const Get_Rotation() {
-	//	return &Rotation;
-	//};
-
-	///**
-	//* @brief スケートを取得する関数
-	//* @return XMFLOAT3* スケート(XMFLOAT3*)
-	//* @details　オブジェクトのスケートを取得する関数
-	//*/
-	//XMFLOAT3* const Get_Scaling() {
-	//	return &Scaling;
-	//};
-
-	///**
-	//* @brief 座標を設定する関数
-	//* @param position 座標(XMFLOAT3*)
-	//* @details オブジェクトの座標を設定する関数
-	//*/
-	//void Set_Position(XMFLOAT3* position) {
-	//	Position = *position;
-	//}
-
-	///**
-	//* @brief 座標を設定する関数
-	//* @param position 座標(XMFLOAT3)
-	//* @details オブジェクトの座標を設定する関数
-	//*/
-	//void Set_Position(XMFLOAT3& position) {
-	//	Position = position;
-	//};
-
-	///**
-	//* @brief 回転を設定する関数
-	//* @param position 回転量(XMFLOAT3*)
-	//* @details オブジェクトの回転を設定する関数
-	//*/
-	//void Set_Rotation(XMFLOAT3* rotation) {
-	//	Rotation = *rotation;
-	//};
-
-	///**
-	//* @brief 回転を設定する関数
-	//* @param position 回転量(XMFLOAT3)
-	//* @details オブジェクトの回転を設定する関数
-	//*/
-	//void Set_Rotation(XMFLOAT3& rotation) {
-	//	Rotation = rotation;
-	//};
-
-	///**
-	//* @brief スケールを設定する関数
-	//* @param position スケール(XMFLOAT3*)
-	//* @details オブジェクトのスケールを設定する関数
-	//*/
-	//void Set_Scaling(XMFLOAT3* scaling) {
-	//	Scaling = *scaling;
-	//};
-
-	///**
-	//* @brief スケールを設定する関数
-	//* @param position スケール(XMFLOAT3)
-	//* @details オブジェクトのスケールを設定する関数
-	//*/
-	//void Set_Scaling(XMFLOAT3& scaling) {
-	//	Scaling = scaling;
-	//};
+	aegis::uuid GetId() const { return Uuid; }
 
 	void* operator new(aegis::uint64 size);
 	void* operator new(aegis::uint64 size, std::align_val_t alignment);
@@ -241,13 +141,46 @@ public:
 		return Transform;
 	}
 
+	template<class T>
+	T* AddComponent()
+	{
+		for (const auto& component : Components)
+		{
+			if (component.lock()->GetTypeId() == T::getDTI()->GetTypeID())
+			{
+				return static_cast<T*>(component.lock().get());
+			}
+		}
+		
+		auto component = COMPONENT_MANEGER::getInstance()->AddComponent<T>(Uuid);
+		component->Set_Owner(this);
+		Components.emplace_back(component);
+		return component.get();
+	}
+
+	template<class T>
+	T* GetComponent()
+	{
+		for (const auto& component : Components)
+		{
+			if (component.lock()->GetTypeId() == T::getDTI()->GetTypeID())
+			{
+				return static_cast<T*>(component.lock().get());
+			}
+		}
+		return nullptr;
+	}
+
 	/**
 	* @brief コンポーネントを取得する関数
 	* @return COMPONENT_MANEGER* 座標(COMPONENT_MANEGER*)
 	* @details オブジェクトのコンポーネントを取得する関数
 	*/
-	COMPONENT_MANEGER* const Get_Component() {
-		return Component.get();
+	//COMPONENT_MANEGER* const Get_Component() {
+	//	return Component.get();
+	//}
+	aegis::vector< std::weak_ptr<COMPONENT> >* const GetComponents() {
+		return &Components;
 	}
 
 	/**
@@ -263,47 +196,60 @@ public:
 	void serialize( Archive& ar)
 	{
 		ar(Object_Name);
-
 		ar(Uuid);
-
-		//ar(Position);
-		//
-		//ar(Rotation);
-		//
-		//ar(Scaling);
-
 		ar(Transform);
-
+		ar(Components);
+	
 		Set_Object_Name(Object_Name);
-
-		ar(Component);
+	
+		for (auto& component : Components)
+		{
+			COMPONENT_MANEGER::getInstance()->AddComponent(Uuid, std::move(component.lock()));
+			component.lock()->Set_Owner(this);
+		}
 	}
 
 	//template<class Archive>
 	//void save(Archive& ar) const
 	//{
 	//	ar(Object_Name);
-
-	//	ar(Position);
-
-	//	ar(Rotation);
-
-	//	ar(Scaling);
+	//	ar(Transform);
+	//	ar(Conponents);
 	//}
 
 	//template<class Archive>
 	//void load(Archive& ar)
 	//{
 	//	ar(Object_Name);
-
-	//	ar(Position);
-
-	//	ar(Rotation);
-
-	//	ar(Scaling);
-
+	//	ar(Transform);
+	//	ar(Conponents);
+	//
 	//	Set_Object_Name(Object_Name);
+	//	
+	//	for (auto& component : Conponents)
+	//	{
+	//		COMPONENT_MANEGER::getInstance()->AddComponent(Uuid, std::move(component.lock()));
+	//	}
 	//}
 };
+
+namespace cereal
+{
+	// JSON
+	// serialize
+	void prologue(cereal::JSONInputArchive&, GameObject const& data);
+	void epilogue(cereal::JSONInputArchive&, GameObject const& data);
+
+	void prologue(cereal::JSONOutputArchive&, GameObject const& data);
+	void epilogue(cereal::JSONOutputArchive&, GameObject const& data);
+
+	// Binary
+	// deserialize
+	void prologue(cereal::BinaryInputArchive&, GameObject const& data);
+	void epilogue(cereal::BinaryInputArchive&, GameObject const& data);
+
+	void prologue(cereal::BinaryOutputArchive&, GameObject const& data);
+	void epilogue(cereal::BinaryOutputArchive&, GameObject const& data);
+}
 
 #endif // !GAME_OBJECT_H

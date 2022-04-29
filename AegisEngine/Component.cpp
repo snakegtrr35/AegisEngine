@@ -43,9 +43,15 @@ void COMPONENT::Draw_Inspector()
 	}
 }
 
-void COMPONENT::Set_Owner(const std::weak_ptr<GameObject>& owner)
+//void COMPONENT::Set_Owner(const std::weak_ptr<GameObject>& owner)
+void COMPONENT::Set_Owner(GameObject* owner)
 {
 	Owner = owner;
+
+	if (Owner != nullptr)
+	{
+		Enable = true;
+	}
 }
 
 void COMPONENT::SetEnable(const bool flag)
@@ -63,62 +69,52 @@ void COMPONENT::SetDestroy()
 	DestroyFlag = true;
 }
 
-void COMPONENT::Set_Draw_Enable(const bool flag)
-{
-	Draw_Enable = flag;
-}
-
-bool COMPONENT::Get_Draw_Enable()
-{
-	return Draw_Enable;
-}
-
-Vector3* const COMPONENT::Get_Position()
-{
-	return &Position;
-};
-
-Vector3* const COMPONENT::Get_Rotation()
-{
-	return &Rotation;
-};
-
-Vector3* const COMPONENT::Get_Scaling()
-{
-	return &Scaling;
-};
-
-
-
-void COMPONENT::Set_Position(Vector3* const position)
-{
-	Position = *position;
-}
-
-void COMPONENT::Set_Position(const Vector3& position)
-{
-	Position = position;
-};
-
-void COMPONENT::Set_Rotation(Vector3* const rotation)
-{
-	Rotation = *rotation;
-};
-
-void COMPONENT::Set_Rotation(const Vector3& rotation)
-{
-	Rotation = rotation;
-};
-
-void COMPONENT::Set_Scaling(Vector3* scaling)
-{
-	Scaling = *scaling;
-};
-
-void COMPONENT::Set_Scaling(const Vector3& scaling)
-{
-	Scaling = scaling;
-};
+//Vector3* const COMPONENT::Get_Position()
+//{
+//	return &Position;
+//};
+//
+//Vector3* const COMPONENT::Get_Rotation()
+//{
+//	return &Rotation;
+//};
+//
+//Vector3* const COMPONENT::Get_Scaling()
+//{
+//	return &Scaling;
+//};
+//
+//
+//
+//void COMPONENT::Set_Position(Vector3* const position)
+//{
+//	Position = *position;
+//}
+//
+//void COMPONENT::Set_Position(const Vector3& position)
+//{
+//	Position = position;
+//};
+//
+//void COMPONENT::Set_Rotation(Vector3* const rotation)
+//{
+//	Rotation = *rotation;
+//};
+//
+//void COMPONENT::Set_Rotation(const Vector3& rotation)
+//{
+//	Rotation = rotation;
+//};
+//
+//void COMPONENT::Set_Scaling(Vector3* scaling)
+//{
+//	Scaling = *scaling;
+//};
+//
+//void COMPONENT::Set_Scaling(const Vector3& scaling)
+//{
+//	Scaling = scaling;
+//};
 
 // メモリ上からの削除
 bool COMPONENT::Destroy()

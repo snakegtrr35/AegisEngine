@@ -18,6 +18,7 @@ public:\
 
 
 #define IMPLEMENT_OBJECT_TYPE_INFO(_base_class_, _class_)\
+    static_assert(std::is_same<_base_class_, _class_>::value == false);\
     using namespace aegis::typeInfo;\
     aegis::typeInfo::TypeInfo* _class_::getDTI()\
     {\

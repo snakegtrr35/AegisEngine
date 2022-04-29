@@ -11,31 +11,34 @@ aegis::unordered_set<std::string> GameObject::Object_Name_Map;
 
 GameObject::GameObject() : Object_Name("none"), DestroyFlag(false), Uuid(aegis::Uuid::GetUuid())
 {
-	Component.reset(new COMPONENT_MANEGER());
 }
 
 GameObject::~GameObject()
 {
 	Object_Name_Map.erase(Object_Name);
-
-	Component.reset();
 };
 
 void GameObject::Init()
 {
-	Component->Init();
 }
 
 void GameObject::Draw()
 {
-	Component->Draw();
 }
 
 void GameObject::Draw_Shadow() {}
 
 void GameObject::Update(float delta_time)
 {
-	Component->Update(delta_time);
+}
+
+void GameObject::Uninit()
+{
+	for (const auto& component : Components)
+	{
+		component.lock()->SetDestroy();
+	}
+	Components.clear();
 }
 
 void GameObject::Set_Destroy()
@@ -116,4 +119,57 @@ void GameObject::operator delete[](void* ptr, std::align_val_t alignment) noexce
 void GameObject::operator delete[](void* ptr, aegis::uint64 size, std::align_val_t alignment) noexcept
 {
 	aegis::memory::AegisAllocator::deallocate(ptr, size, aegis::memory::AllocatorType::Temp);
+}
+
+namespace cereal
+{
+	void prologue(cereal::JSONInputArchive&, GameObject const& data)
+	{
+	}
+
+	void epilogue(cereal::JSONInputArchive&, GameObject const& data)
+	{
+		GameObject& gameObject = const_cast<GameObject&>(data);
+
+		auto components = gameObject.GetComponents();
+
+		for (auto& component : *components)
+		{
+			COMPONENT_MANEGER::getInstance()->AddComponent(gameObject.GetId(), std::move(component.lock()));
+		}
+	}
+
+	void prologue(cereal::JSONOutputArchive&, GameObject const& data)
+	{
+	}
+
+	void epilogue(cereal::JSONOutputArchive&, GameObject const& data)
+	{
+	}
+
+
+
+	void prologue(cereal::BinaryInputArchive&, GameObject const& data)
+	{
+	}
+
+	void epilogue(cereal::BinaryInputArchive&, GameObject const& data)
+	{
+		GameObject& gameObject = const_cast<GameObject&>(data);
+
+		auto components = gameObject.GetComponents();
+
+		for (auto& component : *components)
+		{
+			COMPONENT_MANEGER::getInstance()->AddComponent(gameObject.GetId(), std::move(component.lock()));
+		}
+	}
+
+	void prologue(cereal::BinaryOutputArchive&, GameObject const& data)
+	{
+	}
+
+	void epilogue(cereal::BinaryOutputArchive&, GameObject const& data)
+	{
+	}
 }

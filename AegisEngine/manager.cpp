@@ -291,6 +291,8 @@ void CManager::Draw()
 
 void CManager::Uninit()
 {
+	COMPONENT_MANEGER::getInstance()->Uninit();
+
 	pSceneManager->Uninit();
 	pSceneManager.reset(nullptr);
 

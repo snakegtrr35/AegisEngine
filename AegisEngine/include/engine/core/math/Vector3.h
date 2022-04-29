@@ -14,7 +14,7 @@ namespace aegis
 	class Vector3 : public DirectX::XMFLOAT3 {
 	public:
 
-		Vector3() = default;
+		Vector3() : XMFLOAT3(0.f, 0.f, 0.f) {};
 		Vector3(const float32 _x, const float32 _y, const float32 _z) noexcept
 		{
 			x = _x;

@@ -427,9 +427,6 @@
     <ClInclude Include="Animetion_State_Machine.h">
       <Filter>ソース ファイル\System</Filter>
     </ClInclude>
-    <ClInclude Include="Axis.h">
-      <Filter>ソース ファイル\System</Filter>
-    </ClInclude>
     <ClInclude Include="XYZ_Axis.h">
       <Filter>ソース ファイル\System</Filter>
     </ClInclude>

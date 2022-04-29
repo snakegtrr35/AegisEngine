@@ -15,21 +15,15 @@ class COMPONENT : public aegis::AegisObject {
 	ABSTRACT_OBJECT_TYPE_INFO(COMPONENT)
 
 protected:
-	std::weak_ptr<GameObject> Owner;
+	GameObject* Owner;
 
 	bool Enable;
-	bool Draw_Enable;
 	bool DestroyFlag;
-
-	aegis::Vector3 Position;
-	aegis::Vector3 Rotation;
-	aegis::Vector3 Scaling;
 
 public:
 
-	COMPONENT() : Enable(true), DestroyFlag(false), Position(aegis::Vector3(0.0f, 0.0f, 0.0f)), Rotation(aegis::Vector3(0.0f, 0.0f, 0.0f)), Scaling(aegis::Vector3(1.0f, 1.0f, 1.0f)) {
-		Owner.reset();
-
+	COMPONENT() : Enable(false), DestroyFlag(false), Owner(nullptr)/*, Position(aegis::Vector3(0.0f, 0.0f, 0.0f)), Rotation(aegis::Vector3(0.0f, 0.0f, 0.0f)), Scaling(aegis::Vector3(1.0f, 1.0f, 1.0f))*/
+	{
 	}
 
 	virtual ~COMPONENT() {}
@@ -42,7 +36,8 @@ public:
 
 	virtual void Draw_Inspector() = 0;
 
-	void Set_Owner(const std::weak_ptr<GameObject>& owner);
+	//void Set_Owner(const std::weak_ptr<GameObject>& owner);
+	void Set_Owner(GameObject* owner);
 
 	void SetEnable(const bool flag);
 
@@ -50,11 +45,7 @@ public:
 
 	void SetDestroy();
 
-	void Set_Draw_Enable(const bool flag);
-
-	bool Get_Draw_Enable();
-
-	aegis::Vector3* const Get_Position();
+	/*aegis::Vector3* const Get_Position();
 
 	aegis::Vector3* const Get_Rotation();
 
@@ -69,7 +60,7 @@ public:
 	void Set_Rotation(const aegis::Vector3& rotation);
 
 	void Set_Scaling(aegis::Vector3* const  scaling);
-	void Set_Scaling(const aegis::Vector3& scaling);
+	void Set_Scaling(const aegis::Vector3& scaling);*/
 
 	// メモリ上からの削除
 	bool Destroy();
@@ -77,10 +68,10 @@ public:
 	template<class Archive>
 	void serialize(Archive& ar)
 	{
-		ar(Owner);
-		ar(Position);
+		//ar(Owner);
+		/*ar(Position);
 		ar(Rotation);
-		ar(Scaling);
+		ar(Scaling);*/
 	}
 
 	/*template<class Archive>

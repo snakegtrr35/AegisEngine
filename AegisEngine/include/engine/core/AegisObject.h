@@ -12,6 +12,7 @@ namespace aegis
 		BASE_OBJECT_TYPE_INFO(AegisObject)
 
 	public:
+		AegisObject() = default;
 		virtual ~AegisObject() {}
 	};
 }
