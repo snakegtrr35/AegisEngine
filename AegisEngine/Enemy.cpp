@@ -43,17 +43,19 @@ void ENEMY::Init()
 
 		//if (nullptr == ab)
 		{
-			auto aabb = Get_Component()->Add_Component<BOUNDING_AABB>(scene->Get_Game_Object(this));
-
+			//auto aabb = Get_Component()->Add_Component<BOUNDING_AABB>(scene->Get_Game_Object(this));
+			auto aabb = this->AddComponent<BOUNDING_AABB>();
+			
 			aabb->Set_Radius(Vector3(0.5f, 1.0f, 0.5f));
 			aabb->Set_Position(Vector3(0.f, 0.5f, 0.f));
 		}
 
-		std::string name("viranrifle.fbx");
+		aegis::string name("viranrifle.fbx");
 
-		auto model = Get_Component()->Add_Component<MODEL>(scene->Get_Game_Object(this));
+		//auto model = Get_Component()->Add_Component<MODEL>(scene->Get_Game_Object(this));
+		auto model = this->AddComponent<MODEL>();
 		model->Set_Model_Name(name);
-
+		
 		model->Set_Position(Get_Transform().Get_Position());
 		model->Set_Rotation(Get_Transform().Get_Rotation());
 		model->Set_Scaling(Get_Transform().Get_Scaling());
@@ -88,10 +90,10 @@ void ENEMY::Update(float delta_time)
 		Vector3 position(0.f, 0.f, 0.f);
 		if (!player.expired())
 		{
-			position = *player.lock()->Get_Transform().Get_Position();
+			position = player.lock()->Get_Transform().Get_Position();
 		}
 
-		vec = (position - *Get_Transform().Get_Position());
+		vec = (position - Get_Transform().Get_Position());
 		{
 
 			Vector3 rotate(0.f, 0.f, 0.f);
@@ -123,7 +125,7 @@ void ENEMY::Update(float delta_time)
 		{
 			const auto player = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<PLAYER>("player");
 
-			float r = (Get_Transform().Get_Position()->x - player.lock()->Get_Transform().Get_Position()->x) * (Get_Transform().Get_Position()->x - player.lock()->Get_Transform().Get_Position()->x) + (Get_Transform().Get_Position()->z - player.lock()->Get_Transform().Get_Position()->z) * (Get_Transform().Get_Position()->z - player.lock()->Get_Transform().Get_Position()->z);
+			float r = (Get_Transform().Get_Position().x - player.lock()->Get_Transform().Get_Position().x) * (Get_Transform().Get_Position().x - player.lock()->Get_Transform().Get_Position().x) + (Get_Transform().Get_Position().z - player.lock()->Get_Transform().Get_Position().z) * (Get_Transform().Get_Position().z - player.lock()->Get_Transform().Get_Position().z);
 			float abr = 8.0f;
 
 			// 離す
@@ -141,10 +143,11 @@ void ENEMY::Update(float delta_time)
 			}
 		}
 
-		Get_Transform().Get_Position()->x += move.x;
-		Get_Transform().Get_Position()->z += move.z;
+		Vector3 pos = Get_Transform().Get_Position();
+		pos.x += move.x;
+		pos.z += move.z;
 
-
+		Get_Transform().Set_Position(pos);
 	}
 
 	if (0.5f <= Time)
@@ -158,7 +161,7 @@ void ENEMY::Update(float delta_time)
 			Vector3 rotate;
 			XMStoreFloat3(&rotate, vector * 2.0f);
 
-			Vector3 position = *Get_Transform().Get_Position();
+			Vector3 position = Get_Transform().Get_Position();
 
 			position.x += rotate.x * 2;
 			position.z += rotate.z * 2;
@@ -179,6 +182,7 @@ void ENEMY::Update(float delta_time)
 
 void ENEMY::Uninit(void)
 {
+	GameObject::Uninit();
 }
 
 // ポジションの設定
@@ -205,7 +209,7 @@ void Create_Bullet(Vector3& position, const Vector3& front)
 
 	auto bullets = scene->Get_Game_Objects<BULLET>();
 
-	auto bullet = scene->Add_Game_Object<BULLET>( LAYER_NAME::GAMEOBJECT, "bullet" + std::to_string(bullets.size() + 1) );
+	auto bullet = scene->Add_Game_Object<BULLET>( LAYER_NAME::GAMEOBJECT, aegis::string("bullet" + std::to_string(bullets.size() + 1)) );
 
 	//bullet->Init();
 

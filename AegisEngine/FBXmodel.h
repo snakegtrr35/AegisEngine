@@ -75,12 +75,12 @@ private:
 	aegis::vector<TEXTURE_S> Textures;
 
 
-	//aegis::unordered_map<std::string, aiQuaternion> m_NodeRotation;
-	//aegis::unordered_map<std::string, aiVector3D> m_NodePosition;
+	//aegis::unordered_map<aegis::string, aiQuaternion> m_NodeRotation;
+	//aegis::unordered_map<aegis::string, aiVector3D> m_NodePosition;
 
-	aegis::unordered_map<std::string, UINT> m_BoneIndex;
+	aegis::unordered_map<aegis::string, UINT> m_BoneIndex;
 
-	aegis::unordered_map<std::string, UINT> m_TextureIdMap;
+	aegis::unordered_map<aegis::string, UINT> m_TextureIdMap;
 
 	aegis::unordered_map<UINT, BONE> m_Bone;
 
@@ -92,8 +92,8 @@ private:
 	void UpdateBoneMatrix(const aiNode* Node, const XMMATRIX& Matrix);
 	void SetBoneMatrix(const aegis::vector<XMMATRIX>& matrix);
 
-	aegis::vector<TEXTURE_S> loadMaterialTextures(aiMaterial* mat, aiTextureType type, std::string typeName, const aiScene* scene);
-	std::string determineTextureType(const aiScene* scene, aiMaterial* mat);
+	aegis::vector<TEXTURE_S> loadMaterialTextures(aiMaterial* mat, aiTextureType type, aegis::string typeName, const aiScene* scene);
+	aegis::string determineTextureType(const aiScene* scene, aiMaterial* mat);
 	int getTextureIndex(aiString* str);
 	ID3D11ShaderResourceView* getTextureFromModel(const aiScene* scene, int textureindex);
 
@@ -105,7 +105,7 @@ public:
 
 	void Draw(XMMATRIX &Matrix);
 	void Draw_DPP(XMMATRIX& Matrix);
-	bool Load(const std::string& FileName);
+	bool Load(const aegis::string& FileName);
 	void UnLoad();
 	void Update(float delta_time);
 	

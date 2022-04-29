@@ -48,6 +48,8 @@ DEBUG_CAMERA::DEBUG_CAMERA()
 	Rotate = 90.0f;
 
 	RotateEnable = MoveEnable = true;
+
+	//U = Vector3(0.f, 1.0f, 0.f);
 }
 
 void DEBUG_CAMERA::Init()
@@ -89,6 +91,7 @@ void DEBUG_CAMERA::Init()
 
 void DEBUG_CAMERA::Uninit()
 {
+	GameObject::Uninit();
 }
 
 void DEBUG_CAMERA::Update(float delta_time)
@@ -120,6 +123,8 @@ void DEBUG_CAMERA::Update(float delta_time)
 
 	r = DirectX::XMVector3Normalize(r);
 
+	Vector3 rotate = Get_Transform().Get_Rotation();
+
 	// 回転
 	if (flag2 && MOUSE::Get_Mouse()->Get_Move_Flag())
 	{
@@ -133,7 +138,7 @@ void DEBUG_CAMERA::Update(float delta_time)
 		Up = XMVector3TransformNormal(Up, mtxRotation);
 		Up = XMVector3Normalize(Up);
 
-		Get_Transform().Get_Rotation()->x += (point.y * delta_time * 20.0f);
+		rotate.x += (point.y * delta_time * 20.0f);
 	}
 
 	if (flag2 && MOUSE::Get_Mouse()->Get_Move_Flag())
@@ -152,8 +157,10 @@ void DEBUG_CAMERA::Update(float delta_time)
 		Right = XMVector3TransformNormal(Right, mtxRotation);
 		Right = XMVector3Normalize(Right);
 
-		Get_Transform().Get_Rotation()->y += (point.x * delta_time * 20.0f);
+		rotate.y += (point.x * delta_time * 20.0f);
 	}
+
+	Get_Transform().Set_Rotation(rotate);
 
 	if (flag)
 	{
@@ -207,12 +214,13 @@ void DEBUG_CAMERA::Update(float delta_time)
 		Pos = At - (Front * Lenght - Up * 4.0f);
 	}
 
-	XMStoreFloat3(Get_Transform().Get_Position(), Pos);
-	XMStoreFloat3(&A, At);
+	Vector3 pos = Get_Transform().Get_Position();
+	DirectX::XMStoreFloat3(reinterpret_cast<XMFLOAT3*>(&pos), Pos);
+	DirectX::XMStoreFloat3(&A, At);
 
-	XMStoreFloat3(&F, Front);
-	XMStoreFloat3(&U, Up);
-	XMStoreFloat3(&R, Right);
+	DirectX::XMStoreFloat3(&F, Front);
+	DirectX::XMStoreFloat3(&U, Up);
+	DirectX::XMStoreFloat3(&R, Right);
 	
 }
 

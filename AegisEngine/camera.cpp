@@ -61,6 +61,7 @@ void CCamera::Init()
 
 void CCamera::Uninit()
 {
+	GameObject::Uninit();
 }
 
 void CCamera::Update(float delta_time)
@@ -73,11 +74,8 @@ void CCamera::Update(float delta_time)
 		auto player = CManager::Get_Instance()->Get_Scene()->Get_Game_Object("player");
 		if (nullptr == player)
 		{
-			//At = XMLoadFloat3(player->Get_Position());
-
-			//At = Front * Lenght + Pos;
-
-			Pos = XMLoadFloat3(player->Get_Transform().Get_Position());
+			Vector3 pos = player->Get_Transform().Get_Position();
+			Pos = XMLoadFloat3(&pos);
 		}
 	}
 
@@ -203,10 +201,9 @@ void CCamera::Update(float delta_time)
 		}
 	}
 
-	Vector4 pos;
-	XMStoreFloat4(&pos, Pos);
-
-	XMStoreFloat3(Get_Transform().Get_Position(), Pos);
+	Vector3 pos;
+	DirectX::XMStoreFloat3(reinterpret_cast<XMFLOAT3*>(&pos), Pos);
+	Get_Transform().Set_Position(pos);
 }
 
 void CCamera::Draw()

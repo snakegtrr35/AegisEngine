@@ -10,7 +10,7 @@ IMPLEMENT_OBJECT_TYPE_INFO(COMPONENT, MODEL)
 
 using namespace aegis;
 
-MODEL::MODEL() : FileName(std::string()), Key(0)
+MODEL::MODEL() : FileName(aegis::string()), Key(0)
 {
 }
 
@@ -20,6 +20,9 @@ void MODEL::Init()
 
 void MODEL::Draw()
 {
+	if (Owner == nullptr)
+		return;
+
 	CRenderer* render = CRenderer::getInstance();
 
 	const auto camera = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<CCamera>("camera");
@@ -32,9 +35,9 @@ void MODEL::Draw()
 		}
 	}
 
-	const auto pos = *(Owner.lock()->Get_Transform().Get_Position());
-	const auto rota = *(Owner.lock()->Get_Transform().Get_Rotation());
-	const auto scale = *(Owner.lock()->Get_Transform().Get_Scaling());
+	const auto pos = Owner->Get_Transform().Get_Position();
+	const auto rota = Owner->Get_Transform().Get_Rotation();
+	const auto scale = Owner->Get_Transform().Get_Scaling();
 
 	XMMATRIX matrix = XMMatrixScaling(scale.x, scale.y, scale.z);
 	matrix *= XMMatrixRotationRollPitchYaw(XMConvertToRadians(rota.x), XMConvertToRadians(rota.y), XMConvertToRadians(rota.z));
@@ -110,21 +113,22 @@ void MODEL::Uninit()
 {
 }
 
-void MODEL::Set_Model_Name(const std::string& file_name)
+void MODEL::Set_Model_Name(const aegis::string& file_name)
 {
 	if (file_name != FileName)
 	{
 		MODEL_MANEGER::Get_Instance()->Sub_ReferenceCnt(Key);
 		FileName = file_name;
-		Key = std::hash<std::string>()(file_name);
+		Key = std::hash<aegis::string>()(file_name);
 		MODEL_MANEGER::Get_Instance()->Add_ReferenceCnt(Key);
 	}
 }
 
-const std::string& MODEL::Get_Model_Name()
+const aegis::string& MODEL::Get_Model_Name()
 {
 	return FileName;
 }
+
 
 #include	"imgui/imgui.h"
 

@@ -117,12 +117,20 @@ public:
 	*/
 	const float Get_Radius();
 
-	template<typename Archive>
-	void serialize(Archive& ar)
+	template<class Archive>
+	void save(Archive& archive) const
 	{
-		ar(cereal::base_class<BOUNDING>(this));
-		ar(Radius);
-		ar(Height);
+		archive(cereal::make_nvp("BOUNDING", cereal::base_class<BOUNDING>(this)));
+		archive(cereal::make_nvp("Radius", Radius));
+		archive(cereal::make_nvp("Height", Height));
+	}
+
+	template<class Archive>
+	void load(Archive& archive)
+	{
+		archive(cereal::make_nvp("BOUNDING", cereal::base_class<BOUNDING>(this)));
+		archive(cereal::make_nvp("Radius", Radius));
+		archive(cereal::make_nvp("Height", Height));
 	}
 };
 

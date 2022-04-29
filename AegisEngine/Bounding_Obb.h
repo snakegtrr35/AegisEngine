@@ -90,25 +90,21 @@ public:
 	*/
 	const BoundingOrientedBox& Get_Collition();
 
-	template<typename Archive>
-	void serialize(Archive& ar)
+	template<class Archive>
+	void save(Archive& archive) const
 	{
-		ar(cereal::base_class<BOUNDING>(this));
-		ar(Radius);
-		ar(Quaternion);
+		archive(cereal::make_nvp("BOUNDING", cereal::base_class<BOUNDING>(this)));
+		archive(cereal::make_nvp("Radius", Radius));
+		archive(cereal::make_nvp("Quaternion", Quaternion));
 	}
 
-	//template<class Archive>
-	//void save(Archive& ar) const
-	//{
-	//	ar(cereal::base_class<GameObject>(this));
-	//}
-
-	//template<class Archive>
-	//void load(Archive& ar)
-	//{
-	//	ar(cereal::base_class<GameObject>(this));
-	//}
+	template<class Archive>
+	void load(Archive& archive)
+	{
+		archive(cereal::make_nvp("BOUNDING", cereal::base_class<BOUNDING>(this)));
+		archive(cereal::make_nvp("Radius", Radius));
+		archive(cereal::make_nvp("Quaternion", Quaternion));
+	}
 };
 
 CEREAL_REGISTER_TYPE(BOUNDING_OBB)

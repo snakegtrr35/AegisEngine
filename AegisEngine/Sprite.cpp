@@ -23,7 +23,7 @@ SPRITE::SPRITE()
 	Enable = true;
 
 	// テクスチャの設定
-	Texture.reset(new TEXTURE(std::string("number.png")));
+	Texture.reset(new TEXTURE(aegis::string("number.png")));
 }
 
 SPRITE::SPRITE(Vector2 position, Vector4 size)
@@ -39,7 +39,7 @@ SPRITE::SPRITE(Vector2 position, Vector4 size)
 	Enable = true;
 
 	// テクスチャの設定
-	Texture.reset(new TEXTURE(std::string("number.png")));
+	Texture.reset(new TEXTURE(aegis::string("number.png")));
 }
 
 SPRITE::~SPRITE()
@@ -176,7 +176,7 @@ void SPRITE::Draw(void)
 		}
 
 		// 2Dマトリックス設定
-		render->SetWorldViewProjection2D(*Get_Transform().Get_Scaling());
+		render->SetWorldViewProjection2D(Get_Transform().Get_Scaling());
 
 		if (flag)
 		{
@@ -237,7 +237,7 @@ void SPRITE::Draw_DPP()
 
 
 		// 2Dマトリックス設定
-		render->SetWorldViewProjection2D(*Get_Transform().Get_Scaling());
+		render->SetWorldViewProjection2D(Get_Transform().Get_Scaling());
 
 		render->DrawIndexed(6, 0, 0);
 	}
@@ -253,6 +253,8 @@ void SPRITE::Update(float delta_time)
 
 void SPRITE::Uninit(void)
 {	
+	GameObject::Uninit();
+
 	Texture.reset(nullptr);
 
 	for (auto& child : Children)
@@ -306,7 +308,7 @@ Vector4* const SPRITE::GetSize()
 	return &Size;
 }
 
-void SPRITE::SetTexture(const std::string& const file_name)
+void SPRITE::SetTexture(const aegis::string& const file_name)
 {
 	Texture->Set_Texture_Name(file_name);
 }
@@ -318,7 +320,7 @@ TEXTURE* const SPRITE::GetTexture()
 
 
 
-SPRITE* SPRITE::Add_Child_Sptite(const std::string& name)
+SPRITE* SPRITE::Add_Child_Sptite(const aegis::string& name)
 {
 	std::unique_ptr<CHILD_DATE> child = std::make_unique<CHILD_DATE>();
 
@@ -336,7 +338,7 @@ aegis::vector< std::unique_ptr<CHILD_DATE> >* const SPRITE::Get_Child_Sptite()
 	return &Children;
 }
 
-CHILD_DATE* const SPRITE::Get_Child_Sptite(const std::string& name)
+CHILD_DATE* const SPRITE::Get_Child_Sptite(const aegis::string& name)
 {
 	for (const auto& child : Children)
 	{
@@ -383,7 +385,7 @@ void SPRITE::Draw_DPP_Child()
 	}
 };
 
-void SPRITE::Set_Position_Child(const std::string& const name, const Vector2& position, const Vector2& offset)
+void SPRITE::Set_Position_Child(const aegis::string& const name, const Vector2& position, const Vector2& offset)
 {
 	for (const auto& child : Children)
 	{
@@ -410,7 +412,7 @@ void SPRITE::Set_Enable_Child(const bool flag)
 	}
 };
 
-void SPRITE::Set_Enable_Child(const std::string& const name, const bool flag)
+void SPRITE::Set_Enable_Child(const aegis::string& const name, const bool flag)
 {
 	for (const auto& child : Children)
 	{
@@ -427,7 +429,7 @@ void SPRITE::Set_Enable_Child(const std::string& const name, const bool flag)
 	}
 };
 
-const bool SPRITE::Get_Enable_Child(const std::string& const name, aegis::vector< std::unique_ptr<CHILD_DATE> >* const children)
+const bool SPRITE::Get_Enable_Child(const aegis::string& const name, aegis::vector< std::unique_ptr<CHILD_DATE> >* const children)
 {
 	for (const auto& child : *children)
 	{

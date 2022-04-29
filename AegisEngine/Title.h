@@ -26,23 +26,17 @@ public:
 
 	static void Load(SCENE* scene);
 
-	template<typename Archive>
-	void serialize(Archive& ar)
+	template<class Archive>
+	void save(Archive& archive) const
 	{
-		ar(cereal::base_class<SCENE>(this));
-	}
-
-	/*template<class Archive>
-	void save(Archive& ar) const
-	{
-		ar(cereal::base_class<SCENE>(this));
+		archive(cereal::make_nvp("SCENE", cereal::base_class<SCENE>(this)));
 	}
 
 	template<class Archive>
-	void load(Archive& ar)
+	void load(Archive& archive)
 	{
-		ar(cereal::base_class<SCENE>(this));
-	}*/
+		archive(cereal::make_nvp("SCENE", cereal::base_class<SCENE>(this)));
+	}
 };
 
 CEREAL_REGISTER_TYPE(TITLE)

@@ -44,30 +44,25 @@ public:
 	void SetPosition(aegis::Vector3& position);					// ポジションの設定
 	void SetXYZ(const aegis::Vector3 xyz);							// 幅と高さの設定
 	void SetScaling(aegis::Vector3& scaling);							// 拡大縮小の値の設定
-	void SetTexture(const std::string& file_name);			// テクスチャの設定
+	void SetTexture(const aegis::string& file_name);			// テクスチャの設定
 
-	aegis::Vector3* const Get_Position();
-	aegis::Vector3* const Get_Rotation();
-	aegis::Vector3* const Get_Scaling();
+	aegis::Vector3 const Get_Position();
+	aegis::Vector3 const Get_Rotation();
+	aegis::Vector3 const Get_Scaling();
 
-	//template<typename Archive>
-	//void serialize(Archive& ar)
-	//{
-	//	ar(cereal::base_class<GameObject>(this));
-	//	ar(Texture);
-	//}
-
-	/*template<class Archive>
-	void save(Archive& ar) const
+	template<class Archive>
+	void save(Archive& archive) const
 	{
-		ar(cereal::base_class<GameObject>(this));
+		archive(cereal::make_nvp("GameObject", cereal::base_class<GameObject>(this)));
+		archive(cereal::make_nvp("Texture", Texture));
 	}
 
 	template<class Archive>
-	void load(Archive& ar)
+	void load(Archive& archive)
 	{
-		ar(cereal::base_class<GameObject>(this));
-	}*/
+		archive(cereal::make_nvp("GameObject", cereal::base_class<GameObject>(this)));
+		archive(cereal::make_nvp("Texture", Texture));
+	}
 };
 
 //CEREAL_REGISTER_TYPE(POLYGOM)

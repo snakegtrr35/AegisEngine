@@ -10,30 +10,30 @@
 class FILE_CHANGE_MONITOR {
 private:
 #ifdef UNICODE
-	std::wstring m_directoryName;
+	aegis::wstring m_directoryName;
 #else
-	std::string m_directoryName;
+	aegis::string m_directoryName;
 #endif // !UNICODE
 	const DWORD m_bufferSize = 1024 * 2;
 	HANDLE m_directoryHandle;
 	HANDLE m_eventHandle;
 	aegis::vector<BYTE> m_buf;
 	OVERLAPPED Olp;
-	aegis::unordered_set<std::wstring> m_fileActions;
+	aegis::unordered_set<aegis::wstring> m_fileActions;
 
 	// 変更の監視を開始
 	bool beginReadChanges();
 
 public:
 
-	FILE_CHANGE_MONITOR(const std::string& directoryName);
+	FILE_CHANGE_MONITOR(const aegis::string& directoryName);
 
 	~FILE_CHANGE_MONITOR();
 
 	bool Get_FileStack_Empty();
 
 	// ファイル変更履歴キューから情報を取り出す
-	std::wstring Pop_FileStack();
+	aegis::wstring Pop_FileStack();
 
 	// 初期化
 	bool Init();
@@ -41,7 +41,7 @@ public:
 	// 変更を読み取る
 	void readChanges();
 
-	aegis::unordered_set<std::wstring>* Get();
+	aegis::unordered_set<aegis::wstring>* Get();
 };
 #endif // _DEBUG
 
@@ -52,13 +52,23 @@ public:
 constexpr const int TEXTURE_SIZE_MAX = 16384;
 
 struct TEXTURE_FILE {
-	std::string Path;		//! テクスチャファイルのファイルパス
+	aegis::string Path;		//! テクスチャファイルのファイルパス
 
 	TEXTURE_FILE() {}
 
-	template<class T>
-	void serialize(T& archive) {
-		archive(Path);
+	template<class Archive>
+	void save(Archive& archive) const
+	{
+		archive(cereal::make_nvp("Path", aegis::string(Path)));
+	}
+
+	template<class Archive>
+	void load(Archive& archive)
+	{
+		aegis::string s;
+		archive(cereal::make_nvp("Path", s));
+		Path.reserve(s.size());
+		Path = s;
 	}
 };
 
@@ -78,9 +88,9 @@ private:
 
 	static std::unique_ptr<TEXTURE_MANEGER> Texture_Manager;
 
-	aegis::unordered_map<size_t, std::string> Default_Texture_File;			//! デフォルトのテクスチャのファイルパス
-	aegis::unordered_map<size_t, TEXTURE_FILE> TextureFile;			//! テクスチャのファイルデータ
-	aegis::unordered_map<size_t, TEXTURE_DATA> TextureData;			//! テクスチャデータ
+	aegis::unordered_map<aegis::uint64, aegis::string> Default_Texture_File;			//! デフォルトのテクスチャのファイルパス
+	aegis::unordered_map<aegis::uint64, TEXTURE_FILE> TextureFile;			//! テクスチャのファイルデータ
+	aegis::unordered_map<aegis::uint64, TEXTURE_DATA> TextureData;			//! テクスチャデータ
 
 	void Default_Load(const bool flag);							// デフォルトのテクスチャの読み込み
 	void Load(const bool flag);									// テクスチャの読み込み
@@ -108,25 +118,35 @@ public:
 
 	static TEXTURE_MANEGER* Get_Instance();
 
-	void Add(const std::string& file_name);
-	const bool Unload(const std::string& const file_name);
+	void Add(const aegis::string& file_name);
+	const bool Unload(const aegis::string& const file_name);
 
-	void Add_ReferenceCnt(const size_t file);
-	void Sub_ReferenceCnt(const size_t file);
+	void Add_ReferenceCnt(const aegis::uint64 file);
+	void Sub_ReferenceCnt(const aegis::uint64 file);
 	
-	aegis::Int2* const Get_WH(const size_t file);
+	aegis::Int2* const Get_WH(const aegis::uint64 file);
 
-	ID3D11ShaderResourceView* const GetShaderResourceView(const size_t file);
+	ID3D11ShaderResourceView* const GetShaderResourceView(const aegis::uint64 file);
 
-	aegis::unordered_map<size_t, TEXTURE_FILE>& Get_TextureFile();
+	aegis::unordered_map<aegis::uint64, TEXTURE_FILE>& Get_TextureFile();
 
-	const aegis::unordered_map<size_t, TEXTURE_DATA>::iterator Get_TextureData_Start();
-	const aegis::unordered_map<size_t, TEXTURE_DATA>::iterator Get_TextureData_End();
+	const aegis::unordered_map<aegis::uint64, TEXTURE_DATA>::iterator Get_TextureData_Start();
+	const aegis::unordered_map<aegis::uint64, TEXTURE_DATA>::iterator Get_TextureData_End();
 
 	template<class Archive>
-	void serialize(Archive& archive) {
-		archive(Default_Texture_File);
-		archive(TextureFile);
+	void save(Archive& archive) const
+	{
+		archive(cereal::make_nvp("Default_Texture_File", Default_Texture_File),
+				cereal::make_nvp("TextureFile", TextureFile)
+		);
+	}
+
+	template<class Archive>
+	void load(Archive& archive)
+	{
+		archive(cereal::make_nvp("Default_Texture_File", Default_Texture_File),
+				cereal::make_nvp("TextureFile", TextureFile)
+		);
 	}
 };
 

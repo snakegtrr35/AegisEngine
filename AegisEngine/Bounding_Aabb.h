@@ -108,30 +108,25 @@ public:
 	*/
 	const BoundingBox& Get_Collition();
 
-	template<typename Archive>
-	void serialize(Archive& ar)
-	{
-		ar(cereal::base_class<BOUNDING>(this));
-		ar(Radius);
-	}
-
 	/**
 	* @brief 頂点バッファの更新関数
 	* @param BoundingBox AABB
 	*/
 	void OverWrite(BoundingBox aabb);
 
-	//template<class Archive>
-	//void save(Archive& ar) const
-	//{
-	//	ar(cereal::base_class<GameObject>(this));
-	//}
+	template<class Archive>
+	void save(Archive& archive) const
+	{
+		archive(cereal::make_nvp("BOUNDING", cereal::base_class<BOUNDING>(this)));
+		archive(cereal::make_nvp("Radius", Radius));
+	}
 
-	//template<class Archive>
-	//void load(Archive& ar)
-	//{
-	//	ar(cereal::base_class<GameObject>(this));
-	//}
+	template<class Archive>
+	void load(Archive& archive)
+	{
+		archive(cereal::make_nvp("BOUNDING", cereal::base_class<BOUNDING>(this)));
+		archive(cereal::make_nvp("Radius", Radius));
+	}
 };
 
 CEREAL_REGISTER_TYPE(BOUNDING_AABB)

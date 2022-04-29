@@ -41,23 +41,17 @@ public:
 		return HP;
 	}
 
-	template<typename Archive>
-	void serialize(Archive& ar)
+	template<class Archive>
+	void save(Archive& archive) const
 	{
-		ar(cereal::base_class<GameObject>(this));
-	}
-
-	/*template<class Archive>
-	void save(Archive& ar) const
-	{
-		ar(cereal::base_class<GameObject>(this));
+		archive(cereal::make_nvp("GameObject", cereal::base_class<GameObject>(this)));
 	}
 
 	template<class Archive>
-	void load(Archive& ar)
+	void load(Archive& archive)
 	{
-		ar(cereal::base_class<GameObject>(this));
-	}*/
+		archive(cereal::make_nvp("GameObject", cereal::base_class<GameObject>(this)));
+	}
 };
 
 CEREAL_REGISTER_TYPE(PLAYER)

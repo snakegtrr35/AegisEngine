@@ -82,9 +82,9 @@ public:
 	void Update(float delta_time) override;
 	void Uninit() override;
 
-	bool Mouse_Click_Left(const std::string& const name, SPRITE* me);
-	bool Mouse_Click_Right(const std::string& const name, SPRITE* me);
-	bool Mouse_Over(const std::string& const name, SPRITE* me);
+	bool Mouse_Click_Left(const aegis::string& const name, SPRITE* me);
+	bool Mouse_Click_Right(const aegis::string& const name, SPRITE* me);
+	bool Mouse_Over(const aegis::string& const name, SPRITE* me);
 };
 
 class KEYBOARD_EVENT_COMPONENT : public MENU_COMPONENT {

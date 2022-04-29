@@ -7,7 +7,7 @@ void SCENE_MANAGER::Init()
 {
 #ifdef _DEBUG
 	{
-		std::string name("GameInstance");
+		aegis::string name("GameInstance");
 
 		std::ifstream file(name + ".dat", std::ios::binary);
 
@@ -50,7 +50,7 @@ void SCENE_MANAGER::Uninit()
 
 #ifdef _DEBUG
 	{
-		std::string name("GameInstance");
+		aegis::string name("GameInstance");
 
 		std::ofstream file(name + ".dat", std::ios::binary);
 
@@ -60,7 +60,7 @@ void SCENE_MANAGER::Uninit()
 #endif // _DEBUG
 }
 
-void SCENE_MANAGER::Delete_GameInstance(const std::string& name)
+void SCENE_MANAGER::Delete_GameInstance(const aegis::string& name)
 {
 	GamaInstance.erase(name);
 }

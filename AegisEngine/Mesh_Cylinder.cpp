@@ -97,11 +97,13 @@ void MESH_CYlLINDER::Init()
 	SAFE_DELETE_ARRAY(indexArray);
 
 	// テクスチャの設定
-	Texture.reset(new TEXTURE(std::string("field004.png")));
+	Texture.reset(new TEXTURE("field004.png"));
 }
 
 void MESH_CYlLINDER::Uninit()
 {
+	GameObject::Uninit();
+
 	Texture.reset();
 }
 
@@ -116,9 +118,9 @@ void MESH_CYlLINDER::Draw()
 	{
 		XMMATRIX world;
 
-		Vector3 position = *Get_Transform().Get_Position();
-		Vector3 rotate = *Get_Transform().Get_Rotation();
-		Vector3 scale = *Get_Transform().Get_Scaling();
+		Vector3 position = Get_Transform().Get_Position();
+		Vector3 rotate = Get_Transform().Get_Rotation();
+		Vector3 scale = Get_Transform().Get_Scaling();
 
 		world = XMMatrixScaling(scale.x, scale.y, scale.z);
 		world *= XMMatrixRotationRollPitchYaw(XMConvertToRadians(rotate.x), XMConvertToRadians(rotate.y), XMConvertToRadians(rotate.z));
@@ -170,9 +172,9 @@ void MESH_CYlLINDER::Draw_Shadow()
 	{
 		XMMATRIX world;
 
-		Vector3 position = *Get_Transform().Get_Position();
-		Vector3 rotate = *Get_Transform().Get_Rotation();
-		Vector3 scale = *Get_Transform().Get_Scaling();
+		Vector3 position = Get_Transform().Get_Position();
+		Vector3 rotate = Get_Transform().Get_Rotation();
+		Vector3 scale = Get_Transform().Get_Scaling();
 
 		world = XMMatrixScaling(scale.x, scale.y, scale.z);
 		world *= XMMatrixRotationRollPitchYaw(XMConvertToRadians(rotate.x), XMConvertToRadians(rotate.y), XMConvertToRadians(rotate.z));
@@ -219,9 +221,9 @@ void MESH_CYlLINDER::Draw_DPP()
 	{
 		XMMATRIX world;
 
-		Vector3 position = *Get_Transform().Get_Position();
-		Vector3 rotate = *Get_Transform().Get_Rotation();
-		Vector3 scale = *Get_Transform().Get_Scaling();
+		Vector3 position = Get_Transform().Get_Position();
+		Vector3 rotate = Get_Transform().Get_Rotation();
+		Vector3 scale = Get_Transform().Get_Scaling();
 
 		world = XMMatrixScaling(scale.x, scale.y, scale.z);
 		world *= XMMatrixRotationRollPitchYaw(XMConvertToRadians(rotate.x), XMConvertToRadians(rotate.y), XMConvertToRadians(rotate.z));

@@ -7,7 +7,7 @@
 
 IMPLEMENT_ABSTRACT_OBJECT_TYPE_INFO(aegis::AegisObject, GameObject)
 
-aegis::unordered_set<std::string> GameObject::Object_Name_Map;
+aegis::unordered_set<aegis::string> GameObject::Object_Name_Map;
 
 GameObject::GameObject() : Object_Name("none"), DestroyFlag(false), Uuid(aegis::Uuid::GetUuid())
 {
@@ -36,7 +36,8 @@ void GameObject::Uninit()
 {
 	for (const auto& component : Components)
 	{
-		component.lock()->SetDestroy();
+		if(!component.expired())
+			component.lock()->SetDestroy();
 	}
 	Components.clear();
 }
@@ -51,7 +52,7 @@ bool GameObject::Destroy()
 	return DestroyFlag;
 };
 
-void GameObject::Set_Object_Name(const std::string& name)
+void GameObject::Set_Object_Name(const aegis::string& name)
 {
 #ifdef _DEBUG
 	if (Object_Name_Map.emplace(name).second)
@@ -123,7 +124,7 @@ void GameObject::operator delete[](void* ptr, aegis::uint64 size, std::align_val
 
 namespace cereal
 {
-	void prologue(cereal::JSONInputArchive&, GameObject const& data)
+	/*void prologue(cereal::JSONInputArchive&, GameObject const& data)
 	{
 	}
 
@@ -171,5 +172,5 @@ namespace cereal
 
 	void epilogue(cereal::BinaryOutputArchive&, GameObject const& data)
 	{
-	}
+	}*/
 }

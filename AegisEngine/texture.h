@@ -9,8 +9,8 @@
 class TEXTURE {
 private:
 
-	std::string FileName;
-	std::size_t File;
+	aegis::string FileName;
+	aegis::uint64 File;
 
 public:
 	TEXTURE();
@@ -18,27 +18,39 @@ public:
 	~TEXTURE() {};
 
 	void Set_Texture();											// テクスチャを設定(Directx11)
-	void Set_Texture_Name(const std::string& file_name);				// テクスチャ名の設定
-	const std::string& Get_Texture_Name();							// テクスチャ名の取得
+	void Set_Texture_Name(const aegis::string& file_name);				// テクスチャ名の設定
+	const aegis::string& Get_Texture_Name();							// テクスチャ名の取得
 
 	aegis::Int2* const Get_WH();
 
-	template<typename Archive>
-	void serialize(Archive& ar)
+	template<class Archive>
+	void save(Archive& archive) const
 	{
-		ar(FileName);
-		ar(File);
+		archive(cereal::make_nvp("FileName", std::string(FileName)),
+				cereal::make_nvp("File", File)
+		);
+	}
+
+	template<class Archive>
+	void load(Archive& archive)
+	{
+		std::string s;
+		archive(cereal::make_nvp("FileName", s));
+		FileName.reserve(s.size());
+		FileName = s;
+		
+		archive(cereal::make_nvp("File", File));
 	}
 };
 
 
 class FONT {
 private:
-	static aegis::unordered_map<std::wstring, std::unique_ptr<ID3D11ShaderResourceView, Release>> FontResource;
+	static aegis::unordered_map<aegis::wstring, std::unique_ptr<ID3D11ShaderResourceView, Release>> FontResource;
 	static ID3D11SamplerState* SamplerState;
 
 	static void Load_Font();
-	static void Load_Font(const std::wstring& one_character);
+	static void Load_Font(const aegis::wstring& one_character);
 
 public:
 
@@ -46,9 +58,9 @@ public:
 
 	static void Uninit();
 
-	static void Add_Font(const std::wstring& one_character);
+	static void Add_Font(const aegis::wstring& one_character);
 
-	static ID3D11ShaderResourceView* Get_Font_Resource(const std::wstring& one_character);
+	static ID3D11ShaderResourceView* Get_Font_Resource(const aegis::wstring& one_character);
 
 	static ID3D11SamplerState* Get_SamplerState();
 

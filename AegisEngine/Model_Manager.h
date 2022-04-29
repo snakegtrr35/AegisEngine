@@ -15,13 +15,23 @@
 #include	<assimp/matrix4x4.h>
 
 struct MODEL_FILE {
-	std::string Path;		//! モデルファイルのファイルパス
+	aegis::string Path;		//! モデルファイルのファイルパス
 
 	MODEL_FILE() {}
 
-	template<class T>
-	void serialize(T& archive) {
-		archive(Path);
+	template<class Archive>
+	void save(Archive& archive) const
+	{
+		archive(cereal::make_nvp("Path", std::string(Path)));
+	}
+
+	template<class Archive>
+	void load(Archive& archive)
+	{
+		std::string s;
+		archive(cereal::make_nvp("Path", s));
+		Path.reserve(s.size());
+		Path = s;
 	}
 };
 
@@ -31,9 +41,16 @@ struct MODEL_DATA {
 
 	MODEL_DATA() : Cnt(0) {}
 
-	template<class T>
-	void serialize(T& archive) {
-		//archive(Meshes);
+	template<class Archive>
+	void save(Archive& archive) const
+	{
+		archive(cereal::make_nvp("Meshes", Meshes));
+	}
+
+	template<class Archive>
+	void load(Archive& archive)
+	{
+		archive(cereal::make_nvp("Meshes", Meshes));
 	}
 };
 
@@ -52,9 +69,9 @@ private:
 	void processNode(aiNode* node, const aiScene* scene, aegis::vector<MESH>& mesh_map, aegis::vector<TEXTURE_S>& textures_loaded);
 	MESH processMesh(aiMesh* mesh, aiNode* node, const aiScene* scene, aegis::vector<TEXTURE_S>& textures_loaded);
 
-	//vector<TEXTURE_S> loadMaterialTextures(aiMaterial* mat, aiTextureType type, std::string typeName, const aiScene* scene, vector<TEXTURE_S>& textures_loaded);
-	std::string loadMaterialTextures(aiMaterial* mat, aiTextureType type, std::string typeName, const aiScene* scene, aegis::vector<TEXTURE_S>& textures_loaded);
-	std::string determineTextureType(const aiScene* scene, aiMaterial* mat);
+	//vector<TEXTURE_S> loadMaterialTextures(aiMaterial* mat, aiTextureType type, aegis::string typeName, const aiScene* scene, vector<TEXTURE_S>& textures_loaded);
+	aegis::string loadMaterialTextures(aiMaterial* mat, aiTextureType type, aegis::string typeName, const aiScene* scene, aegis::vector<TEXTURE_S>& textures_loaded);
+	aegis::string determineTextureType(const aiScene* scene, aiMaterial* mat);
 	int getTextureIndex(aiString* str);
 	ID3D11ShaderResourceView* getTextureFromModel(const aiScene* scene, int textureindex);
 
@@ -74,15 +91,22 @@ public:
 
 	MESH* const Get_Mesh(const size_t key);
 
-	void Add(const std::string& file_name);
-	const bool Unload(const std::string& const file_name);
+	void Add(const aegis::string& file_name);
+	const bool Unload(const aegis::string& const file_name);
 
 	void Add_ReferenceCnt(const size_t file);
 	void Sub_ReferenceCnt(const size_t file);
 
 	template<class Archive>
-	void serialize(Archive& archive) {
-		archive(ModelFile);
+	void save(Archive& archive) const
+	{
+		archive(cereal::make_nvp("ModelFiles", ModelFile));
+	}
+
+	template<class Archive>
+	void load(Archive& archive)
+	{
+		archive(cereal::make_nvp("ModelFiles", ModelFile));
 	}
 };
 

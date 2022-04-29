@@ -247,12 +247,6 @@ namespace aegis
 			return toVector4( DirectX::XMVector4Reflect(toXMVECTOR(v), toXMVECTOR(n)) );
 		}
 
-		template<typename Archive>
-		void serialize(Archive& ar, Vector4& vector)
-		{
-			ar(vector.x, vector.y, vector.z);
-		}
-
 	public:
 		static const Vector4 Zero;
 		static const Vector4 One;

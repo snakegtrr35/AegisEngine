@@ -118,7 +118,7 @@ void MAIN_MENU::Uninit()
 	{
 		const type_info& id = typeid(*this);
 
-		std::string name(id.name());
+		aegis::string name(id.name());
 
 		// 置換
 		Replace_String(name, "class ", "");
@@ -150,7 +150,7 @@ void MAIN_MENU::Load(SCENE* scene)
 	{
 		const type_info& id = typeid(*scene);
 
-		std::string name(id.name());
+		aegis::string name(id.name());
 
 		// 置換
 		name = Replace_String(name, "class ", "");
@@ -245,9 +245,9 @@ void MAIN_MENU::Load(SCENE* scene)
 
 		//	text->SetSize(Vector4(20, 20, 20, 20));
 
-		//	text->Set_Object_Name(std::string("delta_time"));
+		//	text->Set_Object_Name(aegis::string("delta_time"));
 
-		//	//std::string time = to_string(Time);
+		//	//aegis::string time = to_string(Time);
 
 		//	text->Edit("0.000");
 		//}

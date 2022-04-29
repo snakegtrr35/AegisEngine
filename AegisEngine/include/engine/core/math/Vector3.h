@@ -255,21 +255,7 @@ namespace aegis
 			return toVector3(DirectX::XMVector3Rotate(toXMVECTOR(v), DirectX::XMLoadFloat4(&q.Quat)));
 		}
 
-		template<typename Archive>
-		void serialize(Archive& ar, Vector3& vector)
-		{
-			ar(vector.x, vector.y, vector.z);
-		}
-
 	public:
-		//union
-		//{
-		//	float32 x;
-		//	float32 y;
-		//	float32 z;
-		//
-		//	DirectX::XMFLOAT3 f;
-		//};
 
 		static const Vector3 Front;
 		static const Vector3 Right;
@@ -282,11 +268,6 @@ namespace aegis
 		static const Vector3 Minus;
 
 	private:
-		//inline explicit Vector3(const DirectX::XMFLOAT3& vector) noexcept : XMFLOAT3(vector)
-		//{
-		//}
-
-
 		inline static DirectX::XMVECTOR toXMVECTOR(const DirectX::XMFLOAT3& vec)
 		{
 			return DirectX::XMLoadFloat3(&vec);

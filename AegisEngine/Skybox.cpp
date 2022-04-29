@@ -136,9 +136,9 @@ void SKYBOX::Draw()
 
 	// 3Dマトリックス設定
 	{
-		Vector3 position = *Get_Transform().Get_Position();
-		Vector3 rotate = *Get_Transform().Get_Rotation();
-		Vector3 scale = *Get_Transform().Get_Scaling();
+		Vector3 position = Get_Transform().Get_Position();
+		Vector3 rotate = Get_Transform().Get_Rotation();
+		Vector3 scale = Get_Transform().Get_Scaling();
 
 		XMMATRIX world = XMMatrixScaling(scale.x, scale.y, scale.z);
 		world *= XMMatrixRotationRollPitchYaw(XMConvertToRadians(rotate.x), XMConvertToRadians(rotate.y), XMConvertToRadians(rotate.z));
@@ -187,4 +187,5 @@ void SKYBOX::Update(float delta_time)
 
 void SKYBOX::Uninit()
 {
+	GameObject::Uninit();
 }

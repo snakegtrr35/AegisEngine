@@ -35,21 +35,23 @@ void PLAYER::Init(void)
 	auto scene = CManager::Get_Instance()->Get_Scene();
 
 	{
-		std::string name = "viranrifle.fbx";
+		aegis::string name = "viranrifle.fbx";
 		//string name = "asset/model/kakunin_joint.fbx";
 
 		//Model->Load(name);
 
-		auto model = Get_Component()->Add_Component<MODEL>(scene->Get_Game_Object(this));
-
+		//auto model = Get_Component()->Add_Component<MODEL>(scene->Get_Game_Object(this));
+		auto model = this->AddComponent<MODEL>();
+		
 		model->Set_Model_Name(name);
 	}
 
 	//Position = Vector3(0.f, 0.f, 0.f);
 
 	{
-		auto aabb = Get_Component()->Add_Component<BOUNDING_AABB>(scene->Get_Game_Object(this));
-
+		//auto aabb = Get_Component()->Add_Component<BOUNDING_AABB>(scene->Get_Game_Object(this));
+		auto aabb = this->AddComponent<BOUNDING_AABB>();
+		
 		GameObject::Init();
 	}
 
@@ -120,7 +122,7 @@ void PLAYER::Update(float delta_time)
 	const auto camera = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
 
 	XMVECTOR* vec = camera.lock()->Get_At();
-	Vector3 rotate = *camera.lock()->Get_Transform().Get_Rotation();
+	Vector3 rotate = camera.lock()->Get_Transform().Get_Rotation();
 
 	XMVECTOR front_vec = *camera.lock()->Get_Front();
 	Vector3 front;
@@ -148,7 +150,7 @@ void PLAYER::Update(float delta_time)
 
 	if (KEYBOARD::Trigger_Keyboard(VK_SPACE))
 	{
-		Vector3 pos = *Get_Transform().Get_Position() + front * 2.0f;
+		Vector3 pos = Get_Transform().Get_Position() + front * 2.0f;
 		pos.y += 1.0;
 	
 		Create_Bullet(pos, front * 2.0f);
@@ -159,6 +161,7 @@ void PLAYER::Update(float delta_time)
 
 void PLAYER::Uninit(void)
 {
+	GameObject::Uninit();
 }
 
 void PLAYER::SetPosition(Vector3& position)
@@ -177,7 +180,7 @@ void Create_Bullet(Vector3& position, const Vector3& front)
 
 	auto bullets = scene->Get_Game_Objects<BULLET>();
 
-	std::string name = "1";
+	aegis::string name;
 	int cnt = 1;
 	if (!bullets.empty())
 	{
@@ -188,7 +191,7 @@ void Create_Bullet(Vector3& position, const Vector3& front)
 		cnt++;
 	}
 
-	auto bullet = scene->Add_Game_Object<BULLET>(LAYER_NAME::GAMEOBJECT, "bullet" + std::to_string(cnt));
+	auto bullet = scene->Add_Game_Object<BULLET>(LAYER_NAME::GAMEOBJECT, aegis::string("bullet" + std::to_string(cnt)));
 
 	bullet->Get_Transform().Set_Position(position);
 	bullet->Set_Move_Vector(front);

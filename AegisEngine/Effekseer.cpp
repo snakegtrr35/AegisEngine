@@ -11,8 +11,8 @@
 ::EffekseerRenderer::Renderer*	EFFEKSEER_MANAGER::Renderer = nullptr;
 ::EffekseerSound::Sound*		EFFEKSEER_MANAGER::Sound = nullptr;
 
-aegis::unordered_map<std::string, ::Effekseer::Effect*>	EFFEKSEER_MANAGER::Effects;
-aegis::unordered_map<std::string, ::Effekseer::Handle>	EFFEKSEER_MANAGER::Handles;
+aegis::unordered_map<aegis::string, ::Effekseer::Effect*>	EFFEKSEER_MANAGER::Effects;
+aegis::unordered_map<aegis::string, ::Effekseer::Handle>	EFFEKSEER_MANAGER::Handles;
 
 using namespace aegis;
 
@@ -147,10 +147,8 @@ void EFFEKSEER_MANAGER::Update(float delta_time)
 {
 	auto player = CManager::Get_Instance()->Get_Scene()->Get_Game_Object("player");
 
-	XMFLOAT3* position = player->Get_Transform().Get_Position();
-
 	if(nullptr != player)
-		Set_Location("test", XMFLOAT3(position->x, position->y, position->z));
+		Set_Location("test", player->Get_Transform().Get_Position());
 
 	//Manager->SetLocation(Handles["test"], Effekseer::Vector3D(player->Get_Position()->x, player->Get_Position()->y, player->Get_Position()->z));
 	Manager->SetScale(Handles["test"], 0.5f, 0.5f, 0.5f);
@@ -188,9 +186,9 @@ void EFFEKSEER_MANAGER::Set()
 
 		if (!camera.expired() && Empty_weak_ptr<CCamera>(camera))
 		{
-			position.X = camera.lock()->Get_Transform().Get_Position()->x;
-			position.Y = camera.lock()->Get_Transform().Get_Position()->y;
-			position.Z = camera.lock()->Get_Transform().Get_Position()->z;
+			position.X = camera.lock()->Get_Transform().Get_Position().x;
+			position.Y = camera.lock()->Get_Transform().Get_Position().y;
+			position.Z = camera.lock()->Get_Transform().Get_Position().z;
 
 			XMFLOAT3 vec;
 			XMStoreFloat3(&vec, *camera.lock()->Get_At());
@@ -209,9 +207,9 @@ void EFFEKSEER_MANAGER::Set()
 		}
 		else
 		{
-			position.X = D_camera.lock()->Get_Transform().Get_Position()->x;
-			position.Y = D_camera.lock()->Get_Transform().Get_Position()->y;
-			position.Z = D_camera.lock()->Get_Transform().Get_Position()->z;
+			position.X = D_camera.lock()->Get_Transform().Get_Position().x;
+			position.Y = D_camera.lock()->Get_Transform().Get_Position().y;
+			position.Z = D_camera.lock()->Get_Transform().Get_Position().z;
 
 			XMFLOAT3 vec;
 			XMStoreFloat3(&vec, *D_camera.lock()->Get_At());
@@ -269,27 +267,27 @@ void EFFEKSEER_MANAGER::Set()
 	}
 }
 
-void EFFEKSEER_MANAGER::Play(const std::string& name)
+void EFFEKSEER_MANAGER::Play(const aegis::string& name)
 {
 	Manager->StopEffect(Handles[name]);
 
 	auto player = CManager::Get_Instance()->Get_Scene()->Get_Game_Object("player");
 
-	XMFLOAT3* position = player->Get_Transform().Get_Position();
+	XMFLOAT3 position = player->Get_Transform().Get_Position();
 
-	Handles[name] = Manager->Play(Effects[name], position->x, position->y, position->z);
+	Handles[name] = Manager->Play(Effects[name], position.x, position.y, position.z);
 
 	//Effects[name].Handle = Manager->Play(Effects[name].Effect, 0, 0, 0);
 }
 
-void EFFEKSEER_MANAGER::Play(const std::string& handle_name, const std::string& effect_name, const XMFLOAT3& position)
+void EFFEKSEER_MANAGER::Play(const aegis::string& handle_name, const aegis::string& effect_name, const XMFLOAT3& position)
 {
 	// ロードしていないエフェクトの判定
 #ifdef _DEBUG
 	if (Effects.find(effect_name) == Effects.end())
 	{
-		std::string text("存在しないエフェクトです\n");
-		std::string t(effect_name.c_str());
+		aegis::string text("存在しないエフェクトです\n");
+		aegis::string t(effect_name.c_str());
 		text += t;
 
 		Erroer_Message(text);
@@ -305,14 +303,14 @@ void EFFEKSEER_MANAGER::Play(const std::string& handle_name, const std::string& 
 
 
 
-void EFFEKSEER_MANAGER::Play(const std::string& handle_name, const std::string& effect_name, const Vector3& position)
+void EFFEKSEER_MANAGER::Play(const aegis::string& handle_name, const aegis::string& effect_name, const Vector3& position)
 {
 	// ロードしていないエフェクトの判定
 #ifdef _DEBUG
 	if (Effects.find(effect_name) == Effects.end())
 	{
-		std::string text("存在しないエフェクトです\n");
-		std::string t(effect_name.c_str());
+		aegis::string text("存在しないエフェクトです\n");
+		aegis::string t(effect_name.c_str());
 		text += t;
 
 		Erroer_Message(text);
@@ -331,48 +329,48 @@ void EFFEKSEER_MANAGER::Play(const std::string& handle_name, const std::string& 
 	return Manager;
 }
 
-const aegis::unordered_map<std::string, ::Effekseer::Effect*>& EFFEKSEER_MANAGER::Get_Effects()
+const aegis::unordered_map<aegis::string, ::Effekseer::Effect*>& EFFEKSEER_MANAGER::Get_Effects()
 {
 	return Effects;
 }
 
-void EFFEKSEER_MANAGER::Set_Location(const std::string& handle_name, const XMFLOAT3& position)
+void EFFEKSEER_MANAGER::Set_Location(const aegis::string& handle_name, const XMFLOAT3& position)
 {
 	Manager->SetLocation(Handles[handle_name], Effekseer::Vector3D(position.x, position.y, position.z));
 }
 
-void EFFEKSEER_MANAGER::Set_Location(const std::string& handle_name, const Vector3& position)
+void EFFEKSEER_MANAGER::Set_Location(const aegis::string& handle_name, const Vector3& position)
 {
 	Manager->SetLocation(Handles[handle_name], Effekseer::Vector3D(position.x, position.y, position.z));
 }
 
-void EFFEKSEER_MANAGER::Set_Rotation(const std::string& handle_name, const XMFLOAT3& axis, const float angle)
+void EFFEKSEER_MANAGER::Set_Rotation(const aegis::string& handle_name, const XMFLOAT3& axis, const float angle)
 {
 	Manager->SetRotation(Handles[handle_name], Effekseer::Vector3D(axis.x, axis.y, axis.z), XMConvertToRadians(angle));
 }
 
-void EFFEKSEER_MANAGER::Set_Rotation(const std::string& handle_name, const Vector3& axis, const float angle)
+void EFFEKSEER_MANAGER::Set_Rotation(const aegis::string& handle_name, const Vector3& axis, const float angle)
 {
 	Manager->SetRotation(Handles[handle_name], Effekseer::Vector3D(axis.x, axis.y, axis.z), XMConvertToRadians(angle));
 }
 
-void EFFEKSEER_MANAGER::Set_Scale(const std::string& handle_name, const XMFLOAT3& scale)
+void EFFEKSEER_MANAGER::Set_Scale(const aegis::string& handle_name, const XMFLOAT3& scale)
 {
 	Manager->SetScale(Handles[handle_name], scale.x, scale.y, scale.z);
 }
 
-void EFFEKSEER_MANAGER::Set_Scale(const std::string& handle_name, const Vector3& scale)
+void EFFEKSEER_MANAGER::Set_Scale(const aegis::string& handle_name, const Vector3& scale)
 {
 	Manager->SetScale(Handles[handle_name], scale.x, scale.y, scale.z);
 }
 
-void EFFEKSEER_MANAGER::Set_Speed(const std::string& handle_name, const float speed)
+void EFFEKSEER_MANAGER::Set_Speed(const aegis::string& handle_name, const float speed)
 {
 	Manager->SetSpeed(Handles[handle_name], speed);
 }
 
 
-//const EFFECT& EFFEKSEER_MANAGER::Get_Effect(const std::string& name)
+//const EFFECT& EFFEKSEER_MANAGER::Get_Effect(const aegis::string& name)
 //{
 //	return Handles[name];
 //}

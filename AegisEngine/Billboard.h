@@ -99,10 +99,13 @@ public:
 	* @param file_name 使用するテクスチャ名
 	* @details テクスチャ(クラス)を設定する関数
 	*/
-	void SetTexture(const std::string& const file_name);
+	void SetTexture(const aegis::string& const file_name);
 
-	template<typename Archive>
-	void serialize(Archive& ar) {}
+	template<class Archive>
+	void save(Archive& archive) const {}
+
+	template<class Archive>
+	void load(Archive& archive) {}
 };
 
 CEREAL_REGISTER_TYPE(BILL_BOARD)
@@ -234,8 +237,11 @@ public:
 	*/
 	void Set_Param_Txy(const float tx_param = -1.0f, const float ty_param = -1.0f);
 
-	template<typename Archive>
-	void serialize(Archive& ar) {}
+	template<class Archive>
+	void save(Archive& archive) const {}
+
+	template<class Archive>
+	void load(Archive& archive) {}
 };
 
 CEREAL_REGISTER_TYPE(BILL_BOARD_ANIMATION)

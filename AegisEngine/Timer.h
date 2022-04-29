@@ -104,7 +104,7 @@ public:
 
 				if (0.0 < fps)
 				{
-					std::string s = std::to_string(fps);
+					aegis::string s(std::to_string(fps).c_str());
 
 					size_t i = s.find_first_of(".");
 
@@ -112,7 +112,7 @@ public:
 					{
 						s.erase(i + 2, 5);
 
-						FPSs.emplace_front(std::stod(s));
+						FPSs.emplace_front(std::stod(s.c_str()));
 
 						if (10 <= FPSs.size())
 						{

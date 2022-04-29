@@ -124,44 +124,33 @@ public:
 		return aegis::Vector2(Tw, Th);
 	}
 
-	template<typename Archive>
-	void serialize(Archive& ar)
+	template<class Archive>
+	void save(Archive& archive) const
 	{
-		ar(cereal::base_class<SPRITE>(this));
-		ar(WaitFrame);
-		ar(Pattern_Max_X);
-		ar(Pattern_Max_Y);
-		ar(Tx);
-		ar(Ty);
-		ar(Tw);
-		ar(Th);
+		archive(cereal::make_nvp("SPRITE", cereal::base_class<SPRITE>(this)));
+
+		archive(cereal::make_nvp("WaitFrame", WaitFrame));
+		archive(cereal::make_nvp("Pattern_Max_X", Pattern_Max_X));
+		archive(cereal::make_nvp("Pattern_Max_Y", Pattern_Max_Y));
+		archive(cereal::make_nvp("Tx", Tx));
+		archive(cereal::make_nvp("Ty", Ty));
+		archive(cereal::make_nvp("Tw", Tw));
+		archive(cereal::make_nvp("Th", Th));
 	}
 
-	//template<class Archive>
-	//void save(Archive& ar) const
-	//{
-	//	ar(cereal::base_class<SPRITE>(this));
-	//	ar(WaitFrame);
-	//	ar(Pattern_Max_X);
-	//	ar(Pattern_Max_Y);
-	//	ar(Tx);
-	//	ar(Ty);
-	//	ar(Tw);
-	//	ar(Th);
-	//}
+	template<class Archive>
+	void load(Archive& archive)
+	{
+		archive(cereal::make_nvp("SPRITE", cereal::base_class<SPRITE>(this)));
 
-	//template<class Archive>
-	//void load(Archive& ar)
-	//{
-	//	ar(cereal::base_class<SPRITE>(this));
-	//	ar(WaitFrame);
-	//	ar(Pattern_Max_X);
-	//	ar(Pattern_Max_Y);
-	//	ar(Tx);
-	//	ar(Ty);
-	//	ar(Tw);
-	//	ar(Th);
-	//}
+		archive(cereal::make_nvp("WaitFrame", WaitFrame));
+		archive(cereal::make_nvp("Pattern_Max_X", Pattern_Max_X));
+		archive(cereal::make_nvp("Pattern_Max_Y", Pattern_Max_Y));
+		archive(cereal::make_nvp("Tx", Tx));
+		archive(cereal::make_nvp("Ty", Ty));
+		archive(cereal::make_nvp("Tw", Tw));
+		archive(cereal::make_nvp("Th", Th));
+	}
 };
 
 CEREAL_REGISTER_TYPE(SPRITE_ANIMATION)

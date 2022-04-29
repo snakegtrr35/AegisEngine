@@ -4,7 +4,7 @@
 
 std::unique_ptr<MODEL_MANEGER> MODEL_MANEGER::ModelManager;
 
-static std::string textype;
+static aegis::string textype;
 
 void MODEL_MANEGER::Init()
 {
@@ -56,9 +56,9 @@ void MODEL_MANEGER::Load(const bool flag)
 	// バイナリファイルがない
 	if (false == flag)
 	{
-		std::string path;			// ファイル名(パス付き) 
-		std::string file_name;		// ファイル名(パスなし)
-		std::string type;
+		aegis::string path;			// ファイル名(パス付き) 
+		aegis::string file_name;		// ファイル名(パスなし)
+		aegis::string type;
 		size_t key;
 		size_t pos;
 
@@ -87,7 +87,7 @@ void MODEL_MANEGER::Load(const bool flag)
 
 			file_name = path.substr(pos + 1);
 
-			key = std::hash<std::string>()(file_name);//
+			key = std::hash<aegis::string>()(file_name);//
 
 			//テクスチャの登録
 			ModelFile[key].Path = path;
@@ -99,7 +99,7 @@ void MODEL_MANEGER::Load(const bool flag)
 
 				Assimp::Importer importer;
 
-				const aiScene* pScene = importer.ReadFile(path, aiProcess_Triangulate | aiProcess_LimitBoneWeights | aiProcess_ConvertToLeftHanded | aiProcessPreset_TargetRealtime_MaxQuality);
+				const aiScene* pScene = importer.ReadFile(path.c_str(), aiProcess_Triangulate | aiProcess_LimitBoneWeights | aiProcess_ConvertToLeftHanded | aiProcessPreset_TargetRealtime_MaxQuality);
 
 				if (pScene == NULL)
 				{
@@ -120,9 +120,9 @@ void MODEL_MANEGER::Load(const bool flag)
 	{
 		// 現在は普通のファイルから読み込んでいるが、将来的にはバイナリファイルと普通のファイルどちらからも読み込めるようにする
 
-		std::string path;			// ファイル名(パス付き) 
-		std::string file_name;		// ファイル名(パスなし)
-		std::string type;
+		aegis::string path;			// ファイル名(パス付き) 
+		aegis::string file_name;		// ファイル名(パスなし)
+		aegis::string type;
 		size_t key;
 		size_t pos;
 
@@ -134,7 +134,7 @@ void MODEL_MANEGER::Load(const bool flag)
 
 			file_name = path.substr(pos + 1);
 
-			key = std::hash<std::string>()(file_name);
+			key = std::hash<aegis::string>()(file_name);
 
 			pos = path.find_last_of(".");
 			type = path.substr(pos + 1);
@@ -145,7 +145,7 @@ void MODEL_MANEGER::Load(const bool flag)
 
 				Assimp::Importer importer;
 
-				const aiScene* pScene = importer.ReadFile(path, aiProcess_Triangulate | aiProcess_LimitBoneWeights | aiProcess_ConvertToLeftHanded | aiProcessPreset_TargetRealtime_MaxQuality);
+				const aiScene* pScene = importer.ReadFile(path.c_str(), aiProcess_Triangulate | aiProcess_LimitBoneWeights | aiProcess_ConvertToLeftHanded | aiProcessPreset_TargetRealtime_MaxQuality);
 
 				if (pScene == NULL)
 				{
@@ -185,9 +185,9 @@ MESH* const MODEL_MANEGER::Get_Mesh(const size_t key)
 
 using is = std::pair<size_t, MESH>;
 
-void MODEL_MANEGER::Add(const std::string& file_name)
+void MODEL_MANEGER::Add(const aegis::string& file_name)
 {
-	size_t key = std::hash<std::string>()(file_name);
+	size_t key = std::hash<aegis::string>()(file_name);
 
 	//テクスチャの登録
 	ModelFile[key].Path = "./asset/model/" + file_name;
@@ -199,7 +199,7 @@ void MODEL_MANEGER::Add(const std::string& file_name)
 
 		Assimp::Importer importer;
 
-		const aiScene* pScene = importer.ReadFile(ModelFile[key].Path, aiProcess_Triangulate | aiProcess_LimitBoneWeights | aiProcess_ConvertToLeftHanded | aiProcessPreset_TargetRealtime_MaxQuality);
+		const aiScene* pScene = importer.ReadFile(ModelFile[key].Path.c_str(), aiProcess_Triangulate | aiProcess_LimitBoneWeights | aiProcess_ConvertToLeftHanded | aiProcessPreset_TargetRealtime_MaxQuality);
 
 		if (pScene == NULL)
 		{
@@ -216,9 +216,9 @@ void MODEL_MANEGER::Add(const std::string& file_name)
 	}
 }
 
-const bool MODEL_MANEGER::Unload(const std::string& const file_name)
+const bool MODEL_MANEGER::Unload(const aegis::string& const file_name)
 {
-	size_t first = std::hash<std::string>()(file_name);//
+	size_t first = std::hash<aegis::string>()(file_name);//
 
 #ifdef _DEBUG
 	if (0 != ModelData[first].Cnt)
@@ -274,9 +274,9 @@ MESH MODEL_MANEGER::processMesh(aiMesh* mesh, aiNode* node, const aiScene* scene
 
 	XMMATRIX matrix;
 
-	std::string name = node->mName.C_Str();
+	aegis::string name = node->mName.C_Str();
 
-	std::string texture_name;
+	aegis::string texture_name;
 
 	if (mesh->mMaterialIndex >= 0)
 	{
@@ -346,11 +346,11 @@ MESH MODEL_MANEGER::processMesh(aiMesh* mesh, aiNode* node, const aiScene* scene
 	return MESH(vertices, indices, texture_name, matrix, name);
 }
 
-//vector<TEXTURE_S> MODEL_MANEGER::loadMaterialTextures(aiMaterial* mat, aiTextureType type, std::string typeName, const aiScene* scene, vector<TEXTURE_S>& textures_loaded)
-std::string MODEL_MANEGER::loadMaterialTextures(aiMaterial* mat, aiTextureType type, std::string typeName, const aiScene* scene, aegis::vector<TEXTURE_S>& textures_loaded)
+//vector<TEXTURE_S> MODEL_MANEGER::loadMaterialTextures(aiMaterial* mat, aiTextureType type, aegis::string typeName, const aiScene* scene, vector<TEXTURE_S>& textures_loaded)
+aegis::string MODEL_MANEGER::loadMaterialTextures(aiMaterial* mat, aiTextureType type, aegis::string typeName, const aiScene* scene, aegis::vector<TEXTURE_S>& textures_loaded)
 {
-	std::string file_name;
-	const std::string directory = "./asset/model";
+	aegis::string file_name;
+	const aegis::string directory = "./asset/model";
 
 	for (UINT i = 0; i < mat->GetTextureCount(type); i++)
 	{
@@ -361,7 +361,7 @@ std::string MODEL_MANEGER::loadMaterialTextures(aiMaterial* mat, aiTextureType t
 		bool skip = false;
 		for (UINT j = 0; j < textures_loaded.size(); j++)
 		{
-			if ( textures_loaded[j].FileName == std::string(str.C_Str()) )
+			if ( textures_loaded[j].FileName == aegis::string(str.C_Str()) )
 			{
 				file_name = textures_loaded[j].FileName;
 				skip = true; // A texture with the same filepath has already been loaded, continue to next one. (optimization)
@@ -378,8 +378,8 @@ std::string MODEL_MANEGER::loadMaterialTextures(aiMaterial* mat, aiTextureType t
 			}
 			else
 			{
-				file_name = std::string(str.C_Str());
-				std::string path = directory + "/" + file_name;
+				file_name = aegis::string(str.C_Str());
+				aegis::string path = directory + "/" + file_name;
 				std::wstring filenamews = std::wstring(path.begin(), path.end());
 
 				{
@@ -427,11 +427,11 @@ void MODEL_MANEGER::processNode(aiNode* node, const aiScene* scene, aegis::vecto
 	}
 }
 
-std::string MODEL_MANEGER::determineTextureType(const aiScene* scene, aiMaterial* mat)
+aegis::string MODEL_MANEGER::determineTextureType(const aiScene* scene, aiMaterial* mat)
 {
 	aiString textypeStr;
 	mat->GetTexture(aiTextureType_DIFFUSE, 0, &textypeStr);
-	std::string textypeteststr = textypeStr.C_Str();
+	aegis::string textypeteststr = textypeStr.C_Str();
 	if (textypeteststr == "*0" || textypeteststr == "*1" || textypeteststr == "*2" || textypeteststr == "*3" || textypeteststr == "*4" || textypeteststr == "*5")
 	{
 		if (scene->mTextures[0]->mHeight == 0)
@@ -443,7 +443,7 @@ std::string MODEL_MANEGER::determineTextureType(const aiScene* scene, aiMaterial
 			return "embedded non-compressed texture";
 		}
 	}
-	if (textypeteststr.find('.') != std::string::npos)
+	if (textypeteststr.find('.') != aegis::string::npos)
 	{
 		return "textures are on disk";
 	}
@@ -453,10 +453,10 @@ std::string MODEL_MANEGER::determineTextureType(const aiScene* scene, aiMaterial
 
 int MODEL_MANEGER::getTextureIndex(aiString* str)
 {
-	std::string tistr;
+	aegis::string tistr;
 	tistr = str->C_Str();
 	tistr = tistr.substr(1);
-	return stoi(tistr);
+	return std::stoi(tistr.c_str());
 }
 
 ID3D11ShaderResourceView* MODEL_MANEGER::getTextureFromModel(const aiScene* scene, int textureindex)

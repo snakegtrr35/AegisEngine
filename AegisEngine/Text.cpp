@@ -50,12 +50,12 @@ void TEXTS::Uninit(void)
 {
 }
 
-void TEXTS::Edit(const std::string& text)
+void TEXTS::Edit(const aegis::string& text)
 {
 	Text = text;
 }
 
-void TEXTS::Text_Draw(const std::string& text)
+void TEXTS::Text_Draw(const aegis::string& text)
 {
 	SPRITE sprite;
 	ID3D11ShaderResourceView* shader_resource_view = nullptr;
@@ -68,13 +68,13 @@ void TEXTS::Text_Draw(const std::string& text)
 
 	sprite.SetColor(Color);
 
-	std::string ctext = text;
+	aegis::string ctext = text;
 	std::wstring wtext = stringTowstring(ctext);
 
 	for (auto itr : wtext)
 	{
 		font.push_back(itr);
-		shader_resource_view = FONT::Get_Font_Resource(font);
+		shader_resource_view = FONT::Get_Font_Resource(font.c_str());
 
 		sprite.Set(shader_resource_view);
 
@@ -88,11 +88,11 @@ void TEXTS::Text_Draw(const std::string& text)
 	}
 }
 
-void TEXTS::Text_Draw_DPP(const std::string& text)
+void TEXTS::Text_Draw_DPP(const aegis::string& text)
 {
 	SPRITE sprite;
 	ID3D11ShaderResourceView* shader_resource_view = nullptr;
-	std::wstring font;
+	aegis::wstring font;
 	short i = 0;
 
 	sprite.Init();
@@ -101,8 +101,8 @@ void TEXTS::Text_Draw_DPP(const std::string& text)
 
 	sprite.SetColor(Color);
 
-	std::string ctext = text;
-	std::wstring wtext = stringTowstring(ctext);
+	aegis::string ctext = text;
+	aegis::wstring wtext = stringTowstring(ctext).c_str();
 
 	for (auto itr : wtext)
 	{

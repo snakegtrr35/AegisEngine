@@ -61,26 +61,17 @@ public:
 	*/
 	void Uninit();
 
-	template<typename Archive>
-	void serialize(Archive& ar)
+	template<class Archive>
+	void save(Archive& archive) const
 	{
-		ar(cereal::base_class<GameObject>(this));
-		//ar(Texture);
+		archive(cereal::make_nvp("GameObject", cereal::base_class<GameObject>(this)));
 	}
 
-	//template<class Archive>
-	//void save(Archive& ar) const
-	//{
-	//	ar(cereal::base_class<GameObject>(this));
-	//	ar(Texture);
-	//}
-
-	//template<class Archive>
-	//void load(Archive& ar)
-	//{
-	//	ar(cereal::base_class<GameObject>(this));
-	//	ar(Texture);
-	//}
+	template<class Archive>
+	void load(Archive& archive)
+	{
+		archive(cereal::make_nvp("GameObject", cereal::base_class<GameObject>(this)));
+	}
 };
 
 CEREAL_REGISTER_TYPE(SKYBOX)

@@ -30,6 +30,10 @@ protected:
 	//! 各バウンディングのカラー
 	aegis::COLOR Color;
 
+	aegis::Vector3 Position;
+	aegis::Vector3 Rotation;
+	aegis::Vector3 Scaling;
+
 public:
 	/**
 	* @brief コンストラクタ
@@ -112,13 +116,41 @@ public:
 		Color = color;
 	}
 
+	aegis::Vector3* const Get_Position() { return &Position; };
+	aegis::Vector3* const Get_Rotation() { return &Rotation; };
+	aegis::Vector3* const Get_Scaling() { return &Scaling; };
 
-	template<typename Archive>
-	void serialize(Archive& ar)
+	void Set_Position(aegis::Vector3* const position) { Position = *position; }
+	void Set_Position(const aegis::Vector3& position) { Position = position; };
+
+	void Set_Rotation(aegis::Vector3* const rotation) { Rotation = *rotation; };
+	void Set_Rotation(const aegis::Vector3& rotation) { Rotation = rotation; };
+
+	void Set_Scaling(aegis::Vector3* scaling) { Scaling = *scaling; };
+	void Set_Scaling(const aegis::Vector3& scaling) { Scaling = scaling; };
+
+	template<class Archive>
+	void save(Archive& archive) const
 	{
-		ar(cereal::base_class<COMPONENT>(this));
-		ar(Default_Color);
-		ar(Color);
+		archive(cereal::make_nvp("COMPONENT", cereal::base_class<COMPONENT>(this)));
+
+		archive(cereal::make_nvp("Default_Color", Default_Color));
+		archive(cereal::make_nvp("Color", Color));
+		archive(cereal::make_nvp("Position", Position));
+		archive(cereal::make_nvp("Rotation", Rotation));
+		archive(cereal::make_nvp("Scaling", Scaling));
+	}
+
+	template<class Archive>
+	void load(Archive& archive)
+	{
+		archive(cereal::make_nvp("COMPONENT", cereal::base_class<COMPONENT>(this)));
+
+		archive(cereal::make_nvp("Default_Color", Default_Color));
+		archive(cereal::make_nvp("Color", Color));
+		archive(cereal::make_nvp("Position", Position));
+		archive(cereal::make_nvp("Rotation", Rotation));
+		archive(cereal::make_nvp("Scaling", Scaling));
 	}
 };
 

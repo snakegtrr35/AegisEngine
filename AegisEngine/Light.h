@@ -22,16 +22,29 @@ struct LIGHT_BUFFER {
 	aegis::Vector3	Dummy;
 
 	LIGHT_BUFFER();
+
+	template<class Archive>
+	void save(Archive& archive) const
+	{
+		archive(cereal::make_nvp("Enable", Enable),
+				cereal::make_nvp("Position", Position),
+				cereal::make_nvp("Color", Color),
+				cereal::make_nvp("Type", Type)
+		);
+	}
+
+	template<class Archive>
+	void load(Archive& archive)
+	{
+		archive(cereal::make_nvp("Enable", Enable),
+			cereal::make_nvp("Position", Position),
+			cereal::make_nvp("Color", Color),
+			cereal::make_nvp("Type", Type)
+		);
+	}
 };
 
-template<typename Archive>
-void serialize(Archive& ar, LIGHT_BUFFER& light)
-{
-	ar(light.Enable);
-	ar(light.Position);
-	ar(light.Color);
-	ar(light.Type);
-}
+
 
 class LIGHTS {
 private:
@@ -55,10 +68,16 @@ public:
 
 	 static ID3D11Buffer* Get_LightBuffer() { return LightBuffer.Get(); }
 
-	template<typename Archive>
-	void serialize(Archive& ar)
+	template<class Archive>
+	void save(Archive& archive) const
 	{
-		ar(Lights);
+		archive(cereal::make_nvp("Lights", Lights));
+	}
+
+	template<class Archive>
+	void load(Archive& archive)
+	{
+		archive(cereal::make_nvp("Lights", Lights));
 	}
 };
 #endif // !LIGHT_H

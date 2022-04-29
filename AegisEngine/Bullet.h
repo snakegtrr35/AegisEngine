@@ -31,8 +31,11 @@ public:
 
 	void Set_Move_Vector(const aegis::Vector3 move_vector);			// 
 
-	template<typename Archive>
-	void serialize(Archive& ar) {}
+	template<class Archive>
+	void save(Archive& archive) const {}
+
+	template<class Archive>
+	void load(Archive& archive) {}
 };
 
 CEREAL_REGISTER_TYPE(BULLET)

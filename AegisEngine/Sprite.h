@@ -25,18 +25,29 @@ struct CHILD_DATE {
 	//aegis::Vector3 Offset;
 
 	//! 子スプライトの名前
-	std::string Name;
+	aegis::string Name;
 
 	CHILD_DATE() : /*Offset(aegis::Vector3(0.f, 0.f, 0.f)),*/ Name("") {
 		Child.reset(nullptr);
 	}
 
-	template<typename Archive>
-	void serialize(Archive& ar)
+	template<class Archive>
+	void save(Archive& archive) const
 	{
-		ar(Child);
-		//ar(Offset);
-		ar(Name);
+		archive(cereal::make_nvp("Child", Child),
+				cereal::make_nvp("Name", std::string(Name))
+		);
+	}
+
+	template<class Archive>
+	void load(Archive& archive)
+	{
+		archive(cereal::make_nvp("Child", Child));
+
+		std::string s;
+		archive(cereal::make_nvp("Name", s));
+		Name.reserve(s.size());
+		Name = s;
 	}
 
 };
@@ -75,7 +86,7 @@ protected:
 	aegis::Vector4 Size;
 
 	//!< カラー
-	aegis::COLOR Color;//!< 子スプライトのリスト
+	aegis::COLOR Color;
 
 	//!< 子スプライトのリスト
 	aegis::vector< std::unique_ptr<CHILD_DATE> > Children;
@@ -213,7 +224,7 @@ public:
 	* @param file_name 使用するテクスチャ名
 	* @details テクスチャ(クラス)を設定する関数
 	*/
-	void SetTexture(const std::string& const file_name);
+	void SetTexture(const aegis::string& const file_name);
 
 	/**
 	* @brief テクスチャを取得する関数
@@ -229,7 +240,7 @@ public:
 	* @return SPRITE 子スプライトのポインタ
 	* @details 子スプライトを一つ追加する関数
 	*/
-	SPRITE* Add_Child_Sptite(const std::string& name);
+	SPRITE* Add_Child_Sptite(const aegis::string& name);
 
 	/**
 	* @brief 子スプライトを取得する関数
@@ -243,7 +254,7 @@ public:
 	* @return list<CHILD_DATE> 子スプライトのリスト
 	* @details 子スプライトのリストを取得する関数
 	*/
-	CHILD_DATE* const Get_Child_Sptite(const std::string& name);
+	CHILD_DATE* const Get_Child_Sptite(const aegis::string& name);
 
 	/**
 	* @brief メニューイベントを追加する関数
@@ -278,7 +289,7 @@ public:
 	* @param offset オフセット位置(二次元座標)
 	* @details 特定の子スプライトの座標(二次元座標、親スプライトからオフセットされる)を設定する関数
 	*/
-	void Set_Position_Child(const std::string& const name, const aegis::Vector2& position, const aegis::Vector2& offset);
+	void Set_Position_Child(const aegis::string& const name, const aegis::Vector2& position, const aegis::Vector2& offset);
 
 	/**
 	* @brief 子スプライトの描画の有効無効を設定する関数
@@ -293,7 +304,7 @@ public:
 	* @param flag 描画の有効無効のフラグ
 	* @details 特定の子スプライトの描画の有効無効を設定する関数
 	*/
-	void Set_Enable_Child(const std::string& const name, const bool flag);
+	void Set_Enable_Child(const aegis::string& const name, const bool flag);
 
 	/**
 	* @brief 子スプライトの描画の有効無効を取得する関数
@@ -301,7 +312,7 @@ public:
 	* @return bool 描画の有効無効のフラグ
 	* @details 特定の子スプライトの描画の有効無効を取得する関数
 	*/
-	const bool Get_Enable_Child(const std::string& const name, aegis::vector< std::unique_ptr<CHILD_DATE> >* const children);
+	const bool Get_Enable_Child(const aegis::string& const name, aegis::vector< std::unique_ptr<CHILD_DATE> >* const children);
 	
 	void Set(ID3D11ShaderResourceView* shader_resource_view) {
 		ShaderResourceView = shader_resource_view;
@@ -344,37 +355,31 @@ public:
 		}
 	}
 
-	template<typename Archive>
-	void serialize(Archive& ar)
+	template<class Archive>
+	void save(Archive& archive) const
 	{
-		ar(cereal::base_class<GameObject>(this));
-		ar(Children);
-		ar(Texture);
-		ar(SPRITE::Position);
-		ar(Size);
-		//ar(Color);
-		ar(Enable);
+		archive(cereal::make_nvp("GameObject", cereal::base_class<GameObject>(this)));
+
+		archive(cereal::make_nvp("Children", Children));
+		archive(cereal::make_nvp("Texture", Texture));
+		archive(cereal::make_nvp("Position", SPRITE::Position));
+		archive(cereal::make_nvp("Size", Size));
+		archive(cereal::make_nvp("Color", Color));
+		archive(cereal::make_nvp("Enable", Enable));
 	}
 
-	//template<class Archive>
-	//void save(Archive& ar) const
-	//{
-	//	ar(cereal::base_class<GameObject>(this));
-	//	ar(Texture);
-	//	ar(SPRITE::Position);
-	//	ar(Size);
-	//	ar(Color);
-	//}
-
-	//template<class Archive>
-	//void load(Archive& ar)
-	//{
-	//	ar(cereal::base_class<GameObject>(this));
-	//	ar(Texture);
-	//	ar(SPRITE::Position);
-	//	ar(Size);
-	//	ar(Color);
-	//}
+	template<class Archive>
+	void load(Archive& archive)
+	{
+		archive(cereal::make_nvp("GameObject", cereal::base_class<GameObject>(this)));
+		
+		archive(cereal::make_nvp("Children", Children));
+		archive(cereal::make_nvp("Texture", Texture));
+		archive(cereal::make_nvp("Position", SPRITE::Position));
+		archive(cereal::make_nvp("Size", Size));
+		archive(cereal::make_nvp("Color", Color));
+		archive(cereal::make_nvp("Enable", Enable));
+	}
 
 	bool flag = true;
 };

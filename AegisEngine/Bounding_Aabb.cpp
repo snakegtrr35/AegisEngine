@@ -21,10 +21,8 @@ void BOUNDING_AABB::Init()
 	{
 		Vector3 pos = Vector3();
 
-		if (false == Owner.expired())
-		{
-			pos = *Owner.lock()->Get_Transform().Get_Position();
-		}
+		if(Owner)
+			pos = Owner->Get_Transform().Get_Position();
 
 		Aabb = BoundingBox(Vector3(0.f, 0.f, 0.f), Radius);
 
@@ -170,7 +168,7 @@ void BOUNDING_AABB::OverWrite()
 	{
 		Color = Default_Color;
 
-		Vector3 pos = *Owner.lock()->Get_Transform().Get_Position();
+		Vector3 pos = Owner->Get_Transform().Get_Position();
 
 		Aabb = BoundingBox(Vector3(0.f, 0.f, 0.f), Radius);
 

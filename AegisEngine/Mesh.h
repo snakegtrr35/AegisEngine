@@ -25,7 +25,7 @@
 #define ARRAY_SIZE_IN_ELEMENTS(a) (sizeof(a)/sizeof(a[0]))
 
 struct TEXTURE_S {
-	std::string FileName;
+	aegis::string FileName;
 	ID3D11ShaderResourceView* Texture = nullptr;
 };
 
@@ -62,7 +62,7 @@ struct QuatKey {
 };
 
 struct NodeAnim {
-	std::string node_name;
+	aegis::string node_name;
 
 	aegis::vector<VectorKey> translate;
 	aegis::vector<VectorKey> scaling;
@@ -84,9 +84,9 @@ protected:
 	ComPtr<ID3D11Buffer> VertexBuffer;
 	ComPtr<ID3D11Buffer> IndexBuffer;
 
-	std::string Name; //! メッシュの名前
+	aegis::string Name; //! メッシュの名前
 
-	std::string TextureName;	//! テクスチャ名
+	aegis::string TextureName;	//! テクスチャ名
 
 	XMFLOAT4X4 Matrix;
 
@@ -103,7 +103,7 @@ public:
 	MESH();
 
 
-	MESH(aegis::vector<VERTEX_3D>& vertices, aegis::vector<UINT>& indices, std::string& texture_name, XMMATRIX& matrix, std::string name);
+	MESH(aegis::vector<VERTEX_3D>& vertices, aegis::vector<UINT>& indices, aegis::string& texture_name, XMMATRIX& matrix, aegis::string name);
 
 	~MESH() { Uninit(); }
 
@@ -121,23 +121,39 @@ public:
 
 	aegis::vector<TEXTURE_S>& Get_Textures();
 
-	const std::string& Get_Name();
+	const aegis::string& Get_Name();
 
-	void Set_Name(const std::string& name);
+	void Set_Name(const aegis::string& name);
 
-	const std::string& Get_Texture_Name();
+	const aegis::string& Get_Texture_Name();
 
-	void Set_Texture_Name(const std::string& texture_name);
+	void Set_Texture_Name(const aegis::string& texture_name);
 
 	void Set(const MESH& meshs);
 
 	template<class Archive>
-	void serialize(Archive& ar) {
-		//ar(Vertices);
-		ar(Indices);
-		ar(Name);
-		ar(Matrix);
-		ar(ChildMeshes);
+	void save(Archive& archive) const
+	{
+		archive(cereal::make_nvp("Vertices", Vertices));
+		archive(cereal::make_nvp("Indices", Indices));
+		archive(cereal::make_nvp("Name", aegis::string(Name)));
+		archive(cereal::make_nvp("Matrix", Matrix));
+		archive(cereal::make_nvp("ChildMeshes", ChildMeshes));
+	}
+
+	template<class Archive>
+	void load(Archive& archive)
+	{
+		archive(cereal::make_nvp("Vertices", Vertices));
+		archive(cereal::make_nvp("Indices", Indices));
+
+		aegis::string s;
+		archive(cereal::make_nvp("Name", s));
+		Name.reserve(s.size());
+		Name = s;
+
+		archive(cereal::make_nvp("Matrix", Matrix));
+		archive(cereal::make_nvp("ChildMeshes", ChildMeshes));
 	}
 };
 

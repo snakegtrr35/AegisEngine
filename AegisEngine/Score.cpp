@@ -17,7 +17,7 @@ SCORE::SCORE()
 	Flag = true;
 
 	Number = new SPRITE_ANIMATION();
-	Number->SetTexture(std::string("number02.png"));
+	Number->SetTexture("number02.png");
 	Number->SetParam(0, 10, 1);
 	Number->SetSize(Vector4(32.0f, 32.0f, 32.0f, 32.0f));
 	Number->Init();
@@ -43,7 +43,7 @@ void SCORE::Draw(void)
 
 		Vector2 pos;
 
-		Vector3 position = *Get_Transform().Get_Position();
+		Vector3 position = Get_Transform().Get_Position();
 
 		for (i = Digit - 1; 0 <= i; i--)
 		{
@@ -68,7 +68,7 @@ void SCORE::Draw_DPP(void)
 
 	Vector2 pos;
 
-	Vector3 position = *Get_Transform().Get_Position();
+	Vector3 position = Get_Transform().Get_Position();
 
 	for (i = Digit - 1; 0 <= i; i--)
 	{
@@ -116,6 +116,8 @@ void SCORE::Update(float delta_time)
 
 void SCORE::Uninit(void)
 {
+	GameObject::Uninit();
+
 	SAFE_DELETE(Number);
 }
 

@@ -18,11 +18,23 @@ struct VERTEX_3D
 	VERTEX_3D(XMFLOAT3 v, XMFLOAT3 n, XMFLOAT4 d, XMFLOAT2 t) : Position(v.x, v.y, v.z), Normal(n), Diffuse(d), TexCoord(t) {}
 
 	template<class Archive>
-	void serialize(Archive& ar) {
-		ar(Position);
-		ar(Normal);
-		ar(Diffuse);
-		ar(TexCoord);
+	void save(Archive& archive) const
+	{
+		archive(cereal::make_nvp("Position", Position),
+				cereal::make_nvp("Normal", Normal),
+				cereal::make_nvp("Diffuse", Diffuse),
+				cereal::make_nvp("TexCoord", TexCoord)
+		);
+	}
+
+	template<class Archive>
+	void load(Archive& archive)
+	{
+		archive(cereal::make_nvp("Position", Position),
+				cereal::make_nvp("Normal", Normal),
+				cereal::make_nvp("Diffuse", Diffuse),
+				cereal::make_nvp("TexCoord", TexCoord)
+		);
 	}
 };
 
@@ -37,13 +49,27 @@ struct VERTEX_3D_NORMAL
 	aegis::Vector2 TexCoord;
 
 	template<class Archive>
-	void serialize(Archive& ar) {
-		ar(Position);
-		ar(Normal);
-		ar(Binormal);
-		ar(Tangent);
-		ar(Diffuse);
-		ar(TexCoord);
+	void save(Archive& archive) const
+	{
+		archive(cereal::make_nvp("Position", Position),
+				cereal::make_nvp("Normal", Normal),
+				cereal::make_nvp("Binormal", Binormal),
+				cereal::make_nvp("Tangent", Tangent),
+				cereal::make_nvp("Diffuse", Diffuse),
+				cereal::make_nvp("TexCoord", TexCoord)
+		);
+	}
+
+	template<class Archive>
+	void load(Archive& archive)
+	{
+		archive(cereal::make_nvp("Position", Position),
+				cereal::make_nvp("Normal", Normal),
+				cereal::make_nvp("Binormal", Binormal),
+				cereal::make_nvp("Tangent", Tangent),
+				cereal::make_nvp("Diffuse", Diffuse),
+				cereal::make_nvp("TexCoord", TexCoord)
+		);
 	}
 };
 
@@ -87,7 +113,7 @@ struct LIGHT
 };
 
 struct TEXT_FOMAT{
-	std::string FontName;
+	aegis::string FontName;
 	float FontSize = 32.0f;
 	DWRITE_FONT_WEIGHT Weight = DWRITE_FONT_WEIGHT_NORMAL;
 	DWRITE_FONT_STYLE Style = DWRITE_FONT_STYLE_NORMAL;
@@ -95,7 +121,7 @@ struct TEXT_FOMAT{
 };
 
 struct TEXT_LAYOUT {
-	std::string Text;
+	aegis::string Text;
 	float Width;
 	float Height;
 };

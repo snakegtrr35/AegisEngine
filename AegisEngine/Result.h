@@ -30,26 +30,18 @@ public:
 
 	static void Load(SCENE* scene);
 
-	template<typename Archive>
-	void serialize(Archive& ar)
-	{
-		ar(cereal::base_class<SCENE>(this));
-	}
+	static void Set(const bool flag) { Clear_Flag = flag; }
 
-	/*template<class Archive>
-	void save(Archive& ar) const
+	template<class Archive>
+	void save(Archive& archive) const
 	{
-		ar(cereal::base_class<SCENE>(this));
+		archive(cereal::make_nvp("SCENE", cereal::base_class<SCENE>(this)));
 	}
 
 	template<class Archive>
-	void load(Archive& ar)
+	void load(Archive& archive)
 	{
-		ar(cereal::base_class<SCENE>(this));
-	}*/
-
-	static void Set(const bool flag) {
-		Clear_Flag = flag;
+		archive(cereal::make_nvp("SCENE", cereal::base_class<SCENE>(this)));
 	}
 };
 

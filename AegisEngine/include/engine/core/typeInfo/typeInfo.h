@@ -60,7 +60,7 @@ namespace aegis::typeInfo
 
 		bool mIsAbstract;
 		ObjectID mTypeID;
-		std::string mName;
+		aegis::string mName;
 		TypeInfo* mParent;
 		std::unique_ptr<IClassCreateInterface> mCreateInstanceInterface;
 		aegis::vector<TypeInfo*> mChildren;

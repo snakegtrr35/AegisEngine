@@ -24,7 +24,7 @@ class GameObject : public aegis::AegisObject {
 
 private:
 	//! ゲームオブジェクトの名称一覧(静的なもの)
-	static aegis::unordered_set<std::string> Object_Name_Map;
+	static aegis::unordered_set<aegis::string> Object_Name_Map;
 
 	//! コンポーネント
 	aegis::vector< std::weak_ptr<COMPONENT> > Components;
@@ -32,7 +32,7 @@ private:
 protected:
 
 	//! オブジェクトの名前
-	std::string Object_Name;
+	aegis::string Object_Name;
 
 	//! 削除するかのフラグ
 	bool DestroyFlag;
@@ -111,7 +111,7 @@ public:
 	* @return string オブジェクトの名前
 	* @details オブジェクトの名前を取得する関数
 	*/
-	const std::string& Get_Object_Name() {
+	const aegis::string& Get_Object_Name() {
 		return Object_Name;
 	};
 
@@ -120,7 +120,7 @@ public:
 	* @param name 名前(string)
 	* @details オブジェクトの名前を設定する関数
 	*/
-	void Set_Object_Name(const std::string& name);
+	void Set_Object_Name(const aegis::string& name);
 
 	aegis::uuid GetId() const { return Uuid; }
 
@@ -188,68 +188,58 @@ public:
 	* @return unordered_set<string> ゲームオブジェクトネームマップ(unordered_set<string>)
 	* @details ゲームオブジェクトネームマップを取得する関数
 	*/
-	static const aegis::unordered_set<std::string>& Get_Object_Name_Map() {
+	static const aegis::unordered_set<aegis::string>& Get_Object_Name_Map() {
 		return Object_Name_Map;
 	}
 
 	template<class Archive>
-	void serialize( Archive& ar)
+	void save(Archive& archive) const
 	{
-		ar(Object_Name);
-		ar(Uuid);
-		ar(Transform);
-		ar(Components);
-	
-		Set_Object_Name(Object_Name);
-	
-		for (auto& component : Components)
-		{
-			COMPONENT_MANEGER::getInstance()->AddComponent(Uuid, std::move(component.lock()));
-			component.lock()->Set_Owner(this);
-		}
+		archive(cereal::make_nvp("Object_Name", std::string(Object_Name)));
+		archive(cereal::make_nvp("Id", Uuid));
+		archive(cereal::make_nvp("Transform", Transform));
+		archive(cereal::make_nvp("Components", Components));
 	}
 
-	//template<class Archive>
-	//void save(Archive& ar) const
-	//{
-	//	ar(Object_Name);
-	//	ar(Transform);
-	//	ar(Conponents);
-	//}
+	template<class Archive>
+	void load(Archive& archive)
+	{
+		std::string s;
+		archive(cereal::make_nvp("Object_Name", s));
+		Object_Name.reserve(s.size());
+		Object_Name = s;
 
-	//template<class Archive>
-	//void load(Archive& ar)
-	//{
-	//	ar(Object_Name);
-	//	ar(Transform);
-	//	ar(Conponents);
-	//
-	//	Set_Object_Name(Object_Name);
-	//	
-	//	for (auto& component : Conponents)
-	//	{
-	//		COMPONENT_MANEGER::getInstance()->AddComponent(Uuid, std::move(component.lock()));
-	//	}
-	//}
+		archive(cereal::make_nvp("Id", Uuid));
+		archive(cereal::make_nvp("Transform", Transform));
+		archive(cereal::make_nvp("Components", Components));
+	
+		Set_Object_Name(Object_Name);
+		
+		for (auto& component : Components)
+		{
+			component.lock()->Set_Owner(this);
+			COMPONENT_MANEGER::getInstance()->AddComponent(Uuid, std::move(component.lock()));
+		}
+	}
 };
 
 namespace cereal
 {
-	// JSON
-	// serialize
-	void prologue(cereal::JSONInputArchive&, GameObject const& data);
-	void epilogue(cereal::JSONInputArchive&, GameObject const& data);
+	//// JSON
+	//// serialize
+	//void prologue(cereal::JSONInputArchive&, GameObject const& data);
+	//void epilogue(cereal::JSONInputArchive&, GameObject const& data);
 
-	void prologue(cereal::JSONOutputArchive&, GameObject const& data);
-	void epilogue(cereal::JSONOutputArchive&, GameObject const& data);
+	//void prologue(cereal::JSONOutputArchive&, GameObject const& data);
+	//void epilogue(cereal::JSONOutputArchive&, GameObject const& data);
 
-	// Binary
-	// deserialize
-	void prologue(cereal::BinaryInputArchive&, GameObject const& data);
-	void epilogue(cereal::BinaryInputArchive&, GameObject const& data);
+	//// Binary
+	//// deserialize
+	//void prologue(cereal::BinaryInputArchive&, GameObject const& data);
+	//void epilogue(cereal::BinaryInputArchive&, GameObject const& data);
 
-	void prologue(cereal::BinaryOutputArchive&, GameObject const& data);
-	void epilogue(cereal::BinaryOutputArchive&, GameObject const& data);
+	//void prologue(cereal::BinaryOutputArchive&, GameObject const& data);
+	//void epilogue(cereal::BinaryOutputArchive&, GameObject const& data);
 }
 
 #endif // !GAME_OBJECT_H

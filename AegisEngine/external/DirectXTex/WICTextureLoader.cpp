@@ -347,16 +347,16 @@ namespace
         UINT twidth, theight;
         if (width > maxsize || height > maxsize)
         {
-            float ar = static_cast<float>(height) / static_cast<float>(width);
+            float archive = static_cast<float>(height) / static_cast<float>(width);
             if (width > height)
             {
                 twidth = static_cast<UINT>(maxsize);
-                theight = std::max<UINT>(1, static_cast<UINT>(static_cast<float>(maxsize) * ar));
+                theight = std::max<UINT>(1, static_cast<UINT>(static_cast<float>(maxsize) * archive));
             }
             else
             {
                 theight = static_cast<UINT>(maxsize);
-                twidth = std::max<UINT>(1, static_cast<UINT>(static_cast<float>(maxsize) / ar));
+                twidth = std::max<UINT>(1, static_cast<UINT>(static_cast<float>(maxsize) / archive));
             }
             assert(twidth <= maxsize && theight <= maxsize);
         }

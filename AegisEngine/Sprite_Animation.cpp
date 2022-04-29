@@ -24,7 +24,7 @@ SPRITE_ANIMATION::SPRITE_ANIMATION()
 
 	Ty_Param = Tx_Param = -1.0f;
 
-	SetTexture(std::string("Explosion.png"));
+	SetTexture("Explosion.png");
 }
 
 SPRITE_ANIMATION::SPRITE_ANIMATION(Vector2 position, Vector4 size)
@@ -48,7 +48,7 @@ SPRITE_ANIMATION::SPRITE_ANIMATION(Vector2 position, Vector4 size)
 
 	Ty_Param = Tx_Param = -1.0f;
 
-	SetTexture(std::string("Explosion.png"));
+	SetTexture("Explosion.png");
 }
 
 SPRITE_ANIMATION::~SPRITE_ANIMATION()
@@ -144,7 +144,7 @@ void SPRITE_ANIMATION::Draw2(float tx, float ty)
 	Texture->Set_Texture();
 
 	// 2Dマトリックス設定
-	render->SetWorldViewProjection2D(*Get_Transform().Get_Scaling());
+	render->SetWorldViewProjection2D(Get_Transform().Get_Scaling());
 
 	render->Set_Shader(SHADER_INDEX_V::DEFAULT, SHADER_INDEX_P::NO_LIGHT);
 
@@ -220,7 +220,7 @@ void SPRITE_ANIMATION::Draw_DPP2(float tx, float ty)
 	render->SetIndexBuffer(pIndexBuffer.Get());
 
 	// 2Dマトリックス設定
-	render->SetWorldViewProjection2D(*Get_Transform().Get_Scaling());
+	render->SetWorldViewProjection2D(Get_Transform().Get_Scaling());
 
 	render->DrawIndexed(6, 0, 0);
 }

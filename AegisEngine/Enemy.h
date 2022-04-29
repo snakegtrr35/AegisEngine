@@ -29,10 +29,16 @@ public:
 	void SetRotation(aegis::Vector3& position);					// 回転の設定
 	void SetScaling(aegis::Vector3& scaling);					// 拡大縮小の値の設定
 
-	template<typename Archive>
-	void serialize(Archive& ar)
+	template<class Archive>
+	void save(Archive& archive) const
 	{
-		ar(cereal::base_class<GameObject>(this));
+		archive(cereal::make_nvp("GameObject", cereal::base_class<GameObject>(this)));
+	}
+
+	template<class Archive>
+	void load(Archive& archive)
+	{
+		archive(cereal::make_nvp("GameObject", cereal::base_class<GameObject>(this)));
 	}
 };
 

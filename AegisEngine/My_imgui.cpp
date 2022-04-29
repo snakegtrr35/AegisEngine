@@ -563,7 +563,7 @@ static const ImWchar glyphRangesJapanese[] = {
 
 extern float32 radius;
 
-static std::string old_name;
+static aegis::string old_name;
 
 extern double fps;
 
@@ -576,29 +576,29 @@ extern DXGI_QUERY_VIDEO_MEMORY_INFO info;
 extern void ShowExampleAppDockSpace(bool* p_open);
 
 template <typename ... Args>
-std::string format(const std::string& fmt, Args ... args)
+aegis::string format(const aegis::string& fmt, Args ... args)
 {
-	size_t len = std::snprintf(nullptr, 0, fmt.c_str(), args ...);
+	uint64 len = std::snprintf(nullptr, 0, fmt.c_str(), args ...);
 	aegis::vector<char> buf(len + 1);
 	std::snprintf(&buf[0], len + 1, fmt.c_str(), args ...);
-	return std::string(&buf[0]/*, &buf[0] + len*/);
+	return aegis::string(&buf[0]/*, &buf[0] + len*/);
 }
 
-void printFile(const std::string& path)
+void printFile(const aegis::string& path)
 {
 	std::wstring wstr;
-	std::string str;
+	aegis::string str;
 
 	for (const std::filesystem::directory_entry& i : std::filesystem::directory_iterator(path)) {	
 		if (i.is_directory()) {
 
-			//wstr = stringTowstring(i.path().filename().std::string());
+			//wstr = stringTowstring(i.path().filename().aegis::string());
 
 			str = format((char*)u8"%s %s", ICON_FA_FOLDER, i.path().filename().string().c_str());
 
 			if(ImGui::TreeNodeEx(str.c_str(), ImGuiTreeNodeFlags_Bullet))
 			{
-				printFile(i.path().string());
+				printFile(i.path().string().c_str());
 				ImGui::TreePop();
 			}
 		}
@@ -845,7 +845,7 @@ void My_imgui::Draw(void)
 	// ドッキングスペース
 	ImGui::DockSpaceOverViewport(ImGui::GetMainViewport(), ImGuiDockNodeFlags_PassthruCentralNode);
 
-	static std::string s = GameObject::Get_Object_Name_Map().begin()->c_str();
+	static aegis::string s = GameObject::Get_Object_Name_Map().begin()->c_str();
 
 	old_name = s;
 
@@ -918,7 +918,7 @@ void My_imgui::Draw(void)
 			ImGuiTreeNodeFlags node_flags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_OpenOnDoubleClick;
 			auto map = GameObject::Get_Object_Name_Map();
 
-			aegis::vector<std::string> Object_Name_List;
+			aegis::vector<aegis::string> Object_Name_List;
 			Object_Name_List.reserve(map.size());
 
 			for (auto object : map)
@@ -937,7 +937,7 @@ void My_imgui::Draw(void)
 				for (auto object : Object_Name_List)
 				{
 					// マウスボタン : 0 = left, 1 = right, 2 = middle + extras
-					std::string str = object.c_str();
+					aegis::string str = object.c_str();
 
 					node_flags |= /*ImGuiTreeNodeFlags_Leaf |*/ ImGuiTreeNodeFlags_NoTreePushOnOpen; // ImGuiTreeNodeFlags_Bullet
 					ImGui::TreeNodeEx((void*)(intptr_t)i, node_flags, str.c_str());
@@ -1028,7 +1028,7 @@ void My_imgui::Draw(void)
 
 				for (int i = 0; i < (int)aegis::memory::AllocatorType::Max; i++)
 				{
-					std::string type;
+					aegis::string type;
 					switch (aegis::memory::AllocatorType(i))
 					{
 						case aegis::memory::AllocatorType::Boot:
@@ -1083,7 +1083,7 @@ void My_imgui::Draw(void)
 
 	// Drag Test
 	{
-		static aegis::vector<std::string> names = { "Bobby", "Beatrice", "Betty", "Brianna", "Barry", "Bernard", "Bibi", "Blaine", "Bryn" };
+		static aegis::vector<aegis::string> names = { "Bobby", "Beatrice", "Betty", "Brianna", "Barry", "Bernard", "Bibi", "Blaine", "Bryn" };
 
 		static int32 cnt = 0;
 
@@ -1107,14 +1107,14 @@ void My_imgui::Draw(void)
 					if ((cnt % 3) != 0)
 						ImGui::SameLine();
 
-					size_t pos = tex_file->second.Path.find_last_of("/");
+					uint64 pos = tex_file->second.Path.find_last_of("/");
 
-					std::string tex_name = tex_file->second.Path.substr(pos + 1);
+					aegis::string tex_name = tex_file->second.Path.substr(pos + 1);
 
 					ImGui::BeginGroup();
 					{
 						{
-							auto hash = std::hash<std::string>()(tex_name);
+							auto hash = std::hash<aegis::string>()(tex_name);
 
 							ImTextureID image = TEXTURE_MANEGER::Get_Instance()->GetShaderResourceView(hash);
 
@@ -1170,7 +1170,7 @@ void My_imgui::Draw(void)
 
 		if (ImGui::Begin("Drop Test"))
 		{
-			static aegis::vector<std::string> names_temp = { "Bobby", "Beatrice", "Betty", "Brianna", "Barry", "Bernard", "Bibi", "Blaine", "Bryn" };
+			static aegis::vector<aegis::string> names_temp = { "Bobby", "Beatrice", "Betty", "Brianna", "Barry", "Bernard", "Bibi", "Blaine", "Bryn" };
 
 			enum Mode
 			{
@@ -1200,13 +1200,13 @@ void My_imgui::Draw(void)
 						//IM_ASSERT(payload->DataSize == sizeof(char*));
 						//int32 payload_n = *(const int32*)payload->Data;
 
-						std::string str = reinterpret_cast<char*>(payload->Data);
+						aegis::string str = reinterpret_cast<char*>(payload->Data);
 
 						if (mode == Mode_Copy)
 						{
-							size_t pos = start->second.Path.find_last_of("/");
+							uint64 pos = start->second.Path.find_last_of("/");
 
-							std::string tex_name = start->second.Path.substr(pos + 1);
+							aegis::string tex_name = start->second.Path.substr(pos + 1);
 
 							//names_temp[cnt] = tex_name;
 							names_temp[cnt] = str.c_str();
@@ -1311,8 +1311,6 @@ void My_imgui::Update(void)
 		{
 			Mouse_Over_Enable = false;
 		}
-
-		COMPONENT_MANEGER::Set_Draw_Enable_All(Debug_Draw_Enable);
 	}
 }
 
@@ -1323,7 +1321,7 @@ void My_imgui::Uninit(void)
 	ImGui::DestroyContext();
 
 	{
-		std::pair< aegis::vector<std::string>, aegis::vector<std::string> > temp;
+		std::pair< aegis::vector<aegis::string>, aegis::vector<aegis::string> > temp;
 
 		temp.swap(Component_Items);
 	}
@@ -1357,7 +1355,7 @@ const bool My_imgui::Get_Mouse_Over_Enable()
 
 
 
-void My_imgui::Draw_Inspector(const std::string& name)
+void My_imgui::Draw_Inspector(const aegis::string& name)
 {
 	//static const char* item_current = nullptr;
 	//static const char* temp_current = nullptr;
@@ -1431,7 +1429,7 @@ void My_imgui::Draw_Inspector(const std::string& name)
 								mat44._41, mat44._42, mat44._43,mat44._44
 			};
 
-			mtr = XMMatrixTranslation(object->Get_Transform().Get_Position()->x, object->Get_Transform().Get_Position()->y, object->Get_Transform().Get_Position()->z);
+			mtr = XMMatrixTranslation(object->Get_Transform().Get_Position().x, object->Get_Transform().Get_Position().y, object->Get_Transform().Get_Position().z);
 			XMStoreFloat4x4(&mat44, mtr);
 
 			static float32 pos[16] = { mat44._11, mat44._12, mat44._13,mat44._14,
@@ -1442,8 +1440,8 @@ void My_imgui::Draw_Inspector(const std::string& name)
 
 			if (flag)
 			{
-				mtr = XMMatrixScaling(object->Get_Transform().Get_Scaling()->x, object->Get_Transform().Get_Scaling()->y, object->Get_Transform().Get_Scaling()->z);
-				mtr *= XMMatrixTranslation(object->Get_Transform().Get_Position()->x, object->Get_Transform().Get_Position()->y, object->Get_Transform().Get_Position()->z);
+				mtr = XMMatrixScaling(object->Get_Transform().Get_Scaling().x, object->Get_Transform().Get_Scaling().y, object->Get_Transform().Get_Scaling().z);
+				mtr *= XMMatrixTranslation(object->Get_Transform().Get_Position().x, object->Get_Transform().Get_Position().y, object->Get_Transform().Get_Position().z);
 				XMStoreFloat4x4(&mat44, mtr);
 
 				pos[0] = mat44._11, pos[1] = mat44._12, pos[2] = mat44._13, pos[3] = mat44._14;
@@ -1478,14 +1476,14 @@ void My_imgui::Draw_Inspector(const std::string& name)
 			}
 
 			{
-				Draw_Components(object->Get_Component()->Get_All_Components());
+				Draw_Components(object->GetComponents());
 			}
 
 			if (ImGui::Button("Add Component"))
 			{
 				if (nullptr != temp_current)
 				{
-					std::string s(temp_current.get());
+					aegis::string s(temp_current.get());
 
 					Add_Component(object, s);
 				}
@@ -1495,7 +1493,7 @@ void My_imgui::Draw_Inspector(const std::string& name)
 			{
 				if (nullptr != temp_current)
 				{
-					std::string s(temp_current.get());
+					aegis::string s(temp_current.get());
 
 					Delete_Component(object, s);
 				}
@@ -1521,54 +1519,72 @@ void EditTransform(const float32* cameraView, float32* cameraProjection, float32
 		mCurrentGizmoOperation = ImGuizmo::SCALE;
 
 	{
-		std::array<float32, 3> Translation{ object->Get_Transform().Get_Position()->x, object->Get_Transform().Get_Position()->y, object->Get_Transform().Get_Position()->z };
-		const std::array<float32, 3> Translation_Ans{ object->Get_Transform().Get_Position()->x, object->Get_Transform().Get_Position()->y, object->Get_Transform().Get_Position()->z };
-			  
-		std::array<float32, 3>  Rotation = { object->Get_Transform().Get_Rotation()->x, object->Get_Transform().Get_Rotation()->y, object->Get_Transform().Get_Rotation()->z };
-		const std::array<float32, 3>  Rotation_Ans = { object->Get_Transform().Get_Rotation()->x, object->Get_Transform().Get_Rotation()->y, object->Get_Transform().Get_Rotation()->z };
-			  
-		float32 R[3] = { object->Get_Transform().Get_Rotation()->x, object->Get_Transform().Get_Rotation()->y, object->Get_Transform().Get_Rotation()->z };
+		aegis::Transform transform = object->Get_Transform();
 
-		std::array<float32, 3>  Scale = { object->Get_Transform().Get_Scaling()->x, object->Get_Transform().Get_Scaling()->y, object->Get_Transform().Get_Scaling()->z };
-		const std::array<float32, 3>  Scale_Ans = { object->Get_Transform().Get_Scaling()->x, object->Get_Transform().Get_Scaling()->y, object->Get_Transform().Get_Scaling()->z };
+		std::array<float32, 3> Translation{ transform.Get_Position().x, transform.Get_Position().y, transform.Get_Position().z };
+		std::array<float32, 3>  Rotation = { transform.Get_Rotation().x, transform.Get_Rotation().y, transform.Get_Rotation().z };
+		float32 R[3] = { transform.Get_Rotation().x, transform.Get_Rotation().y, transform.Get_Rotation().z };
+		std::array<float32, 3>  Scale = { transform.Get_Scaling().x, transform.Get_Scaling().y, transform.Get_Scaling().z };
 
 		//ImGuizmo::DecomposeMatrixToComponents(matrix, Translation, Rotation, Scale);
 
-		ImGui::DragFloat3((char*)u8"トランスフォーム", (float32*)object->Get_Transform().Get_Position(), 0.01f);
-		ImGui::DragFloat3((char*)u8"回転", (float32*)object->Get_Transform().Get_Rotation(), 0.1f);
-		ImGui::DragFloat3((char*)u8"スケール", (float32*)object->Get_Transform().Get_Scaling(), 0.01f);
+		bool isTransEdit = ImGui::DragFloat3((char*)u8"トランスフォーム", Translation.data(), 0.01f);
+		bool isRotateEdit = ImGui::DragFloat3((char*)u8"回転", Rotation.data(), 0.01f);
+		bool isScaleEdit = ImGui::DragFloat3((char*)u8"スケール", Scale.data(), 0.01f);
+
+		transform.Set_Position(reinterpret_cast<Vector3*>(Translation.data()));
+		transform.Set_Rotation(reinterpret_cast<Vector3*>(Rotation.data()));
+		transform.Set_Scaling(reinterpret_cast<Vector3*>(Scale.data()));
+
+		Vector3 pos = transform.Get_Position();
+		Vector3 rotate = transform.Get_Rotation();
+		Vector3 scale = transform.Get_Scaling();
+
+		for (int i = 0; i < 3; i++)
+		{
+			Translation[i] = pos[i];
+			Rotation[i] = rotate[i];
+			Scale[i] = scale[i];
+		}
+
+		const std::array<float32, 3> Translation_Ans{ transform.Get_Position().x, transform.Get_Position().y, transform.Get_Position().z };
+		const std::array<float32, 3>  Rotation_Ans = { transform.Get_Rotation().x, transform.Get_Rotation().y, transform.Get_Rotation().z };
+		const std::array<float32, 3>  Scale_Ans = { transform.Get_Scaling().x, transform.Get_Scaling().y, transform.Get_Scaling().z };
 
 		ImGuizmo::DecomposeMatrixToComponents(matrix, Translation.data(), Rotation.data(), Scale.data());
+	
 
-		//ImGuizmo::RecomposeMatrixFromComponents(Translation, Rotation, Scale, matrix);
-		ImGuizmo::RecomposeMatrixFromComponents(Translation.data(), Rotation.data(), Scale.data(), matrix);
+		//ImGuizmo::RecomposeMatrixFromComponents(Translation.data(), Rotation.data(), Scale.data(), matrix);
 
 		switch (mCurrentGizmoOperation)
 		{
 			case ImGuizmo::TRANSLATE:
 			{
-				if (Translation_Ans != Translation)
+				if (Translation_Ans != Translation
+					&& !isTransEdit)
 				{
 					Vector3 vec(Translation[0], Translation[1], Translation[2]);
-					object->Get_Transform().Set_Position(vec);
+					transform.Set_Position(vec);
 				}
 			}
 			break;
 		case ImGuizmo::ROTATE:
 			{
-				if (Rotation_Ans != Rotation)
+				if (Rotation_Ans != Rotation
+					&& !isRotateEdit)
 				{
 					Vector3 vec(Rotation[0], Rotation[1], Rotation[2]);
-					object->Get_Transform().Set_Rotation(vec);
+					transform.Set_Rotation(vec);
 				}
 			}
 			break;
 		case ImGuizmo::SCALE:
 			{
-				if (Scale_Ans != Scale)
+				if (Scale_Ans != Scale
+					&& !isScaleEdit)
 				{
 					Vector3 vec(Scale[0], Scale[1], Scale[2]);
-					object->Get_Transform().Set_Scaling(vec);
+					transform.Set_Scaling(vec);
 				}
 			}
 			break;
@@ -1576,19 +1592,25 @@ void EditTransform(const float32* cameraView, float32* cameraProjection, float32
 			break;
 		}
 
+		ImGuizmo::RecomposeMatrixFromComponents(Translation.data(), Rotation.data(), Scale.data(), matrix);
+
+		//transform.Set_Position(reinterpret_cast<Vector3*>(Translation.data()));
+		//transform.Set_Rotation(reinterpret_cast<Vector3*>(Rotation.data()));
+		//transform.Set_Scaling(reinterpret_cast<Vector3*>(Scale.data()));
+
 		if (enable)
 		{
 			//Vector3 vec1(Translation[0], Translation[1], Translation[2]);
 			Vector3 vec2/*(Rotation[0], Rotation[1], Rotation[2])*/;
 			//Vector3 vec3(Scale[0], Scale[1], Scale[2]);
 
-			//object->Get_Transform().Set_Position(vec1);
+			//transform.Set_Position(vec1);
 			//object->Set_Rotation(vec2);
-			//object->Get_Transform().Set_Scaling(vec3);
+			//transform.Set_Scaling(vec3);
 
 			ImGui::DragFloat3("Rotation", R, 0.2f, -180.f, 180.f);
 			vec2 = Vector3(R[0], R[1], R[2]);
-			object->Get_Transform().Set_Rotation(vec2);
+			transform.Set_Rotation(vec2);
 		}
 	}
 
@@ -1597,16 +1619,16 @@ void EditTransform(const float32* cameraView, float32* cameraProjection, float32
 	ImGuizmo::Manipulate(cameraView, cameraProjection, mCurrentGizmoOperation, ImGuizmo::LOCAL, matrix, NULL, &snap[0], NULL, NULL);
 }
 
-void My_imgui::Draw_Components(const aegis::vector<COMPONENT*>& components)
+void My_imgui::Draw_Components(aegis::vector< std::weak_ptr<COMPONENT> >* components)
 {
 	ImGui::Spacing();
 	ImGui::Text((char*)u8"コンポーネント");
 	ImGui::Spacing();
 
-	for (const auto& com : components)
+	for (const auto& com : *components)
 	{
 		ImGui::Spacing();
-		com->Draw_Inspector();
+		com.lock()->Draw_Inspector();
 		ImGui::Spacing();
 	}
 }
@@ -1616,7 +1638,7 @@ void My_imgui::Texture_Import()
 	static bool flag = false;
 	static bool flag2 = false;
 
-	static std::string file_name;
+	static aegis::string file_name;
 
 	ImGuiWindowFlags window_flags = ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoDocking;
 
@@ -1630,7 +1652,7 @@ void My_imgui::Texture_Import()
 		{
 			ImGui::Indent(15.0f);
 
-			ImGui::InputText((char*)u8"テクスチャ名", &file_name);
+			ImGui::InputText((char*)u8"テクスチャ名", reinterpret_cast<std::string*>(&file_name));
 			ImGui::SameLine(); HelpMarker((char*)u8"対応フォーマットは 'png' 'jpg''dds'");
 
 			ImGui::Spacing();
@@ -1710,7 +1732,7 @@ void My_imgui::Texture_Import()
 	}
 }
 
-const char My_imgui::Texture_File_Check(const std::string& file_name)
+const char My_imgui::Texture_File_Check(const aegis::string& file_name)
 {
 	if (file_name.empty())
 	{
@@ -1718,7 +1740,7 @@ const char My_imgui::Texture_File_Check(const std::string& file_name)
 		return -1;
 	}
 
-	size_t file = std::hash<std::string>()(file_name);//
+	uint64 file = std::hash<aegis::string>()(file_name);//
 
 	if (TEXTURE_MANEGER::Get_Instance()->Get_TextureFile().find(file) != TEXTURE_MANEGER::Get_Instance()->Get_TextureFile().end())
 	{
@@ -1728,7 +1750,7 @@ const char My_imgui::Texture_File_Check(const std::string& file_name)
 
 	// ファイルがあるかの判定
 	{
-		std::string path = "./asset/texture/";
+		aegis::string path = "./asset/texture/";
 
 		path += file_name;
 
@@ -1748,7 +1770,7 @@ void My_imgui::Texture_Delete()
 	static bool flag = true;
 	static bool flag2 = false;
 
-	static std::string file_name;
+	static aegis::string file_name;
 
 	ImGuiWindowFlags window_flags = ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoDocking;
 
@@ -1762,7 +1784,7 @@ void My_imgui::Texture_Delete()
 		{
 			ImGui::Indent(15.0f);
 
-			ImGui::InputText((char*)u8"テクスチャ名", &file_name);
+			ImGui::InputText((char*)u8"テクスチャ名", reinterpret_cast<std::string*>(&file_name));
 
 			ImGui::Spacing();
 			ImGui::Spacing();
@@ -1841,7 +1863,7 @@ void My_imgui::Model_Import()
 	static bool flag = false;
 	static bool flag2 = false;
 
-	static std::string file_name;
+	static aegis::string file_name;
 
 	ImGuiWindowFlags window_flags = ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoDocking;
 
@@ -1855,7 +1877,7 @@ void My_imgui::Model_Import()
 		{
 			ImGui::Indent(15.0f);
 
-			ImGui::InputText((char*)u8"モデル名", &file_name);
+			ImGui::InputText((char*)u8"モデル名", reinterpret_cast<std::string*>(&file_name));
 			ImGui::SameLine(); HelpMarker((char*)u8"対応フォーマットは 'fbx'");
 
 			ImGui::Spacing();
@@ -1935,7 +1957,7 @@ void My_imgui::Model_Import()
 	}
 }
 
-const char My_imgui::Model_File_Check(const std::string& file_name)
+const char My_imgui::Model_File_Check(const aegis::string& file_name)
 {
 	if (file_name.empty())
 	{
@@ -1943,7 +1965,7 @@ const char My_imgui::Model_File_Check(const std::string& file_name)
 		return -1;
 	}
 
-	size_t file = std::hash<std::string>()(file_name);//
+	uint64 file = std::hash<aegis::string>()(file_name);//
 
 	if (MODEL_MANEGER::Get_Instance()->Get_ModelFile().find(file) != MODEL_MANEGER::Get_Instance()->Get_ModelFile().end())
 	{
@@ -1953,7 +1975,7 @@ const char My_imgui::Model_File_Check(const std::string& file_name)
 
 	// ファイルがあるかの判定
 	{
-		std::string path = "./asset/model/";
+		aegis::string path = "./asset/model/";
 
 		path += file_name;
 
@@ -1973,7 +1995,7 @@ void My_imgui::Model_Delete()
 	static bool flag = true;
 	static bool flag2 = false;
 
-	static std::string file_name;
+	static aegis::string file_name;
 
 	ImGuiWindowFlags window_flags = ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoDocking;
 
@@ -1987,7 +2009,7 @@ void My_imgui::Model_Delete()
 		{
 			ImGui::Indent(15.0f);
 
-			ImGui::InputText((char*)u8"モデル名", &file_name);
+			ImGui::InputText((char*)u8"モデル名", reinterpret_cast<std::string*>(&file_name));
 
 			ImGui::Spacing();
 			ImGui::Spacing();
@@ -2258,65 +2280,73 @@ void My_imgui::Light_Setting()
 	ImGui::End();
 }
 
-void My_imgui::Add_Component(GameObject* object, const std::string s)
+void My_imgui::Add_Component(GameObject* object, const aegis::string s)
 {
 	ImGui::Text("%s", s.c_str());
 
 	auto scene = CManager::Get_Instance()->Get_Scene();
-	auto comp = object->Get_Component();
+	//auto comp = object->Get_Component();
 
-	if (std::string::npos != s.find("AABB"))
+	if (aegis::string::npos != s.find("AABB"))
 	{
-		comp->Add_Component<BOUNDING_AABB>(scene->Get_Game_Object(object));
+		//comp->Add_Component<BOUNDING_AABB>(scene->Get_Game_Object(object));
+		object->AddComponent<BOUNDING_AABB>();
 		return;
 	}
 
-	if (std::string::npos != s.find("OBB"))
+	if (aegis::string::npos != s.find("OBB"))
 	{
-		comp->Add_Component<BOUNDING_OBB>(scene->Get_Game_Object(object));
+		//comp->Add_Component<BOUNDING_OBB>(scene->Get_Game_Object(object));
+		object->AddComponent<BOUNDING_OBB>();
 		return;
 	}
 
-	if (std::string::npos != s.find("球"))
+	if (aegis::string::npos != s.find("球"))
 	{
-		comp->Add_Component<BOUNDING_SHPERE>(scene->Get_Game_Object(object));
+		//comp->Add_Component<BOUNDING_SHPERE>(scene->Get_Game_Object(object));
+		object->AddComponent<BOUNDING_SHPERE>();
 		return;
 	}
 
-	if (std::string::npos != s.find("カプセル"))
+	if (aegis::string::npos != s.find("カプセル"))
 	{
-		comp->Add_Component<BOUNDING_CAPSULE>(scene->Get_Game_Object(object));
+		//comp->Add_Component<BOUNDING_CAPSULE>(scene->Get_Game_Object(object));
+		object->AddComponent<BOUNDING_CAPSULE>();
 		return;
 	}
 }
 
-void My_imgui::Delete_Component(GameObject* object, const std::string s)
+void My_imgui::Delete_Component(GameObject* object, const aegis::string s)
 {
 	ImGui::Text("%s", s.c_str());
 
 	auto scene = CManager::Get_Instance()->Get_Scene();
-	auto comp = object->Get_Component();
+	//auto comp = object->Get_Component();
 
 	COMPONENT* component = nullptr;
 
-	if (std::string::npos != s.find("AABB"))
+	if (aegis::string::npos != s.find("AABB"))
 	{
-		component = comp->Get_Component<BOUNDING_AABB>();
+		//component = comp->Get_Component<BOUNDING_AABB>();
+		component = object->GetComponent<BOUNDING_AABB>();
 	}
 
-	if (std::string::npos != s.find("OBB"))
+	if (aegis::string::npos != s.find("OBB"))
 	{
-		component = comp->Get_Component<BOUNDING_OBB>();
+		//component = comp->Get_Component<BOUNDING_OBB>();
+		component = object->GetComponent<BOUNDING_OBB>();
 	}
 
-	if (std::string::npos != s.find("球"))
+	if (aegis::string::npos != s.find("球"))
 	{
-		component = comp->Get_Component<BOUNDING_SHPERE>();
+		//component = comp->Get_Component<BOUNDING_SHPERE>();
+		component = object->GetComponent<BOUNDING_SHPERE>();
 	}
 
-	if (std::string::npos != s.find("カプセル"))
+	if (aegis::string::npos != s.find("カプセル"))
 	{
-		component = comp->Get_Component<BOUNDING_CAPSULE>();
+		//component = comp->Get_Component<BOUNDING_CAPSULE>();
+		component = object->GetComponent<BOUNDING_CAPSULE>();
 	}
 
 	if(nullptr == component) return;

@@ -10,7 +10,7 @@ MESH::MESH() : VertexBuffer(nullptr), IndexBuffer(nullptr)
 {
 }
 
-MESH::MESH(aegis::vector<VERTEX_3D>& vertices, aegis::vector<UINT>& indices, std::string& texture_name, XMMATRIX& matrix, std::string name) : Name(name), TextureName(texture_name), Matrix(XMMATRIXToXMFLOAT4X4(matrix)), Vertices(vertices), Indices(indices), VertexBuffer(nullptr), IndexBuffer(nullptr)
+MESH::MESH(aegis::vector<VERTEX_3D>& vertices, aegis::vector<UINT>& indices, aegis::string& texture_name, XMMATRIX& matrix, aegis::string name) : Name(name), TextureName(texture_name), Matrix(XMMATRIXToXMFLOAT4X4(matrix)), Vertices(vertices), Indices(indices), VertexBuffer(nullptr), IndexBuffer(nullptr)
 {
 }
 
@@ -27,8 +27,8 @@ void MESH::Init()
 		{
 			for (auto& tex : Textures)
 			{
-				const std::string directory = "./asset/model/";
-				std::string path = directory + tex.FileName;
+				const aegis::string directory = "./asset/model/";
+				aegis::string path = directory + tex.FileName;
 				std::wstring filenamews = std::wstring(path.begin(), path.end());
 
 				{
@@ -93,22 +93,22 @@ aegis::vector<TEXTURE_S>& MESH::Get_Textures()
 	return Textures;
 }
 
-const std::string& MESH::Get_Name()
+const aegis::string& MESH::Get_Name()
 {
 	return Name;
 }
 
-void MESH::Set_Name(const std::string& name)
+void MESH::Set_Name(const aegis::string& name)
 {
 	Name = name;
 }
 
-const std::string& MESH::Get_Texture_Name()
+const aegis::string& MESH::Get_Texture_Name()
 {
 	return TextureName;
 }
 
-void MESH::Set_Texture_Name(const std::string & texture_name)
+void MESH::Set_Texture_Name(const aegis::string & texture_name)
 {
 	TextureName = texture_name;
 }

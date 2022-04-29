@@ -71,7 +71,7 @@ void FADE::Draw()
 	render->SetIndexBuffer(pIndexBuffer.Get());
 
 	// 2Dマトリックス設定
-	render->SetWorldViewProjection2D(*Get_Transform().Get_Scaling());
+	render->SetWorldViewProjection2D(Get_Transform().Get_Scaling());
 
 	render->Set_Shader(SHADER_INDEX_V::DEFAULT, SHADER_INDEX_P::NO_TEXTURE);
 

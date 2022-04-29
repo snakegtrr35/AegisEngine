@@ -117,6 +117,8 @@ void MESH_DOOM::Init()
 //***********************************************************************************************
 void MESH_DOOM::Uninit()
 {
+	GameObject::Uninit();
+
 	Texture.reset(nullptr);
 }
 
@@ -143,9 +145,9 @@ void MESH_DOOM::Draw()
 	{
 		XMMATRIX world;
 
-		Vector3 position = *Get_Transform().Get_Position();
-		Vector3 rotate = *Get_Transform().Get_Rotation();
-		Vector3 scale = *Get_Transform().Get_Scaling();
+		Vector3 position = Get_Transform().Get_Position();
+		Vector3 rotate = Get_Transform().Get_Rotation();
+		Vector3 scale = Get_Transform().Get_Scaling();
 
 		world = XMMatrixScaling(scale.x, scale.y, scale.z);
 		world *= XMMatrixRotationRollPitchYaw(XMConvertToRadians(rotate.x), XMConvertToRadians(rotate.y), XMConvertToRadians(rotate.z));
@@ -196,9 +198,9 @@ void MESH_DOOM::Draw_Shadow()
 	{
 		XMMATRIX world;
 
-		Vector3 position = *Get_Transform().Get_Position();
-		Vector3 rotate = *Get_Transform().Get_Rotation();
-		Vector3 scale = *Get_Transform().Get_Scaling();
+		Vector3 position = Get_Transform().Get_Position();
+		Vector3 rotate = Get_Transform().Get_Rotation();
+		Vector3 scale = Get_Transform().Get_Scaling();
 
 		world = XMMatrixScaling(scale.x, scale.y, scale.z);
 		world *= XMMatrixRotationRollPitchYaw(XMConvertToRadians(rotate.x), XMConvertToRadians(rotate.y), XMConvertToRadians(rotate.z));

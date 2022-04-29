@@ -204,13 +204,13 @@ void GAME::Update(float delta_time)
 
 		//	for (auto sprite : sprits)
 		//	{
-		//		if (std::string("hp_ui") == sprite->Get_Object_Name())
+		//		if (aegis::string("hp_ui") == sprite->Get_Object_Name())
 		//		{
 		//			auto children = sprite->Get_Child_Sptite();
 
 		//			for (const auto& child : *children)
 		//			{
-		//				if (std::string("hp") == child->Name)
+		//				if (aegis::string("hp") == child->Name)
 		//				{
 		//					auto player = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<PLAYER>("player");
 
@@ -297,7 +297,7 @@ void GAME::Uninit()
 //	{
 //		const type_info& id = typeid(*this);
 //
-//		std::string name(id.name());
+//		aegis::string name(id.name());
 //
 //		// 置換
 //		Replace_String(name, "class ", "      ");
@@ -327,7 +327,7 @@ void GAME::Load(SCENE* scene)
 	{
 		const type_info& id = typeid(*scene);
 
-		std::string name(id.name());
+		aegis::string name(id.name());
 
 		// 置換
 		name = Replace_String(name, "class ", "");
@@ -395,14 +395,14 @@ void GAME::Load(SCENE* scene)
 
 		// 敵
 		{
-			std::string name("enemy");
-			std::string number;
+			aegis::string name("enemy");
+			aegis::string number;
 		
 			for (int i = 0; i < 5; i++)
 			{
 				number = std::to_string(i);
 		
-				auto enemy = Add_Game_Object<ENEMY>(LAYER_NAME::GAMEOBJECT, name + number);
+				auto enemy = Add_Game_Object<ENEMY>(LAYER_NAME::GAMEOBJECT, (name + number).c_str());
 		
 				if (enemy)
 				{
@@ -474,8 +474,8 @@ void GAME::Load(SCENE* scene)
 		
 			sprite->SetColor(color);
 		
-			//sprite->Edit(std::string("30 / 30"));
-			sprite->Edit(std::string("infinite / 30"));
+			//sprite->Edit(aegis::string("30 / 30"));
+			sprite->Edit(aegis::string("infinite / 30"));
 		
 			// 弾のアイコン
 			SPRITE* bullet_icon = sprite->Add_Child_Sptite("bullet_icon");
@@ -542,7 +542,7 @@ void GAME::Load(SCENE* scene)
 		//
 		//	for (const auto& child : *children)
 		//	{
-		//		if (std::string("hp") == child->Name)
+		//		if (aegis::string("hp") == child->Name)
 		//		{
 		//			child->Child->SetColor(color);
 		//		}
@@ -550,18 +550,18 @@ void GAME::Load(SCENE* scene)
 		//}
 
 		{
-			std::string name("enemy");
-			std::string number;
+			aegis::string name("enemy");
+			aegis::string number;
 		
 			for (int i = 0; i < 5; i++)
 			{
 				number = std::to_string(i);
 		
-				auto enemy = scene->Get_Game_Object<ENEMY>(name + number);
+				auto enemy = scene->Get_Game_Object<ENEMY>((name + number).c_str());
 		
 				if (enemy.expired())
 				{
-					ENEMY* e = Add_Game_Object<ENEMY>(LAYER_NAME::GAMEOBJECT, name + number);
+					ENEMY* e = Add_Game_Object<ENEMY>(LAYER_NAME::GAMEOBJECT, (name + number).c_str());
 		
 					Vector3 vec((float)(-10.0f + i * 5.0f), 0.0f, 10.0f);
 					e->Get_Transform().Set_Position(vec);
@@ -605,7 +605,7 @@ void GAME::Load(SCENE* scene)
 		
 			for (const auto& child : *children)
 			{
-				if (std::string("hp") == child->Name)
+				if (aegis::string("hp") == child->Name)
 				{
 					child->Child->SetColor(color);
 				}
@@ -613,8 +613,8 @@ void GAME::Load(SCENE* scene)
 		}
 
 		//{
-		//	std::string name("enemy");
-		//	std::string number;
+		//	aegis::string name("enemy");
+		//	aegis::string number;
 		//
 		//	for (int i = 0; i < 5; i++)
 		//	{
@@ -650,7 +650,7 @@ void GAME::Load(SCENE* scene)
 	{
 		const type_info& id = typeid(*scene);
 
-		std::string name(id.name());
+		aegis::string name(id.name());
 
 		// 置換
 		name = Replace_String(name, "class ", "");

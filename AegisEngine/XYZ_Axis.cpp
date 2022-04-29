@@ -226,9 +226,9 @@ void AXIS::Draw(void)
 		{
 			world = XMMatrixIdentity();
 
-			Vector3 position = *Get_Transform().Get_Position();
-			Vector3 rotate = *Get_Transform().Get_Rotation();
-			Vector3 scale = *Get_Transform().Get_Scaling();
+			Vector3 position = Get_Transform().Get_Position();
+			Vector3 rotate = Get_Transform().Get_Rotation();
+			Vector3 scale = Get_Transform().Get_Scaling();
 
 			world = XMMatrixScaling(scale.x, scale.y, scale.z);																						// 拡大縮小
 			world *= XMMatrixRotationRollPitchYaw(XMConvertToRadians(rotate.x), XMConvertToRadians(rotate.y), XMConvertToRadians(rotate.z));			// 回転(ロールピッチヨウ)
@@ -262,6 +262,8 @@ void AXIS::Update(float delta_time)
 
 void AXIS::Uninit(void)
 {
+	GameObject::Uninit();
+
 	for (int i = 0; i < 3; i++)
 	{
 		SAFE_RELEASE(pVertexBuffer[i]);

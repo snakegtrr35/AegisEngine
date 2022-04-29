@@ -15,19 +15,19 @@ class TEXTS :public  SPRITE {
 	OBJECT_TYPE_INFO(TEXTS)
 
 private:
-	std::string Text;	//!< 表示する文字列
+	aegis::string Text;	//!< 表示する文字列
 
 	/**
 	* @brief 描画関数
 	* @details 実際に描画する関数
 	*/
-	void Text_Draw(const std::string& text);
+	void Text_Draw(const aegis::string& text);
 
 	/**
 	* @brief 描画(Depth-pre-pass)関数
 	* @details Depth-pre-passをする関数
 	*/
-	void Text_Draw_DPP(const std::string& text);
+	void Text_Draw_DPP(const aegis::string& text);
 
 public:
 	/**
@@ -77,28 +77,26 @@ public:
 	* @param text 設定する文字列
 	* @details 表示する文字列を設定する関数
 	*/
-	void Edit(const std::string& text);
+	void Edit(const aegis::string& text);
 
-	template<typename Archive>
-	void serialize(Archive& ar)
+	template<class Archive>
+	void save(Archive& archive) const
 	{
-		ar(cereal::base_class<SPRITE>(this));
-		ar(Text);
+		archive(cereal::make_nvp("SPRITE", cereal::base_class<SPRITE>(this)));
+
+		archive(cereal::make_nvp("Text", std::string(Text)));
 	}
 
-	//template<class Archive>
-	//void save(Archive& ar) const
-	//{
-	//	ar(cereal::base_class<SPRITE>(this));
-	//	ar(Text);
-	//}
+	template<class Archive>
+	void load(Archive& archive)
+	{
+		archive(cereal::make_nvp("SPRITE", cereal::base_class<SPRITE>(this)));
 
-	//template<class Archive>
-	//void load(Archive& ar)
-	//{
-	//	ar(cereal::base_class<SPRITE>(this));
-	//	ar(Text);
-	//}
+		std::string s;
+		archive(cereal::make_nvp("Text", s));
+		Text.reserve(s.size());
+		Text = s;
+	}
 };
 
 CEREAL_REGISTER_TYPE(TEXTS)

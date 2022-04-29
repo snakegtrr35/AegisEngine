@@ -219,9 +219,9 @@ void POLYGON_3D::Draw(void)
 	{
 		XMMATRIX world(XMMatrixIdentity());
 
-		Vector3 position = *Get_Transform().Get_Position();
-		Vector3 rotate = *Get_Transform().Get_Rotation();
-		Vector3 scale = *Get_Transform().Get_Scaling();
+		Vector3 position = Get_Transform().Get_Position();
+		Vector3 rotate = Get_Transform().Get_Rotation();
+		Vector3 scale = Get_Transform().Get_Scaling();
 
 		XMMATRIX matrix = XMMatrixScaling(scale.x, scale.y, scale.z);
 		matrix *= XMMatrixRotationRollPitchYaw(XMConvertToRadians(rotate.x), XMConvertToRadians(rotate.y), XMConvertToRadians(rotate.z));
@@ -296,9 +296,9 @@ void POLYGON_3D::Draw_Shadow(void)
 	{
 		XMMATRIX world(XMMatrixIdentity());
 
-		Vector3 position = *Get_Transform().Get_Position();
-		Vector3 rotate = *Get_Transform().Get_Rotation();
-		Vector3 scale = *Get_Transform().Get_Scaling();
+		Vector3 position = Get_Transform().Get_Position();
+		Vector3 rotate = Get_Transform().Get_Rotation();
+		Vector3 scale = Get_Transform().Get_Scaling();
 
 		XMMATRIX matrix = XMMatrixScaling(scale.x, scale.y, scale.z);
 		matrix *= XMMatrixRotationRollPitchYaw(XMConvertToRadians(rotate.x), XMConvertToRadians(rotate.y), XMConvertToRadians(rotate.z));
@@ -340,9 +340,9 @@ void POLYGON_3D::Draw_DPP(void)
 	{
 		XMMATRIX world(XMMatrixIdentity());
 
-		Vector3 position = *Get_Transform().Get_Position();
-		Vector3 rotate = *Get_Transform().Get_Rotation();
-		Vector3 scale = *Get_Transform().Get_Scaling();
+		Vector3 position = Get_Transform().Get_Position();
+		Vector3 rotate = Get_Transform().Get_Rotation();
+		Vector3 scale = Get_Transform().Get_Scaling();
 
 		XMMATRIX matrix = XMMatrixScaling(scale.x, scale.y, scale.z);
 		matrix *= XMMatrixRotationRollPitchYaw(XMConvertToRadians(rotate.x), XMConvertToRadians(rotate.y), XMConvertToRadians(rotate.z));
@@ -378,6 +378,8 @@ void POLYGON_3D::Update(float delta_time)
 
 void POLYGON_3D::Uninit(void)
 {
+	GameObject::Uninit();
+
 	SAFE_RELEASE(pVertexBuffer);
 	Texture.reset(nullptr);
 }
@@ -409,22 +411,22 @@ void POLYGON_3D::SetScaling(Vector3& scaling)
 //==============================
 // テクスチャの設定
 //==============================
-void POLYGON_3D::SetTexture(const std::string& file_name)
+void POLYGON_3D::SetTexture(const aegis::string& file_name)
 {
 	Texture->Set_Texture_Name(file_name);
 }
 
-Vector3* const POLYGON_3D::Get_Position()
+Vector3 const POLYGON_3D::Get_Position()
 {
 	return Get_Transform().Get_Position();
 }
 
-Vector3* const POLYGON_3D::Get_Rotation()
+Vector3 const POLYGON_3D::Get_Rotation()
 {
 	return Get_Transform().Get_Rotation();
 }
 
-Vector3* const POLYGON_3D::Get_Scaling()
+Vector3 const POLYGON_3D::Get_Scaling()
 {
 	return Get_Transform().Get_Scaling();
 }

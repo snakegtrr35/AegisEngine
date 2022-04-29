@@ -176,7 +176,7 @@ void TITLE::Uninit()
 //	{
 //		const type_info& id = typeid(*this);
 //
-//		std::string name(id.name());
+//		aegis::string name(id.name());
 //
 //		// 置換
 //		Replace_String(name, "class ", "      ");
@@ -206,7 +206,7 @@ void TITLE::Load(SCENE* scene)
 	{
 		const type_info& id = typeid(*scene);
 
-		std::string name(id.name());
+		aegis::string name(id.name());
 
 		// 置換
 		name = Replace_String(name, "class ", "");
@@ -235,11 +235,11 @@ void TITLE::Load(SCENE* scene)
 
 			title->SetSize(Vector4(SCREEN_HEIGHT * 0.5f, SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.5f, SCREEN_WIDTH * 0.5f));
 
-			title->SetTexture(std::string("title.png"));
+			title->SetTexture("title.png");
 
 			SPRITE* arrow = title->Add_Child_Sptite("arrow");
 
-			arrow->SetTexture(std::string("arrow.png"));
+			arrow->SetTexture("arrow.png");
 
 			title->Set_Position_Child("arrow", *title->GetPosition(), Vector2(0.0f, 65.0f + 140.0f));
 
@@ -256,7 +256,7 @@ void TITLE::Load(SCENE* scene)
 	{
 		const type_info& id = typeid(*scene);
 
-		std::string name(id.name());
+		aegis::string name(id.name());
 
 		// 置換
 		name = Replace_String(name, "class ", "");

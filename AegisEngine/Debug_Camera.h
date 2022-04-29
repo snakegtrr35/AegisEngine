@@ -119,72 +119,43 @@ public:
 		RotateEnable = flag;
 	}
 
-	template<typename Archive>
-	void serialize(Archive& ar)
+	template<class Archive>
+	void save(Archive& archive) const
 	{
-		XMStoreFloat3(Get_Transform().Get_Position(), Pos);
-		XMStoreFloat3(&A, At);
+		archive(cereal::make_nvp("GameObject", cereal::base_class<GameObject>(this)));
+		archive(cereal::make_nvp("At", A));
 
-		ar(cereal::base_class<GameObject>(this));
-		ar(A);
+		archive(cereal::make_nvp("Front", F));
+		archive(cereal::make_nvp("Up", U));
+		archive(cereal::make_nvp("Right", R));
 
-		ar(F);
-		ar(U);
-		ar(R);
+		archive(cereal::make_nvp("FOV", Viewing_Angle));
 
-		ar(Viewing_Angle);
-
-		ar(Viewport);
-
-		Pos = XMLoadFloat3(Get_Transform().Get_Position());
-		At = XMLoadFloat3(&A);
-
-		Front = XMLoadFloat3(&F);
-		Up = XMLoadFloat3(&U);
-		Right = XMLoadFloat3(&R);
-	}
-
-	//const BoundingFrustum& Get_Frustum() {
-	//	return Frustum;
-	//}
-
-	/*template<class Archive>
-	void save(Archive& ar) const
-	{
-		ar(cereal::base_class<GameObject>(this));
-		ar(A);
-
-		ar(F);
-		ar(U);
-		ar(R);
-
-		ar(Viewing_Angle);
-
-		ar(Viewport);
+		archive(cereal::make_nvp("Viewport", Viewport));
 	}
 
 	template<class Archive>
-	void load(Archive& ar)
+	void load(Archive& archive)
 	{
-		ar(cereal::base_class<GameObject>(this));
-		ar(A);
-		ar(A);
+		archive(cereal::make_nvp("GameObject", cereal::base_class<GameObject>(this)));
+		archive(cereal::make_nvp("At", A));
 
-		ar(F);
-		ar(U);
-		ar(R);
+		archive(cereal::make_nvp("Front", F));
+		archive(cereal::make_nvp("Up", U));
+		archive(cereal::make_nvp("Right", R));
 
-		ar(Viewing_Angle);
+		archive(cereal::make_nvp("FOV", Viewing_Angle));
 
-		ar(Viewport);
+		archive(cereal::make_nvp("Viewport", Viewport));
 
-		Pos = XMLoadFloat3(&Position);
-		At = XMLoadFloat3(&A);
-
-		Front = XMLoadFloat3(&F);
-		Up = XMLoadFloat3(&U);
-		Right = XMLoadFloat3(&R);
-	}*/
+		aegis::Vector3 pos = Get_Transform().Get_Position();
+		Pos = XMLoadFloat3(reinterpret_cast<XMFLOAT3*>(&pos));
+		At = XMLoadFloat3(reinterpret_cast<XMFLOAT3*>(&A));
+		
+		Front = XMLoadFloat3(reinterpret_cast<XMFLOAT3*>(&F));
+		Up = XMLoadFloat3(reinterpret_cast<XMFLOAT3*>(&U));
+		Right = XMLoadFloat3(reinterpret_cast<XMFLOAT3*>(&R));
+	}
 
 };
 

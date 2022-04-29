@@ -323,14 +323,11 @@ void SHADOW_MAP::Update()
 
 	if (!Target.expired())
 	{
-		Vector3* at = Target.lock()->Get_Transform().Get_Position();
+		Vector3 at = Target.lock()->Get_Transform().Get_Position();
 
-		Vector3 pos;
-		pos.x = at->x + LightPos.x;
-		pos.y = at->y + LightPos.y;
-		pos.z = at->z + LightPos.z;
+		Vector3 pos = at + LightPos;
 
-		ViewMatrix = XMMatrixLookAtLH(XMLoadFloat3(&pos), XMVectorSet(at->x, at->y, at->z, 0.f), XMVectorSet(0.f, 1.0f, 0.f, 0.f));
+		ViewMatrix = XMMatrixLookAtLH(XMLoadFloat3(&pos), XMVectorSet(at.x, at.y, at.z, 0.f), XMVectorSet(0.f, 1.0f, 0.f, 0.f));
 
 		Shadow.ViewMatrix = XMMatrixTranspose(ViewMatrix);
 

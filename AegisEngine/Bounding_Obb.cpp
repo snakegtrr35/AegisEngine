@@ -19,7 +19,10 @@ void BOUNDING_OBB::Init()
 	CRenderer* render = CRenderer::getInstance();
 
 	{
-		Vector3 pos = *Owner.lock()->Get_Transform().Get_Position();
+		Vector3 pos;
+
+		if(Owner)
+			pos = Owner->Get_Transform().Get_Position();
 
 		Obb = BoundingOrientedBox(Vector3(0.f, 0.f, 0.f), Radius, Quaternion);
 
@@ -124,7 +127,7 @@ void BOUNDING_OBB::Draw()
 
 	// 3Dマトリックス設定
 	{
-		Vector3 pos = *Owner.lock()->Get_Transform().Get_Position();
+		Vector3 pos = Owner->Get_Transform().Get_Position();
 
 		const auto camera01 = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<CCamera>("camera");
 		const auto camera02 = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<DEBUG_CAMERA>("camera");
@@ -168,7 +171,7 @@ void BOUNDING_OBB::Uninit()
 void BOUNDING_OBB::OverWrite()
 {
 	{
-		Vector3 pos = *Owner.lock()->Get_Transform().Get_Position();
+		Vector3 pos = Owner->Get_Transform().Get_Position();
 
 		Obb = BoundingOrientedBox(Vector3(0.f, 0.f, 0.f), Radius, Quaternion);
 

@@ -33,8 +33,8 @@ void BOUNDING_CAPSULE::Draw()
 	//Vector3 p(pos.x, pos.y, pos.z);
 
 	{
-		Vector3 pos = *Owner.lock()->Get_Transform().Get_Position();
-		Vector3 rota = *Owner.lock()->Get_Transform().Get_Rotation();
+		Vector3 pos = Owner->Get_Transform().Get_Position();
+		Vector3 rota = Owner->Get_Transform().Get_Rotation();
 
 		pos = pos + Position;
 		rota = rota + Rotation;

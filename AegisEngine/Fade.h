@@ -131,15 +131,11 @@ public:
 	*/
 	static bool End_Fade();
 
-	///**
-	//* @brief 座標を設定する関数
-	//* @param position 座標(二次元座標)
-	//* @details 座標(二次元座標)を設定する関数
-	//*/
-	//static void Set_Enable(const bool flag);
+	template<class Archive>
+	void save(Archive& archive) const {}
 
-	template<typename Archive>
-	void serialize(Archive& ar) {}
+	template<class Archive>
+	void load(Archive& archive) {}
 };
 
 CEREAL_REGISTER_TYPE(FADE)

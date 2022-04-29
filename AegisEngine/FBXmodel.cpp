@@ -9,8 +9,8 @@
 
 using namespace aegis;
 
-static std::string textype;
-static std::string directory;
+static aegis::string textype;
+static aegis::string directory;
 
 XMMATRIX aiMatrixToMatrix(aiMatrix4x4 matrix)
 {
@@ -54,7 +54,7 @@ aiMatrix4x4 MatrixToaiMatrix(XMMATRIX matrix)
 
 
 
-bool FBXmodel::Load(const std::string& FileName)
+bool FBXmodel::Load(const aegis::string& FileName)
 {
 	CRenderer* render = CRenderer::getInstance();
 	HRESULT hr;
@@ -546,7 +546,7 @@ void FBXmodel::UpdateBoneMatrix(const aiNode* Node, const XMMATRIX& Matrix)
 
 
 
-aegis::vector<TEXTURE_S> FBXmodel::loadMaterialTextures(aiMaterial* mat, aiTextureType type, std::string typeName, const aiScene* scene)
+aegis::vector<TEXTURE_S> FBXmodel::loadMaterialTextures(aiMaterial* mat, aiTextureType type, aegis::string typeName, const aiScene* scene)
 {
 	aegis::vector<TEXTURE_S> textures;
 	for (UINT i = 0; i < mat->GetTextureCount(type); i++)
@@ -576,7 +576,7 @@ aegis::vector<TEXTURE_S> FBXmodel::loadMaterialTextures(aiMaterial* mat, aiTextu
 			}
 			else
 			{
-				std::string filename = std::string(str.C_Str());
+				aegis::string filename = aegis::string(str.C_Str());
 				filename = directory + "/" + filename;
 				std::wstring filenamews = std::wstring(filename.begin(), filename.end());
 
@@ -598,11 +598,11 @@ aegis::vector<TEXTURE_S> FBXmodel::loadMaterialTextures(aiMaterial* mat, aiTextu
 	return textures;
 }
 
-std::string FBXmodel::determineTextureType(const aiScene* scene, aiMaterial* mat)
+aegis::string FBXmodel::determineTextureType(const aiScene* scene, aiMaterial* mat)
 {
 	aiString textypeStr;
 	mat->GetTexture(aiTextureType_DIFFUSE, 0, &textypeStr);
-	std::string textypeteststr = textypeStr.C_Str();
+	aegis::string textypeteststr = textypeStr.C_Str();
 	if (textypeteststr == "" || textypeteststr == "*0" || textypeteststr == "*1" || textypeteststr == "*2" || textypeteststr == "*3" || textypeteststr == "*4" || textypeteststr == "*5")
 	{
 		if (scene->mTextures[0]->mHeight == 0)
@@ -614,7 +614,7 @@ std::string FBXmodel::determineTextureType(const aiScene* scene, aiMaterial* mat
 			return "embedded non-compressed texture";
 		}
 	}
-	if (textypeteststr.find('.') != std::string::npos)
+	if (textypeteststr.find('.') != aegis::string::npos)
 	{
 		return "textures are on disk";
 	}
@@ -622,10 +622,10 @@ std::string FBXmodel::determineTextureType(const aiScene* scene, aiMaterial* mat
 
 int FBXmodel::getTextureIndex(aiString* str)
 {
-	std::string tistr;
+	aegis::string tistr;
 	tistr = str->C_Str();
 	tistr = tistr.substr(1);
-	return std::stoi(tistr);
+	return std::stoi(tistr.c_str());
 }
 
 ID3D11ShaderResourceView* FBXmodel::getTextureFromModel(const aiScene* scene, int textureindex)

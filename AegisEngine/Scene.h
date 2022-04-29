@@ -55,7 +55,7 @@ public:
 
 	//// リストへの追加
 	template <typename T>
-	static T* Add_Game_Object(LAYER_NAME layer, const std::string& name)
+	static T* Add_Game_Object(LAYER_NAME layer, const aegis::string& name)
 	{
 		std::shared_ptr<T> object(new T());
 
@@ -69,7 +69,7 @@ public:
 
 	// リストから特定の名前のオブジェクトの取得
 	template <typename T>
-	static std::weak_ptr<T> Get_Game_Object(const std::string& name = "none")
+	static std::weak_ptr<T> Get_Game_Object(const aegis::string& name = "none")
 	{
 		for (int i = 0; i < (int)LAYER_NAME::MAX_LAYER; i++)
 		{
@@ -97,7 +97,7 @@ public:
 
 	// リストから特定のオブジェクの取得
 	// 引数 name オブジェクト名
-	static GameObject* Get_Game_Object(const std::string& name)
+	static GameObject* Get_Game_Object(const aegis::string& name)
 	{
 		for (int i = 0; i < (int)LAYER_NAME::MAX_LAYER; i++)
 		{
@@ -255,6 +255,7 @@ public:
 					object.get()->Draw();
 			}
 		}
+		COMPONENT_MANEGER::getInstance()->Draw();
 	};
 
 	/**
@@ -285,6 +286,7 @@ public:
 					object.get()->Draw_DPP();
 			}
 		}
+		COMPONENT_MANEGER::getInstance()->Draw_DPP();
 	};
 
 	/**
@@ -355,6 +357,8 @@ public:
 				GameObjects[i].erase(result, GameObjects[i].end());
 			}
 		}
+
+		COMPONENT_MANEGER::getInstance()->Update(delta_time);
 	};
 
 	/**
@@ -444,36 +448,30 @@ public:
 		return &Light_Manager;
 	}
 
-	template<typename Archive>
-	void serialize(Archive& ar)
+	template<class Archive>
+	void save(Archive& archive) const
 	{
 		for (int i = 0; i < (int)LAYER_NAME::MAX_LAYER; i++)
 		{
-			if(!GameObjects[i].empty())
-				//GameObjects[i].remove_if([](auto& object) { return object->Destroy(); });
+			if (!GameObjects[i].empty())
+			{
 				// リストから削除
-				//std::remove_if(GameObjects[i].begin(), GameObjects[i].end(), [](auto& object) { return object->Destroy(); });
-				auto result = std::remove_if(GameObjects[i].begin(), GameObjects[i].end(), [](auto& object) { return object->Destroy(); });
-				//GameObjects[i].erase(result, GameObjects[i].end());
+				std::remove_if(GameObjects[i].begin(), GameObjects[i].end(), [](const auto& object) { return object->Destroy(); });
+			}
 		}
 
-		ar(GameObjects);
-		ar(Light_Manager);
-	}
-
-	/*template<class Archive>
-	void save(Archive& ar) const
-	{
-		ar(GameObjects);
-		ar(Light_Manager);
+		archive(cereal::make_nvp("GameObjects", GameObjects),
+				cereal::make_nvp("Light_Manager", Light_Manager)
+		);
 	}
 
 	template<class Archive>
-	void load(Archive& ar)
+	void load(Archive& archive)
 	{
-		ar(GameObjects);
-		ar(Light_Manager);
-	}*/
+		archive(cereal::make_nvp("GameObjects", GameObjects),
+				cereal::make_nvp("Light_Manager", Light_Manager)
+		);
+	}
 };
 
 #endif // !SCENE_H

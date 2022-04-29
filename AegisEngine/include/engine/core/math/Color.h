@@ -103,13 +103,27 @@ namespace aegis
 		{
 			return (color.r == r) && (color.g == g) && (color.b == b) && (color.a == a);
 		}
-	};
 
-	template<typename Archive>
-	void serialize(Archive& ar, COLOR& color)
-	{
-		ar(color.r, color.g, color.b, color.a);
-	}
+		template<class Archive>
+		void save(Archive& archive) const
+		{
+			archive(CEREAL_NVP(r),
+					CEREAL_NVP(g),
+					CEREAL_NVP(b),
+					CEREAL_NVP(a)
+			);
+		}
+
+		template<class Archive>
+		void load(Archive& archive)
+		{
+			archive(CEREAL_NVP(r),
+					CEREAL_NVP(g),
+					CEREAL_NVP(b),
+					CEREAL_NVP(a)
+			);
+		}
+	};
 }
 
 #endif // !COLOR_H

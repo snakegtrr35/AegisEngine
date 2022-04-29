@@ -108,7 +108,7 @@ void RESULT::Uninit()
 //	{
 //		const type_info& id = typeid(*this);
 //
-//		std::string name(id.name());
+//		aegis::string name(id.name());
 //
 //		// 置換
 //		Replace_String(name, "class ", "      ");
@@ -138,7 +138,7 @@ void RESULT::Load(SCENE* scene)
 	{
 		const type_info& id = typeid(*scene);
 
-		std::string name(id.name());
+		aegis::string name(id.name());
 
 		// 置換
 		name = Replace_String(name, "class ", "");
@@ -173,13 +173,13 @@ void RESULT::Load(SCENE* scene)
 	//	{
 	//		if (RESULT::Clear_Flag)
 	//		{
-	//			result.lock()->SetTexture(std::string("game_clear.png"));
+	//			result.lock()->SetTexture(aegis::string("game_clear.png"));
 	//
 	//			//AUDIO_MANAGER::Play_Sound_Object(SOUND_INDEX::SOUND_INDEX_CLEAR, false);
 	//		}
 	//		else
 	//		{
-	//			result.lock()->SetTexture(std::string("game_over.png"));
+	//			result.lock()->SetTexture(aegis::string("game_over.png"));
 	//
 	//			//AUDIO_MANAGER::Play_Sound_Object(SOUND_INDEX::SOUND_INDEX_GAMEOVER, false);
 	//		}
@@ -195,11 +195,11 @@ void RESULT::Load(SCENE* scene)
 		{
 			if (RESULT::Clear_Flag)
 			{
-				result.lock()->SetTexture(std::string("game_clear.png"));
+				result.lock()->SetTexture(aegis::string("game_clear.png"));
 			}
 			else
 			{
-				result.lock()->SetTexture(std::string("game_over.png"));
+				result.lock()->SetTexture(aegis::string("game_over.png"));
 			}
 		}
 	}
@@ -209,7 +209,7 @@ void RESULT::Load(SCENE* scene)
 	{
 		const type_info& id = typeid(*scene);
 
-		std::string name(id.name());
+		aegis::string name(id.name());
 
 		// 置換
 		name = Replace_String(name, "class ", "");

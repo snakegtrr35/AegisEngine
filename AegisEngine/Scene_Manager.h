@@ -17,11 +17,11 @@ private:
 #define DECIAL		float, double
 #define DX_MATH		XMINT2, XMINT3, XMINT4, XMUINT2, XMUINT3, XMUINT4, XMFLOAT2, XMFLOAT3, XMFLOAT4
 
-	typedef std::variant<INTEGER, DECIAL, DX_MATH, std::string> VARIANT;
+	typedef std::variant<INTEGER, DECIAL, DX_MATH, aegis::string> VARIANT;
 
 	static std::unique_ptr<SCENE> pScene;
 
-	aegis::unordered_map<std::string, VARIANT > GamaInstance;
+	aegis::unordered_map<aegis::string, VARIANT > GamaInstance;
 
 	static bool Scene_Change_Enable;
 
@@ -47,19 +47,19 @@ public:
 	const bool Get_Scene_Change_Enable();
 
 	template <typename T>
-	void Set_GameInstance(const std::string& name, T object) {
+	void Set_GameInstance(const aegis::string& name, T object) {
 		GamaInstance.emplace(name, object);
 	}
 
 	template <typename T>
-	const T* Get_GameInstance(const std::string& name) {
+	const T* Get_GameInstance(const aegis::string& name) {
 
 		if (GamaInstance.end() == GamaInstance.find(name)) return nullptr;
 
 		return std::get_if<T>(&GamaInstance[name]);
 	}
 
-	void Delete_GameInstance(const std::string& name);
+	void Delete_GameInstance(const aegis::string& name);
 
 	static SCENE* const Get_Scene();
 
@@ -77,11 +77,11 @@ public:
 		pScene->Init();
 	};
 
-	template<typename Archive>
-	void serialize(Archive& ar)
-	{
-		//ar(GamaInstance);
-	}
+	template<class Archive>
+	void save(Archive& archive) const {}
+
+	template<class Archive>
+	void load(Archive& archive) {}
 };
 
 #endif // ! SCENE_MANAGER_H

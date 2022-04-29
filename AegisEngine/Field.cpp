@@ -16,7 +16,7 @@ static const UINT g_InstanceNum = 40 * 40 * 40;
 FIELD::FIELD()
 {
 	// テクスチャの設定
-	Texture.reset(new TEXTURE(std::string("UVCheckerMap01-512.png")));
+	Texture.reset(new TEXTURE(aegis::string("UVCheckerMap01-512.png")));
 }
 
 FIELD::FIELD(Vector3 position, Vector2 wh)
@@ -153,7 +153,7 @@ FIELD::FIELD(Vector3 position, Vector2 wh)
 	}
 
 	// テクスチャの設定
-	Texture.reset(new TEXTURE(std::string("UVCheckerMap01-512.png")));
+	Texture.reset(new TEXTURE(aegis::string("UVCheckerMap01-512.png")));
 }
 
 FIELD::~FIELD()
@@ -319,9 +319,9 @@ void FIELD::Draw()
 
 	// 3Dマトリックス設定
 	{
-		Vector3 position = *Get_Transform().Get_Position();
-		Vector3 rotate = *Get_Transform().Get_Rotation();
-		Vector3 scale = *Get_Transform().Get_Scaling();
+		Vector3 position = Get_Transform().Get_Position();
+		Vector3 rotate = Get_Transform().Get_Rotation();
+		Vector3 scale = Get_Transform().Get_Scaling();
 
 		XMMATRIX world = XMMatrixScaling(scale.x, scale.y, scale.z);
 		world *= XMMatrixRotationRollPitchYaw(XMConvertToRadians(rotate.x), XMConvertToRadians(rotate.y), XMConvertToRadians(rotate.z));
@@ -401,9 +401,9 @@ void FIELD::Draw_Shadow()
 
 	// 3Dマトリックス設定
 	{
-		Vector3 position = *Get_Transform().Get_Position();
-		Vector3 rotate = *Get_Transform().Get_Rotation();
-		Vector3 scale = *Get_Transform().Get_Scaling();
+		Vector3 position = Get_Transform().Get_Position();
+		Vector3 rotate = Get_Transform().Get_Rotation();
+		Vector3 scale = Get_Transform().Get_Scaling();
 
 		XMMATRIX world = XMMatrixScaling(scale.x, scale.y, scale.z);
 		world *= XMMatrixRotationRollPitchYaw(XMConvertToRadians(rotate.x), XMConvertToRadians(rotate.y), XMConvertToRadians(rotate.z));
@@ -465,6 +465,8 @@ void FIELD::Update(float delta_time)
 
 void FIELD::Uninit()
 {
+	GameObject::Uninit();
+
 	Texture.reset(nullptr);
 }
 
@@ -487,7 +489,7 @@ void FIELD::SetWH(const Vector2 wh)
 //==============================
 // テクスチャの設定
 //==============================
-void FIELD::SetTexture(const std::string& const file_name)
+void FIELD::SetTexture(const aegis::string& const file_name)
 {
 	Texture->Set_Texture_Name(file_name);
 }

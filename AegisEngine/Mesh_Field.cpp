@@ -143,6 +143,8 @@ void MESH_FIELD::Init()
 
 void MESH_FIELD::Uninit()
 {
+	GameObject::Uninit();
+
 	Texture.reset(nullptr);
 }
 
@@ -165,9 +167,9 @@ void MESH_FIELD::Draw()
 			//angle = 180.0f;
 		}
 
-		Vector3 position = *Get_Transform().Get_Position();
-		Vector3 rotate = *Get_Transform().Get_Rotation();
-		Vector3 scale = *Get_Transform().Get_Scaling();
+		Vector3 position = Get_Transform().Get_Position();
+		Vector3 rotate = Get_Transform().Get_Rotation();
+		Vector3 scale = Get_Transform().Get_Scaling();
 
 		world = XMMatrixScaling(scale.x, scale.y, scale.z);
 		world *= XMMatrixRotationRollPitchYaw(XMConvertToRadians(rotate.x), XMConvertToRadians(rotate.y), XMConvertToRadians(rotate.z));
@@ -248,9 +250,9 @@ void MESH_FIELD::Draw_Shadow()
 	{
 		XMMATRIX world;
 
-		Vector3 position = *Get_Transform().Get_Position();
-		Vector3 rotate = *Get_Transform().Get_Rotation();
-		Vector3 scale = *Get_Transform().Get_Scaling();
+		Vector3 position = Get_Transform().Get_Position();
+		Vector3 rotate = Get_Transform().Get_Rotation();
+		Vector3 scale = Get_Transform().Get_Scaling();
 
 		world = XMMatrixScaling(scale.x, scale.y, scale.z);
 		world *= XMMatrixRotationRollPitchYaw(XMConvertToRadians(rotate.x), XMConvertToRadians(rotate.y), XMConvertToRadians(rotate.z));
@@ -291,9 +293,9 @@ void MESH_FIELD::Draw_DPP()
 
 	// 3Dマトリックス設定
 	{
-		Vector3 position = *Get_Transform().Get_Position();
-		Vector3 rotate = *Get_Transform().Get_Rotation();
-		Vector3 scale = *Get_Transform().Get_Scaling();
+		Vector3 position = Get_Transform().Get_Position();
+		Vector3 rotate = Get_Transform().Get_Rotation();
+		Vector3 scale = Get_Transform().Get_Scaling();
 
 		XMMATRIX world = XMMatrixScaling(scale.x, scale.y, scale.z);
 		world *= XMMatrixRotationRollPitchYaw(XMConvertToRadians(rotate.x), XMConvertToRadians(rotate.y), XMConvertToRadians(rotate.z));
@@ -394,7 +396,7 @@ const float MESH_FIELD::Get_Height(const Vector3& position)
 //==============================
 // テクスチャの設定
 //==============================
-void MESH_FIELD::SetTexture(const std::string& const file_name)
+void MESH_FIELD::SetTexture(const aegis::string& const file_name)
 {
 	Texture->Set_Texture_Name(file_name);
 }
@@ -527,7 +529,7 @@ void MESH_WALL::Init()
 	delete[] indexArray;
 
 	// テクスチャの設定
-	Texture = new TEXTURE(std::string("field004.png"));
+	Texture = new TEXTURE(aegis::string("field004.png"));
 }
 
 void MESH_WALL::Uninit()
@@ -551,9 +553,9 @@ void MESH_WALL::Draw()
 	{
 		XMMATRIX world(XMMatrixIdentity());
 
-		Vector3 position = *Get_Transform().Get_Position();
-		Vector3 rotate = *Get_Transform().Get_Rotation();
-		Vector3 scale = *Get_Transform().Get_Scaling();
+		Vector3 position = Get_Transform().Get_Position();
+		Vector3 rotate = Get_Transform().Get_Rotation();
+		Vector3 scale = Get_Transform().Get_Scaling();
 
 		XMMATRIX matrix = XMMatrixScaling(scale.x, scale.y, scale.z);
 		matrix *= XMMatrixRotationRollPitchYaw(XMConvertToRadians(rotate.x), XMConvertToRadians(rotate.y), XMConvertToRadians(rotate.z));
@@ -633,9 +635,9 @@ void MESH_WALL::Draw_DPP()
 	CRenderer* render = CRenderer::getInstance();
 	// 3Dマトリックス設定
 	{
-		Vector3 position = *Get_Transform().Get_Position();
-		Vector3 rotate = *Get_Transform().Get_Rotation();
-		Vector3 scale = *Get_Transform().Get_Scaling();
+		Vector3 position = Get_Transform().Get_Position();
+		Vector3 rotate = Get_Transform().Get_Rotation();
+		Vector3 scale = Get_Transform().Get_Scaling();
 
 		XMMATRIX matrix = XMMatrixScaling(scale.x, scale.y, scale.z);
 		matrix *= XMMatrixRotationRollPitchYaw(XMConvertToRadians(rotate.x), XMConvertToRadians(rotate.y), XMConvertToRadians(rotate.z));

@@ -22,10 +22,14 @@ class MODEL : public COMPONENT {
 private:
 
 	//! ファイル名
-	std::string FileName;
+	aegis::string FileName;
 
 	//! ファイル名のハッシュ値
 	size_t Key;
+
+	aegis::Vector3 Position;
+	aegis::Vector3 Rotation;
+	aegis::Vector3 Scaling;
 
 public:
 
@@ -78,34 +82,52 @@ public:
 	void Draw_Inspector() override;
 
 	// モデル名の設定
-	void Set_Model_Name(const std::string& file_name);	
+	void Set_Model_Name(const aegis::string& file_name);	
 
 	// モデル名の取得
-	const std::string& Get_Model_Name();
+	const aegis::string& Get_Model_Name();
+
+	aegis::Vector3* const GetPosition() { return &Position; };
+	aegis::Vector3* const Get_Rotation() { return &Rotation; };
+	aegis::Vector3* const Get_Scaling() { return &Scaling; };
+
+	void Set_Position(aegis::Vector3* const position) { Position = *position; }
+	void Set_Position(const aegis::Vector3& position) { Position = position; };
+
+	void Set_Rotation(aegis::Vector3* const rotation) { Rotation = *rotation; };
+	void Set_Rotation(const aegis::Vector3& rotation) { Rotation = rotation; };
+
+	void Set_Scaling(aegis::Vector3* scaling) { Scaling = *scaling; };
+	void Set_Scaling(const aegis::Vector3& scaling) { Scaling = scaling; };
 
 	template<class Archive>
-	void serialize(Archive& ar)
+	void save(Archive& archive) const
 	{
-		ar(cereal::base_class<COMPONENT>(this));
-		ar(FileName);
-		ar(Key);
-	}
+		archive(cereal::make_nvp("COMPONENT", cereal::base_class<COMPONENT>(this)));
 
-	/*template<class Archive>
-	void save(Archive& ar) const
-	{
-		ar(cereal::base_class<COMPONENT>(this));
-		ar(FileName);
-		ar(Key);
+		archive(cereal::make_nvp("FileName", std::string(FileName)));
+
+		archive(cereal::make_nvp("Key", Key));
+		archive(cereal::make_nvp("Position", Position));
+		archive(cereal::make_nvp("Rotation", Rotation));
+		archive(cereal::make_nvp("Scaling", Scaling));
 	}
 
 	template<class Archive>
-	void load(Archive& ar)
+	void load(Archive& archive)
 	{
-		ar(cereal::base_class<COMPONENT>(this));
-		ar(FileName);
-		ar(Key);
-	}*/
+		archive(cereal::make_nvp("COMPONENT", cereal::base_class<COMPONENT>(this)));
+		
+		std::string s;
+		archive(cereal::make_nvp("FileName", s));
+		FileName.reserve(s.size());
+		FileName = s;
+
+		archive(cereal::make_nvp("Key", Key));
+		archive(cereal::make_nvp("Position", Position));
+		archive(cereal::make_nvp("Rotation", Rotation));
+		archive(cereal::make_nvp("Scaling", Scaling));
+	}
 
 };
 

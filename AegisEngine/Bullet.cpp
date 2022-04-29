@@ -50,16 +50,17 @@ void BULLET::Init()
 {
 	auto scene = CManager::Get_Instance()->Get_Scene();
 
-	std::string name("bullet.fbx");
+	aegis::string name("bullet.fbx");
 
-	auto model = Get_Component()->Add_Component<MODEL>(scene->Get_Game_Object(this));
+	//auto model = Get_Component()->Add_Component<MODEL>(scene->Get_Game_Object(this));
+	auto model = this->AddComponent<MODEL>();
 	model->Set_Model_Name(name);
 	model->Set_Scaling(Get_Transform().Get_Scaling());
 
-	auto sphere = Get_Component()->Add_Component<BOUNDING_SHPERE>(scene->Get_Game_Object(this));
-
+	//auto sphere = Get_Component()->Add_Component<BOUNDING_SHPERE>(scene->Get_Game_Object(this));
+	auto sphere = this->AddComponent<BOUNDING_SHPERE>();
+	
 	sphere->Set_Radius(1.0f);
-
 	sphere->Set_Scaling(Vector3(0.11f, 0.11f, 0.11f));
 
 	GameObject::Init();
@@ -82,9 +83,13 @@ void BULLET::Draw_DPP()
 
 void BULLET::Update(float delta_time)
 {
-	Get_Transform().Get_Position()->x += MoveVector.x * delta_time * 5.0f;
-	Get_Transform().Get_Position()->y += MoveVector.y * delta_time * 5.0f;
-	Get_Transform().Get_Position()->z += MoveVector.z * delta_time * 5.0f;
+	Vector3 pos = Get_Transform().Get_Position();
+
+	pos.x += MoveVector.x * delta_time * 5.0f;
+	pos.y += MoveVector.y * delta_time * 5.0f;
+	pos.z += MoveVector.z * delta_time * 5.0f;
+
+	Get_Transform().Set_Position(pos);
 
 	if (HP <= 0)
 	{
@@ -92,16 +97,14 @@ void BULLET::Update(float delta_time)
 
 		// ビルボード
 		{
-			auto name = this->Get_Object_Name();
-		
-			std::string str(name);
+			aegis::string str = this->Get_Object_Name();
 			ExtratNum(str);
 			if (false == str.empty())
 			{
-				const int x = std::stoi(str);
+				const int x = std::stoi(str.c_str());
 		
-				BILL_BOARD_ANIMATION* bba = CManager::Get_Instance()->Get_Scene()->Add_Game_Object<BILL_BOARD_ANIMATION>(LAYER_NAME::EFFECT, "explosion" + std::to_string(x));
-				bba->Get_Transform().Set_Position(Get_Transform().Get_Position());
+				BILL_BOARD_ANIMATION* bba = CManager::Get_Instance()->Get_Scene()->Add_Game_Object<BILL_BOARD_ANIMATION>(LAYER_NAME::EFFECT, aegis::string("explosion" + std::to_string(x)));
+				bba->Get_Transform().Set_Position(pos);
 				bba->SetWH(Vector2(1.0f, 1.0f));
 				bba->SetParam(6, 4, 4);
 				//bba->Init();
@@ -128,8 +131,11 @@ void BULLET::Update(float delta_time)
 
 		for (auto enemy : enemys)
 		{
-			auto bullet_collision = this->Get_Component()->Get_Component<BOUNDING_SHPERE>();
-			auto enemy_collision = enemy->Get_Component()->Get_Component<BOUNDING_AABB>();
+			//auto bullet_collision = this->Get_Component()->Get_Component<BOUNDING_SHPERE>();
+			//auto enemy_collision = enemy->Get_Component()->Get_Component<BOUNDING_AABB>();
+			auto bullet_collision = this->AddComponent<BOUNDING_SHPERE>();
+			auto enemy_collision = this->AddComponent<BOUNDING_AABB>();
+
 
 			if (ContainmentType::DISJOINT != bullet_collision->Get_Collition().Contains(enemy_collision->Get_Collition()))
 			{
@@ -137,14 +143,14 @@ void BULLET::Update(float delta_time)
 				{
 					auto name = this->Get_Object_Name();
 
-					std::string str(name);
+					aegis::string str(name);
 					ExtratNum(str);
 					if (!str.empty())
 					{
-						const int x = std::stoi(str);
+						const int x = std::stoi(str.c_str());
 
-						BILL_BOARD_ANIMATION* bba = CManager::Get_Instance()->Get_Scene()->Add_Game_Object<BILL_BOARD_ANIMATION>(LAYER_NAME::EFFECT, "explosion" + std::to_string(x));
-						bba->Get_Transform().Set_Position(Get_Transform().Get_Position());
+						BILL_BOARD_ANIMATION* bba = CManager::Get_Instance()->Get_Scene()->Add_Game_Object<BILL_BOARD_ANIMATION>(LAYER_NAME::EFFECT, aegis::string("explosion" + std::to_string(x)));
+						bba->Get_Transform().Set_Position(pos);
 						bba->SetWH(Vector2(1.0f, 1.0f));
 						bba->SetParam(6, 4, 4);
 						//bba->Init();
@@ -163,7 +169,8 @@ void BULLET::Update(float delta_time)
 			{
 				auto player = CManager::Get_Instance()->Get_Scene()->Get_Game_Object<PLAYER>("player");
 			
-				if (ContainmentType::DISJOINT != bullet_collision->Get_Collition().Contains(player.lock()->Get_Component()->Get_Component<BOUNDING_AABB>()->Get_Collition()))
+				//if (ContainmentType::DISJOINT != bullet_collision->Get_Collition().Contains(player.lock()->Get_Component()->Get_Component<BOUNDING_AABB>()->Get_Collition()))
+				if (ContainmentType::DISJOINT != bullet_collision->Get_Collition().Contains(player.lock()->GetComponent<BOUNDING_AABB>()->Get_Collition()))
 				{
 					auto billboards = scene->Get_Game_Objects<BILL_BOARD_ANIMATION>();
 			
@@ -171,15 +178,15 @@ void BULLET::Update(float delta_time)
 					{
 						auto name = this->Get_Object_Name();
 			
-						std::string str(name);
+						aegis::string str(name);
 						ExtratNum(str);
 			
 						if (!str.empty())
 						{
-							const int x = std::stoi(str);
+							const int x = std::stoi(str.c_str());
 			
-							BILL_BOARD_ANIMATION* bba = CManager::Get_Instance()->Get_Scene()->Add_Game_Object<BILL_BOARD_ANIMATION>(LAYER_NAME::EFFECT, "explosion" + std::to_string(x));
-							bba->Get_Transform().Set_Position(Get_Transform().Get_Position());
+							BILL_BOARD_ANIMATION* bba = CManager::Get_Instance()->Get_Scene()->Add_Game_Object<BILL_BOARD_ANIMATION>(LAYER_NAME::EFFECT, aegis::string("explosion" + std::to_string(x)));
+							bba->Get_Transform().Set_Position(pos);
 							bba->SetWH(Vector2(1.0f, 1.0f));
 							bba->SetParam(6, 4, 4);
 						}
@@ -202,6 +209,7 @@ void BULLET::Update(float delta_time)
 
 void BULLET::Uninit()
 {
+	GameObject::Uninit();
 }
 
 void BULLET::Set_Move_Vector(const Vector3 move_vector)

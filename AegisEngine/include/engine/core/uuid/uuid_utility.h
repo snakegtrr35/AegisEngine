@@ -5,24 +5,14 @@
 namespace uuids
 {
 	template<class Archive>
-	void serialize(Archive& archive, uuids::uuid& uuid)
+	void save(Archive& archive, uuids::uuid const& uuid)
 	{
 		archive(cereal::make_nvp("uuid", uuid.data));
 	}
 
-	//template<class Archive>
-	//void save(Archive& archive, uuids::uuid& uuid)
-	//{
-	//	archive(cereal::make_nvp("uuid", uuid.data));
-	//}
-
-	//template<class Archive>
-	//void load(Archive& archive, uuids::uuid& uuid)
-	//{
-	//	std::array<std::uint8_t, 16> data = {};
-
-	//	archive(cereal::make_nvp("uuid", data));
-
-	//	uuid = data;
-	//}
+	template<class Archive>
+	void load(Archive& archive, uuids::uuid uuid)
+	{
+		archive(cereal::make_nvp("uuid", uuid.data));
+	}
 }

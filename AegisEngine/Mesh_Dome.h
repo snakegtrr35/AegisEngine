@@ -76,26 +76,19 @@ public:
 	*/
 	void Uninit() override;
 
-	template<typename Archive>
-	void serialize(Archive& ar)
+	template<class Archive>
+	void save(Archive& archive) const
 	{
-		ar(cereal::base_class<GameObject>(this));
-		ar(Texture);
+		archive(cereal::make_nvp("GameObject", cereal::base_class<GameObject>(this)));
+		archive(cereal::make_nvp("Texture", Texture));
 	}
 
-	//template<class Archive>
-	//void save(Archive& ar) const
-	//{
-	//	ar(cereal::base_class<GameObject>(this));
-	//	ar(Texture);
-	//}
-
-	//template<class Archive>
-	//void load(Archive& ar)
-	//{
-	//	ar(cereal::base_class<GameObject>(this));
-	//	ar(Texture);
-	//}
+	template<class Archive>
+	void load(Archive& archive)
+	{
+		archive(cereal::make_nvp("GameObject", cereal::base_class<GameObject>(this)));
+		archive(cereal::make_nvp("Texture", Texture));
+	}
 };
 
 CEREAL_REGISTER_TYPE(MESH_DOOM)

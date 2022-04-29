@@ -45,46 +45,20 @@ public:
 
 	void SetDestroy();
 
-	/*aegis::Vector3* const Get_Position();
-
-	aegis::Vector3* const Get_Rotation();
-
-	aegis::Vector3* const Get_Scaling();
-
-
-
-	void Set_Position(aegis::Vector3* const  position);
-	void Set_Position(const aegis::Vector3& position);
-
-	void Set_Rotation(aegis::Vector3* const  rotation);
-	void Set_Rotation(const aegis::Vector3& rotation);
-
-	void Set_Scaling(aegis::Vector3* const  scaling);
-	void Set_Scaling(const aegis::Vector3& scaling);*/
-
 	// メモリ上からの削除
 	bool Destroy();
 
 	template<class Archive>
-	void serialize(Archive& ar)
+	void save(Archive& archive) const
 	{
-		//ar(Owner);
-		/*ar(Position);
-		ar(Rotation);
-		ar(Scaling);*/
-	}
-
-	/*template<class Archive>
-	void save(Archive& ar) const
-	{
-		ar(Owner);
+		archive(cereal::make_nvp("Enable", Enable));
 	}
 
 	template<class Archive>
-	void load(Archive& ar)
+	void load(Archive& archive)
 	{
-		ar(Owner);
-	}*/
+		archive(cereal::make_nvp("Enable", Enable));
+	}
 };
 
 //CEREAL_REGISTER_TYPE(COMPONENT)

@@ -125,9 +125,9 @@ struct OBB {
 class COLLISION  {
 protected:
 	
-	std::string Name;
-	std::string ParentName;
-	aegis::unordered_map<std::string, COLLISION*> Childlen;
+	aegis::string Name;
+	aegis::string ParentName;
+	aegis::unordered_map<aegis::string, COLLISION*> Childlen;
 
 public:
 	COLLISION() : Name("Collision"), ParentName("None") {}
@@ -136,29 +136,29 @@ public:
 	virtual void Update(float delta_time) = 0;
 	virtual void Draw() = 0;
 
-	void Set_Name(const std::string& name) {
+	void Set_Name(const aegis::string& name) {
 		Name = name;
 	}
 
-	std::string& const Get_Name() {
+	aegis::string& const Get_Name() {
 		return Name;
 	}
 
-	void Set_Parent_Name(const std::string& parent_name) {
+	void Set_Parent_Name(const aegis::string& parent_name) {
 		ParentName = parent_name;
 	}
 
-	std::string& const Get_Parent_Name() {
+	aegis::string& const Get_Parent_Name() {
 		return ParentName;
 	}
 
 
 
-	//void Set_Childt_Name(const std::string& child_name) {
+	//void Set_Childt_Name(const aegis::string& child_name) {
 	//	ChildlenName.push_back(child_name);
 	//};
 
-	//vector<std::string> const Get_Childlen_Name() {
+	//vector<aegis::string> const Get_Childlen_Name() {
 	//	return ChildlenName;
 	//};
 };

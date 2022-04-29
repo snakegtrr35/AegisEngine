@@ -177,9 +177,9 @@ void BILL_BOARD::Draw()
 
 		world = XMMatrixMultiply(world, mtxViewInv);
 
-		Vector3 position = *Get_Transform().Get_Position();
-		Vector3 rotate = *Get_Transform().Get_Rotation();
-		Vector3 scale = *Get_Transform().Get_Scaling();
+		Vector3 position = Get_Transform().Get_Position();
+		Vector3 rotate = Get_Transform().Get_Rotation();
+		Vector3 scale = Get_Transform().Get_Scaling();
 
 		world *= XMMatrixScaling(scale.x, scale.y, scale.z);
 		world *= XMMatrixRotationRollPitchYaw(XMConvertToRadians(rotate.x), XMConvertToRadians(rotate.y), XMConvertToRadians(rotate.z));
@@ -281,9 +281,9 @@ void BILL_BOARD::Draw_DPP()
 
 		world = XMMatrixMultiply(world, mtxViewInv);
 
-		Vector3 position = *Get_Transform().Get_Position();
-		Vector3 rotate = *Get_Transform().Get_Rotation();
-		Vector3 scale = *Get_Transform().Get_Scaling();
+		Vector3 position = Get_Transform().Get_Position();
+		Vector3 rotate = Get_Transform().Get_Rotation();
+		Vector3 scale = Get_Transform().Get_Scaling();
 
 		world *= XMMatrixScaling(scale.x, scale.y, scale.z);
 		world *= XMMatrixRotationRollPitchYaw(XMConvertToRadians(rotate.x), XMConvertToRadians(rotate.y), XMConvertToRadians(rotate.z));
@@ -310,6 +310,8 @@ void BILL_BOARD::Update(float delta_time)
 
 void BILL_BOARD::Uninit()
 {
+	GameObject::Uninit();
+
 	Texture.reset(nullptr);
 }
 
@@ -320,7 +322,7 @@ void BILL_BOARD::SetWH(const Vector2& wh)
 };
 
 // テクスチャの設定
-void BILL_BOARD::SetTexture(const std::string& const file_name)
+void BILL_BOARD::SetTexture(const aegis::string& const file_name)
 {
 	Texture->Set_Texture_Name(file_name);
 };
@@ -471,9 +473,9 @@ void BILL_BOARD_ANIMATION::Draw(float tx, float ty)
 
 		world = XMMatrixMultiply(world, mtxViewInv);
 
-		Vector3 position = *Get_Transform().Get_Position();
-		Vector3 rotate = *Get_Transform().Get_Rotation();
-		Vector3 scale = *Get_Transform().Get_Scaling();
+		Vector3 position = Get_Transform().Get_Position();
+		Vector3 rotate = Get_Transform().Get_Rotation();
+		Vector3 scale = Get_Transform().Get_Scaling();
 
 		world *= XMMatrixScaling(scale.x, scale.y, scale.z);
 		world *= XMMatrixRotationRollPitchYaw(XMConvertToRadians(rotate.x), XMConvertToRadians(rotate.y), XMConvertToRadians(rotate.z));
@@ -604,9 +606,9 @@ void BILL_BOARD_ANIMATION::Draw_DPP(float tx, float ty)
 
 		world = XMMatrixMultiply(world, mtxViewInv);
 
-		Vector3 position = *Get_Transform().Get_Position();
-		Vector3 rotate = *Get_Transform().Get_Rotation();
-		Vector3 scale = *Get_Transform().Get_Scaling();
+		Vector3 position = Get_Transform().Get_Position();
+		Vector3 rotate = Get_Transform().Get_Rotation();
+		Vector3 scale = Get_Transform().Get_Scaling();
 
 		world *= XMMatrixScaling(scale.x, scale.y, scale.z);
 		world *= XMMatrixRotationRollPitchYaw(XMConvertToRadians(rotate.x), XMConvertToRadians(rotate.y), XMConvertToRadians(rotate.z));
