@@ -3,7 +3,7 @@
 #ifndef MAIN_MENU_H
 #define MAIN_MENU_H
 
-class SCENE;
+#include "Scene.h"
 
 /**
 * @brief メインメニューシーンクラス

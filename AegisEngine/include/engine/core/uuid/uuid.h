@@ -3,9 +3,9 @@
 #ifndef INCLUDE_UUID_H
 #define INCLUDE_UUID_H
 
-#include	<mutex>
-#include	"../random/Xorshift.h"
-#include	"uuid_utility.h"
+#include <mutex>
+#include "../random/Xorshift.h"
+#include "uuid_utility.h"
 
 namespace aegis
 {

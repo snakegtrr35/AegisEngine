@@ -1,4 +1,4 @@
-﻿#include	"Input.h"
+﻿#include "Input.h"
 
 //CINPUT* CINPUT::InputDevice = nullptr;
 RAWINPUTDEVICE CINPUT::device[2];

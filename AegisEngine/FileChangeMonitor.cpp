@@ -1,5 +1,5 @@
 ﻿#ifdef _DEBUG
-#include	"Texture_Manager.h"
+#include "TextureManager.h"
 
 #include "common.h"
 

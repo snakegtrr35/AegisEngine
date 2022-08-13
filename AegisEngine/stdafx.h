@@ -16,52 +16,52 @@
 #include <cstdlib>
 
 //#define NOMINMAX
-//#include	<windows.h>
+//#include <windows.h>
 
 #undef min
 #undef max
 
-#include	<cassert>
+#include <cassert>
 
-#include	<DirectXMath.h>
-#include	<directxcollision.h>
+#include <DirectXMath.h>
+#include <directxcollision.h>
 using namespace DirectX;
 
-#include	"common.h"
+#include "common.h"
 
 #ifndef IMGUI
 #define IMGUI
 
-#include	"imgui/imgui.h"
-#include	"imgui/imgui_impl_dx11.h"
-#include	"imgui/imgui_impl_win32.h"
-#include	"imgui/imstb_rectpack.h"
-#include	"imgui/imstb_truetype.h"
-#include	"imgui/ImGuizmo.h"
+#include "imgui/imgui.h"
+#include "imgui/imgui_impl_dx11.h"
+#include "imgui/imgui_impl_win32.h"
+#include "imgui/imstb_rectpack.h"
+#include "imgui/imstb_truetype.h"
+#include "imgui/ImGuizmo.h"
 
 #endif // !IMGUI
 
 #ifndef CEREAL
 #define CEREAL
 
-#include	<cereal/cereal.hpp>
-#include	<cereal/archives/binary.hpp>
-#include	<cereal/archives/json.hpp>
-#include	<cereal/types/base_class.hpp>
-#include	<cereal/types/polymorphic.hpp>
+#include <cereal/cereal.hpp>
+#include <cereal/archives/binary.hpp>
+#include <cereal/archives/json.hpp>
+#include <cereal/types/base_class.hpp>
+#include <cereal/types/polymorphic.hpp>
 
-#include	<cereal/types/memory.hpp>
-#include	<cereal/types/array.hpp>
-#include	<cereal/types/list.hpp>
-#include	<cereal/types/vector.hpp>
-#include	<cereal/types/map.hpp>
-#include	<cereal/types/unordered_map.hpp>
-#include	<cereal/types/set.hpp>
-#include	<cereal/types/unordered_set.hpp>
-#include	<cereal/types/string.hpp>
-#include	<cereal/types/variant.hpp>
+#include <cereal/types/memory.hpp>
+#include <cereal/types/array.hpp>
+#include <cereal/types/list.hpp>
+#include <cereal/types/vector.hpp>
+#include <cereal/types/map.hpp>
+#include <cereal/types/unordered_map.hpp>
+#include <cereal/types/set.hpp>
+#include <cereal/types/unordered_set.hpp>
+#include <cereal/types/string.hpp>
+#include <cereal/types/variant.hpp>
 
-#include	"Cereal.h"
+#include "Cereal.h"
 
 #endif // !CEREAL
 

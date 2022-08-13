@@ -3,10 +3,10 @@
 #ifndef INPUT_H
 #define INPUT_H
 
-#include	"Keyboard.h"
-#include	"main.h"
-#include	"Mouse.h"
-#include	"Xbox.h"
+#include "Keyboard.h"
+#include "main.h"
+#include "Mouse.h"
+#include "Xbox.h"
 
 #include <Commctrl.h>
 #pragma comment (lib, "comctl32.lib")

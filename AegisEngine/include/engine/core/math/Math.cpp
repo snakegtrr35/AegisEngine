@@ -1,5 +1,5 @@
-﻿#include	"Math.h"
-#include	<random>
+﻿#include "Math.h"
+#include <random>
 
 
 

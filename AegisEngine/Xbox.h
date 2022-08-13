@@ -3,7 +3,7 @@
 #ifndef XBOX_H
 #define XBOX_H
 
-#include	<xinput.h>
+#include <xinput.h>
 
 #pragma comment (lib, "xinput.lib")
 

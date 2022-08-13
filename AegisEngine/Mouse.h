@@ -3,9 +3,9 @@
 #ifndef MOUSE_H
 #define MOUSE_H
 
-#include	"main.h"
+#include "main.h"
 
-#include	<algorithm>
+#include <algorithm>
 
 enum class WHEEL_MOVE_ENUM {
 	UP = 1,

@@ -1,5 +1,5 @@
-﻿#include	"Component_Manager.h"
-#include	"Component.h"
+﻿#include "Component_Manager.h"
+#include "Component.h"
 
 
 COMPONENT_MANEGER* COMPONENT_MANEGER::getInstance()

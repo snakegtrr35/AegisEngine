@@ -2,8 +2,8 @@
 #define new new(_NORMAL_BLOCK, __FILE__, __LINE__)
 #endif // _DEBUG
 
-#include	"Mouse.h"
-#include	<algorithm>
+#include "Mouse.h"
+#include <algorithm>
 
 using namespace aegis;
 

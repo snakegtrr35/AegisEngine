@@ -1,5 +1,5 @@
-﻿#include	"common.h"
-#include	<locale.h>
+﻿#include "common.h"
+#include <locale.h>
 
 std::wstring stringTowstring(const std::string_view font)
 {

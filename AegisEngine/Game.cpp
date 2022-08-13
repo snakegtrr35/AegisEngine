@@ -1,30 +1,30 @@
-﻿#include	"Scene.h"
-#include	"Game.h"
-#include	"Title.h"
-#include	"Result.h"
+﻿#include "Game.h"
+#include "Title.h"
+#include "Result.h"
 
-#include	"Input.h"
-#include	"manager.h"
-#include	"Component.h"
-#include	"audio_clip.h"
-#include	"Fade.h"
-#include	"Enemy.h"
-#include	"Score.h"
-#include	"Mesh_Field.h"
+#include "Input.h"
+#include "manager.h"
+#include "Component.h"
+#include "audio_clip.h"
+#include "Fade.h"
+#include "Enemy.h"
+#include "Score.h"
+#include "Mesh_Field.h"
 
-#include	"Mesh_Dome.h"
-#include	"Skybox.h"
+#include "Mesh_Dome.h"
+#include "Skybox.h"
 
-#include	"Player.h"
-#include	"camera.h"
-#include	"Debug_Camera.h"
-#include	"Sprite.h"
-#include	"Text.h"
-#include	"Sprite_Animation.h"
+#include "Player.h"
+#include "camera.h"
+#include "Debug_Camera.h"
+#include "Sprite.h"
+#include "Text.h"
+#include "Sprite_Animation.h"
+#include "texture.h"
 
-#include	"Scene_Manager.h"
+#include "Scene_Manager.h"
 
-#include	"Bullet.h"
+#include "Bullet.h"
 
 using namespace aegis;
 
@@ -34,14 +34,14 @@ static float hp;
 
 static short cnt;
 
-static std::unique_ptr<SPRITE_ANIMATION> sprite_anime = nullptr;
+static std::unique_ptr<SPRITE_ANIMATION, Delete> sprite_anime = nullptr;
 
 using namespace aegis;
 
 void GAME::Init()
 {
 	{
-		sprite_anime = std::make_unique<SPRITE_ANIMATION>();
+		sprite_anime.reset(new SPRITE_ANIMATION());
 
 		sprite_anime->SetPosition(Vector2(SCREEN_WIDTH * 0.5, SCREEN_HEIGHT * 0.5));
 		sprite_anime->SetSize(Vector4(SCREEN_HEIGHT * 0.5, SCREEN_WIDTH * 0.5, SCREEN_HEIGHT * 0.5, SCREEN_WIDTH * 0.5));
@@ -281,7 +281,7 @@ void GAME::Update(float delta_time)
 }
 
 
-#include	"Billboard.h"
+#include "Billboard.h"
 
 void GAME::Uninit()
 {

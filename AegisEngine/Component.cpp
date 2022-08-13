@@ -1,6 +1,6 @@
-﻿#include	"Component.h"
+﻿#include "Component.h"
 
-#include	"imgui/imgui.h"
+#include "imgui/imgui.h"
 
 IMPLEMENT_ABSTRACT_OBJECT_TYPE_INFO(aegis::AegisObject, COMPONENT)
 

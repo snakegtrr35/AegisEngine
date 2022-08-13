@@ -1,7 +1,7 @@
-﻿#include	"Score.h"
-#include	"Sprite_Animation.h"
-#include	"manager.h"
-#include	"ShadowMap.h"
+﻿#include "Score.h"
+#include "Sprite_Animation.h"
+#include "manager.h"
+#include "ShadowMap.h"
 
 IMPLEMENT_OBJECT_TYPE_INFO(GameObject, SCORE)
 

@@ -1,34 +1,34 @@
-﻿#include	"Scene.h"
-#include	"Main_Menu.h"
-#include	"Input.h"
-#include	"manager.h"
-#include	"Component.h"
-#include	"audio_clip.h"
+﻿#include "Main_Menu.h"
+#include "Input.h"
+#include "manager.h"
+#include "Component.h"
+#include "audio_clip.h"
 
-#include	"Field.h"
-#include	"Mesh_Dome.h"
-#include	"Mesh_Field.h"
-#include	"Fade.h"
-#include	"Bill.h"
-#include	"Player.h"
-#include	"Bullet.h"
-#include	"Billboard.h"
+#include "Field.h"
+#include "Mesh_Dome.h"
+#include "Mesh_Field.h"
+#include "Fade.h"
+#include "Bill.h"
+#include "Player.h"
+#include "Bullet.h"
+#include "Billboard.h"
 
-#include	"Timer.h"
+#include "Timer.h"
 
-#include	"FBXmodel.h"
-#include	"Sprite_Animation.h"
+#include "FBXmodel.h"
+#include "Sprite_Animation.h"
+#include "texture.h"
 
-#include	"Skybox.h"
+#include "Skybox.h"
 
 using namespace aegis;
 
-static std::unique_ptr<SPRITE_ANIMATION> sprite_anime;
+static std::unique_ptr<SPRITE_ANIMATION, Delete> sprite_anime;
 
 void MAIN_MENU::Init()
 {
 	{
-		sprite_anime = std::make_unique<SPRITE_ANIMATION>();
+		sprite_anime.reset(new SPRITE_ANIMATION());
 
 		sprite_anime->SetPosition(Vector2(SCREEN_WIDTH * 0.5, SCREEN_HEIGHT * 0.5));
 		sprite_anime->SetSize(Vector4(SCREEN_HEIGHT * 0.5, SCREEN_WIDTH * 0.5, SCREEN_HEIGHT * 0.5, SCREEN_WIDTH * 0.5));

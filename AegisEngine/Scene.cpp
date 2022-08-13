@@ -1,5 +1,5 @@
-﻿#include	"Scene.h"
-#include	"Scene_Manager.h"
+﻿#include "Scene.h"
+#include "Scene_Manager.h"
 
 std::vector<std::shared_ptr<GameObject>>	SCENE::GameObjects[(int)LAYER_NAME::MAX_LAYER];
 std::vector<std::shared_ptr<GameObject>>	SCENE::AddGameObjects[(int)LAYER_NAME::MAX_LAYER];

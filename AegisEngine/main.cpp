@@ -1,8 +1,8 @@
-﻿#include	"main.h"
-#include	"manager.h"
-#include	"resource.h"
+﻿#include "main.h"
+#include "manager.h"
+#include "resource.h"
 
-#include	"Timer.h"
+#include "Timer.h"
 
 #ifdef _DEBUG
 // メモリリークのためのインクルード
