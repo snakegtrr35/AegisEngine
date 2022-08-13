@@ -20,6 +20,11 @@ GameObject::~GameObject()
 
 void GameObject::Init()
 {
+	for (const auto& component : Components)
+	{
+		if (!component.expired())
+			component.lock()->Init();
+	}
 }
 
 void GameObject::Draw()

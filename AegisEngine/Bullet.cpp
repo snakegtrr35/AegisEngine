@@ -1,23 +1,22 @@
-﻿//#include	"manager.h"
-//#include	"Scene_Manager.h"
-//#include	"Scene.h"
+﻿//#include "manager.h"
+//#include "Scene_Manager.h"
+//#include "Scene.h"
 
-#include	"GameObject.h"
-#include	"Bullet.h"
+#include "Bullet.h"
 
-#include	"manager.h"
-#include	"Scene.h"
+#include "manager.h"
+#include "Scene.h"
 
-#include	"Component_Manager.h"
-#include	"Bounding_Aabb.h"
-#include	"Bounding_Sphere.h"
-#include	"Score.h"
-#include	"Player.h"
-#include	"Enemy.h"
-#include	"Billboard.h"
-#include	"Model.h"
+#include "Component_Manager.h"
+#include "Bounding_Aabb.h"
+#include "Bounding_Sphere.h"
+#include "Score.h"
+#include "Player.h"
+#include "Enemy.h"
+#include "Billboard.h"
+#include "Model.h"
 
-#include	"audio_clip.h"
+#include "audio_clip.h"
 
 IMPLEMENT_OBJECT_TYPE_INFO(GameObject, BULLET)
 
@@ -59,11 +58,13 @@ void BULLET::Init()
 
 	//auto sphere = Get_Component()->Add_Component<BOUNDING_SHPERE>(scene->Get_Game_Object(this));
 	auto sphere = this->AddComponent<BOUNDING_SHPERE>();
-	
+
 	sphere->Set_Radius(1.0f);
 	sphere->Set_Scaling(Vector3(0.11f, 0.11f, 0.11f));
 
 	GameObject::Init();
+
+	GameObject::InitEnd();
 }
 
 void BULLET::Draw()
@@ -83,6 +84,8 @@ void BULLET::Draw_DPP()
 
 void BULLET::Update(float delta_time)
 {
+	return;
+
 	Vector3 pos = Get_Transform().Get_Position();
 
 	pos.x += MoveVector.x * delta_time * 5.0f;

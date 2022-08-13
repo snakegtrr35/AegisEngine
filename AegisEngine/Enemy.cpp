@@ -1,21 +1,21 @@
-﻿#include	"Scene.h"
-#include	"manager.h"
-#include	"Scene_Manager.h"
+﻿#include "Scene.h"
+#include "manager.h"
+#include "Scene_Manager.h"
 
-#include	"Enemy.h"
-#include	"Player.h"
-#include	"Debug_Camera.h"
-#include	"Bounding_Aabb.h"
+#include "Enemy.h"
+#include "Player.h"
+#include "Debug_Camera.h"
+#include "Bounding_Aabb.h"
 
-#include	"Bullet.h"
-#include	"Axis.h"
+#include "Bullet.h"
+#include "Axis.h"
 
-#include	"Model.h"
-#include	"Collision.h"
+#include "Model.h"
+#include "Collision.h"
 
-#include	"audio_clip.h"
-#include	"Math.h"
-#include	"include/engine/core/random/Random.h"
+#include "audio_clip.h"
+#include "Math.h"
+#include "include/engine/core/random/Random.h"
 
 IMPLEMENT_OBJECT_TYPE_INFO(GameObject, ENEMY)
 
@@ -31,10 +31,14 @@ ENEMY::ENEMY()
 ENEMY::~ENEMY()
 {
 	Uninit();
+
+	GameObject::Uninit();
 }
 
 void ENEMY::Init()
 {
+	GameObject::Init();
+
 	Time = 0.f;
 
 	// コンポーネント
@@ -61,7 +65,7 @@ void ENEMY::Init()
 		model->Set_Scaling(Get_Transform().Get_Scaling());
 	}
 
-	GameObject::Init();
+	GameObject::InitEnd();
 }
 
 void ENEMY::Draw()

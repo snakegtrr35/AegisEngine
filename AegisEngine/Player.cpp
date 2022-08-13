@@ -1,19 +1,19 @@
-﻿//#include	"GameObject.h"
-#include	"Player.h"
+﻿//#include "GameObject.h"
+#include "Player.h"
 
-#include	"manager.h"
-#include	"Scene.h"
+#include "manager.h"
+#include "Scene.h"
 
-//#include	"ModelLoader.h"
-//#include	"FBXmodel.h"
-#include	"Model.h"
+//#include "ModelLoader.h"
+//#include "FBXmodel.h"
+#include "Model.h"
 
-#include	"Input.h"
-#include	"Collision.h"
-#include	"Bounding_Aabb.h"
-#include	"Bullet.h"
-#include	"Debug_Camera.h"
-#include	"audio_clip.h"
+#include "Input.h"
+#include "Collision.h"
+#include "Bounding_Aabb.h"
+#include "Bullet.h"
+#include "Debug_Camera.h"
+#include "audio_clip.h"
 
 using namespace aegis;
 
@@ -32,6 +32,8 @@ PLAYER::~PLAYER()
 
 void PLAYER::Init(void)
 {
+	GameObject::Init();
+
 	auto scene = CManager::Get_Instance()->Get_Scene();
 
 	{
@@ -51,11 +53,11 @@ void PLAYER::Init(void)
 	{
 		//auto aabb = Get_Component()->Add_Component<BOUNDING_AABB>(scene->Get_Game_Object(this));
 		auto aabb = this->AddComponent<BOUNDING_AABB>();
-		
-		GameObject::Init();
 	}
 
 	HP = 100.0f;
+
+	GameObject::InitEnd();
 }
 
 void PLAYER::Draw(void)

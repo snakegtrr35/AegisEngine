@@ -8,9 +8,9 @@
 #ifndef GAME_OBJECT_H
 #define GAME_OBJECT_H
 
-#include	"Component_Manager.h"
-#include	"Transform.h"
-#include	"include/engine/core/uuid/uuid.h"
+#include "Component_Manager.h"
+#include "Transform.h"
+#include "include/engine/core/uuid/uuid.h"
 
 #include "include\engine\core\AegisObject.h"
 
@@ -20,7 +20,7 @@
  */
 class GameObject : public aegis::AegisObject {
 
-	ABSTRACT_OBJECT_TYPE_INFO(GameObject)
+	ABSTRACT_OBJECT_TYPE_INFO(aegis::AegisObject, GameObject)
 
 private:
 	//! ゲームオブジェクトの名称一覧(静的なもの)
@@ -28,6 +28,8 @@ private:
 
 	//! コンポーネント
 	aegis::vector< std::weak_ptr<COMPONENT> > Components;
+
+	bool IsInited = false;
 
 protected:
 
@@ -123,6 +125,9 @@ public:
 	void Set_Object_Name(const aegis::string& name);
 
 	aegis::uuid GetId() const { return Uuid; }
+
+	void InitEnd() { IsInited = true; }
+	bool IsInit() const { return IsInited; }
 
 	void* operator new(aegis::uint64 size);
 	void* operator new(aegis::uint64 size, std::align_val_t alignment);

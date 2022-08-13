@@ -1,14 +1,14 @@
 ﻿
-#include	"Bill.h"
+#include "Bill.h"
 
-#include	"Bounding_Aabb.h"
-#include	"Model.h"
+#include "Bounding_Aabb.h"
+#include "Model.h"
 
-#include	"manager.h"
-#include	"Scene.h"
-#include	"Scene_Manager.h"
+#include "manager.h"
+#include "Scene.h"
+#include "Scene_Manager.h"
 
-#include	"Model.h"
+#include "Model.h"
 
 IMPLEMENT_OBJECT_TYPE_INFO(GameObject, BILL)
 
@@ -25,6 +25,8 @@ BILL::~BILL()
 
 void BILL::Init()
 {
+	GameObject::Init();
+
 	Vector3 pos(10, 0, 0);
 
 	Get_Transform().Set_Position(pos);
@@ -46,7 +48,7 @@ void BILL::Init()
 		model->Set_Model_Name(name);
 	}
 
-	GameObject::Init();
+	GameObject::InitEnd();
 }
 
 void BILL::Draw()

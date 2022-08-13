@@ -3,8 +3,8 @@
 #ifndef SCENE_H
 #define SCENE_H
 
-#include	"GameObject.h"
-#include	"Light.h"
+#include "GameObject.h"
+#include "Light.h"
 
 #include "include/engine/core/memory/stlAllocator.h"
 
@@ -235,9 +235,9 @@ public:
 				if (object)
 					object.get()->Init();
 			}
-
-			Light_Manager.Init();
 		}
+
+		Light_Manager.Init();
 
 		End_Pause();
 	};
@@ -251,7 +251,7 @@ public:
 		{
 			for (const auto& object : GameObjects[i])
 			{
-				if (object)
+				if (object && object->IsInit())
 					object.get()->Draw();
 			}
 		}
@@ -267,7 +267,7 @@ public:
 		{
 			for (const auto& object : GameObjects[i])
 			{
-				if (object)
+				if (object && object->IsInit())
 					object.get()->Draw_Shadow();
 			}
 		}
@@ -282,7 +282,7 @@ public:
 		{
 			for (const auto& object : GameObjects[i])
 			{
-				if (object)
+				if (object && object->IsInit())
 					object.get()->Draw_DPP();
 			}
 		}

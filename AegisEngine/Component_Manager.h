@@ -3,16 +3,16 @@
 #ifndef COMPONENT_MANAGER_H
 #define COMPONENT_MANAGER_H
 
-#include	"Component.h"
+#include "Component.h"
 #include "include\engine\core\uuid\uuid.h"
 
 #ifdef _DEBUG
 #define new new(_NORMAL_BLOCK, __FILE__, __LINE__)
 #endif // _DEBUG
 
-//#include	"Bounding_Aabb.h"
-//#include	"Bounding_Obb.h"
-//#include	"Bounding_Shpere.h"
+//#include "Bounding_Aabb.h"
+//#include "Bounding_Obb.h"
+//#include "Bounding_Shpere.h"
 class BOUNDING_AABB;
 class BOUNDING_OBB;
 class BOUNDING_SHPERE;
@@ -121,7 +121,7 @@ public:
 	{
 		for (const auto& component : mComponentArray)
 		{
-			if (component->GetEnable())
+			if (component->GetEnable() && component->IsInit())
 				component->Draw();
 		}
 	}
@@ -130,7 +130,7 @@ public:
 	{
 		for (const auto& component : mComponentArray)
 		{
-			if (component->GetEnable())
+			if (component->GetEnable() && component->IsInit())
 				component->Draw_DPP();
 		}
 	}
