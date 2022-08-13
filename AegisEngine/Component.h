@@ -4,21 +4,15 @@
 #define COMPONENT_H
 
 class GameObject;
-//#include	"GameObject.h"
-//#include	"manager.h"
+//#include "GameObject.h"
+//#include "manager.h"
 
 #include "include\engine\core\AegisObject.h"
 
 // コンポーネントクラス
 class COMPONENT : public aegis::AegisObject {
 
-	ABSTRACT_OBJECT_TYPE_INFO(COMPONENT)
-
-protected:
-	GameObject* Owner;
-
-	bool Enable;
-	bool DestroyFlag;
+	ABSTRACT_OBJECT_TYPE_INFO(aegis::AegisObject, COMPONENT)
 
 public:
 
@@ -48,6 +42,9 @@ public:
 	// メモリ上からの削除
 	bool Destroy();
 
+	void InitEnd() { IsInited = true; }
+	bool IsInit() const { return IsInited; }
+
 	template<class Archive>
 	void save(Archive& archive) const
 	{
@@ -59,6 +56,15 @@ public:
 	{
 		archive(cereal::make_nvp("Enable", Enable));
 	}
+
+protected:
+	GameObject* Owner;
+
+	bool Enable;
+	bool DestroyFlag;
+
+private:
+	bool IsInited = false;
 };
 
 //CEREAL_REGISTER_TYPE(COMPONENT)
