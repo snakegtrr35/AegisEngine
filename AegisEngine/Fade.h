@@ -8,7 +8,7 @@
 #ifndef FADE_H
 #define FADE_H
 
-#include	"Sprite.h"
+#include "Sprite.h"
 
  /**
  * @brief フェイドクラス
@@ -16,7 +16,7 @@
  */
 class FADE : public SPRITE {
 
-	OBJECT_TYPE_INFO(FADE)
+	OBJECT_TYPE_INFO(SPRITE, FADE)
 
 private:
 	

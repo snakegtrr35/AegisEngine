@@ -8,7 +8,7 @@
 #ifndef SPRITE_ANIMATION_H
 #define SPRITE_ANIMATION_H
 
-#include	"Sprite.h"
+#include "Sprite.h"
 
 /**
 * @brief スプライトアニメーションクラス
@@ -16,7 +16,7 @@
 */
 class SPRITE_ANIMATION : public SPRITE {
 
-	OBJECT_TYPE_INFO(SPRITE_ANIMATION)
+	OBJECT_TYPE_INFO(SPRITE, SPRITE_ANIMATION)
 
 private:
 	float WaitFrame;

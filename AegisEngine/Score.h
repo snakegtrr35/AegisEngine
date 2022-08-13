@@ -3,13 +3,13 @@
 #ifndef SCORE_H
 #define SCORE_H
 
-#include	"GameObject.h"
+#include "GameObject.h"
 
 class SPRITE_ANIMATION;
 
 class SCORE : public GameObject {
 
-	OBJECT_TYPE_INFO(SCORE)
+	OBJECT_TYPE_INFO(GameObject, SCORE)
 
 private:
 	SPRITE_ANIMATION* Number;

@@ -7,7 +7,7 @@
 
 class BILL : public GameObject {
 
-	OBJECT_TYPE_INFO(BILL)
+	OBJECT_TYPE_INFO(GameObject, BILL)
 
 private:
 

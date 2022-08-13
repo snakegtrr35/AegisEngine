@@ -3,7 +3,7 @@
 #ifndef TEXT_H
 #define TEXT_H
 
-#include	"Sprite.h"
+#include "Sprite.h"
 
 /**
 * @brief テキストクラス
@@ -12,7 +12,7 @@
 */
 class TEXTS :public  SPRITE {
 
-	OBJECT_TYPE_INFO(TEXTS)
+	OBJECT_TYPE_INFO(SPRITE, TEXTS)
 
 private:
 	aegis::string Text;	//!< 表示する文字列

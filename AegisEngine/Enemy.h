@@ -7,7 +7,7 @@ class GameObject;
 
 class ENEMY : public GameObject {
 
-	OBJECT_TYPE_INFO(ENEMY)
+	OBJECT_TYPE_INFO(GameObject, ENEMY)
 
 private:
 

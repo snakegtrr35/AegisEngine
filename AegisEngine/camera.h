@@ -3,11 +3,11 @@
 #ifndef CAMERA_H
 #define CAMERA_H
 
-#include	"GameObject.h"
+#include "GameObject.h"
 
 class CCamera : public GameObject{
 
-	OBJECT_TYPE_INFO(CCamera)
+	OBJECT_TYPE_INFO(GameObject, CCamera)
 
 private:
 	static CCamera* pCamera;

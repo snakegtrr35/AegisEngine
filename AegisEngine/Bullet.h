@@ -3,13 +3,11 @@
 #ifndef BULLET_H
 #define BULLET_H
 
-//#include	"GameObject.h"
-
-class GameObject;
+#include "GameObject.h"
 
 class BULLET : public GameObject {
 
-	OBJECT_TYPE_INFO(BULLET)
+	OBJECT_TYPE_INFO(GameObject, BULLET)
 
 protected:
 	aegis::Vector3 MoveVector;
