@@ -1,7 +1,8 @@
-﻿#include	"GameObject.h"
-#include	"Sprite_Animation.h"
-#include	"manager.h"
-#include	"ShadowMap.h"
+﻿#include "GameObject.h"
+#include "Sprite_Animation.h"
+#include "manager.h"
+#include "ShadowMap.h"
+#include "texture.h"
 
 IMPLEMENT_OBJECT_TYPE_INFO(SPRITE, SPRITE_ANIMATION)
 
@@ -59,6 +60,7 @@ SPRITE_ANIMATION::~SPRITE_ANIMATION()
 void SPRITE_ANIMATION::Init(void)
 {
 	SPRITE::Init();
+	SPRITE::InitEnd();
 }
 
 void SPRITE_ANIMATION::Draw(void)
@@ -128,17 +130,15 @@ void SPRITE_ANIMATION::Draw2(float tx, float ty)
 
 	// 頂点バッファの書き換え
 	{
-		D3D11_MAPPED_SUBRESOURCE msr;
-		render->GetDeviceContext()->Map(pVertexBuffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &msr);
-		memcpy(msr.pData, Vertex, sizeof(VERTEX_3D) * 4); // 4頂点分コピー
-		render->GetDeviceContext()->Unmap(pVertexBuffer.Get(), 0);
+		render->Map(VertexBuffer.get(), Vertex, sizeof(VERTEX_3D) * 4); // 4頂点分コピー
+		render->Unmap(VertexBuffer.get());
 	}
 
 	// 入力アセンブラに頂点バッファを設定
-	render->SetVertexBuffers(pVertexBuffer.Get());
+	render->SetVertexBuffers(VertexBuffer.get());
 
 	// 入力アセンブラにインデックスバッファを設定
-	render->SetIndexBuffer(pIndexBuffer.Get());
+	render->SetIndexBuffer(IndexBuffer.get());
 
 	// テクスチャの設定
 	Texture->Set_Texture();
@@ -207,17 +207,15 @@ void SPRITE_ANIMATION::Draw_DPP2(float tx, float ty)
 
 	// 頂点バッファの書き換え
 	{
-		D3D11_MAPPED_SUBRESOURCE msr;
-		render->GetDeviceContext()->Map(pVertexBuffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &msr);
-		memcpy(msr.pData, Vertex, sizeof(VERTEX_3D) * 4); // 4頂点分コピー
-		render->GetDeviceContext()->Unmap(pVertexBuffer.Get(), 0);
+		render->Map(VertexBuffer.get(), Vertex, sizeof(VERTEX_3D) * 4); // 4頂点分コピー
+		render->Unmap(VertexBuffer.get());
 	}
 
 	// 入力アセンブラに頂点バッファを設定
-	render->SetVertexBuffers(pVertexBuffer.Get());
+	render->SetVertexBuffers(VertexBuffer.get());
 
 	// 入力アセンブラにインデックスバッファを設定
-	render->SetIndexBuffer(pIndexBuffer.Get());
+	render->SetIndexBuffer(IndexBuffer.get());
 
 	// 2Dマトリックス設定
 	render->SetWorldViewProjection2D(Get_Transform().Get_Scaling());

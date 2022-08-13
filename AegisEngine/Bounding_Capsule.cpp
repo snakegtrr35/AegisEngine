@@ -1,9 +1,9 @@
-﻿#include	"Bounding_Capsule.h"
-#include	"camera.h"
-#include	"Debug_Camera.h"
-#include	"manager.h"
-#include	"Scene.h"
-#include	"ShadowMap.h"
+﻿#include "Bounding_Capsule.h"
+#include "camera.h"
+#include "Debug_Camera.h"
+#include "manager.h"
+#include "Scene.h"
+#include "ShadowMap.h"
 
 IMPLEMENT_ABSTRACT_OBJECT_TYPE_INFO(BOUNDING, BOUNDING_CAPSULE)
 
@@ -11,6 +11,8 @@ using namespace aegis;
 
 void BOUNDING_CAPSULE::Init()
 {
+	BOUNDING::Init();
+
 	Radius = 3.0f;
 	Height = 6.0f;
 
@@ -19,6 +21,7 @@ void BOUNDING_CAPSULE::Init()
 	Init_Body();
 	Init_Ring();
 
+	BOUNDING::InitEnd();
 }
 
 void BOUNDING_CAPSULE::Draw()
@@ -124,18 +127,16 @@ void BOUNDING_CAPSULE::Init_Body()
 
 		// 頂点バッファの設定
 		{
-			D3D11_BUFFER_DESC bd{};
+			BufferDesc  bd{};
+			bd.Usage = Usage::Dynamic;
 			bd.ByteWidth = sizeof(VERTEX_3D) * vertex_num;
-			bd.Usage = D3D11_USAGE_DYNAMIC;
-			bd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-			bd.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
-			bd.MiscFlags = 0;
-			bd.StructureByteStride = 0;
+			bd.BindFlags = BindFlag::Vertexbuffer;
+			bd.CPUAccessFlags = CpuAccessFlag::Write;
 
-			D3D11_SUBRESOURCE_DATA sd{};
+			SubresourceData sd{};
 			sd.pSysMem = Vertex.data();
 
-			render->GetDevice()->CreateBuffer(&bd, &sd, &pVertexBuffer);
+			VertexBuffer.reset(render->CreateBuffer(bd, sd));
 		}
 	}
 
@@ -184,18 +185,16 @@ void BOUNDING_CAPSULE::Init_Body()
 
 		// 頂点バッファの設定
 		{
-			D3D11_BUFFER_DESC bd{};
+			BufferDesc  bd{};
+			bd.Usage = Usage::Dynamic;
 			bd.ByteWidth = sizeof(VERTEX_3D) * vertex_num;
-			bd.Usage = D3D11_USAGE_DYNAMIC;
-			bd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-			bd.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
-			bd.MiscFlags = 0;
-			bd.StructureByteStride = 0;
+			bd.BindFlags = BindFlag::Vertexbuffer;
+			bd.CPUAccessFlags = CpuAccessFlag::Write;
 
-			D3D11_SUBRESOURCE_DATA sd{};
+			SubresourceData sd{};
 			sd.pSysMem = Vertex.data();
 
-			render->GetDevice()->CreateBuffer(&bd, &sd, &pVertexBuffer2);
+			VertexBuffer2.reset(render->CreateBuffer(bd, sd));
 		}
 	}
 
@@ -213,18 +212,16 @@ void BOUNDING_CAPSULE::Init_Body()
 
 		// インデックスバッファの設定
 		{
-			D3D11_BUFFER_DESC bd{};
-			bd.ByteWidth = sizeof(WORD) * IndexNum;
-			bd.Usage = D3D11_USAGE_DEFAULT;
-			bd.BindFlags = D3D11_BIND_INDEX_BUFFER;
-			bd.CPUAccessFlags = 0;
-			bd.MiscFlags = 0;
-			bd.StructureByteStride = 0;
+			BufferDesc  bd{};
+			bd.Usage = Usage::Default;
+			bd.ByteWidth = sizeof(uint16) * IndexNum;
+			bd.BindFlags = BindFlag::Indexbuffer;
+			bd.CPUAccessFlags = CpuAccessFlag::None;
 
-			D3D11_SUBRESOURCE_DATA sd{};
+			SubresourceData sd{};
 			sd.pSysMem = Index.data();
 
-			render->GetDevice()->CreateBuffer(&bd, &sd, &pIndexBuffer);
+			IndexBuffer.reset(render->CreateBuffer(bd, sd));
 		}
 	}
 }
@@ -255,18 +252,16 @@ void BOUNDING_CAPSULE::Init_Ring()
 
 		// 頂点バッファの設定
 		{
-			D3D11_BUFFER_DESC bd{};
+			BufferDesc  bd{};
+			bd.Usage = Usage::Dynamic;
 			bd.ByteWidth = sizeof(VERTEX_3D) * cnt;
-			bd.Usage = D3D11_USAGE_DYNAMIC;
-			bd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-			bd.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
-			bd.MiscFlags = 0;
-			bd.StructureByteStride = 0;
+			bd.BindFlags = BindFlag::Vertexbuffer;
+			bd.CPUAccessFlags = CpuAccessFlag::Write;
 
-			D3D11_SUBRESOURCE_DATA sd{};
+			SubresourceData sd{};
 			sd.pSysMem = Vertex.data();
 
-			render->GetDevice()->CreateBuffer(&bd, &sd, &pVertexBuffer_Ring);
+			VertexBufferRing.reset(render->CreateBuffer(bd, sd));
 		}
 	}
 
@@ -286,18 +281,16 @@ void BOUNDING_CAPSULE::Init_Ring()
 
 		// インデックスバッファの設定
 		{
-			D3D11_BUFFER_DESC bd{};
-			bd.ByteWidth = sizeof(WORD) * IndexNum_Ring;
-			bd.Usage = D3D11_USAGE_DEFAULT;
-			bd.BindFlags = D3D11_BIND_INDEX_BUFFER;
-			bd.CPUAccessFlags = 0;
-			bd.MiscFlags = 0;
-			bd.StructureByteStride = 0;
+			BufferDesc  bd{};
+			bd.Usage = Usage::Default;
+			bd.ByteWidth = sizeof(uint16) * IndexNum_Ring;
+			bd.BindFlags = BindFlag::Indexbuffer;
+			bd.CPUAccessFlags = CpuAccessFlag::None;
 
-			D3D11_SUBRESOURCE_DATA sd{};
+			SubresourceData sd{};
 			sd.pSysMem = Index.data();
 
-			render->GetDevice()->CreateBuffer(&bd, &sd, &pIndexBuffer_Ring);
+			IndexBufferRing.reset(render->CreateBuffer(bd, sd));
 		}
 
 	}
@@ -310,20 +303,20 @@ void BOUNDING_CAPSULE::Draw_Body(const Vector3& position, const Vector3& rotatio
 	render->Set_Shader(SHADER_INDEX_V::DEFAULT, SHADER_INDEX_P::NO_TEXTURE);
 
 	// トポロジの設定
-	render->SetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_LINESTRIP);
+	render->SetPrimitiveTopology(PrimitiveTopology::TriangleStrip);
 
 	// 本体の描画
 	{
 		// 入力アセンブラにインデックスバッファを設定
-		render->SetIndexBuffer(pIndexBuffer.Get());
+		render->SetIndexBuffer(IndexBuffer.get());
 
 		// 入力アセンブラに頂点バッファを設定
-		render->SetVertexBuffers(pVertexBuffer.Get());
+		render->SetVertexBuffers(VertexBuffer.get());
 
 		Draw_Semicircle(position, rotation);
 
 		// 入力アセンブラに頂点バッファを設定
-		render->SetVertexBuffers(pVertexBuffer2.Get());
+		render->SetVertexBuffers(VertexBuffer2.get());
 
 		Draw_Semicircle(position, rotation);
 	}
@@ -336,7 +329,7 @@ void BOUNDING_CAPSULE::Draw_Body(const Vector3& position, const Vector3& rotatio
 	render->Set_Shader();
 
 	// トポロジの設定
-	render->SetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	render->SetPrimitiveTopology(PrimitiveTopology::TriangleList);
 }
 
 void BOUNDING_CAPSULE::Draw_Semicircle(const Vector3& position, const Vector3& rotation)
@@ -371,10 +364,10 @@ void BOUNDING_CAPSULE::Draw_Ring(const Vector3& position, const Vector3& rotatio
 	CRenderer* render = CRenderer::getInstance();
 
 	// 入力アセンブラに頂点バッファを設定
-	render->SetVertexBuffers(pVertexBuffer_Ring.Get());
+	render->SetVertexBuffers(VertexBufferRing.get());
 
 	// 入力アセンブラにインデックスバッファを設定
-	render->SetIndexBuffer(pIndexBuffer_Ring.Get());
+	render->SetIndexBuffer(IndexBufferRing.get());
 
 	// 3Dマトリックス設定
 	{
@@ -402,7 +395,7 @@ void BOUNDING_CAPSULE::Draw_Ring(const Vector3& position, const Vector3& rotatio
 	render->DrawIndexed(IndexNum_Ring, 0, 0);
 }
 
-#include	"imgui/imgui.h"
+#include "imgui/imgui.h"
 
 void BOUNDING_CAPSULE::Draw_Inspector()
 {

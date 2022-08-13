@@ -1,10 +1,18 @@
 ﻿#ifndef SHADOW_MAP_H
 #define SHADOW_MAP_H
 
-#include	"main.h"
-#include	"Renderer.h"
+#include "GameObject.h"
+#include "RendererTypeDefine.h"
 
-class GameObject;
+namespace aegis
+{
+	class DepthStencilView;
+	class ShaderResourceView;
+	class RasterizerState;
+	class SamplerState;
+	class Buffer;
+	class RenderTargetView;
+}
 
 class SHADOW_MAP {
 private:
@@ -20,34 +28,34 @@ private:
 	};
 
 	//! デプスステンシルビュー
-	ComPtr<ID3D11DepthStencilView>		DepthStencilView;
+	aegis::uniquePtr<aegis::DepthStencilView>	DepthStencilView;
 	//! シェーダーリソースビュー
-	ComPtr<ID3D11ShaderResourceView>	ShaderResourceView;
-	ComPtr<ID3D11ShaderResourceView>	SRV;
+	aegis::uniquePtr<aegis::ShaderResourceView>	ShaderResourceView;
+	aegis::uniquePtr<aegis::ShaderResourceView>	SRV;
 	//! ラスタライザステート
-	ComPtr<ID3D11RasterizerState>		RasterizerState;
+	aegis::uniquePtr<aegis::RasterizerState>		RasterizerState;
 	//! サンプラー
-	ComPtr<ID3D11SamplerState>			Sampler;
+	aegis::uniquePtr<aegis::SamplerState>		Sampler;
 	//! コンスタントバッファ
-	ComPtr<ID3D11Buffer>				ShadowBuffer;
-	CONSTANT_SHADOW_MAP					Shadow;
-	ComPtr<ID3D11Buffer>				LightBuffer;
+	aegis::uniquePtr<aegis::Buffer>				ShadowBuffer;
+	CONSTANT_SHADOW_MAP							Shadow;
+	aegis::uniquePtr<aegis::Buffer>					LightBuffer;
 	//! 
-	aegis::Vector3						LightPos;
+	aegis::Vector3								LightPos;
 	//!
-	CONSTANT_LIGHT						Light;
+	CONSTANT_LIGHT								Light;
 
-	XMMATRIX							ViewMatrix;
-	XMMATRIX							PlojectionMatrix;
+	XMMATRIX									ViewMatrix;
+	XMMATRIX									PlojectionMatrix;
 
-	RECT								Viewport;
-	D3D11_VIEWPORT						DxViewport;
+	RECT										Viewport;
+	aegis::ViewPort								DxViewport;
 
-	bool Enable;
+	bool										Enable;
 
-	ComPtr<ID3D11RenderTargetView> RenderTargetView;
+	aegis::uniquePtr<aegis::RenderTargetView>	RenderTargetView;
 
-	std::weak_ptr<GameObject> Target;
+	std::weak_ptr<GameObject>					Target;
 
 	static UINT WIDTH;
 	static UINT HEIGHT;
@@ -85,8 +93,8 @@ public:
 		return LightPos;
 	}
 
-	ID3D11ShaderResourceView* Get() {
-		return ShaderResourceView.Get();
+	aegis::ShaderResourceView* Get() {
+		return ShaderResourceView.get();
 	}
 
 	void Set_Target(const std::weak_ptr<GameObject>& object);
@@ -95,7 +103,7 @@ public:
 
 	void Set();
 
-	ID3D11SamplerState* getSampler() { return Sampler.Get(); }
+	aegis::SamplerState* getSampler() { return Sampler.get(); }
 };
 
 #endif // !SHADOW_MAP_H

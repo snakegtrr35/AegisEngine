@@ -4,64 +4,61 @@
 #define EFFEKSEER_H
 
 #include <Effekseer.h>
+
+#ifdef DX11
 #include <EffekseerRendererDX11.h>
 #include <EffekseerSoundXAudio2.h>
+#elif DX12
+// 未実装
+#elif VULKAN
+// 未実装
+#endif
 
-#if _DEBUG
-#pragma comment(lib, "external/Effekseer/lib/VS2017WIN64/Debug/Effekseer.lib" )
-#pragma comment(lib, "external/Effekseer/lib/VS2017WIN64/Debug/EffekseerRendererDX11.lib" )
-#pragma comment(lib, "external/Effekseer/lib/VS2017WIN64/Debug/EffekseerSoundXAudio2.lib" )
-#else
-#pragma comment(lib, "external/Effekseer/lib/VS2017WIN64/Release/Effekseer.lib" )
-#pragma comment(lib, "external/Effekseer/lib/VS2017WIN64/Release/EffekseerRendererDX11.lib" )
-#pragma comment(lib, "external/Effekseer/lib/VS2017WIN64/Release/EffekseerSoundXAudio2.lib" )
-#endif // !DEBUG
+namespace aegis
+{
+	class EffekseerManager {
+	private:
+		::Effekseer::Manager* Manager;
+		::EffekseerRenderer::Renderer* Renderer;
+		::EffekseerSound::Sound* Sound;
 
+		aegis::unordered_map<aegis::string, ::Effekseer::Effect*> Effects;
+		aegis::unordered_map<aegis::string, ::Effekseer::Handle> Handles;
 
-class EFFEKSEER_MANAGER {
-private:
-	static ::Effekseer::Manager*			Manager;
-	static ::EffekseerRenderer::Renderer*	Renderer;
-	static ::EffekseerSound::Sound*			Sound;
+		void Set();
 
-	static aegis::unordered_map<aegis::string, ::Effekseer::Effect*> Effects;
-	static aegis::unordered_map<aegis::string, ::Effekseer::Handle> Handles;
+	public:
 
+		EffekseerManager() = default;
+		~EffekseerManager() {}
 
-	EFFEKSEER_MANAGER() {}
+		static EffekseerManager* getInstance();
 
-	static void Set();
+		bool Init();
+		void Uninit();
 
-public:
+		void Draw();
+		void Update(float delta_time);
 
-	static bool Init();
-	static void Uninit();
+		::Effekseer::Manager* const Get_Manager();
 
-	static void Draw();
-	static void Update(float delta_time);
+		const aegis::unordered_map<aegis::string, ::Effekseer::Effect*>& Get_Effects();
 
-	static ::Effekseer::Manager* const Get_Manager();
+		void Play(const aegis::string& name);
+		void Play(const aegis::string& handle_name, const aegis::string& effect_name, const XMFLOAT3& position);
+		void Play(const aegis::string& handle_name, const aegis::string& effect_name, const aegis::Vector3& position);
 
-	static const aegis::unordered_map<aegis::string, ::Effekseer::Effect*>& Get_Effects();
+		void Set_Location(const aegis::string& handle_name, const XMFLOAT3& position);
+		void Set_Location(const aegis::string& handle_name, const aegis::Vector3& position);
 
-	static void Play(const aegis::string& name);
-	static void Play(const aegis::string& handle_name, const aegis::string& effect_name, const XMFLOAT3& position);
-	static void Play(const aegis::string& handle_name, const aegis::string& effect_name, const aegis::Vector3& position);
+		void Set_Rotation(const aegis::string& handle_name, const XMFLOAT3& axis, const float angle);
+		void Set_Rotation(const aegis::string& handle_name, const aegis::Vector3& axis, const float angle);
 
-	static void Set_Location(const aegis::string& handle_name, const XMFLOAT3& position);
-	static void Set_Location(const aegis::string& handle_name, const aegis::Vector3& position);
+		void Set_Scale(const aegis::string& handle_name, const XMFLOAT3& scale);
+		void Set_Scale(const aegis::string& handle_name, const aegis::Vector3& scale);
 
-	static void Set_Rotation(const aegis::string& handle_name, const XMFLOAT3& axis, const float angle);
-	static void Set_Rotation(const aegis::string& handle_name, const aegis::Vector3& axis, const float angle);
-
-	static void Set_Scale(const aegis::string& handle_name, const XMFLOAT3& scale);
-	static void Set_Scale(const aegis::string& handle_name, const aegis::Vector3& scale);
-
-
-	static void Set_Speed(const aegis::string& handle_name, const float speed);
-
-	//static const EFFECT& Get_Effect(const aegis::string& name);
-
-};
+		void Set_Speed(const aegis::string& handle_name, const float speed);
+	};
+}
 
 #endif // !EFFEKSEER_H

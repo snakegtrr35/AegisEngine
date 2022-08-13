@@ -8,16 +8,16 @@
 #ifndef BOUNDING_OBB_H
 #define BOUNDING_OBB_H
 
-#include	"Bounding.h"
+#include "Bounding.h"
 
 // OBB
 class BOUNDING_OBB : public BOUNDING {
 
-	OBJECT_TYPE_INFO(BOUNDING_OBB)
+	OBJECT_TYPE_INFO(BOUNDING, BOUNDING_OBB)
 
 private:
 	//! 頂点バッファ
-	ComPtr<ID3D11Buffer> pVertexBuffer;
+	aegis::uniquePtr<aegis::Buffer> VertexBuffer;
 
 	//! OBB
 	BoundingOrientedBox Obb;

@@ -1,27 +1,27 @@
-﻿#include	"main.h"
-#include	"manager.h"
-#include	"Renderer.h"
-#include	"Input.h"
+﻿#include "main.h"
+#include "manager.h"
+#include "Renderer.h"
+#include "Input.h"
 
-#include	"Scene.h"
-#include	"Scene_Manager.h"
-#include	"Title.h"
-#include	"Main_Menu.h"
-#include	"Game.h"
-#include	"Result.h"
+#include "Scene.h"
+#include "Scene_Manager.h"
+#include "Title.h"
+#include "Main_Menu.h"
+#include "Game.h"
+#include "Result.h"
 
-#include	"texture.h"
-#include	"Texture_Manager.h"
-#include	"Model_Manager.h"
-#include	"Timer.h"
-#include	"audio_clip.h"
-#include	"ShadowMap.h"
-#include	"Effekseer.h"
+#include "texture.h"
+#include "TextureManager.h"
+#include "Model_Manager.h"
+#include "Timer.h"
+#include "audio_clip.h"
+#include "ShadowMap.h"
+#include "Effekseer.h"
 
-#include	"Clustered.h"
+#include "Clustered.h"
 
 #ifdef _DEBUG
-#include	"My_imgui.h"
+#include "My_imgui.h"
 #endif // _DEBUG
 
 #include "include/engine/core/memory/aegisAllocator.h"
@@ -31,6 +31,8 @@
 #endif // _DEBUG
 
 std::unique_ptr<CManager> CManager::Manager;
+
+using namespace aegis;
 
 bool CManager::Init()
 {
@@ -73,11 +75,9 @@ bool CManager::Init()
 		return false;
 	}
 
-	CRenderer::getInstance()->CreateRenderTexture();
-
 	AUDIO_MANAGER::Init();
 
-	TEXTURE_MANEGER::Init();
+	TextureManager::Init();
 
 	MODEL_MANEGER::Init();
 	//MODEL_MANEGER::Get_Instance()->Add("player_neutral.fbx");
@@ -88,7 +88,7 @@ bool CManager::Init()
 	TIMER::Init();
 	CLOCK_TIMER::Init();
 
-	EFFEKSEER_MANAGER::Init();
+	EffekseerManager::getInstance()->Init();
 
 	Manager->cluster.reset(new CLUSTERED());
 	Manager->cluster->Init();
@@ -97,7 +97,7 @@ bool CManager::Init()
 	//CRenderer::Change_Window_Mode();
 
 #ifdef _DEBUG
-	Manager->imgui.reset(new My_imgui());
+	Manager->imgui.reset(new aegis::My_imgui());
 	Manager->imgui->Init(GetWindow());
 #endif // _DEBUG
 
@@ -117,13 +117,6 @@ bool CManager::Init()
 	Manager->pShadowMap.reset(new SHADOW_MAP());//
 	Manager->pShadowMap->Init();
 
-	{
-		CLUSTERED clustered;
-
-		clustered.Init();
-		clustered.Update();
-	}
-
 	return true;
 }
 
@@ -138,7 +131,7 @@ void CManager::Update()
 	if (false == this->Get_Scene()->GetLockLoad())
 	{
 #ifdef _DEBUG
-		TEXTURE_MANEGER::Get_Instance()->Update();
+		TextureManager::Get_Instance()->Update();
 
 		if (Play_Enable)
 		{
@@ -162,7 +155,7 @@ void CManager::Update()
 
 		// Effekseer
 		{
-			EFFEKSEER_MANAGER::Update((float)TIMER::Get_DeltaTime());
+			EffekseerManager::getInstance()->Update((float)TIMER::Get_DeltaTime());
 		}
 
 		MOUSE::Get_Mouse()->Reset_Wheel_Moveset();
@@ -181,7 +174,7 @@ void CManager::Update()
 
 		if (KEYBOARD::Trigger_Keyboard(VK_F2))
 		{
-			EFFEKSEER_MANAGER::Play("test");
+			EffekseerManager::getInstance()->Play("test");
 		}
 
 		Manager->cluster->Update();
@@ -213,7 +206,7 @@ void CManager::Draw()
 
 	// 最終レンダリング
 	{
-		render->SetPass_Rendring();
+		render->SetPassRendring();
 		pShadowMap->Set();
 		Manager->pSceneManager->Get_Scene()->Get_Light_Manager()->Draw();
 		Manager->cluster->Draw();
@@ -223,7 +216,7 @@ void CManager::Draw()
 
 	// Effekseer
 	{
-		EFFEKSEER_MANAGER::Draw();
+		EffekseerManager::getInstance()->Draw();
 	}
 
 	/*// Direct2D
@@ -312,7 +305,7 @@ void CManager::Uninit()
 #endif // _DEBUG
 
 	// Effekseer
-	EFFEKSEER_MANAGER::Uninit();
+	EffekseerManager::getInstance()->Uninit();
 
 	FONT::Uninit();
 

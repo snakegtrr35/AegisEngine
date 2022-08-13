@@ -3,6 +3,8 @@
 #ifndef TEXYUTE_H
 #define TEXYUTE_H
 
+#include "RendererTypeDefine.h"
+
 //========================================
 // テクスチャクラス
 //========================================
@@ -46,8 +48,8 @@ public:
 
 class FONT {
 private:
-	static aegis::unordered_map<aegis::wstring, std::unique_ptr<ID3D11ShaderResourceView, Release>> FontResource;
-	static ID3D11SamplerState* SamplerState;
+	static aegis::unordered_map<aegis::wstring, aegis::uniquePtr<aegis::ShaderResourceView>> FontResource;
+	static aegis::SamplerState* SamplerState;
 
 	static void Load_Font();
 	static void Load_Font(const aegis::wstring& one_character);
@@ -60,9 +62,9 @@ public:
 
 	static void Add_Font(const aegis::wstring& one_character);
 
-	static ID3D11ShaderResourceView* Get_Font_Resource(const aegis::wstring& one_character);
+	static aegis::ShaderResourceView* Get_Font_Resource(const aegis::wstring& one_character);
 
-	static ID3D11SamplerState* Get_SamplerState();
+	static aegis::SamplerState* Get_SamplerState();
 
 
 };

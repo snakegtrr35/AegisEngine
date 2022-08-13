@@ -1,9 +1,8 @@
-﻿#include	"GameObject.h"
-#include	"Fade.h"
-#include	"Scene.h"
-#include	"manager.h"
-#include	"ShadowMap.h"
-#include	"Renderer.h"
+﻿#include "Fade.h"
+#include "Scene.h"
+#include "manager.h"
+#include "ShadowMap.h"
+#include "Renderer.h"
 
 IMPLEMENT_OBJECT_TYPE_INFO(SPRITE, FADE)
 
@@ -26,6 +25,7 @@ FADE::~FADE()
 void FADE::Init()
 {
 	SPRITE::Init();
+	SPRITE::InitEnd();
 }
 
 void FADE::Draw()
@@ -57,18 +57,16 @@ void FADE::Draw()
 
 		// 頂点バッファの書き換え
 		{
-			D3D11_MAPPED_SUBRESOURCE msr;
-			render->GetDeviceContext()->Map(pVertexBuffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &msr);
-			memcpy(msr.pData, Vertex, sizeof(VERTEX_3D) * 4); // 4頂点分コピー
-			render->GetDeviceContext()->Unmap(pVertexBuffer.Get(), 0);
+			render->Map(VertexBuffer.get(), Vertex, sizeof(VERTEX_3D) * 4); // 4頂点分コピー
+			render->Unmap(VertexBuffer.get());
 		}
 	}
 
 	// 入力アセンブラに頂点バッファを設定
-	render->SetVertexBuffers(pVertexBuffer.Get());
+	render->SetVertexBuffers(VertexBuffer.get());
 
 	// 入力アセンブラにインデックスバッファを設定
-	render->SetIndexBuffer(pIndexBuffer.Get());
+	render->SetIndexBuffer(IndexBuffer.get());
 
 	// 2Dマトリックス設定
 	render->SetWorldViewProjection2D(Get_Transform().Get_Scaling());

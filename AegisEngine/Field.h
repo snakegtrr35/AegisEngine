@@ -8,11 +8,10 @@
 #ifndef FIELD_H
 #define FIELD_H
 
-#include	"texture.h"
-#include	"Renderer.h"
-#include	"main.h"
+#include "GameObject.h"
+#include "Renderer.h"
 
-class GameObject;
+class TEXTURE;
 
 /**
 * @brief フィールドクラス
@@ -20,17 +19,17 @@ class GameObject;
 */
 class FIELD : public GameObject {
 
-	OBJECT_TYPE_INFO(FIELD)
+	OBJECT_TYPE_INFO(GameObject, FIELD)
 
 private:
 	//! 頂点バッファ
-	ComPtr<ID3D11Buffer> pVertexBuffer;
+	aegis::uniquePtr<aegis::Buffer> VertexBuffer;
 
 	//! インスタンシング用のバッファ
-	ComPtr<ID3D11Buffer> pInstanceBuffer;
+	aegis::uniquePtr<aegis::Buffer> InstanceBuffer;
 
 	//! インデックスバッファ
-	ComPtr<ID3D11Buffer> pIndexBuffer;
+	aegis::uniquePtr<aegis::Buffer> IndexBuffer;
 
 	//! テクスチャ
 	std::unique_ptr<TEXTURE> Texture;

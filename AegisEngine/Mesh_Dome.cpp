@@ -1,12 +1,10 @@
-﻿#include	"GameObject.h"
-#include	"Mesh_Dome.h"
-#include	"camera.h"
-#include	"Debug_Camera.h"
-#include	"renderer.h"
-#include	"texture.h"
-#include	"manager.h"
-#include	"Scene.h"
-#include	"ShadowMap.h"
+﻿#include "Mesh_Dome.h"
+#include "camera.h"
+#include "Debug_Camera.h"
+#include "manager.h"
+#include "Scene.h"
+#include "ShadowMap.h"
+#include "texture.h"
 
 using namespace aegis;
 
@@ -18,6 +16,8 @@ MESH_DOOM::MESH_DOOM() : Radius(500.0f)
 
 void MESH_DOOM::Init()
 {
+	GameObject::Init();
+
 	CRenderer* render = CRenderer::getInstance();
 
 	const int cornerNum = 20;
@@ -53,16 +53,16 @@ void MESH_DOOM::Init()
 		// 頂点バッファ生成
 		if (nullptr == VertexBuffer)
 		{
-			D3D11_BUFFER_DESC bd{};
-			bd.Usage = D3D11_USAGE_DEFAULT;
+			BufferDesc  bd{};
+			bd.Usage = Usage::Default;
 			bd.ByteWidth = sizeof(VERTEX_3D) * VertexNum;
-			bd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-			bd.CPUAccessFlags = 0;
+			bd.BindFlags = BindFlag::Vertexbuffer;
+			bd.CPUAccessFlags = CpuAccessFlag::None;
 
-			D3D11_SUBRESOURCE_DATA sd{};
+			SubresourceData sd{};
 			sd.pSysMem = vertexArray.data();
 
-			render->GetDevice()->CreateBuffer(&bd, &sd, &VertexBuffer);
+			VertexBuffer.reset(render->CreateBuffer(bd, sd));
 		}
 	}
 
@@ -98,18 +98,20 @@ void MESH_DOOM::Init()
 		// インデックスバッファ生成
 		if (nullptr == IndexBuffer)
 		{
-			D3D11_BUFFER_DESC bd{};
-			bd.Usage = D3D11_USAGE_DEFAULT;
-			bd.ByteWidth = sizeof(WORD) * IndexNum;
-			bd.BindFlags = D3D11_BIND_INDEX_BUFFER;
-			bd.CPUAccessFlags = 0;
+			BufferDesc  bd{};
+			bd.Usage = Usage::Default;
+			bd.ByteWidth = sizeof(uint16) * IndexNum;
+			bd.BindFlags = BindFlag::Indexbuffer;
+			bd.CPUAccessFlags = CpuAccessFlag::None;
 
-			D3D11_SUBRESOURCE_DATA sd{};
+			SubresourceData sd{};
 			sd.pSysMem = indexArray.data();
 
-			render->GetDevice()->CreateBuffer(&bd, &sd, &IndexBuffer);
+			IndexBuffer.reset(render->CreateBuffer(bd, sd));
 		}
 	}
+
+	GameObject::InitEnd();
 }
 
 //***********************************************************************************************
@@ -166,11 +168,11 @@ void MESH_DOOM::Draw()
 		}
 	}
 
-	render->SetVertexBuffers(VertexBuffer.Get());
-	render->SetIndexBuffer(IndexBuffer.Get());
+	render->SetVertexBuffers(VertexBuffer.get());
+	render->SetIndexBuffer(IndexBuffer.get());
 
 	// トポロジ設定
-	render->SetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
+	render->SetPrimitiveTopology(PrimitiveTopology::TriangleStrip);
 
 	Texture.get()->Set_Texture();
 
@@ -181,7 +183,7 @@ void MESH_DOOM::Draw()
 	render->Set_Shader();
 
 	// トポロジ設定
-	render->SetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	render->SetPrimitiveTopology(PrimitiveTopology::TriangleList);
 
 	GameObject::Draw();
 }
@@ -219,18 +221,18 @@ void MESH_DOOM::Draw_Shadow()
 		}
 	}
 
-	render->SetVertexBuffers(VertexBuffer.Get());
-	render->SetIndexBuffer(IndexBuffer.Get());
+	render->SetVertexBuffers(VertexBuffer.get());
+	render->SetIndexBuffer(IndexBuffer.get());
 
 	// トポロジ設定
-	render->SetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
+	render->SetPrimitiveTopology(PrimitiveTopology::TriangleStrip);
 
 	render->Set_Shader(SHADER_INDEX_V::SHADOW_MAP, SHADER_INDEX_P::MAX);
 
 	render->DrawIndexed(IndexNum, 0, 0);
 
 	// トポロジ設定
-	render->SetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	render->SetPrimitiveTopology(PrimitiveTopology::TriangleList);
 
 	GameObject::Draw_Shadow();
 }

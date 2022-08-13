@@ -8,9 +8,9 @@
 #ifndef BILL_BOARD_H
 #define	BILL_BOARD_H
 
-#include	"Renderer.h"
+#include "GameObject.h"
+#include "Renderer.h"
 
-class GameObject;
 class TEXTURE;
 
 /**
@@ -19,15 +19,15 @@ class TEXTURE;
 */
 class BILL_BOARD : public GameObject {
 
-	OBJECT_TYPE_INFO(BILL_BOARD)
+	OBJECT_TYPE_INFO(GameObject, BILL_BOARD)
 
 protected:
 
 	//! インデックスバッファ
-	static ComPtr<ID3D11Buffer> pIndexBuffer;
+	static aegis::uniquePtr<aegis::Buffer> IndexBuffer;
 
 	//! 頂点バッファ
-	ComPtr<ID3D11Buffer> pVertexBuffer;
+	aegis::uniquePtr<aegis::Buffer> VertexBuffer;
 
 	//! テクスチャ
 	std::unique_ptr<TEXTURE> Texture;

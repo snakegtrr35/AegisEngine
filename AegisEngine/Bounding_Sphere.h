@@ -8,18 +8,18 @@
 #ifndef BOUNDING_SHPERE_H
 #define BOUNDING_SHPERE_H
 
-#include	"Bounding.h"
+#include "Bounding.h"
 
 // 球
 class BOUNDING_SHPERE : public BOUNDING {
 
-	OBJECT_TYPE_INFO(BOUNDING_SHPERE)
+	OBJECT_TYPE_INFO(BOUNDING, BOUNDING_SHPERE)
 
 private:
 	//! 頂点バッファ
-	ComPtr<ID3D11Buffer> pVertexBuffer;
+	aegis::uniquePtr<aegis::Buffer> VertexBuffer;
 	//! インデックスバッファ
-	ComPtr<ID3D11Buffer> pIndexBuffer;
+	aegis::uniquePtr<aegis::Buffer> IndexBuffer;
 
 	//! 半径
 	float Radius;

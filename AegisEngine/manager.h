@@ -7,7 +7,11 @@
 class SCENE_MANAGER;
 class SCENE;
 class SHADOW_MAP;
-class My_imgui;
+
+namespace aegis
+{
+	class My_imgui;
+}
 
 class CLUSTERED;
 
@@ -31,7 +35,7 @@ private:
 
 	std::unique_ptr<SHADOW_MAP, Delete> pShadowMap;
 #ifdef _DEBUG
-	std::unique_ptr<My_imgui, Delete> imgui;		// Imguiのクラス
+	std::unique_ptr<aegis::My_imgui, Delete> imgui;		// Imguiのクラス
 	bool Play_Enable;
 #endif // _DEBUG
 

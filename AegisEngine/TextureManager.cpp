@@ -1,19 +1,27 @@
-﻿#include	"Texture_Manager.h"
-#include	"Renderer.h"
-#include	"manager.h"
+﻿#include "TextureManager.h"
+#include "manager.h"
 
-#include	"external/DirectXTex/WICTextureLoader.h"
-#include	"external/DirectXTex/DDSTextureLoader.h"
+#include "TextureImporter.h"
+#include "include/engine/core/AllocatorWrapper.h"
 
 using namespace aegis;
 
-std::unique_ptr<TEXTURE_MANEGER> TEXTURE_MANEGER::Texture_Manager;
+std::unique_ptr<TextureManager> TextureManager::Texture_Manager;
 
-bool TEXTURE_MANEGER::Init()
+bool TextureManager::Init()
 {
+	/*{
+		std::unique_ptr<aegis::render::TextureData> temp;
+		temp.reset(new aegis::render::TextureData);
+
+		temp->ShaderResourceView.reset(aegis::allocatorWrapper::allocate<aegis::ShaderResourceView>());
+
+		temp.reset();
+	}*/
+
 	if (nullptr == Texture_Manager.get())
 	{
-		Texture_Manager = std::make_unique<TEXTURE_MANEGER>();
+		Texture_Manager = std::make_unique<TextureManager>();
 	}
 
 	bool flag;
@@ -54,7 +62,7 @@ bool TEXTURE_MANEGER::Init()
 	return true;
 }
 
-void TEXTURE_MANEGER::Uninit()
+void TextureManager::Uninit()
 {
 #ifdef _DEBUG
 	Monitor.reset(nullptr);
@@ -70,14 +78,14 @@ void TEXTURE_MANEGER::Uninit()
 	Default_Texture_File.clear();
 	TextureFile.clear();
 
-	for (auto tex = TextureData.begin(); tex != TextureData.end(); tex++)
-	{
-		tex->second.Resource.reset(nullptr);
-	}
+	///for (auto tex = TextureData.begin(); tex != TextureData.end(); tex++)
+	///{
+	///	tex->second->;
+	///}
 	TextureData.clear();
 }
 
-void TEXTURE_MANEGER::Update()
+void TextureManager::Update()
 {
 #ifdef _DEBUG
 	Load_Check();
@@ -98,52 +106,34 @@ void TEXTURE_MANEGER::Update()
 
 		{
 			// ファイルが更新された
-			aegis::wstring name;
-			HRESULT hr;
-			ID3D11ShaderResourceView* ShaderResourceView;
 
 			pos = file_name.find_last_of(L".");
 			type = file_name.substr(pos + 1);
 
-			if (L"dds" == type)	// dds
-			{
-				hr = CreateDDSTextureFromFile(render->GetDevice(), render->GetDeviceContext(), path.c_str(), nullptr, &ShaderResourceView, nullptr, nullptr);
-				if (FAILED(hr))
-				{
-					FAILDE_ASSERT;
-					return;
-				}
-			}
-			else	// jpg か png
-			{
-				hr = CreateWICTextureFromFile(render->GetDevice(), render->GetDeviceContext(), path.c_str(), nullptr, &ShaderResourceView, nullptr, nullptr);
-				if (FAILED(hr))
-				{
-					FAILDE_ASSERT;
-					return;
-				}
-			}
+			TextureImporter* textureImporter = TextureImporter::getInstance();
 
 			first = std::hash<aegis::string>()(wstringTostring(file_name).c_str());
 
-			TextureData[first].Resource.reset(ShaderResourceView);
+			aegis::render::TextureData* texture = aegis::allocatorWrapper::allocate<aegis::render::TextureData>();
+			texture->ShaderResourceView.reset(textureImporter->GetShaderResourceView(path));
+
+			TextureData.try_emplace(first, texture);
 		}
 	}
 #endif // _DEBUG
 }
 
-void TEXTURE_MANEGER::Default_Load(const bool flag)
+void TextureManager::Default_Load(const bool flag)
 {
 	CRenderer* render = CRenderer::getInstance();
 
-	int width, height;
+	int width = 0, height = 0;
 	aegis::string path;			// ファイル名(パス付き) 
 	aegis::string file_name;		// ファイル名(パスなし)
 	aegis::string type;
 	uint64 first;			// 
 	uint64 pos;
 
-	ID3D11ShaderResourceView* ShaderResourceView;
 	aegis::wstring name;
 
 	std::filesystem::directory_iterator e = std::filesystem::directory_iterator("./asset/Default/texture");
@@ -167,7 +157,7 @@ void TEXTURE_MANEGER::Default_Load(const bool flag)
 			// テクスチャの登録
 			Default_Texture_File[first] = path;
 
-			TextureData[first].Cnt = 0;
+			TextureData[first]->Cnt = 0;
 		}
 
 		// テクスチャの読み込み
@@ -180,40 +170,26 @@ void TEXTURE_MANEGER::Default_Load(const bool flag)
 			// char から wchar_t への変換
 			name = stringTowstring(path);
 
-			if ("dds" == type)	// dds
-			{
-				hr = CreateDDSTextureFromFile(render->GetDevice(), render->GetDeviceContext(), name.c_str(), nullptr, &ShaderResourceView, &width, &height);
-				if (FAILED(hr))
-				{
-					FAILDE_ASSERT;
-					return;
-				}
-			}
-			else	// jpg か png
-			{
-				hr = CreateWICTextureFromFile(render->GetDevice(), render->GetDeviceContext(), name.c_str(), nullptr, &ShaderResourceView, &width, &height);
-				if (FAILED(hr))
-				{
-					FAILDE_ASSERT;
-					return;
-				}
-			}
+			TextureImporter* textureImporter = TextureImporter::getInstance();
+			aegis::render::TextureData* texture = aegis::allocatorWrapper::allocate<aegis::render::TextureData>();
+			texture->ShaderResourceView.reset(textureImporter->GetShaderResourceView(name));
+			textureImporter->GetSize(name, &width, &height);
 
-			TextureData[first].Resource.reset(ShaderResourceView);
-			TextureData[first].WH.x = width;
-			TextureData[first].WH.y = height;
+			TextureData.try_emplace(first, texture);
+			TextureData[first]->WH.x = width;
+			TextureData[first]->WH.y = height;
 		}
 	}
 }
 
-void TEXTURE_MANEGER::Load(const bool flag)
+void TextureManager::Load(const bool flag)
 {
 	CRenderer* render = CRenderer::getInstance();
 
 	// バイナリファイルがない
 	if (false == flag)
 	{
-		int width, height;
+		int width = 0, height = 0;
 		aegis::string path;			// ファイル名(パス付き) 
 		aegis::string file_name;		// ファイル名(パスなし)
 		aegis::string type;
@@ -244,8 +220,6 @@ void TEXTURE_MANEGER::Load(const bool flag)
 			// テクスチャの読み込み
 			if (TextureFile.find(first) != TextureFile.end())
 			{
-				ID3D11ShaderResourceView* ShaderResourceView;
-				HRESULT hr;
 				aegis::wstring name;
 
 				pos = file_name.find_last_of(".");
@@ -254,43 +228,29 @@ void TEXTURE_MANEGER::Load(const bool flag)
 				// char から wchar_t への変換
 				name = stringTowstring(path);
 
-				if ("dds" == type)	// dds
-				{
-					hr = CreateDDSTextureFromFile(render->GetDevice(), render->GetDeviceContext(), name.c_str(), nullptr, &ShaderResourceView, &width, &height);
-					if (FAILED(hr))
-					{
-						FAILDE_ASSERT;
-						return;
-					}
-				}
-				else	// jpg か png
-				{
-					hr = CreateWICTextureFromFile(render->GetDevice(), render->GetDeviceContext(), name.c_str(), nullptr, &ShaderResourceView, &width, &height);
-					if (FAILED(hr))
-					{
-						FAILDE_ASSERT;
-						return;
-					}
-				}
+				TextureImporter* textureImporter = TextureImporter::getInstance();
 
-				TextureData[first].Resource.reset(ShaderResourceView);
-				TextureData[first].WH.x = width;
-				TextureData[first].WH.y = height;
-				TextureData[first].Cnt = 0;
+				aegis::render::TextureData* texture = aegis::allocatorWrapper::allocate<aegis::render::TextureData>();
+				texture->ShaderResourceView.reset(textureImporter->GetShaderResourceView(name));
+				textureImporter->GetSize(name, &width, &height);
+
+				TextureData.try_emplace(first, texture);
+				auto& data = TextureData.at(first);
+				data->WH.x = width;
+				data->WH.y = height;
+				data->Cnt = 0;
 			}
 		}
 	}
 	else
 	{
-		int width, height;
+		int width = 0, height = 0;
 		aegis::string path;			// ファイル名(パス付き) 
 		aegis::string file_name;		// ファイル名(パスなし)
 		aegis::string type;
 		uint64 first;
 		uint64 pos;
 
-		ID3D11ShaderResourceView* ShaderResourceView;
-		HRESULT hr;
 		aegis::wstring name;
 
 		for (auto f : TextureFile)
@@ -309,38 +269,25 @@ void TEXTURE_MANEGER::Load(const bool flag)
 			// char から wchar_t への変換
 			name = stringTowstring(path);
 
-			if ("dds" == type)	// dds
-			{
-				hr = CreateDDSTextureFromFile(render->GetDevice(), render->GetDeviceContext(), name.c_str(), nullptr, &ShaderResourceView, &width, &height);
-				if (FAILED(hr))
-				{
-					FAILDE_ASSERT;
-					return;
-				}
-			}
-			else	// jpg か png
-			{
-				hr = CreateWICTextureFromFile(render->GetDevice(), render->GetDeviceContext(), name.c_str(), nullptr, &ShaderResourceView, &width, &height);
-				if (FAILED(hr))
-				{
-					FAILDE_ASSERT;
-					return;
-				}
-			}
+			TextureImporter* textureImporter = TextureImporter::getInstance();
+			aegis::render::TextureData* texture = aegis::allocatorWrapper::allocate<aegis::render::TextureData>();
+			texture->ShaderResourceView.reset(textureImporter->GetShaderResourceView(name));
+			textureImporter->GetSize(name, &width, &height);
 
-			TextureData[first].Resource.reset(ShaderResourceView);
-			TextureData[first].WH.x = width;
-			TextureData[first].WH.y = height;
-			TextureData[first].Cnt = 0;
+			TextureData.try_emplace(f.first, texture);
+			auto& data = TextureData.at(first);
+			data->WH.x = width;
+			data->WH.y = height;
+			data->Cnt = 0;
 		}
 	}
 }
 
-void TEXTURE_MANEGER::Add(const aegis::string& file_name)
+void TextureManager::Add(const aegis::string& file_name)
 {
 	CRenderer* render = CRenderer::getInstance();
 
-	int width, height;
+	int width = 0, height = 0;
 
 	aegis::string path;	// ファイル名
 	aegis::string type;
@@ -353,8 +300,6 @@ void TEXTURE_MANEGER::Add(const aegis::string& file_name)
 
 	// テクスチャの読み込み
 	{
-		ID3D11ShaderResourceView* ShaderResourceView;
-		HRESULT hr;
 		aegis::wstring name;
 
 		pos = path.find_last_of(".");
@@ -363,47 +308,36 @@ void TEXTURE_MANEGER::Add(const aegis::string& file_name)
 		// char から wchar_t への変換
 		name = stringTowstring("asset/texture/" + path);
 
-		if ("dds" == type)	// dds
-		{
-			hr = CreateDDSTextureFromFile(render->GetDevice(), render->GetDeviceContext(), name.c_str(), nullptr, &ShaderResourceView, &width, &height);
-			if (FAILED(hr))
-			{
-				FAILDE_ASSERT;
-				return;
-			}
-		}
-		else	// jpg か png
-		{
-			hr = CreateWICTextureFromFile(render->GetDevice(), render->GetDeviceContext(), name.c_str(), nullptr, &ShaderResourceView, &width, &height);
-			if (FAILED(hr))
-			{
-				FAILDE_ASSERT;
-				return;
-			}
-		}
+		TextureImporter* textureImporter = TextureImporter::getInstance();
 
 		first = std::hash<aegis::string>()(file_name);
 		TextureFile[first].Path = "asset/texture/" + path;
 
-		TextureData[first].Resource.reset(ShaderResourceView);
-		TextureData[first].WH.x = width;
-		TextureData[first].WH.y = height;
+		aegis::render::TextureData* texture = aegis::allocatorWrapper::allocate<aegis::render::TextureData>();
+		texture->ShaderResourceView.reset(textureImporter->GetShaderResourceView(name));
+		textureImporter->GetSize(name, &width, &height);
+
+		TextureData.try_emplace(first, texture);
+		auto& data = TextureData.at(first);
+		data->WH.x = width;
+		data->WH.y = height;
+		data->Cnt = 0;
 	}
 }
 
-const bool TEXTURE_MANEGER::Unload(const aegis::string& const file_name)
+const bool TextureManager::Unload(const aegis::string& const file_name)
 {
 	uint64 first = std::hash<aegis::string>()(file_name);//
 
 #ifdef _DEBUG
-	if (0 != TextureData[first].Cnt)
+	if (0 != TextureData[first]->Cnt)
 	{
 		// 参照しているものがある
 		return false;
 	}
 #endif // _DEBUG
 
-	TextureData[first].Resource.reset(nullptr);
+	///TextureData[first]->Reset();
 
 	TextureData.erase(first);
 
@@ -413,10 +347,10 @@ const bool TEXTURE_MANEGER::Unload(const aegis::string& const file_name)
 }
 
 #ifdef _DEBUG
-#include	"Timer.h"
+#include "Timer.h"
 double fps = 0.0;
 
-void TEXTURE_MANEGER::Load_Check()
+void TextureManager::Load_Check()
 {
 	fps += TIMER::Get_DeltaTime();
 
@@ -430,17 +364,17 @@ void TEXTURE_MANEGER::Load_Check()
 }
 #endif // _DEBUG
 
-void TEXTURE_MANEGER::Add_ReferenceCnt(const uint64 file)
+void TextureManager::Add_ReferenceCnt(const uint64 file)
 {
-	TextureData[file].Cnt++;
+	TextureData[file]->Cnt++;
 }
 
-void TEXTURE_MANEGER::Sub_ReferenceCnt(const uint64 file)
+void TextureManager::Sub_ReferenceCnt(const uint64 file)
 {
-	TextureData[file].Cnt--;
+	TextureData[file]->Cnt--;
 
 #ifdef _DEBUG
-	if (TextureData[file].Cnt < 0)
+	if (TextureData[file]->Cnt < 0)
 	{
 		FAILDE_ASSERT;
 		return;
@@ -448,43 +382,43 @@ void TEXTURE_MANEGER::Sub_ReferenceCnt(const uint64 file)
 #endif // _DEBUG
 }
 
-Int2* const TEXTURE_MANEGER::Get_WH(const uint64 file)
+Int2* const TextureManager::Get_WH(const uint64 file)
 {
 	if (TextureData.find(file) != TextureData.end())
 	{
-		return &TextureData[file].WH;
+		return &TextureData[file]->WH;
 	}
 
 	return nullptr;
 }
 
-ID3D11ShaderResourceView* const TEXTURE_MANEGER::GetShaderResourceView(const uint64 file)
+aegis::ShaderResourceView* TextureManager::GetShaderResourceView(const uint64 file)
 {
 	if (TextureData.find(file) != TextureData.end())
 	{
-		return TextureData[file].Resource.get();
+		return TextureData[file]->ShaderResourceView.get();
 	}
 
 	return nullptr;
 }
 
-unordered_map<uint64, TEXTURE_FILE>& TEXTURE_MANEGER::Get_TextureFile()
+unordered_map<uint64, TEXTURE_FILE>& TextureManager::Get_TextureFile()
 {
 	return TextureFile;
 }
 
-const unordered_map<uint64, TEXTURE_DATA>::iterator TEXTURE_MANEGER::Get_TextureData_Start()
+const unordered_map<uint64, aegis::uniquePtr<aegis::render::TextureData>>::iterator TextureManager::Get_TextureData_Start()
 {
 	return TextureData.begin();
 }
 
-const unordered_map<uint64, TEXTURE_DATA>::iterator TEXTURE_MANEGER::Get_TextureData_End()
+const unordered_map<uint64, aegis::uniquePtr<aegis::render::TextureData>>::iterator TextureManager::Get_TextureData_End()
 {
 	return TextureData.end();
 }
 
 
-TEXTURE_MANEGER* TEXTURE_MANEGER::Get_Instance()
+TextureManager* TextureManager::Get_Instance()
 {
 	return Texture_Manager.get();
 }

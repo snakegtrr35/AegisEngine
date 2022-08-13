@@ -8,8 +8,8 @@
 #ifndef BOUNDING_H
 #define BOUNDING_H
 
-#include	"Renderer.h"
-#include	"Component.h"
+#include "Component.h"
+#include "Renderer.h"
 
  /**
  * @brief バウンディングクラス
@@ -17,12 +17,12 @@
  */
 class BOUNDING : public COMPONENT {
 
-	ABSTRACT_OBJECT_TYPE_INFO(BOUNDING)
+	ABSTRACT_OBJECT_TYPE_INFO(COMPONENT, BOUNDING)
 
 private:
 protected:
 	//! BOXのインデックスバッファ
-	static ComPtr<ID3D11Buffer> pIndexBuffer_BOX;
+	static aegis::uniquePtr<aegis::Buffer> IndexBufferBox;
 	//! BOXのインデックス数
 	static const char IndexNum_Box;
 	//! デフォルトのカラー
@@ -32,7 +32,7 @@ protected:
 
 	aegis::Vector3 Position;
 	aegis::Vector3 Rotation;
-	aegis::Vector3 Scaling;
+	aegis::Vector3 Scaling = aegis::Vector3(1.0f, 1.0f, 1.0f);
 
 public:
 	/**

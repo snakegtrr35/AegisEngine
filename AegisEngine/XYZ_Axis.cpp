@@ -1,9 +1,9 @@
-﻿#include	"XYZ_Axis.h"
-#include	"camera.h"
-#include	"Debug_Camera.h"
-#include	"manager.h"
-#include	"Scene.h"
-#include	"ShadowMap.h"
+﻿#include "XYZ_Axis.h"
+#include "camera.h"
+#include "Debug_Camera.h"
+#include "manager.h"
+#include "Scene.h"
+#include "ShadowMap.h"
 
 IMPLEMENT_OBJECT_TYPE_INFO(GameObject, AXIS)
 
@@ -31,34 +31,18 @@ AXIS::AXIS()
 
 		// 頂点バッファの設定
 		{
-			HRESULT hr;
-
-			D3D11_BUFFER_DESC bd;
-			ZeroMemory(&bd, sizeof(D3D11_BUFFER_DESC));
-
+			BufferDesc  bd{};
+			bd.Usage = Usage::Default;
 			bd.ByteWidth = sizeof(VERTEX_3D) * COUNT;
-			bd.Usage = D3D11_USAGE_DEFAULT;
-			bd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-			bd.CPUAccessFlags = 0;
-			bd.MiscFlags = 0;
-			bd.StructureByteStride = 0;
+			bd.BindFlags = BindFlag::Vertexbuffer;
+			bd.CPUAccessFlags = CpuAccessFlag::None;
 
 			// サブリソースの設定
-			D3D11_SUBRESOURCE_DATA srd;
-			ZeroMemory(&srd, sizeof(D3D11_SUBRESOURCE_DATA));
+			SubresourceData sd{};
+			sd.pSysMem = Vertexs;
 
-			srd.pSysMem = Vertexs;
-			srd.SysMemPitch = 0;
-			srd.SysMemSlicePitch = 0;
-
-			// 頂点バッファの生成
-			hr = render->GetDevice()->CreateBuffer(&bd, &srd, &pVertexBuffer[0]);
-
-			if (FAILED(hr))
-			{
-				assert(false);
-				return;
-			}
+			// サブリソースの設定
+			VertexBuffer[0].reset(render->CreateBuffer(bd, sd));
 		}
 	}
 
@@ -78,34 +62,18 @@ AXIS::AXIS()
 
 		// 頂点バッファの設定
 		{
-			HRESULT hr;
-
-			D3D11_BUFFER_DESC bd;
-			ZeroMemory(&bd, sizeof(D3D11_BUFFER_DESC));
-
+			BufferDesc  bd{};
+			bd.Usage = Usage::Default;
 			bd.ByteWidth = sizeof(VERTEX_3D) * COUNT;
-			bd.Usage = D3D11_USAGE_DEFAULT;
-			bd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-			bd.CPUAccessFlags = 0;
-			bd.MiscFlags = 0;
-			bd.StructureByteStride = 0;
+			bd.BindFlags = BindFlag::Vertexbuffer;
+			bd.CPUAccessFlags = CpuAccessFlag::None;
 
 			// サブリソースの設定
-			D3D11_SUBRESOURCE_DATA srd;
-			ZeroMemory(&srd, sizeof(D3D11_SUBRESOURCE_DATA));
+			SubresourceData sd{};
+			sd.pSysMem = Vertexs;
 
-			srd.pSysMem = Vertexs;
-			srd.SysMemPitch = 0;
-			srd.SysMemSlicePitch = 0;
-
-			// 頂点バッファの生成
-			hr = render->GetDevice()->CreateBuffer(&bd, &srd, &pVertexBuffer[1]);
-
-			if (FAILED(hr))
-			{
-				assert(false);
-				return;
-			}
+			// サブリソースの設定
+			VertexBuffer[1].reset(render->CreateBuffer(bd, sd));
 		}
 	}
 
@@ -125,39 +93,23 @@ AXIS::AXIS()
 
 		// 頂点バッファの設定
 		{
-			HRESULT hr;
-
-			D3D11_BUFFER_DESC bd;
-			ZeroMemory(&bd, sizeof(D3D11_BUFFER_DESC));
-
+			BufferDesc  bd{};
+			bd.Usage = Usage::Default;
 			bd.ByteWidth = sizeof(VERTEX_3D) * COUNT;
-			bd.Usage = D3D11_USAGE_DEFAULT;
-			bd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-			bd.CPUAccessFlags = 0;
-			bd.MiscFlags = 0;
-			bd.StructureByteStride = 0;
+			bd.BindFlags = BindFlag::Vertexbuffer;
+			bd.CPUAccessFlags = CpuAccessFlag::None;
 
 			// サブリソースの設定
-			D3D11_SUBRESOURCE_DATA srd;
-			ZeroMemory(&srd, sizeof(D3D11_SUBRESOURCE_DATA));
+			SubresourceData sd{};
+			sd.pSysMem = Vertexs;
 
-			srd.pSysMem = Vertexs;
-			srd.SysMemPitch = 0;
-			srd.SysMemSlicePitch = 0;
-
-			// 頂点バッファの生成
-			hr = render->GetDevice()->CreateBuffer(&bd, &srd, &pVertexBuffer[2]);
-
-			if (FAILED(hr))
-			{
-				assert(false);
-				return;
-			}
+			// サブリソースの設定
+			VertexBuffer[2].reset(render->CreateBuffer(bd, sd));
 		}
 	}
 
 	// インデックスバッファの設定
-	if (nullptr == pIndexBuffer)
+	if (nullptr == IndexBuffer)
 	{
 		HRESULT hr;
 
@@ -167,24 +119,16 @@ AXIS::AXIS()
 			1, 3,
 		};
 
-		D3D11_BUFFER_DESC ibDesc;
-		ibDesc.ByteWidth = sizeof(WORD) * 6;
-		ibDesc.Usage = D3D11_USAGE_DEFAULT;
-		ibDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
-		ibDesc.CPUAccessFlags = 0;
-		ibDesc.MiscFlags = 0;
-		ibDesc.StructureByteStride = 0;
+		BufferDesc  bd{};
+		bd.Usage = Usage::Default;
+		bd.ByteWidth = sizeof(uint16) * 6;
+		bd.BindFlags = BindFlag::Indexbuffer;
+		bd.CPUAccessFlags = CpuAccessFlag::None;
 
-		D3D11_SUBRESOURCE_DATA irData;
-		irData.pSysMem = index;
-		irData.SysMemPitch = 0;
-		irData.SysMemSlicePitch = 0;
+		SubresourceData sd{};
+		sd.pSysMem = index;
 
-		hr = render->GetDevice()->CreateBuffer(&ibDesc, &irData, &pIndexBuffer);
-		if (FAILED(hr))
-		{
-			FAILDE_ASSERT
-		}
+		IndexBuffer.reset(render->CreateBuffer(bd, sd));
 	}
 }
 
@@ -209,10 +153,10 @@ void AXIS::Draw(void)
 	XMMATRIX world;
 
 	// 入力アセンブラにインデックスバッファを設定
-	render->SetIndexBuffer(pIndexBuffer.Get());
+	render->SetIndexBuffer(IndexBuffer.get());
 
 	// トポロジの設定
-	render->SetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_LINESTRIP);
+	render->SetPrimitiveTopology(PrimitiveTopology::LineStrip);
 
 	// 
 	render->Set_Shader(SHADER_INDEX_V::DEFAULT, SHADER_INDEX_P::NO_TEXTURE);
@@ -220,7 +164,7 @@ void AXIS::Draw(void)
 	for (int i = 0; i < 3; i++)
 	{
 		// 入力アセンブラに頂点バッファを設定
-		render->SetVertexBuffers(pVertexBuffer[i].Get());
+		render->SetVertexBuffers(VertexBuffer[i].get());
 
 		// 3Dマトリックス設定
 		{
@@ -251,7 +195,7 @@ void AXIS::Draw(void)
 	}
 
 	// トポロジの設定
-	render->SetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	render->SetPrimitiveTopology(PrimitiveTopology::TriangleList);
 
 	render->Set_Shader();
 }
@@ -266,6 +210,6 @@ void AXIS::Uninit(void)
 
 	for (int i = 0; i < 3; i++)
 	{
-		SAFE_RELEASE(pVertexBuffer[i]);
+		VertexBuffer[i].reset();
 	}
 }

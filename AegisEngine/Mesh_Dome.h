@@ -8,23 +8,25 @@
 #ifndef MESH_DOOM_H
 #define	MESH_DOOM_H
 
-class GameObject;
+#include "GameObject.h"
+#include "renderer.h"
+
 class TEXTURE;
 
 class MESH_DOOM :public GameObject {
 private:
 	//! 半径
-	float								Radius;
+	float						Radius;
 	//! 頂点数
-	UINT	VertexNum;
+	UINT						VertexNum;
 	//! インデックス数
-	UINT								IndexNum;
+	UINT						IndexNum;
 	//! 頂点バッファ
-	ComPtr<ID3D11Buffer>	VertexBuffer;
+	aegis::uniquePtr<aegis::Buffer>		VertexBuffer;
 	//! インデックスバッファ
-	ComPtr<ID3D11Buffer>	IndexBuffer;
+	aegis::uniquePtr<aegis::Buffer>		IndexBuffer;
 	//! テクスチャ
-	std::unique_ptr<TEXTURE>					Texture;						
+	std::unique_ptr<TEXTURE>	Texture;						
 
 public:
 

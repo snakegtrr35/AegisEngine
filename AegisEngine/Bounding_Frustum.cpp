@@ -1,9 +1,11 @@
-﻿#include	"Bounding_Frustum.h"
-#include	"camera.h"
-#include	"Debug_Camera.h"
-#include	"manager.h"
-#include	"Scene.h"
-#include	"ShadowMap.h"
+﻿#include "Bounding_Frustum.h"
+#include "camera.h"
+#include "Debug_Camera.h"
+#include "manager.h"
+#include "Scene.h"
+#include "ShadowMap.h"
+
+#include "include\engine\core\AllocatorWrapper.h"
 
 IMPLEMENT_OBJECT_TYPE_INFO(BOUNDING, BOUNDING_FRUSTUM)
 
@@ -11,6 +13,8 @@ using namespace aegis;
 
 void BOUNDING_FRUSTUM::Init()
 {
+	BOUNDING::Init();
+
 	CRenderer* render = CRenderer::getInstance();
 
 	{
@@ -27,7 +31,7 @@ void BOUNDING_FRUSTUM::Init()
 	Color = COLOR(1.f, 0.f, 0.f, 1.f);
 
 	// 頂点バッファの設定
-	if (nullptr == pVertexBuffer)
+	if (nullptr == VertexBuffer)
 	{
 		const char VertexNum = 8;
 
@@ -54,23 +58,21 @@ void BOUNDING_FRUSTUM::Init()
 
 		// 頂点バッファの設定
 		{
-			D3D11_BUFFER_DESC bd;
+			BufferDesc  bd{};
+			bd.Usage = Usage::Dynamic;
 			bd.ByteWidth = sizeof(VERTEX_3D) * VertexNum;
-			bd.Usage = D3D11_USAGE_DYNAMIC;
-			bd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-			bd.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
-			bd.MiscFlags = 0;
-			bd.StructureByteStride = 0;
+			bd.BindFlags = BindFlag::Vertexbuffer;
+			bd.CPUAccessFlags = CpuAccessFlag::Write;
 
-			D3D11_SUBRESOURCE_DATA sd;
+			SubresourceData sd{};
 			sd.pSysMem = Vertex;
 
-			render->GetDevice()->CreateBuffer(&bd, &sd, &pVertexBuffer);
+			VertexBuffer.reset(render->CreateBuffer(bd, sd));
 		}
 	}
 
 	// インデックスバッファの設定
-	if (nullptr == pIndexBuffer)
+	if (nullptr == IndexBuffer)
 	{
 		const WORD index[24] = {
 		0, 1,
@@ -90,19 +92,19 @@ void BOUNDING_FRUSTUM::Init()
 		6, 2
 		};
 
-		D3D11_BUFFER_DESC bd{};
-		bd.ByteWidth = sizeof(WORD) * 24;
-		bd.Usage = D3D11_USAGE_DEFAULT;
-		bd.BindFlags = D3D11_BIND_INDEX_BUFFER;
-		bd.CPUAccessFlags = 0;
-		bd.MiscFlags = 0;
-		bd.StructureByteStride = 0;
+		BufferDesc  bd{};
+		bd.Usage = Usage::Default;
+		bd.ByteWidth = sizeof(uint16) * 24;
+		bd.BindFlags = BindFlag::Indexbuffer;
+		bd.CPUAccessFlags = CpuAccessFlag::None;
 
-		D3D11_SUBRESOURCE_DATA sd{};
+		SubresourceData sd{};
 		sd.pSysMem = index;
 
-		render->GetDevice()->CreateBuffer(&bd, &sd, &pIndexBuffer);
+		IndexBuffer.reset(render->CreateBuffer(bd, sd));
 	}
+
+	BOUNDING::InitEnd();
 }
 
 void BOUNDING_FRUSTUM::Draw()
@@ -115,13 +117,13 @@ void BOUNDING_FRUSTUM::Draw()
 	CRenderer* render = CRenderer::getInstance();
 
 	// 入力アセンブラに頂点バッファを設定
-	render->SetVertexBuffers(pVertexBuffer.Get());
+	render->SetVertexBuffers(VertexBuffer.get());
 
 	// 入力アセンブラにインデックスバッファを設定
-	render->SetIndexBuffer(pIndexBuffer.Get());
+	render->SetIndexBuffer(IndexBuffer.get());
 
 	// トポロジの設定
-	render->SetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_LINESTRIP);
+	render->SetPrimitiveTopology(PrimitiveTopology::LineStrip);
 
 	render->Set_Shader(SHADER_INDEX_V::DEFAULT, SHADER_INDEX_P::NO_TEXTURE);
 
@@ -158,7 +160,7 @@ void BOUNDING_FRUSTUM::Draw()
 	render->Set_Shader();
 
 	// トポロジの設定
-	render->SetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	render->SetPrimitiveTopology(PrimitiveTopology::TriangleList);
 }
 
 void BOUNDING_FRUSTUM::Update(float delta_time)
@@ -244,53 +246,55 @@ void BOUNDING_FRUSTUM::OverWrite()
 
 		// 頂点バッファの設定
 		{
-			D3D11_BUFFER_DESC bd{};
+			BufferDesc  bd{};
+			bd.Usage = Usage::Dynamic;
 			bd.ByteWidth = sizeof(VERTEX_3D) * VertexNum;
-			bd.Usage = D3D11_USAGE_DYNAMIC;
-			bd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-			bd.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
-			bd.MiscFlags = 0;
-			bd.StructureByteStride = 0;
+			bd.BindFlags = BindFlag::Vertexbuffer;
+			bd.CPUAccessFlags = CpuAccessFlag::Write;
 
-			D3D11_SUBRESOURCE_DATA sd{};
+			SubresourceData sd{};
 			sd.pSysMem = Vertex;
 
-			render->GetDevice()->CreateBuffer(&bd, &sd, &pVertexBuffer);
+			if(VertexBuffer != nullptr)
+		 		VertexBuffer->Release();
+
+			VertexBuffer.reset(render->CreateBuffer(bd, sd));
 		}
 	}
 
 	// インデックスバッファの設定
 	{
-		const WORD index[24] = {
-		0, 1,
-		1, 3,
-		3, 2,
-		2, 0,
+		const uint16 index[24] = {
+			0, 1,
+			1, 3,
+			3, 2,
+			2, 0,
 
-		0, 4,
+			0, 4,
 
-		4, 5,
-		5, 7,
-		7, 6,
-		6, 4,
+			4, 5,
+			5, 7,
+			7, 6,
+			6, 4,
 
-		5, 1,
-		3, 7,
-		6, 2
+			5, 1,
+			3, 7,
+			6, 2
 		};
 
-		D3D11_BUFFER_DESC bd{};
-		bd.ByteWidth = sizeof(WORD) * 24;
-		bd.Usage = D3D11_USAGE_DEFAULT;
-		bd.BindFlags = D3D11_BIND_INDEX_BUFFER;
-		bd.CPUAccessFlags = 0;
-		bd.MiscFlags = 0;
-		bd.StructureByteStride = 0;
+		BufferDesc  bd{};
+		bd.Usage = Usage::Default;
+		bd.ByteWidth = sizeof(uint16) * 24;
+		bd.BindFlags = BindFlag::Indexbuffer;
+		bd.CPUAccessFlags = CpuAccessFlag::None;
 
-		D3D11_SUBRESOURCE_DATA sd{};
+		SubresourceData sd{};
 		sd.pSysMem = index;
 
-		render->GetDevice()->CreateBuffer(&bd, &sd, &pIndexBuffer);
+		if (IndexBuffer != nullptr)
+			IndexBuffer->Release();
+
+		IndexBuffer.reset(render->CreateBuffer(bd, sd));
 	}
 }
 

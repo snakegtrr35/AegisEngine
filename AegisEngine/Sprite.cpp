@@ -1,14 +1,14 @@
-﻿#include	"GameObject.h"
-#include	"Sprite.h"
-#include	"manager.h"
-#include	"ShadowMap.h"
-#include	"Scene.h"
+﻿#include "Sprite.h"
+#include "manager.h"
+#include "ShadowMap.h"
+#include "Scene.h"
+#include "texture.h"
 
 IMPLEMENT_OBJECT_TYPE_INFO(GameObject, SPRITE)
 
 using namespace aegis;
 
-ComPtr<ID3D11Buffer> SPRITE::pIndexBuffer;		// インデックスバッファ
+aegis::uniquePtr<aegis::Buffer> SPRITE::IndexBuffer;		// インデックスバッファ
 
 SPRITE::SPRITE()
 {
@@ -45,6 +45,8 @@ SPRITE::SPRITE(Vector2 position, Vector4 size)
 SPRITE::~SPRITE()
 {
 	Uninit();
+
+	GameObject::Uninit();
 }
 
 void SPRITE::Init(void)
@@ -52,71 +54,49 @@ void SPRITE::Init(void)
 	CRenderer* render = CRenderer::getInstance();
 
 	// 頂点バッファの設定
-	if (nullptr == pVertexBuffer)
+	if (nullptr == VertexBuffer)
 	{
-		HRESULT hr;
-
-		D3D11_BUFFER_DESC bd;
-		ZeroMemory(&bd, sizeof(D3D11_BUFFER_DESC));
-
+		BufferDesc  bd{};
+		bd.Usage = Usage::Dynamic;
 		bd.ByteWidth = sizeof(VERTEX_3D) * 4;
-		bd.Usage = D3D11_USAGE_DYNAMIC;
-		bd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-		bd.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
-		bd.MiscFlags = 0;
-		bd.StructureByteStride = 0;
+		bd.BindFlags = BindFlag::Vertexbuffer;
+		bd.CPUAccessFlags = CpuAccessFlag::Write;
 
 		// サブリソースの設定
-		D3D11_SUBRESOURCE_DATA srd;
-		ZeroMemory(&srd, sizeof(D3D11_SUBRESOURCE_DATA));
-
-		srd.pSysMem = Vertex;
-		srd.SysMemPitch = 0;
-		srd.SysMemSlicePitch = 0;
+		SubresourceData sd{};
+		sd.pSysMem = Vertex;
 
 		// 頂点バッファの生成
-		hr = render->GetDevice()->CreateBuffer(&bd, &srd, &pVertexBuffer);
-
-		if (FAILED(hr))
-		{
-			return;
-		}
+		VertexBuffer.reset(render->CreateBuffer(bd, sd));
 	}
 
 	// インデックスバッファの設定
-	if (nullptr == pIndexBuffer)
+	if (nullptr == IndexBuffer)
 	{
-		HRESULT hr;
-
-		const WORD index[] = {
+		const WORD index[] =
+		{
 			0, 1, 2,
 			1, 3, 2,
 		};
 
-		D3D11_BUFFER_DESC ibDesc;
-		ibDesc.ByteWidth = sizeof(WORD) * 6;
-		ibDesc.Usage = D3D11_USAGE_DEFAULT;
-		ibDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
-		ibDesc.CPUAccessFlags = 0;
-		ibDesc.MiscFlags = 0;
-		ibDesc.StructureByteStride = 0;
+		BufferDesc  bd{};
+		bd.Usage = Usage::Default;
+		bd.ByteWidth = sizeof(uint16) * 6;
+		bd.BindFlags = BindFlag::Indexbuffer;
+		bd.CPUAccessFlags = CpuAccessFlag::None;
 
-		D3D11_SUBRESOURCE_DATA irData;
-		irData.pSysMem = index;
-		irData.SysMemPitch = 0;
-		irData.SysMemSlicePitch = 0;
+		SubresourceData sd{};
+		sd.pSysMem = index;
 
-		hr = render->GetDevice()->CreateBuffer(&ibDesc, &irData, &pIndexBuffer);
-		if (FAILED(hr))
-		{
-			FAILDE_ASSERT
-		}
+		IndexBuffer.reset(render->CreateBuffer(bd, sd));
 	}
 
 	for (const auto& child : Children)
 	{
 		child->Child->Init();
 	}
+
+	GameObject::InitEnd();
 }
 
 void SPRITE::Draw(void)
@@ -152,31 +132,46 @@ void SPRITE::Draw(void)
 
 		// 頂点バッファの書き換え
 		{
-			D3D11_MAPPED_SUBRESOURCE msr;
-			render->GetDeviceContext()->Map(pVertexBuffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &msr);
-			memcpy(msr.pData, Vertex, sizeof(VERTEX_3D) * 4);
-			render->GetDeviceContext()->Unmap(pVertexBuffer.Get(), 0);
+			render->Map(VertexBuffer.get(), Vertex, sizeof(VERTEX_3D) * 4);
+			render->Unmap(VertexBuffer.get());
 		}
 
 		// 入力アセンブラに頂点バッファを設定
-		render->SetVertexBuffers(pVertexBuffer.Get());
+		render->SetVertexBuffers(VertexBuffer.get());
 
 		// 入力アセンブラにインデックスバッファを設定
-		render->SetIndexBuffer(pIndexBuffer.Get());
+		render->SetIndexBuffer(IndexBuffer.get());
 
-		if (nullptr == ShaderResourceView)
+		//if (ShaderResourceView == nullptr 
+		//	&& ShaderResourceView->IsEmpty())
+		//{
+		//	// テクスチャの設定
+		//	Texture->Set_Texture();
+		//}
+		//else
+		//{
+		//	aegis::ShaderResourceView* shaderResourceViews[] = { ShaderResourceView.get()};
+		//
+		//	render->PSSetShaderResources(0, 1, shaderResourceViews);
+		//}
+
+		if (ShaderResourceView != nullptr
+			&& !ShaderResourceView->IsEmpty())
 		{
-			// テクスチャの設定
-			// テクスチャの設定
-			Texture->Set_Texture();
+			aegis::ShaderResourceView* shaderResourceViews[] = { ShaderResourceView.get() };
+
+			render->PSSetShaderResources(0, 1, shaderResourceViews);
 		}
 		else
 		{
-			render->GetDeviceContext()->PSSetShaderResources(0, 1, &ShaderResourceView);
+			// テクスチャの設定
+			Texture->Set_Texture();
 		}
 
 		// 2Dマトリックス設定
 		render->SetWorldViewProjection2D(Get_Transform().Get_Scaling());
+
+		render->SetPrimitiveTopology(PrimitiveTopology::TriangleList);
 
 		if (flag)
 		{
@@ -223,17 +218,15 @@ void SPRITE::Draw_DPP()
 
 		// 頂点バッファの書き換え
 		{
-			D3D11_MAPPED_SUBRESOURCE msr;
-			render->GetDeviceContext()->Map(pVertexBuffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &msr);
-			memcpy(msr.pData, Vertex, sizeof(VERTEX_3D) * 4);
-			render->GetDeviceContext()->Unmap(pVertexBuffer.Get(), 0);
+			render->Map(VertexBuffer.get(), Vertex, sizeof(VERTEX_3D) * 4);
+			render->Unmap(VertexBuffer.get());
 		}
 
 		// 入力アセンブラに頂点バッファを設定
-		render->SetVertexBuffers(pVertexBuffer.Get());
+		render->SetVertexBuffers(VertexBuffer.get());
 
 		// 入力アセンブラにインデックスバッファを設定
-		render->SetIndexBuffer(pIndexBuffer.Get());
+		render->SetIndexBuffer(IndexBuffer.get());
 
 
 		// 2Dマトリックス設定
@@ -249,6 +242,7 @@ void SPRITE::Draw_DPP()
 
 void SPRITE::Update(float delta_time)
 {
+	GameObject::Update(delta_time);
 }
 
 void SPRITE::Uninit(void)
@@ -322,9 +316,10 @@ TEXTURE* const SPRITE::GetTexture()
 
 SPRITE* SPRITE::Add_Child_Sptite(const aegis::string& name)
 {
-	std::unique_ptr<CHILD_DATE> child = std::make_unique<CHILD_DATE>();
+	std::unique_ptr<CHILD_DATE, Delete> child;
+	child.reset(new CHILD_DATE());
 
-	child->Child = std::make_unique<SPRITE>();
+	child->Child.reset(new SPRITE());
 
 	child->Name = name;
 
@@ -333,7 +328,7 @@ SPRITE* SPRITE::Add_Child_Sptite(const aegis::string& name)
 	return (Children.end() - 1)->get()->Child.get();
 }
 
-aegis::vector< std::unique_ptr<CHILD_DATE> >* const SPRITE::Get_Child_Sptite()
+aegis::vector< std::unique_ptr<CHILD_DATE, Delete> >* const SPRITE::Get_Child_Sptite()
 {
 	return &Children;
 }
@@ -429,7 +424,7 @@ void SPRITE::Set_Enable_Child(const aegis::string& const name, const bool flag)
 	}
 };
 
-const bool SPRITE::Get_Enable_Child(const aegis::string& const name, aegis::vector< std::unique_ptr<CHILD_DATE> >* const children)
+const bool SPRITE::Get_Enable_Child(const aegis::string& const name, aegis::vector< std::unique_ptr<CHILD_DATE, Delete> >* const children)
 {
 	for (const auto& child : *children)
 	{

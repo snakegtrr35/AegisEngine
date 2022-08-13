@@ -1,9 +1,9 @@
-﻿#include	"Grid.h"
-#include	"camera.h"
-#include	"Debug_Camera.h"
-#include	"manager.h"
-#include	"Scene.h"
-#include	"ShadowMap.h"
+﻿#include "Grid.h"
+#include "camera.h"
+#include "Debug_Camera.h"
+#include "manager.h"
+#include "Scene.h"
+#include "ShadowMap.h"
 
 IMPLEMENT_OBJECT_TYPE_INFO(GameObject, GRID)
 
@@ -89,32 +89,18 @@ GRID::GRID()
 
 	// 頂点バッファの設定
 	{
-		HRESULT hr;
-		D3D11_BUFFER_DESC bd = {};
-
+		BufferDesc  bd{};
+		bd.Usage = Usage::Default;
 		bd.ByteWidth = sizeof(VERTEX_3D) * COUNT;
-		bd.Usage = D3D11_USAGE_DEFAULT;
-		bd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-		bd.CPUAccessFlags = 0;
-		bd.MiscFlags = 0;
-		bd.StructureByteStride = 0;
+		bd.BindFlags = BindFlag::Vertexbuffer;
+		bd.CPUAccessFlags = CpuAccessFlag::None;
 
 		// サブリソースの設定
-		D3D11_SUBRESOURCE_DATA srd;
-		ZeroMemory(&srd, sizeof(D3D11_SUBRESOURCE_DATA));
-
-		srd.pSysMem = Vertexs;
-		srd.SysMemPitch = 0;
-		srd.SysMemSlicePitch = 0;
+		SubresourceData sd{};
+		sd.pSysMem = Vertexs;
 
 		// 頂点バッファの生成
-		hr = render->GetDevice()->CreateBuffer(&bd, &srd, &pVertexBuffer);
-
-		if (FAILED(hr))
-		{
-			assert(false);
-			return;
-		}
+		VertexBuffer.reset(render->CreateBuffer(bd, sd));
 	}
 }
 
@@ -125,6 +111,8 @@ GRID::~GRID()
 
 void GRID::Init()
 {
+	GameObject::Init();
+	GameObject::InitEnd();
 }
 
 void GRID::Draw()
@@ -134,7 +122,7 @@ void GRID::Draw()
 	if (false == CManager::Get_Instance()->Get_ShadowMap()->Get_Enable())
 	{
 		// 入力アセンブラに頂点バッファを設定.
-		render->SetVertexBuffers(pVertexBuffer.Get());
+		render->SetVertexBuffers(VertexBuffer.get());
 
 		// 3Dマトリックス設定
 		{
@@ -166,7 +154,7 @@ void GRID::Draw()
 		}
 
 		// トポロジの設定
-		render->SetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_LINELIST);
+		render->SetPrimitiveTopology(aegis::PrimitiveTopology::LineList);
 
 		render->Set_Shader(SHADER_INDEX_V::DEFAULT, SHADER_INDEX_P::NO_TEXTURE);
 
@@ -188,5 +176,5 @@ void GRID::Uninit()
 {
 	GameObject::Uninit();
 
-	SAFE_RELEASE(pVertexBuffer);
+	VertexBuffer.reset();
 }

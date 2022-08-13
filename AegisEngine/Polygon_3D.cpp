@@ -1,12 +1,11 @@
-﻿#include	"GameObject.h"
-#include	"Polygon_3D.h"
-#include	"texture.h"
-#include	"Input.h"
-#include	"camera.h"
-#include	"Debug_Camera.h"
-#include	"manager.h"
-#include	"ShadowMap.h"
-#include	"Scene.h"
+﻿#include "Polygon_3D.h"
+#include "Input.h"
+#include "camera.h"
+#include "Debug_Camera.h"
+#include "manager.h"
+#include "ShadowMap.h"
+#include "Scene.h"
+#include "texture.h"
 
 IMPLEMENT_OBJECT_TYPE_INFO(GameObject, POLYGON_3D)
 
@@ -18,7 +17,7 @@ static float yaw = 0.0f;
 
 POLYGON_3D::POLYGON_3D()
 {
-	pVertexBuffer = nullptr;
+	VertexBuffer = nullptr;
 	Texture.reset(nullptr);
 
 	XYZ = Vector3(0.5f, 0.5f, 0.5f);
@@ -30,7 +29,7 @@ POLYGON_3D::POLYGON_3D()
 
 POLYGON_3D::POLYGON_3D(Vector3 position, Vector3 xyz)
 {
-	pVertexBuffer = nullptr;
+	VertexBuffer = nullptr;
 	Texture = nullptr;
 
 	Get_Transform().Set_Position(position);
@@ -43,8 +42,8 @@ POLYGON_3D::POLYGON_3D(Vector3 position, Vector3 xyz)
 
 POLYGON_3D::~POLYGON_3D()
 {
-	SAFE_RELEASE(pVertexBuffer);
-	Texture.reset(nullptr);
+	VertexBuffer.reset();
+	Texture.reset();
 }
 
 void POLYGON_3D::Init(void)
@@ -182,32 +181,18 @@ void POLYGON_3D::Init(void)
 
 	// 頂点バッファの設定
 	{
-		D3D11_BUFFER_DESC bd;
-		ZeroMemory(&bd, sizeof(D3D11_BUFFER_DESC));
-
+		BufferDesc  bd{};
+		bd.Usage = Usage::Default;
 		bd.ByteWidth = sizeof(VERTEX_3D) * 4 * 6;
-		bd.Usage = D3D11_USAGE_DEFAULT;
-		bd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-		bd.CPUAccessFlags = 0;
-		bd.MiscFlags = 0;
-		bd.StructureByteStride = 0;
+		bd.BindFlags = BindFlag::Vertexbuffer;
+		bd.CPUAccessFlags = CpuAccessFlag::None;
 
 		// サブリソースの設定
-		D3D11_SUBRESOURCE_DATA srd;
-		ZeroMemory(&srd, sizeof(D3D11_SUBRESOURCE_DATA));
-
-		srd.pSysMem = Polygon_3d.Vertex;
-		srd.SysMemPitch = 0;
-		srd.SysMemSlicePitch = 0;
+		SubresourceData sd{};
+		sd.pSysMem = Polygon_3d.Vertex;
 
 		// 頂点バッファの生成
-		hr = render->GetDevice()->CreateBuffer(&bd, &srd, &pVertexBuffer);
-
-		if (FAILED(hr))
-		{
-			assert(false);
-			return;
-		}
+		VertexBuffer.reset(render->CreateBuffer(bd, sd));
 	}
 }
 
@@ -275,15 +260,15 @@ void POLYGON_3D::Draw(void)
 	}
 
 	// 入力アセンブラに頂点バッファを設定.
-	render->SetVertexBuffers(pVertexBuffer.Get());
+	render->SetVertexBuffers(VertexBuffer.get());
 
 	// テクスチャの設定
 	Texture->Set_Texture();
 
 	// トポロジの設定
-	render->GetDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
+	render->SetPrimitiveTopology(PrimitiveTopology::TriangleStrip);
 
-	render->GetDeviceContext()->Draw(4 * 6, 0);
+	render->Draw(4 * 6, 0);
 
 	GameObject::Draw();
 }
@@ -319,13 +304,13 @@ void POLYGON_3D::Draw_Shadow(void)
 	}
 
 	// 入力アセンブラに頂点バッファを設定.
-	render->SetVertexBuffers(pVertexBuffer.Get());
+	render->SetVertexBuffers(VertexBuffer.get());
 
 	// テクスチャの設定
 	Texture->Set_Texture();
 
 	// トポロジの設定
-	render->SetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
+	render->SetPrimitiveTopology(PrimitiveTopology::TriangleStrip);
 
 	render->Draw(4 * 6, 0);
 
@@ -362,12 +347,12 @@ void POLYGON_3D::Draw_DPP(void)
 	}
 
 	// 入力アセンブラに頂点バッファを設定.
-	render->SetVertexBuffers(pVertexBuffer.Get());
+	render->SetVertexBuffers(VertexBuffer.get());
 
 	// トポロジの設定
-	render->GetDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
+	render->SetPrimitiveTopology(PrimitiveTopology::TriangleStrip);
 
-	render->GetDeviceContext()->Draw(4 * 6, 0);
+	render->Draw(4 * 6, 0);
 }
 
 void POLYGON_3D::Update(float delta_time)
@@ -380,8 +365,8 @@ void POLYGON_3D::Uninit(void)
 {
 	GameObject::Uninit();
 
-	SAFE_RELEASE(pVertexBuffer);
-	Texture.reset(nullptr);
+	VertexBuffer.reset();
+	Texture.reset();
 }
 
 //==============================

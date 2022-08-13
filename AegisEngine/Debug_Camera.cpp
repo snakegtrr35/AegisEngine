@@ -1,7 +1,7 @@
-﻿#include	"Renderer.h"
-#include	"Input.h"
-#include	"Debug_Camera.h"
-#include	"manager.h"
+﻿#include "Renderer.h"
+#include "Input.h"
+#include "Debug_Camera.h"
+#include "manager.h"
 
 IMPLEMENT_OBJECT_TYPE_INFO(GameObject, DEBUG_CAMERA)
 
@@ -54,6 +54,8 @@ DEBUG_CAMERA::DEBUG_CAMERA()
 
 void DEBUG_CAMERA::Init()
 {
+	GameObject::Init();
+
 	Vector4 at = Vector4(0.f, 0.f, 0.f, 0.f);
 
 	Viewing_Angle = 80.0f;
@@ -87,6 +89,8 @@ void DEBUG_CAMERA::Init()
 	Rotate = 90.0f;
 
 	RotateEnable = MoveEnable = true;
+
+	GameObject::InitEnd();
 }
 
 void DEBUG_CAMERA::Uninit()
@@ -227,7 +231,7 @@ void DEBUG_CAMERA::Update(float delta_time)
 void DEBUG_CAMERA::Draw()
 {
 	// ビューポート設定
-	D3D11_VIEWPORT dxViewport;
+	aegis::ViewPort dxViewport;
 	dxViewport.Width = (float)(Viewport.right - Viewport.left);
 	dxViewport.Height = (float)(Viewport.bottom - Viewport.top);
 	dxViewport.MinDepth = 0.0f;

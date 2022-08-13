@@ -3,20 +3,19 @@
 #ifndef SKYBOX_H
 #define SKYBOX_H
 
-
-class GameObject;
-//class TEXTURE;
+#include "GameObject.h"
+#include "renderer.h"
 
 class SKYBOX : public GameObject {
 private:
 	//! 頂点バッファ
-	static ComPtr<ID3D11Buffer>	VertexBuffer;
+	static aegis::uniquePtr<aegis::Buffer> VertexBuffer;
 
 	//! インデックスバッファ
-	static ComPtr<ID3D11Buffer>	IndexBuffer;
+	static aegis::uniquePtr<aegis::Buffer> IndexBuffer;
 
 	////! テクスチャ
-	//std::unique_ptr<TEXTURE>					Texture;
+	aegis::uniquePtr<aegis::ShaderResourceView>	Texture;
 
 public:
 	/**

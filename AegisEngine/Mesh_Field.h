@@ -8,9 +8,9 @@
 #ifndef MESH_FIELF_H
 #define MESH_FIELF_H
 
-#include	"Renderer.h"
+#include "GameObject.h"
+#include "Renderer.h"
 
-class GameObject;
 class TEXTURE;
 
 //==============================
@@ -29,13 +29,12 @@ private:
 	UINT						IndexNum;
 
 	// 頂点データ
-	aegis::vector<VERTEX_3D>	VertexArray;
+	aegis::vector<aegis::VERTEX_3D>	VertexArray;
 
 	//! 頂点バッファ
-	ComPtr<ID3D11Buffer>		VertexBuffer;
-
+	aegis::uniquePtr<aegis::Buffer>		VertexBuffer;
 	//! インデックスバッファ
-	ComPtr<ID3D11Buffer>		IndexBuffer;
+	aegis::uniquePtr<aegis::Buffer>		IndexBuffer;
 
 	//! テクスチャ
 	std::unique_ptr<TEXTURE>			Texture;
@@ -128,14 +127,14 @@ CEREAL_REGISTER_POLYMORPHIC_RELATION(GameObject, MESH_FIELD)
 //==============================
 class MESH_WALL :public GameObject {
 private:
-	aegis::Vector3		GridSize;
-	aegis::Int2			GridNum;
-	unsigned int	IndexNum;
-	VERTEX_3D* VertexArray;
+	aegis::Vector3			GridSize;
+	aegis::Int2				GridNum;
+	unsigned int			IndexNum;
+	aegis::VERTEX_3D*		VertexArray;
 
-	ComPtr<ID3D11Buffer> VertexBuffer;		// 頂点バッファ
-	ComPtr<ID3D11Buffer> IndexBuffer;		// インデックスバッファ
-	TEXTURE* Texture;				// テクスチャ
+	aegis::uniquePtr<aegis::Buffer>	VertexBuffer;		// 頂点バッファ
+	aegis::uniquePtr<aegis::Buffer>	IndexBuffer;		// インデックスバッファ
+	TEXTURE*				Texture;			// テクスチャ
 
 public:
 	MESH_WALL();

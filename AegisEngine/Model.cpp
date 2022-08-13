@@ -1,10 +1,10 @@
-﻿#include	"Model.h"
-#include	"Model_Manager.h"
+﻿#include "Model.h"
+#include "Model_Manager.h"
 
-#include	"manager.h"
-#include	"Scene.h"
-#include	"camera.h"
-#include	"Debug_Camera.h"
+#include "manager.h"
+#include "Scene.h"
+#include "camera.h"
+#include "Debug_Camera.h"
 
 IMPLEMENT_OBJECT_TYPE_INFO(COMPONENT, MODEL)
 
@@ -12,10 +12,12 @@ using namespace aegis;
 
 MODEL::MODEL() : FileName(aegis::string()), Key(0)
 {
+	Base::InitEnd();
 }
 
 void MODEL::Init()
 {
+	Base::InitEnd();
 }
 
 void MODEL::Draw()
@@ -49,7 +51,7 @@ void MODEL::Draw()
 
 		{
 			XMVECTOR camera_pos;
-			LIGHT light = *render->Get_Light();
+			LIGHT light = *render->GetLight();
 
 			XMVECTOR light_pos = XMVectorSet(light.Direction.x, light.Direction.y, light.Direction.z, light.Direction.w);
 
@@ -130,7 +132,7 @@ const aegis::string& MODEL::Get_Model_Name()
 }
 
 
-#include	"imgui/imgui.h"
+#include "imgui/imgui.h"
 
 void MODEL::Draw_Inspector()
 {

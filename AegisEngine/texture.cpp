@@ -1,6 +1,5 @@
-﻿#include	"texture.h"
-#include	"Texture_Manager.h"
-#include	"Renderer.h"
+﻿#include "texture.h"
+#include "TextureManager.h"
 
 using namespace aegis;
 
@@ -10,7 +9,7 @@ TEXTURE::TEXTURE() : FileName("none"), File(std::hash<aegis::string>()(FileName)
 
 TEXTURE::TEXTURE(std::string_view file_name) : FileName(file_name), File(std::hash<std::string_view>()(file_name))
 {
-	TEXTURE_MANEGER::Get_Instance()->Add_ReferenceCnt(File);
+	TextureManager::Get_Instance()->Add_ReferenceCnt(File);
 }
 
 //========================================
@@ -18,9 +17,9 @@ TEXTURE::TEXTURE(std::string_view file_name) : FileName(file_name), File(std::ha
 //========================================
 void TEXTURE::Set_Texture(void)
 {
-	ID3D11ShaderResourceView* shader_resouce_view = TEXTURE_MANEGER::Get_Instance()->GetShaderResourceView(File);
+	ShaderResourceView* shaderResouceView = TextureManager::Get_Instance()->GetShaderResourceView(File);
 
-	CRenderer::getInstance()->GetDeviceContext()->PSSetShaderResources(0, 1, &shader_resouce_view);
+	CRenderer::getInstance()->PSSetShaderResources(0, 1, &shaderResouceView);
 }
 
 //========================================
@@ -30,10 +29,10 @@ void TEXTURE::Set_Texture_Name(const aegis::string& file_name)
 {
 	if (file_name != FileName)
 	{
-		TEXTURE_MANEGER::Get_Instance()->Sub_ReferenceCnt(File);
+		TextureManager::Get_Instance()->Sub_ReferenceCnt(File);
 		FileName = file_name;
 		File = std::hash<aegis::string>()(file_name);
-		TEXTURE_MANEGER::Get_Instance()->Add_ReferenceCnt(File);
+		TextureManager::Get_Instance()->Add_ReferenceCnt(File);
 	}
 }
 
@@ -47,24 +46,24 @@ const aegis::string& TEXTURE::Get_Texture_Name(void)
 
 aegis::Int2* const TEXTURE::Get_WH()
 {
-	return TEXTURE_MANEGER::Get_Instance()->Get_WH(File);
+	return TextureManager::Get_Instance()->Get_WH(File);
 }
 
 
-aegis::unordered_map<aegis::wstring,std::unique_ptr<ID3D11ShaderResourceView, Release>> FONT::FontResource;
-ID3D11SamplerState* FONT::SamplerState = nullptr;
+aegis::unordered_map<aegis::wstring, aegis::uniquePtr<aegis::ShaderResourceView>> FONT::FontResource;
+aegis::SamplerState* FONT::SamplerState = nullptr;
 
 
 void FONT::Init()
 {
-	FONT::Load_Font();
+	//FONT::Load_Font();
 }
 
 void FONT::Uninit()
 {
 	for (auto tex = FontResource.begin(); tex != FontResource.end(); tex++)
 	{
-		tex->second.reset(nullptr);
+		tex->second->Release();
 	}
 	FontResource.clear();
 };
@@ -126,48 +125,28 @@ void FONT::Load_Font()
 	}
 
 	//フォントを書き込むテクスチャ作成
-	D3D11_TEXTURE2D_DESC fontTextureDesc;
-	ZeroMemory(&fontTextureDesc, sizeof(fontTextureDesc));
+	Texture2DDesc fontTextureDesc{};
 	fontTextureDesc.MipLevels = 1;
 	fontTextureDesc.ArraySize = 1;
-	fontTextureDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+	fontTextureDesc.Format = Format::RGBA8Unorm;
 	fontTextureDesc.SampleDesc.Count = 1;
 	fontTextureDesc.SampleDesc.Quality = 0;
-	fontTextureDesc.Usage = D3D11_USAGE_DYNAMIC;
-	fontTextureDesc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
-	fontTextureDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+	fontTextureDesc.Usage = Usage::Dynamic;
+	fontTextureDesc.BindFlags = BindFlag::ShaderResource;
+	fontTextureDesc.CPUAccessFlags = CpuAccessFlag::Write;
 	fontTextureDesc.MiscFlags = 0;
 
 	// シェーダ用にサンプラを作成する
 	{
-		D3D11_SAMPLER_DESC samDesc;
-		ZeroMemory(&samDesc, sizeof(samDesc));
-		samDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
-		samDesc.AddressU = samDesc.AddressV = samDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
+		SamplerDesc samDesc{};
+		samDesc.Filter = Filter::Linear;
+		samDesc.Address = AddressMode::Wrap;
 		samDesc.MaxAnisotropy = 1;
-		samDesc.ComparisonFunc = D3D11_COMPARISON_ALWAYS;
-		samDesc.MaxLOD = D3D11_FLOAT32_MAX;
+		samDesc.ComparisonFunc = ComparisonFunc::Always;
+		samDesc.MaxLOD = Math::Float32Max;
 
-		ID3D11SamplerState* samplerState = nullptr;
-
-		render->GetDevice()->CreateSamplerState(&samDesc, &samplerState);
+		SamplerState = render->CreateSampler(samDesc);
 	}
-
-	// ShaderResourceViewの情報を作成する
-	D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc;
-	ZeroMemory(&srvDesc, sizeof(srvDesc));
-	srvDesc.Format = fontTextureDesc.Format;
-	srvDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
-	srvDesc.Texture2D.MostDetailedMip = 0;
-	srvDesc.Texture2D.MipLevels = fontTextureDesc.MipLevels;
-
-	ID3D11ShaderResourceView* ShaderResourceView;
-
-	// デバイス
-	auto device = render->GetDevice();
-
-	// デバイスコンテキスト
-	auto deviceContext = render->GetDeviceContext();
 
 	UINT code;
 	TEXTMETRIC tm;
@@ -177,12 +156,8 @@ void FONT::Load_Font()
 	DWORD size;
 	BYTE* pMono = nullptr;
 
-	int fontWidth = 0;
-	int fontHeight = 0;
-
-	ID3D11Texture2D* font_texture = nullptr;
-	HRESULT hr;
-	D3D11_MAPPED_SUBRESOURCE hMappedResource;
+	std::unique_ptr<Texture2D> font_texture = nullptr;
+	MappedSubresource hMappedResource;
 
 	aegis::wstring f;
 
@@ -199,23 +174,16 @@ void FONT::Load_Font()
 
 		//================================================================================
 
-		//フォントの幅と高さ
-		fontWidth = gm.gmCellIncX;
-		fontHeight = tm.tmHeight;
-
 		//フォントを書き込むテクスチャ作成
-		fontTextureDesc.Width = fontWidth;
-		fontTextureDesc.Height = fontHeight;
+		//フォントの幅と高さ
+		fontTextureDesc.Width = gm.gmCellIncX;
+		fontTextureDesc.Height = tm.tmHeight;
 
-		hr = device->CreateTexture2D(&fontTextureDesc, nullptr, &font_texture);
+		font_texture.reset(render->CreateTexture2D(fontTextureDesc, nullptr));
 
 		// フォント情報をテクスチャに書き込む部分
-		hr = deviceContext->Map(
-			font_texture,
-			0,
-			D3D11_MAP_WRITE_DISCARD,
-			0,
-			&hMappedResource);
+		hMappedResource = render->Map(font_texture.get());
+
 		// ここで書き込む
 		BYTE* pBits = (BYTE*)hMappedResource.pData;
 		// フォント情報の書き込み
@@ -245,18 +213,25 @@ void FONT::Load_Font()
 					sizeof(DWORD));
 			}
 		}
-		deviceContext->Unmap(font_texture, 0);
+		render->Unmap(font_texture.get());
 		//不要なので削除
 		SAFE_DELETE_ARRAY(pMono);
 
-		// シェーダーリソースの作成
-		device->CreateShaderResourceView(font_texture, &srvDesc, &ShaderResourceView);
+		// ShaderResourceViewの情報を作成する
+		ShaderResourceViewDesc srvDesc{};
+		srvDesc.Format = fontTextureDesc.Format;
+		srvDesc.ViewDimension = SrvDimension::Texture2D;
+		srvDesc.Texture2D.MostDetailedMip = 0;
+		srvDesc.Texture2D.MipLevels = fontTextureDesc.MipLevels;
 
-		SAFE_RELEASE(font_texture);
+		ShaderResourceView* shaderResourceView;
+
+		// シェーダーリソースの作成
+		shaderResourceView = render->CreateShaderResourceView(font_texture.get(), srvDesc);
 
 		f.push_back(font);
 
-		FontResource[f].reset(ShaderResourceView);
+		FontResource[f].reset(shaderResourceView);
 
 		f.clear();
 	}
@@ -317,12 +292,6 @@ void FONT::Load_Font(const aegis::wstring& one_character)
 
 	GetGlyphOutlineW(hdc, code, gradFlag, &gm, size, pMono, &mat);
 
-	// デバイス
-	auto device = render->GetDevice();
-
-	// デバイスコンテキスト
-	auto deviceContext = render->GetDeviceContext();
-
 	//================================================================================
 
 	//フォントの幅と高さ
@@ -330,32 +299,26 @@ void FONT::Load_Font(const aegis::wstring& one_character)
 	int fontHeight = tm.tmHeight;
 
 	//フォントを書き込むテクスチャ作成
-	D3D11_TEXTURE2D_DESC fontTextureDesc;
-	ZeroMemory(&fontTextureDesc, sizeof(fontTextureDesc));
+	Texture2DDesc fontTextureDesc{};
 	fontTextureDesc.Width = fontWidth;
 	fontTextureDesc.Height = fontHeight;
 	fontTextureDesc.MipLevels = 1;
 	fontTextureDesc.ArraySize = 1;
-	fontTextureDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+	fontTextureDesc.Format = Format::RGBA8Unorm;
 	fontTextureDesc.SampleDesc.Count = 1;
 	fontTextureDesc.SampleDesc.Quality = 0;
-	fontTextureDesc.Usage = D3D11_USAGE_DYNAMIC;
-	fontTextureDesc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
-	fontTextureDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+	fontTextureDesc.Usage = Usage::Dynamic;
+	fontTextureDesc.BindFlags = BindFlag::ShaderResource;
+	fontTextureDesc.CPUAccessFlags = CpuAccessFlag::Write;
 	fontTextureDesc.MiscFlags = 0;
 
-	ID3D11Texture2D* font_texture = nullptr;
+	std::unique_ptr<Texture2D> font_texture = nullptr;
 
-	HRESULT hr = device->CreateTexture2D(&fontTextureDesc, nullptr, &font_texture);
+	font_texture.reset(render->CreateTexture2D(fontTextureDesc, nullptr));
 
 	// フォント情報をテクスチャに書き込む部分
-	D3D11_MAPPED_SUBRESOURCE hMappedResource;
-	hr = deviceContext->Map(
-		font_texture,
-		0,
-		D3D11_MAP_WRITE_DISCARD,
-		0,
-		&hMappedResource);
+	MappedSubresource hMappedResource = render->Map(font_texture.get());
+
 	// ここで書き込む
 	BYTE* pBits = (BYTE*)hMappedResource.pData;
 	// フォント情報の書き込み
@@ -385,28 +348,25 @@ void FONT::Load_Font(const aegis::wstring& one_character)
 				sizeof(DWORD));
 		}
 	}
-	deviceContext->Unmap(font_texture, 0);
+	render->Unmap(font_texture.get());
 	//不要なので削除
 	SAFE_DELETE_ARRAY(pMono);
 
 	// ShaderResourceViewの情報を作成する
-	D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc;
-	ZeroMemory(&srvDesc, sizeof(srvDesc));
+	ShaderResourceViewDesc srvDesc{};
 	srvDesc.Format = fontTextureDesc.Format;
-	srvDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
+	srvDesc.ViewDimension = SrvDimension::Texture2D;
 	srvDesc.Texture2D.MostDetailedMip = 0;
 	srvDesc.Texture2D.MipLevels = fontTextureDesc.MipLevels;
 
-	ID3D11ShaderResourceView* ShaderResourceView;
+	ShaderResourceView* shaderResourceView;
 
-	device->CreateShaderResourceView(font_texture, &srvDesc, &ShaderResourceView);
-
-	SAFE_RELEASE(font_texture);
+	shaderResourceView = render->CreateShaderResourceView(font_texture.get(), srvDesc);
 
 	aegis::wstring f;
 	f.push_back(font);
 
-	FontResource[f].reset(ShaderResourceView);
+	FontResource[f].reset(shaderResourceView);
 }
 
 void FONT::Add_Font(const aegis::wstring& one_character)
@@ -420,7 +380,7 @@ void FONT::Add_Font(const aegis::wstring& one_character)
 	}
 }
 
-ID3D11ShaderResourceView* FONT::Get_Font_Resource(const aegis::wstring& one_character)
+ShaderResourceView* FONT::Get_Font_Resource(const aegis::wstring& one_character)
 {
 	if (FontResource.end() != FontResource.find(one_character))
 	{
@@ -432,7 +392,7 @@ ID3D11ShaderResourceView* FONT::Get_Font_Resource(const aegis::wstring& one_char
 	}
 }
 
-ID3D11SamplerState* FONT::Get_SamplerState()
+SamplerState* FONT::Get_SamplerState()
 {
 	return SamplerState;
 }

@@ -1,6 +1,8 @@
-﻿#include	"Model_Manager.h"
+﻿#include "Model_Manager.h"
 
-#include	"external/DirectXTex/WICTextureLoader.h"
+#include "TextureImporter.h"
+
+using namespace aegis;
 
 std::unique_ptr<MODEL_MANEGER> MODEL_MANEGER::ModelManager;
 
@@ -108,7 +110,7 @@ void MODEL_MANEGER::Load(const bool flag)
 
 				processNode(pScene->mRootNode, pScene, Mesh.Get_Meshs(), Mesh.Get_Textures());
 
-				ModelData[key].Meshes.Set(Mesh);
+				ModelData[key].Meshes.Set(std::move(Mesh));
 				ModelData[key].Meshes.Init();
 				ModelData[key].Cnt = 0;
 
@@ -154,7 +156,7 @@ void MODEL_MANEGER::Load(const bool flag)
 
 				processNode(pScene->mRootNode, pScene, Mesh.Get_Meshs(), Mesh.Get_Textures());
 
-				ModelData[key].Meshes.Set(Mesh);
+				ModelData[key].Meshes.Set(std::move(Mesh));
 				ModelData[key].Meshes.Init();
 				ModelData[key].Cnt = 0;
 
@@ -208,7 +210,7 @@ void MODEL_MANEGER::Add(const aegis::string& file_name)
 
 		processNode(pScene->mRootNode, pScene, Mesh.Get_Meshs(), Mesh.Get_Textures());
 
-		ModelData[key].Meshes.Set(Mesh);
+		ModelData[key].Meshes.Set(std::move(Mesh));
 		ModelData[key].Meshes.Init();
 		ModelData[key].Cnt = 0;
 
@@ -239,7 +241,9 @@ const bool MODEL_MANEGER::Unload(const aegis::string& const file_name)
 
 void MODEL_MANEGER::Add_ReferenceCnt(const size_t file)
 {
-	if (!ModelData.contains(file))
+	auto const end = ModelData.cend();
+
+	if (end == ModelData.find(file))
 		return;
 
 	ModelData[file].Cnt++;
@@ -247,7 +251,9 @@ void MODEL_MANEGER::Add_ReferenceCnt(const size_t file)
 
 void MODEL_MANEGER::Sub_ReferenceCnt(const size_t file)
 {
-	if (!ModelData.contains(file))
+	auto const end = ModelData.cend();
+
+	if (end == ModelData.find(file))
 		return;
 
 	ModelData[file].Cnt--;
@@ -267,7 +273,7 @@ void MODEL_MANEGER::Sub_ReferenceCnt(const size_t file)
 MESH MODEL_MANEGER::processMesh(aiMesh* mesh, aiNode* node, const aiScene* scene, aegis::vector<TEXTURE_S>& textures_loaded)
 {
 	// Data to fill
-	aegis::vector<VERTEX_3D> vertices;
+	aegis::vector<aegis::VERTEX_3D> vertices;
 	vertices.resize(mesh->mNumVertices);
 
 	aegis::vector<UINT> indices;
@@ -459,18 +465,13 @@ int MODEL_MANEGER::getTextureIndex(aiString* str)
 	return std::stoi(tistr.c_str());
 }
 
-ID3D11ShaderResourceView* MODEL_MANEGER::getTextureFromModel(const aiScene* scene, int textureindex)
+aegis::ShaderResourceView* MODEL_MANEGER::getTextureFromModel(const aiScene* scene, int textureindex)
 {
-	CRenderer* render = CRenderer::getInstance();
+	TextureImporter* textureImporter = TextureImporter::getInstance();
 
-	HRESULT hr;
-	ID3D11ShaderResourceView* texture;
+	aegis::ShaderResourceView* texture;
 
-	UINT size = scene->mTextures[textureindex]->mWidth;
-
-	hr = CreateWICTextureFromMemory(render->GetDevice(), render->GetDeviceContext(), reinterpret_cast<BYTE*>(scene->mTextures[textureindex]->pcData), size, nullptr, &texture);
-	if (FAILED(hr))
-		FAILDE_ASSERT
+	texture = textureImporter->GetShaderResourceView(scene->mTextures[textureindex]->pcData, scene->mTextures[textureindex]->mWidth);
 
 	return texture;
 }

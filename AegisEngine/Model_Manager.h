@@ -3,16 +3,16 @@
 #ifndef MODEL_MANEGER_H
 #define MODEL_MANEGER_H
 
-#include	"Mesh.h"
+#include "Mesh.h"
 
 #undef min
 #undef max
 
-#include	<assimp/Importer.hpp>
-#include	<assimp/cimport.h>
-#include	<assimp/scene.h>
-#include	<assimp/postprocess.h>
-#include	<assimp/matrix4x4.h>
+#include <assimp/Importer.hpp>
+#include <assimp/cimport.h>
+#include <assimp/scene.h>
+#include <assimp/postprocess.h>
+#include <assimp/matrix4x4.h>
 
 struct MODEL_FILE {
 	aegis::string Path;		//! モデルファイルのファイルパス
@@ -73,7 +73,7 @@ private:
 	aegis::string loadMaterialTextures(aiMaterial* mat, aiTextureType type, aegis::string typeName, const aiScene* scene, aegis::vector<TEXTURE_S>& textures_loaded);
 	aegis::string determineTextureType(const aiScene* scene, aiMaterial* mat);
 	int getTextureIndex(aiString* str);
-	ID3D11ShaderResourceView* getTextureFromModel(const aiScene* scene, int textureindex);
+	aegis::ShaderResourceView* getTextureFromModel(const aiScene* scene, int textureindex);
 
 public:
 

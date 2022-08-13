@@ -8,19 +8,19 @@
 #ifndef BOUNDING_SFRUSTUM_H
 #define BOUNDING_SFRUSTUM_H
 
-#include	"Bounding.h"
-#include	"Bounding_Aabb.h"
+#include "Bounding.h"
+#include "Bounding_Aabb.h"
 
 // 球
 class BOUNDING_FRUSTUM : public BOUNDING {
 
-	OBJECT_TYPE_INFO(BOUNDING_FRUSTUM);
+	OBJECT_TYPE_INFO(BOUNDING, BOUNDING_FRUSTUM);
 
 private:
 	//! 頂点バッファ
-	ComPtr<ID3D11Buffer> pVertexBuffer;
+	aegis::uniquePtr<aegis::Buffer> VertexBuffer;
 	//! インデックスバッファ
-	ComPtr<ID3D11Buffer> pIndexBuffer;
+	aegis::uniquePtr<aegis::Buffer> IndexBuffer;
 
 	//! 視錐台
 	BoundingFrustum Frustum;

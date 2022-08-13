@@ -8,18 +8,20 @@
 #ifndef  SPRITE_H
 #define SPRITE_H
 
-#include	"GameObject.h"
+#include "GameObject.h"
+#include "Menu_Component.h"
+#include "Renderer.h"
 
-#include	"texture.h"
-#include	"Menu_Component.h"
-#include	"Renderer.h"
+#include "texture.h"
+
+#include "common.h"
 
 /**
  * 子スプライト情報
  */
 struct CHILD_DATE {
 	//! 子スプライトのポインタ
-	std::unique_ptr<SPRITE> Child;
+	std::unique_ptr<SPRITE, Delete> Child;
 
 	////! オフセット位置
 	//aegis::Vector3 Offset;
@@ -58,20 +60,20 @@ struct CHILD_DATE {
 */
 class SPRITE : public GameObject {
 
-	OBJECT_TYPE_INFO(SPRITE)
+	OBJECT_TYPE_INFO(GameObject, SPRITE)
 
 private:
 protected:
 	//! 頂点バッファ
-	ComPtr<ID3D11Buffer> pVertexBuffer;
+	aegis::uniquePtr<aegis::Buffer> VertexBuffer;
 
 	//! インデックスバッファ
-	static ComPtr<ID3D11Buffer> pIndexBuffer;
+	static aegis::uniquePtr<aegis::Buffer> IndexBuffer;
 
 	//! 頂点データ
-	VERTEX_3D Vertex[4];
+	aegis::VERTEX_3D Vertex[4];
 	//! テクスチャ
-	std::unique_ptr<TEXTURE> Texture;
+	std::unique_ptr<TEXTURE, Delete> Texture;
 
 	//! ポジション
 	aegis::Vector2 Position;
@@ -89,7 +91,7 @@ protected:
 	aegis::COLOR Color;
 
 	//!< 子スプライトのリスト
-	aegis::vector< std::unique_ptr<CHILD_DATE> > Children;
+	aegis::vector< std::unique_ptr<CHILD_DATE, Delete> > Children;
 
 	//!< メニューイベント(リスト)
 	aegis::list<MENU_COMPONENT*> MenuEvents;
@@ -97,8 +99,7 @@ protected:
 	//!< スプライトの有効無効フラグ(デフォルトは true )
 	bool Enable;
 
-
-	ID3D11ShaderResourceView* ShaderResourceView = nullptr;
+	aegis::uniquePtr<aegis::ShaderResourceView> ShaderResourceView;
 
 	/**
 	* @brief 子スプライトの描画関数
@@ -247,7 +248,7 @@ public:
 	* @return list<CHILD_DATE> 子スプライトのリスト
 	* @details 子スプライトのリストを取得する関数
 	*/
-	aegis::vector< std::unique_ptr<CHILD_DATE> >* const Get_Child_Sptite();
+	aegis::vector< std::unique_ptr<CHILD_DATE, Delete> >* const Get_Child_Sptite();
 
 	/**
 	* @brief 子スプライトを取得する関数
@@ -312,10 +313,10 @@ public:
 	* @return bool 描画の有効無効のフラグ
 	* @details 特定の子スプライトの描画の有効無効を取得する関数
 	*/
-	const bool Get_Enable_Child(const aegis::string& const name, aegis::vector< std::unique_ptr<CHILD_DATE> >* const children);
+	const bool Get_Enable_Child(const aegis::string& const name, aegis::vector< std::unique_ptr<CHILD_DATE, Delete> >* const children);
 	
-	void Set(ID3D11ShaderResourceView* shader_resource_view) {
-		ShaderResourceView = shader_resource_view;
+	void Set(aegis::ShaderResourceView* shader_resource_view) {
+		ShaderResourceView.reset(shader_resource_view);
 	};
 
 	/**

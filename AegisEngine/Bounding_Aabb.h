@@ -8,7 +8,7 @@
 #ifndef BOUNDING_AABB_H
 #define	BOUNDING_AABB_H
 
-#include	"Bounding.h"
+#include "Bounding.h"
 
  /**
  * @brief バウンディングAABBクラス
@@ -17,11 +17,11 @@
  */
 class BOUNDING_AABB : public BOUNDING {
 
-	OBJECT_TYPE_INFO(BOUNDING_AABB)
+	OBJECT_TYPE_INFO(BOUNDING, BOUNDING_AABB)
 
 private:
 	//! BOXの頂点バッファ
-	ComPtr<ID3D11Buffer> pVertexBuffer;
+	aegis::uniquePtr<aegis::Buffer> VertexBuffer;
 	//! 各辺の長さ
 	aegis::Vector3 Radius;
 

@@ -1,11 +1,12 @@
 ﻿#include "FBXmodel.h"
 
-#include	"manager.h"
-#include	"Scene.h"
-#include	"ShadowMap.h"
-#include	"camera.h"
+#include "manager.h"
+#include "Scene.h"
+#include "ShadowMap.h"
+#include "camera.h"
+#include "Renderer.h"
 
-#include	"external/DirectXTex/WICTextureLoader.h"
+#include "TextureImporter.h"
 
 using namespace aegis;
 
@@ -130,33 +131,24 @@ bool FBXmodel::Load(const aegis::string& FileName)
 
 
 		//頂点バッファ生成
-		ID3D11Buffer* vertex_Buffer;
+		Buffer* vertex_Buffer;
 		{
-			D3D11_BUFFER_DESC bd{};
-			bd.Usage = D3D11_USAGE_DEFAULT;
+			BufferDesc  bd{};
+			bd.Usage = Usage::Default;
 			bd.ByteWidth = sizeof(ANIME_VERTEX) * (UINT)vertex.size();
-			bd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-			bd.CPUAccessFlags = 0;
-			bd.MiscFlags = 0;
+			bd.BindFlags = BindFlag::Vertexbuffer;
+			bd.CPUAccessFlags = CpuAccessFlag::None;
 
-			D3D11_SUBRESOURCE_DATA initData{};
-			initData.pSysMem = vertex.data();
-			initData.SysMemPitch = 0;
-			initData.SysMemSlicePitch = 0;
+			SubresourceData sd{};
+			sd.pSysMem = vertex.data();
 
-			hr = render->GetDevice()->CreateBuffer(&bd, &initData, &vertex_Buffer);
-
-			if (FAILED(hr))
-			{
-				FAILDE_ASSERT;
-				return false;
-			}
+			vertex_Buffer = render->CreateBuffer(bd, sd);
 		}
 		
 
 		// インデックスバッファ生成
 		UINT index_Num;
-		ID3D11Buffer* index_Beffer;
+		Buffer* index_Beffer;
 		{
 			aegis::vector<WORD> index;
 			for (UINT f = 0; f < mesh->mNumFaces; f++)
@@ -169,34 +161,26 @@ bool FBXmodel::Load(const aegis::string& FileName)
 			}
 
 			index_Num = (UINT)index.size();
-	
-			D3D11_BUFFER_DESC bd{};
-			bd.Usage = D3D11_USAGE_DEFAULT;
-			bd.ByteWidth = sizeof(WORD) * (UINT)index.size();
-			bd.BindFlags = D3D11_BIND_INDEX_BUFFER;
-			bd.CPUAccessFlags = 0;
 
-			D3D11_SUBRESOURCE_DATA initData{};
-			initData.pSysMem = index.data();
-			initData.SysMemPitch = 0;
-			initData.SysMemSlicePitch = 0;
+			BufferDesc  bd{};
+			bd.Usage = Usage::Default;
+			bd.ByteWidth = sizeof(uint16) * (UINT)index.size();
+			bd.BindFlags = BindFlag::Indexbuffer;
+			bd.CPUAccessFlags = CpuAccessFlag::None;
 
-			hr = render->GetDevice()->CreateBuffer(&bd, &initData, &index_Beffer);
-			
-			if (FAILED(hr))
-			{
-				FAILDE_ASSERT;
-				return false;
-			}
+			SubresourceData sd{};
+			sd.pSysMem = index.data();
+
+			index_Beffer = render->CreateBuffer(bd, sd);
 		}
 
 		MESH temp_mesh;
-		temp_mesh.VertexBuffer= vertex_Buffer;
-		temp_mesh.IndexBuffer = index_Beffer;
+		temp_mesh.VertexBuffer.reset(vertex_Buffer);
+		temp_mesh.IndexBuffer.reset(index_Beffer);
 		temp_mesh.VertexNum = vertex_Num;
 		temp_mesh.IndexNum = index_Num;
 
-		m_Meshes.emplace_back(temp_mesh);
+		m_Meshes.emplace_back(std::move(temp_mesh));
 
 		// テクスチャの設定
 		if (mesh->mMaterialIndex >= 0)
@@ -222,24 +206,15 @@ bool FBXmodel::Load(const aegis::string& FileName)
 
 	// 定数バッファ作成
 	{
-		ID3D11Buffer* buffer = nullptr;
+		BufferDesc  bd{};
+		bd.Usage = Usage::Default;
+		bd.ByteWidth = sizeof(XMMATRIX) * m_BoneNum;
+		bd.BindFlags = BindFlag::Constantbuffer;
+		bd.CPUAccessFlags = CpuAccessFlag::None;
 
-		D3D11_BUFFER_DESC hBufferDesc{};
-		hBufferDesc.ByteWidth = sizeof(XMMATRIX) * m_BoneNum;
-		hBufferDesc.Usage = D3D11_USAGE_DEFAULT;
-		hBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-		hBufferDesc.CPUAccessFlags = 0;
-		hBufferDesc.MiscFlags = 0;
-		hBufferDesc.StructureByteStride = sizeof(float);
+		SubresourceData sd{};
 
-		hr = render->GetDevice()->CreateBuffer(&hBufferDesc, NULL, &buffer);
-		if (FAILED(hr))
-		{
-			FAILDE_ASSERT;
-			return false;
-		}
-
-		MatrixBuffer.reset(buffer);
+		MatrixBuffer.reset(render->CreateBuffer(bd, sd));
 	}
 
 	return true;
@@ -248,11 +223,12 @@ bool FBXmodel::Load(const aegis::string& FileName)
 
 void FBXmodel::UnLoad()
 {
-	for (UINT m = 0; m < m_MeshNum; m++)
+	for (auto& mesh : m_Meshes)
 	{
-		SAFE_RELEASE(m_Meshes[m].VertexBuffer);
-		SAFE_RELEASE(m_Meshes[m].IndexBuffer);
+		mesh.VertexBuffer.reset();
+		mesh.IndexBuffer.reset();
 	}
+
 	m_Meshes.clear();
 	
 	aiReleaseImport(m_Scene);
@@ -316,7 +292,7 @@ void FBXmodel::Draw(XMMATRIX &Matrix)
 	//render->Set_Shader(SHADER_INDEX_V::ANIMATION, SHADER_INDEX_P::DEFAULT);
 	render->Set_InputLayout(INPUTLAYOUT::ANIMATION);
 
-	render->SetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	render->SetPrimitiveTopology(PrimitiveTopology::TriangleList);
 
 	DrawMesh(m_Scene->mRootNode, Matrix);
 
@@ -339,7 +315,7 @@ void FBXmodel::Draw_DPP(XMMATRIX& Matrix)
 	render->Set_InputLayout(INPUTLAYOUT::ANIMATION);
 	render->Set_Shader(SHADER_INDEX_V::DEPTH_PRE_ANIME, SHADER_INDEX_P::MAX);
 
-	render->SetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	render->SetPrimitiveTopology(PrimitiveTopology::TriangleList);
 
 	DrawMesh_DPP(m_Scene->mRootNode, Matrix);
 
@@ -357,15 +333,15 @@ void FBXmodel::set_bone(const aiNode* Node, aegis::vector<XMMATRIX>& v)
 	}
 }
 
-void FBXmodel::SetBoneMatrix(const aegis::vector<XMMATRIX>& matrix)
+void FBXmodel::SetBoneMatrix(aegis::vector<XMMATRIX>& matrix) const
 {
 	CRenderer* render = CRenderer::getInstance();
 
-	render->GetDeviceContext()->UpdateSubresource(MatrixBuffer.get(), 0, NULL, matrix.data(), 0, 0);
+	render->UpdateSubresource(MatrixBuffer.get(), matrix.data());
 
 	auto buffer = MatrixBuffer.get();
 
-	render->GetDeviceContext()->VSSetConstantBuffers(6, 1, &buffer);
+	render->VSSetConstantBuffers(6, 1, &buffer);
 }
 
 void FBXmodel::DrawMesh(const aiNode* Node, const XMMATRIX& Matrix)
@@ -430,20 +406,17 @@ void FBXmodel::DrawMesh(const aiNode* Node, const XMMATRIX& Matrix)
 
 		// テクスチャの設定
 		{
-			render->GetDeviceContext()->PSSetShaderResources(0, 1, &Textures[0].Texture);
+			render->PSSetShaderResources(0, 1, &Textures[0].Texture);
 		}
 
 		// 頂点バッファの設定
 		{
-			const UINT stride = sizeof(ANIME_VERTEX);
-			const UINT offset = 0;
-			ID3D11Buffer* vb[1] = { m_Meshes[m].VertexBuffer.Get() };
-			render->GetDeviceContext()->IASetVertexBuffers(0, 1, vb, &stride, &offset);
+			render->SetVertexBuffers(m_Meshes[m].VertexBuffer.get(), sizeof(ANIME_VERTEX));
 		}
 
 		// インデックスバッファの設定
 		{
-			render->SetIndexBuffer(m_Meshes[m].IndexBuffer.Get());
+			render->SetIndexBuffer(m_Meshes[m].IndexBuffer.get());
 		}
 
 		render->DrawIndexed(m_Meshes[m].IndexNum, 0, 0);
@@ -488,15 +461,12 @@ void FBXmodel::DrawMesh_DPP(const aiNode* Node, const XMMATRIX& Matrix)
 
 		// 頂点バッファの設定
 		{
-			const UINT stride = sizeof(ANIME_VERTEX);
-			const UINT offset = 0;
-			ID3D11Buffer* vb[1] = { m_Meshes[m].VertexBuffer.Get() };
-			render->GetDeviceContext()->IASetVertexBuffers(0, 1, vb, &stride, &offset);
+			render->SetVertexBuffers(m_Meshes[m].VertexBuffer.get(), sizeof(ANIME_VERTEX));
 		}
 
 		// インデックスバッファの設定
 		{
-			render->SetIndexBuffer(m_Meshes[m].IndexBuffer.Get());
+			render->SetIndexBuffer(m_Meshes[m].IndexBuffer.get());
 		}
 
 		render->DrawIndexed(m_Meshes[m].IndexNum, 0, 0);
@@ -567,7 +537,6 @@ aegis::vector<TEXTURE_S> FBXmodel::loadMaterialTextures(aiMaterial* mat, aiTextu
 		}
 		if (!skip)
 		{   // If texture hasn't been loaded already, load it
-			HRESULT hr;
 			TEXTURE_S texture;
 			if (textype == "embedded compressed texture")
 			{
@@ -583,11 +552,10 @@ aegis::vector<TEXTURE_S> FBXmodel::loadMaterialTextures(aiMaterial* mat, aiTextu
 				{
 					CRenderer* render = CRenderer::getInstance();
 
-					hr = CreateWICTextureFromFile(render->GetDevice(), render->GetDeviceContext(), filenamews.c_str(), nullptr, &texture.Texture, nullptr, nullptr);
-				}
+					TextureImporter* textureImporter = TextureImporter::getInstance();
 
-				if (FAILED(hr))
-					FAILDE_ASSERT;
+					texture.Texture = textureImporter->GetShaderResourceView(filenamews.c_str());
+				}
 			}
 
 			texture.FileName = str.C_Str();
@@ -628,18 +596,13 @@ int FBXmodel::getTextureIndex(aiString* str)
 	return std::stoi(tistr.c_str());
 }
 
-ID3D11ShaderResourceView* FBXmodel::getTextureFromModel(const aiScene* scene, int textureindex)
+aegis::ShaderResourceView* FBXmodel::getTextureFromModel(const aiScene* scene, int textureindex)
 {
-	CRenderer* render = CRenderer::getInstance();
+	TextureImporter* textureImporter = TextureImporter::getInstance();
 
-	HRESULT hr;
-	ID3D11ShaderResourceView* texture;
+	aegis::ShaderResourceView* texture;
 
-	int* size = reinterpret_cast<int*>(&scene->mTextures[textureindex]->mWidth);
+	texture = textureImporter->GetShaderResourceView(scene->mTextures[textureindex]->pcData, scene->mTextures[textureindex]->mWidth);
 
-	hr = CreateWICTextureFromMemory(render->GetDevice(), render->GetDeviceContext(), reinterpret_cast<unsigned char*>(scene->mTextures[textureindex]->pcData), *size, nullptr, &texture);
-	if (FAILED(hr))
-		FAILDE_ASSERT
-
-		return texture;
+	return texture;
 }

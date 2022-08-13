@@ -1,21 +1,19 @@
-﻿#include	"GameObject.h"
-#include	"Billboard.h"
+﻿#include "Billboard.h"
 
-#include	"camera.h"
-#include	"Debug_Camera.h"
-#include	"Renderer.h"
-#include	"texture.h"
-#include	"manager.h"
-#include	"Scene.h"
-#include	"ShadowMap.h"
+#include "camera.h"
+#include "Debug_Camera.h"
+#include "manager.h"
+#include "Scene.h"
+#include "ShadowMap.h"
+#include "texture.h"
 
 IMPLEMENT_OBJECT_TYPE_INFO(GameObject, BILL_BOARD)
 
 using namespace aegis;
 
-ComPtr<ID3D11Buffer> BILL_BOARD::pIndexBuffer = nullptr;		// インデックスバッファ
+aegis::uniquePtr<aegis::Buffer> BILL_BOARD::IndexBuffer = nullptr;		// インデックスバッファ
 
-BILL_BOARD::BILL_BOARD() : pVertexBuffer(nullptr), Texture(nullptr), WH(Vector2(1.0f, 1.0f))
+BILL_BOARD::BILL_BOARD() : VertexBuffer(nullptr), Texture(nullptr), WH(Vector2(1.0f, 1.0f))
 {
 	// テクスチャの設定
 	Texture = std::make_unique<TEXTURE>();
@@ -26,7 +24,7 @@ BILL_BOARD::BILL_BOARD() : pVertexBuffer(nullptr), Texture(nullptr), WH(Vector2(
 // position : 中心座標
 // wh : 幅と高さ
 //==============================
-BILL_BOARD::BILL_BOARD(Vector3 position, Vector2 wh) : pVertexBuffer(nullptr), Texture(nullptr), WH(wh)
+BILL_BOARD::BILL_BOARD(Vector3 position, Vector2 wh) : VertexBuffer(nullptr), Texture(nullptr), WH(wh)
 {
 	Get_Transform().Set_Position(position);
 
@@ -41,58 +39,45 @@ BILL_BOARD::~BILL_BOARD()
 
 void BILL_BOARD::Init()
 {
+	GameObject::Init();
+
 	CRenderer* render = CRenderer::getInstance();
 
 	// 頂点バッファの設定
 	{
-		HRESULT hr;
-
-		D3D11_BUFFER_DESC bd{};
+		BufferDesc  bd{};
+		bd.Usage = Usage::Dynamic;
 		bd.ByteWidth = sizeof(VERTEX_3D) * 4;
-		bd.Usage = D3D11_USAGE_DYNAMIC;
-		bd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-		bd.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
-		bd.MiscFlags = 0;
-		bd.StructureByteStride = 0;
+		bd.BindFlags = BindFlag::Vertexbuffer;
+		bd.CPUAccessFlags = CpuAccessFlag::Write;
 
-		// 頂点バッファの生成
-		hr = render->GetDevice()->CreateBuffer(&bd, nullptr, &pVertexBuffer);
+		SubresourceData sd{};
 
-		if (FAILED(hr))
-		{
-			return;
-		}
+		VertexBuffer.reset(render->CreateBuffer(bd, sd));
 	}
 
 	// インデックスバッファの設定
-	if (nullptr == pIndexBuffer)
+	if (nullptr == IndexBuffer)
 	{
-		HRESULT hr;
-
-		const WORD index[] = {
-		0, 1, 2,
-		1, 3, 2,
+		const WORD index[] =
+		{
+			0, 1, 2,
+			1, 3, 2,
 		};
 
-		D3D11_BUFFER_DESC ibDesc{};
-		ibDesc.ByteWidth = sizeof(WORD) * 6;
-		ibDesc.Usage = D3D11_USAGE_DEFAULT;
-		ibDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
-		ibDesc.CPUAccessFlags = 0;
-		ibDesc.MiscFlags = 0;
-		ibDesc.StructureByteStride = 0;
+		BufferDesc  bd{};
+		bd.Usage = Usage::Default;
+		bd.ByteWidth = sizeof(uint16) * 6;
+		bd.BindFlags = BindFlag::Indexbuffer;
+		bd.CPUAccessFlags = CpuAccessFlag::None;
 
-		D3D11_SUBRESOURCE_DATA irData{};
-		irData.pSysMem = index;
-		irData.SysMemPitch = 0;
-		irData.SysMemSlicePitch = 0;
+		SubresourceData sd{};
+		sd.pSysMem = index;
 
-		hr = render->GetDevice()->CreateBuffer(&ibDesc, &irData, &pIndexBuffer);
-		if (FAILED(hr))
-		{
-			return;
-		}
+		IndexBuffer.reset(render->CreateBuffer(bd, sd));
 	}
+
+	GameObject::InitEnd();
 }
 
 void BILL_BOARD::Draw()
@@ -129,17 +114,15 @@ void BILL_BOARD::Draw()
 
 		// 頂点バッファの書き換え
 		{
-			D3D11_MAPPED_SUBRESOURCE msr;
-			render->GetDeviceContext()->Map(pVertexBuffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &msr);
-			memcpy(msr.pData, vertex, sizeof(VERTEX_3D) * 4); // 4頂点分コピー
-			render->GetDeviceContext()->Unmap(pVertexBuffer.Get(), 0);
+			render->Map(VertexBuffer.get(), vertex, sizeof(VERTEX_3D) * 4); // 4頂点分コピー
+			render->Unmap(VertexBuffer.get());
 		}
 	}
 
 	// 入力アセンブラに頂点バッファを設定
-	render->SetVertexBuffers(pVertexBuffer.Get());
+	render->SetVertexBuffers(VertexBuffer.get());
 
-	render->SetIndexBuffer(pIndexBuffer.Get());
+	render->SetIndexBuffer(IndexBuffer.get());
 
 	// テクスチャの設定
 	Texture->Set_Texture();
@@ -236,17 +219,15 @@ void BILL_BOARD::Draw_DPP()
 
 		// 頂点バッファの書き換え
 		{
-			D3D11_MAPPED_SUBRESOURCE msr;
-			render->GetDeviceContext()->Map(pVertexBuffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &msr);
-			memcpy(msr.pData, vertex, sizeof(VERTEX_3D) * 4); // 4頂点分コピー
-			render->GetDeviceContext()->Unmap(pVertexBuffer.Get(), 0);
+			render->Map(VertexBuffer.get(), vertex, sizeof(VERTEX_3D) * 4); // 4頂点分コピー
+			render->Unmap(VertexBuffer.get());
 		}
 	}
 
 	// 入力アセンブラに頂点バッファを設定
-	render->SetVertexBuffers(pVertexBuffer.Get());
+	render->SetVertexBuffers(VertexBuffer.get());
 
-	render->SetIndexBuffer(pIndexBuffer.Get());
+	render->SetIndexBuffer(IndexBuffer.get());
 
 	// 3Dマトリックス設定
 	{
@@ -353,6 +334,7 @@ BILL_BOARD_ANIMATION::~BILL_BOARD_ANIMATION()
 void BILL_BOARD_ANIMATION::Init()
 {
 	BILL_BOARD::Init();
+	GameObject::InitEnd();
 }
 
 void BILL_BOARD_ANIMATION::Draw()
@@ -425,17 +407,15 @@ void BILL_BOARD_ANIMATION::Draw(float tx, float ty)
 
 		// 頂点バッファの書き換え
 		{
-			D3D11_MAPPED_SUBRESOURCE msr;
-			render->GetDeviceContext()->Map(pVertexBuffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &msr);
-			memcpy(msr.pData, vertex, sizeof(VERTEX_3D) * 4); // 4頂点分コピー
-			render->GetDeviceContext()->Unmap(pVertexBuffer.Get(), 0);
+			render->Map(VertexBuffer.get(), vertex, sizeof(VERTEX_3D) * 4); // 4頂点分コピー
+			render->Unmap(VertexBuffer.get());
 		}
 	}
 
 	// 入力アセンブラに頂点バッファを設定
-	render->SetVertexBuffers(pVertexBuffer.Get());
+	render->SetVertexBuffers(VertexBuffer.get());
 
-	render->SetIndexBuffer(pIndexBuffer.Get());
+	render->SetIndexBuffer(IndexBuffer.get());
 
 	// テクスチャの設定
 	Texture->Set_Texture();
@@ -561,17 +541,15 @@ void BILL_BOARD_ANIMATION::Draw_DPP(float tx, float ty)
 
 		// 頂点バッファの書き換え
 		{
-			D3D11_MAPPED_SUBRESOURCE msr;
-			render->GetDeviceContext()->Map(pVertexBuffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &msr);
-			memcpy(msr.pData, vertex, sizeof(VERTEX_3D) * 4); // 4頂点分コピー
-			render->GetDeviceContext()->Unmap(pVertexBuffer.Get(), 0);
+			render->Map(VertexBuffer.get(), vertex, sizeof(VERTEX_3D) * 4); // 4頂点分コピー
+			render->Unmap(VertexBuffer.get());
 		}
 	}
 
 	// 入力アセンブラに頂点バッファを設定
-	render->SetVertexBuffers(pVertexBuffer.Get());
+	render->SetVertexBuffers(VertexBuffer.get());
 
-	render->SetIndexBuffer(pIndexBuffer.Get());
+	render->SetIndexBuffer(IndexBuffer.get());
 
 	// 3Dマトリックス設定
 	{

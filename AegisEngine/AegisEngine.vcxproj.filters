@@ -236,7 +236,7 @@
     <ClCompile Include="texture.cpp">
       <Filter>ソース ファイル\System\Texture</Filter>
     </ClCompile>
-    <ClCompile Include="Texture_Manager.cpp">
+    <ClCompile Include="TextureManager.cpp">
       <Filter>ソース ファイル\System\Texture</Filter>
     </ClCompile>
     <ClCompile Include="audio_clip.cpp">
@@ -371,6 +371,15 @@
     <ClCompile Include="include\engine\core\AegisObject.cpp">
       <Filter>include\engine\core</Filter>
     </ClCompile>
+    <ClCompile Include="RenderDX11.cpp">
+      <Filter>ソース ファイル\System\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="TextureDX11.cpp">
+      <Filter>ソース ファイル\System\Texture</Filter>
+    </ClCompile>
+    <ClCompile Include="TextureImporter.cpp">
+      <Filter>ソース ファイル\System\Texture</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="imgui\imconfig.h">
@@ -496,7 +505,7 @@
     <ClInclude Include="texture.h">
       <Filter>ソース ファイル\System\Texture</Filter>
     </ClInclude>
-    <ClInclude Include="Texture_Manager.h">
+    <ClInclude Include="TextureManager.h">
       <Filter>ソース ファイル\System\Texture</Filter>
     </ClInclude>
     <ClInclude Include="audio_clip.h">
@@ -690,6 +699,27 @@
     </ClInclude>
     <ClInclude Include="include\engine\core\AegisObject.h">
       <Filter>include\engine\core</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderDX11.h">
+      <Filter>ソース ファイル\System\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="RendererTypeDefine.h">
+      <Filter>ソース ファイル\System\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="TextureTypeDefine.h">
+      <Filter>ソース ファイル\System\Texture</Filter>
+    </ClInclude>
+    <ClInclude Include="TextureDX11.h">
+      <Filter>ソース ファイル\System\Texture</Filter>
+    </ClInclude>
+    <ClInclude Include="TextureImporter.h">
+      <Filter>ソース ファイル\System\Texture</Filter>
+    </ClInclude>
+    <ClInclude Include="include\engine\core\AllocatorWrapper.h">
+      <Filter>include\engine\core</Filter>
+    </ClInclude>
+    <ClInclude Include="GlyphRangesJapanese.h">
+      <Filter>ソース ファイル\System\ImGui</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

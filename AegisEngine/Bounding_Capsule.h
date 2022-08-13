@@ -8,31 +8,31 @@
 #ifndef BOUNDING_CAPSULE_H
 #define	BOUNDING_CAPSULE_H
 
-#include	"Bounding.h"
+#include "Bounding.h"
 
 // 球
 class BOUNDING_CAPSULE : public BOUNDING {
 
-	OBJECT_TYPE_INFO(BOUNDING_CAPSULE)
+	OBJECT_TYPE_INFO(BOUNDING, BOUNDING_CAPSULE)
 
 private:
 	//! 一つ目の頂点バッファ
-	ComPtr<ID3D11Buffer> pVertexBuffer;
+	aegis::uniquePtr<aegis::Buffer> VertexBuffer;
 
 	//! 二つ目の頂点バッファ
-	ComPtr<ID3D11Buffer> pVertexBuffer2;
+	aegis::uniquePtr<aegis::Buffer> VertexBuffer2;
 
 	//! インデックスバッファ
-	ComPtr<ID3D11Buffer> pIndexBuffer;
+	aegis::uniquePtr<aegis::Buffer> IndexBuffer;
 
 	//! インデックス数
 	UINT IndexNum;
 
 	//! リングの頂点バッファ
-	ComPtr<ID3D11Buffer> pVertexBuffer_Ring;
+	aegis::uniquePtr<aegis::Buffer> VertexBufferRing;
 
 	//! リングのインデックスバッファ
-	ComPtr<ID3D11Buffer> pIndexBuffer_Ring;
+	aegis::uniquePtr<aegis::Buffer> IndexBufferRing;
 
 	//! リングのインデックス数
 	UINT IndexNum_Ring;

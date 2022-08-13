@@ -3,15 +3,15 @@
 #ifndef CUBE_H
 #define CUBE_H
 
-#include	"Renderer.h"
-#include	"GameObject.h"
+#include "GameObject.h"
+#include "Renderer.h"
 
 class GRID : public GameObject {
 
-	OBJECT_TYPE_INFO(GRID)
+	OBJECT_TYPE_INFO(GameObject, GRID)
 
 private:
-	ComPtr<ID3D11Buffer> pVertexBuffer;	// 頂点バッファ
+	aegis::uniquePtr<aegis::Buffer> VertexBuffer;	// 頂点バッファ
 
 public:
 	GRID();

@@ -35,19 +35,19 @@ private:
 	using CLSTER = aegis::array<aegis::array<aegis::array<UINT, CLUSTERED_X>, CLUSTERED_Y>, CLUSTERED_Z>;
 	using LIGHT_LIST = aegis::array<aegis::array<UINT, CLUSTERED_X* CLUSTERED_Y* CLUSTERED_Z>, 32>;
 
-	ComPtr<ID3D11Buffer>				ConstatntBuffer;
+	aegis::uniquePtr<aegis::Buffer>					ConstatntBuffer;
 
-	ComPtr<ID3D11ComputeShader>			ClusterCS;
+	aegis::uniquePtr<aegis::ComputeShader>			ClusterCS;
 
-	ComPtr<ID3D11Texture3D>				ClusterTexture;
-	ComPtr<ID3D11UnorderedAccessView>	ClusterUAV;
-	ComPtr<ID3D11ShaderResourceView>	ClusterSRV;
+	aegis::uniquePtr<aegis::Texture3D>				ClusterTexture;
+	aegis::uniquePtr<aegis::UnorderedAccessView>		ClusterUAV;
+	aegis::uniquePtr<aegis::ShaderResourceView>		ClusterSRV;
 
-	ComPtr<ID3D11Texture2D>				Light_List_Texture;
-	ComPtr<ID3D11UnorderedAccessView>	Light_List_UAV;
-	ComPtr<ID3D11ShaderResourceView>	Light_List_SRV;
+	aegis::uniquePtr<aegis::Texture2D>				LightListTexture;
+	aegis::uniquePtr<aegis::UnorderedAccessView>		LightListUAV;
+	aegis::uniquePtr<aegis::ShaderResourceView>	LightListSRV;
 
-	ComPtr<ID3D11Buffer>				ClusterBuffer;
+	aegis::uniquePtr<aegis::Buffer>					ClusterBuffer;
 
 
 	std::unique_ptr<CLSTER>					Cluster;

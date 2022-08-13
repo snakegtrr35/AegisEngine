@@ -1,24 +1,19 @@
-﻿#include	"GameObject.h"
-#include	"Skybox.h"
+﻿#include "Skybox.h"
 
-#include	"camera.h"
-#include	"Debug_Camera.h"
-//#include	"texture.h"
-#include	"renderer.h"
-#include	"manager.h"
-#include	"Scene.h"
-#include	"ShadowMap.h"
+#include "camera.h"
+#include "Debug_Camera.h"
+#include "manager.h"
+#include "Scene.h"
+#include "ShadowMap.h"
 
-#include	"external/DirectXTex/DDSTextureLoader.h"
+#include "TextureImporter.h"
 
 using namespace aegis;
 
-ComPtr<ID3D11Buffer> SKYBOX::VertexBuffer;
-ComPtr<ID3D11Buffer> SKYBOX::IndexBuffer;
+aegis::uniquePtr<aegis::Buffer> SKYBOX::VertexBuffer;
+aegis::uniquePtr<aegis::Buffer> SKYBOX::IndexBuffer;
 
 static constexpr UINT Indecies = 36;
-
-static ID3D11ShaderResourceView* Srv = nullptr;
 
 SKYBOX::SKYBOX()
 {
@@ -29,6 +24,8 @@ SKYBOX::~SKYBOX(){ Uninit(); }
 
 void SKYBOX::Init()
 {
+	GameObject::Init();
+
 	CRenderer* render = render->getInstance();
 
 	// 頂点バッファの作成
@@ -67,16 +64,16 @@ void SKYBOX::Init()
 
 		// 頂点バッファの生成
 		{
-			D3D11_BUFFER_DESC bd{};
-			bd.Usage = D3D11_USAGE_DEFAULT;
+			BufferDesc  bd{};
+			bd.Usage = Usage::Default;
 			bd.ByteWidth = sizeof(VERTEX_3D) * vertex_array.size();
-			bd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-			bd.CPUAccessFlags = 0;
+			bd.BindFlags = BindFlag::Vertexbuffer;
+			bd.CPUAccessFlags = CpuAccessFlag::None;
 
-			D3D11_SUBRESOURCE_DATA sd{};
+			SubresourceData sd{};
 			sd.pSysMem = vertex_array.data();
 
-			render->GetDevice()->CreateBuffer(&bd, &sd, &VertexBuffer);
+			VertexBuffer.reset(render->CreateBuffer(bd, sd));
 		}
 	}
 
@@ -104,25 +101,25 @@ void SKYBOX::Init()
 
 		// インデックスバッファの生成
 		{
-			D3D11_BUFFER_DESC bd{};
-			bd.Usage = D3D11_USAGE_DEFAULT;
-			bd.ByteWidth = sizeof(WORD) * index_array.size();
-			bd.BindFlags = D3D11_BIND_INDEX_BUFFER;
-			bd.CPUAccessFlags = 0;
+			BufferDesc  bd{};
+			bd.Usage = Usage::Default;
+			bd.ByteWidth = sizeof(uint16) * index_array.size();
+			bd.BindFlags = BindFlag::Indexbuffer;
+			bd.CPUAccessFlags = CpuAccessFlag::None;
 
-			D3D11_SUBRESOURCE_DATA sd{};
+			SubresourceData sd{};
 			sd.pSysMem = index_array.data();
 
-			render->GetDevice()->CreateBuffer(&bd, &sd, &IndexBuffer);\
+			IndexBuffer.reset(render->CreateBuffer(bd, sd));
 		}
 	}
 
 	{
-		auto device = render->GetDevice();
-		auto device_context = render->GetDeviceContext();
-		
-		CreateDDSTextureFromFile(device, device_context, L"asset/texture/cloudySea.dds", nullptr, &Srv, nullptr, nullptr);
+		auto textureImporter = TextureImporter::getInstance();
+		Texture.reset(textureImporter->GetShaderResourceView(L"asset/texture/cloudySea.dds"));
 	}
+
+	GameObject::InitEnd();
 }
 
 void SKYBOX::Draw()
@@ -162,13 +159,14 @@ void SKYBOX::Draw()
 	}
 
 	// 頂点バッファ設定
-	render->SetVertexBuffers(VertexBuffer.Get());
+	render->SetVertexBuffers(VertexBuffer.get());
 
 	// インデックスバッファ設定
-	render->SetIndexBuffer(IndexBuffer.Get());
+	render->SetIndexBuffer(IndexBuffer.get());
 
 	// テクスチャの設定
-	render->GetDeviceContext()->PSSetShaderResources(0, 1, &Srv);
+	aegis::ShaderResourceView* shaderResourceViews[] = { Texture.get()};
+	render->PSSetShaderResources(0, 1, shaderResourceViews);
 
 	render->Set_Shader(SHADER_INDEX_V::SKYBOX, SHADER_INDEX_P::SKYBOX);
 

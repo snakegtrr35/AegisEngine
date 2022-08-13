@@ -19,8 +19,15 @@
 #include <variant>
 #include <string>
 
+#include <memory>
+
+#include "../../../common.h"
+
 namespace aegis
 {
+    template <class T, class D = AllocatorDelete<T>>
+    using uniquePtr = std::unique_ptr<T, D>;
+
     template <class T, uint64 Size>
     using array = std::array<T, Size>;
 
@@ -66,8 +73,8 @@ namespace aegis
     // c++14以下
 #endif
 
-    using string = std::basic_string<char, std::char_traits<char>, stl_allocatorWrapper<char>>;
-    using wstring = std::basic_string<wchar_t, std::char_traits<wchar_t>, stl_allocatorWrapper<wchar_t>>;
+    using string = std::basic_string<char8, std::char_traits<char8>, stl_allocatorWrapper<char8>>;
+    using wstring = std::basic_string<char16, std::char_traits<char16>, stl_allocatorWrapper<char16>>;
 }
 
 #endif // !INCLUDE_AEGISCONTAINER_H

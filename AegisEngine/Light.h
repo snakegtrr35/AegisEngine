@@ -3,6 +3,8 @@
 #ifndef LIGHT_H
 #define LIGHT_H
 
+#include "Renderer.h"
+
 static const constexpr UINT MAX_NUM_LIGHTS = 512;
 
 enum class LIGHT_TYPE : UINT {
@@ -51,7 +53,7 @@ private:
 
 	static aegis::array<LIGHT_BUFFER, MAX_NUM_LIGHTS> Lights;
 
-	static ComPtr<ID3D11Buffer>		LightBuffer;
+	static aegis::uniquePtr<aegis::Buffer>		LightBuffer;
 
 public:
 	LIGHTS();
@@ -66,7 +68,7 @@ public:
 		return &Lights;
 	}
 
-	 static ID3D11Buffer* Get_LightBuffer() { return LightBuffer.Get(); }
+	 static aegis::Buffer* Get_LightBuffer() { return LightBuffer.get(); }
 
 	template<class Archive>
 	void save(Archive& archive) const

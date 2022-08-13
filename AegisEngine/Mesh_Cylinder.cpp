@@ -1,16 +1,17 @@
-﻿#include	"GameObject.h"
-#include	"Mesh_Cylinder.h"
-#include	"camera.h"
-#include	"Debug_Camera.h"
-#include	"renderer.h"
-#include	"manager.h"
-#include	"Scene.h"
-#include	"ShadowMap.h"
+﻿#include "Mesh_Cylinder.h"
+#include "camera.h"
+#include "Debug_Camera.h"
+#include "manager.h"
+#include "Scene.h"
+#include "ShadowMap.h"
+#include "texture.h"
 
 using namespace aegis;
 
 void MESH_CYlLINDER::Init()
 {
+	GameObject::Init();
+
 	CRenderer* render = CRenderer::getInstance();
 
 	int cornerNum = (int)Radius * CylinderLength * 10;
@@ -65,31 +66,31 @@ void MESH_CYlLINDER::Init()
 	// 頂点バッファ生成
 	if (nullptr == VertexBuffer)
 	{
-		D3D11_BUFFER_DESC bd{};
-		bd.Usage = D3D11_USAGE_DEFAULT;
+		BufferDesc  bd{};
+		bd.Usage = Usage::Default;
 		bd.ByteWidth = sizeof(VERTEX_3D) * VertexNum;
-		bd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-		bd.CPUAccessFlags = 0;
+		bd.BindFlags = BindFlag::Vertexbuffer;
+		bd.CPUAccessFlags = CpuAccessFlag::None;
 
-		D3D11_SUBRESOURCE_DATA sd{};
+		SubresourceData sd{};
 		sd.pSysMem = vertexArray;
 
-		render->GetDevice()->CreateBuffer(&bd, &sd, &VertexBuffer);
+		VertexBuffer.reset(render->CreateBuffer(bd, sd));
 	}
 
 	// インデックスバッファ生成
 	if (nullptr == IndexBuffer)
 	{
-		D3D11_BUFFER_DESC bd{};
-		bd.Usage = D3D11_USAGE_DEFAULT;
-		bd.ByteWidth = sizeof(WORD) * IndexNum;
-		bd.BindFlags = D3D11_BIND_INDEX_BUFFER;
-		bd.CPUAccessFlags = 0;
+		BufferDesc  bd{};
+		bd.Usage = Usage::Default;
+		bd.ByteWidth = sizeof(uint16) * IndexNum;
+		bd.BindFlags = BindFlag::Indexbuffer;
+		bd.CPUAccessFlags = CpuAccessFlag::None;
 
-		D3D11_SUBRESOURCE_DATA sd{};
+		SubresourceData sd{};
 		sd.pSysMem = indexArray;
 
-		render->GetDevice()->CreateBuffer(&bd, &sd, &IndexBuffer);\
+		IndexBuffer.reset(render->CreateBuffer(bd, sd));
 	}
 
 	// メモリ解放
@@ -98,6 +99,8 @@ void MESH_CYlLINDER::Init()
 
 	// テクスチャの設定
 	Texture.reset(new TEXTURE("field004.png"));
+
+	GameObject::InitEnd();
 }
 
 void MESH_CYlLINDER::Uninit()
@@ -144,19 +147,19 @@ void MESH_CYlLINDER::Draw()
 		}
 	}
 
-	render->SetVertexBuffers(VertexBuffer.Get());	// 頂点バッファ設定
-	render->SetIndexBuffer(IndexBuffer.Get());		// インデックスバッファ設定
+	render->SetVertexBuffers(VertexBuffer.get());	// 頂点バッファ設定
+	render->SetIndexBuffer(IndexBuffer.get());		// インデックスバッファ設定
 
 	Texture.get()->Set_Texture();
 
 	// トポロジ設定
-	render->SetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
+	render->SetPrimitiveTopology(PrimitiveTopology::TriangleStrip);
 
 	// ポリゴン描画
 	render->DrawIndexed(IndexNum, 0, 0);
 
 	// トポロジ設定
-	render->SetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	render->SetPrimitiveTopology(PrimitiveTopology::TriangleList);
 
 	GameObject::Draw();
 }
@@ -198,11 +201,11 @@ void MESH_CYlLINDER::Draw_Shadow()
 		}
 	}
 
-	render->SetVertexBuffers(VertexBuffer.Get());	// 頂点バッファ設定
-	render->SetIndexBuffer(IndexBuffer.Get());		// インデックスバッファ設定
+	render->SetVertexBuffers(VertexBuffer.get());	// 頂点バッファ設定
+	render->SetIndexBuffer(IndexBuffer.get());		// インデックスバッファ設定
 
 	// トポロジ設定
-	render->SetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
+	render->SetPrimitiveTopology(PrimitiveTopology::TriangleStrip);
 
 	render->Set_Shader(SHADER_INDEX_V::SHADOW_MAP, SHADER_INDEX_P::MAX);
 
@@ -210,7 +213,7 @@ void MESH_CYlLINDER::Draw_Shadow()
 	render->DrawIndexed(IndexNum, 0, 0);
 
 	// トポロジ設定
-	render->SetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	render->SetPrimitiveTopology(PrimitiveTopology::TriangleList);
 
 	GameObject::Draw_Shadow();
 }
@@ -242,17 +245,17 @@ void MESH_CYlLINDER::Draw_DPP()
 		}
 	}
 
-	render->SetVertexBuffers(VertexBuffer.Get());	// 頂点バッファ設定
-	render->SetIndexBuffer(IndexBuffer.Get());		// インデックスバッファ設定
+	render->SetVertexBuffers(VertexBuffer.get());	// 頂点バッファ設定
+	render->SetIndexBuffer(IndexBuffer.get());		// インデックスバッファ設定
 
 	// トポロジ設定
-	render->SetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
+	render->SetPrimitiveTopology(PrimitiveTopology::TriangleStrip);
 
 	// ポリゴン描画
 	render->DrawIndexed(IndexNum, 0, 0);
 
 	// トポロジ設定
-	render->SetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	render->SetPrimitiveTopology(PrimitiveTopology::TriangleList);
 }
 
 void MESH_CYlLINDER::Update(float delta_time)

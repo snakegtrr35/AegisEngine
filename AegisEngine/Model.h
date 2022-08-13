@@ -3,21 +3,21 @@
 #ifndef MODEL_H
 #define MODEL_H
 
-#include	"Component.h"
-#include	"Mesh.h"
+#include "Component.h"
+#include "Mesh.h"
 
 #undef min
 #undef max
 
-#include	<assimp/Importer.hpp>
-#include	<assimp/cimport.h>
-#include	<assimp/scene.h>
-#include	<assimp/postprocess.h>
-#include	<assimp/matrix4x4.h>
+#include <assimp/Importer.hpp>
+#include <assimp/cimport.h>
+#include <assimp/scene.h>
+#include <assimp/postprocess.h>
+#include <assimp/matrix4x4.h>
 
 class MODEL : public COMPONENT {
 
-	OBJECT_TYPE_INFO(MODEL)
+	OBJECT_TYPE_INFO(COMPONENT, MODEL)
 
 private:
 

@@ -1,20 +1,18 @@
-#pragma once
+ï»¿#pragma once
 
 #ifndef XYZ_AXIS_H
 #define XYZ_AXIS_H
 
-#include	"Renderer.h"
-#include	"GameObject.h"
-
-class TEXTURE;
+#include "GameObject.h"
+#include "Renderer.h"
 
 class AXIS : public GameObject {
 
-	OBJECT_TYPE_INFO(AXIS)
+	OBJECT_TYPE_INFO(GameObject, AXIS)
 
 private:
-	ComPtr<ID3D11Buffer> pVertexBuffer[3];	// ’¸“_ƒoƒbƒtƒ@
-	ComPtr<ID3D11Buffer> pIndexBuffer;		// ƒCƒ“ƒfƒbƒNƒXƒoƒbƒtƒ@
+	 aegis::uniquePtr<aegis::Buffer> VertexBuffer[3];	// é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡
+	 aegis::uniquePtr<aegis::Buffer> IndexBuffer;		// ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ãƒãƒƒãƒ•ã‚¡
 
 public:
 	AXIS();

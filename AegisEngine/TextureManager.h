@@ -5,7 +5,9 @@
 
 
 #ifdef _DEBUG
-#include	<queue>
+#include <queue>
+#include "Renderer.h"
+#include "TextureTypeDefine.h"
 
 class FILE_CHANGE_MONITOR {
 private:
@@ -72,25 +74,17 @@ struct TEXTURE_FILE {
 	}
 };
 
-struct TEXTURE_DATA {
-	std::unique_ptr<ID3D11ShaderResourceView, Release> Resource;		//! リソースデータ
-	aegis::Int2 WH;													//!	テクスチャの幅と高さ
-	UINT Cnt;													//! 参照回数
-
-	TEXTURE_DATA() : WH(aegis::Int2(0, 0)), Cnt(0) {}
-};
-
 //========================================
 // テクスチャマネージャークラス
 //========================================
-class TEXTURE_MANEGER {
+class TextureManager {
 private:
 
-	static std::unique_ptr<TEXTURE_MANEGER> Texture_Manager;
+	static std::unique_ptr<TextureManager> Texture_Manager;
 
 	aegis::unordered_map<aegis::uint64, aegis::string> Default_Texture_File;			//! デフォルトのテクスチャのファイルパス
 	aegis::unordered_map<aegis::uint64, TEXTURE_FILE> TextureFile;			//! テクスチャのファイルデータ
-	aegis::unordered_map<aegis::uint64, TEXTURE_DATA> TextureData;			//! テクスチャデータ
+	aegis::unordered_map<aegis::uint64, aegis::uniquePtr<aegis::render::TextureData>> TextureData;			//! テクスチャデータ
 
 	void Default_Load(const bool flag);							// デフォルトのテクスチャの読み込み
 	void Load(const bool flag);									// テクスチャの読み込み
@@ -106,8 +100,8 @@ private:
 #endif // _DEBUG
 
 public:
-	TEXTURE_MANEGER() {};
-	~TEXTURE_MANEGER() { Uninit(); }
+	TextureManager() {};
+	~TextureManager() { Uninit(); }
 
 
 	static bool Init();
@@ -116,22 +110,22 @@ public:
 
 	void Uninit();
 
-	static TEXTURE_MANEGER* Get_Instance();
+	static TextureManager* Get_Instance();
 
 	void Add(const aegis::string& file_name);
 	const bool Unload(const aegis::string& const file_name);
 
 	void Add_ReferenceCnt(const aegis::uint64 file);
 	void Sub_ReferenceCnt(const aegis::uint64 file);
-	
+
 	aegis::Int2* const Get_WH(const aegis::uint64 file);
 
-	ID3D11ShaderResourceView* const GetShaderResourceView(const aegis::uint64 file);
+	aegis::ShaderResourceView* GetShaderResourceView(const aegis::uint64 file);
 
 	aegis::unordered_map<aegis::uint64, TEXTURE_FILE>& Get_TextureFile();
 
-	const aegis::unordered_map<aegis::uint64, TEXTURE_DATA>::iterator Get_TextureData_Start();
-	const aegis::unordered_map<aegis::uint64, TEXTURE_DATA>::iterator Get_TextureData_End();
+	const aegis::unordered_map<aegis::uint64, aegis::uniquePtr<aegis::render::TextureData>>::iterator Get_TextureData_Start();
+	const aegis::unordered_map<aegis::uint64, aegis::uniquePtr<aegis::render::TextureData>>::iterator Get_TextureData_End();
 
 	template<class Archive>
 	void save(Archive& archive) const

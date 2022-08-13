@@ -1,8 +1,9 @@
-﻿#include	"Mesh.h"
+﻿#include "Mesh.h"
+#include "Renderer.h"
 
 using namespace aegis;
 
-#include	"external/DirectXTex/WICTextureLoader.h"
+#include "TextureImporter.h"
 
 #pragma comment (lib, "assimp-vc141-mt.lib")
 
@@ -32,11 +33,12 @@ void MESH::Init()
 				std::wstring filenamews = std::wstring(path.begin(), path.end());
 
 				{
-					CRenderer* render = CRenderer::getInstance();
+					TextureImporter* textureImporter = TextureImporter::getInstance();
 
-					HRESULT hr = CreateWICTextureFromFile(render->GetDevice(), render->GetDeviceContext(), filenamews.c_str(), nullptr, &tex.Texture, nullptr, nullptr);
-					if (FAILED(hr))
-						FAILDE_ASSERT
+					ShaderResourceView* texture;
+
+					tex.Texture = textureImporter->GetShaderResourceView(filenamews.c_str());
+
 				}
 			}
 		}
@@ -72,7 +74,10 @@ void MESH::Uninit()
 	for (auto& tex : Textures)
 	{
 		tex.FileName.clear();
-		SAFE_RELEASE(tex.Texture);
+
+		AllocatorDelete<aegis::ShaderResourceView> deleter;
+		deleter(tex.Texture);
+		tex.Texture = nullptr;
 	}
 	Textures.clear();
 
@@ -81,6 +86,15 @@ void MESH::Uninit()
 		child.Uninit();
 	}
 	ChildMeshes.clear();
+
+	{
+		AllocatorDelete<aegis::Buffer> deleter;
+		deleter(VertexBuffer);
+		VertexBuffer = nullptr;
+		
+		deleter(IndexBuffer);
+		IndexBuffer = nullptr;
+	}
 }
 
 aegis::vector<MESH>& MESH::Get_Meshs()
@@ -138,41 +152,35 @@ void MESH::SetupMesh()
 	// 頂点バッファの生成
 	if(nullptr == VertexBuffer && !Vertices.empty())
 	{
-		D3D11_BUFFER_DESC desc;
-		desc.Usage = D3D11_USAGE_DEFAULT;
-		desc.ByteWidth = sizeof(VERTEX_3D) * Vertices.size();
-		desc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-		desc.CPUAccessFlags = 0;
-		desc.MiscFlags = 0;
+		BufferDesc  bd{};
+		bd.Usage = Usage::Default;
+		bd.ByteWidth = sizeof(VERTEX_3D) * Vertices.size();
+		bd.BindFlags = BindFlag::Vertexbuffer;
+		bd.CPUAccessFlags = CpuAccessFlag::None;
 
 		// サブリソースの設定
-		D3D11_SUBRESOURCE_DATA initData{};
+		SubresourceData sd{};
+		sd.pSysMem = Vertices.data();
 
-		initData.pSysMem = Vertices.data();
-
-		hr = render->GetDevice()->CreateBuffer(&desc, &initData, &VertexBuffer);
-		if (FAILED(hr))
-			FAILDE_ASSERT;
+		///VertexBuffer.reset(render->CreateBuffer(bd, sd));
+		VertexBuffer = render->CreateBuffer(bd, sd);
 	}
 
 	// インデックスバッファの生成
 	if (nullptr == IndexBuffer && !Indices.empty())
 	{
-		D3D11_BUFFER_DESC desc;
-		desc.Usage = D3D11_USAGE_DEFAULT;
-		desc.ByteWidth = sizeof(UINT) * (UINT)Indices.size();
-		desc.BindFlags = D3D11_BIND_INDEX_BUFFER;
-		desc.CPUAccessFlags = 0;
-		desc.MiscFlags = 0;
+		BufferDesc  bd{};
+		bd.Usage = Usage::Default;
+		bd.ByteWidth = sizeof(uint32) * (UINT)Indices.size();
+		bd.BindFlags = BindFlag::Indexbuffer;
+		bd.CPUAccessFlags = CpuAccessFlag::None;
 
 		// サブリソースの設定
-		D3D11_SUBRESOURCE_DATA initData{};
+		SubresourceData sd{};
+		sd.pSysMem = Indices.data();
 
-		initData.pSysMem = Indices.data();
-
-		hr = render->GetDevice()->CreateBuffer(&desc, &initData, &IndexBuffer);
-		if (FAILED(hr))
-			FAILDE_ASSERT;
+		///IndexBuffer.reset(render->CreateBuffer(bd, sd));
+		IndexBuffer = render->CreateBuffer(bd, sd);
 	}
 }
 
@@ -183,15 +191,15 @@ void MESH::Draw_Mesh(XMMATRIX& parent_matrix, const aegis::vector<TEXTURE_S>& te
 
 	if (!Indices.empty())
 	{
-		render->SetVertexBuffers(VertexBuffer.Get());
+		render->SetVertexBuffers(VertexBuffer);
 
-		render->GetDeviceContext()->IASetIndexBuffer(IndexBuffer.Get(), DXGI_FORMAT_R32_UINT, 0);
+		render->SetIndexBuffer(IndexBuffer, Format::R32Uint);
 
 		for (UINT i = 0; textures.size(); i++)
 		{
 			if (textures[i].FileName == TextureName)
 			{
-				render->GetDeviceContext()->PSSetShaderResources(0, 1, &textures[i].Texture);
+				render->PSSetShaderResources(0, 1, &textures[i].Texture);
 				break;
 			}
 		}
@@ -240,7 +248,7 @@ void MESH::Draw_Mesh(XMMATRIX& parent_matrix, const aegis::vector<TEXTURE_S>& te
 			}
 		}
 
-		render->GetDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+		render->SetPrimitiveTopology(PrimitiveTopology::TriangleList);
 
 		render->DrawIndexed((UINT)Indices.size(), 0, 0);
 	}
@@ -249,7 +257,7 @@ void MESH::Draw_Mesh(XMMATRIX& parent_matrix, const aegis::vector<TEXTURE_S>& te
 		matrix = XMMatrixMultiply(XMFLOAT4X4ToXMMATRIX(Matrix), parent_matrix);
 	}
 
-	for (auto child : ChildMeshes)
+	for (auto& child : ChildMeshes)
 	{
 		child.Draw_Mesh(matrix, textures);
 	}

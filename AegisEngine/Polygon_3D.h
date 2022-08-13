@@ -3,21 +3,21 @@
 #ifndef  POLYGON_3D_H
 #define POLYGON_3D_H
 
-#include	"Renderer.h"
+#include "GameObject.h"
+#include "Renderer.h"
 
-class GameObject;
 class TEXTURE;
 
 struct POLYGOM {
-	VERTEX_3D Vertex[4 * 6];
+	aegis::VERTEX_3D Vertex[4 * 6];
 };
 
 class POLYGON_3D : public GameObject {
 
-	OBJECT_TYPE_INFO(POLYGON_3D)
+	OBJECT_TYPE_INFO(GameObject, POLYGON_3D)
 
 private:
-	ComPtr<ID3D11Buffer> pVertexBuffer;		// 頂点バッファ
+	aegis::uniquePtr<aegis::Buffer> VertexBuffer;		// 頂点バッファ
 	std::unique_ptr<TEXTURE> Texture;		// テクスチャ
 
 	aegis::Vector3 XYZ;						// 幅と高さと奥行き

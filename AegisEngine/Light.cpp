@@ -1,10 +1,9 @@
-﻿#include	"Light.h"
-#include	"Renderer.h"
+﻿#include "Light.h"
 
 using namespace aegis;
 
 aegis::array<LIGHT_BUFFER, MAX_NUM_LIGHTS> LIGHTS::Lights;
-ComPtr<ID3D11Buffer>	LIGHTS::LightBuffer;
+aegis::uniquePtr<aegis::Buffer>	LIGHTS::LightBuffer;
 
 
 LIGHT_BUFFER::LIGHT_BUFFER() : Enable(0), Position(0.f, 0.f, 0.f), Color(0.f, 0.f, 0.f, 0.f), Type((UINT)LIGHT_TYPE::NONE) {}
@@ -35,24 +34,16 @@ bool LIGHTS::Init()
 
 	// 定数バッファ生成
 	{
-		D3D11_BUFFER_DESC hBufferDesc;
-		hBufferDesc.Usage = D3D11_USAGE_DEFAULT;
-		hBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-		hBufferDesc.CPUAccessFlags = 0;
-		hBufferDesc.MiscFlags = 0;
-		hBufferDesc.ByteWidth = sizeof(LIGHT_BUFFER) * MAX_NUM_LIGHTS;
+		BufferDesc  bd{};
+		bd.Usage = Usage::Default;
+		bd.ByteWidth = sizeof(LIGHT_BUFFER) * MAX_NUM_LIGHTS;
+		bd.BindFlags = BindFlag::Constantbuffer;
+		bd.CPUAccessFlags = CpuAccessFlag::None;
 
-		D3D11_SUBRESOURCE_DATA date = {};
-		date.pSysMem = Lights.data();
+		SubresourceData sd{};
+		sd.pSysMem = Lights.data();
 
-		HRESULT hr = render->GetDevice()->CreateBuffer(&hBufferDesc, &date, &LightBuffer);
-		if (FAILED(hr))
-		{
-			FAILDE_ASSERT;
-			return false;
-		}
-
-		//render->GetDeviceContext()->PSSetConstantBuffers(6, 1, LightBuffer.GetAddressOf());
+		LightBuffer.reset(render->CreateBuffer(bd, sd));
 	}
 
 	return true;
@@ -60,12 +51,14 @@ bool LIGHTS::Init()
 
 void LIGHTS::Draw()
 {
-	CRenderer::getInstance()->GetDeviceContext()->PSSetConstantBuffers(6, 1, LightBuffer.GetAddressOf());
+	Buffer* buffer[] = { LightBuffer.get() };
+
+	CRenderer::getInstance()->PSSetConstantBuffers(6, 1, buffer);
 }
 
 void LIGHTS::Update()
 {
-	CRenderer::getInstance()->GetDeviceContext()->UpdateSubresource(LightBuffer.Get(), 0, nullptr, Lights.data(), 0, 0);
+	CRenderer::getInstance()->UpdateSubresource(LightBuffer.get(),Lights.data());
 }
 
 void LIGHTS::Uninit()

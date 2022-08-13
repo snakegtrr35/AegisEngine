@@ -1,12 +1,10 @@
-﻿#include	"GameObject.h"
-#include	"Mesh_Field.h"
-#include	"camera.h"
-#include	"Debug_Camera.h"
-#include	"renderer.h"
-#include	"texture.h"
-#include	"manager.h"
-#include	"Scene.h"
-#include	"ShadowMap.h"
+﻿#include "Mesh_Field.h"
+#include "camera.h"
+#include "Debug_Camera.h"
+#include "manager.h"
+#include "Scene.h"
+#include "ShadowMap.h"
+#include "texture.h"
 
 using namespace aegis;
 
@@ -18,6 +16,8 @@ MESH_FIELD::MESH_FIELD() : GridSize(Vector3(1.0f, 0.0f, 1.0f)), GridNum(Int2(10,
 
 void MESH_FIELD::Init()
 {
+	GameObject::Init();
+
 	CRenderer* render = CRenderer::getInstance();
 
 	// 頂点バッファの作成
@@ -81,16 +81,16 @@ void MESH_FIELD::Init()
 
 		// 頂点バッファの生成
 		{
-			D3D11_BUFFER_DESC bd{};
-			bd.Usage = D3D11_USAGE_DEFAULT;
+			BufferDesc  bd{};
+			bd.Usage = Usage::Default;
 			bd.ByteWidth = sizeof(VERTEX_3D) * VertexArray.size();
-			bd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-			bd.CPUAccessFlags = 0;
+			bd.BindFlags = BindFlag::Vertexbuffer;
+			bd.CPUAccessFlags = CpuAccessFlag::None;
 
-			D3D11_SUBRESOURCE_DATA sd{};
+			SubresourceData sd{};
 			sd.pSysMem = VertexArray.data();
 
-			render->GetDevice()->CreateBuffer(&bd, &sd, &VertexBuffer);
+			VertexBuffer.reset(render->CreateBuffer(bd, sd));
 		}
 	}
 
@@ -125,20 +125,20 @@ void MESH_FIELD::Init()
 
 		// インデックスバッファの生成
 		{
-			D3D11_BUFFER_DESC bd{};
-			bd.Usage = D3D11_USAGE_DEFAULT;
-			bd.ByteWidth = sizeof(WORD) * IndexNum;
-			bd.BindFlags = D3D11_BIND_INDEX_BUFFER;
-			bd.CPUAccessFlags = 0;
+			BufferDesc  bd{};
+			bd.Usage = Usage::Default;
+			bd.ByteWidth = sizeof(uint16) * IndexNum;
+			bd.BindFlags = BindFlag::Indexbuffer;
+			bd.CPUAccessFlags = CpuAccessFlag::None;
 
-			D3D11_SUBRESOURCE_DATA sd{};
+			SubresourceData sd{};
 			sd.pSysMem = indexArray.data();
 
-			render->GetDevice()->CreateBuffer(&bd, &sd, &IndexBuffer);
+			IndexBuffer.reset(render->CreateBuffer(bd, sd));
 		}
 	}
 
-	GameObject::Init();
+	GameObject::InitEnd();
 }
 
 void MESH_FIELD::Uninit()
@@ -223,21 +223,21 @@ void MESH_FIELD::Draw()
 	}
 
 	// 頂点バッファ設定
-	render->SetVertexBuffers(VertexBuffer.Get());
+	render->SetVertexBuffers(VertexBuffer.get());
 
 	// インデックスバッファ設定
-	render->SetIndexBuffer(IndexBuffer.Get());
+	render->SetIndexBuffer(IndexBuffer.get());
 
 	// テクスチャの設定
 	Texture->Set_Texture();
 
 	// トポロジ設定
-	render->GetDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
+	render->SetPrimitiveTopology(PrimitiveTopology::TriangleStrip);
 
 	render->DrawIndexed(IndexNum, 0, 0);
 
 	// トポロジ設定
-	render->GetDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	render->SetPrimitiveTopology(PrimitiveTopology::TriangleList);
 
 	GameObject::Draw();
 }
@@ -271,18 +271,18 @@ void MESH_FIELD::Draw_Shadow()
 	}
 
 	// 頂点バッファ設定
-	render->SetVertexBuffers(VertexBuffer.Get());
+	render->SetVertexBuffers(VertexBuffer.get());
 
 	// インデックスバッファ設定
-	render->SetIndexBuffer(IndexBuffer.Get());
+	render->SetIndexBuffer(IndexBuffer.get());
 
 	// トポロジ設定
-	render->SetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
+	render->SetPrimitiveTopology(PrimitiveTopology::TriangleStrip);
 
 	render->DrawIndexed(IndexNum, 0, 0);
 
 	// トポロジ設定
-	render->SetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	render->SetPrimitiveTopology(PrimitiveTopology::TriangleList);
 
 	GameObject::Draw_Shadow();
 }
@@ -315,18 +315,18 @@ void MESH_FIELD::Draw_DPP()
 	}
 
 	// 頂点バッファ設定
-	render->SetVertexBuffers(VertexBuffer.Get());
+	render->SetVertexBuffers(VertexBuffer.get());
 
 	// インデックスバッファ設定
-	render->SetIndexBuffer(IndexBuffer.Get());
+	render->SetIndexBuffer(IndexBuffer.get());
 
 	// トポロジ設定
-	render->SetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
+	render->SetPrimitiveTopology(PrimitiveTopology::TriangleStrip);
 
 	render->DrawIndexed(IndexNum, 0, 0);
 
 	// トポロジ設定
-	render->SetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	render->SetPrimitiveTopology(PrimitiveTopology::TriangleList);
 }
 
 const float MESH_FIELD::Get_Height(const Vector3& position)
@@ -408,7 +408,6 @@ void MESH_FIELD::SetTexture(const aegis::string& const file_name)
 MESH_WALL::MESH_WALL()
 {
 	VertexArray = nullptr;
-	IndexBuffer = VertexBuffer = nullptr;
 	Texture = nullptr;
 
 	GridSize = Vector3(1.0f, 0.0f, 1.0f);
@@ -417,6 +416,8 @@ MESH_WALL::MESH_WALL()
 
 void MESH_WALL::Init()
 {
+	GameObject::Init();
+
 	CRenderer* render = CRenderer::getInstance();
 
 	const unsigned int VertexNum = (GridNum.x + 1) * (GridNum.y + 1);
@@ -497,46 +498,45 @@ void MESH_WALL::Init()
 		}
 	}
 
-
 	// 頂点バッファの生成
 	{
-		D3D11_BUFFER_DESC bd{};
-		bd.Usage = D3D11_USAGE_DEFAULT;
+		BufferDesc  bd{};
+		bd.Usage = Usage::Default;
 		bd.ByteWidth = sizeof(VERTEX_3D) * VertexNum;
-		bd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-		bd.CPUAccessFlags = 0;
+		bd.BindFlags = BindFlag::Vertexbuffer;
+		bd.CPUAccessFlags = CpuAccessFlag::None;
 
-		D3D11_SUBRESOURCE_DATA sd{};
+		SubresourceData sd{};
 		sd.pSysMem = VertexArray;
 
-		render->GetDevice()->CreateBuffer(&bd, &sd, &VertexBuffer);
+		VertexBuffer. reset(render->CreateBuffer(bd, sd));
 	}
 
 	// インデックスバッファの生成
 	{
-		D3D11_BUFFER_DESC bd{};
-		bd.Usage = D3D11_USAGE_DEFAULT;
-		bd.ByteWidth = sizeof(unsigned short) * IndexNum;
-		bd.BindFlags = D3D11_BIND_INDEX_BUFFER;
-		bd.CPUAccessFlags = 0;
+		BufferDesc  bd{};
+		bd.Usage = Usage::Default;
+		bd.ByteWidth = sizeof(uint16) * IndexNum;
+		bd.BindFlags = BindFlag::Indexbuffer;
+		bd.CPUAccessFlags = CpuAccessFlag::None;
 
-		D3D11_SUBRESOURCE_DATA sd{};
+		SubresourceData sd{};
 		sd.pSysMem = indexArray;
 
-		render->GetDevice()->CreateBuffer(&bd, &sd, &IndexBuffer);
+		IndexBuffer.reset(render->CreateBuffer(bd, sd));
 	}
 
 	delete[] indexArray;
 
 	// テクスチャの設定
 	Texture = new TEXTURE(aegis::string("field004.png"));
+
+	GameObject::InitEnd();
 }
 
 void MESH_WALL::Uninit()
 {
 	SAFE_DELETE(VertexArray);
-	SAFE_RELEASE(VertexBuffer);
-	SAFE_RELEASE(IndexBuffer);
 	SAFE_DELETE(Texture);
 }
 
@@ -609,16 +609,16 @@ void MESH_WALL::Draw()
 	}
 
 	// 頂点バッファ設定
-	render->SetVertexBuffers(VertexBuffer.Get());
+	render->SetVertexBuffers(VertexBuffer.get());
 
 	// インデックスバッファ設定
-	render->SetIndexBuffer(IndexBuffer.Get());
+	render->SetIndexBuffer(IndexBuffer.get());
 
 	// テクスチャの設定
 	Texture->Set_Texture();
 
 	// トポロジ設定
-	render->GetDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
+	render->SetPrimitiveTopology(PrimitiveTopology::TriangleStrip);
 
 	render->DrawIndexed(IndexNum, 0, 0);
 
@@ -657,18 +657,18 @@ void MESH_WALL::Draw_DPP()
 	}
 
 	// 頂点バッファ設定
-	render->SetVertexBuffers(VertexBuffer.Get());
+	render->SetVertexBuffers(VertexBuffer.get());
 
 	// インデックスバッファ設定
-	render->SetIndexBuffer(IndexBuffer.Get());
+	render->SetIndexBuffer(IndexBuffer.get());
 
 	// トポロジ設定
-	render->SetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
+	render->SetPrimitiveTopology(PrimitiveTopology::TriangleStrip);
 
 	render->DrawIndexed(IndexNum, 0, 0);
 
 	// トポロジ設定
-	render->SetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	render->SetPrimitiveTopology(PrimitiveTopology::TriangleList);
 }
 
 const float MESH_WALL::Get_Height(const Vector3& position)

@@ -1,9 +1,9 @@
-﻿#include	"Bounding_Aabb.h"
-#include	"camera.h"
-#include	"Debug_Camera.h"
-#include	"manager.h"
-#include	"Scene.h"
-#include	"ShadowMap.h"
+﻿#include "Bounding_Aabb.h"
+#include "camera.h"
+#include "Debug_Camera.h"
+#include "manager.h"
+#include "Scene.h"
+#include "ShadowMap.h"
 
 IMPLEMENT_OBJECT_TYPE_INFO(BOUNDING, BOUNDING_AABB)
 
@@ -16,6 +16,8 @@ BOUNDING_AABB::~BOUNDING_AABB()
 
 void BOUNDING_AABB::Init()
 {
+	BOUNDING::Init();
+
 	CRenderer* render = CRenderer::getInstance();
 
 	{
@@ -33,7 +35,7 @@ void BOUNDING_AABB::Init()
 	}
 
 	// 頂点バッファの設定
-	if (nullptr == pVertexBuffer)
+	if (nullptr == VertexBuffer)
 	{
 		Vector3 corners[BoundingBox::CORNER_COUNT];
 
@@ -61,23 +63,23 @@ void BOUNDING_AABB::Init()
 
 		// 頂点バッファの設定
 		{
-			D3D11_BUFFER_DESC bd{};
+			BufferDesc  bd{};
+			bd.Usage = Usage::Dynamic;
 			bd.ByteWidth = sizeof(VERTEX_3D) * BoundingBox::CORNER_COUNT;
-			bd.Usage = D3D11_USAGE_DYNAMIC;
-			bd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-			bd.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
-			bd.MiscFlags = 0;
-			bd.StructureByteStride = 0;
+			bd.BindFlags = BindFlag::Vertexbuffer;
+			bd.CPUAccessFlags = CpuAccessFlag::Write;
 
-			D3D11_SUBRESOURCE_DATA sd{};
+			SubresourceData sd{};
 			sd.pSysMem = Vertex;
 
-			render->GetDevice()->CreateBuffer(&bd, &sd, &pVertexBuffer);
+			VertexBuffer.reset(render->CreateBuffer(bd, sd));
 		}
+
+		BOUNDING::InitEnd();
 	}
 
 	// インデックスバッファの設定
-	if (nullptr == pIndexBuffer_BOX)
+	if (nullptr == IndexBufferBox)
 	{
 		const WORD index[] = {
 		0, 1,
@@ -97,24 +99,27 @@ void BOUNDING_AABB::Init()
 		6, 2
 		};
 
-		D3D11_BUFFER_DESC bd{};
-		bd.ByteWidth = sizeof(WORD) * IndexNum_Box;
-		bd.Usage = D3D11_USAGE_DEFAULT;
-		bd.BindFlags = D3D11_BIND_INDEX_BUFFER;
-		bd.CPUAccessFlags = 0;
-		bd.MiscFlags = 0;
-		bd.StructureByteStride = 0;
+		BufferDesc  bd{};
+		bd.Usage = Usage::Default;
+		bd.ByteWidth = sizeof(uint16) * IndexNum_Box;
+		bd.BindFlags = BindFlag::Indexbuffer;
+		bd.CPUAccessFlags = CpuAccessFlag::None;
 
-		D3D11_SUBRESOURCE_DATA sd{};
+		SubresourceData sd{};
 		sd.pSysMem = index;
 
-		render->GetDevice()->CreateBuffer(&bd, &sd, &pIndexBuffer_BOX);
+		IndexBufferBox.reset(render->CreateBuffer(bd, sd));
 	}
 }
 
 void BOUNDING_AABB::Draw()
 {
 	//if (false == CManager::Get_Instance()->Get_ShadowMap()->Get_Enable())
+
+	if (VertexBuffer == nullptr
+		|| IndexBufferBox == nullptr)
+		return;
+
 	{
 		CRenderer* render = CRenderer::getInstance();
 
@@ -135,12 +140,12 @@ void BOUNDING_AABB::Draw()
 		}
 
 		// 入力アセンブラに頂点バッファを設定
-		render->SetVertexBuffers(pVertexBuffer.Get());
+		render->SetVertexBuffers(VertexBuffer.get());
 
-		render->SetIndexBuffer(pIndexBuffer_BOX.Get());
+		render->SetIndexBuffer(IndexBufferBox.get());
 
 		// トポロジの設定
-		render->SetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_LINESTRIP);
+		render->SetPrimitiveTopology(PrimitiveTopology::LineStrip);
 
 		render->Set_Shader(SHADER_INDEX_V::DEFAULT, SHADER_INDEX_P::NO_TEXTURE);
 
@@ -149,7 +154,7 @@ void BOUNDING_AABB::Draw()
 		render->Set_Shader();
 
 		// トポロジの設定
-		render->SetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+		render->SetPrimitiveTopology(PrimitiveTopology::TriangleList);
 	}
 }
 
@@ -164,15 +169,19 @@ void BOUNDING_AABB::Uninit()
 
 void BOUNDING_AABB::OverWrite()
 {
-	if (nullptr != pVertexBuffer)
+	if (Owner == nullptr)
+		return;
+
+	if (nullptr != VertexBuffer)
 	{
 		Color = Default_Color;
 
 		Vector3 pos = Owner->Get_Transform().Get_Position();
+		auto Scale = Owner->Get_Transform().Get_Scaling();
 
 		Aabb = BoundingBox(Vector3(0.f, 0.f, 0.f), Radius);
 
-		XMMATRIX matrix = XMMatrixScaling(Scaling.x, Scaling.y, Scaling.z);
+		XMMATRIX matrix = XMMatrixScaling(Scaling.x + Scale.x, Scaling.y + Scale.y, Scaling.z + Scale.z);
 		matrix *= XMMatrixTranslation(Position.x + pos.x, Position.y + pos.y, Position.z + pos.z);
 
 		Aabb.Transform(Aabb, matrix);
@@ -210,10 +219,8 @@ void BOUNDING_AABB::OverWrite()
 
 		// 頂点バッファの書き換え
 		{
-			D3D11_MAPPED_SUBRESOURCE msr;
-			render->GetDeviceContext()->Map(pVertexBuffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &msr);
-			memcpy(msr.pData, Vertex, sizeof(VERTEX_3D) * BoundingBox::CORNER_COUNT);
-			render->GetDeviceContext()->Unmap(pVertexBuffer.Get(), 0);
+			render->Map(VertexBuffer.get(), Vertex, sizeof(VERTEX_3D) * BoundingBox::CORNER_COUNT);
+			render->Unmap(VertexBuffer.get());
 		}
 	}
 }
@@ -244,7 +251,7 @@ void BOUNDING_AABB::OverWrite(BoundingBox aabb)
 
 	Color = Default_Color;
 
-	if (nullptr != pVertexBuffer)
+	if (nullptr != VertexBuffer)
 	{
 
 		VERTEX_3D Vertex[BoundingBox::CORNER_COUNT];
@@ -280,15 +287,13 @@ void BOUNDING_AABB::OverWrite(BoundingBox aabb)
 
 		// 頂点バッファの書き換え
 		{
-			D3D11_MAPPED_SUBRESOURCE msr;
-			render->GetDeviceContext()->Map(pVertexBuffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &msr);
-			memcpy(msr.pData, Vertex, sizeof(VERTEX_3D) * BoundingBox::CORNER_COUNT);
-			render->GetDeviceContext()->Unmap(pVertexBuffer.Get(), 0);
+			render->Map(VertexBuffer.get(), Vertex, sizeof(VERTEX_3D) * BoundingBox::CORNER_COUNT);
+			render->Unmap(VertexBuffer.get());
 		}
 	}
 }
 
-#include	"imgui/imgui.h"
+#include "imgui/imgui.h"
 
 void BOUNDING_AABB::Draw_Inspector()
 {

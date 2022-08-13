@@ -1,7 +1,8 @@
-﻿#include	"Text.h"
-#include	"manager.h"
-#include	"ShadowMap.h"
-#include	"Scene.h"
+﻿#include "Text.h"
+#include "manager.h"
+#include "ShadowMap.h"
+#include "Scene.h"
+#include "texture.h"
 
 IMPLEMENT_OBJECT_TYPE_INFO(SPRITE, TEXTS)
 
@@ -20,6 +21,7 @@ TEXTS::~TEXTS()
 void TEXTS::Init(void)
 {
 	SPRITE::Init();
+	SPRITE::InitEnd();
 }
 
 void TEXTS::Draw(void)
@@ -58,7 +60,7 @@ void TEXTS::Edit(const aegis::string& text)
 void TEXTS::Text_Draw(const aegis::string& text)
 {
 	SPRITE sprite;
-	ID3D11ShaderResourceView* shader_resource_view = nullptr;
+	aegis::ShaderResourceView* shader_resource_view = nullptr;
 	std::wstring font;
 	short i = 0;
 
@@ -91,7 +93,7 @@ void TEXTS::Text_Draw(const aegis::string& text)
 void TEXTS::Text_Draw_DPP(const aegis::string& text)
 {
 	SPRITE sprite;
-	ID3D11ShaderResourceView* shader_resource_view = nullptr;
+	aegis::ShaderResourceView* shader_resource_view = nullptr;
 	aegis::wstring font;
 	short i = 0;
 

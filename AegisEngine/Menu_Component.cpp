@@ -1,8 +1,8 @@
-﻿#include	"Component.h"
-#include	"Input.h"
-#include	"Scene.h"
-#include	"manager.h"
-#include	"Sprite.h"
+﻿#include "Component.h"
+#include "Input.h"
+#include "Scene.h"
+#include "manager.h"
+#include "Sprite.h"
 
 IMPLEMENT_ABSTRACT_OBJECT_TYPE_INFO(COMPONENT, MENU_COMPONENT)
 IMPLEMENT_ABSTRACT_OBJECT_TYPE_INFO(MENU_COMPONENT, MOUSE_EVENT_COMPONENT)

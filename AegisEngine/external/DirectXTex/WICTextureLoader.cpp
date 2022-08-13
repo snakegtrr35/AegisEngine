@@ -907,6 +907,37 @@ HRESULT DirectX::CreateWICTextureFromFile(
         texture, textureView, width, height);
 }
 
+void DirectX::GetSize(
+    const wchar_t* fileName,
+    int* width,
+    int* height)
+{
+    auto pWIC = _GetWIC();
+    if (!pWIC)
+        return;
+
+    // Initialize WIC
+    ComPtr<IWICBitmapDecoder> decoder;
+    HRESULT hr = pWIC->CreateDecoderFromFilename(fileName,
+        nullptr,
+        GENERIC_READ,
+        WICDecodeMetadataCacheOnDemand,
+        decoder.GetAddressOf());
+    if (FAILED(hr))
+        return;
+
+    ComPtr<IWICBitmapFrameDecode> frame;
+    hr = decoder->GetFrame(0, frame.GetAddressOf());
+    if (FAILED(hr))
+        return;
+
+    // ‰æ‘œƒTƒCƒY‚ÌŽæ“¾
+    if (nullptr != width && nullptr != height)
+    {
+        frame->GetSize((UINT*)width, (UINT*)height);
+    }
+}
+
 //_Use_decl_annotations_
 //HRESULT DirectX::CreateWICTextureFromFileEx(
 //    ID3D11Device* d3dDevice,

@@ -8,9 +8,10 @@
 #ifndef MESH_CYLINDER_H
 #define MESH_CYLINDER_H
 
-#include	"texture.h"
+#include "GameObject.h"
+#include "renderer.h"
 
-class GameObject;
+class TEXTURE;
 
 class MESH_CYlLINDER : public GameObject {
 private:
@@ -19,9 +20,9 @@ private:
 	unsigned int	VertexNum;
 	unsigned int	IndexNum;
 
-	ComPtr<ID3D11Buffer>	VertexBuffer;	// 頂点バッファ
-	ComPtr<ID3D11Buffer>	IndexBuffer;	// インデックスバッファ
-	std::unique_ptr<TEXTURE> Texture;						// テクスチャ
+	aegis::uniquePtr<aegis::Buffer>	VertexBuffer;	// 頂点バッファ
+	aegis::uniquePtr<aegis::Buffer>	IndexBuffer;	// インデックスバッファ
+	std::unique_ptr<TEXTURE> Texture;		// テクスチャ
 
 public:
 

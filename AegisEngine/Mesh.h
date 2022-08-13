@@ -6,19 +6,24 @@
 #undef min
 #undef max
 
-#include	<assimp/Importer.hpp>
-#include	<assimp/cimport.h>
-#include	<assimp/scene.h>
-#include	<assimp/postprocess.h>
-#include	<assimp/matrix4x4.h>
+#include <assimp/Importer.hpp>
+#include <assimp/cimport.h>
+#include <assimp/scene.h>
+#include <assimp/postprocess.h>
+#include <assimp/matrix4x4.h>
 
-#include	"Renderer.h"
+//#include "Renderer.h"
 
-#include	"camera.h"
-#include	"Debug_Camera.h"
-#include	"manager.h"
-#include	"ShadowMap.h"
-#include	"Scene.h"
+#include "camera.h"
+#include "Debug_Camera.h"
+#include "manager.h"
+#include "ShadowMap.h"
+#include "Scene.h"
+
+namespace aegis
+{
+	class Buffer;
+}
 
 //
 #define NUM_BONES 4
@@ -26,7 +31,7 @@
 
 struct TEXTURE_S {
 	aegis::string FileName;
-	ID3D11ShaderResourceView* Texture = nullptr;
+	aegis::ShaderResourceView* Texture = nullptr;
 };
 
 //
@@ -76,13 +81,15 @@ struct Anim {
 
 class MESH {
 protected:
-	aegis::vector<VERTEX_3D> Vertices;
+	aegis::vector<aegis::VERTEX_3D> Vertices;
 	aegis::vector<UINT> Indices;
 
 	aegis::vector<TEXTURE_S> Textures;
 
-	ComPtr<ID3D11Buffer> VertexBuffer;
-	ComPtr<ID3D11Buffer> IndexBuffer;
+	///std::shared_ptr<aegis::Buffer> VertexBuffer;
+	///std::shared_ptr<aegis::Buffer> IndexBuffer;
+	aegis::Buffer* VertexBuffer;
+	aegis::Buffer* IndexBuffer;
 
 	aegis::string Name; //! メッシュの名前
 
@@ -101,9 +108,10 @@ protected:
 public:
 
 	MESH();
+	MESH(const MESH&) = default;
 
 
-	MESH(aegis::vector<VERTEX_3D>& vertices, aegis::vector<UINT>& indices, aegis::string& texture_name, XMMATRIX& matrix, aegis::string name);
+	MESH(aegis::vector<aegis::VERTEX_3D>& vertices, aegis::vector<UINT>& indices, aegis::string& texture_name, XMMATRIX& matrix, aegis::string name);
 
 	~MESH() { Uninit(); }
 

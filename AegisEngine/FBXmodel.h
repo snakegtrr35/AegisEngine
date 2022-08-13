@@ -12,13 +12,18 @@
 #undef min
 #undef max
 
-#include	<assimp/Importer.hpp>
-#include	<assimp/cimport.h>
-#include	<assimp/scene.h>
-#include	<assimp/postprocess.h>
-#include	<assimp/matrix4x4.h>
+#include <assimp/Importer.hpp>
+#include <assimp/cimport.h>
+#include <assimp/scene.h>
+#include <assimp/postprocess.h>
+#include <assimp/matrix4x4.h>
 
-#include	"Mesh.h"
+#include "Mesh.h"
+
+namespace aegis
+{
+	class Buffer;
+}
 
 const constexpr BYTE BONE_NUM = 4;
 
@@ -58,14 +63,16 @@ private:
 
 	struct MESH
 	{
-		ComPtr<ID3D11Buffer> VertexBuffer;
-		ComPtr<ID3D11Buffer> IndexBuffer;
+		aegis::uniquePtr<aegis::Buffer> VertexBuffer;
+		aegis::uniquePtr<aegis::Buffer> IndexBuffer;
 		int VertexNum;
 		int IndexNum;
+
+	public:
+		MESH() = default;
 	};
 
 	aegis::vector<MESH> m_Meshes;
-	UINT m_MeshNum;
 	UINT frame = 0;
 
 	UINT m_BoneNum = 0;
@@ -84,18 +91,18 @@ private:
 
 	aegis::unordered_map<UINT, BONE> m_Bone;
 
-	std::unique_ptr<ID3D11Buffer, Release> MatrixBuffer;
+	aegis::uniquePtr<aegis::Buffer> MatrixBuffer;
 
 	void DrawMesh(const aiNode* Node, const XMMATRIX& Matrix);
 	void DrawMesh_DPP(const aiNode* Node, const XMMATRIX& Matrix);
 	void CreateBone(const aiNode* Node);
 	void UpdateBoneMatrix(const aiNode* Node, const XMMATRIX& Matrix);
-	void SetBoneMatrix(const aegis::vector<XMMATRIX>& matrix);
+	void SetBoneMatrix(aegis::vector<XMMATRIX>& matrix) const;
 
 	aegis::vector<TEXTURE_S> loadMaterialTextures(aiMaterial* mat, aiTextureType type, aegis::string typeName, const aiScene* scene);
 	aegis::string determineTextureType(const aiScene* scene, aiMaterial* mat);
 	int getTextureIndex(aiString* str);
-	ID3D11ShaderResourceView* getTextureFromModel(const aiScene* scene, int textureindex);
+	aegis::ShaderResourceView* getTextureFromModel(const aiScene* scene, int textureindex);
 
 	void set_bone(const aiNode* Node, aegis::vector<XMMATRIX>& v);
 

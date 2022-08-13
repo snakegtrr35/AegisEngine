@@ -1,11 +1,11 @@
-﻿#include	"GameObject.h"
-#include	"Field.h"
-#include	"Renderer.h"
-#include	"camera.h"
-#include	"Debug_Camera.h"
-#include	"manager.h"
-#include	"Scene.h"
-#include	"ShadowMap.h"
+﻿#include "Field.h"
+#include "camera.h"
+#include "Debug_Camera.h"
+#include "manager.h"
+#include "Scene.h"
+#include "ShadowMap.h"
+#include "Renderer.h"
+#include "texture.h"
 
 IMPLEMENT_OBJECT_TYPE_INFO(GameObject, FIELD)
 
@@ -50,106 +50,81 @@ FIELD::FIELD(Vector3 position, Vector2 wh)
 
 	// 頂点バッファの設定
 	{
-		D3D11_BUFFER_DESC bd{};
+		BufferDesc  bd{};
+		bd.Usage = Usage::Default;
 		bd.ByteWidth = sizeof(VERTEX_3D) * 4;
-		bd.Usage = D3D11_USAGE_DEFAULT;
-		bd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-		bd.CPUAccessFlags = 0;
-		bd.MiscFlags = 0;
-		bd.StructureByteStride = 0;
+		bd.BindFlags = BindFlag::Vertexbuffer;
+		bd.CPUAccessFlags = CpuAccessFlag::None;
 
 		// サブリソースの設定
-		D3D11_SUBRESOURCE_DATA srd{};
-		srd.pSysMem = Vertex;
-		srd.SysMemPitch = 0;
-		srd.SysMemSlicePitch = 0;
+		SubresourceData sd{};
+		sd.pSysMem = Vertex;
 
 		// 頂点バッファの生成
-		hr = render->GetDevice()->CreateBuffer(&bd, &srd, &pVertexBuffer);
-
-		if (FAILED(hr))
-		{
-			return;
-		}
+		VertexBuffer.reset(render->CreateBuffer(bd, sd));
 	}
 
 	////　インスタンシング用のバッファの生成
-	//{
-	//	// マトリクス
-	//	XMMATRIX matrix;
-	//	vector<XMMATRIX> instMatrix;
-	//	instMatrix.reserve(g_InstanceNum);
+	/*{
+		// マトリクス
+		XMMATRIX matrix;
+		vector<XMMATRIX> instMatrix;
+		instMatrix.reserve(g_InstanceNum);
 
-	//	Vector3 position[g_InstanceNum], rotation, scale;
+		Vector3 position[g_InstanceNum], rotation, scale;
 
-	//	for (int y = 0; y < g_InstanceNum; y++)
-	//	{
-	//		position[y] = Vector3(10.0f, (y * 5) - 10.0f, 0.f);
-	//	}
+		for (int y = 0; y < g_InstanceNum; y++)
+		{
+			position[y] = Vector3(10.0f, (y * 5) - 10.0f, 0.f);
+		}
 
-	//	rotation = Vector3(0.0f, 0.0f, 0.0f);
+		rotation = Vector3(0.0f, 0.0f, 0.0f);
 
-	//	scale = Vector3(1.0f, 1.0f, 1.0f);
+		scale = Vector3(1.0f, 1.0f, 1.0f);
 
-	//	for (int i = 0; i < g_InstanceNum; i++)
-	//	{
-	//		matrix = XMMatrixScaling(scale.x, scale.y, scale.z);
-	//		matrix *= XMMatrixRotationRollPitchYaw(rotation.x, rotation.y, rotation.z);
-	//		matrix *= XMMatrixTranslation(position[i].x, position[i].y, position[i].z);
+		for (int i = 0; i < g_InstanceNum; i++)
+		{
+			matrix = XMMatrixScaling(scale.x, scale.y, scale.z);
+			matrix *= XMMatrixRotationRollPitchYaw(rotation.x, rotation.y, rotation.z);
+			matrix *= XMMatrixTranslation(position[i].x, position[i].y, position[i].z);
 
-	//		instMatrix.emplace_back(XMMatrixTranspose(matrix));
-	//	}
+			instMatrix.emplace_back(XMMatrixTranspose(matrix));
+		}
 
-	//	{
-	//		D3D11_BUFFER_DESC bd{};
-	//		bd.ByteWidth = sizeof(XMMATRIX) * g_InstanceNum;
-	//		bd.Usage = D3D11_USAGE_DEFAULT;
-	//		bd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-	//		bd.CPUAccessFlags = 0;
-	//		bd.MiscFlags = 0;
-	//		bd.StructureByteStride = 0;
+		{
+			BufferDesc  bd{};
+			bd.Usage = Usage::UsageDfault;
+			bd.ByteWidth = sizeof(XMMATRIX) * g_InstanceNum;
+			bd.BindFlags = BindFlag::Vertexbuffer;
+			bd.CPUAccessFlags = CpuAccessFlag::None;
 
-	//		// サブリソースの設定
-	//		D3D11_SUBRESOURCE_DATA srd{};
-	//		srd.pSysMem = instMatrix.data();
-	//		srd.SysMemPitch = 0;
-	//		srd.SysMemSlicePitch = 0;
+			// サブリソースの設定
+			SubresourceData sd{};
+			sd.pSysMem = instMatrix.data();
 
-	//		// 頂点バッファの生成
-	//		hr = render->GetDevice()->CreateBuffer(&bd, &srd, &pInstanceBuffer);
-
-	//		if (FAILED(hr))
-	//		{
-	//			return;
-	//		}
-	//	}
-	//}
+			// 頂点バッファの生成
+			InstanceBuffer.reset(render->CreateBuffer(bd, sd));
+		}
+	}*/
 
 	// インデックスバッファの設定
 	{
-		const WORD index[] = {
-		0, 1, 2,
-		1, 3, 2,
+		const WORD index[] =
+		{
+			0, 1, 2,
+			1, 3, 2,
 		};
 
-		D3D11_BUFFER_DESC ibDesc{};
-		ibDesc.ByteWidth = sizeof(WORD) * 6;
-		ibDesc.Usage = D3D11_USAGE_DEFAULT;
-		ibDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
-		ibDesc.CPUAccessFlags = 0;
-		ibDesc.MiscFlags = 0;
-		ibDesc.StructureByteStride = 0;
+		BufferDesc  bd{};
+		bd.Usage = Usage::Default;
+		bd.ByteWidth = sizeof(uint16) * 6;
+		bd.BindFlags = BindFlag::Indexbuffer;
+		bd.CPUAccessFlags = CpuAccessFlag::None;
 
-		D3D11_SUBRESOURCE_DATA irData;
-		irData.pSysMem = index;
-		irData.SysMemPitch = 0;
-		irData.SysMemSlicePitch = 0;
+		SubresourceData sd{};
+		sd.pSysMem = index;
 
-		hr = render->GetDevice()->CreateBuffer(&ibDesc, &irData, &pIndexBuffer);
-		if (FAILED(hr))
-		{
-			return;
-		}
+		IndexBuffer.reset(render->CreateBuffer(bd, sd));
 	}
 
 	// テクスチャの設定
@@ -163,6 +138,8 @@ FIELD::~FIELD()
 
 void FIELD::Init()
 {
+	GameObject::Init();
+
 	CRenderer* render = CRenderer::getInstance();
 
 	HRESULT hr;
@@ -191,28 +168,18 @@ void FIELD::Init()
 
 	// 頂点バッファの設定
 	{
-		D3D11_BUFFER_DESC bd{};
+		BufferDesc  bd{};
+		bd.Usage = Usage::Default;
 		bd.ByteWidth = sizeof(VERTEX_3D) * 4;
-		bd.Usage = D3D11_USAGE_DEFAULT;
-		bd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-		bd.CPUAccessFlags = 0;
-		bd.MiscFlags = 0;
-		bd.StructureByteStride = 0;
+		bd.BindFlags = BindFlag::Vertexbuffer;
+		bd.CPUAccessFlags = CpuAccessFlag::None;
 
 		// サブリソースの設定
-		D3D11_SUBRESOURCE_DATA srd{};
-
-		srd.pSysMem = Vertex;
-		srd.SysMemPitch = 0;
-		srd.SysMemSlicePitch = 0;
+		SubresourceData sd{};
+		sd.pSysMem = Vertex;
 
 		// 頂点バッファの生成
-		hr = render->GetDevice()->CreateBuffer(&bd, &srd, &pVertexBuffer);
-
-		if (FAILED(hr))
-		{
-			return;
-		}
+		VertexBuffer.reset(render->CreateBuffer(bd, sd));
 	}
 
 	//　インスタンシング用のバッファの生成
@@ -250,56 +217,42 @@ void FIELD::Init()
 		}
 
 		{
-			D3D11_BUFFER_DESC bd{};
+			BufferDesc  bd{};
+			bd.Usage = Usage::Default;
 			bd.ByteWidth = sizeof(XMMATRIX) * g_InstanceNum;
-			bd.Usage = D3D11_USAGE_DEFAULT;
-			bd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-			bd.CPUAccessFlags = 0;
-			bd.MiscFlags = 0;
-			bd.StructureByteStride = 0;
+			bd.BindFlags = BindFlag::Vertexbuffer;
+			bd.CPUAccessFlags = CpuAccessFlag::None;
 
 			// サブリソースの設定
-			D3D11_SUBRESOURCE_DATA srd{};
-			srd.pSysMem = instMatrix.data();
-			srd.SysMemPitch = 0;
-			srd.SysMemSlicePitch = 0;
+			SubresourceData sd{};
+			sd.pSysMem = instMatrix.data();
 
 			// 頂点バッファの生成
-			hr = render->GetDevice()->CreateBuffer(&bd, &srd, &pInstanceBuffer);
-
-			if (FAILED(hr))
-			{
-				return;
-			}
+			InstanceBuffer.reset(render->CreateBuffer(bd, sd));
 		}
 	}
 
 	// インデックスバッファの設定
 	{
-		const WORD index[] = {
-		0, 1, 2,
-		1, 3, 2,
+		const WORD index[] =
+		{
+			0, 1, 2,
+			1, 3, 2,
 		};
 
-		D3D11_BUFFER_DESC ibDesc;
-		ibDesc.ByteWidth = sizeof(WORD) * 6;
-		ibDesc.Usage = D3D11_USAGE_DEFAULT;
-		ibDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
-		ibDesc.CPUAccessFlags = 0;
-		ibDesc.MiscFlags = 0;
-		ibDesc.StructureByteStride = 0;
+		BufferDesc  bd{};
+		bd.Usage = Usage::Default;
+		bd.ByteWidth = sizeof(uint16) * 6;
+		bd.BindFlags = BindFlag::Indexbuffer;
+		bd.CPUAccessFlags = CpuAccessFlag::None;
 
-		D3D11_SUBRESOURCE_DATA irData;
-		irData.pSysMem = index;
-		irData.SysMemPitch = 0;
-		irData.SysMemSlicePitch = 0;
+		SubresourceData sd{};
+		sd.pSysMem = index;
 
-		hr = render->GetDevice()->CreateBuffer(&ibDesc, &irData, &pIndexBuffer);
-		if (FAILED(hr))
-		{
-			return;
-		}
+		IndexBuffer.reset(render->CreateBuffer(bd, sd));
 	}
+
+	GameObject::InitEnd();
 }
 
 void FIELD::Draw()
@@ -311,9 +264,9 @@ void FIELD::Draw()
 
 	render->Set_InputLayout(INPUTLAYOUT::INSTANCING);//
 	render->Set_Shader(SHADER_INDEX_V::INSTANCING, SHADER_INDEX_P::NO_LIGHT);//
-	render->SetVertexBuffers(pVertexBuffer.Get(), pInstanceBuffer.Get(), sizeof(VERTEX_3D));//
+	render->SetVertexBuffers(VertexBuffer.get(), InstanceBuffer.get(), sizeof(VERTEX_3D));//
 
-	render->SetIndexBuffer(pIndexBuffer.Get());
+	render->SetIndexBuffer(IndexBuffer.get());
 
 	Texture->Set_Texture();//
 
@@ -377,7 +330,7 @@ void FIELD::Draw()
 	//render->DrawIndexed(6, 0, 0);
 	if (false == CManager::Get_Instance()->Get_ShadowMap()->Get_Enable())
 	{
-		render->GetDeviceContext()->DrawIndexedInstanced(6, g_InstanceNum, 0, 0, 0);//
+		render->DrawIndexedInstanced(6, g_InstanceNum, 0, 0, 0);//
 	}
 
 	render->Set_Shader();
@@ -391,11 +344,11 @@ void FIELD::Draw_Shadow()
 	CRenderer* render = CRenderer::getInstance();
 
 	// 入力アセンブラに頂点バッファを設定.
-	render->SetVertexBuffers(pVertexBuffer.Get());
+	render->SetVertexBuffers(VertexBuffer.get());
 
 	render->Set_Shader(SHADER_INDEX_V::SHADOW_MAP, SHADER_INDEX_P::MAX);
 
-	render->SetIndexBuffer(pIndexBuffer.Get());
+	render->SetIndexBuffer(IndexBuffer.get());
 
 	Texture->Set_Texture();//
 

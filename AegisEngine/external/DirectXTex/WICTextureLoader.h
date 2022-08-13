@@ -67,11 +67,14 @@ namespace DirectX
         _In_z_ const wchar_t* szFileName,
         _Outptr_opt_ ID3D11Resource** texture,
         _Outptr_opt_ ID3D11ShaderResourceView** textureView,
-		int* width,
-		int* height,
+		int* width = nullptr,
+		int* height = nullptr,
         _In_ size_t maxsize = 0);
 
-
+    void GetSize(
+        _In_z_ const wchar_t* szFileName,
+        int* width = nullptr,
+        int* height = nullptr);
 
     // Extended version
     //HRESULT CreateWICTextureFromMemoryEx(

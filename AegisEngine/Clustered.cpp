@@ -1,11 +1,11 @@
-﻿#include	"Clustered.h"
-#include	"manager.h"
-#include	"Scene.h"
-#include	"Light.h"
-#include	"Renderer.h"
-#include	<io.h>
+﻿#include "Clustered.h"
+#include "manager.h"
+#include "Scene.h"
+#include "Light.h"
+#include "Renderer.h"
+#include <io.h>
 
-#include	"Scene_Manager.h"
+#include "Scene_Manager.h"
 
 using namespace aegis;
 
@@ -14,7 +14,7 @@ static LIGHTS g_Light;
 bool CLUSTERED::Init()
 {
 	HRESULT hr;
-	auto device = CRenderer::getInstance()->GetDevice();
+	CRenderer* render = CRenderer::getInstance();
 	
 	// コンピュートシェーダーの生成
 	{
@@ -29,110 +29,100 @@ bool CLUSTERED::Init()
 			fread(buffer, fsize, 1, file);
 			fclose(file);
 
-			hr = device->CreateComputeShader(buffer, fsize, NULL, &ClusterCS);
+			ClusterCS.reset(render->CreateComputeShader(buffer, fsize));
 
 			delete[] buffer;
-
-			assert(SUCCEEDED(hr));
 		}
 	}
 
 	// クラスターグリッドの作成
 	{
-		D3D11_TEXTURE3D_DESC desc{};
-
+		Texture3DDesc desc{};
 		desc.Width = CLUSTERED_X;
 		desc.Height = CLUSTERED_Y;
 		desc.Depth = CLUSTERED_Z;
 		desc.MipLevels = 1;
-		desc.Format = DXGI_FORMAT_R32_UINT;
+		desc.Format = Format::R32Uint;
+		desc.Usage = Usage::Default;
+		desc.BindFlags = (BindFlag)((uint32)BindFlag::UnorderedAccess | (uint32)BindFlag::ShaderResource);
+		desc.CPUAccessFlags = CpuAccessFlag::None;
 
-		desc.Usage = D3D11_USAGE_DEFAULT;
-		desc.BindFlags = D3D11_BIND_UNORDERED_ACCESS | D3D11_BIND_SHADER_RESOURCE;
-		desc.CPUAccessFlags = 0;
-
-		hr = device->CreateTexture3D(&desc, nullptr, &ClusterTexture);
-		assert(SUCCEEDED(hr));
+		ClusterTexture.reset(render->CreateTexture3D(desc, nullptr));
 
 		{
-			D3D11_SHADER_RESOURCE_VIEW_DESC SRVDesc = {};
+			ShaderResourceViewDesc SRVDesc{};
 
 			SRVDesc.Format = desc.Format;
-			SRVDesc.ViewDimension = D3D_SRV_DIMENSION_TEXTURE3D;
+			SRVDesc.ViewDimension = SrvDimension::Texture3D;
 			SRVDesc.Texture2D.MostDetailedMip = 0;
 			SRVDesc.Texture2D.MipLevels = 1;
 
-			hr = device->CreateShaderResourceView(ClusterTexture.Get(), &SRVDesc, &ClusterSRV);
-			assert(SUCCEEDED(hr));
+			ClusterSRV.reset(render->CreateShaderResourceView(ClusterTexture.get(), SRVDesc));
 		}
 
 		{
-			hr = device->CreateUnorderedAccessView(ClusterTexture.Get(), nullptr, &ClusterUAV);
-			assert(SUCCEEDED(hr));
+			ClusterUAV.reset(render->CreateUnorderedAccessView(ClusterTexture.get(), nullptr));
 		}
 	}
 
 	//　ライトリストの作成
 	{
-		D3D11_TEXTURE2D_DESC desc = {};
+		Texture2DDesc desc{};
 		desc.Width = CLUSTERED_X * CLUSTERED_Y * CLUSTERED_Z;
 		desc.Height = CLUSTERED_X;
 		desc.MipLevels = 1;
 		desc.ArraySize = 1;
 		desc.SampleDesc.Count = 1;
 		desc.SampleDesc.Quality = 0;
-		desc.Format = DXGI_FORMAT_R32_UINT;
-		desc.Usage = D3D11_USAGE_DEFAULT;
-		desc.BindFlags = D3D11_BIND_UNORDERED_ACCESS | D3D11_BIND_SHADER_RESOURCE;
-		desc.CPUAccessFlags = 0;
+		desc.Format = Format::R32Uint;
+		desc.Usage = Usage::Default;
+		desc.BindFlags = (BindFlag)((uint32)BindFlag::UnorderedAccess | (uint32)BindFlag::ShaderResource);
+		desc.CPUAccessFlags = CpuAccessFlag::None;
 
-		hr = device->CreateTexture2D(&desc, nullptr, &Light_List_Texture);
-		assert(SUCCEEDED(hr));
+		LightListTexture.reset(render->CreateTexture2D(desc, nullptr));
 
 		{
-			D3D11_SHADER_RESOURCE_VIEW_DESC SRVDesc = {};
+			ShaderResourceViewDesc SRVDesc = {};
 
 			SRVDesc.Format = desc.Format;
-			SRVDesc.ViewDimension = D3D_SRV_DIMENSION_TEXTURE2D;
+			SRVDesc.ViewDimension = SrvDimension::Texture2D;
 			SRVDesc.Texture2D.MostDetailedMip = 0;
 			SRVDesc.Texture2D.MipLevels = 1;
 
-			hr = device->CreateShaderResourceView(Light_List_Texture.Get(), &SRVDesc, &Light_List_SRV);
-			assert(SUCCEEDED(hr));
+			LightListSRV.reset(render->CreateShaderResourceView(LightListTexture.get(), SRVDesc));
 		}
 
 		{
-			hr = device->CreateUnorderedAccessView(Light_List_Texture.Get(), nullptr, &Light_List_UAV);
-			assert(SUCCEEDED(hr));
+			LightListUAV.reset(render->CreateUnorderedAccessView(LightListTexture.get(), nullptr));
 		}
 	}
 
 	// 定数バッファ作成
 	{
-		D3D11_BUFFER_DESC desc{};
-		desc.Usage = D3D11_USAGE_DEFAULT;
-		desc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-		desc.CPUAccessFlags = 0;
-		desc.MiscFlags = 0;
-		desc.StructureByteStride = sizeof(float);
+		BufferDesc  desc{};
+		desc.Usage = Usage::Default;
 		desc.ByteWidth = sizeof(CLSTER_BUFFER);
+		desc.StructureByteStride = sizeof(float);
+		desc.BindFlags = BindFlag::Constantbuffer;
+		desc.CPUAccessFlags = CpuAccessFlag::None;
 
-		hr = device->CreateBuffer(&desc, nullptr, &ClusterBuffer);
-		assert(SUCCEEDED(hr));
+		SubresourceData sd{};
+
+		ClusterBuffer.reset(render->CreateBuffer(desc, sd));
 	}
 
 	// コンピュートシェーダー用の変数
 	{
-		D3D11_BUFFER_DESC desc{};
-		desc.Usage = D3D11_USAGE_DEFAULT;
-		desc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-		desc.CPUAccessFlags = 0;
-		desc.MiscFlags = 0;
-		desc.StructureByteStride = sizeof(float);
+		BufferDesc  desc{};
+		desc.Usage = Usage::Default;
 		desc.ByteWidth = sizeof(CONSTATNT_BUFFER);
+		desc.StructureByteStride = sizeof(float);
+		desc.BindFlags = BindFlag::Constantbuffer;
+		desc.CPUAccessFlags = CpuAccessFlag::None;
 
-		hr = device->CreateBuffer(&desc, nullptr, &ConstatntBuffer);
-		assert(SUCCEEDED(hr));
+		SubresourceData sd{};
+
+		ConstatntBuffer.reset(render->CreateBuffer(desc, sd));
 	}
 
 	m_Frustum.Init();
@@ -145,8 +135,7 @@ bool CLUSTERED::Init()
 
 void CLUSTERED::Update()
 {
-	CRenderer* render = CRenderer::getInstance();
-	auto device_context = render->GetDeviceContext();
+	auto render = CRenderer::getInstance();
 
 	Cale_Cluster(m_Max, m_Min);
 	{
@@ -159,13 +148,13 @@ void CLUSTERED::Update()
 
 		buffer.Bias = m_Min;
 
-		render->GetDeviceContext()->UpdateSubresource(ClusterBuffer.Get(), 0, nullptr, &buffer, 0, 0);
+		render->UpdateSubresource(ClusterBuffer.get(), &buffer);
 	}
 }
 
 void CLUSTERED::Draw()
 {
-	auto device_context = CRenderer::getInstance()->GetDeviceContext();
+	auto render = CRenderer::getInstance();
 
 	/*{
 		Cale_Cluster(m_Max, m_Min);
@@ -186,46 +175,52 @@ void CLUSTERED::Draw()
 	{
 		{
 			uint32 ClearColor[4] = { 0, 0, 0, 0. };
-			device_context->ClearUnorderedAccessViewUint(ClusterUAV.Get(), ClearColor);
-			device_context->ClearUnorderedAccessViewUint(Light_List_UAV.Get(), ClearColor);
+			render->ClearUnorderedAccessView(ClusterUAV.get(), ClearColor);
+			render->ClearUnorderedAccessView(LightListUAV.get(), ClearColor);
 		}
 
 		{
-			device_context->CSSetShader(ClusterCS.Get(), nullptr, NULL);
+			render->CSSetShader(ClusterCS.get());
 
 			// 定数バッファの設定
 			{
-				auto buffer = ConstatntBuffer.Get();
+				auto buffer = ConstatntBuffer.get();
 
-				device_context->CSSetConstantBuffers(0, 1, &buffer);
+				render->CSSetConstantBuffers(0, 1, &buffer);
 
 				buffer = LIGHTS::Get_LightBuffer();
 
-				device_context->CSSetConstantBuffers(1, 1, &buffer);
+				render->CSSetConstantBuffers(1, 1, &buffer);
 			}
 
-			device_context->CSSetUnorderedAccessViews(0, 1, ClusterUAV.GetAddressOf(), nullptr);
-			device_context->CSSetUnorderedAccessViews(1, 1, Light_List_UAV.GetAddressOf(), nullptr);
+			UnorderedAccessView* cluster[] = { ClusterUAV.get() };
+			UnorderedAccessView* lightList[] = { LightListUAV.get() };
 
-			device_context->Dispatch(CLUSTERED_X, CLUSTERED_Y, CLUSTERED_Z);
+			render->CSSetUnorderedAccessViews(0, 1, cluster);
+			render->CSSetUnorderedAccessViews(1, 1, lightList);
 
-			//ID3D11UnorderedAccessView* uav[2] = { nullptr, nullptr };
-			//device_context->CSSetUnorderedAccessViews(0, 2, uav, nullptr);
-			ID3D11UnorderedAccessView* uav = nullptr;
-			device_context->CSSetUnorderedAccessViews(0, 1, &uav, nullptr);
-			device_context->CSSetUnorderedAccessViews(1, 1, &uav, nullptr);
+			render->Dispatch(CLUSTERED_X, CLUSTERED_Y, CLUSTERED_Z);
+
+			render->CSSetUnorderedAccessViews(0, 1, nullptr);
+			render->CSSetUnorderedAccessViews(1, 1, nullptr);
 		}
 
-		device_context->CSSetShader(nullptr, nullptr, NULL);
+		render->CSSetShader(nullptr);
 
-		ID3D11Buffer* buffer = nullptr;
-		device_context->CSSetConstantBuffers(0, 1, &buffer);
-		device_context->CSSetConstantBuffers(1, 1, &buffer);
+		Buffer* buffer = nullptr;
+		render->CSSetConstantBuffers(0, 1, &buffer);
+		render->CSSetConstantBuffers(1, 1, &buffer);
 	}
 
-	device_context->PSSetShaderResources(10, 1, ClusterSRV.GetAddressOf());
-	device_context->PSSetShaderResources(11, 1, Light_List_SRV.GetAddressOf());
-	device_context->PSSetConstantBuffers(7, 1, ClusterBuffer.GetAddressOf());
+	aegis::ShaderResourceView* cluster[] = { ClusterSRV.get() };
+
+	aegis::ShaderResourceView* lightList[] = { LightListSRV.get()};
+
+	aegis::Buffer* buffer[] = { ClusterBuffer.get() };
+
+	render->PSSetShaderResources(10, 1, cluster);
+	render->PSSetShaderResources(11, 1, lightList);
+	render->PSSetConstantBuffers(7, 1, buffer);
 }
 
 void CLUSTERED::Uninit()

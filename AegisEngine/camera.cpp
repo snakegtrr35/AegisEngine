@@ -1,8 +1,8 @@
-﻿#include	"Renderer.h"
-#include	"manager.h"
-#include	"Scene.h"
-#include	"Input.h"
-#include	"camera.h"
+﻿#include "Renderer.h"
+#include "manager.h"
+#include "Scene.h"
+#include "Input.h"
+#include "camera.h"
 
 IMPLEMENT_OBJECT_TYPE_INFO(GameObject, CCamera)
 
@@ -17,6 +17,8 @@ float CCamera::Lenght_Y = 4.0f;
 
 void CCamera::Init()
 {
+	GameObject::Init();
+
 	Vector4 at = Vector4(0.0f, 0.0f, 0.0f, 0.0f);
 
 	Viewing_Angle = 55.0f;
@@ -46,7 +48,7 @@ void CCamera::Init()
 	}
 
 	// ビューポート設定
-	D3D11_VIEWPORT dxViewport;
+	aegis::ViewPort dxViewport;
 	dxViewport.Width = (float)SCREEN_WIDTH;
 	dxViewport.Height = (float)SCREEN_HEIGHT;
 	dxViewport.MinDepth = 0.0f;
@@ -57,6 +59,8 @@ void CCamera::Init()
 	//CRenderer::GetDeviceContext()->RSSetViewports(1, &dxViewport);
 
 	RotateEnable = MoveEnable = true;
+
+	GameObject::InitEnd();
 }
 
 void CCamera::Uninit()
@@ -212,7 +216,7 @@ void CCamera::Draw()
 	GetWindowRect(GetWindow(), &rect);
 
 	// ビューポート設定
-	D3D11_VIEWPORT dxViewport;
+	aegis::ViewPort dxViewport;
 	dxViewport.Width = (float)(rect.right - rect.left);
 	dxViewport.Height = (float)(rect.bottom - rect.top);
 	dxViewport.MinDepth = 0.0f;

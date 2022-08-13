@@ -35,6 +35,19 @@ namespace aegis
         {
             memory::AegisAllocator::deallocate(p, num, memory::AllocatorType::Default);
         }
+
+        template <typename T, typename... Args>
+        void construct(T* p, Args&&... args)
+        {
+            ::new(p) T(std::forward<Args>(args)...);
+        }
+
+        template <typename T>
+        void destroy(T* p)
+        {
+            p->~T();
+        }
+
     private:
         static std::once_flag mOnce[2];
     };
