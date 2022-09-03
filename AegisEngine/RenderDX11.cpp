@@ -13,9 +13,10 @@
 #pragma comment(lib, "dwrite.lib")
 
 #include "Sprite.h"
+
 namespace
 {
-	static std::unique_ptr<SPRITE> sprite;
+	std::unique_ptr<SPRITE> sprite;
 }
 
 namespace aegis
@@ -130,53 +131,6 @@ namespace aegis
 		uint32 Convert2BindFlag(const BindFlag bindFlag)
 		{
 			uint32 flag = 0;
-
-			/*for (BindFlag item :
-			{
-				BindFlag::Vertexbuffer,		BindFlag::Indexbuffer,
-				BindFlag::Constantbuffer,	BindFlag::ShaderResource,
-				BindFlag::StreamOutput,		BindFlag::RenderTarget,
-				BindFlag::DepthStencil,		BindFlag::UnorderedAccess,
-				BindFlag::Decoder,			BindFlag::VideoEncoder,
-			})
-			{
-				if ((uint32)item & (uint32)bindFlag)
-				{
-					switch (item)
-					{
-					case aegis::BindFlag::Vertexbuffer:
-						flag |= D3D11_BIND_VERTEX_BUFFER;
-						break;
-					case aegis::BindFlag::Indexbuffer:
-						flag |= D3D11_BIND_INDEX_BUFFER;
-						break;
-					case aegis::BindFlag::Constantbuffer:
-						flag |= D3D11_BIND_CONSTANT_BUFFER;
-						break;
-					case aegis::BindFlag::ShaderResource:
-						flag |= D3D11_BIND_SHADER_RESOURCE;
-						break;
-					case aegis::BindFlag::StreamOutput:
-						flag |= D3D11_BIND_STREAM_OUTPUT;
-						break;
-					case aegis::BindFlag::RenderTarget:
-						flag |= D3D11_BIND_RENDER_TARGET;
-						break;
-					case aegis::BindFlag::DepthStencil:
-						flag |= D3D11_BIND_DEPTH_STENCIL;
-						break;
-					case aegis::BindFlag::UnorderedAccess:
-						flag |= D3D11_BIND_UNORDERED_ACCESS;
-						break;
-					case aegis::BindFlag::Decoder:
-						flag |= D3D11_BIND_DECODER;
-						break;
-					case aegis::BindFlag::VideoEncoder:
-						flag |= D3D11_BIND_VIDEO_ENCODER;
-						break;
-					}
-				}
-			}*/
 
 			for (auto item : aegis::BindFlag())
 			{
@@ -798,9 +752,9 @@ namespace aegis
 			return false;
 		}
 
-		// 鬆らせ繧ｷ繧ｧ繝ｼ繝逕滓・
+		// 頂点シェーダ生成
 		{
-			// 蜈･蜉帙Ξ繧､繧｢繧ｦ繝育函謌・
+			// 入力レイアウト生成
 			D3D11_INPUT_ELEMENT_DESC layout[] =
 			{
 				{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT,    0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
@@ -811,7 +765,7 @@ namespace aegis
 			UINT numElements = ARRAYSIZE(layout);
 
 
-			// 鬆らせ繧ｷ繧ｧ繝ｼ繝逕滓・ 繝・ヵ繧ｩ繝ｫ繝・
+			// 頂点シェーダ生成 デフォルト
 			{
 				FILE* file;
 				long int fsize;
@@ -839,7 +793,7 @@ namespace aegis
 				}
 			}
 
-			// 鬆らせ繧ｷ繧ｧ繝ｼ繝逕滓・ 繧ｹ繧ｫ繧､繝懊ャ繧ｯ繧ｹ
+			// 頂点シェーダ生成 スカイボックス
 			{
 				FILE* file;
 				long int fsize;
@@ -860,7 +814,7 @@ namespace aegis
 				delete[] buffer;
 			}
 
-			// 鬆らせ繧ｷ繧ｧ繝ｼ繝逕滓・ 繧ｷ繝｣繝峨え繝槭ャ繝・
+			// 頂点シェーダ生成 シャドウマップ
 			{
 				FILE* file;
 				long int fsize;
@@ -881,7 +835,7 @@ namespace aegis
 				delete[] buffer;
 			}
 
-			// 鬆らせ繧ｷ繧ｧ繝ｼ繝逕滓・ (Depth Pre Pass)
+			// 頂点シェーダ生成 (Depth Pre Pass)
 			{
 				FILE* file;
 				long int fsize;
@@ -903,9 +857,9 @@ namespace aegis
 			}
 		}
 
-		// 鬆らせ繧ｷ繧ｧ繝ｼ繝逕滓・ 繧｢繝九Γ繝ｼ繧ｷ繝ｧ繝ｳ
+		// 頂点シェーダ生成 アニメーション
 		{
-			// 蜈･蜉帙Ξ繧､繧｢繧ｦ繝育函謌・
+		// 入力レイアウト生成
 			D3D11_INPUT_ELEMENT_DESC animation_layout[] =
 			{
 				{ "POSITION",	 0, DXGI_FORMAT_R32G32B32_FLOAT,	0, D3D11_APPEND_ALIGNED_ELEMENT,	D3D11_INPUT_PER_VERTEX_DATA, 0 },
@@ -918,7 +872,7 @@ namespace aegis
 
 			UINT numElements = ARRAYSIZE(animation_layout);
 
-			// 鬆らせ繧ｷ繧ｧ繝ｼ繝逕滓・ 繧｢繝九Γ繝ｼ繧ｷ繝ｧ繝ｳ
+			// 頂点シェーダ生成 アニメーション
 			{
 				FILE* file;
 				long int fsize;
@@ -946,7 +900,7 @@ namespace aegis
 				}
 			}
 
-			// 鬆らせ繧ｷ繧ｧ繝ｼ繝逕滓・ 繧｢繝九Γ繝ｼ繧ｷ繝ｧ繝ｳ(繧ｷ繝｣繝峨え繝槭ャ繝嶺ｻ倥″)
+			// 頂点シェーダ生成 アニメーション(シャドウマップ付き)
 			{
 				FILE* file;
 				long int fsize;
@@ -967,7 +921,7 @@ namespace aegis
 				}
 			}
 
-			// 鬆らせ繧ｷ繧ｧ繝ｼ繝逕滓・ 繧｢繝九Γ繝ｼ繧ｷ繝ｧ繝ｳ(Depth Pre Pass)
+			// 頂点シェーダ生成 アニメーション(Depth Pre Pass)
 			{
 				FILE* file;
 				long int fsize;
@@ -989,9 +943,9 @@ namespace aegis
 			}
 		}
 
-		// 鬆らせ繧ｷ繧ｧ繝ｼ繝逕滓・ 繧､繝ｳ繧ｹ繧ｿ繝ｳ繧ｷ繝ｳ繧ｰ
+		// 頂点シェーダ生成 インスタンシング
 		{
-			// 蜈･蜉帙Ξ繧､繧｢繧ｦ繝育函謌・
+			// 入力レイアウト生成
 			D3D11_INPUT_ELEMENT_DESC animation_layout[] =
 			{
 				{ "POSITION",	0, DXGI_FORMAT_R32G32B32_FLOAT,		0,	D3D11_APPEND_ALIGNED_ELEMENT,	D3D11_INPUT_PER_VERTEX_DATA,	0 },
@@ -1035,9 +989,9 @@ namespace aegis
 			}
 		}
 
-		// 繝斐け繧ｻ繝ｫ繧ｷ繧ｧ繝ｼ繝逕滓・
+		// ピクセルシェーダ生成
 		{
-			// 讓呎ｺ・
+			// 標準
 			{
 				FILE* file;
 				long int fsize;
@@ -1058,7 +1012,7 @@ namespace aegis
 				delete[] buffer;
 			}
 
-			// 繝・け繧ｹ繝√Ε縺ｪ縺・
+			// テクスチャなし
 			{
 				FILE* file;
 				long int fsize;
@@ -1079,7 +1033,7 @@ namespace aegis
 				delete[] buffer;
 			}
 
-			// 繝ｩ繧､繝・ぅ繝ｳ繧ｰ縺ｪ縺・
+			// ライティングなし
 			{
 				FILE* file;
 				long int fsize;
@@ -1100,7 +1054,7 @@ namespace aegis
 				delete[] buffer;
 			}
 
-			// 繧ｹ繧ｫ繧､繝懊ャ繧ｯ繧ｹ
+			// スカイボックス
 			{
 				FILE* file;
 				long int fsize;
@@ -1121,7 +1075,7 @@ namespace aegis
 				delete[] buffer;
 			}
 
-			// 繧ｷ繝｣繝峨え繝槭ャ繝・
+			// シャドウマップ
 			{
 				FILE* file;
 				long int fsize;
@@ -1142,7 +1096,7 @@ namespace aegis
 				delete[] buffer;
 			}
 
-			// 繝昴せ繝医お繝輔ぉ繧ｯ繝・
+			// ポストエフェクト
 			{
 				FILE* file;
 				long int fsize;
@@ -1167,7 +1121,7 @@ namespace aegis
 		m_VertexShader[aegis::SHADER_INDEX_V::MAX] = nullptr;
 		m_PixelShader[aegis::SHADER_INDEX_P::MAX] = nullptr;
 
-		// 螳壽焚繝舌ャ繝輔ぃ逕滓・
+		// 定数バッファ生成
 		D3D11_BUFFER_DESC hBufferDesc;
 		hBufferDesc.Usage = D3D11_USAGE_DEFAULT;
 		hBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
@@ -1221,17 +1175,17 @@ namespace aegis
 		m_ImmediateContext->VSSetConstantBuffers(5, 1, m_ConstantBuffer_02.GetAddressOf());
 		m_ImmediateContext->PSSetConstantBuffers(5, 1, m_ConstantBuffer_02.GetAddressOf());
 
-		// 蜈･蜉帙Ξ繧､繧｢繧ｦ繝郁ｨｭ螳・
+		// 入力レイアウト設定
 		m_ImmediateContext->IASetInputLayout(m_VertexLayout[0].Get());
 
-		// 繧ｷ繧ｧ繝ｼ繝險ｭ螳・
+		// シェーダ設定
 		m_ImmediateContext->VSSetShader(m_VertexShader[aegis::SHADER_INDEX_V::DEFAULT].Get(), nullptr, 0);
 		m_ImmediateContext->PSSetShader(m_PixelShader[aegis::SHADER_INDEX_P::DEFAULT].Get(), nullptr, 0);
 
-		// 繝ｩ繧､繝・
+		// ライト
 		SetLight(GetLight());
 
-		// 繝槭ユ繝ｪ繧｢繝ｫ蛻晄悄蛹・
+		// マテリアル初期化
 		aegis::MATERIAL material = {};
 		material.Diffuse = COLOR(1.0f, 1.0f, 1.0f, 1.0f);
 		material.Ambient = COLOR(0.5f, 0.5f, 0.5f, 1.0f);
@@ -1248,7 +1202,7 @@ namespace aegis
 		{
 			m_SwapChain->GetFullscreenState(&FullScreen, nullptr);
 
-			// 繝輔Ν繧ｹ繧ｯ繝ｪ繝ｼ繝ｳ縺ｮ縺ｨ縺・
+			// フルスクリーンの時
 			if (FullScreen == TRUE)
 			{
 				m_SwapChain->SetFullscreenState(FALSE, nullptr);
@@ -1260,7 +1214,7 @@ namespace aegis
 	{
 		auto render_target = RenderTargetView_16bit.Get();
 
-		// 繝舌ャ繧ｯ繝舌ャ繝輔ぃ繧ｯ繝ｪ繧｢
+		// バックバッファクリア
 		float ClearColor[4] = { 0.5f, 0.5f, 0.5f, 1.0f };
 		//m_ImmediateContext->OMSetRenderTargets(1, m_RenderTargetView.GetAddressOf(), m_DepthStencilView.Get());
 		m_ImmediateContext->OMSetRenderTargets(1, &render_target, m_DepthStencilView.Get());//
@@ -1273,16 +1227,16 @@ namespace aegis
 	{
 		if (false == Stand_By_Enable)
 		{
-			// 謠冗判縺吶ｋ
+			// 画面に描画する
 			HRESULT hr = m_SwapChain->Present(0, 0);
 
 			if (DXGI_STATUS_OCCLUDED == hr)
 			{
-				Stand_By_Enable = true;		// 繧ｹ繧ｿ繝ｳ繝舌う繝｢繝ｼ繝峨↓蜈･繧・
+				Stand_By_Enable = true;		// スタンバイモードに入る
 				return;
 			}
 
-			// 繝・ヰ繧､繧ｹ縺ｮ豸亥､ｱ
+			// デバイスの消失
 			{
 				hr = m_D3DDevice->GetDeviceRemovedReason();
 
@@ -1291,13 +1245,13 @@ namespace aegis
 				case S_OK:
 					break;
 
-					// 繝ｪ繧ｻ繝・ヨ
+					// リセット
 				case DXGI_ERROR_DEVICE_HUNG:
 				case DXGI_ERROR_DEVICE_RESET:
 					///CManager::Get_Instance()->GameEnd();
 					break;
 
-					// 繧ｨ繝ｩ繝ｼ 邨ゆｺ・
+					// エラー 終了
 				case DXGI_ERROR_DEVICE_REMOVED:
 				case DXGI_ERROR_DRIVER_INTERNAL_ERROR:
 				case DXGI_ERROR_INVALID_CALL:
@@ -1309,12 +1263,13 @@ namespace aegis
 		}
 		else
 		{
-			// 謠冗判縺励↑縺・
+			// 描画しない
 			HRESULT hr = m_SwapChain->Present(0, DXGI_PRESENT_TEST);
 
 			if (DXGI_STATUS_OCCLUDED != hr)
 			{
-				Stand_By_Enable = false;		// 繧ｹ繧ｿ繝ｳ繝舌う繝｢繝ｼ繝峨ｒ隗｣髯､縺吶ｋ
+				// スタンバイモードを解除する
+				Stand_By_Enable = false;
 			}
 		}
 	}
@@ -1325,7 +1280,7 @@ namespace aegis
 		{
 			D3D11_BLEND_DESC desc = Details::Convert2BlendDesc(*blendState);
 
-			// 繝悶Ξ繝ｳ繝峨せ繝・・繝郁ｨｭ螳・
+			// ブレンドステート設定
 			float blendFactor[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
 			ID3D11BlendState* blendState = nullptr;
 			m_D3DDevice->CreateBlendState(&desc, &blendState);
@@ -1333,7 +1288,7 @@ namespace aegis
 		}
 		else
 		{
-			// 繝悶Ξ繝ｳ繝峨せ繝・・繝郁ｨｭ螳・( 蛻晄悄險ｭ螳・)
+			// ブレンドステート設定 ( 初期設定 )
 			D3D11_BLEND_DESC blendDesc = {};
 			blendDesc.AlphaToCoverageEnable = FALSE;
 			blendDesc.IndependentBlendEnable = FALSE;
@@ -1425,8 +1380,7 @@ namespace aegis
 		// SetFullscreenState
 		m_SwapChain->SetFullscreenState(!FullScreen, nullptr);
 
-		// 蛻晄悄襍ｷ蜍輔ｒ繝輔Ν繧ｹ繧ｯ繝ｪ繝ｼ繝ｳ繝｢繝ｼ繝峨↓縺励◆蝣ｴ蜷医√え繧｣繝ｳ繝峨え繝｢繝ｼ繝峨↓螟画峩縺吶ｋ縺ｨ
-		// 繧ｦ繧｣繝ｳ繝峨え縺後い繧ｯ繝・ぅ繝悶↓縺ｪ繧峨↑縺・・縺ｧ陦ｨ遉ｺ縺輔○繧九・
+		// 初期起動をフルスクリーンモードにした場合、ウィンドウモードに変更するとウィンドウがアクティブにならないので表示させる
 		ShowWindow(GetWindow(), SW_SHOW);
 	}
 
@@ -1434,38 +1388,38 @@ namespace aegis
 	{
 		HRESULT hr = S_OK;
 
-		// 繝・ヰ繧､繧ｹ縲√せ繝ｯ繝・・繝√ぉ繝ｼ繝ｳ縲√さ繝ｳ繝・く繧ｹ繝育函謌・
+		// デバイス、スワップチェーン、コンテキスト生成
 		DXGI_SWAP_CHAIN_DESC1 sc = {};
 		sc.Width = SCREEN_WIDTH;
 		sc.Height = SCREEN_HEIGHT;
 		sc.Format = DXGI_FORMAT_B8G8R8A8_UNORM;
-		// 繧ｹ繧ｱ繝ｼ繝ｫ譁ｹ豕・
+		// スケール方法
 		sc.Scaling = DXGI_SCALING_STRETCH;
-		// 遶倶ｽ楢ｦ・
+		// 立体視
 		sc.Stereo = 0;
-		// 蜊企乗・繝｢繝ｼ繝・
+		// 半透明モード
 		sc.AlphaMode = DXGI_ALPHA_MODE_UNSPECIFIED;
-		// 菴ｿ逕ｨ譁ｹ豕・
+		// 使用方法
 		sc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
 		sc.BufferCount = 1;
-		// 謠冗判蠕後・繝舌ャ繝輔ぃ縺ｮ謇ｱ縺・
+		// 描画後のバッファの扱い
 		sc.SwapEffect = DXGI_SWAP_EFFECT_SEQUENTIAL;
 		// MSAA
-		sc.SampleDesc.Count = 1;	// MSAA逕ｨ 2 4 8 縺御ｽｿ逕ｨ蜿ｯ閭ｽ(螟壼・縺薙ｌ縺縺・
+		sc.SampleDesc.Count = 1;	// MSAA用 2 4 8 が使用可能(多分これだけ)
 		sc.SampleDesc.Quality = 0;
-		// 繝輔Λ繧ｰ
-		sc.Flags = DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH; // 隗｣蜒丞ｺｦ螟画峩縺梧怏蜉ｹ
+		// フラグ
+		sc.Flags = DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH; // 解像度変更が有効
 
-		// 繝輔Λ繧ｰ
-		UINT d3dFlags = D3D11_CREATE_DEVICE_BGRA_SUPPORT; // BGRA 繝・け繧ｹ繝√Ε譛牙柑(Direct2D縺ｫ縺ｯ蠢・★蠢・ｦ・
+		// フラグ
+		UINT d3dFlags = D3D11_CREATE_DEVICE_BGRA_SUPPORT; // BGRA テクスチャ有効(Direct2Dには必ず必要)
 
 #if defined(_DEBUG)
 		d3dFlags |= D3D11_CREATE_DEVICE_DEBUG;
 #endif
 
-		// Direct3D縺ｮ菴懈・
+		// Direct3Dの作成
 		{
-			// 繧｢繝繝励ち繝ｼ縺ｮ蛻玲嫌
+			// アダプターの列挙
 			vector<IDXGIAdapter*> Adapters;
 			{
 				IDXGIFactory1* pDXGIFactory = nullptr;
@@ -1474,7 +1428,7 @@ namespace aegis
 				DXGI_ADAPTER_DESC desc;
 				std::wstring str;
 
-				//繝輔ぃ繧ｯ繝医Μ縺ｮ菴懈・
+				//ファクトリの作成
 				hr = CreateDXGIFactory1(__uuidof(IDXGIFactory1), reinterpret_cast<void**>(&pDXGIFactory));
 				if (FAILED(hr))
 				{
@@ -1506,10 +1460,10 @@ namespace aegis
 				SAFE_RELEASE(pDXGIFactory);
 			}
 
-			// 蜀・鳩GPU縺倥ｃ縺ｪ縺ЖPU縺後≠繧・
+			// 内蔵GPUじゃないGPUがある
 			if (false == Adapters.empty())
 			{
-				// Direct3D縺ｮ菴懈・
+				// Direct3Dの作成
 				hr = D3D11CreateDevice(Adapters.front(), D3D_DRIVER_TYPE_UNKNOWN, 0, d3dFlags, &m_FeatureLevel, 1, D3D11_SDK_VERSION, &m_D3DDevice, nullptr, &m_ImmediateContext);
 				if (FAILED(hr))
 				{
@@ -1517,9 +1471,9 @@ namespace aegis
 					return false;
 				}
 			}
-			else// 蜀・鳩GPU縺励°縺ｪ縺・
+			else// 内蔵GPUしかない
 			{
-				// Direct3D縺ｮ菴懈・
+				// Direct3Dの作成
 				hr = D3D11CreateDevice(nullptr, D3D_DRIVER_TYPE_HARDWARE, 0, d3dFlags, &m_FeatureLevel, 1, D3D11_SDK_VERSION, &m_D3DDevice, nullptr, &m_ImmediateContext);
 				if (FAILED(hr))
 				{
@@ -1535,7 +1489,7 @@ namespace aegis
 			Adapters.clear();
 		}
 
-		//// MSAA逕ｨ
+		//// MSAA用
 		//for (int i = 1; i <= D3D11_MAX_MULTISAMPLE_SAMPLE_COUNT; i <<= 1)
 		//{
 		//	UINT Quality;
@@ -1549,7 +1503,7 @@ namespace aegis
 		//	}
 		//}
 
-		// DXGI繝・ヰ繧､繧ｹ縺ｮ菴懈・
+		// DXGIデバイスの作成
 		hr = m_D3DDevice->QueryInterface<IDXGIDevice1>(&m_dxgiDev);
 		if (FAILED(hr))
 		{
@@ -1557,10 +1511,10 @@ namespace aegis
 			return false;
 		}
 
-		// 繧ｭ繝･繝ｼ縺ｫ譬ｼ邏阪＆繧後※縺・￥謠冗判繧ｳ繝槭Φ繝峨ｒ繧ｹ繝ｯ繝・・譎ゅ↓蜈ｨ縺ｦ繝輔Λ繝・す繝･縺吶ｋ
+		// キューに格納されていく描画コマンドをスワップ時に全てフラッシュする
 		m_dxgiDev->SetMaximumFrameLatency(1);
 
-		// DXGI繧｢繝繝励ち・・PU・峨・蜿門ｾ・
+		// DXGIアダプタ（GPU）の取得
 		IDXGIAdapter* adapter = nullptr;
 		hr = m_dxgiDev->GetAdapter(&adapter);
 		if (FAILED(hr))
@@ -1573,7 +1527,7 @@ namespace aegis
 			IDXGIAdapter3* pAdapter = nullptr;
 			DXGI_QUERY_VIDEO_MEMORY_INFO info;
 
-			// DXGI繧｢繝繝励ち・・PU・峨・蜿門ｾ・
+			// DXGIアダプタ（GPU）の取得
 			hr = m_dxgiDev->GetAdapter((IDXGIAdapter**)&pAdapter);
 			if (FAILED(hr))
 			{
@@ -1584,7 +1538,7 @@ namespace aegis
 			pAdapter->QueryVideoMemoryInfo(0, DXGI_MEMORY_SEGMENT_GROUP_LOCAL, &info);
 		}
 
-		// DXGI縺ｮ繝輔ぃ繧ｯ繝医Μ縺ｮ菴懈・
+		// DXGIのファクトリの作成
 		IDXGIFactory2* factory = nullptr;
 		hr = adapter->GetParent(IID_PPV_ARGS(&factory));
 		adapter->Release();
@@ -1594,7 +1548,7 @@ namespace aegis
 			return false;
 		}
 
-		// 繧ｹ繝ｯ繝・・繝√ぉ繧､繝ｳ繧辿WND縺九ｉ菴懈・
+		// スワップチェインをHWNDから作成
 		hr = factory->CreateSwapChainForHwnd(m_D3DDevice.Get(), GetWindow(), &sc, nullptr, nullptr, &m_SwapChain);
 		factory->Release();
 		if (FAILED(hr))
@@ -1603,7 +1557,7 @@ namespace aegis
 			return false;
 		}
 
-		// 繝ｬ繝ｳ繝繝ｼ繧ｿ繝ｼ繧ｲ繝・ヨ縺ｮ蜿門ｾ暦ｼ・3D11・・
+		// レンダーターゲットの取得（D3D11）
 		ID3D11Texture2D* pBackBuffer = nullptr;
 		hr = m_SwapChain->GetBuffer(0, IID_PPV_ARGS(&pBackBuffer));
 		if (FAILED(hr))
@@ -1612,7 +1566,7 @@ namespace aegis
 			return false;
 		}
 
-		// 繝ｬ繝ｳ繝繝ｼ繧ｿ繝ｼ繧ｲ繝・ヨ繝薙Η繝ｼ縺ｮ菴懈・
+		// レンダーターゲットビューの作成
 		hr = m_D3DDevice->CreateRenderTargetView(pBackBuffer, nullptr, &m_RenderTargetView);
 		if (FAILED(hr))
 		{
@@ -1623,7 +1577,7 @@ namespace aegis
 		{
 			ID3D11Texture2D* pTex = nullptr;
 
-			// 繝・け繧ｹ繝√Ε縺ｮ菴懈・
+			// テクスチャの作成
 			D3D11_TEXTURE2D_DESC td;
 			td.Width = SCREEN_WIDTH;
 			td.Height = SCREEN_HEIGHT;
@@ -1644,7 +1598,7 @@ namespace aegis
 				return false;
 			}
 
-			// 繝ｬ繝ｳ繝繝ｼ繧ｿ繝ｼ繧ｲ繝・ヨ繝薙Η繝ｼ險ｭ螳・
+			// レンダーターゲットビュー設定
 			{
 				hr = m_D3DDevice->CreateRenderTargetView(pTex, nullptr, &RenderTargetView[0]);
 				if (FAILED(hr))
@@ -1653,7 +1607,7 @@ namespace aegis
 				}
 			}
 
-			// 繧ｷ繧ｧ繝ｼ繝繝ｼ繝ｪ繧ｽ繝ｼ繧ｹ繝薙Η繝ｼ險ｭ螳・
+			// シェーダーリソースビュー設定
 			{
 				hr = m_D3DDevice->CreateShaderResourceView(pTex, nullptr, &ShaderResourceView[0]);
 				if (FAILED(hr))
@@ -1665,11 +1619,11 @@ namespace aegis
 		}
 
 		{
-			// 繧｢繝ｫ繝吶ラ繝・け繧ｹ繝√Ε縺ｮ菴懈・
+			// アルベドテクスチャの作成
 			{
 				ID3D11Texture2D* pTex = nullptr;
 
-				// 繝・け繧ｹ繝√Ε縺ｮ菴懈・
+				// テクスチャの作成
 				D3D11_TEXTURE2D_DESC td;
 				td.Width = SCREEN_WIDTH;
 				td.Height = SCREEN_HEIGHT;
@@ -1690,7 +1644,7 @@ namespace aegis
 					return false;
 				}
 
-				// 繝ｬ繝ｳ繝繝ｼ繧ｿ繝ｼ繧ｲ繝・ヨ繝薙Η繝ｼ險ｭ螳・
+				// レンダーターゲットビュー設定
 				{
 					hr = m_D3DDevice->CreateRenderTargetView(pTex, nullptr, &RenderTargetView_16bit);
 					if (FAILED(hr))
@@ -1699,7 +1653,7 @@ namespace aegis
 					}
 				}
 
-				// 繧ｷ繧ｧ繝ｼ繝繝ｼ繝ｪ繧ｽ繝ｼ繧ｹ繝薙Η繝ｼ險ｭ螳・
+				// シェーダーリソースビュー設定
 				{
 					hr = m_D3DDevice->CreateShaderResourceView(pTex, nullptr, &ShaderResourceView_16bit);
 					if (FAILED(hr))
@@ -1711,7 +1665,7 @@ namespace aegis
 			}
 		}
 
-		//繧ｹ繝・Φ繧ｷ繝ｫ逕ｨ繝・け繧ｹ繝√Ε繝ｼ菴懈・
+		//ステンシル用テクスチャー作成
 		ID3D11Texture2D* depthTexture = nullptr;
 		D3D11_TEXTURE2D_DESC td = {};
 		td.Width = sc.Width;
@@ -1731,11 +1685,12 @@ namespace aegis
 			return false;
 		}
 
-		//繧ｹ繝・Φ繧ｷ繝ｫ繧ｿ繝ｼ繧ｲ繝・ヨ菴懈・
+		//ステンシルターゲット作成
 		D3D11_DEPTH_STENCIL_VIEW_DESC dsvd = {};
 		dsvd.Format = DXGI_FORMAT_D32_FLOAT;
 		dsvd.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
-		//dsvd.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2DMS;		// MSAA逕ｨ
+		// MSAA用
+		//dsvd.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2DMS;
 		dsvd.Texture2D.MipSlice = 0;
 		dsvd.Flags = 0;
 		hr = m_D3DDevice->CreateDepthStencilView(depthTexture, &dsvd, &m_DepthStencilView);
@@ -1747,11 +1702,11 @@ namespace aegis
 
 		m_ImmediateContext->OMSetRenderTargets(1, m_RenderTargetView.GetAddressOf(), m_DepthStencilView.Get());
 
-		//// 繧ｷ繧ｧ繝ｼ繝繝ｼ繝ｪ繧ｽ繝ｼ繧ｹ繝薙Η繝ｼ險ｭ螳・
+		//// シェーダーリソースビュー設定
 		//{
 		//	ID3D11ShaderResourceView* srv = nullptr;
 
-		//	// 繧ｷ繧ｧ繝ｼ繝繝ｼ繝ｪ繧ｽ繝ｼ繧ｹ繝薙Η繝ｼ縺ｮ險ｭ螳・
+		//	// シェーダーリソースビューの設定
 		//	D3D11_SHADER_RESOURCE_VIEW_DESC desc;
 		//	desc.Format = DXGI_FORMAT_R32_FLOAT;
 		//	desc.ViewDimension = D3D_SRV_DIMENSION_TEXTURE2D;
@@ -1768,7 +1723,7 @@ namespace aegis
 		//}
 
 
-		// 繝薙Η繝ｼ繝昴・繝郁ｨｭ螳・
+		// ビューポート設定
 		D3D11_VIEWPORT vp;
 		vp.Width = (FLOAT)SCREEN_WIDTH;
 		vp.Height = (FLOAT)SCREEN_HEIGHT;
@@ -1780,7 +1735,7 @@ namespace aegis
 
 
 
-		// 繝ｩ繧ｹ繧ｿ繝ｩ繧､繧ｶ繧ｹ繝・・繝郁ｨｭ螳・
+		// ラスタライザステート設定
 		D3D11_RASTERIZER_DESC rd = {};
 		rd.FillMode = D3D11_FILL_SOLID;
 		rd.CullMode = D3D11_CULL_BACK;
@@ -1793,7 +1748,7 @@ namespace aegis
 
 
 
-		// 繝悶Ξ繝ｳ繝峨せ繝・・繝郁ｨｭ螳・
+		// ブレンドステート設定
 		D3D11_BLEND_DESC blendDesc = {};
 		blendDesc.AlphaToCoverageEnable = FALSE;
 		blendDesc.IndependentBlendEnable = FALSE;
@@ -1817,7 +1772,7 @@ namespace aegis
 
 
 
-		// 豺ｱ蠎ｦ繧ｹ繝・Φ繧ｷ繝ｫ繧ｹ繝・・繝郁ｨｭ螳・
+		// 深度ステンシルステート設定
 		D3D11_DEPTH_STENCIL_DESC depthStencilDesc = {};
 		depthStencilDesc.DepthEnable = TRUE;
 		depthStencilDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
@@ -1839,7 +1794,7 @@ namespace aegis
 
 
 
-		// 繧ｵ繝ｳ繝励Λ繝ｼ繧ｹ繝・・繝郁ｨｭ螳・
+		// サンプラーステート設定
 		D3D11_SAMPLER_DESC samplerDesc = {};
 		samplerDesc.Filter = D3D11_FILTER_ANISOTROPIC;
 		samplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
@@ -1857,7 +1812,7 @@ namespace aegis
 		m_ImmediateContext->PSSetSamplers(0, 1, m_SamplerState.GetAddressOf());
 
 		{
-			// 繧ｵ繝ｳ繝励Λ繝ｼ繧ｹ繝・・繝郁ｨｭ螳・
+			// サンプラーステート設定
 			D3D11_SAMPLER_DESC samplerDesc = {};
 			samplerDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
 			samplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
@@ -1882,7 +1837,7 @@ namespace aegis
 	{
 		HRESULT hr = S_OK;
 
-		// Direct2D縺ｮ繝輔ぃ繧ｯ繝医Μ繝ｼ縺ｮ菴懈・
+		// Direct2Dのファクトリーの作成
 		ID2D1Factory1* d2dFactory = nullptr;
 		hr = D2D1CreateFactory(D2D1_FACTORY_TYPE_SINGLE_THREADED, __uuidof(ID2D1Factory1), nullptr, reinterpret_cast<void**>(&d2dFactory));
 		if (FAILED(hr))
@@ -1892,7 +1847,7 @@ namespace aegis
 		}
 
 
-		// Direct2D繝・ヰ繧､繧ｹ縺ｮ菴懈・
+		// Direct2Dデバイスの作成
 		hr = d2dFactory->CreateDevice(m_dxgiDev.Get(), &m_D2DDevice);
 		d2dFactory->Release();
 		if (FAILED(hr))
@@ -1901,7 +1856,7 @@ namespace aegis
 			return false;
 		}
 
-		// Direct2D繝・ヰ繧､繧ｹ繧ｳ繝ｳ繝・け繧ｹ繝医・菴懈・
+		// Direct2Dデバイスコンテクストの作成
 		hr = m_D2DDevice->CreateDeviceContext(D2D1_DEVICE_CONTEXT_OPTIONS_ENABLE_MULTITHREADED_OPTIMIZATIONS, &m_D2DDeviceContext);
 		if (FAILED(hr))
 		{
@@ -1909,11 +1864,11 @@ namespace aegis
 			return false;
 		}
 
-		// DPI縺ｮ蜿門ｾ・
+		// DPIの取得
 		float dx, dy;
 		m_D2DDeviceContext->GetDpi(&dx, &dy);
 
-		// 繝ｬ繝ｳ繝繝ｼ繧ｿ繝ｼ繧ｲ繝・ヨ縺ｮ蜿門ｾ暦ｼ・XGI・・
+		// レンダーターゲットの取得（DXGI）
 		IDXGISurface* surf = nullptr;
 		hr = m_SwapChain->GetBuffer(0, IID_PPV_ARGS(&surf));
 		if (FAILED(hr))
@@ -1922,7 +1877,7 @@ namespace aegis
 			return false;
 		}
 
-		// Direct2D縺ｮ謠冗判蜈医→縺ｪ繧九ン繝・ヨ繝槭ャ繝励ｒ菴懈・
+		// Direct2Dの描画先となるビットマップを作成
 		D2D1_BITMAP_PROPERTIES1 d2dProp =
 			D2D1::BitmapProperties1(
 				D2D1_BITMAP_OPTIONS_TARGET | D2D1_BITMAP_OPTIONS_CANNOT_DRAW,
@@ -1938,10 +1893,10 @@ namespace aegis
 			return false;
 		}
 
-		// 謠冗判縺吶ｋDirect2D繝薙ャ繝医・繝・・縺ｮ險ｭ螳・
+		// 描画するDirect2Dビットマップの設定
 		m_D2DDeviceContext->SetTarget(m_D2DTargetBitmap.Get());
 
-		// DirectWrite縺ｮ繝輔ぃ繧ｯ繝医Μ縺ｮ菴懈・
+		// DirectWriteのファクトリの作成
 		hr = DWriteCreateFactory(DWRITE_FACTORY_TYPE_SHARED, __uuidof(m_DwriteFactory), &m_DwriteFactory);
 		if (FAILED(hr))
 		{
@@ -1949,23 +1904,24 @@ namespace aegis
 			return false;
 		}
 
-		// 繝・く繧ｹ繝医ヵ繧ｩ繝ｼ繝槭ャ繝医・菴懈・
+		// テキストフォーマットの作成
 		{
 			TEXT_FOMAT fomat;
-			fomat.FontName = "繝｡繧､繝ｪ繧ｪ";
+			fomat.FontName = "メイリオ";
 
 			hr = CreateTextFormat(fomat);
 
 			if (FAILED(hr))
 			{
 				FAILDE_ASSERT;
+				return false;
 			}
 		}
 
-		// 繝・く繧ｹ繝医Ξ繧､繧｢繧ｦ繝医ｒ菴懈・
+		// テキストレイアウトを作成
 		{
 			TEXT_LAYOUT layout;
-			layout.Text = "Hello World!!!";
+			layout.Text = "Hello HELL World!!!\n地球の未来にご奉仕するにゃん！";
 			layout.Width = 400;
 			layout.Height = 50;
 
@@ -1978,7 +1934,7 @@ namespace aegis
 			}
 		}
 
-		// 譁・ｭ励・菴咲ｽｮ縺ｮ險ｭ螳・
+		// 文字の位置の設定
 		hr = m_DwriteTextFormat->SetTextAlignment(DWRITE_TEXT_ALIGNMENT_CENTER);
 		if (FAILED(hr))
 		{
@@ -1986,7 +1942,7 @@ namespace aegis
 			return false;
 		}
 
-		// 繝代Λ繧ｰ繝ｩ繝輔・謖・ｮ・
+		// パラグラフの指定
 		hr = m_DwriteTextFormat->SetParagraphAlignment(DWRITE_PARAGRAPH_ALIGNMENT_NEAR);
 		if (FAILED(hr))
 		{
@@ -2062,7 +2018,7 @@ namespace aegis
 
 	void RenderDX11::Light_Identity()
 	{
-		// 繝ｩ繧､繝亥・譛溷喧
+		// ライト初期化
 		LIGHT light;
 		light.Direction = Vector4(0.0f, 0.0f, 1.0f, 0.0f);
 		light.Diffuse = COLOR(1.0f, 1.0f, 1.0f, 1.0f);
@@ -2197,7 +2153,6 @@ namespace aegis
 
 		if (initData.pSysMem != nullptr)
 		{
-			// 繧ｵ繝悶Μ繧ｽ繝ｼ繧ｹ縺ｮ險ｭ螳・
 			D3D11_SUBRESOURCE_DATA subData{};
 			subData.pSysMem = initData.pSysMem;
 			subData.SysMemPitch = initData.SysMemPitch;
@@ -2798,7 +2753,7 @@ namespace aegis
 
 	void RenderDX11::Set_InputLayout(const INPUTLAYOUT InputLayout)
 	{
-		// 蜈･蜉帙Ξ繧､繧｢繧ｦ繝郁ｨｭ螳・
+		// 入力レイアウト設定
 		switch ((int)InputLayout)
 		{
 			case (int)INPUTLAYOUT::DEFAULT:
@@ -2819,7 +2774,8 @@ namespace aegis
 	{
 		float clearColor[4] = { 0.5f, 0.5f, 0.5f, 1.0f };
 
-		// 繝・ヵ繧ｩ繝ｫ繝医・繝ｬ繝ｳ繝繝ｼ繧ｿ繝ｼ繧ｲ繝・ヨ繝薙Η繝ｼ縺ｫ蛻・ｊ譖ｿ縺・
+		// デフォルトのレンダーターゲットビューに切り替え
+		// デフォルトのレンダーターゲットビューに切り替え
 		//auto render_target = RenderTargetView[0].Get();
 		//m_ImmediateContext->OMSetRenderTargets(1, &render_target, m_DepthStencilView.Get());
 		//m_ImmediateContext->ClearRenderTargetView(render_target, clearColor);
@@ -2837,7 +2793,7 @@ namespace aegis
 		}
 
 		{
-			// 繝薙Η繝ｼ繝昴・繝郁ｨｭ螳・
+			// ビューポート設定
 			D3D11_VIEWPORT dxViewport;
 			dxViewport.Width = (float)SCREEN_WIDTH;
 			dxViewport.Height = (float)SCREEN_HEIGHT;
@@ -2866,7 +2822,7 @@ namespace aegis
 
 		ID3D11RenderTargetView* rtv[3] = { RenderTargetView[0].Get(), RenderTargetView[1].Get(), RenderTargetView[2].Get() };
 
-		// 繝・ヵ繧ｩ繝ｫ繝医・繝ｬ繝ｳ繝繝ｼ繧ｿ繝ｼ繧ｲ繝・ヨ繝薙Η繝ｼ縺ｫ蛻・ｊ譖ｿ縺・
+		// デフォルトのレンダーターゲットビューに切り替え
 		m_ImmediateContext->OMSetRenderTargets(3, rtv, m_DepthStencilView.Get());
 		m_ImmediateContext->ClearRenderTargetView(rtv[0], clearColor);
 		m_ImmediateContext->ClearRenderTargetView(rtv[1], clearColor);
@@ -2874,7 +2830,7 @@ namespace aegis
 		m_ImmediateContext->ClearDepthStencilView(m_DepthStencilView.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 
 		{
-			// 繝薙Η繝ｼ繝昴・繝郁ｨｭ螳・
+			// ビューポート設定
 			D3D11_VIEWPORT dxViewport;
 			dxViewport.Width = (float)SCREEN_WIDTH;
 			dxViewport.Height = (float)SCREEN_HEIGHT;
@@ -2926,7 +2882,7 @@ namespace aegis
 
 			std::wstring font_name = stringTowstring(fomat.FontName);
 
-		// 繝・く繧ｹ繝医ヵ繧ｩ繝ｼ繝槭ャ繝医・菴懈・
+		// テキストフォーマットの作成
 		HRESULT hr = m_DwriteFactory->CreateTextFormat(
 			font_name.c_str(),
 			nullptr,
@@ -2945,8 +2901,8 @@ namespace aegis
 	{
 		SAFE_RELEASE(m_TextLayout)
 
-			// 繝・く繧ｹ繝医Ξ繧､繧｢繧ｦ繝医ｒ菴懈・
-			std::wstring drawText;
+		// テキストレイアウトを作成
+		std::wstring drawText;
 
 		drawText = stringTowstring(layout.Text);
 
