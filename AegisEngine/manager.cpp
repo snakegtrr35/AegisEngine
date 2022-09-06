@@ -26,6 +26,8 @@
 
 #include "include/engine/core/memory/aegisAllocator.h"
 
+#include <d3d11sdklayers.h>
+
 #ifdef _DEBUG
 #define new new(_NORMAL_BLOCK, __FILE__, __LINE__)
 #endif // _DEBUG
@@ -33,6 +35,8 @@
 std::unique_ptr<CManager> CManager::Manager;
 
 using namespace aegis;
+
+ID3D11Debug* gpD3dDebug = nullptr;
 
 bool CManager::Init()
 {
@@ -319,6 +323,20 @@ void CManager::Uninit()
 
 	// COMの終了処理
 	CoUninitialize();
+
+	//{
+	//	// 詳細表示
+	//	if (gpD3dDebug)
+	//	{
+	//		auto hr = gpD3dDebug->ReportLiveDeviceObjects(D3D11_RLDO_DETAIL);
+	//		if (FAILED(hr))
+	//		{
+	//			return;
+	//		}
+	//
+	//		gpD3dDebug->Release();
+	//	}
+	//}
 }
 
 SCENE* const CManager::Get_Scene()
