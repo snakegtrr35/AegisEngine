@@ -14,9 +14,52 @@
 
 #include "Sprite.h"
 
+extern ID3D11Debug* gpD3dDebug;
+
 namespace
 {
 	std::unique_ptr<SPRITE> sprite;
+
+//	inline void SetName(ID3D11Device* resource, aegis::string debugName)
+//	{
+//#if defined(_DEBUG)
+//		auto nameSet = resource->SetPrivateData(WKPDID_D3DDebugObjectName, debugName.size(), debugName.c_str());
+//		assert(SUCCEEDED(nameSet), "Failed to set debug name");
+//#endif
+//	}
+//
+//	inline void SetName(ID3D11DeviceChild* resource, aegis::string debugName)
+//	{
+//#if defined(_DEBUG)
+//		auto nameSet = resource->SetPrivateData(WKPDID_D3DDebugObjectName, debugName.size(), debugName.c_str());
+//		assert(SUCCEEDED(nameSet), "Failed to set debug name");
+//#endif
+//	}
+//
+//	inline void SetDebugName(IDXGIObject* resource, aegis::string debugName)
+//	{
+//#if defined(_DEBUG)
+//		auto nameSet = resource->SetPrivateData(WKPDID_D3DDebugObjectName, debugName.size(), debugName.c_str());
+//		assert(SUCCEEDED(nameSet), "Failed to set debug name");
+//#endif
+//	}
+//
+//	inline void SetDebugName(IDXGISwapChain1* resource, aegis::string debugName)
+//	{
+//#if defined(_DEBUG)
+//		auto nameSet = resource->SetPrivateData(WKPDID_D3DDebugObjectName, debugName.size(), debugName.c_str());
+//		assert(SUCCEEDED(nameSet), "Failed to set debug name");
+//#endif
+//	}
+
+	template<typename T>
+	inline void SetName(T* resource, aegis::string debugName)
+	{
+#if defined(_DEBUG)
+		auto nameSet = resource->SetPrivateData(WKPDID_D3DDebugObjectName, debugName.size(), debugName.c_str());
+		assert(SUCCEEDED(nameSet), "Failed to set debug name");
+#endif
+	}
 }
 
 namespace aegis
@@ -776,14 +819,14 @@ namespace aegis
 				fread(buffer, fsize, 1, file);
 				fclose(file);
 
-				hr = m_D3DDevice->CreateVertexShader(buffer, fsize, nullptr, &m_VertexShader[aegis::SHADER_INDEX_V::DEFAULT]);
+				hr = mD3DDevice->CreateVertexShader(buffer, fsize, nullptr, &mVertexShader[aegis::SHADER_INDEX_V::DEFAULT]);
 				if (FAILED(hr))
 				{
 					FAILDE_ASSERT;
 					return false;
 				}
 
-				hr = m_D3DDevice->CreateInputLayout(layout, numElements, buffer, fsize, &m_VertexLayout[aegis::INPUTLAYOUT::DEFAULT]);
+				hr = mD3DDevice->CreateInputLayout(layout, numElements, buffer, fsize, &mVertexLayout[aegis::INPUTLAYOUT::DEFAULT]);
 				delete[] buffer;
 
 				if (FAILED(hr))
@@ -804,7 +847,7 @@ namespace aegis
 				fread(buffer, fsize, 1, file);
 				fclose(file);
 
-				hr = m_D3DDevice->CreateVertexShader(buffer, fsize, nullptr, &m_VertexShader[aegis::SHADER_INDEX_V::SKYBOX]);
+				hr = mD3DDevice->CreateVertexShader(buffer, fsize, nullptr, &mVertexShader[aegis::SHADER_INDEX_V::SKYBOX]);
 				if (FAILED(hr))
 				{
 					FAILDE_ASSERT;
@@ -825,7 +868,7 @@ namespace aegis
 				fread(buffer, fsize, 1, file);
 				fclose(file);
 
-				hr = m_D3DDevice->CreateVertexShader(buffer, fsize, nullptr, &m_VertexShader[aegis::SHADER_INDEX_V::SHADOW_MAP]);
+				hr = mD3DDevice->CreateVertexShader(buffer, fsize, nullptr, &mVertexShader[aegis::SHADER_INDEX_V::SHADOW_MAP]);
 				if (FAILED(hr))
 				{
 					FAILDE_ASSERT;
@@ -846,7 +889,7 @@ namespace aegis
 				fread(buffer, fsize, 1, file);
 				fclose(file);
 
-				hr = m_D3DDevice->CreateVertexShader(buffer, fsize, nullptr, &m_VertexShader[aegis::SHADER_INDEX_V::DEPTH_PRE]);
+				hr = mD3DDevice->CreateVertexShader(buffer, fsize, nullptr, &mVertexShader[aegis::SHADER_INDEX_V::DEPTH_PRE]);
 				if (FAILED(hr))
 				{
 					FAILDE_ASSERT;
@@ -883,14 +926,14 @@ namespace aegis
 				fread(buffer, fsize, 1, file);
 				fclose(file);
 
-				hr = m_D3DDevice->CreateVertexShader(buffer, fsize, nullptr, &m_VertexShader[aegis::SHADER_INDEX_V::ANIMATION]);
+				hr = mD3DDevice->CreateVertexShader(buffer, fsize, nullptr, &mVertexShader[aegis::SHADER_INDEX_V::ANIMATION]);
 				if (FAILED(hr))
 				{
 					FAILDE_ASSERT;
 					return false;
 				}
 
-				hr = m_D3DDevice->CreateInputLayout(animation_layout, numElements, buffer, fsize, &m_VertexLayout[aegis::INPUTLAYOUT::ANIMATION]);
+				hr = mD3DDevice->CreateInputLayout(animation_layout, numElements, buffer, fsize, &mVertexLayout[aegis::INPUTLAYOUT::ANIMATION]);
 				delete[] buffer;
 
 				if (FAILED(hr))
@@ -911,7 +954,7 @@ namespace aegis
 				fread(buffer, fsize, 1, file);
 				fclose(file);
 
-				hr = m_D3DDevice->CreateVertexShader(buffer, fsize, nullptr, &m_VertexShader[aegis::SHADER_INDEX_V::SHADOW_MAP_ANIMATION]);
+				hr = mD3DDevice->CreateVertexShader(buffer, fsize, nullptr, &mVertexShader[aegis::SHADER_INDEX_V::SHADOW_MAP_ANIMATION]);
 				delete[] buffer;
 
 				if (FAILED(hr))
@@ -932,7 +975,7 @@ namespace aegis
 				fread(buffer, fsize, 1, file);
 				fclose(file);
 
-				hr = m_D3DDevice->CreateVertexShader(buffer, fsize, nullptr, &m_VertexShader[aegis::SHADER_INDEX_V::DEPTH_PRE_ANIME]);
+				hr = mD3DDevice->CreateVertexShader(buffer, fsize, nullptr, &mVertexShader[aegis::SHADER_INDEX_V::DEPTH_PRE_ANIME]);
 				delete[] buffer;
 
 				if (FAILED(hr))
@@ -971,14 +1014,14 @@ namespace aegis
 				fread(buffer, fsize, 1, file);
 				fclose(file);
 
-				hr = m_D3DDevice->CreateVertexShader(buffer, fsize, nullptr, &m_VertexShader[aegis::SHADER_INDEX_V::INSTANCING]);
+				hr = mD3DDevice->CreateVertexShader(buffer, fsize, nullptr, &mVertexShader[aegis::SHADER_INDEX_V::INSTANCING]);
 				if (FAILED(hr))
 				{
 					FAILDE_ASSERT;
 					return false;
 				}
 
-				hr = m_D3DDevice->CreateInputLayout(animation_layout, numElements, buffer, fsize, &m_VertexLayout[aegis::INPUTLAYOUT::INSTANCING]);
+				hr = mD3DDevice->CreateInputLayout(animation_layout, numElements, buffer, fsize, &mVertexLayout[aegis::INPUTLAYOUT::INSTANCING]);
 				delete[] buffer;
 
 				if (FAILED(hr))
@@ -1002,7 +1045,7 @@ namespace aegis
 				fread(buffer, fsize, 1, file);
 				fclose(file);
 
-				hr = m_D3DDevice->CreatePixelShader(buffer, fsize, nullptr, &m_PixelShader[aegis::SHADER_INDEX_P::DEFAULT]);
+				hr = mD3DDevice->CreatePixelShader(buffer, fsize, nullptr, &mPixelShader[aegis::SHADER_INDEX_P::DEFAULT]);
 				if (FAILED(hr))
 				{
 					FAILDE_ASSERT;
@@ -1023,7 +1066,7 @@ namespace aegis
 				fread(buffer, fsize, 1, file);
 				fclose(file);
 
-				hr = m_D3DDevice->CreatePixelShader(buffer, fsize, nullptr, &m_PixelShader[aegis::SHADER_INDEX_P::NO_TEXTURE]);
+				hr = mD3DDevice->CreatePixelShader(buffer, fsize, nullptr, &mPixelShader[aegis::SHADER_INDEX_P::NO_TEXTURE]);
 				if (FAILED(hr))
 				{
 					FAILDE_ASSERT;
@@ -1044,7 +1087,7 @@ namespace aegis
 				fread(buffer, fsize, 1, file);
 				fclose(file);
 
-				hr = m_D3DDevice->CreatePixelShader(buffer, fsize, nullptr, &m_PixelShader[aegis::SHADER_INDEX_P::NO_LIGHT]);
+				hr = mD3DDevice->CreatePixelShader(buffer, fsize, nullptr, &mPixelShader[aegis::SHADER_INDEX_P::NO_LIGHT]);
 				if (FAILED(hr))
 				{
 					FAILDE_ASSERT;
@@ -1065,7 +1108,7 @@ namespace aegis
 				fread(buffer, fsize, 1, file);
 				fclose(file);
 
-				hr = m_D3DDevice->CreatePixelShader(buffer, fsize, nullptr, &m_PixelShader[aegis::SHADER_INDEX_P::SKYBOX]);
+				hr = mD3DDevice->CreatePixelShader(buffer, fsize, nullptr, &mPixelShader[aegis::SHADER_INDEX_P::SKYBOX]);
 				if (FAILED(hr))
 				{
 					FAILDE_ASSERT;
@@ -1086,7 +1129,7 @@ namespace aegis
 				fread(buffer, fsize, 1, file);
 				fclose(file);
 
-				hr = m_D3DDevice->CreatePixelShader(buffer, fsize, nullptr, &m_PixelShader[aegis::SHADER_INDEX_P::SHADOW_MAP]);
+				hr = mD3DDevice->CreatePixelShader(buffer, fsize, nullptr, &mPixelShader[aegis::SHADER_INDEX_P::SHADOW_MAP]);
 				if (FAILED(hr))
 				{
 					FAILDE_ASSERT;
@@ -1107,7 +1150,7 @@ namespace aegis
 				fread(buffer, fsize, 1, file);
 				fclose(file);
 
-				hr = m_D3DDevice->CreatePixelShader(buffer, fsize, nullptr, &m_PixelShader[aegis::SHADER_INDEX_P::POST_EFFECT]);
+				hr = mD3DDevice->CreatePixelShader(buffer, fsize, nullptr, &mPixelShader[aegis::SHADER_INDEX_P::POST_EFFECT]);
 				if (FAILED(hr))
 				{
 					FAILDE_ASSERT;
@@ -1118,8 +1161,8 @@ namespace aegis
 			}
 		}
 
-		m_VertexShader[aegis::SHADER_INDEX_V::MAX] = nullptr;
-		m_PixelShader[aegis::SHADER_INDEX_P::MAX] = nullptr;
+		mVertexShader[aegis::SHADER_INDEX_V::MAX] = nullptr;
+		mPixelShader[aegis::SHADER_INDEX_P::MAX] = nullptr;
 
 		// 定数バッファ生成
 		D3D11_BUFFER_DESC hBufferDesc;
@@ -1131,56 +1174,56 @@ namespace aegis
 
 		hBufferDesc.ByteWidth = sizeof(aegis::MATERIAL);
 
-		hr = m_D3DDevice->CreateBuffer(&hBufferDesc, nullptr, &m_MaterialBuffer);
+		hr = mD3DDevice->CreateBuffer(&hBufferDesc, nullptr, &mMaterialBuffer);
 		if (FAILED(hr))
 		{
 			FAILDE_ASSERT;
 			return false;
 		}
 
-		m_ImmediateContext->VSSetConstantBuffers(3, 1, m_MaterialBuffer.GetAddressOf());
-		m_ImmediateContext->PSSetConstantBuffers(3, 1, m_MaterialBuffer.GetAddressOf());
+		mImmediateContext->VSSetConstantBuffers(3, 1, mMaterialBuffer.GetAddressOf());
+		mImmediateContext->PSSetConstantBuffers(3, 1, mMaterialBuffer.GetAddressOf());
 
 		hBufferDesc.ByteWidth = sizeof(aegis::LIGHT);
 
-		hr = m_D3DDevice->CreateBuffer(&hBufferDesc, nullptr, &m_LightBuffer);
+		hr = mD3DDevice->CreateBuffer(&hBufferDesc, nullptr, &mLightBuffer);
 		if (FAILED(hr))
 		{
 			FAILDE_ASSERT;
 			return false;
 		}
 
-		m_ImmediateContext->VSSetConstantBuffers(4, 1, m_LightBuffer.GetAddressOf());
-		m_ImmediateContext->PSSetConstantBuffers(4, 1, m_LightBuffer.GetAddressOf());
+		mImmediateContext->VSSetConstantBuffers(4, 1, mLightBuffer.GetAddressOf());
+		mImmediateContext->PSSetConstantBuffers(4, 1, mLightBuffer.GetAddressOf());
 
 		hBufferDesc.ByteWidth = sizeof(aegis::CONSTANT);
-		hr = m_D3DDevice->CreateBuffer(&hBufferDesc, nullptr, &m_ConstantBuffer);
+		hr = mD3DDevice->CreateBuffer(&hBufferDesc, nullptr, &mConstantBuffer);
 		if (FAILED(hr))
 		{
 			FAILDE_ASSERT;
 			return false;
 		}
 
-		m_ImmediateContext->VSSetConstantBuffers(0, 1, m_ConstantBuffer.GetAddressOf());
-		m_ImmediateContext->PSSetConstantBuffers(0, 1, m_ConstantBuffer.GetAddressOf());
+		mImmediateContext->VSSetConstantBuffers(0, 1, mConstantBuffer.GetAddressOf());
+		mImmediateContext->PSSetConstantBuffers(0, 1, mConstantBuffer.GetAddressOf());
 
 		hBufferDesc.ByteWidth = sizeof(aegis::CONSTANT_02);
-		hr = m_D3DDevice->CreateBuffer(&hBufferDesc, nullptr, &m_ConstantBuffer_02);
+		hr = mD3DDevice->CreateBuffer(&hBufferDesc, nullptr, &mConstantBuffer_02);
 		if (FAILED(hr))
 		{
 			FAILDE_ASSERT;
 			return false;
 		}
 
-		m_ImmediateContext->VSSetConstantBuffers(5, 1, m_ConstantBuffer_02.GetAddressOf());
-		m_ImmediateContext->PSSetConstantBuffers(5, 1, m_ConstantBuffer_02.GetAddressOf());
+		mImmediateContext->VSSetConstantBuffers(5, 1, mConstantBuffer_02.GetAddressOf());
+		mImmediateContext->PSSetConstantBuffers(5, 1, mConstantBuffer_02.GetAddressOf());
 
 		// 入力レイアウト設定
-		m_ImmediateContext->IASetInputLayout(m_VertexLayout[0].Get());
+		mImmediateContext->IASetInputLayout(mVertexLayout[0].Get());
 
 		// シェーダ設定
-		m_ImmediateContext->VSSetShader(m_VertexShader[aegis::SHADER_INDEX_V::DEFAULT].Get(), nullptr, 0);
-		m_ImmediateContext->PSSetShader(m_PixelShader[aegis::SHADER_INDEX_P::DEFAULT].Get(), nullptr, 0);
+		mImmediateContext->VSSetShader(mVertexShader[aegis::SHADER_INDEX_V::DEFAULT].Get(), nullptr, 0);
+		mImmediateContext->PSSetShader(mPixelShader[aegis::SHADER_INDEX_P::DEFAULT].Get(), nullptr, 0);
 
 		// ライト
 		SetLight(GetLight());
@@ -1198,47 +1241,127 @@ namespace aegis
 	void RenderDX11::Uninit()
 	{
 		BOOL FullScreen = FALSE;
-		if (nullptr != m_SwapChain)
+		if (nullptr != mSwapChain)
 		{
-			m_SwapChain->GetFullscreenState(&FullScreen, nullptr);
+			mSwapChain->GetFullscreenState(&FullScreen, nullptr);
 
 			// フルスクリーンの時
 			if (FullScreen == TRUE)
 			{
-				m_SwapChain->SetFullscreenState(FALSE, nullptr);
+				mSwapChain->SetFullscreenState(FALSE, nullptr);
 			}
 		}
+
+		//mD3DDevice->Release();
+
+		mImmediateContext->Release();
+		mSwapChain->Release();
+		mRenderTargetView->Release();
+
+		mRenderTargetView_16bit->Release();
+		mShaderResourceView_16bit->Release();
+
+		for (uint32 i = 0; i < 3; i++)
+		{
+			if (mRenderTargetViews[i])
+			{
+				mRenderTargetViews[i]->Release();
+			}
+
+			if (mShaderResourceViews[i])
+			{
+				mShaderResourceViews[i]->Release();
+			}
+		}
+		
+		mDepthStencilView->Release();
+
+		mD2DDevice->Release();
+		mD2DDeviceContext->Release();
+		mD2DTargetBitmap->Release();
+		mDxgiDev->Release();
+
+		mDwriteTextFormat->Release();
+		mTextLayout->Release();
+		mDwriteFactory->Release();
+
+		for (auto& shader : mVertexShader)
+		{
+			if (shader.second)
+			{
+				shader.second->Release();
+			}
+		}
+
+		for (auto& shader : mPixelShader)
+		{
+			if (shader.second)
+			{
+				shader.second->Release();
+			}
+		}
+
+		mDepthStateEnable->Release();
+		mDepthStateDisable->Release();
+		mRasterizerState->Release();
+
+		mSamplerState->Release();
+
+		for (uint32 i = 0; i < 3; i++)
+		{
+			if (mVertexLayout[i])
+			{
+				mVertexLayout[i]->Release();
+			}
+		}
+
+		mMaterialBuffer->Release();
+		mLightBuffer->Release();
+		mConstantBuffer->Release();
+		mConstantBuffer_02->Release();
+
+		//{
+		//	// 作成
+		//	HRESULT hr = mD3DDevice->QueryInterface(IID_PPV_ARGS(&gpD3dDebug));
+		//	
+		//	mD3DDevice->Release();
+		//	
+		//	if (FAILED(hr))
+		//	{
+		//		return;
+		//	}
+		//}
 	}
 
 	void RenderDX11::Begin()
 	{
-		auto render_target = RenderTargetView_16bit.Get();
+		auto render_target = mRenderTargetView_16bit.Get();
 
 		// バックバッファクリア
 		float ClearColor[4] = { 0.5f, 0.5f, 0.5f, 1.0f };
-		//m_ImmediateContext->OMSetRenderTargets(1, m_RenderTargetView.GetAddressOf(), m_DepthStencilView.Get());
-		m_ImmediateContext->OMSetRenderTargets(1, &render_target, m_DepthStencilView.Get());//
-		//m_ImmediateContext->ClearRenderTargetView(m_RenderTargetView.Get(), ClearColor);
-		m_ImmediateContext->ClearRenderTargetView(render_target, ClearColor);//
-		m_ImmediateContext->ClearDepthStencilView(m_DepthStencilView.Get(), D3D11_CLEAR_DEPTH, 1.0f, 0);
+		//mImmediateContext->OMSetRenderTargets(1, mRenderTargetView.GetAddressOf(), mDepthStencilView.Get());
+		mImmediateContext->OMSetRenderTargets(1, &render_target, mDepthStencilView.Get());//
+		//mImmediateContext->ClearRenderTargetView(mRenderTargetView.Get(), ClearColor);
+		mImmediateContext->ClearRenderTargetView(render_target, ClearColor);//
+		mImmediateContext->ClearDepthStencilView(mDepthStencilView.Get(), D3D11_CLEAR_DEPTH, 1.0f, 0);
 	}
 
 	void RenderDX11::End()
 	{
-		if (false == Stand_By_Enable)
+		if (false == mStandByEnable)
 		{
 			// 画面に描画する
-			HRESULT hr = m_SwapChain->Present(0, 0);
+			HRESULT hr = mSwapChain->Present(0, 0);
 
 			if (DXGI_STATUS_OCCLUDED == hr)
 			{
-				Stand_By_Enable = true;		// スタンバイモードに入る
+				mStandByEnable = true;		// スタンバイモードに入る
 				return;
 			}
 
 			// デバイスの消失
 			{
-				hr = m_D3DDevice->GetDeviceRemovedReason();
+				hr = mD3DDevice->GetDeviceRemovedReason();
 
 				switch (hr)
 				{
@@ -1264,12 +1387,12 @@ namespace aegis
 		else
 		{
 			// 描画しない
-			HRESULT hr = m_SwapChain->Present(0, DXGI_PRESENT_TEST);
+			HRESULT hr = mSwapChain->Present(0, DXGI_PRESENT_TEST);
 
 			if (DXGI_STATUS_OCCLUDED != hr)
 			{
 				// スタンバイモードを解除する
-				Stand_By_Enable = false;
+				mStandByEnable = false;
 			}
 		}
 	}
@@ -1283,8 +1406,8 @@ namespace aegis
 			// ブレンドステート設定
 			float blendFactor[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
 			ID3D11BlendState* blendState = nullptr;
-			m_D3DDevice->CreateBlendState(&desc, &blendState);
-			m_ImmediateContext->OMSetBlendState(blendState, blendFactor, 0xffffffff);
+			mD3DDevice->CreateBlendState(&desc, &blendState);
+			mImmediateContext->OMSetBlendState(blendState, blendFactor, 0xffffffff);
 		}
 		else
 		{
@@ -1306,8 +1429,8 @@ namespace aegis
 
 			float blendFactor[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
 			ID3D11BlendState* blendState = nullptr;
-			m_D3DDevice->CreateBlendState(&blendDesc, &blendState);
-			m_ImmediateContext->OMSetBlendState(blendState, blendFactor, 0xffffffff);
+			mD3DDevice->CreateBlendState(&blendDesc, &blendState);
+			mImmediateContext->OMSetBlendState(blendState, blendFactor, 0xffffffff);
 		}
 	}
 
@@ -1365,9 +1488,9 @@ namespace aegis
 	void RenderDX11::SetDepthEnable(bool Enable)
 	{
 		if (Enable)
-			m_ImmediateContext->OMSetDepthStencilState(m_DepthStateEnable.Get(), NULL);
+			mImmediateContext->OMSetDepthStencilState(mDepthStateEnable.Get(), NULL);
 		else
-			m_ImmediateContext->OMSetDepthStencilState(m_DepthStateDisable.Get(), NULL);
+			mImmediateContext->OMSetDepthStencilState(mDepthStateDisable.Get(), NULL);
 	}
 
 	void RenderDX11::Change_Window_Mode()
@@ -1375,10 +1498,10 @@ namespace aegis
 		BOOL FullScreen;
 
 		// GetFullscreenState
-		m_SwapChain->GetFullscreenState(&FullScreen, nullptr);
+		mSwapChain->GetFullscreenState(&FullScreen, nullptr);
 
 		// SetFullscreenState
-		m_SwapChain->SetFullscreenState(!FullScreen, nullptr);
+		mSwapChain->SetFullscreenState(!FullScreen, nullptr);
 
 		// 初期起動をフルスクリーンモードにした場合、ウィンドウモードに変更するとウィンドウがアクティブにならないので表示させる
 		ShowWindow(GetWindow(), SW_SHOW);
@@ -1429,7 +1552,7 @@ namespace aegis
 				std::wstring str;
 
 				//ファクトリの作成
-				hr = CreateDXGIFactory1(__uuidof(IDXGIFactory1), reinterpret_cast<void**>(&pDXGIFactory));
+				hr = CreateDXGIFactory1(IID_PPV_ARGS(&pDXGIFactory));
 				if (FAILED(hr))
 				{
 					FAILDE_ASSERT;
@@ -1460,11 +1583,13 @@ namespace aegis
 				SAFE_RELEASE(pDXGIFactory);
 			}
 
+			D3D_FEATURE_LEVEL featureLevel = D3D_FEATURE_LEVEL_11_0;
+
 			// 内蔵GPUじゃないGPUがある
 			if (false == Adapters.empty())
 			{
 				// Direct3Dの作成
-				hr = D3D11CreateDevice(Adapters.front(), D3D_DRIVER_TYPE_UNKNOWN, 0, d3dFlags, &m_FeatureLevel, 1, D3D11_SDK_VERSION, &m_D3DDevice, nullptr, &m_ImmediateContext);
+				hr = D3D11CreateDevice(Adapters.front(), D3D_DRIVER_TYPE_UNKNOWN, 0, d3dFlags, &featureLevel, 1, D3D11_SDK_VERSION, mD3DDevice.ReleaseAndGetAddressOf(), nullptr, mImmediateContext.ReleaseAndGetAddressOf());
 				if (FAILED(hr))
 				{
 					FAILDE_ASSERT;
@@ -1474,7 +1599,7 @@ namespace aegis
 			else// 内蔵GPUしかない
 			{
 				// Direct3Dの作成
-				hr = D3D11CreateDevice(nullptr, D3D_DRIVER_TYPE_HARDWARE, 0, d3dFlags, &m_FeatureLevel, 1, D3D11_SDK_VERSION, &m_D3DDevice, nullptr, &m_ImmediateContext);
+				hr = D3D11CreateDevice(nullptr, D3D_DRIVER_TYPE_HARDWARE, 0, d3dFlags, &featureLevel, 1, D3D11_SDK_VERSION, mD3DDevice.ReleaseAndGetAddressOf(), nullptr, mImmediateContext.ReleaseAndGetAddressOf());
 				if (FAILED(hr))
 				{
 					FAILDE_ASSERT;
@@ -1489,11 +1614,14 @@ namespace aegis
 			Adapters.clear();
 		}
 
+		SetName(mD3DDevice.Get(), "D3D11_Device");
+		SetName(mImmediateContext.Get(), "D3D11_DeviceContext");
+
 		//// MSAA用
 		//for (int i = 1; i <= D3D11_MAX_MULTISAMPLE_SAMPLE_COUNT; i <<= 1)
 		//{
 		//	UINT Quality;
-		//	if (SUCCEEDED(m_D3DDevice->CheckMultisampleQualityLevels(DXGI_FORMAT_D24_UNORM_S8_UINT, i, &Quality)))
+		//	if (SUCCEEDED(mD3DDevice->CheckMultisampleQualityLevels(DXGI_FORMAT_D24_UNORM_S8_UINT, i, &Quality)))
 		//	{
 		//		if (0 < Quality)
 		//		{
@@ -1503,20 +1631,24 @@ namespace aegis
 		//	}
 		//}
 
+
 		// DXGIデバイスの作成
-		hr = m_D3DDevice->QueryInterface<IDXGIDevice1>(&m_dxgiDev);
+		hr = mD3DDevice->QueryInterface<IDXGIDevice1>(&mDxgiDev);
 		if (FAILED(hr))
 		{
 			FAILDE_ASSERT;
 			return false;
 		}
 
+		SetName(mDxgiDev.Get(), "DXGI_Device");
+		
+
 		// キューに格納されていく描画コマンドをスワップ時に全てフラッシュする
-		m_dxgiDev->SetMaximumFrameLatency(1);
+		mDxgiDev->SetMaximumFrameLatency(1);
 
 		// DXGIアダプタ（GPU）の取得
 		IDXGIAdapter* adapter = nullptr;
-		hr = m_dxgiDev->GetAdapter(&adapter);
+		hr = mDxgiDev->GetAdapter(&adapter);
 		if (FAILED(hr))
 		{
 			FAILDE_ASSERT;
@@ -1528,7 +1660,7 @@ namespace aegis
 			DXGI_QUERY_VIDEO_MEMORY_INFO info;
 
 			// DXGIアダプタ（GPU）の取得
-			hr = m_dxgiDev->GetAdapter((IDXGIAdapter**)&pAdapter);
+			hr = mDxgiDev->GetAdapter((IDXGIAdapter**)&pAdapter);
 			if (FAILED(hr))
 			{
 				FAILDE_ASSERT;
@@ -1549,7 +1681,7 @@ namespace aegis
 		}
 
 		// スワップチェインをHWNDから作成
-		hr = factory->CreateSwapChainForHwnd(m_D3DDevice.Get(), GetWindow(), &sc, nullptr, nullptr, &m_SwapChain);
+		hr = factory->CreateSwapChainForHwnd(mD3DDevice.Get(), GetWindow(), &sc, nullptr, nullptr, &mSwapChain);
 		factory->Release();
 		if (FAILED(hr))
 		{
@@ -1557,9 +1689,11 @@ namespace aegis
 			return false;
 		}
 
+		SetName(mSwapChain.Get(), "SwapChain");
+
 		// レンダーターゲットの取得（D3D11）
 		ID3D11Texture2D* pBackBuffer = nullptr;
-		hr = m_SwapChain->GetBuffer(0, IID_PPV_ARGS(&pBackBuffer));
+		hr = mSwapChain->GetBuffer(0, IID_PPV_ARGS(&pBackBuffer));
 		if (FAILED(hr))
 		{
 			FAILDE_ASSERT;
@@ -1567,12 +1701,14 @@ namespace aegis
 		}
 
 		// レンダーターゲットビューの作成
-		hr = m_D3DDevice->CreateRenderTargetView(pBackBuffer, nullptr, &m_RenderTargetView);
+		hr = mD3DDevice->CreateRenderTargetView(pBackBuffer, nullptr, &mRenderTargetView);
 		if (FAILED(hr))
 		{
 			FAILDE_ASSERT;
 			return false;
 		}
+
+		SetName(mRenderTargetView.Get(), "MainOutput");
 
 		{
 			ID3D11Texture2D* pTex = nullptr;
@@ -1591,7 +1727,7 @@ namespace aegis
 			td.CPUAccessFlags = 0;
 			td.MiscFlags = 0;
 
-			hr = m_D3DDevice->CreateTexture2D(&td, nullptr, &pTex);
+			hr = mD3DDevice->CreateTexture2D(&td, nullptr, &pTex);
 			if (FAILED(hr))
 			{
 				FAILDE_ASSERT;
@@ -1600,7 +1736,7 @@ namespace aegis
 
 			// レンダーターゲットビュー設定
 			{
-				hr = m_D3DDevice->CreateRenderTargetView(pTex, nullptr, &RenderTargetView[0]);
+				hr = mD3DDevice->CreateRenderTargetView(pTex, nullptr, &mRenderTargetViews[0]);
 				if (FAILED(hr))
 				{
 					return false;
@@ -1609,13 +1745,16 @@ namespace aegis
 
 			// シェーダーリソースビュー設定
 			{
-				hr = m_D3DDevice->CreateShaderResourceView(pTex, nullptr, &ShaderResourceView[0]);
+				hr = mD3DDevice->CreateShaderResourceView(pTex, nullptr, &mShaderResourceViews[0]);
 				if (FAILED(hr))
 				{
 					FAILDE_ASSERT;
 					return false;
 				}
 			}
+
+			SetName(mRenderTargetViews[0].Get(), "RenderTargetView01");
+			SetName(mShaderResourceViews[0].Get(), "ShaderResourceView01");
 		}
 
 		{
@@ -1637,7 +1776,7 @@ namespace aegis
 				td.CPUAccessFlags = 0;
 				td.MiscFlags = 0;
 
-				hr = m_D3DDevice->CreateTexture2D(&td, nullptr, &pTex);
+				hr = mD3DDevice->CreateTexture2D(&td, nullptr, &pTex);
 				if (FAILED(hr))
 				{
 					FAILDE_ASSERT;
@@ -1646,7 +1785,7 @@ namespace aegis
 
 				// レンダーターゲットビュー設定
 				{
-					hr = m_D3DDevice->CreateRenderTargetView(pTex, nullptr, &RenderTargetView_16bit);
+					hr = mD3DDevice->CreateRenderTargetView(pTex, nullptr, &mRenderTargetView_16bit);
 					if (FAILED(hr))
 					{
 						return false;
@@ -1655,7 +1794,7 @@ namespace aegis
 
 				// シェーダーリソースビュー設定
 				{
-					hr = m_D3DDevice->CreateShaderResourceView(pTex, nullptr, &ShaderResourceView_16bit);
+					hr = mD3DDevice->CreateShaderResourceView(pTex, nullptr, &mShaderResourceView_16bit);
 					if (FAILED(hr))
 					{
 						FAILDE_ASSERT;
@@ -1663,6 +1802,9 @@ namespace aegis
 					}
 				}
 			}
+
+			SetName(mRenderTargetView_16bit.Get(), "RenderTargetView");
+			SetName(mShaderResourceView_16bit.Get(), "ShaderResourceView");
 		}
 
 		//ステンシル用テクスチャー作成
@@ -1678,7 +1820,7 @@ namespace aegis
 		td.BindFlags = D3D11_BIND_DEPTH_STENCIL;
 		td.CPUAccessFlags = 0;
 		td.MiscFlags = 0;
-		hr = m_D3DDevice->CreateTexture2D(&td, nullptr, &depthTexture);
+		hr = mD3DDevice->CreateTexture2D(&td, nullptr, &depthTexture);
 		if (FAILED(hr))
 		{
 			FAILDE_ASSERT;
@@ -1693,14 +1835,16 @@ namespace aegis
 		//dsvd.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2DMS;
 		dsvd.Texture2D.MipSlice = 0;
 		dsvd.Flags = 0;
-		hr = m_D3DDevice->CreateDepthStencilView(depthTexture, &dsvd, &m_DepthStencilView);
+		hr = mD3DDevice->CreateDepthStencilView(depthTexture, &dsvd, &mDepthStencilView);
 		if (FAILED(hr))
 		{
 			FAILDE_ASSERT;
 			return false;
 		}
 
-		m_ImmediateContext->OMSetRenderTargets(1, m_RenderTargetView.GetAddressOf(), m_DepthStencilView.Get());
+		mImmediateContext->OMSetRenderTargets(1, mRenderTargetView.GetAddressOf(), mDepthStencilView.Get());
+
+		SetName(mDepthStencilView.Get(), "DepthStencilView");
 
 		//// シェーダーリソースビュー設定
 		//{
@@ -1713,7 +1857,7 @@ namespace aegis
 		//	desc.Texture2D.MostDetailedMip = 0;
 		//	desc.Texture2D.MipLevels = 1;
 
-		//	hr = m_D3DDevice->CreateShaderResourceView(depthTexture, &desc, &srv);
+		//	hr = mD3DDevice->CreateShaderResourceView(depthTexture, &desc, &srv);
 		//	if (FAILED(hr))
 		//	{
 		//		FAILDE_ASSERT;
@@ -1731,7 +1875,7 @@ namespace aegis
 		vp.MaxDepth = 1.0f;
 		vp.TopLeftX = 0;
 		vp.TopLeftY = 0;
-		m_ImmediateContext->RSSetViewports(1, &vp);
+		mImmediateContext->RSSetViewports(1, &vp);
 
 
 
@@ -1742,9 +1886,9 @@ namespace aegis
 		rd.DepthClipEnable = TRUE;
 		rd.MultisampleEnable = FALSE;
 
-		m_D3DDevice->CreateRasterizerState(&rd, &m_RasterizerState);
+		mD3DDevice->CreateRasterizerState(&rd, &mRasterizerState);
 
-		m_ImmediateContext->RSSetState(m_RasterizerState.Get());
+		mImmediateContext->RSSetState(mRasterizerState.Get());
 
 
 
@@ -1767,8 +1911,8 @@ namespace aegis
 
 		float blendFactor[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
 		ID3D11BlendState* blendState = nullptr;
-		m_D3DDevice->CreateBlendState(&blendDesc, &blendState);
-		m_ImmediateContext->OMSetBlendState(blendState, blendFactor, 0xffffffff);
+		mD3DDevice->CreateBlendState(&blendDesc, &blendState);
+		mImmediateContext->OMSetBlendState(blendState, blendFactor, 0xffffffff);
 
 
 
@@ -1779,7 +1923,7 @@ namespace aegis
 		depthStencilDesc.DepthFunc = D3D11_COMPARISON_LESS_EQUAL;
 		depthStencilDesc.StencilEnable = FALSE;
 
-		hr = m_D3DDevice->CreateDepthStencilState(&depthStencilDesc, &m_DepthStateEnable);//豺ｱ蠎ｦ譛牙柑繧ｹ繝・・繝・
+		hr = mD3DDevice->CreateDepthStencilState(&depthStencilDesc, &mDepthStateEnable);//豺ｱ蠎ｦ譛牙柑繧ｹ繝・・繝・
 		if (FAILED(hr))
 		{
 			FAILDE_ASSERT;
@@ -1788,9 +1932,9 @@ namespace aegis
 
 		depthStencilDesc.DepthEnable = FALSE;
 		depthStencilDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ZERO;
-		m_D3DDevice->CreateDepthStencilState(&depthStencilDesc, &m_DepthStateDisable);//豺ｱ蠎ｦ辟｡蜉ｹ繧ｹ繝・・繝・
+		mD3DDevice->CreateDepthStencilState(&depthStencilDesc, &mDepthStateDisable);//豺ｱ蠎ｦ辟｡蜉ｹ繧ｹ繝・・繝・
 
-		m_ImmediateContext->OMSetDepthStencilState(m_DepthStateEnable.Get(), NULL);
+		mImmediateContext->OMSetDepthStencilState(mDepthStateEnable.Get(), NULL);
 
 
 
@@ -1807,9 +1951,9 @@ namespace aegis
 		samplerDesc.MaxLOD = D3D11_FLOAT32_MAX;
 
 		ID3D11SamplerState* samplerState = nullptr;
-		m_D3DDevice->CreateSamplerState(&samplerDesc, m_SamplerState.GetAddressOf());
+		mD3DDevice->CreateSamplerState(&samplerDesc, mSamplerState.GetAddressOf());
 
-		m_ImmediateContext->PSSetSamplers(0, 1, m_SamplerState.GetAddressOf());
+		mImmediateContext->PSSetSamplers(0, 1, mSamplerState.GetAddressOf());
 
 		{
 			// サンプラーステート設定
@@ -1825,9 +1969,9 @@ namespace aegis
 			samplerDesc.MaxLOD = D3D11_FLOAT32_MAX;
 
 			ID3D11SamplerState* samplerState = nullptr;
-			m_D3DDevice->CreateSamplerState(&samplerDesc, &samplerState);
+			mD3DDevice->CreateSamplerState(&samplerDesc, &samplerState);
 
-			m_ImmediateContext->PSSetSamplers(1, 1, &samplerState);
+			mImmediateContext->PSSetSamplers(1, 1, &samplerState);
 		}
 
 		return true;
@@ -1848,7 +1992,7 @@ namespace aegis
 
 
 		// Direct2Dデバイスの作成
-		hr = d2dFactory->CreateDevice(m_dxgiDev.Get(), &m_D2DDevice);
+		hr = d2dFactory->CreateDevice(mDxgiDev.Get(), &mD2DDevice);
 		d2dFactory->Release();
 		if (FAILED(hr))
 		{
@@ -1857,7 +2001,7 @@ namespace aegis
 		}
 
 		// Direct2Dデバイスコンテクストの作成
-		hr = m_D2DDevice->CreateDeviceContext(D2D1_DEVICE_CONTEXT_OPTIONS_ENABLE_MULTITHREADED_OPTIMIZATIONS, &m_D2DDeviceContext);
+		hr = mD2DDevice->CreateDeviceContext(D2D1_DEVICE_CONTEXT_OPTIONS_ENABLE_MULTITHREADED_OPTIMIZATIONS, &mD2DDeviceContext);
 		if (FAILED(hr))
 		{
 			FAILDE_ASSERT;
@@ -1866,11 +2010,11 @@ namespace aegis
 
 		// DPIの取得
 		float dx, dy;
-		m_D2DDeviceContext->GetDpi(&dx, &dy);
+		mD2DDeviceContext->GetDpi(&dx, &dy);
 
 		// レンダーターゲットの取得（DXGI）
 		IDXGISurface* surf = nullptr;
-		hr = m_SwapChain->GetBuffer(0, IID_PPV_ARGS(&surf));
+		hr = mSwapChain->GetBuffer(0, IID_PPV_ARGS(&surf));
 		if (FAILED(hr))
 		{
 			FAILDE_ASSERT;
@@ -1885,7 +2029,7 @@ namespace aegis
 				dx,
 				dy);
 
-		hr = m_D2DDeviceContext->CreateBitmapFromDxgiSurface(surf, &d2dProp, &m_D2DTargetBitmap);
+		hr = mD2DDeviceContext->CreateBitmapFromDxgiSurface(surf, &d2dProp, &mD2DTargetBitmap);
 		surf->Release();
 		if (FAILED(hr))
 		{
@@ -1894,10 +2038,10 @@ namespace aegis
 		}
 
 		// 描画するDirect2Dビットマップの設定
-		m_D2DDeviceContext->SetTarget(m_D2DTargetBitmap.Get());
+		mD2DDeviceContext->SetTarget(mD2DTargetBitmap.Get());
 
 		// DirectWriteのファクトリの作成
-		hr = DWriteCreateFactory(DWRITE_FACTORY_TYPE_SHARED, __uuidof(m_DwriteFactory), &m_DwriteFactory);
+		hr = DWriteCreateFactory(DWRITE_FACTORY_TYPE_SHARED, __uuidof(mDwriteFactory), &mDwriteFactory);
 		if (FAILED(hr))
 		{
 			FAILDE_ASSERT;
@@ -1935,7 +2079,7 @@ namespace aegis
 		}
 
 		// 文字の位置の設定
-		hr = m_DwriteTextFormat->SetTextAlignment(DWRITE_TEXT_ALIGNMENT_CENTER);
+		hr = mDwriteTextFormat->SetTextAlignment(DWRITE_TEXT_ALIGNMENT_CENTER);
 		if (FAILED(hr))
 		{
 			FAILDE_ASSERT;
@@ -1943,7 +2087,7 @@ namespace aegis
 		}
 
 		// パラグラフの指定
-		hr = m_DwriteTextFormat->SetParagraphAlignment(DWRITE_PARAGRAPH_ALIGNMENT_NEAR);
+		hr = mDwriteTextFormat->SetParagraphAlignment(DWRITE_PARAGRAPH_ALIGNMENT_NEAR);
 		if (FAILED(hr))
 		{
 			FAILDE_ASSERT;
@@ -1971,7 +2115,7 @@ namespace aegis
 		constant.ViewMatrix = XMMatrixTranspose(view);
 		constant.ProjectionMatrix = XMMatrixTranspose(projection);
 
-		m_ImmediateContext->UpdateSubresource(m_ConstantBuffer.Get(), 0, nullptr, &constant, 0, 0);
+		mImmediateContext->UpdateSubresource(mConstantBuffer.Get(), 0, nullptr, &constant, 0, 0);
 	}
 
 	void RenderDX11::Set_MatrixBuffer(const XMMATRIX world, const XMMATRIX view, const XMMATRIX projection)
@@ -1981,7 +2125,7 @@ namespace aegis
 		constant.ViewMatrix = XMMatrixTranspose(view);
 		constant.ProjectionMatrix = XMMatrixTranspose(projection);
 
-		m_ImmediateContext->UpdateSubresource(m_ConstantBuffer.Get(), 0, nullptr, &constant, 0, 0);
+		mImmediateContext->UpdateSubresource(mConstantBuffer.Get(), 0, nullptr, &constant, 0, 0);
 	}
 
 	void RenderDX11::Set_MatrixBuffer01(const XMVECTOR camera_pos)
@@ -1996,15 +2140,15 @@ namespace aegis
 		cons.Camera_Pos.z = pos.z;
 		cons.Camera_Pos.w = 0.0f;
 
-		m_ImmediateContext->UpdateSubresource(m_ConstantBuffer_02.Get(), 0, NULL, &cons, 0, 0);
+		mImmediateContext->UpdateSubresource(mConstantBuffer_02.Get(), 0, NULL, &cons, 0, 0);
 
-		m_ImmediateContext->VSSetConstantBuffers(5, 1, m_ConstantBuffer_02.GetAddressOf());
-		m_ImmediateContext->PSSetConstantBuffers(5, 1, m_ConstantBuffer_02.GetAddressOf());
+		mImmediateContext->VSSetConstantBuffers(5, 1, mConstantBuffer_02.GetAddressOf());
+		mImmediateContext->PSSetConstantBuffers(5, 1, mConstantBuffer_02.GetAddressOf());
 	}
 
 	void RenderDX11::SetMaterial(aegis::MATERIAL Material)
 	{
-		m_ImmediateContext->UpdateSubresource(m_MaterialBuffer.Get(), 0, nullptr, &Material, 0, 0);
+		mImmediateContext->UpdateSubresource(mMaterialBuffer.Get(), 0, nullptr, &Material, 0, 0);
 	}
 
 	void RenderDX11::SetLight(aegis::LIGHT* Light)
@@ -2013,7 +2157,7 @@ namespace aegis
 		vec = XMVector4Normalize(vec);
 		XMStoreFloat4(&Light->Direction, vec);
 
-		m_ImmediateContext->UpdateSubresource(m_LightBuffer.Get(), 0, nullptr, Light, 0, 0);
+		mImmediateContext->UpdateSubresource(mLightBuffer.Get(), 0, nullptr, Light, 0, 0);
 	}
 
 	void RenderDX11::Light_Identity()
@@ -2025,12 +2169,12 @@ namespace aegis
 		light.Ambient = COLOR(0.5f, 0.5f, 0.5f, 1.0f);
 		light.Specular = COLOR(1.0f, 1.0f, 1.0f, 1.0f);
 
-		m_ImmediateContext->UpdateSubresource(m_LightBuffer.Get(), 0, nullptr, &light, 0, 0);
+		mImmediateContext->UpdateSubresource(mLightBuffer.Get(), 0, nullptr, &light, 0, 0);
 	}
 
 	void RenderDX11::Set_RasterizerState()
 	{
-		m_ImmediateContext->RSSetState(m_RasterizerState.Get());
+		mImmediateContext->RSSetState(mRasterizerState.Get());
 	}
 
 	DepthStencilView* RenderDX11::CreateDepthStencilView(Texture2D* texture, DepthStencilViewDesc depthStencilViewDesc) const
@@ -2043,11 +2187,11 @@ namespace aegis
 		HRESULT hr = S_OK;
 		if (texture != nullptr)
 		{
-			hr = m_D3DDevice->CreateDepthStencilView(static_cast<Texture2DDX11*>(texture)->Texture.Get(), &desc, &depthStencilView);
+			hr = mD3DDevice->CreateDepthStencilView(static_cast<Texture2DDX11*>(texture)->Texture.Get(), &desc, &depthStencilView);
 		}
 		else
 		{
-			hr = m_D3DDevice->CreateDepthStencilView(nullptr ,&desc, depthStencilView.GetAddressOf());
+			hr = mD3DDevice->CreateDepthStencilView(nullptr ,&desc, depthStencilView.GetAddressOf());
 		}
 
 		if (FAILED(hr))
@@ -2081,23 +2225,23 @@ namespace aegis
 				}
 			}
 
-			m_ImmediateContext->OMSetRenderTargets(numViews, datas.data(), depthView);
+			mImmediateContext->OMSetRenderTargets(numViews, datas.data(), depthView);
 		}
 		else
 		{
 			ID3D11RenderTargetView* rtv = nullptr;
-			m_ImmediateContext->OMSetRenderTargets(numViews, &rtv, depthView);
+			mImmediateContext->OMSetRenderTargets(numViews, &rtv, depthView);
 		}
 	}
 
 	void RenderDX11::ClearRenderTargetView(aegis::RenderTargetView* renderTargetView, float32 color[4]) const
 	{
-		m_ImmediateContext->ClearRenderTargetView(static_cast<RenderTargetViewDX11*>(renderTargetView)->RenderTargetView.Get(), color);
+		mImmediateContext->ClearRenderTargetView(static_cast<RenderTargetViewDX11*>(renderTargetView)->RenderTargetView.Get(), color);
 	}
 
 	void RenderDX11::ClearDepthStencilView(DepthStencilView* depthStencilView, ClearFlag clearFlags, float32 depth, uint8 stencil) const
 	{
-		m_ImmediateContext->ClearDepthStencilView(static_cast<DepthStencilViewDX11*>(depthStencilView)->DepthStencilView.Get(), Details::Convert2ClearFlag(clearFlags), depth, stencil);
+		mImmediateContext->ClearDepthStencilView(static_cast<DepthStencilViewDX11*>(depthStencilView)->DepthStencilView.Get(), Details::Convert2ClearFlag(clearFlags), depth, stencil);
 	}
 
 	void RenderDX11::SetViewports(uint32 numViewports, ViewPort* const* viewports) const
@@ -2112,7 +2256,7 @@ namespace aegis
 			datas[i] = Details::Convert2ViewPort(*viewports[i]);
 		}
 
-		m_ImmediateContext->RSSetViewports(numViewports, datas.data());
+		mImmediateContext->RSSetViewports(numViewports, datas.data());
 	}
 
 	RasterizerState* RenderDX11::CreateRasterizeState(RasterizeState rasterizeState) const
@@ -2122,7 +2266,7 @@ namespace aegis
 		D3D11_RASTERIZER_DESC desc{};
 		desc = Details::Convert2RasterizeState(rasterizeState);
 
-		HRESULT hr = m_D3DDevice->CreateRasterizerState(&desc, &rasterizerState);
+		HRESULT hr = mD3DDevice->CreateRasterizerState(&desc, &rasterizerState);
 		if (FAILED(hr))
 			FAILDE_ASSERT;
 
@@ -2136,7 +2280,7 @@ namespace aegis
 	{
 		assert(nullptr != rasterizerState);
 
-		m_ImmediateContext->RSSetState(static_cast<RasterizerStateDX11*>(rasterizerState)->RasterizerState.Get());
+		mImmediateContext->RSSetState(static_cast<RasterizerStateDX11*>(rasterizerState)->RasterizerState.Get());
 	}
 
 	Buffer* RenderDX11::CreateBuffer(const BufferDesc& desc, const SubresourceData initData)
@@ -2158,13 +2302,13 @@ namespace aegis
 			subData.SysMemPitch = initData.SysMemPitch;
 			subData.SysMemSlicePitch = initData.SysMemSlicePitch;
 
-			HRESULT hr = m_D3DDevice->CreateBuffer(&bufferDesc, &subData, &buffer);
+			HRESULT hr = mD3DDevice->CreateBuffer(&bufferDesc, &subData, &buffer);
 			if (FAILED(hr))
 				FAILDE_ASSERT;
 		}
 		else
 		{
-			HRESULT hr = m_D3DDevice->CreateBuffer(&bufferDesc, nullptr, &buffer);
+			HRESULT hr = mD3DDevice->CreateBuffer(&bufferDesc, nullptr, &buffer);
 			if (FAILED(hr))
 				FAILDE_ASSERT;
 		}
@@ -2203,13 +2347,13 @@ namespace aegis
 			data.SysMemPitch = initialData->SysMemPitch;
 			data.SysMemSlicePitch = initialData->SysMemSlicePitch;
 
-			HRESULT hr = m_D3DDevice->CreateTexture2D(&textureDesc, &data, &texture);
+			HRESULT hr = mD3DDevice->CreateTexture2D(&textureDesc, &data, &texture);
 			if (FAILED(hr))
 				FAILDE_ASSERT;
 		}
 		else
 		{
-			HRESULT hr = m_D3DDevice->CreateTexture2D(&textureDesc, nullptr, &texture);
+			HRESULT hr = mD3DDevice->CreateTexture2D(&textureDesc, nullptr, &texture);
 			if (FAILED(hr))
 				FAILDE_ASSERT;
 		}
@@ -2242,13 +2386,13 @@ namespace aegis
 			data.SysMemPitch = initialData->SysMemPitch;
 			data.SysMemSlicePitch = initialData->SysMemSlicePitch;
 
-			HRESULT hr = m_D3DDevice->CreateTexture3D(&textureDesc, &data, &texture);
+			HRESULT hr = mD3DDevice->CreateTexture3D(&textureDesc, &data, &texture);
 			if (FAILED(hr))
 				FAILDE_ASSERT;
 		}
 		else
 		{
-			HRESULT hr = m_D3DDevice->CreateTexture3D(&textureDesc, nullptr, &texture);
+			HRESULT hr = mD3DDevice->CreateTexture3D(&textureDesc, nullptr, &texture);
 			if (FAILED(hr))
 				FAILDE_ASSERT;
 		}
@@ -2274,16 +2418,16 @@ namespace aegis
 		{
 			case TextureType::TEX1D:
 				tex1d = static_cast<Texture1DDX11*>(texture);
-				hr = m_D3DDevice->CreateShaderResourceView(tex1d->Texture.Get(), &desc, &shaderResourceView);
+				hr = mD3DDevice->CreateShaderResourceView(tex1d->Texture.Get(), &desc, &shaderResourceView);
 				
 				break;
 			case TextureType::TEX2D:
 				tex2d = static_cast<Texture2DDX11*>(texture);
-				hr = m_D3DDevice->CreateShaderResourceView(tex2d->Texture.Get(), &desc, &shaderResourceView);
+				hr = mD3DDevice->CreateShaderResourceView(tex2d->Texture.Get(), &desc, &shaderResourceView);
 				break;
 			case TextureType::TEX3D:
 				tex3d = static_cast<Texture3DDX11*>(texture);
-				hr = m_D3DDevice->CreateShaderResourceView(tex3d->Texture.Get(), &desc, &shaderResourceView);
+				hr = mD3DDevice->CreateShaderResourceView(tex3d->Texture.Get(), &desc, &shaderResourceView);
 				break;
 		}
 
@@ -2314,16 +2458,16 @@ namespace aegis
 			{
 			case TextureType::TEX1D:
 				tex1d = static_cast<Texture1DDX11*>(texture);
-				hr = m_D3DDevice->CreateUnorderedAccessView(tex1d->Texture.Get(), &desc, &unorderedAccessView);
+				hr = mD3DDevice->CreateUnorderedAccessView(tex1d->Texture.Get(), &desc, &unorderedAccessView);
 
 				break;
 			case TextureType::TEX2D:
 				tex2d = static_cast<Texture2DDX11*>(texture);
-				hr = m_D3DDevice->CreateUnorderedAccessView(tex2d->Texture.Get(), &desc, &unorderedAccessView);
+				hr = mD3DDevice->CreateUnorderedAccessView(tex2d->Texture.Get(), &desc, &unorderedAccessView);
 				break;
 			case TextureType::TEX3D:
 				tex3d = static_cast<Texture3DDX11*>(texture);
-				hr = m_D3DDevice->CreateUnorderedAccessView(tex3d->Texture.Get(), &desc, &unorderedAccessView);
+				hr = mD3DDevice->CreateUnorderedAccessView(tex3d->Texture.Get(), &desc, &unorderedAccessView);
 				break;
 			}
 
@@ -2336,16 +2480,16 @@ namespace aegis
 			{
 			case TextureType::TEX1D:
 				tex1d = static_cast<Texture1DDX11*>(texture);
-				hr = m_D3DDevice->CreateUnorderedAccessView(tex1d->Texture.Get(), nullptr, &unorderedAccessView);
+				hr = mD3DDevice->CreateUnorderedAccessView(tex1d->Texture.Get(), nullptr, &unorderedAccessView);
 
 				break;
 			case TextureType::TEX2D:
 				tex2d = static_cast<Texture2DDX11*>(texture);
-				hr = m_D3DDevice->CreateUnorderedAccessView(tex2d->Texture.Get(), nullptr, &unorderedAccessView);
+				hr = mD3DDevice->CreateUnorderedAccessView(tex2d->Texture.Get(), nullptr, &unorderedAccessView);
 				break;
 			case TextureType::TEX3D:
 				tex3d = static_cast<Texture3DDX11*>(texture);
-				hr = m_D3DDevice->CreateUnorderedAccessView(tex3d->Texture.Get(), nullptr, &unorderedAccessView);
+				hr = mD3DDevice->CreateUnorderedAccessView(tex3d->Texture.Get(), nullptr, &unorderedAccessView);
 				break;
 
 				if (FAILED(hr))
@@ -2363,7 +2507,7 @@ namespace aegis
 	{
 		if (unorderedAccessView != nullptr)
 		{
-			m_ImmediateContext->ClearUnorderedAccessViewFloat(static_cast<UnorderedAccessViewDX11*>(unorderedAccessView)->UnorderedAccessView.Get(), clearValues);
+			mImmediateContext->ClearUnorderedAccessViewFloat(static_cast<UnorderedAccessViewDX11*>(unorderedAccessView)->UnorderedAccessView.Get(), clearValues);
 		}
 	}
 
@@ -2371,7 +2515,7 @@ namespace aegis
 	{
 		if (unorderedAccessView != nullptr)
 		{
-			m_ImmediateContext->ClearUnorderedAccessViewUint(static_cast<UnorderedAccessViewDX11*>(unorderedAccessView)->UnorderedAccessView.Get(), clearValues);
+			mImmediateContext->ClearUnorderedAccessViewUint(static_cast<UnorderedAccessViewDX11*>(unorderedAccessView)->UnorderedAccessView.Get(), clearValues);
 		}
 	}
 
@@ -2387,12 +2531,12 @@ namespace aegis
 				datas[i] = static_cast<UnorderedAccessViewDX11*>(unorderedAccessViews[i])->UnorderedAccessView.Get();
 			}
 
-			m_ImmediateContext->CSSetUnorderedAccessViews(startSlot, numBuffers, datas.data(), nullptr);
+			mImmediateContext->CSSetUnorderedAccessViews(startSlot, numBuffers, datas.data(), nullptr);
 		}
 		else
 		{
 			ID3D11UnorderedAccessView* uav = nullptr;
-			m_ImmediateContext->CSSetUnorderedAccessViews(startSlot, numBuffers, &uav, nullptr);
+			mImmediateContext->CSSetUnorderedAccessViews(startSlot, numBuffers, &uav, nullptr);
 		}
 	}
 
@@ -2400,7 +2544,7 @@ namespace aegis
 	{
 		const uint32 offset = 0;
 		ID3D11Buffer* const vb[1] = { static_cast<BufferDX11*>(vertexBuffer)->Buffer.Get()};
-		m_ImmediateContext->IASetVertexBuffers(0, 1, vb, &stride, &offset);
+		mImmediateContext->IASetVertexBuffers(0, 1, vb, &stride, &offset);
 	}
 
 	void RenderDX11::SetVertexBuffers(Buffer* indexBuffer, Buffer* instancingBuffer, UINT size)
@@ -2408,19 +2552,19 @@ namespace aegis
 		uint32 stride[2] = { size, sizeof(XMMATRIX) };
 		uint32 offset[2] = { 0, 0 };
 		ID3D11Buffer* vb[2] = { static_cast<BufferDX11*>(indexBuffer)->Buffer.Get(), static_cast<BufferDX11*>(instancingBuffer)->Buffer.Get() };
-		m_ImmediateContext->IASetVertexBuffers(0, 2, vb, stride, offset);
+		mImmediateContext->IASetVertexBuffers(0, 2, vb, stride, offset);
 	}
 
 	void RenderDX11::SetIndexBuffer(Buffer* indexBuffer, Format format) const
 	{
-		m_ImmediateContext->IASetIndexBuffer(static_cast<BufferDX11*>(indexBuffer)->Buffer.Get(), Details::Convert2Format(format), 0);
+		mImmediateContext->IASetIndexBuffer(static_cast<BufferDX11*>(indexBuffer)->Buffer.Get(), Details::Convert2Format(format), 0);
 	}
 
 	PixelShader* RenderDX11::CreatePixelShader(void* shaderData, uint32 size) const
 	{
 		ComPtr<ID3D11PixelShader> shader;
 
-		HRESULT hr = m_D3DDevice->CreatePixelShader(shaderData, size, nullptr, &shader);
+		HRESULT hr = mD3DDevice->CreatePixelShader(shaderData, size, nullptr, &shader);
 		if (FAILED(hr))
 			FAILDE_ASSERT;
 
@@ -2434,7 +2578,7 @@ namespace aegis
 	{
 		ComPtr<ID3D11VertexShader> shader;
 
-		HRESULT hr = m_D3DDevice->CreateVertexShader(shaderData, size, nullptr, &shader);
+		HRESULT hr = mD3DDevice->CreateVertexShader(shaderData, size, nullptr, &shader);
 		if (FAILED(hr))
 			FAILDE_ASSERT;
 
@@ -2448,7 +2592,7 @@ namespace aegis
 	{
 		ComPtr<ID3D11ComputeShader> shader;
 
-		HRESULT hr = m_D3DDevice->CreateComputeShader(shaderData, size, nullptr, &shader);
+		HRESULT hr = mD3DDevice->CreateComputeShader(shaderData, size, nullptr, &shader);
 		if (FAILED(hr))
 			FAILDE_ASSERT;
 
@@ -2460,33 +2604,33 @@ namespace aegis
 
 	void RenderDX11::Draw(uint32 indexCount, uint32 startVertexLocation)
 	{
-		m_ImmediateContext->Draw(indexCount, startVertexLocation);
+		mImmediateContext->Draw(indexCount, startVertexLocation);
 	}
 
 	void RenderDX11::DrawIndexed(uint32 indexCount, uint32 startIndexLocation, int32 baseVertexLocation)
 	{
-		m_ImmediateContext->DrawIndexed(indexCount, startIndexLocation, baseVertexLocation);
+		mImmediateContext->DrawIndexed(indexCount, startIndexLocation, baseVertexLocation);
 	}
 
 	void RenderDX11::DrawIndexedInstanced(int32 indexCountPerInstance, uint32 instanceCount, uint32 startIndexLocation, int32 baseVertexLocation, uint32 startInstanceLocation)
 	{
-		m_ImmediateContext->DrawIndexedInstanced(indexCountPerInstance, instanceCount, startIndexLocation, baseVertexLocation, startInstanceLocation);
+		mImmediateContext->DrawIndexedInstanced(indexCountPerInstance, instanceCount, startIndexLocation, baseVertexLocation, startInstanceLocation);
 	}
 
 	void RenderDX11::Dispatch(uint32 threadGroupCountX, uint32 threadGroupCountY, uint32 threadGroupCountZ) const
 	{
-		m_ImmediateContext->Dispatch(threadGroupCountX, threadGroupCountY, threadGroupCountZ);
+		mImmediateContext->Dispatch(threadGroupCountX, threadGroupCountY, threadGroupCountZ);
 	}
 
 	void RenderDX11::CSSetShader(ComputeShader* pShader) const
 	{
 		if (pShader != nullptr)
 		{
-			m_ImmediateContext->CSSetShader(static_cast<ComputeShaderDX11*>(pShader)->Shader.Get(), nullptr, 0);
+			mImmediateContext->CSSetShader(static_cast<ComputeShaderDX11*>(pShader)->Shader.Get(), nullptr, 0);
 		}
 		else
 		{
-			m_ImmediateContext->CSSetShader(nullptr, nullptr, 0);
+			mImmediateContext->CSSetShader(nullptr, nullptr, 0);
 		}
 	}
 
@@ -2502,12 +2646,12 @@ namespace aegis
 				datas[i] = static_cast<BufferDX11*>(pBuffers[i])->Buffer.Get();
 			}
 
-			m_ImmediateContext->VSSetConstantBuffers(startSlot, numBuffers, datas.data());
+			mImmediateContext->VSSetConstantBuffers(startSlot, numBuffers, datas.data());
 		}
 		else
 		{
 			ID3D11Buffer* buffer = nullptr;
-			m_ImmediateContext->VSSetConstantBuffers(startSlot, numBuffers, &buffer);
+			mImmediateContext->VSSetConstantBuffers(startSlot, numBuffers, &buffer);
 		}
 	}
 
@@ -2525,12 +2669,12 @@ namespace aegis
 				datas[i] = static_cast<BufferDX11*>(pBuffers[i])->Buffer.Get();
 			}
 
-			m_ImmediateContext->PSSetConstantBuffers(startSlot, numBuffers, datas.data());
+			mImmediateContext->PSSetConstantBuffers(startSlot, numBuffers, datas.data());
 		}
 		else
 		{
 			ID3D11Buffer* buffer = nullptr;
-			m_ImmediateContext->PSSetConstantBuffers(startSlot, numBuffers, &buffer);
+			mImmediateContext->PSSetConstantBuffers(startSlot, numBuffers, &buffer);
 		}
 	}
 
@@ -2548,12 +2692,12 @@ namespace aegis
 				datas[i] = static_cast<BufferDX11*>(pBuffers[i])->Buffer.Get();
 			}
 
-			m_ImmediateContext->CSSetConstantBuffers(startSlot, numBuffers, datas.data());
+			mImmediateContext->CSSetConstantBuffers(startSlot, numBuffers, datas.data());
 		}
 		else
 		{
 			ID3D11Buffer* buffer = nullptr;
-			m_ImmediateContext->CSSetConstantBuffers(startSlot, numBuffers, &buffer);
+			mImmediateContext->CSSetConstantBuffers(startSlot, numBuffers, &buffer);
 		}
 	}
 
@@ -2569,12 +2713,12 @@ namespace aegis
 				datas[i] = static_cast<ShaderResourceViewDX11*>(shaderResourceViews[i])->ShaderResourceView.Get();
 			}
 
-			m_ImmediateContext->PSSetShaderResources(startSlot, numBuffers, datas.data());
+			mImmediateContext->PSSetShaderResources(startSlot, numBuffers, datas.data());
 		}
 		else
 		{
 			ID3D11ShaderResourceView* srv = nullptr;
-			m_ImmediateContext->PSSetShaderResources(startSlot, numBuffers, &srv);
+			mImmediateContext->PSSetShaderResources(startSlot, numBuffers, &srv);
 		}
 	}
 
@@ -2590,12 +2734,12 @@ namespace aegis
 				datas[i] = static_cast<ShaderResourceViewDX11*>(shaderResourceViews[i])->ShaderResourceView.Get();
 			}
 
-			m_ImmediateContext->CSSetShaderResources(startSlot, numBuffers, datas.data());
+			mImmediateContext->CSSetShaderResources(startSlot, numBuffers, datas.data());
 		}
 		else
 		{
 			ID3D11ShaderResourceView* srv = nullptr;
-			m_ImmediateContext->CSSetShaderResources(startSlot, numBuffers, &srv);
+			mImmediateContext->CSSetShaderResources(startSlot, numBuffers, &srv);
 		}
 	}
 
@@ -2610,7 +2754,7 @@ namespace aegis
 
 		ComPtr<ID3D11SamplerState> samplerState;
 
-		HRESULT hr = m_D3DDevice->CreateSamplerState(&samDesc, &samplerState);
+		HRESULT hr = mD3DDevice->CreateSamplerState(&samDesc, &samplerState);
 		if (FAILED(hr))
 			FAILDE_ASSERT;
 
@@ -2632,7 +2776,7 @@ namespace aegis
 			datas[i] = static_cast<SamplerStateDX11*>(ppSamplers[i])->Sampler.Get();
 		}
 
-		m_ImmediateContext->PSSetSamplers(startSlot, numSamplers, datas.data());
+		mImmediateContext->PSSetSamplers(startSlot, numSamplers, datas.data());
 	}
 
 	void RenderDX11::CSSetSamplers(UINT startSlot, UINT numSamplers, SamplerState* const* ppSamplers)
@@ -2646,19 +2790,19 @@ namespace aegis
 			datas[i] = static_cast<SamplerStateDX11*>(ppSamplers[i])->Sampler.Get();
 		}
 
-		m_ImmediateContext->CSSetSamplers(startSlot, numSamplers, datas.data());
+		mImmediateContext->CSSetSamplers(startSlot, numSamplers, datas.data());
 	}
 
 	void RenderDX11::SetPrimitiveTopology(PrimitiveTopology primitiveTopology)
 	{
-		m_ImmediateContext->IASetPrimitiveTopology(Details::Convert2Topology(primitiveTopology));
+		mImmediateContext->IASetPrimitiveTopology(Details::Convert2Topology(primitiveTopology));
 	}
 
 	void RenderDX11::UpdateSubresource(Buffer* buffer, void* pData)
 	{
 		assert(nullptr != pData);
 
-		m_ImmediateContext->UpdateSubresource(static_cast<BufferDX11*>(buffer)->Buffer.Get(), 0, nullptr, pData, 0, 0);
+		mImmediateContext->UpdateSubresource(static_cast<BufferDX11*>(buffer)->Buffer.Get(), 0, nullptr, pData, 0, 0);
 	}
 
 	void RenderDX11::Map(Buffer* buffer, void* pData, uint32 dataSize)
@@ -2670,16 +2814,16 @@ namespace aegis
 		switch (buffer->mResourceType)
 		{
 			case GpuResourceType::Buffer:
-				m_ImmediateContext->Map(static_cast<BufferDX11*>(buffer)->Buffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &msr);
+				mImmediateContext->Map(static_cast<BufferDX11*>(buffer)->Buffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &msr);
 				break;
 			case GpuResourceType::Texture1D:
-				m_ImmediateContext->Map(static_cast<Texture1DDX11*>(buffer)->Texture.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &msr);
+				mImmediateContext->Map(static_cast<Texture1DDX11*>(buffer)->Texture.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &msr);
 				break;
 			case GpuResourceType::Texture2D:
-				m_ImmediateContext->Map(static_cast<Texture2DDX11*>(buffer)->Texture.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &msr);
+				mImmediateContext->Map(static_cast<Texture2DDX11*>(buffer)->Texture.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &msr);
 				break;
 			case GpuResourceType::Texture3D:
-				m_ImmediateContext->Map(static_cast<Texture3DDX11*>(buffer)->Texture.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &msr);
+				mImmediateContext->Map(static_cast<Texture3DDX11*>(buffer)->Texture.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &msr);
 				break;
 
 			default:
@@ -2696,16 +2840,16 @@ namespace aegis
 		switch (buffer->mResourceType)
 		{
 			case GpuResourceType::Buffer:
-				m_ImmediateContext->Map(static_cast<BufferDX11*>(buffer)->Buffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &msr);
+				mImmediateContext->Map(static_cast<BufferDX11*>(buffer)->Buffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &msr);
 				break;
 			case GpuResourceType::Texture1D:
-				m_ImmediateContext->Map(static_cast<Texture1DDX11*>(buffer)->Texture.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &msr);
+				mImmediateContext->Map(static_cast<Texture1DDX11*>(buffer)->Texture.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &msr);
 				break;
 			case GpuResourceType::Texture2D:
-				m_ImmediateContext->Map(static_cast<Texture2DDX11*>(buffer)->Texture.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &msr);
+				mImmediateContext->Map(static_cast<Texture2DDX11*>(buffer)->Texture.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &msr);
 				break;
 			case GpuResourceType::Texture3D:
-				m_ImmediateContext->Map(static_cast<Texture3DDX11*>(buffer)->Texture.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &msr);
+				mImmediateContext->Map(static_cast<Texture3DDX11*>(buffer)->Texture.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &msr);
 				break;
 
 			default:
@@ -2726,16 +2870,16 @@ namespace aegis
 		switch (buffer->mResourceType)
 		{
 			case GpuResourceType::Buffer:
-				m_ImmediateContext->Unmap(static_cast<BufferDX11*>(buffer)->Buffer.Get(), 0);
+				mImmediateContext->Unmap(static_cast<BufferDX11*>(buffer)->Buffer.Get(), 0);
 				break;
 			case GpuResourceType::Texture1D:
-				m_ImmediateContext->Unmap(static_cast<Texture1DDX11*>(buffer)->Texture.Get(), 0);
+				mImmediateContext->Unmap(static_cast<Texture1DDX11*>(buffer)->Texture.Get(), 0);
 				break;
 			case GpuResourceType::Texture2D:
-				m_ImmediateContext->Unmap(static_cast<Texture2DDX11*>(buffer)->Texture.Get(), 0);
+				mImmediateContext->Unmap(static_cast<Texture2DDX11*>(buffer)->Texture.Get(), 0);
 				break;
 			case GpuResourceType::Texture3D:
-				m_ImmediateContext->Unmap(static_cast<Texture3DDX11*>(buffer)->Texture.Get(), 0);
+				mImmediateContext->Unmap(static_cast<Texture3DDX11*>(buffer)->Texture.Get(), 0);
 				break;
 
 			default:
@@ -2746,9 +2890,9 @@ namespace aegis
 
 	void RenderDX11::Set_Shader(const aegis::SHADER_INDEX_V v_index, const aegis::SHADER_INDEX_P p_index)
 	{
-		m_ImmediateContext->VSSetShader(m_VertexShader[v_index].Get(), nullptr, 0);
+		mImmediateContext->VSSetShader(mVertexShader[v_index].Get(), nullptr, 0);
 
-		m_ImmediateContext->PSSetShader(m_PixelShader[p_index].Get(), nullptr, 0);
+		mImmediateContext->PSSetShader(mPixelShader[p_index].Get(), nullptr, 0);
 	}
 
 	void RenderDX11::Set_InputLayout(const INPUTLAYOUT InputLayout)
@@ -2757,15 +2901,15 @@ namespace aegis
 		switch ((int)InputLayout)
 		{
 			case (int)INPUTLAYOUT::DEFAULT:
-				m_ImmediateContext->IASetInputLayout(m_VertexLayout[(int)INPUTLAYOUT::DEFAULT].Get());
+				mImmediateContext->IASetInputLayout(mVertexLayout[(int)INPUTLAYOUT::DEFAULT].Get());
 				break;
 
 			case (int)INPUTLAYOUT::ANIMATION:
-				m_ImmediateContext->IASetInputLayout(m_VertexLayout[(int)INPUTLAYOUT::ANIMATION].Get());
+				mImmediateContext->IASetInputLayout(mVertexLayout[(int)INPUTLAYOUT::ANIMATION].Get());
 				break;
 
 			case (int)INPUTLAYOUT::INSTANCING:
-				m_ImmediateContext->IASetInputLayout(m_VertexLayout[(int)INPUTLAYOUT::INSTANCING].Get());
+				mImmediateContext->IASetInputLayout(mVertexLayout[(int)INPUTLAYOUT::INSTANCING].Get());
 				break;
 		}
 	}
@@ -2777,19 +2921,19 @@ namespace aegis
 		// デフォルトのレンダーターゲットビューに切り替え
 		// デフォルトのレンダーターゲットビューに切り替え
 		//auto render_target = RenderTargetView[0].Get();
-		//m_ImmediateContext->OMSetRenderTargets(1, &render_target, m_DepthStencilView.Get());
-		//m_ImmediateContext->ClearRenderTargetView(render_target, clearColor);
+		//mImmediateContext->OMSetRenderTargets(1, &render_target, mDepthStencilView.Get());
+		//mImmediateContext->ClearRenderTargetView(render_target, clearColor);
 		//
-		////m_ImmediateContext->OMSetRenderTargets(1, &m_RenderTargetView, m_DepthStencilView);
-		////m_ImmediateContext->ClearRenderTargetView(m_RenderTargetView, clearColor);
-		//m_ImmediateContext->ClearDepthStencilView(m_DepthStencilView.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
+		////mImmediateContext->OMSetRenderTargets(1, &mRenderTargetView, mDepthStencilView);
+		////mImmediateContext->ClearRenderTargetView(mRenderTargetView, clearColor);
+		//mImmediateContext->ClearDepthStencilView(mDepthStencilView.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 
 		{
-			auto render_target = RenderTargetView_16bit.Get();
+			auto render_target = mRenderTargetView_16bit.Get();
 
-			m_ImmediateContext->OMSetRenderTargets(1, &render_target, m_DepthStencilView.Get());//
-			m_ImmediateContext->ClearRenderTargetView(RenderTargetView_16bit.Get(), clearColor);//
-			m_ImmediateContext->ClearDepthStencilView(m_DepthStencilView.Get(), D3D11_CLEAR_DEPTH, 1.0f, 0);
+			mImmediateContext->OMSetRenderTargets(1, &render_target, mDepthStencilView.Get());//
+			mImmediateContext->ClearRenderTargetView(mRenderTargetView_16bit.Get(), clearColor);//
+			mImmediateContext->ClearDepthStencilView(mDepthStencilView.Get(), D3D11_CLEAR_DEPTH, 1.0f, 0);
 		}
 
 		{
@@ -2802,7 +2946,7 @@ namespace aegis
 			dxViewport.TopLeftX = 0.0f;
 			dxViewport.TopLeftY = 0.0f;
 
-			m_ImmediateContext->RSSetViewports(1, &dxViewport);
+			mImmediateContext->RSSetViewports(1, &dxViewport);
 		}
 
 		Set_Shader();
@@ -2810,8 +2954,8 @@ namespace aegis
 
 		SamplerState* sampler = CManager::Get_Instance()->Get_ShadowMap()->getSampler();
 
-		ID3D11SamplerState* pSS[] = { m_SamplerState.Get(), static_cast<SamplerStateDX11*>(sampler)->Sampler.Get()};
-		m_ImmediateContext->PSSetSamplers(0, 2, pSS);
+		ID3D11SamplerState* pSS[] = { mSamplerState.Get(), static_cast<SamplerStateDX11*>(sampler)->Sampler.Get()};
+		mImmediateContext->PSSetSamplers(0, 2, pSS);
 
 		SetDepthEnable(true);
 	}
@@ -2820,14 +2964,14 @@ namespace aegis
 	{
 		float clearColor[4] = { 0.5f, 0.5f, 0.5f, 1.0f };
 
-		ID3D11RenderTargetView* rtv[3] = { RenderTargetView[0].Get(), RenderTargetView[1].Get(), RenderTargetView[2].Get() };
+		ID3D11RenderTargetView* rtv[3] = { mRenderTargetViews[0].Get(), mRenderTargetViews[1].Get(), mRenderTargetViews[2].Get() };
 
 		// デフォルトのレンダーターゲットビューに切り替え
-		m_ImmediateContext->OMSetRenderTargets(3, rtv, m_DepthStencilView.Get());
-		m_ImmediateContext->ClearRenderTargetView(rtv[0], clearColor);
-		m_ImmediateContext->ClearRenderTargetView(rtv[1], clearColor);
-		m_ImmediateContext->ClearRenderTargetView(rtv[2], clearColor);
-		m_ImmediateContext->ClearDepthStencilView(m_DepthStencilView.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
+		mImmediateContext->OMSetRenderTargets(3, rtv, mDepthStencilView.Get());
+		mImmediateContext->ClearRenderTargetView(rtv[0], clearColor);
+		mImmediateContext->ClearRenderTargetView(rtv[1], clearColor);
+		mImmediateContext->ClearRenderTargetView(rtv[2], clearColor);
+		mImmediateContext->ClearDepthStencilView(mDepthStencilView.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 
 		{
 			// ビューポート設定
@@ -2841,7 +2985,7 @@ namespace aegis
 
 			D3D11_VIEWPORT viewport[3] = { dxViewport, dxViewport, dxViewport };
 
-			m_ImmediateContext->RSSetViewports(3, viewport);
+			mImmediateContext->RSSetViewports(3, viewport);
 		}
 
 		Set_Shader();
@@ -2858,7 +3002,7 @@ namespace aegis
 				sprite.get()->SetSize(Vector4(SCREEN_HEIGHT * 0.5f, SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.5f, SCREEN_WIDTH * 0.5f));
 
 				ShaderResourceViewDX11* buf = aegis::allocatorWrapper::allocate<ShaderResourceViewDX11>();
-				buf->ShaderResourceView = ShaderResourceView_16bit;
+				buf->ShaderResourceView = mShaderResourceView_16bit;
 
 				sprite.get()->Set(buf);
 
@@ -2869,21 +3013,21 @@ namespace aegis
 		);
 
 		float ClearColor[4] = { 0.5f, 0.5f, 0.5f, 1.0f };
-		m_ImmediateContext->OMSetRenderTargets(1, m_RenderTargetView.GetAddressOf(), m_DepthStencilView.Get());
-		m_ImmediateContext->ClearRenderTargetView(m_RenderTargetView.Get(), ClearColor);//
-		m_ImmediateContext->ClearDepthStencilView(m_DepthStencilView.Get(), D3D11_CLEAR_DEPTH, 1.0f, 0);
+		mImmediateContext->OMSetRenderTargets(1, mRenderTargetView.GetAddressOf(), mDepthStencilView.Get());
+		mImmediateContext->ClearRenderTargetView(mRenderTargetView.Get(), ClearColor);//
+		mImmediateContext->ClearDepthStencilView(mDepthStencilView.Get(), D3D11_CLEAR_DEPTH, 1.0f, 0);
 	
 		sprite.get()->Draw();
 	}
 
 	HRESULT RenderDX11::CreateTextFormat(const TEXT_FOMAT& fomat)
 	{
-		SAFE_RELEASE(m_DwriteTextFormat)
+		SAFE_RELEASE(mDwriteTextFormat)
 
 			std::wstring font_name = stringTowstring(fomat.FontName);
 
 		// テキストフォーマットの作成
-		HRESULT hr = m_DwriteFactory->CreateTextFormat(
+		HRESULT hr = mDwriteFactory->CreateTextFormat(
 			font_name.c_str(),
 			nullptr,
 			fomat.Weight,
@@ -2891,7 +3035,7 @@ namespace aegis
 			fomat.Stretch,
 			fomat.FontSize,
 			L"",
-			&m_DwriteTextFormat
+			&mDwriteTextFormat
 		);
 
 		return hr;
@@ -2899,20 +3043,20 @@ namespace aegis
 
 	HRESULT RenderDX11::CreateTextLayout(const TEXT_LAYOUT& layout)
 	{
-		SAFE_RELEASE(m_TextLayout)
+		SAFE_RELEASE(mTextLayout)
 
 		// テキストレイアウトを作成
 		std::wstring drawText;
 
 		drawText = stringTowstring(layout.Text);
 
-		HRESULT hr = m_DwriteFactory->CreateTextLayout(
+		HRESULT hr = mDwriteFactory->CreateTextLayout(
 			drawText.c_str(),
 			drawText.size(),
-			m_DwriteTextFormat.Get(),
+			mDwriteTextFormat.Get(),
 			layout.Width,
 			layout.Height,
-			&m_TextLayout
+			&mTextLayout
 		);
 
 		return hr;

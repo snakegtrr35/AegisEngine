@@ -142,8 +142,8 @@ namespace aegis
 		void Begin() override;
 		void End() override;
 
-		ID3D11Device* GetDevice() const { return m_D3DDevice.Get(); }
-		ID3D11DeviceContext* GetDeviceContext() const { return m_ImmediateContext.Get(); }
+		ID3D11Device* GetDevice() const { return mD3DDevice.Get(); }
+		ID3D11DeviceContext* GetDeviceContext() const { return mImmediateContext.Get(); }
 
 		void SetBlendState(BlendDesc* blendState = nullptr, bool flag = false) override;
 
@@ -260,61 +260,59 @@ namespace aegis
 		HRESULT CreateTextLayout(const TEXT_LAYOUT& layout);
 
 		ID3D11ShaderResourceView* Get() {
-			return ShaderResourceView[0].Get();
+			return mShaderResourceViews[0].Get();
 		}
 
 		ID3D11ShaderResourceView* Get2() {
-			return ShaderResourceView[1].Get();
+			return mShaderResourceViews[1].Get();
 		}
 
 		ID3D11ShaderResourceView* Get3() {
-			return ShaderResourceView[2].Get();
+			return mShaderResourceViews[2].Get();
 		}
 
 		ID3D11ShaderResourceView* Get_Texture() {
-			return ShaderResourceView_16bit.Get();
+			return mShaderResourceView_16bit.Get();
 		}
 
 	private:
-		D3D_FEATURE_LEVEL											m_FeatureLevel = D3D_FEATURE_LEVEL_11_0;
-		ComPtr<ID3D11Device>										m_D3DDevice;
-		ComPtr<ID3D11DeviceContext>									m_ImmediateContext;
-		ComPtr<IDXGISwapChain1>										m_SwapChain;
-		ComPtr<ID3D11RenderTargetView>								m_RenderTargetView;
+		ComPtr<ID3D11Device>										mD3DDevice;
+		ComPtr<ID3D11DeviceContext>									mImmediateContext;
+		ComPtr<IDXGISwapChain1>										mSwapChain;
+		ComPtr<ID3D11RenderTargetView>								mRenderTargetView;
 
-		ComPtr<ID3D11RenderTargetView>								RenderTargetView_16bit;
-		ComPtr<ID3D11ShaderResourceView>							ShaderResourceView_16bit;
+		ComPtr<ID3D11RenderTargetView>								mRenderTargetView_16bit;
+		ComPtr<ID3D11ShaderResourceView>							mShaderResourceView_16bit;
 
-		ComPtr<ID3D11RenderTargetView>								RenderTargetView[3];
-		ComPtr<ID3D11ShaderResourceView>							ShaderResourceView[3];
-		ComPtr<ID3D11DepthStencilView>								m_DepthStencilView;
+		ComPtr<ID3D11RenderTargetView>								mRenderTargetViews[3];
+		ComPtr<ID3D11ShaderResourceView>							mShaderResourceViews[3];
+		ComPtr<ID3D11DepthStencilView>								mDepthStencilView;
 
-		ComPtr<ID2D1Device>											m_D2DDevice;
-		ComPtr<ID2D1DeviceContext>									m_D2DDeviceContext;
-		ComPtr<ID2D1Bitmap1>										m_D2DTargetBitmap;
-		ComPtr<IDXGIDevice1>										m_dxgiDev;
+		ComPtr<ID2D1Device>											mD2DDevice;
+		ComPtr<ID2D1DeviceContext>									mD2DDeviceContext;
+		ComPtr<ID2D1Bitmap1>										mD2DTargetBitmap;
+		ComPtr<IDXGIDevice1>										mDxgiDev;
 
-		ComPtr<IDWriteTextFormat>									m_DwriteTextFormat;
-		ComPtr<IDWriteTextLayout>									m_TextLayout;
-		ComPtr<IDWriteFactory>										m_DwriteFactory;
+		ComPtr<IDWriteTextFormat>									mDwriteTextFormat;
+		ComPtr<IDWriteTextLayout>									mTextLayout;
+		ComPtr<IDWriteFactory>										mDwriteFactory;
 
-		unordered_map<aegis::SHADER_INDEX_V, ComPtr<ID3D11VertexShader>>	m_VertexShader;
-		unordered_map<aegis::SHADER_INDEX_P, ComPtr<ID3D11PixelShader>>	m_PixelShader;
+		unordered_map<aegis::SHADER_INDEX_V, ComPtr<ID3D11VertexShader>> mVertexShader;
+		unordered_map<aegis::SHADER_INDEX_P, ComPtr<ID3D11PixelShader>>	mPixelShader;
 
-		ComPtr<ID3D11DepthStencilState>								m_DepthStateEnable;
-		ComPtr<ID3D11DepthStencilState>								m_DepthStateDisable;
-		ComPtr<ID3D11RasterizerState>								m_RasterizerState;
+		ComPtr<ID3D11DepthStencilState>								mDepthStateEnable;
+		ComPtr<ID3D11DepthStencilState>								mDepthStateDisable;
+		ComPtr<ID3D11RasterizerState>								mRasterizerState;
 
-		ComPtr<ID3D11SamplerState>									m_SamplerState;
+		ComPtr<ID3D11SamplerState>									mSamplerState;
 
-		ComPtr<ID3D11InputLayout>									m_VertexLayout[3];
-		ComPtr<ID3D11Buffer>										m_MaterialBuffer;
-		ComPtr<ID3D11Buffer>										m_LightBuffer;
-		ComPtr<ID3D11Buffer>										m_Bone_Matrix_Buffer;
-		ComPtr<ID3D11Buffer>										m_ConstantBuffer;
-		ComPtr<ID3D11Buffer>										m_ConstantBuffer_02;
+		ComPtr<ID3D11InputLayout>									mVertexLayout[3];
+		ComPtr<ID3D11Buffer>										mMaterialBuffer;
+		ComPtr<ID3D11Buffer>										mLightBuffer;
+		ComPtr<ID3D11Buffer>										mConstantBuffer;
+		ComPtr<ID3D11Buffer>										mConstantBuffer_02;
 
-		bool														Stand_By_Enable = false;
+		bool														mStandByEnable = false;
 		std::once_flag												mOnceFlag;
 
 		/**
