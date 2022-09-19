@@ -8,179 +8,74 @@
 #ifndef TIMER_H
 #define TIMER_H
 
-/**
-* @brief タイマークラス
-* @details ゲームのFPSに依存しない(ほぼ)タイマー
-*/
-class TIMER {
-private:
-	static LARGE_INTEGER start;		//! 開始時間が入っている変数
-	static LARGE_INTEGER end;		//! 現在時間が入っている変数
-	static LARGE_INTEGER frep;		//! タイム関係の値が入っている変数
+#include <chrono>
 
-	static LARGE_INTEGER delta_start;		//!
-	static LARGE_INTEGER delta_end;			//!
-
-	static double time;
-
-	//static deque<double> FPSs;
-
-	TIMER() {}
-
-public:
-
-	static aegis::deque<double> FPSs;
-	static double FPS;
-
+namespace aegis
+{
 	/**
-	* @brief 初期化の関数
+	* @brief タイマークラス
+	* @details ゲームのFPSに依存しない(ほぼ)タイマー
 	*/
-	static void Init() {
+	class Timer {
+	public:
+		/**
+		* @brief 初期化の関数
+		*/
+		static void Init();
 
-		memset(&start, 0, sizeof(start));
-		memset(&end, 0, sizeof(end));
-		memset(&frep, 0, sizeof(frep));
+		/**
+		* @brief 時間の取得関数
+		* @return DWORD ゲーム開始時からの経過時刻
+		*/
+		static uint32 Get_Time();
 
-		memset(&delta_start, 0, sizeof(delta_start));
-		memset(&delta_end, 0, sizeof(delta_end));
+		/**
+		* @brief 時間の取得関数(単位 秒)
+		* @return DWORD ゲーム開始時からの経過時刻(単位 秒)
+		*/
+		static uint32 Get_Time_Sec();
 
-		QueryPerformanceFrequency(&frep);
+		/**
+		* @brief 時間の取得関数((単位 ミリ秒))
+		* @param[in] digit 小数点以下の桁数
+		* @return DWORD ゲーム開始時からの経過時刻(単位 ミリ秒)
+		*/
+		static uint32 Get_Time_Mili();
 
-		QueryPerformanceCounter(&start);
+		static void Update();
 
-		QueryPerformanceCounter(&delta_start);
-	}
+		static float64 Get_DeltaTime() { return time.count(); }
 
-	/**
-	* @brief 時間の取得関数
-	* @return DWORD ゲーム開始時からの経過時刻
-	*/
-	static DWORD Get_Time() {
-		QueryPerformanceCounter(&end);
-		return (DWORD)(end.QuadPart - start.QuadPart);
-	}
+		//static float64 Get_FPS() { return FPS; }
+		static float64 Get_FPS();
 
-	/**
-	* @brief 時間の取得関数(単位 秒)
-	* @return DWORD ゲーム開始時からの経過時刻(単位 秒)
-	*/
-	static DWORD Get_Time_Sec() {
-		QueryPerformanceCounter(&end);
-		return (DWORD)( (end.QuadPart - start.QuadPart) / frep.QuadPart );
-	}
+	private:
+		//static LARGE_INTEGER start;		//! 開始時間が入っている変数
+		//static LARGE_INTEGER end;		//! 現在時間が入っている変数
+		//static LARGE_INTEGER frep;		//! タイム関係の値が入っている変数
+		//
+		//static LARGE_INTEGER delta_start;		//!
+		//static LARGE_INTEGER delta_end;			//!
 
-	/**
-	* @brief 時間の取得関数((単位 ミリ秒))
-	* @param[in] digit 小数点以下の桁数
-	* @return DWORD ゲーム開始時からの経過時刻(単位 ミリ秒)
-	*/
-	static DWORD Get_Time_Mili(const unsigned char digit = 1) {
-		QueryPerformanceCounter(&end);
+		using Time = std::chrono::high_resolution_clock::time_point;
+		using milliseconds = std::chrono::nanoseconds;
 
-		return (DWORD)( (end.QuadPart - start.QuadPart) * std::pow(10, digit) / frep.QuadPart );
-	}
+		static Time start;	//! 開始時間が入っている変数
+		static Time last;	//! 開始時間が入っている変数
+		static milliseconds time;
 
-	static void Update() {
-		static bool flag = true;
-		static char cnt = 0;
+		//static deque<double> FPSs;
 
-		if (flag)
-		{
-			QueryPerformanceCounter(&delta_start);
-			flag = false;
-		}
+		static aegis::queue<float64> FPSs;
+		static float64 FPS;
 
-		QueryPerformanceCounter(&delta_end);
+		static aegis::list<milliseconds> mTimeList;
+		static int32 mTimeListCnt;
+		static milliseconds mSumTimes;               // 共通部分の合計値
 
-		//if (0 == (cnt % 10))
-		{
-			time = ((delta_end.QuadPart - delta_start.QuadPart) * 1000.0 / frep.QuadPart) * 0.001;
-			//time = 1 / (((delta_end.QuadPart - delta_start.QuadPart) * 1000.0 / frep.QuadPart) * 0.001); //1フレームレート(ms)
-
-			{
-				double fps = 1.0 / time;
-
-				fps = std::floor(fps * 10.0) / 10.0;
-
-				if (0.0 < fps)
-				{
-					aegis::string s(std::to_string(fps).c_str());
-
-					size_t i = s.find_first_of(".");
-
-					if (i <= s.size())
-					{
-						s.erase(i + 2, 5);
-
-						FPSs.emplace_front(std::stod(s.c_str()));
-
-						if (10 <= FPSs.size())
-						{
-							FPSs.pop_back();
-						}
-
-						if (5 <= cnt)
-						{
-							double d = accumulate(FPSs.begin(), FPSs.end(), 0);
-
-							FPS = std::floor((d / FPSs.size()) * 10.0) / 10.0;
-
-							cnt = 0;
-						}
-
-						cnt++;
-					}
-				}
-			}
-		}
-		delta_start = delta_end;
-	}
-
-	static double Get_DeltaTime() {
-		return time;
-	}
-
-	static double Get_FPS() {
-		return FPS;
-	}
-};
-
-
-
-/**
-* @brief クロックタイマークラス
-* @details ゲームのFPSに依存するタイマー
-*/
-class CLOCK_TIMER {
-private:
-	static DWORD Time;		//! タイムが入る変数
-
-	CLOCK_TIMER() {}
-
-protected:
-
-public:
-
-	/**
-	* @brief 初期化の関数
-	*/
-	static void Init() {
-		Time = 0;
+		Timer();
+		~Timer() = default;
 	};
-
-	/**
-	* @brief タイマーの更新関数
-	*/
-	static void Update() {
-		Time++;
-	}
-
-	/**
-	* @brief 時間の取得関数
-	*/
-	static const DWORD Get_Time() {
-		return Time;
-	};
-};
+}
 
 #endif // !TIMER_H

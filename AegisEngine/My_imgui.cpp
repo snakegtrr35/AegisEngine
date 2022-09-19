@@ -61,6 +61,7 @@ ImVec2 operator-(const ImVec2& lhs, const ImVec2& rhs) { return ImVec2(lhs.x - r
 
 #include <psapi.h>
 
+#include "Timer.h"
 
 namespace aegis
 {
@@ -620,6 +621,10 @@ namespace aegis
 				{
 					ImGui::DrawRect(ImVec2(100, 100), ImVec4(1.0f, 1.0f, 0.f, 1.0f), "test", ImVec4(0.f, 0.f, 0.f, 1.0f), 3.0f);
 				}
+			}
+
+			{
+				ImGui::Text((char*)u8"平均FPS %.3lf", aegis::Timer::Get_FPS());
 			}
 
 			ImGui::End();
