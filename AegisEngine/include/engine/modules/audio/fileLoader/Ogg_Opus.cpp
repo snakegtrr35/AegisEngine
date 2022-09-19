@@ -1,12 +1,22 @@
 #include "Ogg_Opus.h"
-#include "audio_clip.h"
+#include "../audio_clip.h"
 
-#include <opusfile.h>
+#include <opus\include\opusfile.h>
 // libopusとopusfileをリンク
-#pragma comment(lib, "opus.lib")
-#pragma comment(lib, "opusfile.lib")
 
-namespace aegis
+#if _DEBUG
+//#pragma comment(lib, "opus/lib/Debug/opus.lib")
+//#pragma comment(lib, "opus/lib/Debug/opusfile.lib")
+#pragma comment(lib, "./external/opus/lib/Debug/opus")
+#pragma comment(lib, "./external/opus/lib/Debug/opusfile")
+#else
+//#pragma comment(lib, "opus/lib/Release/opus.lib")
+//#pragma comment(lib, "opus/lib/Release/opusfile.lib")
+#pragma comment(lib, "./external/opus/lib/Release/opus")
+#pragma comment(lib, "./external/opus/lib/Release/opusfile")
+#endif // !DEBUG
+
+namespace aegis::audio
 {
 	//// memory buffer
 	//static std::vector<uint8> data;
@@ -76,12 +86,17 @@ namespace aegis
 		{
 			Close(info);
 
-			SAFE_DELETE_ARRAY(playData->Data);
+			//SAFE_DELETE_ARRAY(playData->Data);
+			if (playData->Data)
+			{
+				delete[] playData->Data;
+				playData->Data = nullptr;
+			}
 		}
 
 		void Load(AudioInfo* info, PlayData* playData)
 		{
-			uint8* data = new uint8[info->DecodedSize];
+			std::uint8_t* data = new std::uint8_t[info->DecodedSize];
 			char* pBuf = reinterpret_cast<char*>(data);
 			int readSize;
 			while ((readSize = op_read(reinterpret_cast<OggOpusFile*>(info->AudioDate), (opus_int16*)pBuf, 8096, nullptr)) > 0)

@@ -5,7 +5,10 @@
 #include "Input.h"
 #include "manager.h"
 #include "Component.h"
-#include "audio_clip.h"
+
+//#include "audio_clip.h"
+#include "./include/engine/modules/audio/audio_clip.h"
+
 #include "Fade.h"
 #include "Enemy.h"
 #include "Score.h"
@@ -126,7 +129,7 @@ void GAME::Update(float delta_time)
 				cnt--;
 				cnt = Math::Loop_Minus(cnt, 3);
 
-				AUDIO_MANAGER::Play_Sound_Object(SOUND_INDEX::SOUND_INDEX_SENTAKU, false);
+				audio::AudioInstance()->Play_Sound_Object(audio::SOUND_INDEX::SOUND_INDEX_SENTAKU, false);
 			}
 
 			if (KEYBOARD::Trigger_Keyboard(VK_DOWN))
@@ -134,7 +137,7 @@ void GAME::Update(float delta_time)
 				cnt++;
 				cnt = Math::Loop_Plus(cnt, 3);
 
-				AUDIO_MANAGER::Play_Sound_Object(SOUND_INDEX::SOUND_INDEX_SENTAKU, false);
+				audio::AudioInstance()->Play_Sound_Object(audio::SOUND_INDEX::SOUND_INDEX_SENTAKU, false);
 			}
 
 			//vector<SPRITE*> sprites = Get_Game_Objects<SPRITE>();
@@ -191,7 +194,7 @@ void GAME::Update(float delta_time)
 					break;
 				}
 
-				AUDIO_MANAGER::Play_Sound_Object(SOUND_INDEX::SOUND_INDEX_KETTEI, false);
+				audio::AudioInstance()->Play_Sound_Object(audio::SOUND_INDEX::SOUND_INDEX_KETTEI, false);
 			}
 		}
 
@@ -317,7 +320,7 @@ void GAME::Uninit()
 
 	SCENE::Uninit();
 
-	AUDIO_MANAGER::Stop_Sound_Object();
+	audio::AudioInstance()->Stop_Sound_Object();
 }
 
 void GAME::Load(SCENE* scene)

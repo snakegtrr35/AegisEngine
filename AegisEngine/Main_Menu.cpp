@@ -2,7 +2,9 @@
 #include "Input.h"
 #include "manager.h"
 #include "Component.h"
-#include "audio_clip.h"
+
+//#include "audio_clip.h"
+#include "./include/engine/modules/audio/audio_clip.h"
 
 #include "Field.h"
 #include "Mesh_Dome.h"
@@ -140,7 +142,7 @@ void MAIN_MENU::Uninit()
 
 	//SAFE_DELETE(model);
 
-	AUDIO_MANAGER::Stop_Sound_Object();
+	audio::AudioInstance()->Stop_Sound_Object();
 }
 
 void MAIN_MENU::Load(SCENE* scene)

@@ -1,14 +1,34 @@
 #include "Ogg_Vorbis.h"
-#include "audio_clip.h"
+#include "../audio_clip.h"
 
-#include <vorbis/vorbisfile.h>
-// vorbisをリンク
-#pragma comment ( lib, "vorbis_static.lib" )
-#pragma comment ( lib, "vorbisfile_static.lib" )
+#include <ogg\ogg\include\ogg\os_types.h>
+#include <ogg\vorbis\include\vorbis\vorbisfile.h>
+
+//// vorbisをリンク
+//#pragma comment ( lib, "vorbis_static.lib" )
+//#pragma comment ( lib, "vorbisfile_static.lib" )
+//// liboggをリンク
+//#pragma comment(lib, "libogg.lib")
+
+#if _DEBUG
+//#pragma comment(lib, "ogg/vorbis/lib/Debug/vorbis_static")
+//#pragma comment(lib, "ogg/vorbis/lib/Debug/vorbisfile_static")
+#pragma comment(lib, "./external/ogg/vorbis/lib/Debug/vorbis_static")
+#pragma comment(lib, "./external/ogg/vorbis/lib/Debug/vorbisfile_static")
 // liboggをリンク
-#pragma comment(lib, "libogg.lib")
+//#pragma comment(lib, "ogg/ogg/lib/Debug/libogg.lib")
+#pragma comment(lib, "./external/ogg/ogg/lib/Debug/libogg")
+#else
+//#pragma comment(lib, "ogg/vorbis/lib/Release/vorbis_static")
+//#pragma comment(lib, "ogg/vorbis/lib/Release/vorbisfile_static")
+#pragma comment(lib, "./external/ogg/vorbis/lib/Release/vorbis_static")
+#pragma comment(lib, "./external/ogg/vorbis/lib/Release/vorbisfile_static")
+// liboggをリンク
+//#pragma comment(lib, "ogg/ogg/lib/Release/libogg.lib")
+#pragma comment(lib, "./external/ogg/ogg/lib/Release/libogg")
+#endif // !DEBUG
 
-namespace aegis
+namespace aegis::audio
 {
 	namespace OggVorbis
 	{
@@ -54,7 +74,12 @@ namespace aegis
 			if (nullptr != info->AudioDate)
 			{
 				ov_clear(reinterpret_cast<OggVorbis_File*>(info->AudioDate));
-				SAFE_DELETE(info->AudioDate)
+				//SAFE_DELETE(info->AudioDate)
+				if (info->AudioDate)
+				{
+					delete info->AudioDate;
+					info->AudioDate = nullptr;
+				}
 			}
 		}
 
@@ -62,12 +87,17 @@ namespace aegis
 		{
 			Close(info);
 
-			SAFE_DELETE_ARRAY(playData->Data);
+			//SAFE_DELETE_ARRAY(playData->Data);
+			if (playData->Data)
+			{
+				delete[] playData->Data;
+				playData->Data = nullptr;
+			}
 		}
 
 		void Load(AudioInfo* info, PlayData* playData)
 		{
-			uint8* data = new uint8[info->DecodedSize];
+			std::uint8_t* data = new std::uint8_t[info->DecodedSize];
 			char* pBuf = reinterpret_cast<char*>(data);
 			int bitstream = 0;
 			int readSize = 0;
@@ -81,7 +111,7 @@ namespace aegis
 			playData->Data = data;
 		}
 
-		void Stream(AudioInfo* info, char* buffer, const uint64 size)
+		void Stream(AudioInfo* info, char* buffer, const std::uint64_t size)
 		{
 			int requestSize = 4096;
 			int comSize = 0;

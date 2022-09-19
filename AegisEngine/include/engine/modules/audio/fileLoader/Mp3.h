@@ -1,15 +1,13 @@
 #pragma once
 
-#ifndef _INCLEDE_OGG_OPUS_LOAD_H_
-#define _INCLEDE_OGG_OPUS_LOAD_H_
+#ifndef _INCLEDE_MP3_LOAD_H_
+#define _INCLEDE_MP3_LOAD_H_
 
-#include "AudioDefine.h"
+#include "../AudioDefine.h"
 
-class OggOpusFile;
-
-namespace aegis
+namespace aegis::audio
 {
-	namespace OggOpus
+	namespace Mp3
 	{
 		void Open(const std::string_view& fileName, AudioInfo* info);
 		void Close(AudioInfo* info);
@@ -19,4 +17,4 @@ namespace aegis
 	}
 }
 
-#endif // !_INCLEDE_OGG_VORBIS_LOAD_H_
+#endif // !_INCLEDE_MP3_LOAD_H_

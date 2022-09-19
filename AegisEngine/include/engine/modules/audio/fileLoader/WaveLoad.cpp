@@ -1,10 +1,11 @@
 #include "WaveLoad.h"
-#include "audio_clip.h"
+#include "../audio_clip.h"
 
 #include <mmsystem.h>
+//#include "..\..\..\..\..\common.h"
 #pragma comment (lib, "winmm.lib")
 
-namespace aegis
+namespace aegis::audio
 {
 	namespace Wave
 	{
@@ -72,14 +73,19 @@ namespace aegis
 		{
 			Close(info);
 
-			SAFE_DELETE_ARRAY(playData->Data);
+			//SAFE_DELETE_ARRAY(playData->Data);
+			if (playData->Data)
+			{
+				delete[] playData->Data;
+				playData->Data = nullptr;
+			}
 		}
 
 		void Load(AudioInfo* info, PlayData* playData)
 		{
-			uint64 buflen = info->DecodedSize;
-			uint8* data = new uint8[buflen];
-			uint32 readlen = mmioRead(reinterpret_cast<HMMIO>(info->AudioDate), reinterpret_cast<HPSTR>(data), buflen);
+			std::uint64_t buflen = info->DecodedSize;
+			std::uint8_t* data = new std::uint8_t[buflen];
+			std::uint32_t readlen = mmioRead(reinterpret_cast<HMMIO>(info->AudioDate), reinterpret_cast<HPSTR>(data), buflen);
 
 			playData->Length = readlen;
 			playData->PlayLength = readlen / info->BlockAlign;

@@ -4,7 +4,9 @@
 
 #include "manager.h"
 #include "Component.h"
-#include "audio_clip.h"
+
+//#include "audio_clip.h"
+#include "./include/engine/modules/audio/audio_clip.h"
 
 #include "Fade.h"
 #include "Sprite_Animation.h"
@@ -128,7 +130,7 @@ void RESULT::Uninit()
 
 	SCENE::Uninit();
 
-	AUDIO_MANAGER::Stop_Sound_Object();
+	audio::AudioInstance()->Stop_Sound_Object();
 }
 
 void RESULT::Load(SCENE* scene)

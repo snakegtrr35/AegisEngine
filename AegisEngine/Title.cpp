@@ -3,7 +3,10 @@
 #include "Input.h"
 #include "manager.h"
 #include "Component.h"
-#include "audio_clip.h"
+
+//#include "audio_clip.h"
+#include "./include/engine/modules/audio/audio_clip.h"
+
 #include "Fade.h"
 #include "Timer.h"
 
@@ -91,7 +94,7 @@ void TITLE::Update(float delta_time)
 				cnt--;
 				cnt = aegis::Math::Loop_Minus(cnt, 3);
 
-				AUDIO_MANAGER::Play_Sound_Object(SOUND_INDEX::SOUND_INDEX_SENTAKU, false);
+				audio::AudioInstance()->Play_Sound_Object(audio::SOUND_INDEX::SOUND_INDEX_SENTAKU, false);
 			}
 
 			if (KEYBOARD::Trigger_Keyboard(BYTE(aegis::KeyCode::DOWN)))
@@ -99,7 +102,7 @@ void TITLE::Update(float delta_time)
 				cnt++;
 				cnt = aegis::Math::Loop_Plus(cnt, 3);
 
-				AUDIO_MANAGER::Play_Sound_Object(SOUND_INDEX::SOUND_INDEX_SENTAKU, false);
+				audio::AudioInstance()->Play_Sound_Object(audio::SOUND_INDEX::SOUND_INDEX_SENTAKU, false);
 			}
 
 			vector<SPRITE*> sprites = Get_Game_Objects<SPRITE>();
@@ -144,7 +147,7 @@ void TITLE::Update(float delta_time)
 							break;
 						}
 
-						AUDIO_MANAGER::Play_Sound_Object(SOUND_INDEX::SOUND_INDEX_KETTEI, false);
+						audio::AudioInstance()->Play_Sound_Object(audio::SOUND_INDEX::SOUND_INDEX_KETTEI, false);
 					}
 
 					break;
@@ -196,7 +199,7 @@ void TITLE::Uninit()
 
 	SCENE::Uninit();
 
-	AUDIO_MANAGER::Stop_Sound_Object();
+	audio::AudioInstance()->Stop_Sound_Object();
 }
 
 void TITLE::Load(SCENE* scene)

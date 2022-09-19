@@ -16,7 +16,8 @@
 #include "Billboard.h"
 #include "Model.h"
 
-#include "audio_clip.h"
+//#include "audio_clip.h"
+#include "./include/engine/modules/audio/audio_clip.h"
 
 IMPLEMENT_OBJECT_TYPE_INFO(GameObject, BULLET)
 
@@ -163,7 +164,7 @@ void BULLET::Update(float delta_time)
 				CManager::Get_Instance()->Get_Scene()->Destroy_Game_Object(this);
 				CManager::Get_Instance()->Get_Scene()->Destroy_Game_Object(enemy);
 
-				AUDIO_MANAGER::Play_Sound_Object(SOUND_INDEX::SOUND_INDEX_EXPLOSION);
+				audio::AudioInstance()->Play_Sound_Object(audio::SOUND_INDEX::SOUND_INDEX_EXPLOSION);
 
 				return;
 			}
@@ -199,7 +200,7 @@ void BULLET::Update(float delta_time)
 			
 					CManager::Get_Instance()->Get_Scene()->Destroy_Game_Object(this);
 			
-					AUDIO_MANAGER::Play_Sound_Object(SOUND_INDEX::SOUND_INDEX_EXPLOSION);
+					audio::AudioInstance()->Play_Sound_Object(audio::SOUND_INDEX::SOUND_INDEX_EXPLOSION);
 			
 					return;
 				}

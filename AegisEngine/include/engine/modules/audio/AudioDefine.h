@@ -3,9 +3,11 @@
 #ifndef _INCLEDE_AUDIO_DIFINE_H_
 #define _INCLEDE_AUDIO_DIFINE_H_
 
-namespace aegis
+#include "stdafx.h"
+
+namespace aegis::audio
 {
-	enum class AudioType : uint8
+	enum class AudioType : std::uint8_t
 	{
 		Wav,
 		Ogg_Vorbis,
@@ -18,31 +20,31 @@ namespace aegis
 	struct AudioInfo
 	{
 		//! チャンネル数(モノラル:1 ステレオ:2)
-		uint16 Channels;
+		std::uint16_t Channels;
 		//! サンプル当たりのビット数(8bit:8 16bit:16)
-		uint16 BitsPerSample;
+		std::uint16_t BitsPerSample;
 		//! サンプリングレート
-		uint32 SamplesPerSec;
+		std::uint32_t SamplesPerSec;
 		//! データ速度(秒間当たりのデータ量
-		uint32 AvgBytesPerSec;
+		std::uint32_t AvgBytesPerSec;
 		//! デコードサイズ
-		uint64 DecodedSize;
+		std::uint64_t DecodedSize;
 		//! デコードクラスのポインタ
 		void* AudioDate = nullptr;
 		//! ブロックサイズ(16bit ステレオなら 2*2=4)
-		uint16 BlockAlign;
+		std::uint16_t BlockAlign;
 		//! オーディオタイプ
 		AudioType Type = AudioType::None;
 
-		array<std::unique_ptr<uint8[]>, 2> Stream;
-		uint32 submitCount = 0;
+		std::array<std::unique_ptr<std::uint8_t[]>, 2> Stream;
+		std::uint32_t submitCount = 0;
 	};
 
 	struct PlayData
 	{
-		uint32 Length;
-		uint32 PlayLength;
-		uint8* Data = nullptr;
+		std::uint32_t Length;
+		std::uint32_t PlayLength;
+		std::uint8_t* Data = nullptr;
 	};
 }
 

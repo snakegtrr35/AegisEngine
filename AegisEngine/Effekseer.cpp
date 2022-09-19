@@ -8,7 +8,8 @@
 #include "Renderer.h"
 #include "RenderDX11.h"
 
-#include "audio_clip.h"
+//#include "audio_clip.h"
+#include "./include/engine/modules/audio/audio_clip.h"
 
 #if _DEBUG
 #pragma comment(lib, "external/Effekseer/lib/VS2017WIN64/Debug/Effekseer.lib" )
@@ -128,7 +129,7 @@ namespace aegis
 
 		{
 			// 音再生用インスタンスの生成
-			Sound = ::EffekseerSound::Sound::Create(AUDIO_MANAGER::Get_Xaudio(), 16, 16);
+			Sound = ::EffekseerSound::Sound::Create(audio::AudioInstance()->Get_Xaudio(), 16, 16);
 			if (nullptr == Sound)
 			{
 				return false;

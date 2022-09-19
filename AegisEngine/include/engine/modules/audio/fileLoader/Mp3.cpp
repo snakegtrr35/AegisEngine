@@ -2,9 +2,9 @@
 //#include "audio_clip.h"
 
 #define MINIMP3_IMPLEMENTATION
-#include "external\mp3\minimp3_ex.h"
+#include <mp3\minimp3_ex.h>
 
-namespace aegis
+namespace aegis::audio
 {
 	//// memory buffer
 	//static std::vector<uint8> data;
@@ -58,8 +58,20 @@ namespace aegis
 			{
 				mp3dec_ex_t* dec = reinterpret_cast<mp3dec_ex_t*>(info->AudioDate);
 
-				SAFE_DELETE(dec->index.frames);
-				SAFE_DELETE(dec);
+				//SAFE_DELETE(dec->index.frames);
+				if (dec->index.frames)
+				{
+					delete dec->index.frames;
+					dec->index.frames = nullptr;
+				}
+
+				//SAFE_DELETE(dec);
+				if (dec)
+				{
+					delete dec;
+					dec = nullptr;
+				}
+
 				info->AudioDate = nullptr;
 			}
 		}
@@ -68,7 +80,12 @@ namespace aegis
 		{
 			Close(info);
 
-			SAFE_DELETE_ARRAY(playData->Data);
+			//SAFE_DELETE_ARRAY(playData->Data);
+			if (playData->Data)
+			{
+				delete[] playData->Data;
+				playData->Data = nullptr;
+			}
 		}
 
 		void Load(AudioInfo* info, PlayData* playData)
@@ -86,7 +103,7 @@ namespace aegis
 
 			playData->Length = info->DecodedSize;
 			playData->PlayLength = info->DecodedSize / info->BlockAlign;
-			playData->Data = reinterpret_cast<uint8*>(data);
+			playData->Data = reinterpret_cast<std::uint8_t*>(data);
 		}
 	}
 }

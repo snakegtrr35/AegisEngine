@@ -14,7 +14,10 @@
 #include "TextureManager.h"
 #include "Model_Manager.h"
 #include "Timer.h"
-#include "audio_clip.h"
+
+//#include "audio_clip.h"
+#include "./include/engine/modules/audio/audio_clip.h"
+
 #include "ShadowMap.h"
 #include "Effekseer.h"
 
@@ -28,6 +31,8 @@
 
 #include <d3d11sdklayers.h>
 
+//#pragma comment(lib, "./audio.lib")
+
 #ifdef _DEBUG
 #define new new(_NORMAL_BLOCK, __FILE__, __LINE__)
 #endif // _DEBUG
@@ -37,6 +42,8 @@ std::unique_ptr<CManager> CManager::Manager;
 using namespace aegis;
 
 ID3D11Debug* gpD3dDebug = nullptr;
+
+
 
 bool CManager::Init()
 {
@@ -79,7 +86,8 @@ bool CManager::Init()
 		return false;
 	}
 
-	AUDIO_MANAGER::Init();
+	audio::CreateInstance();
+	audio::AudioInstance()->Init();
 
 	TextureManager::Init();
 
@@ -89,8 +97,8 @@ bool CManager::Init()
 	FONT::Init();
 
 	// 時間関係の初期化
-	TIMER::Init();
-	CLOCK_TIMER::Init();
+	Timer::Init();
+	//CLOCK_TIMER::Init();
 
 	EffekseerManager::getInstance()->Init();
 
@@ -126,8 +134,8 @@ bool CManager::Init()
 
 void CManager::Update()
 {
-	TIMER::Update();//
-	CLOCK_TIMER::Update();
+	Timer::Update();//
+	//CLOCK_TIMER::Update();
 
 	// インプットの更新
 	CINPUT::Update();
@@ -139,15 +147,15 @@ void CManager::Update()
 
 		if (Play_Enable)
 		{
-			pSceneManager->Update((float)TIMER::Get_DeltaTime());
+			pSceneManager->Update((float)Timer::Get_DeltaTime());
 		}
 		else
 		{
 			auto camera = pSceneManager->Get_Scene()->Get_Game_Object("camera");
-			if(nullptr != camera) camera->Update((float)TIMER::Get_DeltaTime());
+			if(nullptr != camera) camera->Update((float)Timer::Get_DeltaTime());
 		}
 #else
-		pSceneManager->Update(TIMER::Get_DeltaTime());
+		pSceneManager->Update(Timer::Get_DeltaTime());
 #endif // _DEBUG
 
 		if (pSceneManager->Get_Scene_Change_Enable()) return;
@@ -159,7 +167,7 @@ void CManager::Update()
 
 		// Effekseer
 		{
-			EffekseerManager::getInstance()->Update((float)TIMER::Get_DeltaTime());
+			EffekseerManager::getInstance()->Update((float)Timer::Get_DeltaTime());
 		}
 
 		MOUSE::Get_Mouse()->Reset_Wheel_Moveset();
@@ -313,7 +321,8 @@ void CManager::Uninit()
 
 	FONT::Uninit();
 
-	AUDIO_MANAGER::Uninit();
+	audio::AudioInstance()->Uninit();
+	audio::DestroyInstance();
 
 	CRenderer::getInstance()->Uninit();
 

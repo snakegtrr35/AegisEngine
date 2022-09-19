@@ -239,9 +239,6 @@
     <ClCompile Include="TextureManager.cpp">
       <Filter>ソース ファイル\System\Texture</Filter>
     </ClCompile>
-    <ClCompile Include="audio_clip.cpp">
-      <Filter>ソース ファイル\System\Audio</Filter>
-    </ClCompile>
     <ClCompile Include="Debug_Camera.cpp">
       <Filter>ソース ファイル\System\Camera</Filter>
     </ClCompile>
@@ -343,18 +340,6 @@
     </ClCompile>
     <ClCompile Include="include\engine\core\math\Vector4.cpp">
       <Filter>include\engine\core\math</Filter>
-    </ClCompile>
-    <ClCompile Include="WaveLoad.cpp">
-      <Filter>ソース ファイル\System\Audio</Filter>
-    </ClCompile>
-    <ClCompile Include="Ogg_Opus.cpp">
-      <Filter>ソース ファイル\System\Audio</Filter>
-    </ClCompile>
-    <ClCompile Include="Ogg_Vorbis.cpp">
-      <Filter>ソース ファイル\System\Audio</Filter>
-    </ClCompile>
-    <ClCompile Include="Mp3.cpp">
-      <Filter>ソース ファイル\System\Audio</Filter>
     </ClCompile>
     <ClCompile Include="include\engine\core\memory\stlAllocator.cpp">
       <Filter>include\engine\core\memory</Filter>
@@ -508,9 +493,6 @@
     <ClInclude Include="TextureManager.h">
       <Filter>ソース ファイル\System\Texture</Filter>
     </ClInclude>
-    <ClInclude Include="audio_clip.h">
-      <Filter>ソース ファイル\System\Audio</Filter>
-    </ClInclude>
     <ClInclude Include="Debug_Camera.h">
       <Filter>ソース ファイル\System\Camera</Filter>
     </ClInclude>
@@ -657,21 +639,6 @@
     </ClInclude>
     <ClInclude Include="include\engine\core\math\Vector4.h">
       <Filter>include\engine\core\math</Filter>
-    </ClInclude>
-    <ClInclude Include="WaveLoad.h">
-      <Filter>ソース ファイル\System\Audio</Filter>
-    </ClInclude>
-    <ClInclude Include="Ogg_Opus.h">
-      <Filter>ソース ファイル\System\Audio</Filter>
-    </ClInclude>
-    <ClInclude Include="Ogg_Vorbis.h">
-      <Filter>ソース ファイル\System\Audio</Filter>
-    </ClInclude>
-    <ClInclude Include="Mp3.h">
-      <Filter>ソース ファイル\System\Audio</Filter>
-    </ClInclude>
-    <ClInclude Include="AudioDefine.h">
-      <Filter>ソース ファイル\System\Audio</Filter>
     </ClInclude>
     <ClInclude Include="include\engine\core\math\detail\quaternion.h">
       <Filter>include\engine\core\math\detail</Filter>
