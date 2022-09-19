@@ -352,7 +352,7 @@ double fps = 0.0;
 
 void TextureManager::Load_Check()
 {
-	fps += TIMER::Get_DeltaTime();
+	fps += Timer::Get_DeltaTime();
 
 	if (10.0 < fps)
 	{
