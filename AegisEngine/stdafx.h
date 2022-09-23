@@ -76,6 +76,8 @@ using namespace DirectX;
 #include <set>
 #include <unordered_set>
 #include <deque>
+#include <stack>
+#include <queue>
 #include <memory>
 #include <string>
 #include <variant>
