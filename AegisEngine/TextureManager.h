@@ -3,11 +3,10 @@
 #ifndef TEXTURE_MANEGER_H
 #define TEXTURE_MANEGER_H
 
-
-#ifdef _DEBUG
-#include <queue>
 #include "Renderer.h"
 #include "TextureTypeDefine.h"
+#ifdef _DEBUG
+#include <queue>
 
 class FILE_CHANGE_MONITOR {
 private:
