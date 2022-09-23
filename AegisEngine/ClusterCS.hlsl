@@ -45,7 +45,7 @@ RWTexture3D<uint> outCluster : register(u0);
 RWTexture2D<uint> outLightList : register(u1);
 
 // グループ共有メモリ
-groupshared uint TempBuffer[2];
+groupshared uint TempBuffer[2] = { 0, 0 };
 
 bool isHit(in float3 max, in float3 min, in float3 position, in float radius);
 
