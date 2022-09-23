@@ -84,7 +84,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 	//フレームカウント初期化
 	std::chrono::high_resolution_clock::time_point dwExecLastTime{};
 	std::chrono::high_resolution_clock::time_point dwCurrentTime{};
-	timeBeginPeriod(1);
+	//timeBeginPeriod(1);
 	dwExecLastTime = std::chrono::high_resolution_clock::now();
 
 	// メッセージループ
@@ -125,7 +125,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 		}
 	}
 
-	timeEndPeriod(1);				// 分解能を戻す
+	//timeEndPeriod(1);				// 分解能を戻す
 
 	// ウィンドウクラスの登録を解除
 	UnregisterClass(CLASS_NAME, wcex.hInstance);
