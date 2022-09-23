@@ -1254,71 +1254,71 @@ namespace aegis
 
 		//mD3DDevice->Release();
 
-		mImmediateContext->Release();
-		mSwapChain->Release();
-		mRenderTargetView->Release();
-
-		mRenderTargetView_16bit->Release();
-		mShaderResourceView_16bit->Release();
-
-		for (uint32 i = 0; i < 3; i++)
-		{
-			if (mRenderTargetViews[i])
-			{
-				mRenderTargetViews[i]->Release();
-			}
-
-			if (mShaderResourceViews[i])
-			{
-				mShaderResourceViews[i]->Release();
-			}
-		}
-		
-		mDepthStencilView->Release();
-
-		mD2DDevice->Release();
-		mD2DDeviceContext->Release();
-		mD2DTargetBitmap->Release();
-		mDxgiDev->Release();
-
-		mDwriteTextFormat->Release();
-		mTextLayout->Release();
-		mDwriteFactory->Release();
-
-		for (auto& shader : mVertexShader)
-		{
-			if (shader.second)
-			{
-				shader.second->Release();
-			}
-		}
-
-		for (auto& shader : mPixelShader)
-		{
-			if (shader.second)
-			{
-				shader.second->Release();
-			}
-		}
-
-		mDepthStateEnable->Release();
-		mDepthStateDisable->Release();
-		mRasterizerState->Release();
-
-		mSamplerState->Release();
-
-		for (uint32 i = 0; i < 3; i++)
-		{
-			if (mVertexLayout[i])
-			{
-				mVertexLayout[i]->Release();
-			}
-		}
-
-		mMaterialBuffer->Release();
-		mLightBuffer->Release();
-		mConstantBuffer->Release();
-		mConstantBuffer_02->Release();
+		///mImmediateContext->Release();
+		///mSwapChain->Release();
+		///mRenderTargetView->Release();
+		///
+		///mRenderTargetView_16bit->Release();
+		///mShaderResourceView_16bit->Release();
+		///
+		///for (uint32 i = 0; i < 3; i++)
+		///{
+		///	if (mRenderTargetViews[i])
+		///	{
+		///		mRenderTargetViews[i]->Release();
+		///	}
+		///
+		///	if (mShaderResourceViews[i])
+		///	{
+		///		mShaderResourceViews[i]->Release();
+		///	}
+		///}
+		///
+		///mDepthStencilView->Release();
+		///
+		///mD2DDevice->Release();
+		///mD2DDeviceContext->Release();
+		///mD2DTargetBitmap->Release();
+		///mDxgiDev->Release();
+		///
+		///mDwriteTextFormat->Release();
+		///mTextLayout->Release();
+		///mDwriteFactory->Release();
+		///
+		///for (auto& shader : mVertexShader)
+		///{
+		///	if (shader.second)
+		///	{
+		///		shader.second->Release();
+		///	}
+		///}
+		///
+		///for (auto& shader : mPixelShader)
+		///{
+		///	if (shader.second)
+		///	{
+		///		shader.second->Release();
+		///	}
+		///}
+		///
+		///mDepthStateEnable->Release();
+		///mDepthStateDisable->Release();
+		///mRasterizerState->Release();
+		///
+		///mSamplerState->Release();
+		///
+		///for (uint32 i = 0; i < 3; i++)
+		///{
+		///	if (mVertexLayout[i])
+		///	{
+		///		mVertexLayout[i]->Release();
+		///	}
+		///}
+		///
+		///mMaterialBuffer->Release();
+		///mLightBuffer->Release();
+		///mConstantBuffer->Release();
+		///mConstantBuffer_02->Release();
 
 		//{
 		//	// 作成

@@ -90,7 +90,7 @@ struct AllocatorDelete
 	{
 		if (p)
 		{
-			p->Release();
+			//p->Release();
 			aegis::allocatorWrapper::deallocate(p);
 			//p = nullptr;
 		}
