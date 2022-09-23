@@ -16,12 +16,11 @@
 #include <unordered_set>
 #include <deque>
 #include <stack>
+#include <queue>
 #include <variant>
 #include <string>
 
 #include <memory>
-
-#include "../../../common.h"
 
 namespace aegis
 {
@@ -33,6 +32,12 @@ namespace aegis
 
     template <class T>
     using vector = std::vector<T, stl_allocatorWrapper<T>>;
+
+    template <class T>
+    using deque = std::deque<T, stl_allocatorWrapper<T>>;
+
+    template<class T>
+    using queue = std::queue<T, aegis::deque<T>>;
 
     template <class T>
     using list = std::list<T, stl_allocatorWrapper<T>>;
@@ -76,5 +81,7 @@ namespace aegis
     using string = std::basic_string<char8, std::char_traits<char8>, stl_allocatorWrapper<char8>>;
     using wstring = std::basic_string<char16, std::char_traits<char16>, stl_allocatorWrapper<char16>>;
 }
+
+#include "../../../common.h"
 
 #endif // !INCLUDE_AEGISCONTAINER_H
